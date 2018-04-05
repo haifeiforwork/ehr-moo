@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="collpack.assess.dao.AssessmentManagementInitializationLog">
+	<typeAlias alias="AssessmentManagementInitializationLogPK" type="com.lgcns.ikep4.collpack.assess.model.AssessmentManagementInitializationLogPK"/>
+	<typeAlias alias="AssessmentManagementInitializationLog" type="com.lgcns.ikep4.collpack.assess.model.AssessmentManagementInitializationLog"/>
+
+	<resultMap class="AssessmentManagementInitializationLog" id="result">
+		<result column="HISTORY_ID" property="historyId" jdbcType="VARCHAR" javaType="String"/>
+		<result column="INITIAL_DATE" property="initialDate" jdbcType="DATETIME" javaType="Date"/>
+		<result column="REGISTER_ID" property="registerId" jdbcType="VARCHAR" javaType="String"/>
+	</resultMap>
+
+<!-- ANSI -->
+<!-- 초기화이력 입력 -->
+	<insert id="create" parameterClass="AssessmentManagementInitializationLog">
+	<![CDATA[
+		INSERT /* [AssessmentManagementInitializationLog_SqlMap.xml] collpack.assess.dao.AssessmentManagementInitializationLog.create */
+		       INTO IKEP4_AM_INITIALIZATION_LOG (
+		       HISTORY_ID
+		     , INITIAL_DATE
+		     , PORTAL_ID
+		     , REGISTER_ID
+		       )
+		VALUES (
+		       #historyId#
+		     , CURRENT_TIMESTAMP
+		     , #portalId#
+		     , #registerId#
+		       )
+	]]>
+	</insert>
+
+<!-- ANSI -->
+<!-- 포털별 초기화 이력 리스트 -->
+	<select id="listByPortalId" parameterClass="String" resultMap="result">
+	<![CDATA[
+		SELECT /* [AssessmentManagementInitializationLog_SqlMap.xml] collpack.assess.dao.AssessmentManagementInitializationLog.listByPortalId */
+		       HISTORY_ID, INITIAL_DATE, REGISTER_ID
+		  FROM IKEP4_AM_INITIALIZATION_LOG
+		 WHERE PORTAL_ID = #portalId#
+		 ORDER BY INITIAL_DATE DESC
+	]]>
+	</select>
+
+</sqlMap>

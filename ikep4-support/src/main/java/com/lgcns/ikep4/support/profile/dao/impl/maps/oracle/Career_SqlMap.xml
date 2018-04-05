@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="support.profile.dao.Career">
+	<typeAlias alias="Career" type="com.lgcns.ikep4.support.profile.model.Career" />
+
+	<!-- IKEP4_PF_HISTORY 테이블 조회 결과 -->
+	<resultMap id="result" class="Career" groupBy="careerId">
+		<result property="careerId" column="CAREER_ID" columnIndex="1" />
+		<result property="companyName" column="COMPANY_NAME" columnIndex="2" />
+		<result property="workStartDate" column="WORK_START_DATE" columnIndex="3" />
+		<result property="workEndDate" column="WORK_END_DATE" columnIndex="4" />
+		<result property="roleName" column="ROLE_NAME" columnIndex="5" />
+		<result property="workChange" column="WORK_CHARGE" columnIndex="6" />
+		<result property="registerId" column="REGISTER_ID" columnIndex="7" />
+		<result property="registerName" column="REGISTER_NAME" columnIndex="8" />
+		<result property="registDate" column="REGIST_DATE" columnIndex="9" />
+		<result property="updateDate" column="UPDATE_DATE" columnIndex="10" />
+	</resultMap>
+
+	<!-- insert -->
+	<insert id="insert" parameterClass="Career"> 
+		<![CDATA[ 
+           INSERT INTO IKEP4_PF_CAREER (
+           		/* [Career_SqlMap.xml] support.profile.dao.Career.insert */ 
+           		CAREER_ID, COMPANY_NAME, WORK_START_DATE, WORK_END_DATE, ROLE_NAME
+           		, WORK_CHARGE, REGISTER_ID, REGISTER_NAME, REGIST_DATE, UPDATE_DATE )  
+           VALUES (#careerId#, #companyName#, #workStartDate#, #workEndDate#, #roleName#, #workChange#
+           			, #registerId#, #registerName#, SYSDATE, SYSDATE)
+		]]>
+		<selectKey resultClass="java.lang.String" keyProperty="careerId" type="post"> 
+			<![CDATA[ 
+               SELECT CAREER_ID FROM IKEP4_PF_CAREER WHERE CAREER_ID = #careerId# 
+			]]>
+		</selectKey>
+	</insert>
+
+	<!-- select -->
+	<select id="select" parameterClass="java.lang.String" resultMap="result">
+		<![CDATA[
+			SELECT /* [Career_SqlMap.xml] support.profile.dao.Career.select */ 
+				  CAREER_ID
+		   		, COMPANY_NAME
+		   		, WORK_START_DATE
+		   		, WORK_END_DATE
+		   		, ROLE_NAME
+		   		, WORK_CHARGE
+		   		, REGISTER_ID
+		   		, REGISTER_NAME
+		   		, REGIST_DATE
+		   		, UPDATE_DATE
+		   	FROM IKEP4_PF_CAREER 
+		   	WHERE CAREER_ID = #careerId#
+		]]>
+	</select>
+
+	<!-- update -->
+	<update id="update" parameterClass="Career">
+	  <![CDATA[
+		   UPDATE IKEP4_PF_CAREER 
+		   /* [Career_SqlMap.xml] support.profile.dao.Career.update */ 
+		   SET COMPANY_NAME = #companyName#, 
+			   WORK_START_DATE = #workStartDate#, 
+			   WORK_END_DATE = #workEndDate#, 
+			   ROLE_NAME = #roleName#,
+			   WORK_CHARGE = #workChange#,
+			   UPDATE_DATE = SYSDATE
+		   WHERE CAREER_ID = #careerId#
+	   ]]>
+	</update>
+
+	<!-- delete -->
+	<delete id="delete" parameterClass="java.lang.String">
+      <![CDATA[
+	       DELETE /* [Career_SqlMap.xml] support.profile.dao.Career.delete */ 
+	       FROM IKEP4_PF_CAREER WHERE CAREER_ID = #careerId#
+	   ]]>
+	</delete>
+	
+	<!-- selectAll -->
+	<select id="selectAll" parameterClass="Career" resultMap="result">
+	  <![CDATA[
+	  	   SELECT * FROM (
+		   SELECT /* [Career_SqlMap.xml] support.profile.dao.Career.selectAll */
+		   		  CAREER_ID
+		   		, COMPANY_NAME
+		   		, WORK_START_DATE
+		   		, WORK_END_DATE
+		   		, ROLE_NAME
+		   		, WORK_CHARGE
+		   		, REGISTER_ID
+		   		, REGISTER_NAME
+		   		, REGIST_DATE
+		   		, UPDATE_DATE
+		   FROM IKEP4_PF_CAREER 
+		   WHERE REGISTER_ID = #registerId#
+		   ORDER BY WORK_START_DATE DESC
+		   ) 
+		   WHERE ROWNUM <= 200
+		   
+	   ]]>
+	</select>
+
+	<!-- selectCount -->
+	<select id="selectCount" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+	  <![CDATA[
+		   SELECT COUNT(CAREER_ID) FROM IKEP4_PF_CAREER WHERE CAREER_ID = #careerId#
+	   ]]>
+	</select>
+	
+	<!-- selectRecent5 -->
+	<select id="selectRecent5" parameterClass="Career" resultMap="result">
+	  <![CDATA[
+	  	   SELECT * FROM (
+		   SELECT /* [Career_SqlMap.xml] support.profile.dao.Career.selectRecent5 */
+		   		  CAREER_ID
+		   		, COMPANY_NAME
+		   		, WORK_START_DATE
+		   		, WORK_END_DATE
+		   		, ROLE_NAME
+		   		, WORK_CHARGE
+		   		, REGISTER_ID
+		   		, REGISTER_NAME
+		   		, REGIST_DATE
+		   		, UPDATE_DATE
+		   FROM IKEP4_PF_CAREER 
+		   WHERE REGISTER_ID = #registerId#
+		   ORDER BY WORK_START_DATE  DESC
+		  ) 
+		  WHERE ROWNUM <= 5
+	   ]]>
+	</select>
+
+</sqlMap>

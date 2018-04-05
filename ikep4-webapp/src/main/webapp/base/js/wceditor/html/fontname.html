@@ -1,0 +1,45 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="stylesheet" type="text/css" href="../css/html.css" />
+<script type="text/javascript" src="/ikep4-webapp/base/js/jquery/jquery-1.6.2.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function(){
+		$("#fontnameDiv > div")
+		.bind("mouseover", function() {
+			$(this).addClass("over");
+		})
+		.bind("mouseout", function() {
+			$(this).removeClass("over");
+		})
+		.bind("click", function() {
+			parent.WCEditor.setFont("fontname", $(this).css("font-family"));
+		});
+		
+		if(parent.WCEditor.config.miniMode){
+		    $("#fontnameDiv > div:odd").hide();
+		}
+	});
+</script>
+</head>
+<body>
+<div id="ifrmMainDiv">
+	<div id="ifrmLayoutDiv">
+	    <div id="fontnameDiv">
+            <div style="font-family:돋움, dotum;">돋움 <span>(가나다라)</span></div>
+            <div style="font-family:돋움체, dotumche;">돋움체 <span>(가나다라)</span></div>
+            <div style="font-family:굴림, gulim;">굴림 <span>(가나다라)</span></div>
+            <div style="font-family:굴림체, gulimche;">굴림체 <span>(가나다라)</span></div>
+            <div style="font-family:바탕, batang;">바탕 <span>(가나다라)</span></div>
+            <div style="font-family:바탕체, batangche;">바탕체 <span>(가나다라)</span></div>
+            <div style="font-family:궁서, gungsuh;">궁서 <span>(가나다라)</span></div>
+            <div style="font-family:arial;">Arial <span>(abcde)</span></div>
+            <div style="font-family:tahoma;">Tahoma <span>(abcde)</span></div>
+            <div style="font-family:times new roman">Times New Roman <span>(abcde)</span></div>
+            <div style="font-family:verdana">verdana <span>(abcde)</span></div>
+        </div>
+    </div>
+</div>	
+</body>
+</html>

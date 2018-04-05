@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="portal.admin.screen.portalLayout" >
+	<typeAlias alias="PortalLayout" 				type="com.lgcns.ikep4.portal.admin.screen.model.PortalLayout"/>
+	<typeAlias alias="PortalLayoutSearchCondition"	type="com.lgcns.ikep4.framework.web.SearchCondition" />
+
+	<!-- 레이아웃 테이블 조회 결과 -->
+	<resultMap id="layoutResult" class="PortalLayout">
+		<result property="layoutId" column="LAYOUT_ID" columnIndex="1"/>
+		<result property="layoutName" column="LAYOUT_NAME" columnIndex="2"/>
+		<result property="description" column="DESCRIPTION" columnIndex="3"/>
+		<result property="common" column="COMMON" columnIndex="4"/>
+		<result property="layoutNum" column="LAYOUT_NUM" columnIndex="5"/>
+		<result property="registerId" column="REGISTER_ID" columnIndex="6"/>
+		<result property="registerName" column="REGISTER_NAME" columnIndex="7"/>
+		<result property="registDate" column="REGIST_DATE" columnIndex="8"/>
+		<result property="updaterId" column="UPDATER_ID" columnIndex="9"/>
+		<result property="updaterName" column="UPDATER_NAME" columnIndex="10"/>
+		<result property="updateDate" column="UPDATE_DATE" columnIndex="11"/>
+	</resultMap>
+	
+	<resultMap id="searchResult" class="PortalLayout">
+		<result property="num" column="NUM" columnIndex="1"/>
+		<result property="layoutId" column="LAYOUT_ID" columnIndex="2"/>
+		<result property="layoutName" column="LAYOUT_NAME" columnIndex="3"/>
+		<result property="description" column="DESCRIPTION" columnIndex="4"/>
+		<result property="common" column="COMMON" columnIndex="5"/>
+		<result property="layoutNum" column="LAYOUT_NUM" columnIndex="6"/>
+		<result property="registerId" column="REGISTER_ID" columnIndex="7"/>
+		<result property="registerName" column="REGISTER_NAME" columnIndex="8"/>
+		<result property="registDate" column="REGIST_DATE" columnIndex="9"/>
+		<result property="updaterId" column="UPDATER_ID" columnIndex="10"/>
+		<result property="updaterName" column="UPDATER_NAME" columnIndex="11"/>
+		<result property="updateDate" column="UPDATE_DATE" columnIndex="12"/>
+	</resultMap>
+	
+	<select id="listLayout" parameterClass="PortalLayout" resultMap="layoutResult">
+	  <![CDATA[
+	  	   /* [PortalLayout_SqlMap.xml] portal.admin.screen.portalLayout.listLayout */
+		   SELECT 
+			    LAYOUT_ID, 
+			    LAYOUT_NAME, 
+			    DESCRIPTION, 
+			    COMMON, 
+			    LAYOUT_NUM, 
+			    REGISTER_ID, 
+			    REGISTER_NAME,
+			    TO_CHAR(REGIST_DATE, 'YYYY-MM-DD') AS REGIST_DATE,
+			    UPDATER_ID, 
+			    UPDATER_NAME,
+			    TO_CHAR(UPDATE_DATE, 'YYYY-MM-DD') AS UPDATE_DATE
+			  FROM IKEP4_PO_LAYOUT
+			 ORDER BY REGIST_DATE ASC
+		]]>
+	</select>
+	
+	<select id="listBySearchCondition" parameterClass="PortalLayoutSearchCondition" resultMap="searchResult">
+	<![CDATA[
+  		/* [PortalLayout_SqlMap.xml] portal.admin.screen.portalLayout.listBySearchCondition */
+		SELECT				*
+		FROM 				(
+	     					SELECT				ROWNUM AS NUM,
+					     						LAYOUT_ID, 
+											    LAYOUT_NAME, 
+											    DESCRIPTION, 
+											    COMMON, 
+											    LAYOUT_NUM,
+												REGISTER_ID,
+												REGISTER_NAME,
+												TO_CHAR(REGIST_DATE, 'YYYY-MM-DD') AS REGIST_DATE,
+												UPDATER_ID,
+												UPDATER_NAME,
+												TO_CHAR(UPDATE_DATE, 'YYYY-MM-DD') AS UPDATE_DATE
+	     					FROM 				(
+	     										SELECT				LAYOUT_ID, 
+																    LAYOUT_NAME, 
+																    DESCRIPTION, 
+																    COMMON, 
+																    LAYOUT_NUM,
+														            REGISTER_ID, 
+														            REGISTER_NAME, 
+														            REGIST_DATE, 
+														            UPDATER_ID, 
+														            UPDATER_NAME, 
+														            UPDATE_DATE
+	     										FROM				IKEP4_PO_LAYOUT
+	     										WHERE				1 = 1
+		]]>
+												<isNotEmpty property="searchColumn">
+												<isEqual prepend="AND" property="searchColumn" compareValue="layoutName">
+																	UPPER(LAYOUT_NAME) LIKE UPPER('%' || #searchWord# || '%')
+												</isEqual>
+												</isNotEmpty>
+									    		<isNotEmpty property="sortColumn">
+									    		<isEqual property="sortColumn" compareValue="LAYOUT_NAME">
+									    		<isEqual property="sortType" compareValue="ASC">
+												ORDER BY 			LAYOUT_NAME ASC
+												</isEqual>
+												<isEqual property="sortType" compareValue="DESC">
+												ORDER BY 			LAYOUT_NAME DESC
+												</isEqual>
+												</isEqual>
+									    		</isNotEmpty>
+									    		<isEmpty property="sortColumn">
+									    		ORDER BY 			REGIST_DATE DESC
+									    		</isEmpty>
+									    		)
+		<![CDATA[
+	    					WHERE 				ROWNUM <= #endRowIndex#		 
+							)
+		WHERE 				NUM > #startRowIndex#
+		]]>
+	</select>
+	
+	<select id="countBySearchCondition" parameterClass="PortalLayoutSearchCondition" resultClass="int">  
+  		<![CDATA[
+  		/* [PortalLayout_SqlMap.xml] portal.admin.screen.portalLayout.countBySearchCondition */
+		SELECT 				COUNT(LAYOUT_ID)
+		FROM   				IKEP4_PO_LAYOUT
+		WHERE				1 = 1
+		]]>
+		<isNotEmpty property="searchColumn">
+		<isEqual prepend="AND" property="searchColumn" compareValue="layoutName">
+							UPPER(LAYOUT_NAME) LIKE UPPER('%' || #searchWord# || '%')
+		</isEqual>
+		</isNotEmpty>
+  	</select> 
+	
+	<select id="listLayoutCommonCheck" parameterClass="int" resultMap="layoutResult">
+	  <![CDATA[
+	  	   /* [PortalLayout_SqlMap.xml] portal.admin.screen.portalLayout.listLayoutCommonCheck */
+		   SELECT 
+			    LAYOUT_ID, 
+			    LAYOUT_NAME, 
+			    DESCRIPTION, 
+			    COMMON, 
+			    LAYOUT_NUM, 
+			    REGISTER_ID, 
+			    REGISTER_NAME,
+			    TO_CHAR(REGIST_DATE, 'YYYY-MM-DD') AS REGIST_DATE,
+			    UPDATER_ID, 
+			    UPDATER_NAME,
+			    TO_CHAR(UPDATE_DATE, 'YYYY-MM-DD') AS UPDATE_DATE
+			  FROM IKEP4_PO_LAYOUT
+			 WHERE COMMON = #common#
+			 ORDER BY layout_num
+		]]>
+	</select>
+	
+	<insert id="createLayout" parameterClass="PortalLayout"> 
+      <![CDATA[
+      	   /* [PortalLayout_SqlMap.xml] portal.admin.screen.portalLayout.createLayout */ 
+           INSERT INTO IKEP4_PO_LAYOUT (LAYOUT_ID, LAYOUT_NAME, DESCRIPTION, COMMON, LAYOUT_NUM, REGISTER_ID, REGISTER_NAME, REGIST_DATE, UPDATER_ID, UPDATER_NAME, UPDATE_DATE)  
+           VALUES (#layoutId#, #layoutName#, #description#, #common#, #layoutNum#, #registerId#, #registerName#, sysdate, #updaterId#, #updaterName#, sysdate)
+       ]]>
+   </insert>
+   
+   <select id="getLayout" parameterClass="String" resultMap="layoutResult">
+	  <![CDATA[
+	  	   /* [PortalLayout_SqlMap.xml] portal.admin.screen.portalLayout.getLayout */
+		   SELECT 
+			    LAYOUT_ID, 
+			    LAYOUT_NAME, 
+			    DESCRIPTION, 
+			    COMMON, 
+			    LAYOUT_NUM, 
+			    REGISTER_ID, 
+			    REGISTER_NAME,
+			    TO_CHAR(REGIST_DATE, 'YYYY-MM-DD') AS REGIST_DATE,
+			    UPDATER_ID, 
+			    UPDATER_NAME,
+			    TO_CHAR(UPDATE_DATE, 'YYYY-MM-DD') AS UPDATE_DATE
+			 FROM IKEP4_PO_LAYOUT 
+		    WHERE LAYOUT_ID = #layoutId#
+	   ]]>
+	</select>
+	
+    <delete id="removeLayout" parameterClass="java.lang.String">
+      <![CDATA[
+      	   /* [PortalPage_SqlMap.xml] portal.admin.screen.portalLayout.removeLayout */
+	       DELETE FROM IKEP4_PO_LAYOUT WHERE LAYOUT_ID = #layoutId#
+	   ]]>
+	</delete>
+	
+	<update id="updateLayout" parameterClass="PortalLayout">
+	  <![CDATA[
+	  	   /* [PortalLayout_SqlMap.xml] portal.admin.screen.portalLayout.updateLayout */
+		   UPDATE IKEP4_PO_LAYOUT
+		   SET LAYOUT_NAME = #layoutName#,	 
+			   DESCRIPTION = #description#,
+			   LAYOUT_NUM = #layoutNum#,
+			   UPDATER_ID = #updaterId#, 
+			   UPDATER_NAME = #updaterName#,
+			   UPDATE_DATE = sysdate 
+		   WHERE LAYOUT_ID = #layoutId#
+	   ]]>
+	</update>
+	
+	<select id="getCommonLayout" resultMap="layoutResult">
+	  <![CDATA[
+	  	   /* [PortalLayout_SqlMap.xml] portal.admin.screen.portalLayout.getCommonLayout */
+		   SELECT 
+			    LAYOUT_ID, 
+			    LAYOUT_NAME, 
+			    DESCRIPTION, 
+			    COMMON, 
+			    LAYOUT_NUM, 
+			    REGISTER_ID, 
+			    REGISTER_NAME,
+			    TO_CHAR(REGIST_DATE, 'YYYY-MM-DD') AS REGIST_DATE,
+			    UPDATER_ID, 
+			    UPDATER_NAME,
+			    TO_CHAR(UPDATE_DATE, 'YYYY-MM-DD') AS UPDATE_DATE
+			 FROM IKEP4_PO_LAYOUT 
+		    WHERE common = 1
+		      AND rownum = 1
+	   ]]>
+	</select>
+</sqlMap>

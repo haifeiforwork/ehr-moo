@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="support.user.role.dao.RoleType" >
+	<typeAlias alias="RoleType" type="com.lgcns.ikep4.support.user.role.model.RoleType"/>
+	<typeAlias alias = "SearchCondition" type="com.lgcns.ikep4.support.user.code.model.AdminSearchCondition"/>
+	
+	<resultMap id="result" class="RoleType">
+		<result property="roleTypeId" column="ROLE_TYPE_ID" columnIndex="1"/>
+		<result property="roleTypeName" column="ROLE_TYPE_NAME" columnIndex="2"/>
+		<result property="portalId" column="PORTAL_ID" columnIndex="3"/>
+		<result property="registerId" column="REGISTER_ID" columnIndex="4"/>
+		<result property="registerName" column="REGISTER_NAME" columnIndex="5"/>
+		<result property="updaterId" column="UPDATER_ID" columnIndex="6"/>
+		<result property="updaterName" column="UPDATER_NAME" columnIndex="7"/>
+		<result property="registDate" column="REGIST_DATE" columnIndex="8"/>
+		<result property="updateDate" column="UPDATE_DATE" columnIndex="9"/>
+		<result property="num" column="NUM" columnIndex="10"/>
+	</resultMap>
+	
+	<resultMap id="getResult" class="RoleType">
+		<result property="roleTypeId" column="ROLE_TYPE_ID" columnIndex="1"/>
+		<result property="roleTypeName" column="ROLE_TYPE_NAME" columnIndex="2"/>
+		<result property="portalId" column="PORTAL_ID" columnIndex="3"/>
+		<result property="registerId" column="REGISTER_ID" columnIndex="4"/>
+		<result property="registerName" column="REGISTER_NAME" columnIndex="5"/>
+		<result property="updaterId" column="UPDATER_ID" columnIndex="6"/>
+		<result property="updaterName" column="UPDATER_NAME" columnIndex="7"/>
+		<result property="registDate" column="REGIST_DATE" columnIndex="8"/>
+		<result property="updateDate" column="UPDATE_DATE" columnIndex="9"/>
+	</resultMap>	
+	
+	<!-- 신규 등록 -->
+	<insert id="insert" parameterClass="RoleType"> 
+	<![CDATA[
+		INSERT INTO /* [RoleType_SqlMap.xml] support.user.role.dao.RoleType.insert */
+			IKEP4_EV_ROLE_TYPE (
+			ROLE_TYPE_ID, 
+			ROLE_TYPE_NAME, 
+			REGISTER_ID, 
+			REGISTER_NAME,
+			UPDATER_ID, 
+			UPDATER_NAME,
+			REGIST_DATE, 
+			UPDATE_DATE,
+			PORTAL_ID)
+		VALUES ( 
+			#roleTypeId#,
+			#roleTypeName#,
+		    #registerId#,
+		    #registerName#,
+		    #updaterId#,
+		    #updaterName#,
+		    NOW(),
+		    NOW(),
+		    #portalId#)
+	]]>
+   </insert>
+   
+   <!-- 상세정보 -->
+	<select id="select" parameterClass="java.lang.String" resultMap="getResult">
+	<![CDATA[
+		SELECT /* [RoleType_SqlMap.xml] support.user.role.dao.RoleType.select */
+		    ROLE_TYPE_ID,
+		    ROLE_TYPE_NAME,
+		    PORTAL_ID,
+		    REGISTER_ID,
+		    REGISTER_NAME,
+		    UPDATER_ID,
+		    UPDATER_NAME,
+		    REGIST_DATE,
+		    UPDATE_DATE
+		FROM 
+		    IKEP4_EV_ROLE_TYPE
+		WHERE
+			ROLE_TYPE_ID = #roleTypeId#
+	]]>
+	</select>
+	
+	<!-- 기존 정보 수정 -->
+	<update id="update" parameterClass="RoleType">
+	<![CDATA[
+		UPDATE /* [RoleType_SqlMap.xml] support.user.role.dao.RoleType.update */
+			IKEP4_EV_ROLE_TYPE
+		SET
+			ROLE_TYPE_NAME = #roleTypeName#,
+			PORTAL_ID = #portalId#,
+			UPDATER_ID = #updaterId#,
+			UPDATER_NAME = #updaterName#,
+			UPDATE_DATE = NOW()
+		WHERE
+			ROLE_TYPE_ID = #roleTypeId#
+	]]>
+	</update>
+   
+	<!-- 삭제 -->
+	<delete id="delete" parameterClass="java.lang.String">
+	<![CDATA[
+		DELETE /* [RoleType_SqlMap.xml] support.user.role.dao.RoleType.delete */ 
+		FROM IKEP4_EV_ROLE_TYPE
+		WHERE
+			ROLE_TYPE_ID = #roleTypeId#
+	]]>
+	</delete>
+	
+	<!-- 목록 가져오기 -->
+	<select id="selectAll" parameterClass="SearchCondition" resultMap="result">
+		<![CDATA[
+		SELECT				/* [RoleType_SqlMap.xml] support.user.role.dao.RoleType.selectAll */
+							(CASE tbl1.ROLE_TYPE_ID WHEN tbl1.ROLE_TYPE_ID THEN @ROWNUM := @ROWNUM + 1 ELSE @ROWNUM := 1 END) AS NUM,
+		    				tbl1.*
+		FROM 				( 
+							SELECT				A.ROLE_TYPE_ID,
+											    B.ITEM_MESSAGE AS ROLE_TYPE_NAME,
+											    A.PORTAL_ID,
+											    A.REGISTER_ID AS REGISTER_ID,
+											    A.REGISTER_NAME AS REGISTER_NAME,
+											    A.UPDATER_ID AS UPDATER_ID,
+											    A.UPDATER_NAME AS UPDATER_NAME,
+											    A.REGIST_DATE AS REGIST_DATE,
+											    A.UPDATE_DATE AS UPDATE_DATE
+							FROM				IKEP4_EV_ROLE_TYPE A
+						    JOIN 				IKEP4_I18N_MESSAGE B
+						    ON 					A.ROLE_TYPE_ID = B.ITEM_ID
+						    AND 				B.FIELD_NAME = #fieldName#
+						    AND 				B.LOCALE_CODE = #userLocaleCode#
+		        			WHERE 				1 = 1
+		]]>
+							<isNotEmpty property="portalId">
+							AND 				PORTAL_ID = #portalId#
+							</isNotEmpty>
+							<isNotEmpty property="searchColumn">
+							<isEqual property="searchColumn" compareValue="title">
+							AND					ROLE_TYPE_NAME LIKE CONCAT('%', #searchWord#, '%')
+							</isEqual>
+							<isEqual property="searchColumn" compareValue="id">
+							AND					ROLE_TYPE_ID LIKE CONCAT('%', #searchWord#, '%')
+							</isEqual>
+							</isNotEmpty>
+						    <isNotNull property="sortColumn">
+							<isEqual property="sortColumn" compareValue="ROLE_TYPE_ID">
+							<isEqual property="sortType" compareValue="ASC">
+							ORDER BY 			ROLE_TYPE_ID ASC
+							</isEqual>
+							<isEqual property="sortType" compareValue="DESC">
+							ORDER BY 			ROLE_TYPE_ID DESC
+							</isEqual>
+							</isEqual>
+							<isEqual property="sortColumn" compareValue="ROLE_TYPE_NAME">
+							<isEqual property="sortType" compareValue="ASC">
+							ORDER BY 			ROLE_TYPE_NAME ASC
+							</isEqual>
+							<isEqual property="sortType" compareValue="DESC">
+							ORDER BY 			ROLE_TYPE_NAME DESC
+							</isEqual>
+							</isEqual>
+							</isNotNull>
+							<isNull property="sortColumn">
+							ORDER BY 			REGIST_DATE DESC, ROLE_TYPE_ID ASC
+							</isNull>
+		<![CDATA[
+							LIMIT				#startRowIndex#, #pagePerRecord#
+		    				) tbl1,
+		    				(
+		    				SELECT				@ROWNUM := #startRowIndex#
+		    				) tbl2
+		]]>
+	</select>
+
+	<select id="selectCount" parameterClass="SearchCondition" resultClass="int">
+	<![CDATA[
+		SELECT /* [RoleType_SqlMap.xml] support.user.role.dao.RoleType.selectCount */ 
+		    COUNT(*)
+		FROM 
+		    IKEP4_EV_ROLE_TYPE A
+		    JOIN IKEP4_I18N_MESSAGE B
+		    ON A.ROLE_TYPE_ID = B.ITEM_ID
+		    AND B.FIELD_NAME = #fieldName#
+		    AND B.LOCALE_CODE = #userLocaleCode#
+        WHERE 1 = 1
+	]]>
+		<isNotEmpty property="portalId">
+				AND PORTAL_ID = #portalId#
+		</isNotEmpty>
+		<isNotEmpty property="searchColumn">
+			<isEqual property="searchColumn" compareValue="title">
+				AND	A.ROLE_TYPE_NAME LIKE CONCAT('%', #searchWord#, '%')
+			</isEqual>
+			<isEqual property="searchColumn" compareValue="id">
+				AND	A.ROLE_TYPE_ID LIKE CONCAT('%', #searchWord#, '%')
+			</isEqual>
+		</isNotEmpty>
+	</select>
+	
+	<select id="checkId" parameterClass="java.lang.String" resultClass="java.lang.String">
+	<![CDATA[
+		SELECT /* [RoleType_SqlMap.xml] support.user.role.dao.RoleType.checkId */
+			COUNT(ROLE_TYPE_ID)
+		FROM
+			IKEP4_EV_ROLE_TYPE
+		WHERE
+			ROLE_TYPE_ID = #roleTypeId#	
+	]]>
+	</select>
+	
+	<!-- 목록 가져오기 -->
+	<select id="listRoleTypePortal" parameterClass="java.lang.String" resultMap="getResult">
+	<![CDATA[
+		/* [RoleType_SqlMap.xml] support.user.role.dao.RoleType.listRoleTypePortal */
+		SELECT 
+		    ROLE_TYPE_ID,
+		    ROLE_TYPE_NAME,
+		    PORTAL_ID,
+		    REGISTER_ID,
+		    REGISTER_NAME,
+		    UPDATER_ID,
+		    UPDATER_NAME,
+		    REGIST_DATE,
+		    UPDATE_DATE
+		FROM 
+		    IKEP4_EV_ROLE_TYPE
+        WHERE PORTAL_ID = #portalId#
+	]]>
+	</select>	
+</sqlMap>

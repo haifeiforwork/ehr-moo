@@ -1,0 +1,489 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="collpack.collaboration.alliance.dao.Alliance">
+
+	<typeAlias alias="Alliance" type="com.lgcns.ikep4.collpack.collaboration.alliance.model.Alliance" />
+	<typeAlias alias="AllianceSearchCondition" type="com.lgcns.ikep4.collpack.collaboration.alliance.search.AllianceSearchCondition"/>
+	
+	<sql id="sqlColumnList">
+		D.ALLIANCE_ID		AS allianceId,
+		D.TO_WORKSPACE_ID	AS toWorkspaceId,
+		D.REQUEST_REASON	AS requestReason,
+		D.STATUS			AS status,
+		D.REGISTER_ID		AS registerId,
+		D.REGISTER_NAME		AS registerName,
+		D.REGIST_DATE		AS registDate,		
+		D.UPDATER_ID		AS updaterId,
+		D.UPDATER_NAME		AS updaterName,
+		D.UPDATE_DATE		AS updateDate,
+		A.WORKSPACE_ID		AS workspaceId, 
+		A.WORKSPACE_NAME	AS workspaceName, 
+		A.TYPE_ID			AS typeId,
+		B.TYPE_NAME			AS typeName,
+		B.TYPE_ENGLISH_NAME	AS typeEnglishName,
+		A.DESCRIPTION		AS workspaceDescription,
+		C.MEMBER_ID			AS sysopId,
+		E.USER_NAME			AS sysopName,
+		E.USER_ENGLISH_NAME AS sysopEnglishName,
+		A.OPEN_DATE			AS openDate,
+		A.TEAM_ID			AS teamId,
+		G.GROUP_NAME		AS groupName,
+		G.GROUP_ENGLISH_NAME AS groupEnglishName
+	</sql>
+	<select id="giveAllianceBoardListByWorkspace" parameterClass="String" resultClass="Alliance"> 
+	SELECT /* [Alliance_SqlMap.xml] collpack.collaboration.alliance.dao.Alliance.giveAllianceBoardListByWorkspace */ 
+		B.ALLIANCE_ID		AS allianceId,
+		A.WORKSPACE_ID  AS workspaceId,
+		A.WORKSPACE_NAME	AS workspaceName,
+		D.BOARD_ID AS boardId,
+		D.BOARD_NAME AS boardName
+	FROM   
+		IKEP4_WS_WORKSPACE A 
+		INNER JOIN IKEP4_WS_ALLIANCE B ON 
+		( 
+			(
+				( A.WORKSPACE_ID =B.WORKSPACE_ID AND B.TO_WORKSPACE_ID=#workspaceId# )
+				OR ( A.WORKSPACE_ID= B.TO_WORKSPACE_ID AND B.WORKSPACE_ID=#workspaceId# )
+			)
+			AND B.STATUS	=	'1' 
+		)
+		INNER JOIN IKEP4_WS_BOARD_ALLIANCE C ON ( B.ALLIANCE_ID=C.ALLIANCE_ID )
+		INNER JOIN IKEP4_WS_BD_BOARD D ON ( C.BOARD_ID=D.BOARD_ID AND D.IS_DELETE=0 AND D.WORKSPACE_ID IN (#workspaceId#))
+	WHERE	
+		A.WORKSPACE_STATUS IN ('O','WC')
+	ORDER BY 
+		A.WORKSPACE_NAME ASC,A.WORKSPACE_ID ASC,D.BOARD_NAME ASC,D.BOARD_ID ASC
+	</select>	
+	<select id="receiveAllianceBoardListByWorkspace" parameterClass="String" resultClass="Alliance"> 
+	SELECT /* [Alliance_SqlMap.xml] collpack.collaboration.alliance.dao.Alliance.receiveAllianceBoardListByWorkspace */ 
+		B.ALLIANCE_ID		AS allianceId,
+		A.WORKSPACE_ID  AS workspaceId,
+		A.WORKSPACE_NAME	AS workspaceName,
+		D.BOARD_ID AS boardId,
+		D.BOARD_NAME AS boardName
+	FROM   
+		IKEP4_WS_WORKSPACE A 
+		INNER JOIN IKEP4_WS_ALLIANCE B ON 
+		( 
+			(
+				( A.WORKSPACE_ID =B.WORKSPACE_ID AND B.TO_WORKSPACE_ID=#workspaceId# )
+				OR ( A.WORKSPACE_ID= B.TO_WORKSPACE_ID AND B.WORKSPACE_ID=#workspaceId# )
+			)
+			AND B.STATUS	=	'1' 
+		)
+		INNER JOIN IKEP4_WS_BOARD_ALLIANCE C ON ( B.ALLIANCE_ID=C.ALLIANCE_ID )
+		INNER JOIN IKEP4_WS_BD_BOARD D ON ( C.BOARD_ID=D.BOARD_ID AND D.IS_DELETE=0 AND D.WORKSPACE_ID NOT IN (#workspaceId#))
+	WHERE	
+		A.WORKSPACE_STATUS IN ('O','WC')
+	ORDER BY 
+		A.WORKSPACE_NAME ASC,A.WORKSPACE_ID ASC,D.BOARD_NAME ASC,D.BOARD_ID ASC
+	</select>
+	<select id="giveAllianceBoardByWorkspace" parameterClass="Map" resultClass="Alliance"> 
+	SELECT /* [Alliance_SqlMap.xml] collpack.collaboration.alliance.dao.Alliance.giveAllianceBoardByWorkspace */ 
+		B.ALLIANCE_ID		AS allianceId,
+		A.WORKSPACE_ID  AS workspaceId,
+		A.WORKSPACE_NAME	AS workspaceName,
+		D.BOARD_ID AS boardId,
+		(
+			SELECT
+				SUBSTR(SYS_CONNECT_BY_PATH(BOARD_NAME,' > '),3,LENGTH(SYS_CONNECT_BY_PATH(BOARD_NAME,' > '))) boardName
+			FROM  
+				IKEP4_WS_BD_BOARD
+			WHERE 
+				WORKSPACE_ID = A.WORKSPACE_ID AND BOARD_ID = D.BOARD_ID
+			START WITH 
+				BOARD_PARENT_ID IS NULL
+			CONNECT BY 
+				BOARD_PARENT_ID = PRIOR BOARD_ID
+		) AS boardName	
+	FROM   
+		IKEP4_WS_WORKSPACE A 
+		INNER JOIN IKEP4_WS_ALLIANCE B ON 
+		( 
+			(
+				( A.WORKSPACE_ID =B.WORKSPACE_ID AND B.TO_WORKSPACE_ID=#toWorkspaceId# )
+				OR ( A.WORKSPACE_ID= B.TO_WORKSPACE_ID AND B.WORKSPACE_ID=#toWorkspaceId# )
+			)
+			AND B.STATUS	=	'1' 
+		)
+		INNER JOIN IKEP4_WS_BOARD_ALLIANCE C ON ( B.ALLIANCE_ID=C.ALLIANCE_ID )
+		INNER JOIN IKEP4_WS_BD_BOARD D ON ( C.BOARD_ID=D.BOARD_ID AND D.IS_DELETE=0 AND D.WORKSPACE_ID IN (#workspaceId#))
+	WHERE	
+		A.WORKSPACE_STATUS IN ('O','WC')
+	ORDER BY 
+		A.WORKSPACE_NAME ASC,A.WORKSPACE_ID ASC,D.BOARD_NAME ASC,D.BOARD_ID ASC
+	</select>	
+	<select id="receiveAllianceBoardByWorkspace" parameterClass="Map" resultClass="Alliance"> 
+	SELECT /* [Alliance_SqlMap.xml] collpack.collaboration.alliance.dao.Alliance.recieveAllianceBoardByWorkspace */ 
+		B.ALLIANCE_ID		AS allianceId,
+		A.WORKSPACE_ID  AS workspaceId,
+		A.WORKSPACE_NAME	AS workspaceName,
+		D.BOARD_ID AS boardId,
+		(
+			SELECT
+				SUBSTR(SYS_CONNECT_BY_PATH(BOARD_NAME,' > '),3,LENGTH(SYS_CONNECT_BY_PATH(BOARD_NAME,' > ')))  BOARD_NAME
+			FROM  
+				IKEP4_WS_BD_BOARD
+			WHERE 
+				WORKSPACE_ID = A.WORKSPACE_ID AND BOARD_ID = D.BOARD_ID
+			START WITH 
+				BOARD_PARENT_ID IS NULL
+			CONNECT BY 
+				BOARD_PARENT_ID = PRIOR BOARD_ID
+		) AS boardName
+	FROM   
+		IKEP4_WS_WORKSPACE A 
+		INNER JOIN IKEP4_WS_ALLIANCE B ON 
+		( 
+			(
+				( A.WORKSPACE_ID =B.WORKSPACE_ID AND B.TO_WORKSPACE_ID=#workspaceId# )
+				OR ( A.WORKSPACE_ID= B.TO_WORKSPACE_ID AND B.WORKSPACE_ID=#workspaceId# )
+			)
+			AND B.STATUS	=	'1' 
+		)
+		INNER JOIN IKEP4_WS_BOARD_ALLIANCE C ON ( B.ALLIANCE_ID=C.ALLIANCE_ID )
+		INNER JOIN IKEP4_WS_BD_BOARD D ON ( C.BOARD_ID=D.BOARD_ID AND D.IS_DELETE=0 AND D.WORKSPACE_ID IN (#toWorkspaceId#))
+	WHERE	
+		A.WORKSPACE_STATUS IN ('O','WC')
+	ORDER BY 
+		A.WORKSPACE_NAME ASC,A.WORKSPACE_ID ASC,D.BOARD_NAME ASC,D.BOARD_ID ASC
+	</select>	
+	<select id="listAllianceByWorkspace" parameterClass="String" resultClass="Alliance"> 
+	SELECT /* [Alliance_SqlMap.xml] collpack.collaboration.alliance.dao.Alliance.listAllianceByWorkspace */ 
+		B.ALLIANCE_ID		AS allianceId,
+		A.WORKSPACE_ID  AS workspaceId,
+		A.WORKSPACE_NAME	AS workspaceName
+	FROM   
+		IKEP4_WS_WORKSPACE A 
+		INNER JOIN IKEP4_WS_ALLIANCE B ON 
+		( 
+			(
+				( A.WORKSPACE_ID =B.WORKSPACE_ID AND B.TO_WORKSPACE_ID=#workspaceId# )
+				OR ( A.WORKSPACE_ID= B.TO_WORKSPACE_ID AND B.WORKSPACE_ID=#workspaceId# )
+			)
+			AND B.STATUS	=	'1' 
+		)
+	WHERE	
+		A.WORKSPACE_STATUS IN ('O','WC')
+	ORDER BY 
+		A.WORKSPACE_NAME ASC,A.WORKSPACE_ID ASC
+	</select>
+	<select id="listAllianceByBoard" parameterClass="Map" resultClass="Alliance"> 
+	SELECT /* [Alliance_SqlMap.xml] collpack.collaboration.alliance.dao.Alliance.listAllianceByBoard */ 
+		B.ALLIANCE_ID		AS allianceId,
+		A.WORKSPACE_ID		AS workspaceId,				
+		B.TO_WORKSPACE_ID	AS toWorkspaceId,
+		A.WORKSPACE_NAME	AS workspaceName,
+		D.BOARD_ID			AS boardId,
+		D.BOARD_NAME		AS boardName
+	FROM   
+		IKEP4_WS_WORKSPACE A 
+		INNER JOIN IKEP4_WS_ALLIANCE B ON 
+		( 
+			(
+				( A.WORKSPACE_ID =B.WORKSPACE_ID AND B.TO_WORKSPACE_ID=#workspaceId# )
+				OR ( A.WORKSPACE_ID= B.TO_WORKSPACE_ID AND B.WORKSPACE_ID=#workspaceId# )
+			)
+			AND B.STATUS	=	'1' 
+		)
+		LEFT OUTER JOIN IKEP4_WS_BOARD_ALLIANCE C ON ( B.ALLIANCE_ID=C.ALLIANCE_ID and  C.BOARD_ID = #boardId# )
+		LEFT OUTER JOIN IKEP4_WS_BD_BOARD D ON ( C.BOARD_ID = D.BOARD_ID  AND D.BOARD_ID =#boardId# )
+	WHERE	
+		A.WORKSPACE_STATUS IN ('O','WC')
+	ORDER BY A.WORKSPACE_NAME ASC,A.WORKSPACE_ID ASC,D.BOARD_NAME ASC,D.BOARD_ID ASC
+	</select>
+	<!-- select id="listBoardByWorkspace" parameterClass="String" resultClass="Alliance"> 
+	SELECT /* [Alliance_SqlMap.xml] collpack.collaboration.alliance.dao.Alliance.listBoardByWorkspace */ 
+		A.WORKSPACE_ID		AS workspaceId,				
+		B.TO_WORKSPACE_ID	AS toWorkspaceId,
+		A.WORKSPACE_NAME	AS workspaceName,
+		D.BOARD_ID			AS boardId,
+		D.BOARD_NAME		AS boardName
+	FROM   
+		IKEP4_WS_WORKSPACE A 
+		INNER JOIN IKEP4_WS_ALLIANCE B ON 
+		( 
+			A.WORKSPACE_ID= B.WORKSPACE_ID AND B.STATUS	=	'1' 
+		)
+		INNER JOIN IKEP4_WS_BOARD_ALLIANCE C ON ( B.ALLIANCE_ID=C.ALLIANCE_ID )
+		INNER JOIN IKEP4_WS_BD_BOARD D ON ( C.BOARD_ID = D.BOARD_ID AND D.IS_DELETE=0)
+	WHERE	
+		A.WORKSPACE_STATUS IN ('O','WC')
+		AND A.WORKSPACE_ID=#workspaceId#
+	ORDER BY D.BOARD_NAME ASC,D.BOARD_ID ASC
+	</select-->
+	
+	<select id="listBySearchCondition" parameterClass="AllianceSearchCondition" resultClass="Alliance"> 
+	SELECT /* [Alliance_SqlMap.xml] collpack.collaboration.alliance.dao.Alliance.listBySearchCondition */ 
+		*
+	FROM 
+	( 
+		SELECT ROWNUM AS RNUM, A.* FROM 
+		( 
+			/* START========================================= */
+			SELECT 
+				<include refid="collpack.collaboration.alliance.dao.Alliance.sqlColumnList" /> 
+			FROM   
+				IKEP4_WS_WORKSPACE A 
+				INNER JOIN IKEP4_WS_TYPE B ON ( A.TYPE_ID = B.TYPE_ID AND (B.PORTAL_ID=#portalId# OR B.IS_ORGANIZATION='1') )
+				LEFT OUTER JOIN IKEP4_WS_MEMBER C ON (A.WORKSPACE_ID = C.WORKSPACE_ID AND C.MEMBER_LEVEL='1')
+				INNER JOIN IKEP4_WS_ALLIANCE D	ON 
+				(
+					<isNotEmpty property="listType">
+					<isEqual property="listType" compareValue="FROM">
+					( D.WORKSPACE_ID=#workspaceId# AND A.WORKSPACE_ID= D.TO_WORKSPACE_ID )
+					</isEqual>
+					
+					<isEqual property="listType" compareValue="TO">
+					( D.TO_WORKSPACE_ID =#workspaceId# AND A.WORKSPACE_ID= D.WORKSPACE_ID )
+					</isEqual>
+					</isNotEmpty>
+					
+					<isEmpty property="listType">
+					D.STATUS	=	'1'
+					AND 
+					(
+						( D.TO_WORKSPACE_ID =#workspaceId# AND A.WORKSPACE_ID= D.WORKSPACE_ID ) 
+						OR ( D.WORKSPACE_ID=#workspaceId# AND A.WORKSPACE_ID= D.TO_WORKSPACE_ID )
+					)
+					</isEmpty>					
+				)				
+				LEFT OUTER JOIN IKEP4_EV_USER E ON (C.MEMBER_ID= E.USER_ID)
+				LEFT OUTER JOIN IKEP4_EV_GROUP G ON ( A.TEAM_ID= G.GROUP_ID )
+			WHERE	
+				A.WORKSPACE_STATUS IN ('O','WC')
+				
+			
+			<isNotEmpty property="sortColumn">
+	    	ORDER BY 
+	    	<isEqual property="sortColumn" compareValue="TYPE_ID">
+	    	B.TYPE_ID
+			</isEqual>
+			<isEqual property="sortColumn" compareValue="WORKSPACE_NAME">
+	    	A.WORKSPACE_NAME
+			</isEqual>
+	    	<isEqual property="sortColumn" compareValue="E.USER_NAME">
+	    	E.USER_NAME
+			</isEqual>
+			<isEqual property="sortColumn" compareValue="DESCRIPTION">
+	    	A.DESCRIPTION
+			</isEqual>		
+			<isEqual property="sortColumn" compareValue="UPDATE_DATE">
+	    	D.UPDATE_DATE
+			</isEqual>			
+			<isEqual property="sortColumn" compareValue="REGISTER_NAME">
+	    	D.REGISTER_NAME
+			</isEqual>
+			<isEqual property="sortColumn" compareValue="REQUEST_REASON">
+	    	D.REQUEST_REASON
+			</isEqual>			
+			<isEqual property="sortColumn" compareValue="REGIST_DATE">
+	    	D.REGIST_DATE
+			</isEqual>	
+			<isEqual property="sortColumn" compareValue="STATUS">
+	    	D.STATUS
+			</isEqual>									
+			</isNotEmpty>
+	    	
+			<isNotEmpty property="sortType">
+	    	<isEqual property="sortType" compareValue="DESC">
+	    	DESC
+			</isEqual>
+			<isEqual property="sortType" compareValue="ASC">
+	    	ASC
+			</isEqual>
+			</isNotEmpty>
+			    	
+			/* ===========================================END  */ 
+	<![CDATA[
+		) A WHERE ROWNUM <=  #endRowIndex# /* 종료  */
+	) WHERE RNUM >  #startRowIndex# /* 시작 */
+	]]> 
+	</select>   
+	<select id="countBySearchCondition" parameterClass="AllianceSearchCondition" resultClass="int">
+		SELECT /* [Alliance_SqlMap.xml] collpack.collaboration.alliance.dao.Alliance.countBySearchCondition */ 
+	          COUNT(D.ALLIANCE_ID)
+		FROM   
+			IKEP4_WS_WORKSPACE A 
+			INNER JOIN IKEP4_WS_TYPE B ON (A.TYPE_ID = B.TYPE_ID AND (B.PORTAL_ID=#portalId# OR B.IS_ORGANIZATION='1') )
+			INNER JOIN  IKEP4_WS_ALLIANCE D ON
+			(
+				<isNotEmpty property="listType">
+				<isEqual property="listType" compareValue="FROM">
+				D.WORKSPACE_ID=#workspaceId# AND A.WORKSPACE_ID= D.TO_WORKSPACE_ID 
+				</isEqual>
+				
+				<isEqual property="listType" compareValue="TO">
+				D.TO_WORKSPACE_ID =#workspaceId# AND A.WORKSPACE_ID= D.WORKSPACE_ID 
+				</isEqual>
+				</isNotEmpty>
+				
+				<isEmpty property="listType">
+				D.STATUS	=	'1'
+				AND
+				(
+					( D.TO_WORKSPACE_ID =#workspaceId# AND A.WORKSPACE_ID= D.WORKSPACE_ID ) 
+					OR ( D.WORKSPACE_ID =#workspaceId# AND A.WORKSPACE_ID= D.TO_WORKSPACE_ID )
+				)
+				</isEmpty>				
+			)
+		WHERE	
+			A.WORKSPACE_STATUS IN ('O','WC')
+		
+
+
+	</select>
+
+	<!-- create -->	
+	<insert id="create" parameterClass="Alliance"> 
+	<![CDATA[ 
+		INSERT INTO IKEP4_WS_ALLIANCE /* [Alliance_SqlMap.xml] collpack.collaboration.alliance.dao.Alliance.create */
+		(
+			ALLIANCE_ID,	WORKSPACE_ID,	TO_WORKSPACE_ID,	REQUEST_REASON,	STATUS, 
+			REGISTER_ID,	REGISTER_NAME,	REGIST_DATE,		UPDATER_ID,		UPDATER_NAME,	UPDATE_DATE
+		)  
+		VALUES 
+		(	
+			#allianceId#,	#workspaceId#,	#toWorkspaceId#,	#requestReason#,#status#,
+			#registerId#,	#registerName#,	sysdate,			#updaterId#,	#updaterName#,	sysdate
+		)
+	]]>
+	</insert>
+
+
+	<!-- select -->
+	<select id="get" parameterClass="Alliance"  resultClass="Alliance">
+		SELECT /* [Alliance_SqlMap.xml] collpack.collaboration.alliance.dao.Alliance.get */
+    		<include refid="collpack.collaboration.alliance.dao.Alliance.sqlColumnList" />	
+		FROM 
+			IKEP4_WS_WORKSPACE A 
+			INNER JOIN IKEP4_WS_TYPE B ON A.TYPE_ID = B.TYPE_ID
+			LEFT OUTER JOIN IKEP4_WS_MEMBER C ON ( A.WORKSPACE_ID	=	C.WORKSPACE_ID AND C.MEMBER_LEVEL	=	'1' )
+			LEFT OUTER JOIN IKEP4_WS_ALLIANCE D ON
+			(
+				D.STATUS IN ('0','1')
+				<isNotEmpty property="allianceId">
+				AND D.ALLIANCE_ID		=	#allianceId#
+				</isNotEmpty>
+				AND 
+				(
+					( D.TO_WORKSPACE_ID =#workspaceId# AND A.WORKSPACE_ID= D.WORKSPACE_ID ) 
+					OR ( D.WORKSPACE_ID=#workspaceId# AND A.WORKSPACE_ID= D.TO_WORKSPACE_ID )
+				)
+			)
+			LEFT OUTER JOIN IKEP4_EV_USER E ON C.MEMBER_ID = E.USER_ID 
+			LEFT OUTER JOIN IKEP4_EV_GROUP G ON ( A.TEAM_ID= G.GROUP_ID )
+		WHERE
+			A.PORTAL_ID			=	#portalId#
+			AND A.WORKSPACE_ID	=	#toWorkspaceId#
+			AND A.WORKSPACE_STATUS IN ('O','WC')
+	</select>
+	<select id="getOrgAlliance" parameterClass="Alliance"  resultClass="Alliance">
+		SELECT /* [Alliance_SqlMap.xml] collpack.collaboration.alliance.dao.Alliance.get */
+    		<include refid="collpack.collaboration.alliance.dao.Alliance.sqlColumnList" />	
+		FROM 
+			IKEP4_WS_WORKSPACE A 
+			INNER JOIN IKEP4_WS_TYPE B ON A.TYPE_ID = B.TYPE_ID
+			LEFT OUTER JOIN IKEP4_WS_MEMBER C ON ( A.WORKSPACE_ID	=	C.WORKSPACE_ID AND C.MEMBER_LEVEL	=	'1' )
+			LEFT OUTER JOIN IKEP4_WS_ALLIANCE D ON
+			(
+				D.STATUS IN ('0','1')
+				AND 
+				(
+					( D.TO_WORKSPACE_ID =#workspaceId# AND A.WORKSPACE_ID= D.WORKSPACE_ID ) 
+					OR ( D.WORKSPACE_ID=#workspaceId# AND A.WORKSPACE_ID= D.TO_WORKSPACE_ID )
+				)
+			)
+			LEFT OUTER JOIN IKEP4_EV_USER E ON C.MEMBER_ID = E.USER_ID 	
+			LEFT OUTER JOIN IKEP4_EV_GROUP G ON ( A.TEAM_ID= G.GROUP_ID )
+		WHERE
+			A.PORTAL_ID			=	#portalId#
+			AND A.TEAM_ID	=	#teamId#
+			AND A.WORKSPACE_STATUS IN ('O','WC')
+	</select>
+	<select id="getAlliance" parameterClass="String"  resultClass="Alliance">
+		SELECT /* [Alliance_SqlMap.xml] collpack.collaboration.alliance.dao.Alliance.getAlliance */
+			ALLIANCE_ID		allianceId,
+			WORKSPACE_ID	workspaceId,
+			TO_WORKSPACE_ID	toWorkspaceId,
+			REQUEST_REASON	requestReason,
+			STATUS			status,
+			REGISTER_ID		registerId,
+			REGISTER_NAME	registerName,
+			REGIST_DATE		registDate,		
+			UPDATER_ID		updaterId,
+			UPDATER_NAME	updaterName,
+			UPDATE_DATE		updateDate
+		FROM 
+			IKEP4_WS_ALLIANCE A 
+		WHERE
+			ALLIANCE_ID		=	#allianceId#
+	</select>
+	<select id="exists" parameterClass="AllianceSearchCondition" resultClass="java.lang.Integer">
+	<![CDATA[
+		SELECT /* [Alliance_SqlMap.xml] collpack.collaboration.alliance.dao.Alliance.exists */
+			COUNT(D.ALLIANCE_ID) 
+		FROM   
+			IKEP4_WS_WORKSPACE A 
+			LEFT OUTER JOIN IKEP4_WS_MEMBER C ON (A.WORKSPACE_ID = C.WORKSPACE_ID AND C.MEMBER_LEVEL='1')
+			LEFT OUTER JOIN IKEP4_EV_USER E ON (C.MEMBER_ID= E.USER_ID)
+			INNER JOIN IKEP4_WS_TYPE B ON ( A.TYPE_ID = B.TYPE_ID  AND (B.PORTAL_ID=#portalId# OR B.IS_ORGANIZATION='1') )
+			INNER JOIN IKEP4_WS_ALLIANCE D	ON
+			(
+				D.STATUS IN ('0','1')			
+				AND (
+					( D.TO_WORKSPACE_ID =#workspaceId# AND A.WORKSPACE_ID= D.WORKSPACE_ID ) 
+					OR ( D.WORKSPACE_ID=#workspaceId# AND A.WORKSPACE_ID= D.TO_WORKSPACE_ID )
+				)		
+				AND D.ALLIANCE_ID		=	#allianceId#			
+			)	
+		WHERE	
+			A.WORKSPACE_STATUS IN ('O','WC')
+	]]>
+	</select>
+
+	
+
+	<!-- update -->
+	<update id="update" parameterClass="Alliance">
+	<![CDATA[
+		UPDATE 
+			IKEP4_WS_ALLIANCE /* [Alliance_SqlMap.xml] collpack.collaboration.alliance.dao.Alliance.update */
+		SET 
+			REQUEST_REASON	=	#requestReason#, 
+			UPDATER_ID		=	#updaterId#,
+			UPDATER_NAME	=	#updaterName#,
+			UPDATE_DATE		=	sysdate
+		WHERE 
+			ALLIANCE_ID		=	#allianceId#
+	]]>
+	</update>
+
+	<update id="updateStatus" parameterClass="Alliance">
+	<![CDATA[
+		UPDATE 
+			IKEP4_WS_ALLIANCE /* [Alliance_SqlMap.xml] collpack.collaboration.alliance.dao.Alliance.updateStatus */
+		SET 
+			STATUS		=	#status#,
+			UPDATER_ID	=	#updaterId#,
+			UPDATER_NAME=	#updaterName#,
+			UPDATE_DATE	=	sysdate
+		WHERE 
+			ALLIANCE_ID	=	#allianceId#
+	]]>
+	</update>
+
+	<!-- delete -->
+	<delete id="physicalDelete" parameterClass="java.lang.String">
+	<![CDATA[
+		DELETE FROM 
+			IKEP4_WS_ALLIANCE /* [Alliance_SqlMap.xml] collpack.collaboration.alliance.dao.Alliance.physicalDelete */
+		WHERE 
+			ALLIANCE_ID	=	#allianceId#
+	]]>
+	</delete>
+	
+
+
+</sqlMap>

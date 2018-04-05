@@ -1,0 +1,221 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ko">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>iKEP 4.00</title>
+<link rel="stylesheet" type="text/css" href="../../css/theme01/jquery_ui_custom.css" />
+<link rel="stylesheet" type="text/css" href="../../css/common.css" />
+<link rel="stylesheet" type="text/css" href="../../css/theme01/theme.css" />
+<script type="text/javascript" src="../../js/jquery/jquery-1.6.2.min.js"></script>
+<script type="text/javascript" src="../../js/jquery/jquery-ui-1.8.13.min.without.datepicker.js"></script>
+<script type="text/javascript" src="../../js/langResource/ko.js"></script>
+<script type="text/javascript" src="../../js/common.pack.js"></script>
+<script type="text/javascript">
+(function($) {
+	$(document).ready(function() {
+		$("#divTab1").tabs();
+		$("#divTab2").tabs();		
+	});
+})(jQuery);
+
+function show_layer(){
+	$jq("#layer_p").dialog({width: 520, height:160, modal:true, resizable: false});
+}
+</script>
+</head>
+
+<body>
+
+<!-- Modal window Start -->
+<!-- 사용시class="none"으로 설정 -->
+<div class="" id="layer_p" title="일정등록">
+	
+	<!--blockButton Start-->
+	<div class="blockButton">
+		<div id="pageTitle">
+			<h2>일정등록</h2>
+		</div>
+		<ul>
+			<li><a class="button" href="#a"><span>등록</span></a></li>
+			<li><a class="button" href="#a"><span>취소</span></a></li>
+		</ul>
+	</div>
+	<!--//blockButton End-->
+
+	<!--blockDetail Start-->		
+	<div class="blockDetail">
+		<table summary="일정등록테이블">
+			<caption></caption>
+			<tbody>
+				<tr>
+					<th width="18%" scope="row">기간</th>
+					<td width="82%">
+						<input type="text" class="inputbox" id="date1" name="sdate" title="날짜 시작" value="" size="8" /> <img class="dateicon" src="../../images/icon/ic_cal.gif" alt="달력" />&nbsp;
+						<select title="오전" name="" class="inputbox">
+							<option value="">11:00:22</option>
+						</select> -
+						<input type="text" class="inputbox" id="date2" name="sdate" title="날짜 끝" value="" size="8" /> <img class="dateicon" src="../../images/icon/ic_cal.gif" alt="달력" />&nbsp;
+						<select title="오후" name="" class="inputbox">
+							<option value="">21:00:22</option>
+						</select>&nbsp;
+						<label><input name="" class="checkbox" title="반복" type="checkbox" checked="checked" value="" />반복</label>&nbsp;
+						<label><input name="" class="checkbox" title="종일" type="checkbox" value="" />종일</label>&nbsp;
+						<label><input name="" class="checkbox" title="비공개" type="checkbox" value="" />비공개</label>
+						<div class="schedule_bg02" style="margin-top:5px;">
+							<select title="매일" name="" class="inputbox">
+								<option value="0" selected="selected">매일</option>
+								<option value="1">매주</option>
+								<option value="2">매월</option>
+								<option value="3">매년</option>
+							</select> 매
+							<input name="몇일" title="몇일" class="inputbox" type="text" size="2" />&nbsp;일마다
+							<input type="text" class="inputbox" id="date3" name="sdate" title="날짜" value="" size="8" /> <img class="dateicon" src="../../images/icon/ic_cal.gif" alt="달력" />&nbsp;까지
+							<input name="반복" class="checkbox" title="checkbox" type="checkbox" value="" />무한반복				
+						</div>
+						<div class="schedule_bg02">
+							<label><input name="" class="checkbox" title="일" type="checkbox" checked="checked" value="" />일</label>&nbsp;					
+							<label><input name="" class="checkbox" title="월" type="checkbox" value="" />월</label>&nbsp;
+							<label><input name="" class="checkbox" title="화" type="checkbox" value="" />화</label>&nbsp;
+							<label><input name="" class="checkbox" title="수" type="checkbox" value="" />수</label>&nbsp;	
+							<label><input name="" class="checkbox" title="목" type="checkbox" value="" />목</label>&nbsp;	
+							<label><input name="" class="checkbox" title="금" type="checkbox" value="" />금</label>&nbsp;	
+							<label><input name="" class="checkbox" title="토" type="checkbox" value="" />토</label>&nbsp;	
+						</div>
+						<div class="schedule_bg02">
+							<input type="radio" class="radio" title="" checked="checked" name="" value=""  />7일&nbsp;
+							<input type="radio" class="radio" title="" name="" value=""  />1번째 월요일
+						</div>
+						<div class="schedule_bg02">
+							<input type="radio" class="radio" title="" checked="checked" name="" value=""  />2월 7일&nbsp;
+							<input type="radio" class="radio" title="" name="" value=""  />2월 1번째 월요일
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">제목</th>
+					<td>
+						<select title="중요" name="" class="inputbox">
+							<option value="">중요</option>
+						</select>&nbsp;
+						<input name="" title="제목입력" class="inputbox w80" type="text"/>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">알림</th>
+					<td>
+						<div class="mb5">
+							<select title="분전" name="" class="inputbox">
+								<option value="0">사용안함</option>
+								<option value="1">5분 전</option>
+								<option value="2" selected="selected">10분 전</option>
+								<option value="3">15분 전</option>
+								<option value="4">30분 전</option>
+								<option value="5">1시간 전</option>
+								<option value="6">2시간 전</option>
+								<option value="7">1일 전</option>
+							</select>&nbsp;
+							<label><input name="" class="checkbox" title="메일" type="checkbox" checked="checked" value="" />메일</label>&nbsp;				
+							<label><input name="" class="checkbox" title="SMS" type="checkbox" value="" />SMS</label>&nbsp;
+							<label><input name="" class="checkbox" title="쪽지" type="checkbox" value="" />쪽지</label>&nbsp;
+							<a href="#a" style="vertical-align:middle"><span><img src="../../images/icon/ic_btn_minus.gif" alt="" /></span></a>
+						</div>
+						<div>
+							<select title="분전" name="" class="inputbox">
+								<option value="0">사용안함</option>
+								<option value="1">5분 전</option>
+								<option value="2" selected="selected">10분 전</option>
+								<option value="3">15분 전</option>
+								<option value="4">30분 전</option>
+								<option value="5">1시간 전</option>
+								<option value="6">2시간 전</option>
+								<option value="7">1일 전</option>
+							</select>&nbsp;
+							<label><input name="" class="checkbox" title="메일" type="checkbox" checked="checked" value="" />메일</label>&nbsp;				
+							<label><input name="" class="checkbox" title="SMS" type="checkbox" value="" />SMS</label>&nbsp;
+							<label><input name="" class="checkbox" title="쪽지" type="checkbox" value="" />쪽지</label>&nbsp;
+							<a href="#a" class="valign_bottom"><span><img src="../../images/icon/ic_btn_plus.gif" alt="" /></span></a>
+							<a href="#a" class="valign_bottom"><span><img src="../../images/icon/ic_btn_minus.gif" alt="" /></span></a>
+							<a href="#a" class="tableSearch"><span>상세정보&nbsp;<img src="../../images/icon/ic_ar_up.gif" alt="" /></span></a>
+							<!--btn down--><a href="#a" class="tableSearch" style="display:none"><span>상세정보 <img src="../../images/icon/ic_ar_down.gif" alt="" /></span></a><!--//btn down-->
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">참여자</th>
+					<td colspan="2">
+						<input name="" title="참여자" class="inputbox" type="text" size="20"/>
+						<a class="button_ic" href="#a"><span><img src="../../images/icon/ic_btn_search.gif" alt="" />Search</span></a>
+						<a class="button_ic" href="#a"><span><img src="../../images/icon/ic_btn_address.gif" alt="" />Address</span></a>
+						<a class="button_ic" href="#a"><span><img src="../../images/icon/ic_btn_schedule.gif" alt="" />Schedule</span></a>&nbsp;
+						<input name="" class="checkbox" title="참석여부확인요청" type="checkbox" value="" style="vertical-align:middle"/>참석여부확인요청
+						<div class="mt5">
+							<textarea name="textarea" class="w80" title="입력" cols="" rows="5">선택한 참여자가 없습니다.</textarea>
+							<a class="button_ic valign_bottom" href="#a"><span><img src="../../images/icon/ic_btn_delete.gif" alt="" />Delete</span></a> 
+							<a class="totalNum_s">총 0명</a>
+						</div>	
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">참조자</th>
+					<td colspan="2">
+						<input name="" title="참조자" class="inputbox" type="text" size="20" />
+						<a class="button_ic" href="#a"> <span><img src="../../images/icon/ic_btn_search.gif" alt="" />Search</span></a>
+						<a class="button_ic" href="#a"> <span><img src="../../images/icon/ic_btn_address.gif" alt="" />Address</span></a>&nbsp;
+						<span class="tdInstruction">※ 일정 등록/수정/삭제 시 참조메일을 발송할 대상자를 지정합니다.</span>
+						<div class="mt5">
+							<textarea name="textarea" class="w80" title="입력" cols="" rows="5">선택한 참조자가 없습니다.</textarea>
+							<a class="button_ic valign_bottom" href="#a"><span><img src="../../images/icon/ic_btn_delete.gif" alt="" />Delete</span></a> 
+							<a class="totalNum_s">총 0명</a>
+						</div>	
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">장소</th>
+					<td>
+						<input name="" title="장소" class="inputbox w100" type="text"/>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">내용</th>
+					<td>
+						<textarea name="textarea" class="w100" title="입력" cols="" rows="20">일정내용</textarea>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">파일첨부</th>
+					<td>
+						<select title="파일" name="" class="selectbox">
+							<option value="0">1</option>
+							<option value="1">2</option>
+							<option value="2">3</option>
+							<option value="3">4</option>
+							<option value="4">5</option>
+						</select>
+						<input name="input7" type="file" class="file w80" title="" />								
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">파일첨부</th>
+					<td>
+						<select title="초고압선의 공간" name="" class="inputbox">
+							<option value="">초고압선의 공간</option>
+						</select>&nbsp;	
+						<span class="tdInstruction">※ 지정된 Collaboration에서 일정이 공유됩니다.</span>						
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>			
+	<!--//blockDetail End-->
+	<!--blockButton Start-->
+	<div class="blockButton"> 
+		<ul>
+			<li><a class="button" href="#a"><span>등록</span></a></li>
+			<li><a class="button" href="#a"><span>취소</span></a></li>
+		</ul>
+	</div>
+	<!--//blockButton End-->	
+</div>	
+<!-- //Modal window End -->
+</body>
+</html>

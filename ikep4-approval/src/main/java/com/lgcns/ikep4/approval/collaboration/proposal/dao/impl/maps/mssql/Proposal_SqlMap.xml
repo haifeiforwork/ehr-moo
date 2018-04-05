@@ -1,0 +1,856 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="com.lgcns.ikep4.approval.collaboration.proposal.dao.ProposalDao" >
+
+	<typeAlias alias="proposal" type="com.lgcns.ikep4.approval.collaboration.proposal.model.Proposal"/>
+	<typeAlias alias="proposalPermission" type="com.lgcns.ikep4.approval.collaboration.proposal.model.ProposalPermission"/>
+	<typeAlias alias="proposalSearchCondition" type="com.lgcns.ikep4.approval.collaboration.proposal.search.ProposalSearchCondition" />
+	
+	<resultMap id="proposalResultListMap" class="proposal">
+		<result property="rNum"					column="RNUM"					jdbcType="VARCHAR"/>
+		<result property="proposalNo"			column="PROPOSAL_NO"			jdbcType="VARCHAR"/>
+		<result property="reqDate"				column="REQ_DATE"				jdbcType="VARCHAR"/>
+		<result property="reqDeptId"			column="REQ_DEPT_ID"			jdbcType="VARCHAR"/>
+		<result property="reqDeptNm"			column="REQ_DEPT_NM"			jdbcType="VARCHAR"/>
+		<result property="reqEmpNo"				column="REQ_EMP_NO"				jdbcType="VARCHAR"/>
+		<result property="reqEmpNm"				column="REQ_EMP_NM"				jdbcType="VARCHAR"/>
+		<result property="productName"			column="PRODUCT_NAME"			jdbcType="VARCHAR"/>
+		<result property="custName"				column="CUST_NAME"				jdbcType="VARCHAR"/>
+		<result property="tcsRcvEmpNo"			column="TCS_RCV_EMP_NO"			jdbcType="VARCHAR"/>
+		<result property="tcsRcvEmpNm"			column="TCS_RCV_EMP_NM"			jdbcType="VARCHAR"/>
+		<result property="tcsRcvDate"			column="TCS_RCV_DATE"			jdbcType="VARCHAR"/>
+		<result property="saveYn"				column="SAVE_YN"				jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	<resultMap id="proposalResultMap" class="proposal">
+		<result property="proposalNo"			column="PROPOSAL_NO"			jdbcType="VARCHAR"/>
+		<result property="companyCode"			column="COMPANY_CODE"			jdbcType="VARCHAR"/>
+		<result property="tcsRcvEmpNo"			column="TCS_RCV_EMP_NO"			jdbcType="VARCHAR"/>
+		<result property="tcsRcvEmpNm"			column="TCS_RCV_EMP_NM"			jdbcType="VARCHAR"/>
+		<result property="tcsRcvDate"			column="TCS_RCV_DATE"			jdbcType="VARCHAR"/>
+		<result property="reqEmpNo"				column="REQ_EMP_NO"				jdbcType="VARCHAR"/>
+		<result property="reqEmpNm"				column="REQ_EMP_NM"				jdbcType="VARCHAR"/>
+		<result property="reqDeptId"			column="REQ_DEPT_ID"			jdbcType="VARCHAR"/>
+		<result property="reqDeptNm"			column="REQ_DEPT_NM"			jdbcType="VARCHAR"/>
+		<result property="reqUserRank"			column="REQ_USER_RANK"			jdbcType="VARCHAR"/>
+		<result property="reqDate"				column="REQ_DATE"				jdbcType="VARCHAR"/>
+		<result property="custName"				column="CUST_NAME"				jdbcType="VARCHAR"/>
+		<result property="paperGrpName"			column="PAPER_GRP_NAME"			jdbcType="VARCHAR"/>
+		<result property="productName"			column="PRODUCT_NAME"			jdbcType="VARCHAR"/>
+		<result property="proposalReason"		column="PROPOSAL_REASON"		jdbcType="VARCHAR"/>
+		<result property="keyFeatureFunction"	column="KEY_FEATURE_FUNCTION"	jdbcType="VARCHAR"/>
+		<result property="custRequests"			column="CUST_REQUESTS"			jdbcType="VARCHAR"/>
+		<result property="marketStatus"			column="MARKET_STATUS"			jdbcType="VARCHAR"/>
+		<result property="goalSaleQty"			column="GOAL_SALE_QTY"			jdbcType="VARCHAR"/>
+		<result property="goalSalePrice"		column="GOAL_SALE_PRICE"		jdbcType="VARCHAR"/>
+		<result property="supportReqCd"			column="SUPPORT_REQ_CD"			jdbcType="VARCHAR"/>
+		<result property="devPeriod"			column="DEV_PERIOD"				jdbcType="VARCHAR"/>
+		<result property="devGbnCd"				column="DEV_GBN_CD"				jdbcType="VARCHAR"/>
+		<result property="qadOpinion"			column="QAD_OPINION"			jdbcType="VARCHAR"/>
+		<result property="labOpinion"			column="LAB_OPINION"			jdbcType="VARCHAR"/>
+		<result property="salesOpinion"			column="SALES_OPINION"			jdbcType="VARCHAR"/>
+		<result property="scmEmpNo"				column="SCM_EMP_NO"				jdbcType="VARCHAR"/>
+		<result property="scmEmpNm"				column="SCM_EMP_NM"				jdbcType="VARCHAR"/>
+		<result property="scmOpinion"			column="SCM_OPINION"			jdbcType="VARCHAR"/>
+		<result property="marketEmpNo"			column="MARKET_EMP_NO"			jdbcType="VARCHAR"/>
+		<result property="marketEmpNm"			column="MARKET_EMP_NM"			jdbcType="VARCHAR"/>
+		<result property="marketOpinion"		column="MARKET_OPINION"			jdbcType="VARCHAR"/>
+		<result property="marketGradeCd"		column="MARKET_GRADE_CD"		jdbcType="VARCHAR"/>
+		<result property="tcsTotalOpinion"		column="TCS_TOTAL_OPINION"		jdbcType="VARCHAR"/>
+		<result property="apprComment"			column="APPR_COMMENT"			jdbcType="VARCHAR"/>
+		<result property="proposalStatus"		column="PROPOSAL_STATUS"		jdbcType="VARCHAR"/>
+		<result property="fileItemId"			column="FILE_ITEM_ID"			jdbcType="VARCHAR"/>
+		<result property="saveYn"				column="SAVE_YN"				jdbcType="VARCHAR"/>
+		<result property="authYn"				column="AUTH_YN"				jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	<resultMap id="mailTargetResultMap" class="proposal">
+		<result property="email"					column="EMAIL"				jdbcType="VARCHAR"/>
+		<result property="productName"				column="PRODUCT_NAME"		jdbcType="VARCHAR"/>
+		<result property="reqDeptNm"				column="REQ_DEPT_NM"		jdbcType="VARCHAR"/>
+		<result property="userName"					column="USER_NAME"			jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	<resultMap id="opinionResultMap" class="proposalPermission">
+		<result property="qadAuth"				column="QAD_AUTH"				jdbcType="NUMERIC" javaType="java.lang.Boolean"  />
+		<result property="labAuth"				column="LAB_AUTH"				jdbcType="NUMERIC" javaType="java.lang.Boolean"  />
+		<result property="scmAuth"				column="SCM_AUTH"				jdbcType="NUMERIC" javaType="java.lang.Boolean"  />
+		<result property="marketAuth"			column="MARKET_AUTH"			jdbcType="NUMERIC" javaType="java.lang.Boolean"  />
+		<result property="salesAuth"			column="SALES_AUTH"			jdbcType="NUMERIC" javaType="java.lang.Boolean"  />
+		<result property="tcsAuth"				column="TCS_AUTH"				jdbcType="NUMERIC" javaType="java.lang.Boolean"  />
+	</resultMap>
+	
+	<select id="getProposalCount" parameterClass="proposalSearchCondition" resultClass="int">
+		/* [Proposal_SqlMap.xml] proposal.getProposalCount */
+		SELECT COUNT(*) AS RNUM
+		  FROM(
+		  		SELECT A.PROPOSAL_NO
+				     , MAX(A.REQ_DATE)          AS REQ_DATE
+					 , MAX(A.REQ_DEPT_ID)       AS REQ_DEPT_ID
+					 , MAX(A.REQ_DEPT_NM)       AS REQ_DEPT_NM
+					 , MAX(A.REQ_EMP_NO)        AS REQ_EMP_NO
+					 , MAX(A.REQ_EMP_NM)        AS REQ_EMP_NM
+					 , MAX(A.PRODUCT_NAME)      AS PRODUCT_NAME
+					 , MAX(A.CUST_NAME)         AS CUST_NAME
+					 , MAX(A.TCS_RCV_EMP_NO)    AS TCS_RCV_EMP_NO
+					 , MAX(A.TCS_RCV_EMP_NM)    AS TCS_RCV_EMP_NM
+					 , MAX(A.TCS_RCV_DATE)      AS TCS_RCV_DATE
+					 , MAX(A.SAVE_YN)           AS SAVE_YN
+				  FROM (
+						SELECT A.PROPOSAL_NO
+							 , A.REQ_DATE
+							 , A.REQ_DEPT_ID
+							 , B.GROUP_NAME        AS REQ_DEPT_NM
+							 , A.REQ_EMP_NO
+							 , C.USER_NAME         AS REQ_EMP_NM
+							 , A.PRODUCT_NAME
+							 , A.CUST_NAME
+							 , A.TCS_RCV_EMP_NO
+							 , D.USER_NAME         AS TCS_RCV_EMP_NM
+							 , A.TCS_RCV_DATE
+							 , A.SAVE_YN
+						  FROM TB_PROPOSAL A
+							   INNER JOIN IKEP4_EV_GROUP B
+								  ON B.GROUP_TYPE_ID = 'G0001'
+								 AND B.VIEW_OPTION   = '1'
+								 AND B.GROUP_ID      = A.REQ_DEPT_ID
+							   INNER JOIN IKEP4_EV_USER C
+								  ON C.EMP_NO = A.REQ_EMP_NO
+							   LEFT OUTER JOIN IKEP4_EV_USER D
+								  ON D.EMP_NO = A.TCS_RCV_EMP_NO
+						 WHERE A.REQ_DATE       &gt;= CONVERT( DATETIME, #searchStartReqDate#)
+						   AND A.REQ_DATE       &lt; CONVERT( DATETIME, #searchEndReqDate#) + 1
+						   <isNotEmpty property="searchReqEmpNo" >
+						   AND A.REQ_EMP_NO     = #searchReqEmpNo#
+						   </isNotEmpty>
+						   <isNotEmpty property="searchTcsRcvEmpNo" >
+						   AND A.TCS_RCV_EMP_NO = #searchTcsRcvEmpNo#
+						   </isNotEmpty>
+						   <isNotEmpty property="searchProductName" >
+						   AND A.PRODUCT_NAME   LIKE '%' + #searchProductName# + '%'
+						   </isNotEmpty>
+						   AND A.REQ_EMP_NO     = #sessionEmpNo#
+						UNION ALL
+						SELECT A.PROPOSAL_NO
+							 , A.REQ_DATE
+							 , A.REQ_DEPT_ID
+							 , B.GROUP_NAME        AS REQ_DEPT_NM
+							 , A.REQ_EMP_NO
+							 , C.USER_NAME         AS REQ_EMP_NM
+							 , A.PRODUCT_NAME
+							 , A.CUST_NAME
+							 , A.TCS_RCV_EMP_NO
+							 , D.USER_NAME         AS TCS_RCV_EMP_NM
+							 , A.TCS_RCV_DATE
+							 , A.SAVE_YN
+						  FROM TB_PROPOSAL A
+							   INNER JOIN IKEP4_EV_GROUP B
+								  ON B.GROUP_TYPE_ID = 'G0001'
+								 AND B.VIEW_OPTION   = '1'
+								 AND B.GROUP_ID      = A.REQ_DEPT_ID
+							   INNER JOIN IKEP4_EV_USER C
+								  ON C.EMP_NO = A.REQ_EMP_NO
+							   LEFT OUTER JOIN IKEP4_EV_USER D
+								  ON D.EMP_NO = A.TCS_RCV_EMP_NO
+						 WHERE A.REQ_DATE       &gt;= CONVERT( DATETIME, #searchStartReqDate#)
+						   AND A.REQ_DATE       &lt; CONVERT( DATETIME, #searchEndReqDate#) + 1
+						   <isNotEmpty property="searchReqEmpNo" >
+						   AND A.REQ_EMP_NO     = #searchReqEmpNo#
+						   </isNotEmpty>
+						   <isNotEmpty property="searchTcsRcvEmpNo" >
+						   AND A.TCS_RCV_EMP_NO = #searchTcsRcvEmpNo#
+						   </isNotEmpty>
+						   <isNotEmpty property="searchProductName" >
+						   AND A.PRODUCT_NAME   LIKE '%' + #searchProductName# + '%'
+						   </isNotEmpty>
+						   AND A.REQ_EMP_NO     &lt;&gt; #sessionEmpNo#
+						   AND (A.SCM_EMP_NO = #sessionEmpNo# OR A.MARKET_EMP_NO = #sessionEmpNo#)
+						   AND A.SAVE_YN        = 'Y'
+						UNION ALL
+						SELECT A.PROPOSAL_NO
+							 , A.REQ_DATE
+							 , A.REQ_DEPT_ID
+							 , B.GROUP_NAME        AS REQ_DEPT_NM
+							 , A.REQ_EMP_NO
+							 , C.USER_NAME         AS REQ_EMP_NM
+							 , A.PRODUCT_NAME
+							 , A.CUST_NAME
+							 , A.TCS_RCV_EMP_NO
+							 , D.USER_NAME         AS TCS_RCV_EMP_NM
+							 , A.TCS_RCV_DATE
+							 , A.SAVE_YN
+						  FROM TB_PROPOSAL A
+							   INNER JOIN IKEP4_EV_GROUP B
+								  ON B.GROUP_TYPE_ID = 'G0001'
+								 AND B.VIEW_OPTION   = '1'
+								 AND B.GROUP_ID      = A.REQ_DEPT_ID
+							   INNER JOIN IKEP4_EV_USER C
+								  ON C.EMP_NO = A.REQ_EMP_NO
+							   LEFT OUTER JOIN IKEP4_EV_USER D
+								  ON D.EMP_NO = A.TCS_RCV_EMP_NO
+						 WHERE A.REQ_DATE       &gt;= CONVERT( DATETIME, #searchStartReqDate#)
+						   AND A.REQ_DATE       &lt; CONVERT( DATETIME, #searchEndReqDate#) + 1
+						   <isNotEmpty property="searchReqEmpNo" >
+						   AND A.REQ_EMP_NO     = #searchReqEmpNo#
+						   </isNotEmpty>
+						   <isNotEmpty property="searchTcsRcvEmpNo" >
+						   AND A.TCS_RCV_EMP_NO = #searchTcsRcvEmpNo#
+						   </isNotEmpty>
+						   <isNotEmpty property="searchProductName" >
+						   AND A.PRODUCT_NAME   LIKE '%' + #searchProductName# + '%'
+						   </isNotEmpty>
+						   AND A.REQ_EMP_NO     &lt;&gt; #sessionEmpNo#
+						   AND A.SCM_EMP_NO     &lt;&gt; #sessionEmpNo#
+						   AND A.MARKET_EMP_NO  &lt;&gt; #sessionEmpNo#
+						   AND ( #sessionGoupId# = '51000651' OR ( #sessionGoupId# = '51001251' AND A.SAVE_YN = 'Y'))    /* 로그인한 사번의 부서가 TCS or 신제품개발팀(연구팀)인지를 체크 */
+						UNION ALL
+						SELECT A.PROPOSAL_NO
+							 , A.REQ_DATE
+							 , A.REQ_DEPT_ID
+							 , B.GROUP_NAME        AS REQ_DEPT_NM
+							 , A.REQ_EMP_NO
+							 , C.USER_NAME         AS REQ_EMP_NM
+							 , A.PRODUCT_NAME
+							 , A.CUST_NAME
+							 , A.TCS_RCV_EMP_NO
+							 , D.USER_NAME         AS TCS_RCV_EMP_NM
+							 , A.TCS_RCV_DATE
+							 , A.SAVE_YN
+						  FROM TB_PROPOSAL A
+							   INNER JOIN IKEP4_EV_GROUP B
+								  ON B.GROUP_TYPE_ID = 'G0001'
+								 AND B.VIEW_OPTION   = '1'
+								 AND B.GROUP_ID      = A.REQ_DEPT_ID
+							   INNER JOIN IKEP4_EV_USER C
+								  ON C.EMP_NO = A.REQ_EMP_NO
+							   LEFT OUTER JOIN IKEP4_EV_USER D
+								  ON D.EMP_NO = A.TCS_RCV_EMP_NO
+						 WHERE A.REQ_DATE       &gt;= CONVERT( DATETIME, #searchStartReqDate#)
+						   AND A.REQ_DATE       &lt; CONVERT( DATETIME, #searchEndReqDate#) + 1
+						   
+						   <isNotEmpty property="searchReqEmpNo" >
+						   AND A.REQ_EMP_NO     = #searchReqEmpNo#
+						   </isNotEmpty>
+						   <isNotEmpty property="searchTcsRcvEmpNo" >
+						   AND A.TCS_RCV_EMP_NO = #searchTcsRcvEmpNo#
+						   </isNotEmpty>
+						   <isNotEmpty property="searchProductName" >
+						   AND A.PRODUCT_NAME   LIKE '%' + #searchProductName# + '%'
+						   </isNotEmpty>
+						   AND A.REQ_EMP_NO     &lt;&gt; #sessionEmpNo#
+						   AND A.SCM_EMP_NO     &lt;&gt; #sessionEmpNo#
+						   AND A.MARKET_EMP_NO  &lt;&gt; #sessionEmpNo#
+						   AND #sessionGoupId#       NOT IN ('51000651', '51001251')
+						   AND A.SAVE_YN        = 'Y'
+						   AND EXISTS (SELECT 'Y'
+										 FROM TB_USER_AUTH_MGNT
+										WHERE WORK_GBN_CD = '20'
+										  AND EMP_NO      = #sessionEmpNo#
+										  AND DEPT_ID     NOT IN ('51000651', '51001251')
+										  AND USE_YN      = 'Y') ) A
+				 GROUP BY A.PROPOSAL_NO
+		      ) IA
+	</select>
+	
+	<select id="getDeptOpinionPermission" parameterClass="proposalSearchCondition" resultMap="opinionResultMap">
+		SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
+		SELECT
+		     (
+		       SELECT CASE COUNT(1) WHEN 0 THEN 0 ELSE 1 END 
+		         FROM IKEP4_EV_GROUP 
+		        WHERE (
+		        		FULL_PATH LIKE '|회장|사장|대구공장|생산담당|품질보증부|%'
+		        		OR FULL_PATH LIKE '|회장|사장|울산공장|울산생산담당|품질보증1부|%' 
+		        		OR FULL_PATH LIKE '|회장|사장|울산공장|울산생산담당|품질보증2부|%' 
+		        		OR FULL_PATH LIKE '|회장|사장|진주공장|진주생산담당|품질보증부|%' 
+		        		)
+		          AND GROUP_ID = #sessionGoupId# ) AS QAD_AUTH
+		      ,
+		     (
+		       SELECT CASE COUNT(1) WHEN 0 THEN 0 ELSE 1 END
+		         FROM IKEP4_EV_GROUP 
+		        WHERE GROUP_ID = '51001251' /* 하드코딩이지만 하위부서 포함일것을 대비 */
+		          AND GROUP_ID = #sessionGoupId# ) AS LAB_AUTH
+		      ,
+		     (
+		       SELECT CASE COUNT(1) WHEN 0 THEN 0 ELSE 1 END
+		         FROM IKEP4_EV_GROUP 
+		        WHERE GROUP_ID = '51001151' /* 하드코딩이지만 하위부서 포함일것을 대비 */ 
+		          AND GROUP_ID = #sessionGoupId# ) AS SCM_AUTH
+		      ,
+		     (
+		       SELECT CASE COUNT(1) WHEN 0 THEN 0 ELSE 1 END
+		         FROM IKEP4_EV_GROUP 
+		        WHERE FULL_PATH LIKE '|회장|사장|영업총괄|%'
+		          AND GROUP_ID = #sessionGoupId# ) AS SALES_AUTH
+		      ,
+		     (
+		       SELECT CASE COUNT(1) WHEN 0 THEN 0 ELSE 1 END
+		         FROM IKEP4_EV_GROUP 
+		        WHERE GROUP_ID = '51001757' /* 하드코딩이지만 하위부서 포함일것을 대 */  
+		          AND GROUP_ID = #sessionGoupId# ) AS MARKET_AUTH
+		      ,
+		     (
+		       SELECT CASE COUNT(1) WHEN 0 THEN 0 ELSE 1 END
+		         FROM IKEP4_EV_GROUP 
+		        WHERE GROUP_ID = '51000651' /* 하드코딩이지만 하위부서 포함일것을 대비 */
+		          AND GROUP_ID = #sessionGoupId# ) AS TCS_AUTH
+	</select>
+	
+	<select id="getProposalList" parameterClass="proposalSearchCondition" resultMap="proposalResultListMap">
+		/* [Proposal_SqlMap.xml] proposal.getProposalList */
+		SELECT IAA.*
+		  FROM
+		     (
+				SELECT IA.*
+				     , ROW_NUMBER() OVER( ORDER BY
+						     						<isNotEmpty property="sortColumn">
+						     							<isEqual property="sortColumn" compareValue="reqDate">
+						     								<isEqual property="sortType" compareValue="DESC">
+						     									IA.REQ_DATE DESC,
+						     								</isEqual>
+						     								<isEqual property="sortType" compareValue="ASC">
+						     									IA.REQ_DATE ASC,
+						     								</isEqual>
+						     							</isEqual>
+						     							<isEqual property="sortColumn" compareValue="reqDeptId">
+						     								<isEqual property="sortType" compareValue="DESC">
+						     									IA.REQ_DEPT_NM DESC,
+						     								</isEqual>
+						     								<isEqual property="sortType" compareValue="ASC">
+						     									IA.REQ_DEPT_NM ASC,
+						     								</isEqual>
+						     							</isEqual>
+						     							<isEqual property="sortColumn" compareValue="reqEmpNo">
+						     								<isEqual property="sortType" compareValue="DESC">
+						     									IA.REQ_EMP_NM DESC,
+						     								</isEqual>
+						     								<isEqual property="sortType" compareValue="ASC">
+						     									IA.REQ_EMP_NM ASC,
+						     								</isEqual>
+						     							</isEqual>
+						     							<isEqual property="sortColumn" compareValue="productName">
+						     								<isEqual property="sortType" compareValue="DESC">
+						     									IA.PRODUCT_NAME DESC,
+						     								</isEqual>
+						     								<isEqual property="sortType" compareValue="ASC">
+						     									IA.PRODUCT_NAME ASC,
+						     								</isEqual>
+						     							</isEqual>
+						     							<isEqual property="sortColumn" compareValue="custName">
+						     								<isEqual property="sortType" compareValue="DESC">
+						     									IA.CUST_NAME DESC,
+						     								</isEqual>
+						     								<isEqual property="sortType" compareValue="ASC">
+						     									IA.CUST_NAME ASC,
+						     								</isEqual>
+						     							</isEqual>
+						     							<isEqual property="sortColumn" compareValue="tcsRcvEmpNo">
+						     								<isEqual property="sortType" compareValue="DESC">
+						     									IA.TCS_RCV_EMP_NM DESC,
+						     								</isEqual>
+						     								<isEqual property="sortType" compareValue="ASC">
+						     									IA.TCS_RCV_EMP_NM ASC,
+						     								</isEqual>
+						     							</isEqual>
+						     							<isEqual property="sortColumn" compareValue="tcsRcvDate">
+						     								<isEqual property="sortType" compareValue="DESC">
+						     									IA.TCS_RCV_DATE DESC,
+						     								</isEqual>
+						     								<isEqual property="sortType" compareValue="ASC">
+						     									IA.TCS_RCV_DATE ASC,
+						     								</isEqual>
+						     							</isEqual>
+						     						</isNotEmpty>
+													IA.PROPOSAL_NO DESC
+						                         ) AS RNUM
+				  FROM
+				     (
+				     	SELECT A.PROPOSAL_NO
+						     , CONVERT( CHAR(10), MAX(A.REQ_DATE), 102)          AS REQ_DATE
+							 , MAX(A.REQ_DEPT_ID)       AS REQ_DEPT_ID
+							 , MAX(A.REQ_DEPT_NM)       AS REQ_DEPT_NM
+							 , MAX(A.REQ_EMP_NO)        AS REQ_EMP_NO
+							 , MAX(A.REQ_EMP_NM)        AS REQ_EMP_NM
+							 , MAX(A.PRODUCT_NAME)      AS PRODUCT_NAME
+							 , MAX(A.CUST_NAME)         AS CUST_NAME
+							 , MAX(A.TCS_RCV_EMP_NO)    AS TCS_RCV_EMP_NO
+							 , MAX(A.TCS_RCV_EMP_NM)    AS TCS_RCV_EMP_NM
+							 , CONVERT( CHAR(10), MAX(A.TCS_RCV_DATE), 102)      AS TCS_RCV_DATE
+							 , MAX(A.SAVE_YN)           AS SAVE_YN
+						  FROM (
+								SELECT A.PROPOSAL_NO
+									 , A.REQ_DATE
+									 , A.REQ_DEPT_ID
+									 , B.GROUP_NAME        AS REQ_DEPT_NM
+									 , A.REQ_EMP_NO
+									 , C.USER_NAME         AS REQ_EMP_NM
+									 , A.PRODUCT_NAME
+									 , A.CUST_NAME
+									 , A.TCS_RCV_EMP_NO
+									 , D.USER_NAME         AS TCS_RCV_EMP_NM
+									 , A.TCS_RCV_DATE
+									 , A.SAVE_YN
+								  FROM TB_PROPOSAL A
+									   INNER JOIN IKEP4_EV_GROUP B
+										  ON B.GROUP_TYPE_ID = 'G0001'
+										 AND B.VIEW_OPTION   = '1'
+										 AND B.GROUP_ID      = A.REQ_DEPT_ID
+									   INNER JOIN IKEP4_EV_USER C
+										  ON C.EMP_NO = A.REQ_EMP_NO
+									   LEFT OUTER JOIN IKEP4_EV_USER D
+										  ON D.EMP_NO = A.TCS_RCV_EMP_NO
+								 WHERE A.REQ_DATE       &gt;= CONVERT( DATETIME, #searchStartReqDate#)
+								   AND A.REQ_DATE       &lt; CONVERT( DATETIME, #searchEndReqDate#) + 1
+								   <isNotEmpty property="searchReqEmpNo" >
+								   AND A.REQ_EMP_NO     = #searchReqEmpNo#
+								   </isNotEmpty>
+								   <isNotEmpty property="searchTcsRcvEmpNo" >
+								   AND A.TCS_RCV_EMP_NO = #searchTcsRcvEmpNo#
+								   </isNotEmpty>
+								   <isNotEmpty property="searchProductName" >
+								   AND A.PRODUCT_NAME   LIKE '%' + #searchProductName# + '%'
+								   </isNotEmpty>
+								   AND A.REQ_EMP_NO     = #sessionEmpNo#
+								UNION ALL
+								SELECT A.PROPOSAL_NO
+									 , A.REQ_DATE
+									 , A.REQ_DEPT_ID
+									 , B.GROUP_NAME        AS REQ_DEPT_NM
+									 , A.REQ_EMP_NO
+									 , C.USER_NAME         AS REQ_EMP_NM
+									 , A.PRODUCT_NAME
+									 , A.CUST_NAME
+									 , A.TCS_RCV_EMP_NO
+									 , D.USER_NAME         AS TCS_RCV_EMP_NM
+									 , A.TCS_RCV_DATE
+									 , A.SAVE_YN
+								  FROM TB_PROPOSAL A
+									   INNER JOIN IKEP4_EV_GROUP B
+										  ON B.GROUP_TYPE_ID = 'G0001'
+										 AND B.VIEW_OPTION   = '1'
+										 AND B.GROUP_ID      = A.REQ_DEPT_ID
+									   INNER JOIN IKEP4_EV_USER C
+										  ON C.EMP_NO = A.REQ_EMP_NO
+									   LEFT OUTER JOIN IKEP4_EV_USER D
+										  ON D.EMP_NO = A.TCS_RCV_EMP_NO
+								 WHERE A.REQ_DATE       &gt;= CONVERT( DATETIME, #searchStartReqDate#)
+								   AND A.REQ_DATE       &lt; CONVERT( DATETIME, #searchEndReqDate#) + 1
+								   <isNotEmpty property="searchReqEmpNo" >
+								   AND A.REQ_EMP_NO     = #searchReqEmpNo#
+								   </isNotEmpty>
+								   <isNotEmpty property="searchTcsRcvEmpNo" >
+								   AND A.TCS_RCV_EMP_NO = #searchTcsRcvEmpNo#
+								   </isNotEmpty>
+								   <isNotEmpty property="searchProductName" >
+								   AND A.PRODUCT_NAME   LIKE '%' + #searchProductName# + '%'
+								   </isNotEmpty>
+								   AND A.REQ_EMP_NO     &lt;&gt; #sessionEmpNo#
+								   AND (A.SCM_EMP_NO = #sessionEmpNo# OR A.MARKET_EMP_NO = #sessionEmpNo#)
+								   AND A.SAVE_YN        = 'Y'
+								UNION ALL
+								SELECT A.PROPOSAL_NO
+									 , A.REQ_DATE
+									 , A.REQ_DEPT_ID
+									 , B.GROUP_NAME        AS REQ_DEPT_NM
+									 , A.REQ_EMP_NO
+									 , C.USER_NAME         AS REQ_EMP_NM
+									 , A.PRODUCT_NAME
+									 , A.CUST_NAME
+									 , A.TCS_RCV_EMP_NO
+									 , D.USER_NAME         AS TCS_RCV_EMP_NM
+									 , A.TCS_RCV_DATE
+									 , A.SAVE_YN
+								  FROM TB_PROPOSAL A
+									   INNER JOIN IKEP4_EV_GROUP B
+										  ON B.GROUP_TYPE_ID = 'G0001'
+										 AND B.VIEW_OPTION   = '1'
+										 AND B.GROUP_ID      = A.REQ_DEPT_ID
+									   INNER JOIN IKEP4_EV_USER C
+										  ON C.EMP_NO = A.REQ_EMP_NO
+									   LEFT OUTER JOIN IKEP4_EV_USER D
+										  ON D.EMP_NO = A.TCS_RCV_EMP_NO
+								 WHERE A.REQ_DATE       &gt;= CONVERT( DATETIME, #searchStartReqDate#)
+								   AND A.REQ_DATE       &lt; CONVERT( DATETIME, #searchEndReqDate#) + 1
+								   <isNotEmpty property="searchReqEmpNo" >
+								   AND A.REQ_EMP_NO     = #searchReqEmpNo#
+								   </isNotEmpty>
+								   <isNotEmpty property="searchTcsRcvEmpNo" >
+								   AND A.TCS_RCV_EMP_NO = #searchTcsRcvEmpNo#
+								   </isNotEmpty>
+								   <isNotEmpty property="searchProductName" >
+								   AND A.PRODUCT_NAME   LIKE '%' + #searchProductName# + '%'
+								   </isNotEmpty>
+								   AND A.REQ_EMP_NO     &lt;&gt; #sessionEmpNo#
+								   AND A.SCM_EMP_NO     &lt;&gt; #sessionEmpNo#
+								   AND A.MARKET_EMP_NO  &lt;&gt; #sessionEmpNo#
+								   AND ( #sessionGoupId# = '51000651' OR ( #sessionGoupId# = '51001251' AND A.SAVE_YN = 'Y'))    /* 로그인한 사번의 부서가 TCS or 신제품개발팀(연구팀)인지를 체크 */
+								UNION ALL
+								SELECT A.PROPOSAL_NO
+									 , A.REQ_DATE
+									 , A.REQ_DEPT_ID
+									 , B.GROUP_NAME        AS REQ_DEPT_NM
+									 , A.REQ_EMP_NO
+									 , C.USER_NAME         AS REQ_EMP_NM
+									 , A.PRODUCT_NAME
+									 , A.CUST_NAME
+									 , A.TCS_RCV_EMP_NO
+									 , D.USER_NAME         AS TCS_RCV_EMP_NM
+									 , A.TCS_RCV_DATE
+									 , A.SAVE_YN
+								  FROM TB_PROPOSAL A
+									   INNER JOIN IKEP4_EV_GROUP B
+										  ON B.GROUP_TYPE_ID = 'G0001'
+										 AND B.VIEW_OPTION   = '1'
+										 AND B.GROUP_ID      = A.REQ_DEPT_ID
+									   INNER JOIN IKEP4_EV_USER C
+										  ON C.EMP_NO = A.REQ_EMP_NO
+									   LEFT OUTER JOIN IKEP4_EV_USER D
+										  ON D.EMP_NO = A.TCS_RCV_EMP_NO
+								 WHERE A.REQ_DATE       &gt;= CONVERT( DATETIME, #searchStartReqDate#)
+								   AND A.REQ_DATE       &lt; CONVERT( DATETIME, #searchEndReqDate#) + 1
+								   
+								   <isNotEmpty property="searchReqEmpNo" >
+								   AND A.REQ_EMP_NO     = #searchReqEmpNo#
+								   </isNotEmpty>
+								   <isNotEmpty property="searchTcsRcvEmpNo" >
+								   AND A.TCS_RCV_EMP_NO = #searchTcsRcvEmpNo#
+								   </isNotEmpty>
+								   <isNotEmpty property="searchProductName" >
+								   AND A.PRODUCT_NAME   LIKE '%' + #searchProductName# + '%'
+								   </isNotEmpty>
+								   AND A.REQ_EMP_NO     &lt;&gt; #sessionEmpNo#
+								   AND A.SCM_EMP_NO     &lt;&gt; #sessionEmpNo#
+								   AND A.MARKET_EMP_NO  &lt;&gt; #sessionEmpNo#
+								   AND #sessionGoupId#       NOT IN ('51000651', '51001251')
+								   AND A.SAVE_YN        = 'Y'
+								   AND EXISTS (SELECT 'Y'
+												 FROM TB_USER_AUTH_MGNT
+												WHERE WORK_GBN_CD = '20'
+												  AND EMP_NO      = #sessionEmpNo#
+												  AND DEPT_ID     NOT IN ('51000651', '51001251')
+												  AND USE_YN      = 'Y') ) A
+						 GROUP BY A.PROPOSAL_NO
+				     ) IA
+		     ) IAA
+		 WHERE IAA.RNUM &lt;= #endRowIndex#
+		   AND IAA.RNUM &gt; #startRowIndex#
+	</select>
+	
+	<select id="getProposal" parameterClass="proposalSearchCondition" resultMap="proposalResultMap">
+		/* [Proposal_SqlMap.xml] proposal.getProposal */
+		SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
+		SELECT A.PROPOSAL_NO	AS PROPOSAL_NO
+		     , A.COMPANY_CODE	AS COMPANY_CODE
+			 , A.TCS_RCV_EMP_NO	AS TCS_RCV_EMP_NO
+			 , DBO.FN_GET_EMPNO_EMP_NAME( A.TCS_RCV_EMP_NO)	AS TCS_RCV_EMP_NM
+			 , CONVERT( CHAR(10), A.TCS_RCV_DATE, 102)	AS TCS_RCV_DATE
+			 , A.REQ_EMP_NO	AS REQ_EMP_NO
+			 , DBO.FN_GET_EMPNO_EMP_NAME( A.REQ_EMP_NO) AS  REQ_EMP_NM
+			 , A.REQ_DEPT_ID	AS REQ_DEPT_ID
+			 , DBO.FN_GET_DEPT_NAME( A.REQ_DEPT_ID)	AS REQ_DEPT_NM
+			 , A.REQ_USER_RANK	AS REQ_USER_RANK
+			 , CONVERT( CHAR(10), A.REQ_DATE, 102)	AS REQ_DATE
+			 , A.CUST_NAME		AS CUST_NAME
+			 , A.PAPER_GRP_NAME	AS PAPER_GRP_NAME
+			 , A.PRODUCT_NAME	AS PRODUCT_NAME
+			 , A.PROPOSAL_REASON	AS PROPOSAL_REASON
+			 , A.KEY_FEATURE_FUNCTION	AS KEY_FEATURE_FUNCTION
+			 , A.CUST_REQUESTS	AS CUST_REQUESTS
+			 , A.MARKET_STATUS	AS MARKET_STATUS
+			 , A.GOAL_SALE_QTY	AS GOAL_SALE_QTY
+			 , A.GOAL_SALE_PRICE	AS GOAL_SALE_PRICE
+			 , A.SUPPORT_REQ_CD	AS SUPPORT_REQ_CD
+			 , A.DEV_PERIOD	AS DEV_PERIOD
+			 , A.DEV_GBN_CD	AS DEV_GBN_CD
+			 , A.QAD_OPINION	AS QAD_OPINION
+			 , A.LAB_OPINION	AS LAB_OPINION
+			 , A.SALES_OPINION	AS SALES_OPINION
+			 , A.SCM_EMP_NO	AS SCM_EMP_NO
+			 , DBO.FN_GET_EMPNO_EMP_NAME( A.SCM_EMP_NO)	AS SCM_EMP_NM
+			 , A.SCM_OPINION	AS SCM_OPINION
+			 , A.MARKET_EMP_NO	AS MARKET_EMP_NO
+			 , DBO.FN_GET_EMPNO_EMP_NAME( A.MARKET_EMP_NO)	AS MARKET_EMP_NM
+			 , A.MARKET_OPINION	AS MARKET_OPINION
+			 , A.MARKET_GRADE_CD	AS MARKET_GRADE_CD
+			 , A.TCS_TOTAL_OPINION	AS TCS_TOTAL_OPINION
+			 , A.APPR_COMMENT	AS APPR_COMMENT
+			 , A.PROPOSAL_STATUS	AS PROPOSAL_STATUS
+			 , A.FILE_ITEM_ID	AS FILE_ITEM_ID
+			 , A.SAVE_YN	AS SAVE_YN
+			 , (
+		 		SELECT TOP 1 X.AUTH_YN
+				  FROM (
+						SELECT 'Y'    AS AUTH_YN
+						  FROM TB_PROPOSAL A
+						 WHERE A.PROPOSAL_NO = #proposalNo#
+						   AND A.REQ_EMP_NO  = #sessionEmpNo#        /* 로그인한 사원이 작성자/SCM, 마케팅팀 인지를 체크 */
+				        UNION ALL
+						SELECT 'Y'    AS AUTH_YN
+						  FROM TB_PROPOSAL A
+						 WHERE A.PROPOSAL_NO = #proposalNo#
+						   AND A.REQ_EMP_NO  &lt;&gt; #sessionEmpNo#        /* 로그인한 사원이 작성자/SCM, 마케팅팀 인지를 체크 */
+						   AND (A.SCM_EMP_NO = #sessionEmpNo# OR A.MARKET_EMP_NO = #sessionEmpNo#)
+						   AND A.SAVE_YN     = 'Y'
+				        UNION ALL
+						SELECT 'Y'    AS AUTH_YN
+						  FROM TB_PROPOSAL A
+						 WHERE A.PROPOSAL_NO   = #proposalNo#
+						   AND A.REQ_EMP_NO    &lt;&gt; #sessionEmpNo#
+						   AND A.SCM_EMP_NO    &lt;&gt; #sessionEmpNo#
+						   AND A.MARKET_EMP_NO &lt;&gt; #sessionEmpNo#
+						   AND ( #sessionGoupId# = '51000651' OR ( #sessionGoupId# = '51001251' AND A.SAVE_YN = 'Y'))    /* 로그인한 사번의 부서가 TCS or 신제품개발팀(연구팀)인지를 체크 */
+				        UNION ALL
+						SELECT 'Y'    AS AUTH_YN
+						  FROM TB_PROPOSAL A
+						 WHERE A.PROPOSAL_NO   = #proposalNo#
+						   AND A.REQ_EMP_NO    &lt;&gt; #sessionEmpNo#
+						   AND A.SCM_EMP_NO    &lt;&gt; #sessionEmpNo#
+						   AND A.MARKET_EMP_NO &lt;&gt; #sessionEmpNo#
+						   AND #sessionGoupId#      NOT IN ('51000651', '51001251')   /* 로그인한 사번의 부서가 TCS or 신제품개발팀(연구팀)인지를 체크 */
+						   AND A.SAVE_YN       = 'Y'
+						   AND EXISTS (SELECT 'Y'
+						                 FROM TB_USER_AUTH_MGNT B
+						                WHERE B.WORK_GBN_CD = '20'
+						                  AND B.EMP_NO      = #proposalNo#
+						                  AND B.DEPT_ID     NOT IN ('51000651', '51001251')
+						                  AND B.USE_YN      = 'Y') ) X   
+			   ) AS AUTH_YN
+		 FROM TB_PROPOSAL A
+		WHERE A.PROPOSAL_NO = #proposalNo#
+	</select>
+	
+	<select id="getMailTargetUser" parameterClass="proposal" resultMap="mailTargetResultMap">
+		/* [Proposal_SqlMap.xml] proposal.getMailTargetUser */
+		SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
+		SELECT dbo.FN_GET_EMPNO_EMAIL_ADDRESS(A.TGT_EMP_NO)    AS EMAIL
+		     , MAX(A.PRODUCT_NM)                               AS PRODUCT_NAME
+			 , MAX(A.GRP_NM)                                   AS REQ_DEPT_NM
+			 , DBO.FN_GET_EMPNO_EMP_NAME( A.TGT_EMP_NO) 	   AS USER_NAME
+		  FROM (SELECT A1.SCM_EMP_NO      AS TGT_EMP_NO
+				     , A1.PRODUCT_NAME    AS PRODUCT_NM
+				     , A2.GROUP_NAME      AS GRP_NM
+				  FROM TB_PROPOSAL A1
+				       INNER JOIN IKEP4_EV_GROUP A2
+					      ON A2.GROUP_ID      = A1.REQ_DEPT_ID
+						 AND A2.GROUP_TYPE_ID = 'G0001'
+						 AND A2.VIEW_OPTION   = '1'
+				 WHERE A1.PROPOSAL_NO = #proposalNo#
+				UNION ALL
+				SELECT B1.MARKET_EMP_NO    AS TGT_EMP_NO
+				     , B1.PRODUCT_NAME     AS PRODUCT_NM
+				     , B2.GROUP_NAME       AS GRP_NM
+				  FROM TB_PROPOSAL B1
+				       INNER JOIN IKEP4_EV_GROUP B2
+					      ON B2.GROUP_ID      = B1.REQ_DEPT_ID
+						 AND B2.GROUP_TYPE_ID = 'G0001'
+						 AND B2.VIEW_OPTION   = '1'
+				 WHERE B1.PROPOSAL_NO = #proposalNo#
+				UNION ALL
+				SELECT C1.EMP_NO          AS TGT_EMP_NO
+				     , C2.PRODUCT_NAME    AS PRODUCT_NM
+				     , C3.GROUP_NAME      AS GRP_NM
+				  FROM TB_USER_AUTH_MGNT C1
+				       INNER JOIN TB_PROPOSAL C2
+					      ON C2.PROPOSAL_NO = #proposalNo#
+					   INNER JOIN IKEP4_EV_GROUP C3
+					      ON C3.GROUP_ID      = C2.REQ_DEPT_ID
+						 AND C3.GROUP_TYPE_ID = 'G0001'
+						 AND C3.VIEW_OPTION   = '1'
+				 WHERE C1.WORK_GBN_CD = '20'
+				   AND C1.USE_YN      = 'Y'
+				UNION ALL
+				SELECT D3.EMP_NO          AS TGT_EMP_NO
+				     , D4.PRODUCT_NAME    AS PRODUCT_NM
+				     , D5.GROUP_NAME      AS GRP_NM
+				  FROM IKEP4_EV_GROUP D1
+					   INNER JOIN IKEP4_EV_USER_GROUP D2
+						  ON D2.GROUP_ID = D1.GROUP_ID
+					   INNER JOIN IKEP4_EV_USER D3
+						  ON D3.USER_ID     = D2.USER_ID
+						 AND D3.USER_STATUS = 'C'
+				       INNER JOIN TB_PROPOSAL D4
+					      ON D4.PROPOSAL_NO = #proposalNo#
+					   INNER JOIN IKEP4_EV_GROUP D5
+					      ON D5.GROUP_ID      = D4.REQ_DEPT_ID
+						 AND D5.GROUP_TYPE_ID = 'G0001'
+						 AND D5.VIEW_OPTION   = '1'
+				 WHERE D1.GROUP_TYPE_ID = 'G0001'
+				   AND D1.VIEW_OPTION   = '1'
+				   AND D1.GROUP_ID      = '51001251') A   /* 신제품연구팀 부서(고정) */
+		 GROUP BY A.TGT_EMP_NO
+	</select>
+	
+	<insert id="insertProposal" parameterClass="proposal">
+		<selectKey keyProperty="proposalNo" resultClass="String">
+			SELECT #proposalNo# + REPLICATE( 0, 3 - LEN( A.MAXSEQ)) + A.MAXSEQ
+			 FROM(
+			       SELECT CONVERT( VARCHAR, ISNULL( RIGHT( MAX( PROPOSAL_NO ), 3), 0) + 1)  AS MAXSEQ
+			         FROM TB_PROPOSAL
+			        WHERE PROPOSAL_NO LIKE  #proposalNo# + '%'
+			     )A
+		</selectKey>
+		/* [Proposal_SqlMap.xml] proposal.insertProposal */
+		INSERT INTO TB_PROPOSAL
+		          (
+		          	  PROPOSAL_NO
+					, COMPANY_CODE
+					, REQ_EMP_NO
+					, REQ_DEPT_ID
+					, REQ_USER_RANK
+					, REQ_DATE
+					, CUST_NAME
+					, PAPER_GRP_NAME
+					, PRODUCT_NAME
+					, PROPOSAL_REASON
+					, KEY_FEATURE_FUNCTION
+					, CUST_REQUESTS
+					, MARKET_STATUS
+					, MARKET_GRADE_CD
+					, GOAL_SALE_QTY
+					, GOAL_SALE_PRICE
+					, SUPPORT_REQ_CD
+					, DEV_PERIOD
+					, DEV_GBN_CD
+					, SCM_EMP_NO
+					, MARKET_EMP_NO
+					, APPR_COMMENT
+					, PROPOSAL_STATUS
+					, FILE_ITEM_ID
+					, SAVE_YN
+		          )
+		     VALUES
+		          (
+		          	  #proposalNo#
+					, #companyCode#
+					, #reqEmpNo#
+					, #reqDeptId#
+					, #reqUserRank#
+					, GETDATE()
+					, #custName#
+					, #paperGrpName#
+					, #productName#
+					, #proposalReason#
+					, #keyFeatureFunction#
+					, #custRequests#
+					, #marketStatus#
+					, #marketGradeCd#
+					, #goalSaleQty#
+					, #goalSalePrice#
+					, #supportReqCd#
+					, #devPeriod#
+					, #devGbnCd#
+					, #scmEmpNo#
+					, #marketEmpNo#
+					, #apprComment#
+					, #proposalStatus#
+					, #fileItemId#
+					, #saveYn#
+		          )
+	</insert>
+	
+	<update id="updateProposal" parameterClass="proposal">
+		/* [Proposal_SqlMap.xml] proposal.updateProposal */
+		UPDATE TB_PROPOSAL
+		   SET 
+		   <isEqual property="saveType" compareValue="draftOnly">
+		       COMPANY_CODE = #companyCode#
+			 , CUST_NAME = #custName#
+			 , PAPER_GRP_NAME =  #paperGrpName#
+			 , PRODUCT_NAME = #productName#
+			 , PROPOSAL_REASON = #proposalReason#
+			 , KEY_FEATURE_FUNCTION = #keyFeatureFunction#
+			 , CUST_REQUESTS = #custRequests#
+			 , MARKET_STATUS = #marketStatus#
+			 , MARKET_GRADE_CD = #marketGradeCd#
+			 , GOAL_SALE_QTY = #goalSaleQty#
+			 , GOAL_SALE_PRICE = #goalSalePrice#
+			 , SUPPORT_REQ_CD = #supportReqCd#
+			 , DEV_PERIOD = #devPeriod#
+			 , DEV_GBN_CD = #devGbnCd#
+			 , SCM_EMP_NO = #scmEmpNo#
+			 , MARKET_EMP_NO = #marketEmpNo#
+			 , SAVE_YN = #saveYn#
+			 , FILE_ITEM_ID = #fileItemId#
+			</isEqual>			 
+		   
+		   <isEqual property="saveType" compareValue="tcsOnly">
+		       APPR_COMMENT = #apprComment#
+		     , PROPOSAL_STATUS = #proposalStatus#
+			 , SAVE_YN = #saveYn#
+			 <isNotEmpty property="sessionEmpNo">
+			 , TCS_RCV_EMP_NO = #sessionEmpNo#
+			 , TCS_RCV_DATE = GETDATE()
+			 </isNotEmpty>
+			</isEqual>
+					 
+		   <isEqual property="saveType" compareValue="both">
+		       COMPANY_CODE = #companyCode#
+			 , CUST_NAME = #custName#
+			 , PAPER_GRP_NAME =  #paperGrpName#
+			 , PRODUCT_NAME = #productName#
+			 , PROPOSAL_REASON = #proposalReason#
+			 , KEY_FEATURE_FUNCTION = #keyFeatureFunction#
+			 , CUST_REQUESTS = #custRequests#
+			 , MARKET_STATUS = #marketStatus#
+			 , MARKET_GRADE_CD = #marketGradeCd#
+			 , GOAL_SALE_QTY = #goalSaleQty#
+			 , GOAL_SALE_PRICE = #goalSalePrice#
+			 , SUPPORT_REQ_CD = #supportReqCd#
+			 , DEV_PERIOD = #devPeriod#
+			 , DEV_GBN_CD = #devGbnCd#
+			 , SCM_EMP_NO = #scmEmpNo#
+			 , MARKET_EMP_NO = #marketEmpNo#
+			 , FILE_ITEM_ID = #fileItemId#
+			 , APPR_COMMENT = #apprComment#
+		     , PROPOSAL_STATUS = #proposalStatus#
+			 , SAVE_YN = #saveYn#
+			 <isNotEmpty property="sessionEmpNo">
+			 , TCS_RCV_EMP_NO = #sessionEmpNo#
+			 , TCS_RCV_DATE = GETDATE()
+			 </isNotEmpty>
+			</isEqual>			 
+	   WHERE PROPOSAL_NO = #proposalNo#
+	</update>
+	
+	<update id="updateOpinion"  parameterClass="proposal">
+		/* [Proposal_SqlMap.xml] proposal.updateFileId */
+		UPDATE TB_PROPOSAL
+		   SET
+		   <isEqual property="opinionType" compareValue="qad">
+		   	   QAD_OPINION = #opinionValue#
+		   </isEqual>
+		   <isEqual property="opinionType" compareValue="lab">
+		   	   LAB_OPINION = #opinionValue#
+		   </isEqual>
+		   <isEqual property="opinionType" compareValue="sales">
+		   	   SALES_OPINION = #opinionValue#
+		   </isEqual>
+		   <isEqual property="opinionType" compareValue="market">
+		   	   MARKET_OPINION = #opinionValue#
+		   </isEqual>
+		   <isEqual property="opinionType" compareValue="tcs">
+		   	   TCS_TOTAL_OPINION = #opinionValue#
+		   </isEqual>
+		   <isEqual property="opinionType" compareValue="scm">
+		   	   SCM_OPINION = #opinionValue#
+		   </isEqual>
+		 WHERE PROPOSAL_NO = #proposalNo#
+	</update>
+	
+	
+	<update id="updateFileId"  parameterClass="proposal">
+		/* [Proposal_SqlMap.xml] proposal.updateFileId */
+		UPDATE TB_PROPOSAL
+		   SET FILE_ITEM_ID = #fileItemId#
+		 WHERE PROPOSAL_NO = #proposalNo#
+	</update>
+	
+	<delete id="deleteProposal" parameterClass="proposal">
+		/* [Proposal_SqlMap.xml] proposal.deleteProposal */
+		DELETE FROM TB_PROPOSAL
+		      WHERE PROPOSAL_NO = #proposalNo#
+	</delete>
+	
+</sqlMap>

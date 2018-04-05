@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="socialpack.socialblog.dao.SocialBlogPortlet">
+
+	<typeAlias alias="SocialBlogPortlet" type="com.lgcns.ikep4.socialpack.socialblog.model.SocialBlogPortlet"/>
+  
+	<!-- IKEP4_AD_ADDRGROUP 테이블 조회 결과 -->
+	<resultMap id="resultSocialBlogPortlet" class="SocialBlogPortlet">
+		<result property="portletId" column="PORTLET_ID" columnIndex="1"/>
+		<result property="portletName" column="PORTLET_NAME" columnIndex="2"/>
+		<result property="viewUrl" column="VIEW_URL" columnIndex="3"/>
+		<result property="isDefault" column="IS_DEFAULT" columnIndex="4"/>
+		<result property="sortOrder" column="SORT_ORDER" columnIndex="5"/>
+		<result property="portletEnglishName" column="PORTLET_ENGLISH_NAME" columnIndex="6"/>
+	</resultMap>
+
+	<sql id="sqlColumnList"> 
+	    PORTLET_ID, 
+	    PORTLET_NAME, 
+	    VIEW_URL,
+	    IS_DEFAULT,
+	    SORT_ORDER,
+	    PORTLET_ENGLISH_NAME
+	</sql>  
+    
+	<select id="get" parameterClass="java.lang.String" resultMap="resultSocialBlogPortlet"> 
+		SELECT 
+			/* [SocialBlogPortlet_SqlMap.xml] socialpack.socialblog.dao.SocialBlogPortlet.get */
+			<include refid="socialpack.socialblog.dao.SocialBlogPortlet.sqlColumnList" /> 
+		FROM  IKEP4_SB_PORTLET
+    	WHERE PORTLET_ID = #portletId# 
+	</select>
+  
+	<select id="exists" parameterClass="java.lang.String" resultClass="int"> 
+		SELECT /* [SocialBlogPortlet_SqlMap.xml] socialpack.socialblog.dao.SocialBlogPortlet.exists */
+			COUNT(*)
+		FROM  IKEP4_SB_PORTLET
+		WHERE PORTLET_ID = #portletId# 
+	</select> 
+  
+	<select id="listAllPortlet" parameterClass="SocialBlogPortlet" resultMap="resultSocialBlogPortlet">  
+		SELECT 
+			/* [SocialBlogPortlet_SqlMap.xml] socialpack.socialblog.dao.SocialBlogPortlet.listAllPortlet */ 
+			<include refid="socialpack.socialblog.dao.SocialBlogPortlet.sqlColumnList" /> 
+		FROM   IKEP4_SB_PORTLET
+		<dynamic>
+			<!-- 디폴트 포틀릿 요청시에만  -->
+			<isNotEmpty property="isDefault" >
+				<isEqual property="isDefault" compareValue="1" prepend="WHERE">
+					IS_DEFAULT = #isDefault#
+				</isEqual>
+			</isNotEmpty>
+		</dynamic>
+		ORDER BY SORT_ORDER
+	</select>   
+
+	<select id="countAllPortlet" parameterClass="SocialBlogPortlet" resultClass="int">  
+		SELECT /* [SocialBlogPortlet_SqlMap.xml] socialpack.socialblog.dao.SocialBlogPortlet.countAllPortlet */ 
+           COUNT(*)
+		FROM   IKEP4_SB_PORTLET
+		<dynamic>
+			<!-- 디폴트 포틀릿 요청시에만  -->
+			<isNotEmpty property="isDefault" >
+				<isEqual property="isDefault" compareValue="1" prepend="WHERE">
+					IS_DEFAULT = #isDefault#
+				</isEqual>
+			</isNotEmpty>
+		</dynamic>
+		ORDER BY SORT_ORDER
+  	</select>
+ 
+	<insert id="create" parameterClass="SocialBlogPortlet"> 
+		INSERT INTO IKEP4_SB_PORTLET ( 
+			/* [SocialBlogPortlet_SqlMap.xml] socialpack.socialblog.dao.SocialBlogPortlet.create */
+			<include refid="socialpack.socialblog.dao.SocialBlogPortlet.sqlColumnList" />
+		) VALUES (
+			#portletId#, 
+			#portletName#, 
+			#viewUrl#, 
+			#isDefault#,
+			#sortOrder#,
+			#portletEnglishName#
+    	) 
+	</insert>
+	
+	<update id="update" parameterClass="SocialBlogPortlet"> 
+		UPDATE IKEP4_SB_PORTLET 
+			/* [SocialBlogPortlet_SqlMap.xml] socialpack.socialblog.dao.SocialBlogPortlet.update */
+    	SET PORTLET_NAME    			= #portletName#,
+          	VIEW_URL    				= #viewUrl#,
+          	IS_DEFAULT    				= #isDefault#,
+          	SORT_ORDER    				= #sortOrder#,
+          	PORTLET_ENGLISH_NAME    	= #portletEnglishName#
+		WHERE PORTLET_ID 	= #portletId# 
+	</update>
+ 
+	<delete id="physicalDelete" parameterClass="java.lang.String"> 
+		DELETE FROM IKEP4_SB_PORTLET 
+			/* [SocialBlogPortlet_SqlMap.xml] socialpack.socialblog.dao.SocialBlogPortlet.physicalDelete */
+		WHERE PORTLET_ID 	= #portletId#  
+	</delete>
+	
+</sqlMap> 

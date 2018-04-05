@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="lightpack.todo.dao.task">
+	<typeAlias alias = "Task" type="com.lgcns.ikep4.lightpack.todo.model.Task"/>
+	
+	<!-- IKEP4_TD_TASK 테이블 조회 결과 -->
+	<resultMap id="taskResult" class="Task">
+		<result property="taskId"               column="TASK_ID"                />
+		<result property="title"                column="TITLE"                  />
+		<result property="directorId"           column="DIRECTOR_ID"            />
+		<result property="subworkCode"          column="SUBWORK_CODE"           />
+		<result property="startDate"            column="START_DATE"             />
+		<result property="dueDate"              column="DUE_DATE"               />
+		<result property="taskContents"         column="TASK_CONTENTS"          />
+		<result property="taskAttachCount"      column="TASK_ATTACH_COUNT"      />
+		<result property="taskStatus"           column="TASK_STATUS"            />
+		<result property="taskCompleteDate"     column="TASK_COMPLETE_DATE"     />
+		<result property="registerId"           column="REGISTER_ID"            />
+		<result property="registerName"         column="REGISTER_NAME"          />
+		<result property="registDate"           column="REGIST_DATE"            />
+		<result property="updaterId"            column="UPDATER_ID"             />
+		<result property="updaterName"          column="UPDATER_NAME"           />
+		<result property="updateDate"           column="UPDATE_DATE"            />
+		<result property="directorName"         column="DIRECTOR_NAME"          />
+		<result property="directorTeamName"     column="DIRECTOR_TEAM_NAME"     />
+		<result property="directorJobRankName"  column="DIRECTOR_JOB_RANK_NAME" />
+		<result property="directorEnglishName"         column="DIRECTOR_ENGLISH_NAME"          />
+		<result property="directorTeamEnglishName"     column="DIRECTOR_TEAM_ENGLISH_NAME"     />
+		<result property="directorJobRankEnglishName"  column="DIRECTOR_JOB_RANK_ENGLISH_NAME" />
+	</resultMap>
+	
+	<!-- MS SQL -->
+	<insert id="create" parameterClass="Task"> 
+      <![CDATA[ 
+           INSERT INTO IKEP4_TD_TASK /* [Task_SqlMap.xml] Task.create */
+                  (TASK_ID, TITLE, DIRECTOR_ID, START_DATE, DUE_DATE, 
+                   TASK_CONTENTS, TASK_ATTACH_COUNT, TASK_STATUS, 
+                   REGISTER_ID, REGISTER_NAME, REGIST_DATE, UPDATER_ID, UPDATER_NAME, 
+                   UPDATE_DATE,SUBWORK_CODE)  
+           VALUES (#taskId#, #title#, #directorId#, #startDate#, #dueDate#, 
+                   #taskContents#, ISNULL(#taskAttachCount#, 0), 'A',
+                   #registerId#, #registerName#, CURRENT_TIMESTAMP, #updaterId#, #updaterName#, 
+                   CURRENT_TIMESTAMP,#subworkCode#)
+       ]]>
+       <selectKey resultClass="java.lang.String" type="post"> 
+         <![CDATA[ 
+               SELECT TASK_ID 
+                 FROM IKEP4_TD_TASK 
+                WHERE TASK_ID = #taskId#
+            ]]>
+      </selectKey>
+   </insert>
+ 
+ 	<!-- ANSI -->
+	<select id="get" parameterClass="java.lang.String" resultMap="taskResult">
+	  <![CDATA[
+		   SELECT /* [Task_SqlMap.xml] Task.get */
+		   		  A.*,         
+		          '' AS DIRECTOR_NAME,       
+		          '' AS DIRECTOR_TEAM_NAME,  
+		          '' AS DIRECTOR_JOB_RANK_NAME,
+		          '' AS DIRECTOR_ENGLISH_NAME,       
+		          '' AS DIRECTOR_TEAM_ENGLISH_NAME,  
+		          '' AS DIRECTOR_JOB_RANK_ENGLISH_NAME
+		     FROM IKEP4_TD_TASK A
+		    WHERE TASK_ID = #taskId#
+	   ]]>
+	</select>
+	
+	<!-- MS SQL -->
+	<update id="update" parameterClass="Task">
+	  <![CDATA[
+		   UPDATE IKEP4_TD_TASK /* [Task_SqlMap.xml] Task.update */
+		      SET TITLE = #title#,          
+				  DIRECTOR_ID = #directorId#,     
+				  START_DATE = #startDate#,      
+				  DUE_DATE = #dueDate#,       
+				  TASK_CONTENTS = #taskContents#, 
+				  TASK_ATTACH_COUNT = ISNULL(#taskAttachCount#, 0),
+				  TASK_STATUS = #taskStatus#,     
+				  TASK_COMPLETE_DATE = (CASE
+								        	WHEN #taskStatus# = 'A' THEN NULL
+								         	ELSE CURRENT_TIMESTAMP
+								       	END),
+				  UPDATER_ID = #updaterId#,      
+				  UPDATER_NAME = #updaterName#,    
+				  UPDATE_DATE = CURRENT_TIMESTAMP  
+		    WHERE TASK_ID = #taskId# 
+	   ]]>
+	</update>
+   
+   <!-- ANSI -->
+   <delete id="remove" parameterClass="java.lang.String">
+      <![CDATA[
+	       DELETE FROM IKEP4_TD_TASK /* [Task_SqlMap.xml] Task.remove */
+	        WHERE TASK_ID = #taskId#
+	   ]]>
+	</delete>
+	
+	<!-- ANSI -->
+	<select id="count" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+	  <![CDATA[
+		   SELECT /* [Task_SqlMap.xml] Task.count */ 
+		   		  COUNT(1) 
+		     FROM IKEP4_TD_TASK 
+		    WHERE TASK_ID = #taskId# 
+	   ]]>
+	</select>
+   
+   <!-- ANSI -->
+   <!-- //작업 조회 -->
+	<select id="getTask" parameterClass="java.lang.String" resultMap="taskResult">
+	  <![CDATA[
+		   SELECT /* [Task_SqlMap.xml] Task.getTask */
+		   		  A.TASK_ID,              
+		          A.TITLE,               
+		          A.DIRECTOR_ID,         
+		          A.START_DATE,          
+		          A.DUE_DATE,            
+		          A.TASK_CONTENTS,       
+		          A.TASK_ATTACH_COUNT,   
+		          A.TASK_STATUS,         
+		          A.TASK_COMPLETE_DATE,  
+		          A.REGISTER_ID,         
+		          A.REGISTER_NAME,       
+		          A.REGIST_DATE,         
+		          A.UPDATER_ID,          
+		          A.UPDATER_NAME,        
+		          A.UPDATE_DATE,
+				  A.SUBWORK_CODE,         
+		          B.USER_NAME AS DIRECTOR_NAME,       
+		          B.TEAM_NAME AS DIRECTOR_TEAM_NAME,  
+		          isnull(ejd.JOB_DUTY_NAME, ejt.JOB_TITLE_NAME) AS DIRECTOR_JOB_RANK_NAME,         
+		          B.USER_ENGLISH_NAME AS DIRECTOR_ENGLISH_NAME,       
+		          B.TEAM_ENGLISH_NAME AS DIRECTOR_TEAM_ENGLISH_NAME,  
+		          '' AS DIRECTOR_JOB_RANK_ENGLISH_NAME
+		     FROM   IKEP4_TD_TASK A
+			        inner join IKEP4_EV_USER B
+			          ON A.DIRECTOR_ID = B.USER_ID
+			        left outer join IKEP4_EV_JOB_TITLE ejt  on B.job_title_code =ejt.job_title_code
+        			left outer join IKEP4_EV_JOB_DUTY ejd  on B.job_duty_code = ejd.job_duty_code
+			 WHERE  A.TASK_ID = #taskId# 
+	   ]]>
+	</select>
+	
+	<!-- ANSI -->
+	<!-- //작업완료 업데이트 -->
+	<update id="updateCompleteStatus" parameterClass="Task">
+	  <![CDATA[
+		   UPDATE IKEP4_TD_TASK /* [Task_SqlMap.xml] Task.updateCompleteStatus */
+		      SET TASK_STATUS = 'B',     
+				  TASK_COMPLETE_DATE = CURRENT_TIMESTAMP, 
+				  UPDATER_ID = #updaterId#,      
+				  UPDATER_NAME = #updaterName#,    
+				  UPDATE_DATE = CURRENT_TIMESTAMP  
+		    WHERE TASK_ID = #taskId# 
+	   ]]>
+	</update>
+</sqlMap>

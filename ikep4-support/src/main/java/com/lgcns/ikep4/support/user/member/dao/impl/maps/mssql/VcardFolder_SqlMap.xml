@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+	<sqlMap namespace="support.user.member.dao.VcardFolder" >
+  	<typeAlias alias="VcardFolder" type="com.lgcns.ikep4.support.user.restful.model.VcardFolder" />
+  	
+  	<resultMap id="result" class="VcardFolder">
+		<result property="folderId" column="ADDRGROUP_ID" />
+		<result property="userId" column="REGISTER_ID" />
+		<result property="portalId" column="PORTAL_ID" />
+		<result property="folderName" column="ADDRGROUP_NAME" />
+		<result property="folderType" column="FOLDER_TYPE" />
+		<result property="registerId" column="REGISTER_ID" />
+		<result property="registerName" column="REGISTER_NAME" />
+		<result property="registDate" column="REGIST_DATE" />
+		<result property="level" column="LEVEL" />
+		<result property="isHasChildren" column="HAS_CHILDREN" />
+		<result property="folderRootId" column="FOLDER_ROOT_ID" />
+	</resultMap>
+  	
+  	<select id="listUserFolderTree" parameterClass="java.util.Map" resultMap="result">
+		<![CDATA[
+	  	SELECT/* [VcardFolder_SqlMap.xml] support.user.member.dao.VcardFolder.listUserFolderTree */
+		   		  ADDRGROUP_ID
+           		, ADDRGROUP_NAME
+           		, PORTAL_ID
+           		, REGISTER_ID
+           		, REGISTER_NAME
+           		, REGIST_DATE
+           		, 0 as LEVEL
+           		, 0 as HAS_CHILDREN
+           		, '0' as FOLDER_ROOT_ID
+           		, '0' FOLDER_TYPE
+			FROM IKEP4_AD_ADDRGROUP  AB
+			where group_type = 'P' and register_id=#userId#
+			ORDER BY AB.ADDRGROUP_ID ASC, AB.ADDRGROUP_NAME ASC
+      	]]>    	
+	  </select>
+</sqlMap>

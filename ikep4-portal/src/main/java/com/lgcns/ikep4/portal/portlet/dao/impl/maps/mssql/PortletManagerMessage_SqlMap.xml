@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="portal.portlet.portletManagerMessage" >
+	<typeAlias alias = "PortletManagerMessage" type="com.lgcns.ikep4.portal.portlet.model.PortletManagerMessage"/>
+
+	<!-- ANSI -->
+	<insert id="createPortletManagerMessage" parameterClass="PortletManagerMessage"> 
+      <![CDATA[
+      	   /* [PortletManagerMessage_SqlMap.xml] portal.portlet.portletManagerMessage.createPortletManagerMessage */
+           INSERT INTO IKEP4_PO_PORTLET_MANAGERMESSAGE (PORTLET_CONFIG_ID, IMAGE_FILE_ID, TITLE_FILE_ID, BOARD_ID, ITEM_ID, TARGET, REGISTER_ID, REGISTER_NAME, REGIST_DATE, UPDATER_ID, UPDATER_NAME, UPDATE_DATE,SUMMARY,LOCATION,IMG_WIDTH,IMG_HEIGHT,SUBJECT)  
+           VALUES (#portletConfigId#, #imageFileId#,#titleFileId#, #boardId#, #itemId#, #target#, #registerId#, #registerName#, CURRENT_TIMESTAMP, #updaterId#, #updaterName#, CURRENT_TIMESTAMP ,#summary#,#location#,#imgWidth#,#imgHeight#,#subject#)
+       ]]>
+   </insert>
+
+	<!-- ANSI -->
+	<select id="getPortletManagerMessage" resultClass="PortletManagerMessage">
+	  <![CDATA[
+	  	   /* [PortletManagerMessage_SqlMap.xml] portal.portlet.portletManagerMessage.getPortletManagerMessage */
+	  	   SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
+		   SELECT
+			  PORTLET_CONFIG_ID  portletConfigId,
+			  IMAGE_FILE_ID		imageFileId, 
+			  TITLE_FILE_ID		titleFileId, 
+			  BOARD_ID          boardId,
+			  ITEM_ID           itemId,
+			  TARGET			target,
+			  REGISTER_ID		registerId, 
+			  REGISTER_NAME		registerName, 
+			  REGIST_DATE		registDate, 
+			  UPDATER_ID		updaterId, 
+			  UPDATER_NAME  	updaterName, 
+			  UPDATE_DATE   	updateDate,
+			  SUMMARY           summary,
+			  LOCATION			location,
+			  IMG_WIDTH			imgWidth,
+			  IMG_HEIGHT		imgHeight,
+			  SUBJECT           subject
+			FROM IKEP4_PO_PORTLET_MANAGERMESSAGE
+	   ]]>
+	</select>
+	
+	<!-- ANSI -->
+	<update id="updatePortletManagerMessage" parameterClass="PortletManagerMessage">
+	  <![CDATA[
+	  	   /* [PortletManagerMessage_SqlMap.xml] portal.portlet.portletManagerMessage.updatePortletManagerMessage */
+		   UPDATE IKEP4_PO_PORTLET_MANAGERMESSAGE
+			  SET IMAGE_FILE_ID = #imageFileId#,
+			  	TITLE_FILE_ID = #titleFileId#,
+			  	  BOARD_ID = #boardId#,
+                  ITEM_ID = #itemId#,
+			  	  TARGET = #target#, 
+			      UPDATER_ID = #updaterId#,
+			      UPDATER_NAME = #updaterName#,
+			      UPDATE_DATE = CURRENT_TIMESTAMP,
+					SUMMARY			= #summary#,
+					LOCATION		= #location#,
+					IMG_WIDTH		= #imgWidth#,
+					IMG_HEIGHT		= #imgHeight#,
+					SUBJECT			= #subject#
+	   ]]>
+	</update>
+	
+</sqlMap>

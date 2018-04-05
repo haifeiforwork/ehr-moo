@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="collpack.workmanual.dao.approvalUser">
+	<typeAlias alias = "ApprovalUser" type="com.lgcns.ikep4.collpack.workmanual.model.ApprovalUser"/>
+	<typeAlias alias = "ApprovalUserPk" type="com.lgcns.ikep4.collpack.workmanual.model.ApprovalUserPk"/>
+	
+	<!-- 테이블 조회 결과 -->
+	<resultMap id="approvalUserResult" class="ApprovalUser">
+		<result property="categoryId"                       column="CATEGORY_ID"                  />
+		<result property="approvalLine"                     column="APPROVAL_LINE"                />
+		<result property="approvalUserId"                   column="APPROVAL_USER_ID"             />
+		<result property="approvalUserName"                 column="APPROVAL_USER_NAME"           />
+		<result property="approvalUserTeamName"             column="APPROVAL_USER_TEAM_NAME"      />
+		<result property="approvalUserJobTitleName"         column="APPROVAL_USER_JOB_TITLE_NAME" />
+		<result property="approvalUserEnglishName"          column="APPROVAL_USER_ENGLISH_NAME"   />
+		<result property="approvalUserTeamEnglishName"      column="TEAM_ENGLISH_NAME"            />
+		<result property="approvalUserJobTitleEnglishName"  column="JOB_TITLE_ENGLISH_NAME"       />
+	</resultMap>
+	
+	<!-- ANSI -->
+	<insert id="create" parameterClass="ApprovalUser"> 
+      <![CDATA[ 
+           INSERT INTO IKEP4_WM_APPROVAL_USER (/* [ApprovalUser_SqlMap.xml] ApprovalUser.create */
+           		CATEGORY_ID, APPROVAL_LINE, APPROVAL_USER_ID)  
+           VALUES (#categoryId#, #approvalLine#, #approvalUserId#)
+       ]]>
+   </insert>
+   
+   	<!-- ANSI -->
+	<select id="get" parameterClass="ApprovalUserPk" resultMap="approvalUserResult">
+	  <![CDATA[
+		   SELECT /* [ApprovalUser_SqlMap.xml] ApprovalUser.get */
+				  CATEGORY_ID,
+				  APPROVAL_LINE,
+				  APPROVAL_USER_ID,
+				  '' AS APPROVAL_USER_NAME,                 
+				  '' AS APPROVAL_USER_TEAM_NAME,            
+				  '' AS APPROVAL_USER_JOB_TITLE_NAME,       
+				  '' AS APPROVAL_USER_ENGLISH_NAME,         
+				  '' AS TEAM_ENGLISH_NAME,    
+				  '' AS JOB_TITLE_ENGLISH_NAME
+		     FROM IKEP4_WM_APPROVAL_USER
+		    WHERE CATEGORY_ID = #categoryId#
+		      AND APPROVAL_LINE = #approvalLine#
+	   ]]>
+	</select>
+	
+	<!-- ANSI -->
+	<update id="update" parameterClass="ApprovalUser">
+	  <![CDATA[
+		   UPDATE IKEP4_WM_APPROVAL_USER /* [ApprovalUser_SqlMap.xml] ApprovalUser.update */ 
+		      SET APPROVAL_USER_ID = #approvalUserId#
+		    WHERE CATEGORY_ID = #categoryId#
+		      AND APPROVAL_LINE = #approvalLine#
+	   ]]>
+	</update>
+   
+   <!-- ANSI -->
+   <delete id="remove" parameterClass="ApprovalUserPk">
+      <![CDATA[
+	       DELETE FROM IKEP4_WM_APPROVAL_USER /* [ApprovalUser_SqlMap.xml] ApprovalUser.remove */ 
+	        WHERE CATEGORY_ID = #categoryId#
+		      AND APPROVAL_LINE = #approvalLine#
+	   ]]>
+	</delete>
+	
+	<!-- ANSI -->
+	<select id="count" parameterClass="ApprovalUserPk" resultClass="java.lang.Integer">
+	  <![CDATA[
+		   SELECT /* [ApprovalUser_SqlMap.xml] ApprovalUser.count */ 
+		   		  COUNT(1) 
+		     FROM IKEP4_WM_APPROVAL_USER 
+		    WHERE CATEGORY_ID = #categoryId#
+		      AND APPROVAL_LINE = #approvalLine#
+	   ]]>
+	</select>
+   	
+   	<!-- ANSI -->
+	<!-- //문서결재자 정보 -->
+	<select id="listApprovalUser" parameterClass="java.lang.String" resultMap="approvalUserResult">
+	  <![CDATA[
+		   SELECT /* [ApprovalUser_SqlMap.xml] ApprovalUser.listApprovalUser */
+				  A.CATEGORY_ID,
+				  A.APPROVAL_LINE,
+				  A.APPROVAL_USER_ID,         
+		          B.USER_NAME AS APPROVAL_USER_NAME,       
+		          B.TEAM_NAME AS APPROVAL_USER_TEAM_NAME,  
+		          C.JOB_TITLE_NAME AS APPROVAL_USER_JOB_TITLE_NAME,         
+		          B.USER_ENGLISH_NAME AS APPROVAL_USER_ENGLISH_NAME,       
+		          B.TEAM_ENGLISH_NAME AS TEAM_ENGLISH_NAME,  
+		          C.JOB_TITLE_ENGLISH_NAME AS JOB_TITLE_ENGLISH_NAME
+		     FROM IKEP4_WM_APPROVAL_USER A
+		          INNER JOIN IKEP4_EV_USER B
+		          	 ON A.APPROVAL_USER_ID = B.USER_ID
+                  INNER JOIN IKEP4_EV_JOB_TITLE C 
+                  	 ON B.JOB_TITLE_CODE = C.JOB_TITLE_CODE
+		     		AND B.PORTAL_ID = C.PORTAL_ID
+		    WHERE A.CATEGORY_ID = #categoryId#
+		    ORDER BY A.APPROVAL_LINE   
+	   ]]>
+	</select>
+	
+	<!-- ANSI -->
+	<!-- //문서 결재자 여부 -->
+	<select id="approvalUserYn" parameterClass="java.lang.String" resultClass="java.lang.String">
+	  <![CDATA[
+		   SELECT /* [ApprovalUser_SqlMap.xml] ApprovalUser.approvalUserYn */ 
+		   		  CASE WHEN COUNT(1) = 0 THEN 'N' ELSE 'Y' END 
+		     FROM IKEP4_WM_APPROVAL_USER 
+		    WHERE APPROVAL_USER_ID = #approvalUserId#
+	   ]]>
+	</select>
+   
+   <!-- ANSI -->
+   <!-- //카테고리 아이디로 삭제 -->
+   <delete id="removeByCategoryId" parameterClass="java.lang.String">
+      <![CDATA[
+	       DELETE FROM IKEP4_WM_APPROVAL_USER /* [ApprovalUser_SqlMap.xml] ApprovalUser.removeByCategoryId */ 
+	        WHERE CATEGORY_ID = #categoryId#
+	   ]]>
+	</delete>
+</sqlMap>

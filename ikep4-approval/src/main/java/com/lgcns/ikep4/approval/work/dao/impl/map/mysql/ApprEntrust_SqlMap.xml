@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="com.lgcns.ikep4.approval.work.dao.ApprEntrust" >
+	
+	<typeAlias alias="apprEntrust" type="com.lgcns.ikep4.approval.work.model.ApprEntrust"/>
+	<typeAlias alias="ApprListSearchCondition"	type="com.lgcns.ikep4.approval.work.search.ApprListSearchCondition"/>
+	
+	<insert id="entrustCreate" parameterClass="apprEntrust"> 
+      <![CDATA[ 
+           INSERT INTO IKEP4_APPR_ENTRUST 
+           		  (ENTRUST_ID, ENTRUST_USER_ID, SIGN_USER_ID, `USAGE`, ENTRUST_START_DATE, ENTRUST_END_DATE
+           	     , ENTRUST_REASON, REGIST_DATE, UPDATE_DATE,PORTAL_ID)
+           VALUES (#entrustId#, #userId#, #signUserId#, #usage#,#startDate#, #endDate#
+           		 , #reason#, now(), now(),#portalId#)
+       ]]>
+  	</insert>
+	
+	<update id="entrustUpdate" parameterClass="apprEntrust">
+	  <![CDATA[
+		   	UPDATE 	IKEP4_APPR_ENTRUST 
+		   	SET 	SIGN_USER_ID 	= #signUserId# 	
+		   		  , ENTRUST_START_DATE = #startDateStr#
+		   		  , ENTRUST_END_DATE = #endDateStr#
+		   		  , ENTRUST_REASON = #reason#
+		   		  ,	`USAGE` 			= #usage#
+			   	  , UPDATE_DATE 	= now() 
+		   	WHERE 	ENTRUST_USER_ID 		= #userId#
+		   	  AND   PORTAL_ID = #portalId#
+	   ]]>
+	</update>
+	
+	<update id="entrustUpdateUsage" parameterClass="apprEntrust">
+	  <![CDATA[
+		   	UPDATE 	IKEP4_APPR_ENTRUST 
+		   	SET 	`USAGE` 			= 0
+			   	  , UPDATE_DATE 	= now() 
+		   	WHERE 	ENTRUST_USER_ID 		= #userId#
+		   	  AND   PORTAL_ID = #portalId#
+		   	  AND   ENTRUST_ID = #entrustId#
+	   ]]>
+	</update>
+	
+	<select id="entrustDetail" parameterClass="apprEntrust" resultClass="apprEntrust">
+	  <![CDATA[
+		   	SELECT  ENTRUST_ID entrustId,
+		   			ENTRUST_USER_ID userId,
+		   			EU1.USER_NAME userName, 
+		   			SIGN_USER_ID signUserId,
+		   			EU2.USER_NAME  signUserName,
+		   			`USAGE`,
+		   			ENTRUST_START_DATE startDate,
+		   			ENTRUST_END_DATE endDate,
+		   			ENTRUST_REASON reason			
+			FROM IKEP4_APPR_ENTRUST AE  INNER JOIN IKEP4_EV_USER EU1 ON EU1.USER_ID = AE.ENTRUST_USER_ID 
+										INNER JOIN IKEP4_EV_USER EU2 ON EU2.USER_ID = AE.SIGN_USER_ID
+			WHERE 	AE.PORTAL_ID = #portalId#
+	   ]]>
+	   <isNotEmpty property="usage">
+	   		AND `USAGE` = 1
+	   </isNotEmpty>
+	   <isNotEmpty property="entrustId">
+	   		AND AE.ENTRUST_ID 		= #entrustId#
+	   </isNotEmpty>
+	   <isNotEmpty property="userId">
+	   		AND AE.ENTRUST_USER_ID = #userId#
+	   </isNotEmpty>
+	   <isNotEmpty property="signUserId">
+	   		AND AE.SIGN_USER_ID = #signUserId#
+	   </isNotEmpty>
+	   <isNotEmpty property="isValidDate">
+	   		AND now()  BETWEEN AE.ENTRUST_START_DATE  AND AE.ENTRUST_END_DATE 
+	   </isNotEmpty>
+	   ORDER BY AE.REGIST_DATE DESC
+	</select>
+	
+	<select id="listBySearchCondition" parameterClass="ApprListSearchCondition" resultClass="apprEntrust">
+		SELECT /* [ApprEntrust_SqlMap.xml] listBySearchCondition */ 
+			        		ENTRUST_ID entrustId,
+				   			ENTRUST_USER_ID userId,
+				   			EU1.USER_NAME userName, 
+				   			SIGN_USER_ID signUserId,
+				   			EU2.USER_NAME  signUserName,
+				   			`USAGE`,
+				   			ENTRUST_START_DATE startDate,
+				   			ENTRUST_END_DATE endDate,
+				   			ENTRUST_REASON reason
+					FROM IKEP4_APPR_ENTRUST AE  INNER JOIN IKEP4_EV_USER EU1 ON EU1.USER_ID = AE.ENTRUST_USER_ID 
+												INNER JOIN IKEP4_EV_USER EU2 ON EU2.USER_ID = AE.SIGN_USER_ID
+					WHERE 	AE.PORTAL_ID = #portalId#
+					<isNotEmpty property="userId">
+						AND	AE.ENTRUST_USER_ID = #userId#
+					</isNotEmpty>
+					<isNotEmpty property="searchSignUserId">
+						AND	AE.SIGN_USER_ID = #searchSignUserId#
+					</isNotEmpty>
+					ORDER BY `USAGE` DESC, ENTRUST_START_DATE DESC
+		<![CDATA[  
+			LIMIT #startRowIndex#, #pagePerRecord#
+		]]> 
+	</select>
+	
+	<select id="countBySearchCondition" parameterClass="ApprListSearchCondition" resultClass="int">  
+		SELECT /* [ApprEntrust_SqlMap.xml] countBySearchCondition */ 
+	           COUNT(*)
+		FROM 	IKEP4_APPR_ENTRUST
+		WHERE 	PORTAL_ID = #portalId#
+		<isNotEmpty property="userId">
+			AND	ENTRUST_USER_ID 		= #userId#
+		</isNotEmpty>
+		<isNotEmpty property="searchSignUserId">
+			AND	SIGN_USER_ID = #searchSignUserId#
+		</isNotEmpty>
+	</select> 
+	
+	<select id="hasSignUser" parameterClass="map" resultClass="int"> 
+		SELECT /* [ApprEntrust_SqlMap.xml] hasSignUser */ 
+			COUNT(*)
+		FROM IKEP4_APPR_ENTRUST 
+	   WHERE SIGN_USER_ID = #userId#
+	   	 AND ENTRUST_USER_ID = #entrustUserId#
+	</select>
+</sqlMap>

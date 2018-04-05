@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="collpack.kms.batch.dao.KmsMigrationAnnounceUsageDao"> 
+  
+	<!-- ANSI --> 
+	<select id="listAnnounceFromNewsDB" resultClass="java.util.HashMap">		  
+		SELECT
+			/*collpack.kms.batch.dao.KmsMigrationAnnounceUsageDao.listAnnounceFromNewsDB*/ 
+			A.BBS_SEQ,
+	       CONVERT(NVARCHAR, A.READ_COUNT) AS READ_COUNT,
+	       A.TITLE,
+	       A.CONTENT,
+	       A.CREATE_ID,
+	       A.CREATE_NAME,
+	       CONVERT(NVARCHAR, A.CREATE_DATE, 102) AS CREATE_DATE,
+	       A.CHANGE_ID,
+	       A.CHANGE_NAME,
+	       CONVERT(NVARCHAR, A.CHANGE_DATE, 102) AS CHANGE_DATE,
+	       B.FILE_ORG_NAME,
+	       B.FILE_PATH
+	  FROM VIEWEP_MULTIBOARD_LIST A
+	  LEFT JOIN MULTIBOARD_FILE B
+	    ON A.BBS_SEQ = B.BBS_SEQ
+	 ORDER BY A.BBS_SEQ ASC	
+	</select>
+	
+	<select id="listViewLogFromNewsDB" resultClass="java.util.HashMap">
+		SELECT /*collpack.kms.batch.dao.KmsMigrationAnnounceUsageDao.listViewLogFromNewsDB*/ 
+			CONVERT(NVARCHAR,EMPLOYEE) AS EMPLOYEE
+				,SUBSTRING(CONVERT(NVARCHAR, VIEWDATE, 120), 1, 10) AS VIEW_DATE
+				,CONVERT(NVARCHAR, SUM(VIEWCOUNT)) AS VIEW_SUM
+		FROM INFORMATIONLOG 
+		where VIEWDATE between '2012-01-01 00:00:00' and '2012-11-19 23:59:59'
+		GROUP BY EMPLOYEE, SUBSTRING(CONVERT(NVARCHAR, VIEWDATE, 120), 1, 10)
+		ORDER BY  SUBSTRING(CONVERT(NVARCHAR, VIEWDATE, 120), 1, 10) ASC
+		
+	</select>
+  
+</sqlMap>

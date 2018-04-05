@@ -1,0 +1,3234 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="collpack.kms.board.dao.boardItem">
+	<typeAlias alias="kmsBoardItem"                type="com.lgcns.ikep4.collpack.kms.board.model.BoardItem"/>
+	<typeAlias alias="kmsBoardItemSearchCondition" type="com.lgcns.ikep4.collpack.kms.board.search.BoardItemSearchCondition"/>
+	<typeAlias alias="kmsRelatedBoardItemSearchCondition" type="com.lgcns.ikep4.collpack.kms.board.search.RelatedBoardItemSearchCondition"/>
+	<typeAlias alias="readerSearchCondition" type="com.lgcns.ikep4.collpack.kms.board.search.BoardItemReaderSearchCondition"/>
+
+
+	<resultMap id="boardItemMinResult" class="com.lgcns.ikep4.collpack.kms.board.model.BoardItem" >
+		<result column="ITEM_ID"           property="itemId"               jdbcType="VARCHAR" />
+		<result column="BOARD_ID"          property="boardId"              jdbcType="VARCHAR" />
+		<result column="TITLE"             property="title"                jdbcType="VARCHAR" /> 
+		<result column="START_DATE"        property="startDate"            jdbcType="TIMESTAMP" />
+		<result column="END_DATE"          property="endDate"              jdbcType="TIMESTAMP" />
+		<result column="ITEM_DELETE"       property="itemDelete"           jdbcType="DECIMAL" /> 
+		<result column="IMAGE_FILE_ID"     property="imageFileId"          jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<resultMap id="kmsBoardItemTarget" class="com.lgcns.ikep4.collpack.kms.board.model.BoardItem" >
+		<result column="targetGroupId"           property="targetGroupId"               jdbcType="VARCHAR" />
+		<result column="targetGroupName"          property="targetGroupName"              jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<resultMap id="kmsBoardItemTargetUser" class="com.lgcns.ikep4.collpack.kms.board.model.BoardItem" >
+		<result column="targetUserId"           property="targetUserId"               jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<resultMap id="boardItemReaderViewResult" class="com.lgcns.ikep4.collpack.kms.board.model.BoardItemReader">
+    <result column="READER_ID"       property="readerId"         jdbcType="VARCHAR" />
+    <result column="READER_NAME"      property="readerName"     jdbcType="VARCHAR" />
+    <result column="READER_TEAM_NAME" property="readerTeamName"    jdbcType="VARCHAR" />
+    <result column="READ_DATE"          property="readDate"              jdbcType="TIMESTAMP" />
+  </resultMap>
+
+	<resultMap id="boardItemResult" class="com.lgcns.ikep4.collpack.kms.board.model.BoardItem" >
+		<result column="ITEM_ID"           	property="itemId"			jdbcType="VARCHAR" />
+		<result column="BOARD_ID"     		property="boardId"        	jdbcType="VARCHAR" />
+		<result column="ITEM_PARENT_ID"    	property="itemParentId"     jdbcType="VARCHAR" />
+		<result column="ITEM_GROUP_ID"    	property="itemGroupId"      jdbcType="VARCHAR" />
+		<result column="ITEM_SEQ_ID"     	property="itemSeqId"        jdbcType="VARCHAR" />
+		<result column="STEP"     			property="step"        		jdbcType="DECIMAL" />
+		<result column="INDENTATION"     	property="indentation"      jdbcType="DECIMAL" />
+		<result column="ITEM_TYPE"     		property="itemType"         jdbcType="VARCHAR" />
+		<result column="ITEM_DISPLAY"       property="itemDisplay"      jdbcType="DECIMAL" />
+		<result column="TITLE"       		property="title"          	jdbcType="VARCHAR" />
+		<result column="CONTENTS"       	property="contents"         jdbcType="VARCHAR" />
+		<result column="HIT_COUNT"       	property="hitCount"         jdbcType="DECIMAL" />
+		<result column="RECOMMEND_COUNT"    property="recommendCount"   jdbcType="DECIMAL" />
+		<result column="REPLY_COUNT"    	property="replyCount"   	jdbcType="DECIMAL" />
+		<result column="LINEREPLY_COUNT"    property="linereplyCount"   jdbcType="DECIMAL" />
+		<result column="MARK"    			property="mark"   			jdbcType="DECIMAL" />
+		<result column="IS_KNOWHOW"    		property="isKnowhow"   		jdbcType="DECIMAL" />
+		<result column="IMAGE_FILE_ID"      property="imageFileId"      jdbcType="VARCHAR" />
+		<result column="ATTACH_FILE_COUNT"  property="attachFileCount"  jdbcType="DECIMAL" />
+		<result column="START_DATE"       	property="startDate"        jdbcType="DATE" />
+		<result column="END_DATE"       	property="endDate"       	jdbcType="DATE" />
+		<result column="ITEM_DELETE"       	property="itemDelete"       jdbcType="DECIMAL" />
+		<result column="FOLLOW_BOARD_PERMISSION"       	property="followBoardPermission"       jdbcType="DECIMAL" />
+		<result column="STATUS"       		property="status"           jdbcType="DECIMAL" />
+		<result column="INFO_GRADE"       	property="infoGrade"        jdbcType="VARCHAR" />
+		<result column="HOPE_GRADE"       	property="hopeGrade"        jdbcType="VARCHAR" />
+		<result column="EXPERT_ID"      	property="expertId"         jdbcType="VARCHAR" />
+		<result column="EXPERT_NAME"     	property="expertName"       jdbcType="VARCHAR" />
+		<result column="EXPERT_REQ_DATE"    property="expertReqDate"    jdbcType="DATE" />		 
+		<result column="REGISTER_ID"      	property="registerId"       jdbcType="VARCHAR" />
+		<result column="REGISTER_NAME"     	property="registerName"     jdbcType="VARCHAR" />
+		<result column="REGIST_DATE"       	property="registDate"       jdbcType="DATE" />
+		<result column="UPDATER_ID"        	property="updaterId"        jdbcType="VARCHAR" />
+		<result column="UPDATER_NAME"      	property="updaterName"      jdbcType="VARCHAR" />
+		<result column="UPDATE_DATE"       	property="updateDate"       jdbcType="DATE" />
+		<result column="ASSESSOR_ID"        property="assessorId"       jdbcType="VARCHAR" />
+		<result column="ASSESSOR_NAME"      property="assessorName"     jdbcType="VARCHAR" />
+		<result column="ASSESSOR_OPINION"   property="assessorOpinion"  jdbcType="VARCHAR" />
+		<result column="ASSESS_DATE"        property="assessDate"       jdbcType="DATE" />
+		<result column="GROUP_ID"     		property="groupId"     		jdbcType="VARCHAR" />
+		<result column="GROUP_NAME"     	property="groupName"    	jdbcType="VARCHAR" />
+		<result column="TARGET_SOURCE"      property="targetSource"    	jdbcType="VARCHAR" />
+		<result column="SCORE"      		property="score"    		jdbcType="VARCHAR" />
+		<result column="REPORT_REQ"      		property="reportReq"    		jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<resultMap id="boardItemResultPls" extends="boardItemResult" class="com.lgcns.ikep4.collpack.kms.board.model.BoardItem" >
+		<result column="color"           	property="color"			jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<resultMap id="receivebBoardItemResult" extends="boardItemResult" class="com.lgcns.ikep4.collpack.kms.board.model.BoardItem" >
+		<result column="sub_register_id"      	property="subRegisterId"       jdbcType="VARCHAR" />
+		<result column="sub_register_name"     	property="subRegisterName"     jdbcType="VARCHAR" />
+		<result column="sub_regist_date"       	property="subRegistDate"       jdbcType="DATE" />
+	</resultMap>
+	
+	<resultMap id="boardItemResultExtend" extends="boardItemResult"  class="com.lgcns.ikep4.collpack.kms.board.model.BoardItem" > 
+		<result column="EMP_NO"      			property="empNo"     		   jdbcType="VARCHAR" />
+		<result column="WORK_PLACE_NAME"      	property="workPlaceName"       jdbcType="VARCHAR" />
+	</resultMap> 
+
+	<resultMap id="boardItemOrgResult" class="com.lgcns.ikep4.collpack.kms.board.model.BoardItem" >
+		<result column="ITEM_ID"           	property="itemId"			jdbcType="VARCHAR" />
+		<result column="BOARD_ID"     		property="boardId"        	jdbcType="VARCHAR" />
+		<result column="ITEM_PARENT_ID"    	property="itemParentId"     jdbcType="VARCHAR" />
+		<result column="ITEM_GROUP_ID"    	property="itemGroupId"      jdbcType="VARCHAR" />
+		<result column="STEP"     			property="step"        		jdbcType="DECIMAL" />
+		<result column="INDENTATION"     	property="indentation"      jdbcType="DECIMAL" />		
+		<result column="ITEM_SEQ_ID"     	property="itemSeqId"        jdbcType="VARCHAR" />
+		<result column="ITEM_TYPE"     		property="itemType"         jdbcType="VARCHAR" />
+		<result column="ITEM_DISPLAY"       property="itemDisplay"      jdbcType="DECIMAL" />
+		<result column="TITLE"       		property="title"          	jdbcType="VARCHAR" />
+		<result column="CONTENTS"       	property="contents"         jdbcType="VARCHAR" />
+		<result column="HIT_COUNT"       	property="hitCount"         jdbcType="DECIMAL" />
+		<result column="RECOMMEND_COUNT"    property="recommendCount"   jdbcType="DECIMAL" />
+		<result column="REPLY_COUNT"    	property="replyCount"   	jdbcType="DECIMAL" />
+		<result column="LINEREPLY_COUNT"    property="linereplyCount"   jdbcType="DECIMAL" />
+		<result column="ATTACH_FILE_COUNT"  property="attachFileCount"  jdbcType="DECIMAL" />
+		<result column="START_DATE"       	property="startDate"        jdbcType="DATE" />
+		<result column="END_DATE"       	property="endDate"       	jdbcType="DATE" />
+		<result column="ITEM_DELETE"       	property="itemDelete"       jdbcType="DECIMAL" />
+		<result column="FOLLOW_BOARD_PERMISSION"       	property="followBoardPermission"       jdbcType="DECIMAL" />
+		<result column="STATUS"       		property="status"           jdbcType="DECIMAL" />
+		<result column="INFO_GRADE"       	property="infoGrade"        jdbcType="VARCHAR" />
+		<result column="HOPE_GRADE"       	property="hopeGrade"        jdbcType="VARCHAR" />
+		<result column="MARK"    			property="mark"   			jdbcType="DECIMAL" />
+		<result column="IMAGE_FILE_ID"      property="imageFileId"      jdbcType="VARCHAR" />
+		<result column="EXPERT_ID"      	property="expertId"         jdbcType="VARCHAR" />
+		<result column="EXPERT_NAME"     	property="expertName"       jdbcType="VARCHAR" />
+		<result column="EXPERT_REQ_DATE"    property="expertReqDate"    jdbcType="DATE" />		 
+		<result column="REGISTER_ID"      	property="registerId"       jdbcType="VARCHAR" />
+		<result column="REGISTER_NAME"     	property="registerName"     jdbcType="VARCHAR" />
+		<result column="REGIST_DATE"       	property="registDate"       jdbcType="DATE" />
+		<result column="UPDATER_ID"        	property="updaterId"        jdbcType="VARCHAR" />
+		<result column="UPDATER_NAME"      	property="updaterName"      jdbcType="VARCHAR" />
+		<result column="UPDATE_DATE"       	property="updateDate"       jdbcType="DATE" />
+		<result column="ASSESSOR_ID"        property="assessorId"       jdbcType="VARCHAR" />
+		<result column="ASSESSOR_NAME"      property="assessorName"     jdbcType="VARCHAR" />
+		<result column="ASSESSOR_OPINION"   property="assessorOpinion"  jdbcType="VARCHAR" />
+		<result column="ASSESS_DATE"        property="assessDate"       jdbcType="DATE" />
+		<result column="GROUP_ID"     		property="groupId"     		jdbcType="VARCHAR" />
+		<result column="GROUP_NAME"     	property="groupName"    	jdbcType="VARCHAR" />
+		<result column="TARGET_SOURCE"      property="targetSource"     jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<resultMap id="expertResult" class="com.lgcns.ikep4.collpack.kms.board.model.BoardItem" > 
+	    <result column="CATEGORY_ID"          property="categoryId"         jdbcType="VARCHAR" />
+	    <result column="CATEGORY_NAME"        property="categoryName"       jdbcType="VARCHAR" />
+	    <result column="USER_ID"      property="userId"      jdbcType="VARCHAR" />
+	    <result column="USER_NAME"        property="userName"       jdbcType="VARCHAR" />
+	    <result column="TEAM_NAME"        property="teamName"       jdbcType="VARCHAR" />
+	    <result column="JOB_TITLE_NAME"        property="jobTitleName"       jdbcType="VARCHAR" />
+	  </resultMap> 
+
+
+	<sql id="sqlMinColumnList"> 
+		ITEM_ID, 
+		BOARD_ID, 
+		TITLE,
+		START_DATE, 
+		END_DATE, 
+		ITEM_DELETE,
+		IMAGE_FILE_ID
+	</sql> 
+
+	<sql id="sqlColumnList"> 
+		ITEM_ID,                
+		ITEM_PARENT_ID,         
+		ITEM_GROUP_ID,          
+		STEP,                   
+		INDENTATION,            
+		ITEM_SEQ_ID,            
+		ITEM_TYPE,              
+		ITEM_DISPLAY,           
+		TITLE,                  
+		'' CONTENTS,               
+		HIT_COUNT,              
+		RECOMMEND_COUNT,        
+		REPLY_COUNT,            
+		LINEREPLY_COUNT,        
+		ATTACH_FILE_COUNT,      
+		START_DATE,             
+		END_DATE,               
+		ITEM_DELETE,            
+		FOLLOW_BOARD_PERMISSION,
+		STATUS,                 
+		INFO_GRADE,
+		HOPE_GRADE,             
+		MARK,                   
+		IMAGE_FILE_ID,          
+		EXPERT_ID,              
+		EXPERT_NAME,            
+		EXPERT_REQ_DATE,        
+		REGISTER_ID,            
+		REGISTER_NAME,          
+		REGIST_DATE,            
+		UPDATER_ID,             
+		UPDATER_NAME,           
+		UPDATE_DATE,            
+		ASSESSOR_ID,            
+		ASSESSOR_NAME,          
+		ASSESSOR_OPINION,       
+		ASSESS_DATE,            
+		BOARD_ID,
+		BOARD_TYPE,
+		IS_KNOWHOW,
+		GROUP_ID,
+		GROUP_NAME,
+		TARGET_SOURCE,
+		'' SCORE,
+		REPORT_REQ 
+	</sql>  
+
+	<sql id="sqlExtendColumnList"> 
+       A.ITEM_ID				AS ITEM_ID,
+       A.ITEM_PARENT_ID			AS ITEM_PARENT_ID,
+       A.ITEM_GROUP_ID			AS ITEM_GROUP_ID,
+       A.STEP					AS STEP,
+       A.INDENTATION			AS INDENTATION,
+       A.ITEM_SEQ_ID			AS ITEM_SEQ_ID,
+       A.ITEM_TYPE				AS ITEM_TYPE,
+       A.ITEM_DISPLAY			AS ITEM_DISPLAY,
+       A.TITLE					AS TITLE,
+       ''						AS CONTENTS,
+       A.HIT_COUNT				AS HIT_COUNT,
+       A.RECOMMEND_COUNT		AS RECOMMEND_COUNT,
+       A.REPLY_COUNT			AS REPLY_COUNT,
+       A.LINEREPLY_COUNT		AS LINEREPLY_COUNT,
+       A.ATTACH_FILE_COUNT		AS ATTACH_FILE_COUNT,
+       A.START_DATE				AS START_DATE,
+       A.END_DATE				AS END_DATE,
+       A.ITEM_DELETE			AS ITEM_DELETE,
+       A.FOLLOW_BOARD_PERMISSION	AS FOLLOW_BOARD_PERMISSION,
+       A.STATUS					AS STATUS,
+       A.INFO_GRADE				AS INFO_GRADE,
+       A.HOPE_GRADE				AS HOPE_GRADE,
+       A.MARK					AS MARK,
+       A.IMAGE_FILE_ID			AS IMAGE_FILE_ID,
+       A.EXPERT_ID				AS EXPERT_ID,
+       A.EXPERT_NAME			AS EXPERT_NAME,
+       A.EXPERT_REQ_DATE		AS EXPERT_REQ_DATE,
+       A.REGISTER_ID			AS REGISTER_ID,
+       A.REGISTER_NAME			AS REGISTER_NAME,
+       A.REGIST_DATE			AS REGIST_DATE,
+       A.UPDATER_ID				AS UPDATER_ID,
+       A.UPDATER_NAME			AS UPDATER_NAME,
+       A.UPDATE_DATE			AS UPDATE_DATE,
+       A.ASSESSOR_ID			AS ASSESSOR_ID,
+       A.ASSESSOR_NAME			AS ASSESSOR_NAME,
+       A.ASSESSOR_OPINION		AS ASSESSOR_OPINION,
+       A.ASSESS_DATE			AS ASSESS_DATE, 
+	   B.BOARD_ID				AS BOARD_ID,
+	   B.BOARD_TYPE				AS BOARD_TYPE,
+	   B.IS_KNOWHOW				AS IS_KNOWHOW,
+	   A.GROUP_ID				AS GROUP_ID,
+	   A.GROUP_NAME				AS GROUP_NAME,
+	   A.TARGET_SOURCE			AS TARGET_SOURCE,
+	   (SELECT SUM(score) FROM IKEP4_KMS_SCORE WHERE item_id = A.item_id) AS SCORE,
+	   A.REPORT_REQ			AS REPORT_REQ
+	</sql> 
+	
+	<sql id="sqlExtendColumnListByRead"> 
+       A.ITEM_ID				AS ITEM_ID,
+       A.ITEM_PARENT_ID			AS ITEM_PARENT_ID,
+       A.ITEM_GROUP_ID			AS ITEM_GROUP_ID,
+       A.STEP					AS STEP,
+       A.INDENTATION			AS INDENTATION,
+       A.ITEM_SEQ_ID			AS ITEM_SEQ_ID,
+       A.ITEM_TYPE				AS ITEM_TYPE,
+       A.ITEM_DISPLAY			AS ITEM_DISPLAY,
+       A.TITLE					AS TITLE,
+       replace(A.CONTENTS,'HY태고딕','맑은 고딕')          AS CONTENTS,
+       A.HIT_COUNT				AS HIT_COUNT,
+       A.RECOMMEND_COUNT		AS RECOMMEND_COUNT,
+       A.REPLY_COUNT			AS REPLY_COUNT,
+       A.LINEREPLY_COUNT		AS LINEREPLY_COUNT,
+       A.ATTACH_FILE_COUNT		AS ATTACH_FILE_COUNT,
+       A.START_DATE				AS START_DATE,
+       A.END_DATE				AS END_DATE,
+       A.ITEM_DELETE			AS ITEM_DELETE,
+       A.FOLLOW_BOARD_PERMISSION	AS FOLLOW_BOARD_PERMISSION,
+       A.STATUS					AS STATUS,
+       A.INFO_GRADE				AS INFO_GRADE,
+       A.HOPE_GRADE				AS HOPE_GRADE,
+       A.MARK					AS MARK,
+       A.IMAGE_FILE_ID			AS IMAGE_FILE_ID,
+       A.EXPERT_ID				AS EXPERT_ID,
+       A.EXPERT_NAME			AS EXPERT_NAME,
+       A.EXPERT_REQ_DATE		AS EXPERT_REQ_DATE,
+       A.REGISTER_ID			AS REGISTER_ID,
+       A.REGISTER_NAME			AS REGISTER_NAME,
+       A.REGIST_DATE			AS REGIST_DATE,
+       A.UPDATER_ID				AS UPDATER_ID,
+       A.UPDATER_NAME			AS UPDATER_NAME,
+       A.UPDATE_DATE			AS UPDATE_DATE,
+       A.ASSESSOR_ID			AS ASSESSOR_ID,
+       A.ASSESSOR_NAME			AS ASSESSOR_NAME,
+       A.ASSESSOR_OPINION		AS ASSESSOR_OPINION,
+       A.ASSESS_DATE			AS ASSESS_DATE, 
+	   B.BOARD_ID				AS BOARD_ID,
+	   B.BOARD_TYPE				AS BOARD_TYPE,
+	   B.IS_KNOWHOW				AS IS_KNOWHOW,
+	   A.GROUP_ID				AS GROUP_ID,
+	   A.GROUP_NAME				AS GROUP_NAME,
+	   A.TARGET_SOURCE			AS TARGET_SOURCE,
+	   A.REPORT_REQ			AS REPORT_REQ,
+	   (SELECT SUM(score) FROM IKEP4_KMS_SCORE WHERE item_id = A.item_id) AS SCORE 
+	</sql>    
+	 
+	
+	<sql id="sqlOrgColumnList"> 
+		ITEM_ID,
+		BOARD_ID,
+		ITEM_PARENT_ID,
+		ITEM_GROUP_ID,
+		STEP,
+		INDENTATION,
+		ITEM_SEQ_ID,
+		ITEM_TYPE,
+		ITEM_DISPLAY,
+		TITLE,
+		CONTENTS,
+		HIT_COUNT,
+		RECOMMEND_COUNT,
+		REPLY_COUNT,
+		LINEREPLY_COUNT,
+		ATTACH_FILE_COUNT,
+		START_DATE,
+		END_DATE,
+		ITEM_DELETE,
+		FOLLOW_BOARD_PERMISSION,
+		STATUS,
+		INFO_GRADE,
+		HOPE_GRADE,
+		MARK,
+		IMAGE_FILE_ID,
+		EXPERT_ID,
+		EXPERT_NAME,
+		EXPERT_REQ_DATE,
+		REGISTER_ID,
+		REGISTER_NAME,
+		REGIST_DATE,
+		UPDATER_ID,
+		UPDATER_NAME,
+		UPDATE_DATE,
+		ASSESSOR_ID,
+		ASSESSOR_NAME,
+		ASSESSOR_OPINION,
+		ASSESS_DATE,
+		GROUP_ID,
+		GROUP_NAME,
+		TARGET_SOURCE 
+	</sql> 	
+
+	<!-- MS SQL -->
+	<select id="listBatchDeleteBoardItem" parameterClass="int" resultMap="boardItemMinResult">
+		SELECT /* [BoardItem_SqlMap.xml] collpack.kms.board.dao.boardItem.batchRemoveItemList */
+			TOP $getCount$ 
+			<include refid="collpack.kms.board.dao.boardItem.sqlMinColumnList" /> 
+		FROM  
+			IKEP4_KMS_BD_ITEM 
+		<![CDATA[  
+		WHERE  
+			ITEM_ID = ITEM_GROUP_ID
+			AND    END_DATE < DATEADD(DD, -1, CURRENT_TIMESTAMP)
+		]]> 
+	</select>
+
+	<!-- MS SQL -->
+	<select id="listLowerItemThread" parameterClass="String" resultMap="boardItemOrgResult">   
+		WITH CTE AS (
+			SELECT	*
+			FROM	IKEP4_KMS_BD_ITEM
+			WHERE	ITEM_ID = #itemId#
+			UNION ALL
+			SELECT	T.*
+			FROM	IKEP4_KMS_BD_ITEM T, CTE
+			WHERE	CTE.ITEM_ID = T.ITEM_PARENT_ID 
+		)
+		SELECT /* [BoardItem_SqlMap.xml] collpack.kms.board.dao.boardItem.listLowerItemThread */ 
+			<include refid="collpack.kms.board.dao.boardItem.sqlOrgColumnList" /> 
+		FROM CTE
+	</select>
+
+	<!-- ANSI -->
+	<select id="listByBoardIdForBoardDelete" parameterClass="String" resultMap="boardItemResult">   
+		SELECT /* [BoardItem_SqlMap.xml] collpack.kms.board.dao.boardItem.listByBoardId */ 
+			<include refid="collpack.kms.board.dao.boardItem.sqlColumnList" /> 
+		FROM  
+			IKEP4_KMS_BD_ITEM
+		WHERE
+			BOARD_ID = #boardId#
+		ORDER BY
+			INDENTATION DESC, STEP DESC
+	</select> 
+
+	<!-- MS SQL -->
+	<select id="getRecommendDetailList" parameterClass="kmsBoardItemSearchCondition" resultMap="boardItemResult">  
+		select 
+		<include refid="collpack.kms.board.dao.boardItem.sqlColumnList" />
+		FROM 
+		( 
+			SELECT 
+				E.* 
+			FROM 
+			( 
+				SELECT Row_number() OVER (	ORDER BY A.REGIST_DATE DESC ) AS RNUM,
+					<include refid="collpack.kms.board.dao.boardItem.sqlExtendColumnList" /> 
+				FROM   IKEP4_KMS_BD_ITEM A
+				  	   INNER JOIN IKEP4_KMS_BD_BOARD B 	ON A.BOARD_ID = B.BOARD_ID
+				WHERE  A.ITEM_DELETE = 0
+			      and A.item_id in(
+					select item_id from IKEP4_KMS_BD_RECOMMEND
+					where register_id = #userId#)
+			) E
+		) TBL
+	</select>  
+	
+	<select id="getRecommendReceiveDetailList" parameterClass="kmsBoardItemSearchCondition" resultMap="receivebBoardItemResult">  
+		select 
+		<include refid="collpack.kms.board.dao.boardItem.sqlColumnList" />
+		,sub_register_id
+		,sub_register_name
+		,sub_regist_date 
+		FROM 
+		( 
+			SELECT 
+				E.* 
+			FROM 
+			( 
+				SELECT Row_number() OVER (	ORDER BY A.REGIST_DATE DESC ) AS RNUM,
+					<include refid="collpack.kms.board.dao.boardItem.sqlExtendColumnList" />
+					,C.register_id  as sub_register_id
+					,(select user_name from ikep4_ev_user where user_id = C.register_id) as sub_register_name
+					,C.regist_date as sub_regist_date 
+				FROM   IKEP4_KMS_BD_ITEM A
+				  	   INNER JOIN IKEP4_KMS_BD_BOARD B 	ON A.BOARD_ID = B.BOARD_ID
+				inner join IKEP4_KMS_BD_RECOMMEND C on C.item_id = A.item_id
+				WHERE  A.ITEM_DELETE = 0
+			      and A.register_id = #userId#
+			) E
+		) TBL
+	</select> 
+	
+	<select id="getReplyReceiveDetailList" parameterClass="kmsBoardItemSearchCondition" resultMap="receivebBoardItemResult">  
+		select 
+		<include refid="collpack.kms.board.dao.boardItem.sqlColumnList" />
+		,sub_register_id
+		,sub_register_name
+		,sub_regist_date 
+		FROM 
+		( 
+			SELECT 
+				E.* 
+			FROM 
+			( 
+				SELECT Row_number() OVER (	ORDER BY A.REGIST_DATE DESC ) AS RNUM,
+					<include refid="collpack.kms.board.dao.boardItem.sqlExtendColumnList" />
+					,C.register_id  as sub_register_id
+					,C.register_name as sub_register_name
+					,C.regist_date as sub_regist_date 
+				FROM   IKEP4_KMS_BD_ITEM A
+				  	   INNER JOIN IKEP4_KMS_BD_BOARD B 	ON A.BOARD_ID = B.BOARD_ID
+				inner join ikep4_kms_bd_linereply C on C.item_id = A.item_id
+				WHERE  A.ITEM_DELETE = 0
+			      and A.register_id = #userId#
+			) E
+		) TBL
+	</select> 
+	
+	<select id="getReplyDetailList" parameterClass="kmsBoardItemSearchCondition" resultMap="boardItemResult">  
+		select 
+		<include refid="collpack.kms.board.dao.boardItem.sqlColumnList" />
+		FROM 
+		( 
+			SELECT 
+				E.* 
+			FROM 
+			( 
+				SELECT Row_number() OVER (	ORDER BY A.REGIST_DATE DESC ) AS RNUM,
+					<include refid="collpack.kms.board.dao.boardItem.sqlExtendColumnList" /> 
+				FROM   IKEP4_KMS_BD_ITEM A
+				  	   INNER JOIN IKEP4_KMS_BD_BOARD B 	ON A.BOARD_ID = B.BOARD_ID
+				WHERE  A.ITEM_DELETE = 0
+			      and A.item_id in(
+					select item_id from IKEP4_KMS_BD_LINEREPLY
+					where register_id = #userId#)
+			) E
+		) TBL
+	</select>  
+
+<select id="listBySearchCondition" parameterClass="kmsBoardItemSearchCondition" resultMap="boardItemResultPls">  
+		SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
+		SELECT /* [BoardItem_SqlMap.xml] collpack.kms.board.dao.boardItem.listBySearchCondition */ 
+			<include refid="collpack.kms.board.dao.boardItem.sqlColumnList" />
+			,color
+		FROM 
+		( 
+			SELECT 
+				E.* 
+			FROM 
+			( 
+				/* START========================================= */
+				SELECT Row_number() OVER (	ORDER BY  
+											<isNotEmpty property="sortColumn" >
+												<isEqual property="sortColumn" compareValue="ITEM_SEQ_ID">
+													A.ITEM_SEQ_ID
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="ATTACH_FILE_COUNT">
+													A.ATTACH_FILE_COUNT
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="IS_KNOWHOW">
+													B.IS_KNOWHOW
+												</isEqual>												
+												<isEqual property="sortColumn" compareValue="TITLE">
+													A.TITLE
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="REGISTER_NAME">
+													A.REGISTER_NAME
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="REGIST_DATE">
+													A.REGIST_DATE
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="ASSESS_DATE">
+													A.ASSESS_DATE
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="HIT_COUNT">
+													A.HIT_COUNT
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="RECOMMEND_COUNT">
+													A.RECOMMEND_COUNT
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="LINEREPLY_COUNT">
+													A.LINEREPLY_COUNT
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="TARGET_SOURCE">
+													A.TARGET_SOURCE
+												</isEqual>
+											</isNotEmpty>
+						
+											<isNotEmpty property="sortType" >
+											<isEqual property="sortType" compareValue="DESC">
+											DESC ,
+											</isEqual>
+											<isEqual property="sortType" compareValue="ASC">
+											ASC ,
+											</isEqual>
+											</isNotEmpty>
+											A.ITEM_DISPLAY DESC, A.ASSESS_DATE DESC, A.REGIST_DATE DESC ) AS RNUM,
+					<include refid="collpack.kms.board.dao.boardItem.sqlExtendColumnList" /> 
+					,(select CASE WHEN br.item_id IS NOT NULL THEN (select top 1 color from ikep4_kms_special_user where category = '1') ELSE '' END 
+					from IKEP4_KMS_BD_REFERENCE br where br.register_id = (select top 1 su.user_id from ikep4_kms_special_user su where su.category = '1')
+					and br.item_id = A.item_id) as color 
+				FROM   IKEP4_KMS_BD_ITEM A
+				  	   INNER JOIN IKEP4_KMS_BD_BOARD B 	ON A.BOARD_ID = B.BOARD_ID
+				WHERE  A.ITEM_DELETE = 0
+				<isNotEmpty property="boardId">
+			      AND (A.BOARD_ID = #boardId# or A.BOARD_ID in (select C.board_id from IKEP4_KMS_BD_BOARD C where C.board_parent_id = #boardId#))
+			     </isNotEmpty>
+			      AND  B.IS_KNOWHOW = #isKnowhow#
+                  <![CDATA[ 
+                  AND  A.STATUS > 2
+                  ]]> 
+<isEqual property="admin" compareValue="false">                
+		<isNotEmpty property="infoGrage">
+			<isEqual property="infoGrage" compareValue="A">
+				AND ( A.INFO_GRADE IN ('A', 'B', 'C') OR ( A.REGISTER_ID = #userId#  AND A.INFO_GRADE != 'E' ) )
+			</isEqual>
+			<isEqual property="infoGrage" compareValue="B">
+				AND (A.INFO_GRADE IN ('B', 'C')  OR ( A.REGISTER_ID = #userId#  AND A.INFO_GRADE != 'E' ) )
+			</isEqual>
+			<isEqual property="infoGrage" compareValue="C">
+				AND (A.INFO_GRADE = 'C'  OR ( A.REGISTER_ID = #userId#  AND A.INFO_GRADE != 'E' ) )
+			</isEqual>
+		</isNotEmpty>
+</isEqual>
+<isEqual property="admin" compareValue="true">
+				AND ( A.INFO_GRADE IN ('A', 'B', 'C'))
+</isEqual> 	
+			<isNotEmpty property="searchColumn">
+				<isNotEmpty property="searchWord">
+					<isEqual property="searchColumn" compareValue="title">
+					  AND	replace(A.TITLE,' ','') LIKE '%' + replace(#searchWord#,' ','') + '%'
+					</isEqual>
+					<isEqual property="searchColumn" compareValue="registerName">
+					  AND	replace(A.REGISTER_NAME,' ','') LIKE '%' + replace(#searchWord#,' ','') + '%'
+					</isEqual>
+				</isNotEmpty>
+			</isNotEmpty>
+		<isNotEmpty property="searchRegType">
+			<isEqual property="searchRegType" compareValue="0">
+				AND CONVERT(VARCHAR(8), A.REGIST_DATE, 112) BETWEEN #searchStartRegDate# AND #searchEndRegDate#
+			</isEqual>
+			<isEqual property="searchRegType" compareValue="1">
+				AND CONVERT(VARCHAR(8), A.REGIST_DATE, 112) BETWEEN #searchStartRegDate# AND  CONVERT(NVARCHAR(8), GETDATE(), 112)
+			</isEqual>
+			<isEqual property="searchRegType" compareValue="2">
+				AND CONVERT(VARCHAR(8), A.REGIST_DATE, 112) BETWEEN '19000101' AND #searchEndRegDate#
+			</isEqual>	
+		</isNotEmpty>
+			/* ===========================================END  */  
+		<![CDATA[   
+			) E
+			WHERE 
+				RNUM <=  #endRowIndex# /* 종료  */
+		) TBL
+		WHERE 
+			RNUM >  #startRowIndex# /* 시작 */
+		]]> 
+		order by
+		<isNotEmpty property="sortColumn" >
+												<isEqual property="sortColumn" compareValue="ITEM_SEQ_ID">
+													ITEM_SEQ_ID
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="ATTACH_FILE_COUNT">
+													ATTACH_FILE_COUNT
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="IS_KNOWHOW">
+													IS_KNOWHOW
+												</isEqual>												
+												<isEqual property="sortColumn" compareValue="TITLE">
+													TITLE
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="REGISTER_NAME">
+													REGISTER_NAME
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="REGIST_DATE">
+													REGIST_DATE
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="ASSESS_DATE">
+													ASSESS_DATE
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="HIT_COUNT">
+													HIT_COUNT
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="RECOMMEND_COUNT">
+													RECOMMEND_COUNT
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="LINEREPLY_COUNT">
+													LINEREPLY_COUNT
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="TARGET_SOURCE">
+													TARGET_SOURCE
+												</isEqual>
+											</isNotEmpty>
+						
+											<isNotEmpty property="sortType" >
+											<isEqual property="sortType" compareValue="DESC">
+											DESC 
+											</isEqual>
+											<isEqual property="sortType" compareValue="ASC">
+											ASC 
+											</isEqual>
+											</isNotEmpty>
+											<isEmpty property="sortColumn" >
+											ITEM_DISPLAY DESC, ASSESS_DATE DESC, REGIST_DATE DESC
+											</isEmpty>
+	</select> 
+
+	<!-- ANSI -->
+	<select id="countBySearchCondition" parameterClass="kmsBoardItemSearchCondition" resultClass="int">  
+		     SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
+		     SELECT /* [BoardItem_SqlMap.xml] collpack.kms.board.dao.boardItem.countBySearchCondition */ 
+					COUNT(ITEM_ID)
+			   FROM  
+				  	IKEP4_KMS_BD_ITEM A
+				  	INNER JOIN IKEP4_KMS_BD_BOARD B 	ON A.BOARD_ID = B.BOARD_ID
+			  WHERE A.item_delete = 0
+			  <isNotEmpty property="boardId">
+			    AND (A.BOARD_ID = #boardId# or A.BOARD_ID in (select C.board_id from IKEP4_KMS_BD_BOARD C where C.board_parent_id = #boardId#))
+			    </isNotEmpty>
+			    AND B.IS_KNOWHOW = #isKnowhow#
+                <![CDATA[ 
+                AND  A.STATUS > 2
+                ]]> 
+<isEqual property="admin" compareValue="false">                
+		<isNotEmpty property="infoGrage">
+			<isEqual property="infoGrage" compareValue="A">
+				AND ( A.INFO_GRADE IN ('A', 'B', 'C') OR ( A.REGISTER_ID = #userId#  AND A.INFO_GRADE != 'E' ) )
+			</isEqual>
+			<isEqual property="infoGrage" compareValue="B">
+				AND (A.INFO_GRADE IN ('B', 'C') OR ( A.REGISTER_ID = #userId#  AND A.INFO_GRADE != 'E' ) )
+			</isEqual>
+			<isEqual property="infoGrage" compareValue="C">
+				AND (A.INFO_GRADE = 'C' OR ( A.REGISTER_ID = #userId#  AND A.INFO_GRADE != 'E' ) )
+			</isEqual>
+		</isNotEmpty>
+</isEqual>
+<isEqual property="admin" compareValue="true">
+				AND ( A.INFO_GRADE IN ('A', 'B', 'C'))
+</isEqual> 		
+		
+			<isNotEmpty property="searchColumn">
+				<isNotEmpty property="searchWord">
+					<isEqual property="searchColumn" compareValue="title">
+					  AND	replace(A.TITLE,' ','') LIKE '%' + replace(#searchWord#,' ','') + '%'
+					</isEqual>
+					<isEqual property="searchColumn" compareValue="registerName">
+					  AND	replace(A.REGISTER_NAME,' ','') LIKE '%' + replace(#searchWord#,' ','') + '%'
+					</isEqual>
+				</isNotEmpty>
+			</isNotEmpty>
+
+		<isNotEmpty property="searchRegType">
+			<isEqual property="searchRegType" compareValue="0">
+				AND CONVERT(VARCHAR(8), A.REGIST_DATE, 112) BETWEEN #searchStartRegDate# AND #searchEndRegDate#
+			</isEqual>
+			<isEqual property="searchRegType" compareValue="1">
+				AND CONVERT(VARCHAR(8), A.REGIST_DATE, 112) BETWEEN #searchStartRegDate# AND  CONVERT(NVARCHAR(8), GETDATE(), 112)
+			</isEqual>
+			<isEqual property="searchRegType" compareValue="2">
+				AND CONVERT(VARCHAR(8), A.REGIST_DATE, 112) BETWEEN '19000101' AND #searchEndRegDate#
+			</isEqual>	
+		</isNotEmpty>
+	</select>  
+
+	<!-- ANSI -->
+	<select id="countChildren" parameterClass="String" resultClass="int">  
+		SELECT /* [Board_SqlMap.xml] collpack.kms.board.dao.boardItem.countChildren */ 
+			COUNT(*)
+		FROM  
+			IKEP4_KMS_BD_ITEM
+		WHERE
+			ITEM_PARENT_ID = #itemId#  
+	</select> 
+
+	<!-- MS SQL -->
+	<insert id="create" parameterClass="kmsBoardItem"> 
+		INSERT INTO IKEP4_KMS_BD_ITEM ( /* [boardItem_SqlMap.xml] collpack.kms.board.dao.boardItem.insert */
+			ITEM_ID, 
+			BOARD_ID, 
+			ITEM_PARENT_ID, 
+			ITEM_GROUP_ID, 
+			STEP, 
+			INDENTATION, 
+			ITEM_SEQ_ID,  
+			ITEM_DISPLAY, 
+			ITEM_TYPE,
+			TITLE,
+			HIT_COUNT, 
+			RECOMMEND_COUNT, 
+			REPLY_COUNT, 
+			LINEREPLY_COUNT, 
+			ATTACH_FILE_COUNT, 
+			START_DATE, 
+			END_DATE, 
+			ITEM_DELETE,
+			FOLLOW_BOARD_PERMISSION,
+			IMAGE_FILE_ID, 
+			CONTENTS,
+			REGISTER_ID, 
+			REGISTER_NAME, 
+			REGIST_DATE, 
+			UPDATER_ID, 
+			UPDATER_NAME, 
+			UPDATE_DATE,
+			STATUS,
+			INFO_GRADE,
+			HOPE_GRADE,
+			TARGET_SOURCE,
+			GROUP_ID,
+			GROUP_NAME,
+			MARK,
+			REPORT_REQ,
+			ASSESSOR_ID,
+			ASSESSOR_NAME,
+			ASSESSOR_OPINION,
+			ASSESS_DATE,
+			MIGRATIONYN,
+			EXPERT_ID,
+			EXPERT_NAME,
+			EXPERT_REQ_DATE
+		) VALUES (
+			#itemId#, 
+			#boardId#, 
+			#itemParentId#, 
+			#itemGroupId#, 
+			#step#, 
+			#indentation#, 
+			#itemSeqId#,  
+			#itemDisplay#, 
+			#itemType#, 
+			#title#, 
+			#hitCount#, 
+			#recommendCount#, 
+			#replyCount#, 
+			#linereplyCount#, 
+			#attachFileCount#,
+			CURRENT_TIMESTAMP, 
+			CURRENT_TIMESTAMP, 
+			#itemDelete#,
+			#followBoardPermission#,
+			#imageFileId#,
+			#contents#,
+			#registerId#, 
+			#registerName#, 
+			<isNotEmpty property="registDate">#registDate#,</isNotEmpty>
+			<isEmpty property="registDate">CURRENT_TIMESTAMP,</isEmpty>
+			#updaterId#, 
+			#updaterName#, 
+			<isNotEmpty property="registDate">#registDate#,</isNotEmpty>
+			<isEmpty property="registDate">CURRENT_TIMESTAMP,</isEmpty>
+			#status#,
+			#infoGrade#,
+			#hopeGrade#,
+			#targetSource#,
+			#groupId#,
+			#groupName#,
+			#mark#,
+			#reportReq#,
+			#assessorId#,
+			#assessorName#,
+			#assessorOpinion#,
+			<isNotEmpty property="assessorId">CURRENT_TIMESTAMP,</isNotEmpty>
+			<isEmpty property="assessorId">'',</isEmpty>
+			#migrationyn#,
+			#expertId#,
+			#expertName#,
+			<isNotEmpty property="expertId">CURRENT_TIMESTAMP</isNotEmpty>
+			<isEmpty property="expertId">null</isEmpty>
+			
+		) 
+		<selectKey resultClass="string" keyProperty="itemSeqId" type="pre">  
+		declare @seq numeric(38)
+		exec dbo.GET_SEQUENCE_FROM_SEQ_IKEP4_KMS_BD_ITEM 2, @seq OUTPUT
+		
+		SELECT @seq
+		</selectKey>
+	</insert>
+
+	<!-- ANSI -->
+	<update id="update" parameterClass="kmsBoardItem"> 
+		UPDATE IKEP4_KMS_BD_ITEM /* [BoardItem_SqlMap.xml] collpack.kms.board.dao.boardItem.update */
+		SET   
+			<isNotEmpty property="boardId"         >BOARD_ID          = #boardId#,        </isNotEmpty>
+			<isNotEmpty property="itemParentId"    >ITEM_PARENT_ID    = #itemParentId#,   </isNotEmpty>
+			<isNotEmpty property="itemGroupId"     >ITEM_GROUP_ID     = #itemGroupId#,    </isNotEmpty>
+			<isNotEmpty property="step"            >STEP              = #step#,           </isNotEmpty>
+			<isNotEmpty property="indentation"     >INDENTATION       = #indentation#,    </isNotEmpty>
+			<isNotEmpty property="itemSeqId"       >ITEM_SEQ_ID       = #itemSeqId#,      </isNotEmpty>
+			<isNotEmpty property="itemDisplay"     >ITEM_DISPLAY      = #itemDisplay#,    </isNotEmpty>
+			<isNotEmpty property="title"           >TITLE             = #title#,          </isNotEmpty>
+			<isNotEmpty property="hitCount"        >HIT_COUNT         = #hitCount#,       </isNotEmpty>
+			<isNotEmpty property="recommendCount"  >RECOMMEND_COUNT   = #recommendCount#, </isNotEmpty>
+			<isNotEmpty property="replyCount"      >REPLY_COUNT       = #replyCount#,     </isNotEmpty>
+			<isNotEmpty property="linereplyCount"  >LINEREPLY_COUNT   = #linereplyCount#, </isNotEmpty>
+			<isNotEmpty property="attachFileCount" >ATTACH_FILE_COUNT = #attachFileCount#,</isNotEmpty>
+			<isNotEmpty property="startDate"       >START_DATE        = #startDate#,      </isNotEmpty>
+			<isNotEmpty property="endDate"         >END_DATE          = #endDate#,        </isNotEmpty>
+			<isNotEmpty property="itemDelete"      >ITEM_DELETE       = #itemDelete#,     </isNotEmpty>
+			<isNotEmpty property="imageFileId"     >IMAGE_FILE_ID     = #imageFileId#,    </isNotEmpty>
+			<isNotEmpty property="contents"        >CONTENTS          = #contents#,       </isNotEmpty>
+
+			<isNotEmpty property="followBoardPermission"  >FOLLOW_BOARD_PERMISSION   = #followBoardPermission#, </isNotEmpty>
+						        
+			<isNotEmpty property="status"		>STATUS   		= #status#, 		</isNotEmpty>
+			<isNotEmpty property="infoGrade"	>INFO_GRADE   	= #infoGrade#, 		</isNotEmpty>
+			<isNotEmpty property="hopeGrade"	>HOPE_GRADE   	= #hopeGrade#, 		</isNotEmpty>
+			<isNotEmpty property="mark"			>MARK   		= #mark#, 			</isNotEmpty>
+			<isNotEmpty property="targetSource"	>TARGET_SOURCE	= #targetSource#, 	</isNotEmpty>
+			<isNotEmpty property="reportReq"		>REPORT_REQ   		= #reportReq#, 		</isNotEmpty>
+			
+			<isNotEmpty property="assessorId"		>
+													ASSESSOR_ID   		= #assessorId#,
+													 ASSESS_DATE		= CURRENT_TIMESTAMP,  	
+			</isNotEmpty>
+			<isNotEmpty property="assessorName"		>ASSESSOR_NAME  	= #assessorName#, 	</isNotEmpty>
+			<isNotEmpty property="assessorOpinion"	>ASSESSOR_OPINION   = #assessorOpinion#, </isNotEmpty>
+
+			UPDATER_ID        = #updaterId#,
+			UPDATER_NAME      = #updaterName#,			
+			UPDATE_DATE        = CURRENT_TIMESTAMP
+			<isNotEmpty property="expertId">
+			,EXPERT_ID		=	#expertId#,
+			EXPERT_NAME		=	#expertName#,
+			EXPERT_REQ_DATE		=	CURRENT_TIMESTAMP
+			</isNotEmpty>
+			      
+
+			/**	UPDATER_ID        = , **/
+			/**	UPDATER_NAME      = ,			**/
+			/**	UPDATE_DATE       = CURRENT_TIMESTAMP	  **/
+		WHERE
+			ITEM_ID = #itemId# 
+	</update>
+
+	<update id="updateTempItem" parameterClass="kmsBoardItem"> 
+		UPDATE IKEP4_KMS_BD_ITEM /* [BoardItem_SqlMap.xml] collpack.kms.board.dao.boardItem.update */
+		SET   
+			<isNotEmpty property="boardId"         >BOARD_ID          = #boardId#,        </isNotEmpty>
+			<isNotEmpty property="itemParentId"    >ITEM_PARENT_ID    = #itemParentId#,   </isNotEmpty>
+			<isNotEmpty property="itemGroupId"     >ITEM_GROUP_ID     = #itemGroupId#,    </isNotEmpty>
+			<isNotEmpty property="step"            >STEP              = #step#,           </isNotEmpty>
+			<isNotEmpty property="indentation"     >INDENTATION       = #indentation#,    </isNotEmpty>
+			<isNotEmpty property="itemSeqId"       >ITEM_SEQ_ID       = #itemSeqId#,      </isNotEmpty>
+			<isNotEmpty property="itemDisplay"     >ITEM_DISPLAY      = #itemDisplay#,    </isNotEmpty>
+			<isNotEmpty property="title"           >TITLE             = #title#,          </isNotEmpty>
+			<isNotEmpty property="hitCount"        >HIT_COUNT         = #hitCount#,       </isNotEmpty>
+			<isNotEmpty property="recommendCount"  >RECOMMEND_COUNT   = #recommendCount#, </isNotEmpty>
+			<isNotEmpty property="replyCount"      >REPLY_COUNT       = #replyCount#,     </isNotEmpty>
+			<isNotEmpty property="linereplyCount"  >LINEREPLY_COUNT   = #linereplyCount#, </isNotEmpty>
+			<isNotEmpty property="attachFileCount" >ATTACH_FILE_COUNT = #attachFileCount#,</isNotEmpty>
+			<isNotEmpty property="startDate"       >START_DATE        = #startDate#,      </isNotEmpty>
+			<isNotEmpty property="endDate"         >END_DATE          = #endDate#,        </isNotEmpty>
+			<isNotEmpty property="itemDelete"      >ITEM_DELETE       = #itemDelete#,     </isNotEmpty>
+			<isNotEmpty property="imageFileId"     >IMAGE_FILE_ID     = #imageFileId#,    </isNotEmpty>
+			<isNotEmpty property="contents"        >CONTENTS          = #contents#,       </isNotEmpty>
+
+			<isNotEmpty property="followBoardPermission"  >FOLLOW_BOARD_PERMISSION   = #followBoardPermission#, </isNotEmpty>
+						        
+			<isNotEmpty property="status"		>STATUS   		= #status#, 		</isNotEmpty>
+			<isNotEmpty property="infoGrade"	>INFO_GRADE   	= #infoGrade#, 		</isNotEmpty>
+			<isNotEmpty property="hopeGrade"	>HOPE_GRADE   	= #hopeGrade#, 		</isNotEmpty>
+			<isNotEmpty property="mark"			>MARK   		= #mark#, 			</isNotEmpty>
+			<isNotEmpty property="targetSource"	>TARGET_SOURCE	= #targetSource#, 	</isNotEmpty>
+			<isNotEmpty property="reportReq"		>REPORT_REQ   		= #reportReq#, 		</isNotEmpty>
+			
+			<isNotEmpty property="assessorId"		>
+													ASSESSOR_ID   		= #assessorId#,
+													 ASSESS_DATE		= CURRENT_TIMESTAMP,  	
+			</isNotEmpty>
+			<isNotEmpty property="assessorName"		>ASSESSOR_NAME  	= #assessorName#, 	</isNotEmpty>
+			<isNotEmpty property="assessorOpinion"	>ASSESSOR_OPINION   = #assessorOpinion#, </isNotEmpty>
+			<isNotEmpty property="status">
+				<isEqual property="status" compareValue="0">
+					<isNotEmpty property="oriStatus">
+						<isEqual property="oriStatus" compareValue="0">
+							REGISTER_ID        = #updaterId#,
+							REGISTER_NAME      = #updaterName#,			
+							REGIST_DATE        = CURRENT_TIMESTAMP,
+						</isEqual>
+					</isNotEmpty>
+				</isEqual>
+				<isEqual property="status" compareValue="1">
+					<isNotEmpty property="oriStatus">
+						<isEqual property="oriStatus" compareValue="0">
+							REGISTER_ID        = #updaterId#,
+							REGISTER_NAME      = #updaterName#,			
+							REGIST_DATE        = CURRENT_TIMESTAMP,
+						</isEqual>
+					</isNotEmpty>
+				</isEqual>
+			</isNotEmpty>
+			UPDATER_ID        = #updaterId#,
+			UPDATER_NAME      = #updaterName#,			
+			UPDATE_DATE        = CURRENT_TIMESTAMP
+			<isNotEmpty property="expertId">
+			,EXPERT_ID		=	#expertId#,
+			EXPERT_NAME		=	#expertName#,
+			EXPERT_REQ_DATE		=	CURRENT_TIMESTAMP
+			</isNotEmpty>
+			      
+
+			/**	UPDATER_ID        = , **/
+			/**	UPDATER_NAME      = ,			**/
+			/**	UPDATE_DATE       = CURRENT_TIMESTAMP	  **/
+		WHERE
+			ITEM_ID = #itemId# 
+	</update>
+	<!-- ANSI -->
+	<update id="logicalDelete" parameterClass="kmsBoardItem"> 
+		UPDATE IKEP4_KMS_BD_ITEM /* [BoardItem_SqlMap.xml] collpack.kms.board.dao.boardItem.logicalDelete */
+		SET 
+			ITEM_DELETE = 1,
+			UPDATER_ID          = #updaterId#,
+			UPDATER_NAME        = #updaterName#,
+			UPDATE_DATE         = CURRENT_TIMESTAMP   
+		WHERE
+			ITEM_ID = #itemId# 
+	</update>
+	
+	<!-- ANSI -->
+	<update id="updateStep" parameterClass="kmsBoardItem"> 
+		UPDATE IKEP4_KMS_BD_ITEM /* [BoardItem_SqlMap.xml] collpack.kms.board.dao.boardItem.updateStep */
+		SET  
+			STEP = STEP + 1 
+		WHERE
+			ITEM_GROUP_ID = #itemGroupId# 
+			AND   STEP >= #step#  
+	</update>
+
+	<!-- ANSI -->
+	<update id="updateRecommendCount" parameterClass="string">
+		UPDATE IKEP4_KMS_BD_ITEM /* [BoardItem_SqlMap.xml] collpack.kms.board.dao.boardItem.updateRecommendCount */
+		SET    
+			RECOMMEND_COUNT = RECOMMEND_COUNT + 1
+		WHERE
+			ITEM_ID = #itemId# 
+	</update> 
+
+	<!-- ANSI -->
+	<update id="updateLinereplyCount" parameterClass="string">
+		UPDATE IKEP4_KMS_BD_ITEM /* [BoardItem_SqlMap.xml] collpack.kms.board.dao.boardItem.updateLinereplyCount */
+		SET  
+			LINEREPLY_COUNT = (SELECT COUNT(*) FROM IKEP4_KMS_BD_LINEREPLY WHERE ITEM_ID = #itemId#) 
+		WHERE
+			ITEM_ID = #itemId# 
+	</update> 
+
+	<!-- ANSI -->
+	<update id="updateReplyCount" parameterClass="string">
+		UPDATE IKEP4_KMS_BD_ITEM /* [BoardItem_SqlMap.xml] collpack.kms.board.dao.boardItem.updateReplyCount */
+		SET  
+			REPLY_COUNT = (SELECT COUNT(*) FROM IKEP4_KMS_BD_ITEM WHERE ITEM_PARENT_ID = #itemId#) 
+		WHERE
+			ITEM_ID = #itemId# 
+	</update>
+
+	<!-- ANSI -->
+	<update id="updateHitCount" parameterClass="String"> 
+		UPDATE IKEP4_KMS_BD_ITEM /* [BoardItem_SqlMap.xml] collpack.kms.board.dao.boardItem.updateHitCount */
+		SET  
+			HIT_COUNT = HIT_COUNT + 1
+		WHERE
+			ITEM_ID = #itemId# 
+	</update> 
+	
+	<update id="updateMark" parameterClass="String"> 
+		UPDATE IKEP4_KMS_BD_ITEM /* [BoardItem_SqlMap.xml] collpack.kms.board.dao.boardItem.updateMark */
+		SET  
+			MARK = (SELECT SUM(item_display) FROM IKEP4_KMS_BD_ASSESS_ITEM_MAP WHERE item_id = #itemId#)
+		WHERE
+			ITEM_ID = #itemId# 
+	</update> 
+	
+	<!-- ANSI -->
+	<delete id="physicalDelete" parameterClass="string"> 
+		DELETE FROM IKEP4_KMS_BD_ITEM /* [BoardItem_SqlMap.xml] collpack.kms.board.dao.boardItem.physicalDelete */
+		WHERE 
+			ITEM_ID = #itemId# 
+	</delete>    
+	
+	<!-- MS SQL -->
+	<delete id="physicalDeleteThread" parameterClass="string">  
+	WITH CTE AS (
+		SELECT	*
+		FROM	IKEP4_KMS_BD_ITEM
+		WHERE 	ITEM_ID =  #itemId# 
+		UNION ALL
+		SELECT 	T.*
+		FROM 	IKEP4_KMS_BD_ITEM T, CTE
+		WHERE	CTE.ITEM_ID = T.ITEM_PARENT_ID 
+	)
+	DELETE FROM  
+		IKEP4_KMS_BD_ITEM /* [BoardItem_SqlMap.xml] collpack.kms.board.dao.boardItem.physicalDeleteThread */
+	WHERE
+		ITEM_ID IN 
+		( 
+			SELECT ITEM_ID FROM CTE 
+		)   
+	</delete>  
+
+	<!-- ANSI -->
+	<!--  5/17 WS 추가 부분  -->
+	<update id="updateItem" parameterClass="kmsBoardItem"> 
+		UPDATE IKEP4_KMS_BD_ITEM /* [BoardItem_SqlMap.xml] collpack.kms.dao.boardItem.updateItem */
+		SET 
+			ITEM_DISPLAY      = #itemDisplay#,
+			TITLE             = #title#,
+			CONTENTS          = #contents#,           
+			ATTACH_FILE_COUNT = #attachFileCount#,
+			START_DATE        = #startDate#,
+			END_DATE          = #endDate#,
+			FOLLOW_BOARD_PERMISSION = #followBoardPermission#,
+			READ_PERMISSION	= #readPermission#,
+			UPDATER_ID        = #updaterId#,
+			UPDATER_NAME      = #updaterName#,
+			UPDATE_DATE       = CURRENT_TIMESTAMP
+		WHERE
+			ITEM_ID = #itemId# 
+	</update>   
+	
+	<!-- MS SQL -->
+	<select id="listBoardItemByPortlet" parameterClass="Map" resultClass="kmsBoardItem">  
+		SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
+		SELECT /* [BoardItem_SqlMap.xml] collpack.kms.dao.boardItem.listBoardItemByPortlet */ 
+			A.* 
+		FROM 
+		( 
+			/* START========================================= */
+			SELECT Row_number() OVER (ORDER BY B.ITEM_DISPLAY DESC, B.ITEM_GROUP_ID DESC, B.STEP DESC) AS RNUM,
+				A.WORKSPACE_ID    as workspaceId,
+				B.ITEM_ID           as itemId,           
+				B.BOARD_ID          as boardId,
+				B.TITLE             AS title,  
+				B.IMAGE_FILE_ID		AS imageFileId,  
+				B.REGISTER_ID       as registerId,
+				B.REGIST_DATE		as registDate,
+				B.UPDATE_DATE	    as updateDate,
+				U.USER_NAME			as registerName,
+				U.USER_ENGLISH_NAME	as registerEnglishName
+			FROM
+				IKEP4_KMS_BD_BOARD A 
+				INNER JOIN IKEP4_KMS_BD_ITEM B ON  ( A.BOARD_ID = B.BOARD_ID AND B.ITEM_DELETE = 0 )
+				INNER JOIN IKEP4_EV_USER U ON  B.REGISTER_ID = U.USER_ID 
+				/** INNER JOIN IKEP4_WS_MEMBER M ON ( B.REGISTER_ID =M.MEMBER_ID AND M.WORKSPACE_ID=workspaceId) **/
+			WHERE
+				A.WORKSPACE_ID	=	#workspaceId#
+				AND A.IS_DELETE=0
+				<isNotEmpty property="boardId">
+				AND A.BOARD_ID		=	#boardId#
+				</isNotEmpty>
+			/* ===========================================END  */
+		<![CDATA[   
+		) A 
+		WHERE 
+			RNUM <=  #limitSize#
+		]]> 
+	</select>  
+	
+	<!-- MS SQL -->
+	<select id="listMyCollBySearchCondition" parameterClass="kmsBoardItemSearchCondition" resultClass="kmsBoardItem">  
+		SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
+		SELECT /* [BoardItem_SqlMap.xml] collpack.kms.board.dao.boardItem.listMyCollBySearchCondition */ 
+		*
+		FROM 
+		( 
+			SELECT
+				A.* 
+			FROM 
+			( 
+				/* START========================================= */
+				SELECT Row_number() OVER (ORDER BY X.REGIST_DATE DESC) AS RNUM,
+					X.WORKSPACE_ID as workspaceId,
+					X.WORKSPACE_NAME as workspaceName,
+					G.TYPE_NAME as typeName, 
+					G.TYPE_ENGLISH_NAME as typeEnglishName, 
+					X.ITEM_ID as itemId,
+					X.BOARD_ID as boardId, 
+					X.STEP as step, 
+					X.INDENTATION as indentation, 
+					X.TITLE AS TITLE, 
+					X.CONTENTS as contents, 
+					X.HIT_COUNT as hitCount,
+					X.RECOMMEND_COUNT as recommendCount, 
+					X.REPLY_COUNT as replyCount, 
+					X.LINEREPLY_COUNT as linereplyCount,
+					X.ATTACH_FILE_COUNT as attachFileCount,
+					X.REGISTER_ID as registerId, 
+					E.USER_NAME as registerName,
+					E.USER_ENGLISH_NAME as registerEnglishName, 
+					X.REGIST_DATE as registDate,
+					X.UPDATE_DATE as updateDate,
+					E.TEAM_NAME as teamName, 
+					F.JOB_TITLE_NAME as jobTitleName,
+					F.JOB_TITLE_ENGLISH_NAME as jobTitleEnglishName
+				FROM 
+				(
+					SELECT 
+						D.WORKSPACE_ID,
+						D.WORKSPACE_NAME,
+						A.ITEM_ID,
+						A.BOARD_ID, 
+						A.STEP, 
+						A.INDENTATION, 
+						A.TITLE, 
+						A.CONTENTS, 
+						A.HIT_COUNT,
+						A.RECOMMEND_COUNT, 
+						A.REPLY_COUNT, 
+						A.LINEREPLY_COUNT,
+						A.ATTACH_FILE_COUNT,
+						A.REGISTER_ID, 
+						A.REGIST_DATE,
+						A.UPDATE_DATE,
+						D.TYPE_ID
+					FROM
+						( 
+							SELECT /*+ INDEX(X IDX_WS_MEMBER_IE2) */
+								X.WORKSPACE_ID, 
+								Y.WORKSPACE_NAME,
+								Y.TYPE_ID 
+							FROM 
+								IKEP4_WS_MEMBER X 
+								INNER JOIN IKEP4_WS_WORKSPACE Y ON ( X.WORKSPACE_ID=Y.WORKSPACE_ID AND Y.WORKSPACE_STATUS IN ('O','WC')  )
+							WHERE 
+								X.MEMBER_ID = #userId# 
+								AND RTRIM(X.MEMBER_LEVEL) IN ('1','2','3','4') 
+						)D 
+						INNER JOIN IKEP4_KMS_BD_BOARD B ON ( B.WORKSPACE_ID= D.WORKSPACE_ID AND B.IS_DELETE=0 ) 
+						INNER JOIN IKEP4_WS_MEMBER M ON ( M.WORKSPACE_ID=D.WORKSPACE_ID)
+						INNER JOIN IKEP4_KMS_BD_ITEM A ON ( A.BOARD_ID = B.BOARD_ID AND A.ITEM_DELETE=0 AND A.REGISTER_ID = M.MEMBER_ID AND A.UPDATE_DATE &gt;= DATEADD(DD, -30, CURRENT_TIMESTAMP))
+				) X
+				INNER JOIN IKEP4_EV_USER E ON ( X.REGISTER_ID = E.USER_ID )
+				INNER JOIN IKEP4_EV_JOB_TITLE F ON ( E.JOB_TITLE_CODE = F.JOB_TITLE_CODE ) 
+				INNER JOIN IKEP4_WS_TYPE G ON ( X.TYPE_ID = G.TYPE_ID )
+
+				/* ===========================================END  */  
+			<![CDATA[   
+			) A 
+			WHERE 
+				RNUM <=  #endRowIndex# /* 종료  */
+		) TBL
+		WHERE
+			RNUM >  #startRowIndex# /* 시작 */
+		]]> 
+
+	</select>  
+
+	<!-- ANSI -->
+	<update id="updateBoardItemMove" parameterClass="Map"> 
+		UPDATE IKEP4_KMS_BD_ITEM /* [BoardItem_SqlMap.xml] collpack.kms.board.dao.boardItem.updateBoardItemMove */
+		SET   
+			BOARD_ID		=	#targetBoardId#,
+			UPDATER_ID		=	#updaterId#,
+			UPDATER_NAME	=	#updaterName#,
+			UPDATE_DATE		=	CURRENT_TIMESTAMP
+		WHERE 
+			ITEM_ID = #itemId# 
+			AND BOARD_ID=#orgBoardId#
+	</update>   
+
+	<!-- ANSI -->
+	<select id="listDeleteBoardItem" parameterClass="String" resultClass="kmsBoardItem"> 
+		<![CDATA[
+		SELECT /* [BoardItem_SqlMap.xml] collpack.kms.board.dao.boardItem.listDeleteBoardItem */ 
+			ITEM_ID,
+			BOARD_ID,
+			TITLE,
+			ATTACH_FILE_COUNT
+		FROM
+			IKEP4_KMS_BD_ITEM
+		WHERE  
+			BOARD_ID = #boardId#
+			AND ATTACH_FILE_COUNT>0
+		]]>		
+	</select>   
+
+	<!-- ANSI -->
+	<update id="updateMailCount" parameterClass="string">
+	   UPDATE IKEP4_KMS_BD_ITEM 		/* [BoardItem_SqlMap.xml] boardItem.updateMailCount */
+	   SET MAIL_COUNT = MAIL_COUNT + 1
+	   WHERE ITEM_ID = #itemId#
+	</update>
+	
+	<!-- ANSI -->
+	<update id="updateMblogCount" parameterClass="string">
+	   UPDATE IKEP4_KMS_BD_ITEM 		/* [BoardItem_SqlMap.xml] boardItem.updateMblogCount */
+	   SET MBLOG_COUNT = MBLOG_COUNT + 1
+	   WHERE  ITEM_ID = #itemId#
+	</update>
+	
+	<!-- ASNI -->
+	<!-- 최근정보 list count --> 
+	<select id="latestCountBySearchCondition" parameterClass="kmsBoardItemSearchCondition" resultClass="int">  
+			 SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
+			 SELECT /* [BoardItem_SqlMap.xml] BoardItem.latestCountBySearchCondition*/ 
+					COUNT(ITEM_ID)
+			   FROM  
+				  	IKEP4_KMS_BD_ITEM A
+				  	INNER JOIN IKEP4_KMS_BD_BOARD B 	ON A.BOARD_ID = B.BOARD_ID
+			  WHERE A.item_delete = 0
+		        AND A.regist_date BETWEEN GETDATE()-14 AND GETDATE() 
+                <![CDATA[ 
+                AND  A.STATUS > 2
+                ]]>
+                AND B.IS_DELETE = 0 
+			<isNotEmpty property="isKnowhow">
+				  AND B.IS_KNOWHOW = #isKnowhow#
+			</isNotEmpty>                
+<isEqual property="admin" compareValue="false">                
+		<isNotEmpty property="infoGrage">
+			<isEqual property="infoGrage" compareValue="A">
+				AND ( A.INFO_GRADE IN ('A', 'B', 'C') OR ( A.REGISTER_ID = #userId#  AND A.INFO_GRADE != 'E' ) )
+			</isEqual>
+			<isEqual property="infoGrage" compareValue="B">
+				AND (A.INFO_GRADE IN ('B', 'C') OR ( A.REGISTER_ID = #userId#  AND A.INFO_GRADE != 'E' ) )
+			</isEqual>
+			<isEqual property="infoGrage" compareValue="C">
+				AND (A.INFO_GRADE = 'C' OR ( A.REGISTER_ID = #userId#  AND A.INFO_GRADE != 'E' ) )
+			</isEqual>
+		</isNotEmpty>
+</isEqual>
+<isEqual property="admin" compareValue="true">
+				AND ( A.INFO_GRADE IN ('A', 'B', 'C'))
+</isEqual> 
+			<isNotEmpty property="searchColumn">
+				<isNotEmpty property="searchWord">
+					<isEqual property="searchColumn" compareValue="title">
+					  AND	A.TITLE LIKE #searchWord# + '%'
+					</isEqual>
+					<isEqual property="searchColumn" compareValue="registerName">
+					  AND	A.REGISTER_NAME LIKE #searchWord# + '%'
+					</isEqual>
+				</isNotEmpty>
+			</isNotEmpty>
+	</select>
+	
+	<select id="listReaderCountBySearchCondition" parameterClass="readerSearchCondition" resultClass="int"> 
+		SELECT COUNT(*) from 
+		 IKEP4_KMS_BD_REFERENCE
+	   WHERE 1=1
+  	 and item_id = #boardItemId#
+  	 and register_id in (select user_id from ikep4_ev_user where user_status = 'C' and user_id != 'admin')
+	 <isNotEmpty property="searchColumn">
+			<isNotEmpty property="searchWord">
+				<isEqual property="searchColumn" compareValue="READER_NAME">
+					AND	register_id in (select user_id from IKEP4_EV_USER where user_name like '%' + #searchWord# + '%') 
+				</isEqual>
+				<isEqual property="searchColumn" compareValue="READER_TEAM_NAME">
+					AND	register_id in (select user_id from IKEP4_EV_USER where team_name like '%' + #searchWord# + '%') 
+				</isEqual>
+			</isNotEmpty>
+		</isNotEmpty> 
+	</select>
+	
+	<select id="listReaderBySearchCondition" parameterClass="readerSearchCondition" resultMap="boardItemReaderViewResult">
+	  SELECT 
+			*
+	  FROM (
+		     SELECT AA.* FROM ( 
+		      
+		         SELECT Row_number() OVER (ORDER BY  
+		         								<isNotEmpty property="sortColumn">
+													<isEqual property="sortColumn" compareValue="READER_NAME">
+														<isEqual property="sortType" compareValue="DESC">
+															READER_NAME DESC ,READ_DATE DESC
+														</isEqual>
+														<isEqual property="sortType" compareValue="ASC">
+															READER_NAME ASC ,READ_DATE DESC
+														</isEqual>
+													</isEqual> 
+													<isEqual property="sortColumn" compareValue="READ_DATE">
+														<isEqual property="sortType" compareValue="DESC">
+															READ_DATE DESC ,READER_NAME ASC
+														</isEqual>
+														<isEqual property="sortType" compareValue="ASC">
+															READ_DATE ASC ,READER_NAME ASC
+														</isEqual>
+													</isEqual> 
+													<isEqual property="sortColumn" compareValue="READER_TEAM_NAME">
+														<isEqual property="sortType" compareValue="DESC">
+															READER_TEAM_NAME DESC ,READER_NAME ASC
+														</isEqual>
+														<isEqual property="sortType" compareValue="ASC">
+															READER_TEAM_NAME ASC ,READER_NAME ASC
+														</isEqual>
+													</isEqual> 
+		         								</isNotEmpty>  
+										         <isEmpty property="sortColumn">
+										          READ_DATE DESC, READER_NAME ASC 
+										         </isEmpty>
+										   ) AS RNUM,
+		          BB.* FROM (
+						select
+						distinct U.USER_NAME  AS READER_NAME , RD.REGISTER_ID AS READER_ID , U.TEAM_name AS READER_TEAM_NAME, RD.regist_date AS READ_DATE
+						from IKEP4_KMS_BD_REFERENCE RD
+						INNER JOIN  IKEP4_EV_USER U ON RD.register_id = U.user_id
+						where 1=1
+					  	 and RD.item_id = #boardItemId#
+					  	 and U.user_status = 'C'
+					  	  and U.user_id != 'admin'
+				) BB
+				<isNotEmpty property="searchColumn">
+					<isNotEmpty property="searchWord">
+						<isEqual property="searchColumn" compareValue="READER_NAME">
+							WHERE	READER_NAME LIKE '%' + #searchWord# + '%'
+						</isEqual>
+						<isEqual property="searchColumn" compareValue="READER_TEAM_NAME">
+							WHERE READER_TEAM_NAME LIKE '%' + #searchWord# + '%' 
+						</isEqual>
+					</isNotEmpty>
+				</isNotEmpty>  
+		<![CDATA[   
+			) AA WHERE RNUM <= #endRowIndex#
+	) TBL WHERE RNUM >   #startRowIndex#
+		]]> 
+</select>
+	
+	<select id="hotissueCountBySearchCondition" parameterClass="kmsBoardItemSearchCondition" resultClass="int">  
+			 SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
+			 SELECT /* [BoardItem_SqlMap.xml] BoardItem.hotissueCountBySearchCondition*/ 
+					COUNT(ITEM_ID)
+			   FROM  
+				  	IKEP4_KMS_BD_ITEM A
+				  	INNER JOIN IKEP4_KMS_BD_BOARD B 	ON A.BOARD_ID = B.BOARD_ID
+			  WHERE A.item_delete = 0
+		         AND  A.REGIST_DATE BETWEEN GETDATE()-7 AND GETDATE()
+                <![CDATA[ 
+                AND  A.STATUS > 2
+                ]]>
+                AND B.IS_DELETE = 0 
+			<isNotEmpty property="isKnowhow">
+				  AND B.IS_KNOWHOW = #isKnowhow#
+			</isNotEmpty>                
+<isEqual property="admin" compareValue="false">                
+		<isNotEmpty property="infoGrage">
+			<isEqual property="infoGrage" compareValue="A">
+				AND ( A.INFO_GRADE IN ('A', 'B', 'C') OR ( A.REGISTER_ID = #userId#  AND A.INFO_GRADE != 'E' ) )
+			</isEqual>
+			<isEqual property="infoGrage" compareValue="B">
+				AND (A.INFO_GRADE IN ('B', 'C') OR ( A.REGISTER_ID = #userId#  AND A.INFO_GRADE != 'E' ) )
+			</isEqual>
+			<isEqual property="infoGrage" compareValue="C">
+				AND (A.INFO_GRADE = 'C' OR ( A.REGISTER_ID = #userId#  AND A.INFO_GRADE != 'E' ) )
+			</isEqual>
+		</isNotEmpty>
+</isEqual>
+<isEqual property="admin" compareValue="true">
+				AND ( A.INFO_GRADE IN ('A', 'B', 'C'))
+</isEqual> 
+			<isNotEmpty property="searchColumn">
+				<isNotEmpty property="searchWord">
+					<isEqual property="searchColumn" compareValue="title">
+					  AND	A.TITLE LIKE #searchWord# + '%'
+					</isEqual>
+					<isEqual property="searchColumn" compareValue="registerName">
+					  AND	A.REGISTER_NAME LIKE #searchWord# + '%'
+					</isEqual>
+				</isNotEmpty>
+			</isNotEmpty>
+	</select>
+	
+	<!-- MS SQL -->
+	<!-- 최신정보 List Query -->
+	<select id="latestListBySearchCondition" parameterClass="kmsBoardItemSearchCondition" resultMap="boardItemResult">  
+		SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
+		SELECT  /* [BoardItem_SqlMap.xml] BoardItem.latestListBySearchCondition */ 
+			<include refid="collpack.kms.board.dao.boardItem.sqlColumnList" />
+		FROM 
+		( 
+			SELECT 
+				E.* 
+			FROM 
+			( 
+				/* START========================================= */
+				SELECT Row_number() OVER (	ORDER BY 
+											<isNotEmpty property="sortColumn" >
+												<isEqual property="sortColumn" compareValue="ITEM_SEQ_ID">
+													A.ITEM_SEQ_ID
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="ATTACH_FILE_COUNT">
+													A.ATTACH_FILE_COUNT
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="IS_KNOWHOW">
+													B.IS_KNOWHOW
+												</isEqual>												
+												<isEqual property="sortColumn" compareValue="TITLE">
+													A.TITLE
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="REGISTER_NAME">
+													C.REGISTER_NAME
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="REGIST_DATE">
+													A.REGIST_DATE
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="HIT_COUNT">
+													A.HIT_COUNT
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="RECOMMEND_COUNT">
+													A.RECOMMEND_COUNT
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="LINEREPLY_COUNT">
+													A.LINEREPLY_COUNT
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="TARGET_SOURCE">
+													A.TARGET_SOURCE
+												</isEqual>
+											</isNotEmpty>
+						
+											<isNotEmpty property="sortType" >
+											<isEqual property="sortType" compareValue="DESC">
+											DESC ,
+											</isEqual>
+											<isEqual property="sortType" compareValue="ASC">
+											ASC ,
+											</isEqual>
+											</isNotEmpty>
+											A.item_display DESC ,
+											A.REGIST_DATE DESC ) AS RNUM,
+					<include refid="collpack.kms.board.dao.boardItem.sqlExtendColumnList" /> 
+				FROM   IKEP4_KMS_BD_ITEM A 
+				  	   INNER JOIN IKEP4_KMS_BD_BOARD B 	ON A.BOARD_ID = B.BOARD_ID
+				WHERE  A.ITEM_DELETE = 0
+                  AND  A.REGIST_DATE BETWEEN GETDATE()-7 AND GETDATE()
+                  <![CDATA[ 
+                  AND  A.STATUS > 2
+                  ]]>
+                  AND  B.IS_DELETE = 0 
+			<isNotEmpty property="isKnowhow">
+				  AND B.IS_KNOWHOW = #isKnowhow#
+			</isNotEmpty> 
+<isEqual property="admin" compareValue="false">                
+		<isNotEmpty property="infoGrage">
+			<isEqual property="infoGrage" compareValue="A">
+				AND ( A.INFO_GRADE IN ('A', 'B', 'C') OR ( A.REGISTER_ID = #userId#  AND A.INFO_GRADE != 'E' ) )
+			</isEqual>
+			<isEqual property="infoGrage" compareValue="B">
+				AND (A.INFO_GRADE IN ('B', 'C') OR ( A.REGISTER_ID = #userId#  AND A.INFO_GRADE != 'E' ) )
+			</isEqual>
+			<isEqual property="infoGrage" compareValue="C">
+				AND (A.INFO_GRADE = 'C' OR ( A.REGISTER_ID = #userId#  AND A.INFO_GRADE != 'E' ) )
+			</isEqual>
+		</isNotEmpty>
+</isEqual>
+<isEqual property="admin" compareValue="true">
+				AND ( A.INFO_GRADE IN ('A', 'B', 'C'))
+</isEqual> 
+			<isNotEmpty property="searchColumn">
+				<isNotEmpty property="searchWord">
+					<isEqual property="searchColumn" compareValue="title">
+					  AND	A.TITLE LIKE #searchWord# + '%'
+					</isEqual>
+					<isEqual property="searchColumn" compareValue="registerName">
+					  AND	A.REGISTER_NAME LIKE #searchWord# + '%'
+					</isEqual>
+				</isNotEmpty>
+			</isNotEmpty>
+			/* ===========================================END  */  
+		<![CDATA[   
+			) E
+			WHERE 
+				RNUM <=  #endRowIndex# /* 종료  */
+		) TBL
+		WHERE 
+			RNUM >  #startRowIndex# /* 시작 */
+		]]> 
+	</select>	
+	
+	<select id="hotissueListBySearchCondition" parameterClass="kmsBoardItemSearchCondition" resultMap="boardItemResult">  
+		SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
+		SELECT  /* [BoardItem_SqlMap.xml] BoardItem.hotissueListBySearchCondition */ 
+			<include refid="collpack.kms.board.dao.boardItem.sqlColumnList" />
+		FROM 
+		( 
+			SELECT 
+				E.* 
+			FROM 
+			( 
+				/* START========================================= */
+				SELECT Row_number() OVER (	ORDER BY 
+											<isNotEmpty property="sortColumn" >
+												<isEqual property="sortColumn" compareValue="ITEM_SEQ_ID">
+													A.ITEM_SEQ_ID
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="ATTACH_FILE_COUNT">
+													A.ATTACH_FILE_COUNT
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="IS_KNOWHOW">
+													B.IS_KNOWHOW
+												</isEqual>												
+												<isEqual property="sortColumn" compareValue="TITLE">
+													A.TITLE
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="REGISTER_NAME">
+													C.REGISTER_NAME
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="REGIST_DATE">
+													A.REGIST_DATE
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="HIT_COUNT">
+													A.HIT_COUNT
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="RECOMMEND_COUNT">
+													A.RECOMMEND_COUNT
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="LINEREPLY_COUNT">
+													A.LINEREPLY_COUNT
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="TARGET_SOURCE">
+													A.TARGET_SOURCE
+												</isEqual>
+											</isNotEmpty>
+						
+											<isNotEmpty property="sortType" >
+											<isEqual property="sortType" compareValue="DESC">
+											DESC ,
+											</isEqual>
+											<isEqual property="sortType" compareValue="ASC">
+											ASC ,
+											</isEqual>
+											</isNotEmpty>
+											A.HIT_COUNT DESC ) AS RNUM,
+					<include refid="collpack.kms.board.dao.boardItem.sqlExtendColumnList" /> 
+				FROM   IKEP4_KMS_BD_ITEM A 
+				  	   INNER JOIN IKEP4_KMS_BD_BOARD B 	ON A.BOARD_ID = B.BOARD_ID
+				WHERE  A.ITEM_DELETE = 0
+                  AND  A.REGIST_DATE BETWEEN GETDATE()-7 AND GETDATE()
+                  <![CDATA[ 
+                  AND  A.STATUS > 2
+                  ]]>
+                  AND  B.IS_DELETE = 0 
+			<isNotEmpty property="isKnowhow">
+				  AND B.IS_KNOWHOW = #isKnowhow#
+			</isNotEmpty> 
+<isEqual property="admin" compareValue="false">                
+		<isNotEmpty property="infoGrage">
+			<isEqual property="infoGrage" compareValue="A">
+				AND ( A.INFO_GRADE IN ('A', 'B', 'C') OR ( A.REGISTER_ID = #userId#  AND A.INFO_GRADE != 'E' ) )
+			</isEqual>
+			<isEqual property="infoGrage" compareValue="B">
+				AND (A.INFO_GRADE IN ('B', 'C') OR ( A.REGISTER_ID = #userId#  AND A.INFO_GRADE != 'E' ) )
+			</isEqual>
+			<isEqual property="infoGrage" compareValue="C">
+				AND (A.INFO_GRADE = 'C' OR ( A.REGISTER_ID = #userId#  AND A.INFO_GRADE != 'E' ) )
+			</isEqual>
+		</isNotEmpty>
+</isEqual>
+<isEqual property="admin" compareValue="true">
+				AND ( A.INFO_GRADE IN ('A', 'B', 'C'))
+</isEqual> 
+			<isNotEmpty property="searchColumn">
+				<isNotEmpty property="searchWord">
+					<isEqual property="searchColumn" compareValue="title">
+					  AND	A.TITLE LIKE #searchWord# + '%'
+					</isEqual>
+					<isEqual property="searchColumn" compareValue="registerName">
+					  AND	A.REGISTER_NAME LIKE #searchWord# + '%'
+					</isEqual>
+				</isNotEmpty>
+			</isNotEmpty>
+			/* ===========================================END  */  
+		<![CDATA[   
+			) E
+			WHERE 
+				RNUM <=  #endRowIndex# /* 종료  */
+		) TBL
+		WHERE 
+			RNUM >  #startRowIndex# /* 시작 */
+		]]> 
+	</select>
+	
+	<!-- 우수정보 list count --> 
+	<select id="excellenceCountBySearchCondition" parameterClass="kmsBoardItemSearchCondition" resultClass="int">  
+			 SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
+			 SELECT /* [BoardItem_SqlMap.xml] BoardItem.latestCountBySearchCondition*/ 
+					COUNT(ITEM_ID)
+			   FROM  
+				  	IKEP4_KMS_BD_ITEM A with(index=IDX_KMS_BD_ITEM_RCMD2)
+				  	INNER JOIN IKEP4_KMS_BD_BOARD B 	ON A.BOARD_ID = B.BOARD_ID
+			  WHERE A.item_delete = 0
+
+                <![CDATA[ 
+                AND  A.STATUS > 2
+                ]]> 
+                AND B.IS_DELETE = 0
+                AND A.regist_date BETWEEN GETDATE()-30 AND GETDATE()
+			<isNotEmpty property="isKnowhow">
+				  AND B.IS_KNOWHOW = #isKnowhow#
+			</isNotEmpty> 
+<isEqual property="admin" compareValue="false">                
+		<isNotEmpty property="infoGrage">
+			<isEqual property="infoGrage" compareValue="A">
+				AND ( A.INFO_GRADE IN ('A', 'B', 'C') OR ( A.REGISTER_ID = #userId#  AND A.INFO_GRADE != 'E' ) )
+			</isEqual>
+			<isEqual property="infoGrage" compareValue="B">
+				AND (A.INFO_GRADE IN ('B', 'C') OR ( A.REGISTER_ID = #userId#  AND A.INFO_GRADE != 'E' ) )
+			</isEqual>
+			<isEqual property="infoGrage" compareValue="C">
+				AND (A.INFO_GRADE = 'C' OR ( A.REGISTER_ID = #userId#  AND A.INFO_GRADE != 'E' ) )
+			</isEqual>
+		</isNotEmpty>
+</isEqual>
+<isEqual property="admin" compareValue="true">
+				AND ( A.INFO_GRADE IN ('A', 'B', 'C'))
+</isEqual> 
+			<isNotEmpty property="searchColumn">
+				<isNotEmpty property="searchWord">
+					<isEqual property="searchColumn" compareValue="title">
+					  AND	A.TITLE LIKE #searchWord# + '%'
+					</isEqual>
+					<isEqual property="searchColumn" compareValue="registerName">
+					  AND	A.REGISTER_NAME LIKE #searchWord# + '%'
+					</isEqual>
+				</isNotEmpty>
+			</isNotEmpty>
+	</select>
+	
+	<!-- MS SQL -->
+	<!-- 우수정보 List Query -->
+	<select id="excellenceListBySearchCondition" parameterClass="kmsBoardItemSearchCondition" resultMap="boardItemResultPls">  
+		SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
+		SELECT  /* [BoardItem_SqlMap.xml] BoardItem.excellenceListBySearchCondition */ 
+			<include refid="collpack.kms.board.dao.boardItem.sqlColumnList" />
+			,color
+		FROM 
+		( 
+			SELECT 
+				 E.* 
+			FROM 
+			( select 
+				/* START========================================= */
+				Row_number() OVER (	ORDER BY 
+				(select count(*) from ikep4_kms_special_user where (user_id in (select register_id 
+			from IKEP4_KMS_BD_RECOMMEND where item_id = A.item_id) or user_id in (select register_id from 
+			IKEP4_KMS_BD_LINEREPLY where item_id = A.item_id))and category = '2') DESC, A.MARK DESC, A.REGIST_DATE DESC ) AS RNUM,
+					<include refid="collpack.kms.board.dao.boardItem.sqlExtendColumnList" /> 
+					,(select CASE WHEN count(tp.item_id) > 0 THEN (select top 1 color from ikep4_kms_special_user where category = '2') ELSE '' END from (select br.item_id from IKEP4_KMS_BD_RECOMMEND br where br.register_id in (select su.user_id from ikep4_kms_special_user su where su.category = '2') and br.item_id = A.item_id union all select lr.item_id from IKEP4_KMS_BD_LINEREPLY lr where lr.register_id in (select spu.user_id from ikep4_kms_special_user spu where spu.category = '2') and lr.item_id = A.item_id)tp ) as color
+				FROM   IKEP4_KMS_BD_ITEM A with(index=IDX_KMS_BD_ITEM_RCMD2)
+				  	   INNER JOIN IKEP4_KMS_BD_BOARD B 	ON A.BOARD_ID = B.BOARD_ID
+				WHERE  A.ITEM_DELETE = 0
+
+                  <![CDATA[ 
+                  AND  A.STATUS > 2
+                  ]]>
+                  AND B.IS_DELETE = 0 
+                  AND A.regist_date BETWEEN GETDATE()-7 AND GETDATE()
+			<isNotEmpty property="isKnowhow">
+				  AND B.IS_KNOWHOW = #isKnowhow#
+			</isNotEmpty> 
+<isEqual property="admin" compareValue="false">                
+		<isNotEmpty property="infoGrage">
+			<isEqual property="infoGrage" compareValue="A">
+				AND ( A.INFO_GRADE IN ('A', 'B', 'C') OR ( A.REGISTER_ID = #userId#  AND A.INFO_GRADE != 'E' ) )
+			</isEqual>
+			<isEqual property="infoGrage" compareValue="B">
+				AND (A.INFO_GRADE IN ('B', 'C') OR ( A.REGISTER_ID = #userId#  AND A.INFO_GRADE != 'E' ) )
+			</isEqual>
+			<isEqual property="infoGrage" compareValue="C">
+				AND (A.INFO_GRADE = 'C' OR ( A.REGISTER_ID = #userId#  AND A.INFO_GRADE != 'E' ) )
+			</isEqual>
+		</isNotEmpty>
+</isEqual>
+<isEqual property="admin" compareValue="true">
+				AND ( A.INFO_GRADE IN ('A', 'B', 'C'))
+</isEqual> 
+			<isNotEmpty property="searchColumn">
+				<isNotEmpty property="searchWord">
+					<isEqual property="searchColumn" compareValue="title">
+					  AND	A.TITLE LIKE #searchWord# + '%'
+					</isEqual>
+					<isEqual property="searchColumn" compareValue="registerName">
+					  AND	A.REGISTER_NAME LIKE #searchWord# + '%'
+					</isEqual>
+				</isNotEmpty>
+			</isNotEmpty>
+			/* ===========================================END  */  
+		<![CDATA[   
+			) E
+			WHERE 
+				RNUM <=  #endRowIndex# /* 종료  */
+				
+		) TBL
+		WHERE 
+			RNUM >  #startRowIndex# /* 시작 */
+		]]> 
+	</select>	
+	
+	<!-- ANSI -->
+	<select id="get" parameterClass="string" resultMap="boardItemResult"> 
+		SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
+		SELECT /* [BoardItem_SqlMap.xml] collpack.kms.board.dao.boardItem.get */
+			<include refid="collpack.kms.board.dao.boardItem.sqlExtendColumnListByRead" /> 
+		FROM  
+			IKEP4_KMS_BD_ITEM A
+			INNER JOIN IKEP4_KMS_BD_BOARD B 	ON A.BOARD_ID = B.BOARD_ID 
+		WHERE A.ITEM_ID = #itemId# 
+			AND A.ITEM_DELETE = 0 
+	</select>
+	
+	<!-- ANSI -->
+	<select id="countBoardReference" parameterClass="java.util.Map" resultClass="Integer">
+		SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
+		SELECT 
+			COUNT(REGISTER_ID) 
+		FROM
+			IKEP4_KMS_BD_REFERENCE 
+		WHERE 
+			ITEM_ID = #itemId# 
+			AND REGISTER_ID = #userId#
+	</select>
+	
+	<!-- ANSI -->
+	<update id="updateBoardHitCount" parameterClass="String"> 
+		UPDATE 
+			IKEP4_KMS_BD_ITEM /* [BoardItem_SqlMap.xml] collpack.kms.board.dao.boardItem.updateBoardHitCount */
+		SET 
+			HIT_COUNT = HIT_COUNT + 1
+		WHERE
+			ITEM_ID = #itemId# 
+	</update>
+	
+	<!-- ANSI -->
+	<insert id="createBoardItemReference" parameterClass="java.util.Map"> 
+		INSERT INTO IKEP4_KMS_BD_REFERENCE 
+		(
+			/* [BoardItem_SqlMap.xml] collpack.kms.board.dao.boardItem.createBoardItemReference*/
+			REGISTER_ID,
+			ITEM_ID,
+			REGIST_DATE
+		) 
+		VALUES
+		(
+			#userId#, 
+			#itemId#,
+			CURRENT_TIMESTAMP
+		)
+	</insert>
+	
+	<update id="updateBoardItemReference" parameterClass="java.util.Map"> 
+		UPDATE IKEP4_KMS_BD_REFERENCE /* [BoardItem_SqlMap.xml] collpack.kms.board.dao.boardItem.updateBoardItemReference */
+	    SET REGIST_DATE = CURRENT_TIMESTAMP
+	    WHERE ITEM_ID = #itemId# 
+	    AND REGISTER_ID = #registerId#  
+	</update>
+	
+	<!-- 관련 글 목록 count --> 
+	<select id="relatedCountBySearchCondition" parameterClass="kmsRelatedBoardItemSearchCondition" resultClass="int">  
+			 SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
+			 SELECT /* [BoardItem_SqlMap.xml] BoardItem.relatedCountBySearchCondition*/ 
+					COUNT(B.ITEM_ID)
+			  FROM  IKEP4_KMS_REF_INFO B
+			        INNER JOIN IKEP4_KMS_BD_ITEM A 	ON B.REF_ITEM_ID = A.ITEM_ID 
+			        INNER JOIN IKEP4_KMS_BD_BOARD C 	ON A.BOARD_ID = C.BOARD_ID
+			 WHERE  B.ITEM_ID = #itemId#
+			   AND  A.ITEM_DELETE = 0
+               <![CDATA[ 
+               AND  A.STATUS > 2
+               ]]> 
+               AND  C.IS_DELETE = 0
+	</select>
+	
+	<!-- MS SQL -->
+	<!-- 관련 글 List Query -->
+	<select id="listRelatedListBySearchCondition" parameterClass="kmsRelatedBoardItemSearchCondition" resultMap="boardItemResult">  
+				SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
+				SELECT Row_number() OVER (	ORDER BY  A.ITEM_DISPLAY DESC, A.REGIST_DATE DESC ) AS RNUM,
+					<include refid="collpack.kms.board.dao.boardItem.sqlExtendColumnList" /> 
+				FROM   IKEP4_KMS_REF_INFO E
+					   INNER JOIN IKEP4_KMS_BD_ITEM A   ON E.REF_ITEM_ID = A.ITEM_ID
+				  	   INNER JOIN IKEP4_KMS_BD_BOARD B 	ON A.BOARD_ID = B.BOARD_ID
+				WHERE  E.ITEM_ID = #itemId#
+				  AND  A.ITEM_DELETE = 0
+        		<![CDATA[ 
+                  AND  A.STATUS > 2
+				]]>
+				  AND  B.IS_DELETE = 0 
+			    ORDER BY A.REGIST_DATE DESC 
+	</select>	
+	
+	<!-- 게시물 조회 누적정보 count --> 
+	<select id="countBoardRefCumulative" parameterClass="java.util.Map" resultClass="int">  
+			SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
+			SELECT /* [BoardItem_SqlMap.xml] BoardItem.countBoardRefCumulative*/ 
+				   COUNT(*)
+			  FROM IKEP4_KMS_BD_LOG
+			 WHERE REGISTER_ID = #userId#
+			   AND REGIST_DATE = CONVERT(NVARCHAR(10), GETDATE(), 126)
+	</select>
+	<!-- 게시물 조회 누적정보 insert -->
+	<insert id="createBoardItemRefCumulative" parameterClass="java.util.Map"> 
+			INSERT INTO IKEP4_KMS_BD_LOG /* [BoardItem_SqlMap.xml] BoardItem.createBoardItemRefCumulative*/
+			            ( register_id,
+						  regist_date,
+						  hit_count,
+						  group_id,
+						  group_name )
+				 VALUES ( #userId#, 
+				 		<isNotEmpty property="registDate">
+				 			#registDate#,
+				 		</isNotEmpty>
+				 		<isEmpty property="registDate">
+				          CONVERT(NVARCHAR(10), GETDATE(), 126),
+				        </isEmpty> 
+				        <isNotEmpty property="viewSum">
+				 			#viewSum#,
+				 		</isNotEmpty>
+				 		<isEmpty property="viewSum">
+				          1,
+				        </isEmpty>
+						  #groupId#,
+						  #groupName#)
+	</insert>
+	<!-- 게시물 조회 누적정보 update -->
+	<update id="updateBoardItemRefCumulative" parameterClass="java.util.Map"> 
+			UPDATE IKEP4_KMS_BD_LOG /* [BoardItem_SqlMap.xml] BoardItem.updateBoardItemRefCumulative*/
+			   SET HIT_COUNT = HIT_COUNT + 1 
+			 WHERE REGISTER_ID = #userId#
+			   AND REGIST_DATE = CONVERT(NVARCHAR(20), GETDATE(), 23)
+	</update>	
+	
+	<!-- 활용정보 중복검사 --> 
+	<select id="countCreateRefInfo" parameterClass="java.util.Map" resultClass="int">  
+			SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
+			SELECT /* [BoardItem_SqlMap.xml] BoardItem.countCreateRefInfo*/ 
+				   COUNT(*)
+			  FROM IKEP4_KMS_REF_INFO
+			 WHERE ITEM_ID = #itemId#
+			   AND REF_ITEM_ID = #itemId#
+	</select>
+	
+	<!-- 활용정보 insert -->
+	<insert id="createRefInfo" parameterClass="java.util.Map"> 
+			INSERT INTO IKEP4_KMS_REF_INFO /* [BoardItem_SqlMap.xml] BoardItem.createRefInfo*/
+			            ( item_id, 
+			              ref_item_id, 
+			              regist_date )
+				 VALUES ( #itemId#, 
+				          #refItemId#, 
+						  CURRENT_TIMESTAMP)
+	</insert>	
+	
+	<!-- 활용정보 delete -->
+	<delete id="deleteRefInfo" parameterClass="String">
+		DELETE FROM IKEP4_KMS_REF_INFO /* [BoardItem_SqlMap.xml] BoardItem.deleteRefInfo */
+		WHERE 
+			ITEM_ID = #itemId# 
+		OR 
+			REF_ITEM_ID = #itemId#
+	</delete>	
+	
+	<!-- 활용정보 list -->
+	<!-- 관련 글 List Query -->
+	<select id="listRefInfoMap" parameterClass="java.util.Map" resultMap="boardItemResult">  
+				SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
+				SELECT Row_number() OVER (	ORDER BY  A.ITEM_DISPLAY DESC, A.REGIST_DATE DESC ) AS RNUM,
+					<include refid="collpack.kms.board.dao.boardItem.sqlExtendColumnList" /> 
+				FROM   IKEP4_KMS_REF_INFO E
+					   INNER JOIN IKEP4_KMS_BD_ITEM A   ON E.REF_ITEM_ID = A.ITEM_ID
+				  	   INNER JOIN IKEP4_KMS_BD_BOARD B 	ON A.BOARD_ID = B.BOARD_ID
+				WHERE  E.ITEM_ID = #itemId#
+				  AND  A.ITEM_DELETE = 0
+        		<![CDATA[ 
+                  AND  A.STATUS > 2
+				]]> 
+				  AND  B.IS_DELETE = 0
+			    ORDER BY A.REGIST_DATE DESC 
+	</select>	
+	
+	<!-- ASNI -->
+	<!-- Ref list count --> 
+	<select id="refCountBySearchCondition" parameterClass="kmsBoardItemSearchCondition" resultClass="int">  
+			 SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
+			 SELECT /* [BoardItem_SqlMap.xml] BoardItem.refCountBySearchCondition*/ 
+					COUNT(ITEM_ID)
+			   FROM IKEP4_KMS_BD_ITEM A INNER JOIN IKEP4_KMS_BD_BOARD B ON A.BOARD_ID = B.BOARD_ID 
+										INNER JOIN IKEP4_EV_USER C ON A.REGISTER_ID = C.USER_ID 
+										INNER JOIN IKEP4_EV_JOB_TITLE D ON D.JOB_TITLE_CODE=C.JOB_TITLE_CODE
+										INNER JOIN IKEP4_EV_USER_GROUP F ON C.USER_ID = F.USER_ID
+										INNER JOIN IKEP4_EV_GROUP G ON F.GROUP_ID = G.GROUP_ID
+			  WHERE A.item_delete = 0
+                <![CDATA[ 
+                AND  A.STATUS > 2
+                ]]> 
+                AND F.REPRESENT_GROUP =1
+                AND B.IS_DELETE = 0
+<isEqual property="admin" compareValue="false">                
+		<isNotEmpty property="infoGrage">
+			<isEqual property="infoGrage" compareValue="A">
+				AND ( A.INFO_GRADE IN ('A', 'B', 'C') OR ( A.REGISTER_ID = #userId#  AND A.INFO_GRADE != 'E' ) )
+			</isEqual>
+			<isEqual property="infoGrage" compareValue="B">
+				AND (A.INFO_GRADE IN ('B', 'C') OR ( A.REGISTER_ID = #userId#  AND A.INFO_GRADE != 'E' ) )
+			</isEqual>
+			<isEqual property="infoGrage" compareValue="C">
+				AND (A.INFO_GRADE = 'C' OR ( A.REGISTER_ID = #userId#  AND A.INFO_GRADE != 'E' ) )
+			</isEqual>
+		</isNotEmpty>
+</isEqual>
+<isEqual property="admin" compareValue="true">
+				AND ( A.INFO_GRADE IN ('A', 'B', 'C'))
+</isEqual> 
+		<isNotEmpty property="searchWorkPlaceName">
+				AND C.WORK_PLACE_CODE IN(SELECT WORK_PLACE_CODE FROM IKEP4_EV_WORK_PLACE WHERE WORK_PLACE_NAME = #searchWorkPlaceName#)
+		</isNotEmpty>
+		<isNotEmpty property="searchGroupId">
+				AND G.GROUP_ID = #searchGroupId#
+		</isNotEmpty>
+		<isNotEmpty property="searchRegType">
+			<isEqual property="searchRegType" compareValue="0">
+				AND CONVERT(VARCHAR(8), A.REGIST_DATE, 112) BETWEEN #searchStartRegDate# AND #searchEndRegDate#
+			</isEqual>
+			<isEqual property="searchRegType" compareValue="1">
+				AND CONVERT(VARCHAR(8), A.REGIST_DATE, 112) BETWEEN #searchStartRegDate# AND  CONVERT(NVARCHAR(8), GETDATE(), 112)
+			</isEqual>
+			<isEqual property="searchRegType" compareValue="2">
+				AND CONVERT(VARCHAR(8), A.REGIST_DATE, 112) BETWEEN '19000101' AND #searchEndRegDate#
+			</isEqual>	
+		</isNotEmpty>
+		<isNotEmpty property="searchRegisterName">
+				AND	A.REGISTER_NAME LIKE '%' + #searchRegisterName# + '%'
+		</isNotEmpty>
+		<isNotEmpty property="searchTitle">
+				AND	A.TITLE LIKE '%' + #searchTitle# + '%'
+		</isNotEmpty>
+	</select>
+	
+	<!-- MS SQL -->
+	<!-- Ref List Query -->
+	<select id="refListBySearchCondition" parameterClass="kmsBoardItemSearchCondition" resultMap="boardItemResult">  
+		SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
+		SELECT  /* [BoardItem_SqlMap.xml] BoardItem.refListBySearchCondition */ 
+			<include refid="collpack.kms.board.dao.boardItem.sqlColumnList" />
+		FROM 
+		( 
+			SELECT 
+				E.* 
+			FROM 
+			( 
+				/* START========================================= */
+				SELECT Row_number() OVER (	ORDER BY  
+											<isNotEmpty property="sortColumn" >
+												<isEqual property="sortColumn" compareValue="ITEM_SEQ_ID">
+													A.ITEM_SEQ_ID
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="ATTACH_FILE_COUNT">
+													A.ATTACH_FILE_COUNT
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="IS_KNOWHOW">
+													B.IS_KNOWHOW
+												</isEqual>												
+												<isEqual property="sortColumn" compareValue="TITLE">
+													A.TITLE
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="REGISTER_NAME">
+													A.REGISTER_NAME
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="REGIST_DATE">
+													A.REGIST_DATE
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="HIT_COUNT">
+													A.HIT_COUNT
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="RECOMMEND_COUNT">
+													A.RECOMMEND_COUNT
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="LINEREPLY_COUNT">
+													A.LINEREPLY_COUNT
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="TARGET_SOURCE">
+													A.TARGET_SOURCE
+												</isEqual>
+											</isNotEmpty>
+						
+											<isNotEmpty property="sortType" >
+											<isEqual property="sortType" compareValue="DESC">
+											DESC ,
+											</isEqual>
+											<isEqual property="sortType" compareValue="ASC">
+											ASC ,
+											</isEqual>
+											</isNotEmpty>
+											A.REGIST_DATE DESC ) AS RNUM,
+					<include refid="collpack.kms.board.dao.boardItem.sqlExtendColumnList" /> 
+				   FROM IKEP4_KMS_BD_ITEM A INNER JOIN IKEP4_KMS_BD_BOARD B ON A.BOARD_ID = B.BOARD_ID 
+											INNER JOIN IKEP4_EV_USER C ON A.REGISTER_ID = C.USER_ID 
+											INNER JOIN IKEP4_EV_JOB_TITLE D ON D.JOB_TITLE_CODE=C.JOB_TITLE_CODE
+											INNER JOIN IKEP4_EV_USER_GROUP F ON C.USER_ID = F.USER_ID
+											INNER JOIN IKEP4_EV_GROUP G ON F.GROUP_ID = G.GROUP_ID
+				  WHERE A.item_delete = 0
+	                <![CDATA[ 
+	                AND  A.STATUS > 2
+	                ]]>
+	                AND B.IS_DELETE = 0 
+	                AND F.REPRESENT_GROUP =1
+<isEqual property="admin" compareValue="false">                
+		<isNotEmpty property="infoGrage">
+			<isEqual property="infoGrage" compareValue="A">
+				AND ( A.INFO_GRADE IN ('A', 'B', 'C') OR ( A.REGISTER_ID = #userId#  AND A.INFO_GRADE != 'E' ) )
+			</isEqual>
+			<isEqual property="infoGrage" compareValue="B">
+				AND (A.INFO_GRADE IN ('B', 'C') OR ( A.REGISTER_ID = #userId#  AND A.INFO_GRADE != 'E' ) )
+			</isEqual>
+			<isEqual property="infoGrage" compareValue="C">
+				AND (A.INFO_GRADE = 'C' OR ( A.REGISTER_ID = #userId#  AND A.INFO_GRADE != 'E' ) )
+			</isEqual>
+		</isNotEmpty>
+</isEqual>
+<isEqual property="admin" compareValue="true">
+				AND ( A.INFO_GRADE IN ('A', 'B', 'C'))
+</isEqual> 
+			<isNotEmpty property="searchWorkPlaceName">
+					AND C.WORK_PLACE_CODE IN(SELECT WORK_PLACE_CODE FROM IKEP4_EV_WORK_PLACE WHERE WORK_PLACE_NAME = #searchWorkPlaceName#)
+			</isNotEmpty>
+			<isNotEmpty property="searchGroupId">
+					AND G.GROUP_ID = #searchGroupId#
+			</isNotEmpty>
+			<isNotEmpty property="searchRegType">
+				<isEqual property="searchRegType" compareValue="0">
+					AND CONVERT(VARCHAR(8), A.REGIST_DATE, 112) BETWEEN #searchStartRegDate# AND #searchEndRegDate#
+				</isEqual>
+				<isEqual property="searchRegType" compareValue="1">
+					AND CONVERT(VARCHAR(8), A.REGIST_DATE, 112) BETWEEN #searchStartRegDate# AND  CONVERT(NVARCHAR(8), GETDATE(), 112)
+				</isEqual>
+				<isEqual property="searchRegType" compareValue="2">
+					AND CONVERT(VARCHAR(8), A.REGIST_DATE, 112) BETWEEN '19000101' AND #searchEndRegDate#
+				</isEqual>	
+			</isNotEmpty>
+			<isNotEmpty property="searchRegisterName">
+					AND	A.REGISTER_NAME LIKE '%' + #searchRegisterName# + '%'
+			</isNotEmpty>
+			<isNotEmpty property="searchTitle">
+					AND	A.TITLE LIKE '%' + #searchTitle# + '%'
+			</isNotEmpty>
+			<isNotEmpty property="searchColumn">
+				<isNotEmpty property="searchWord">
+					<isEqual property="searchColumn" compareValue="title">
+					  AND	A.TITLE LIKE #searchWord# + '%'
+					</isEqual>
+					<isEqual property="searchColumn" compareValue="registerName">
+					  AND	A.REGISTER_NAME LIKE #searchWord# + '%'
+					</isEqual>
+				</isNotEmpty>
+			</isNotEmpty>
+			/* ===========================================END  */  
+		<![CDATA[   
+			) E
+			WHERE 
+				RNUM <=  #endRowIndex# /* 종료  */
+		) TBL
+		WHERE 
+			RNUM >  #startRowIndex# /* 시작 */
+		]]> 
+	</select>
+		
+	<!-- 임시저장 list count --> 
+	<select id="temporaryCountBySearchCondition" parameterClass="kmsBoardItemSearchCondition" resultClass="int">  
+			 SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
+			 SELECT /* [BoardItem_SqlMap.xml] BoardItem.latestCountBySearchCondition*/ 
+					 COUNT(ITEM_ID)
+			   FROM  
+				  	IKEP4_KMS_BD_ITEM A
+				  	INNER JOIN IKEP4_KMS_BD_BOARD B 	ON A.BOARD_ID = B.BOARD_ID
+			  WHERE A.item_delete = 0
+			  	<isNotEmpty property="gubun" >
+				<isEqual property="gubun" compareValue="0">
+					AND A.STATUS = #gubun#
+				</isEqual>
+				<isEqual property="gubun" compareValue="1">
+					AND A.STATUS in ('1','2')
+				</isEqual>
+				<isEqual property="gubun" compareValue="2">
+					AND A.STATUS in ('3','5')
+					AND A.INFO_GRADE not in ('E')
+				</isEqual>
+				<isEqual property="gubun" compareValue="3">
+					AND A.STATUS in ('3','5')
+					AND A.INFO_GRADE = 'E'
+				</isEqual>
+				<isEqual property="gubun" compareValue="4">
+					AND A.STATUS not in ('0')
+				</isEqual>
+				</isNotEmpty>
+			    
+			    AND A.REGISTER_ID = #userId#
+			    AND B.IS_DELETE = 0
+			    <isNotEmpty property="startDate">
+				<![CDATA[   
+				AND A.REGIST_DATE >= #startDate#
+				]]> 
+				</isNotEmpty>
+				
+				<isNotEmpty property="endDate">
+				<![CDATA[   
+				AND A.REGIST_DATE <= #endDate#
+				]]> 
+				</isNotEmpty>
+	</select>
+	
+	<select id="targetCountBySearchCondition" parameterClass="kmsBoardItemSearchCondition" resultClass="int">  
+			 WITH CTE AS 
+				(
+					SELECT GROUP_ID, PARENT_GROUP_ID
+					FROM IKEP4_EV_GROUP
+					WHERE GROUP_ID = (select max(a.group_id) from ikep4_ev_group a inner join IKEP4_EV_USER_GROUP b on a.group_id = b.group_id 
+					and a.group_type_id = 'G0001'
+					and b.user_id = #userId#)
+					UNION ALL
+					SELECT TBL.GROUP_ID, TBL.PARENT_GROUP_ID
+					FROM IKEP4_EV_GROUP TBL, CTE
+					WHERE TBL.PARENT_GROUP_ID = CTE.GROUP_ID		
+				)
+				select count(*) from IKEP4_KMS_BD_ITEM A 
+				INNER JOIN IKEP4_KMS_BD_BOARD B 	ON A.BOARD_ID = B.BOARD_ID
+			  	WHERE A.item_delete = 0
+			  	AND A.STATUS not in ('0')
+				AND A.item_id in(
+				select C.item_id as item_id from ikep4_kms_announce_target C inner join CTE on CTE.group_id = C.target_Id
+				and C.is_group = 'Y'
+				union all
+				select C.item_id as item_id from ikep4_kms_announce_target C where C.target_id = #userId# and C.is_group = 'N'
+				group by item_id)
+				<isNotEmpty property="searchColumn">
+				<isNotEmpty property="searchWord">
+					<isEqual property="searchColumn" compareValue="title">
+					  AND	A.TITLE LIKE '%' + #searchWord# + '%'
+					</isEqual>
+					<isEqual property="searchColumn" compareValue="registerName">
+					  AND	A.REGISTER_NAME LIKE '%' + #searchWord# + '%'
+					</isEqual>
+				</isNotEmpty>
+			</isNotEmpty>
+			    
+			    <isNotEmpty property="startDate">
+				<![CDATA[   
+				AND A.REGIST_DATE >= #startDate#
+				]]> 
+				</isNotEmpty>
+				
+				<isNotEmpty property="endDate">
+				<![CDATA[   
+				AND A.REGIST_DATE <= #endDate#
+				]]> 
+				</isNotEmpty>
+	</select>
+	
+	<select id="keyInfoCountBySearchCondition" parameterClass="kmsBoardItemSearchCondition" resultClass="int">  
+			 WITH CTE AS 
+				(
+					SELECT GROUP_ID, PARENT_GROUP_ID
+					FROM IKEP4_EV_GROUP
+					WHERE GROUP_ID = (select max(a.group_id) from ikep4_ev_group a inner join IKEP4_EV_USER_GROUP b on a.group_id = b.group_id 
+					and a.group_type_id = 'G0001'
+					and b.user_id = #userId#)
+					UNION ALL
+					SELECT TBL.GROUP_ID, TBL.PARENT_GROUP_ID
+					FROM IKEP4_EV_GROUP TBL, CTE
+					WHERE TBL.PARENT_GROUP_ID = CTE.GROUP_ID		
+				)
+				select count(*) from IKEP4_KMS_BD_ITEM A 
+				INNER JOIN IKEP4_KMS_BD_BOARD B 	ON A.BOARD_ID = B.BOARD_ID
+			  	WHERE A.item_delete = 0
+				AND A.item_id in(
+				select C.item_id from IKEP4_KMS_BD_ASSESS_ITEM_MAP C
+				where C.assess_item = '1'
+				and C.item_display = '1')
+				<isNotEmpty property="searchColumn">
+				<isNotEmpty property="searchWord">
+					<isEqual property="searchColumn" compareValue="title">
+					  AND	A.TITLE LIKE '%' + #searchWord# + '%'
+					</isEqual>
+					<isEqual property="searchColumn" compareValue="registerName">
+					  AND	A.REGISTER_NAME LIKE '%' + #searchWord# + '%'
+					</isEqual>
+				</isNotEmpty>
+			</isNotEmpty>
+			    
+			    <isNotEmpty property="startDate">
+				<![CDATA[   
+				AND A.REGIST_DATE >= #startDate#
+				]]> 
+				</isNotEmpty>
+				
+				<isNotEmpty property="endDate">
+				<![CDATA[   
+				AND A.REGIST_DATE <= #endDate#
+				]]> 
+				</isNotEmpty>
+	</select>
+	
+	<!-- MS SQL -->
+	<!-- 임시저장 List Query -->
+	<select id="temporaryListBySearchCondition" parameterClass="kmsBoardItemSearchCondition" resultMap="boardItemResult">  
+		SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
+		SELECT  /* [BoardItem_SqlMap.xml] BoardItem.latestListBySearchCondition */ 
+			<include refid="collpack.kms.board.dao.boardItem.sqlColumnList" />
+		FROM 
+		( 
+			SELECT 
+				E.* 
+			FROM 
+			( 
+				/* START========================================= */
+				SELECT Row_number() OVER (	ORDER BY 
+											<isNotEmpty property="sortColumn" >
+												<isEqual property="sortColumn" compareValue="ITEM_SEQ_ID">
+													A.ITEM_SEQ_ID
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="ATTACH_FILE_COUNT">
+													A.ATTACH_FILE_COUNT
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="IS_KNOWHOW">
+													B.IS_KNOWHOW
+												</isEqual>												
+												<isEqual property="sortColumn" compareValue="TITLE">
+													A.TITLE
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="REGISTER_NAME">
+													A.REGISTER_NAME
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="REGIST_DATE">
+													A.REGIST_DATE
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="HIT_COUNT">
+													A.HIT_COUNT
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="RECOMMEND_COUNT">
+													A.RECOMMEND_COUNT
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="LINEREPLY_COUNT">
+													A.LINEREPLY_COUNT
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="TARGET_SOURCE">
+													A.TARGET_SOURCE
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="INFO_GRADE">
+													A.INFO_GRADE
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="STATUS">
+													A.INFO_GRADE
+													<isNotEmpty property="sortType" >
+													<isEqual property="sortType" compareValue="DESC">
+													DESC ,
+													</isEqual>
+													<isEqual property="sortType" compareValue="ASC">
+													ASC ,
+													</isEqual>
+													</isNotEmpty>
+													A.STATUS
+												</isEqual>
+											</isNotEmpty>
+						
+											<isNotEmpty property="sortType" >
+											<isEqual property="sortType" compareValue="DESC">
+											DESC ,
+											</isEqual>
+											<isEqual property="sortType" compareValue="ASC">
+											ASC ,
+											</isEqual>
+											</isNotEmpty>
+											A.item_display DESC ,
+											A.REGIST_DATE DESC) AS RNUM,
+					<include refid="collpack.kms.board.dao.boardItem.sqlExtendColumnList" /> 
+				FROM   IKEP4_KMS_BD_ITEM A
+				  	   INNER JOIN IKEP4_KMS_BD_BOARD B 	ON A.BOARD_ID = B.BOARD_ID
+				WHERE  A.ITEM_DELETE = 0
+				<isNotEmpty property="gubun" >
+				<isEqual property="gubun" compareValue="0">
+					AND A.STATUS = #gubun#
+				</isEqual>
+				<isEqual property="gubun" compareValue="1">
+					AND A.STATUS in ('1','2')
+				</isEqual>
+				<isEqual property="gubun" compareValue="2">
+					AND A.STATUS in ('3','5')
+					AND A.INFO_GRADE not in ('E')
+				</isEqual>
+				<isEqual property="gubun" compareValue="3">
+					AND A.STATUS in ('3','5')
+					AND A.INFO_GRADE = 'E'
+				</isEqual>
+				<isEqual property="gubun" compareValue="4">
+					AND A.STATUS not in ('0')
+				</isEqual>
+				</isNotEmpty>
+				  AND  B.IS_DELETE = 0
+				  AND  A.REGISTER_ID = #userId#
+			<isNotEmpty property="searchColumn">
+				<isNotEmpty property="searchWord">
+					<isEqual property="searchColumn" compareValue="title">
+					  AND	A.TITLE LIKE #searchWord# + '%'
+					</isEqual>
+					<isEqual property="searchColumn" compareValue="registerName">
+					  AND	A.REGISTER_NAME LIKE #searchWord# + '%'
+					</isEqual>
+				</isNotEmpty>
+			</isNotEmpty>
+			<isNotEmpty property="startDate">
+			<![CDATA[   
+			AND A.REGIST_DATE >= #startDate#
+			]]> 
+			</isNotEmpty>
+			
+			<isNotEmpty property="endDate">
+			<![CDATA[   
+			AND A.REGIST_DATE <= #endDate#
+			]]> 
+			</isNotEmpty>
+			/* ===========================================END  */  
+		<![CDATA[   
+			) E
+			WHERE 
+				RNUM <=  #endRowIndex# /* 종료  */
+		) TBL
+		WHERE 
+			RNUM >  #startRowIndex# /* 시작 */
+		]]> 
+	</select>
+	
+	<select id="targetListBySearchCondition" parameterClass="kmsBoardItemSearchCondition" resultMap="boardItemResult">  
+		WITH CTE AS 
+		(
+			SELECT GROUP_ID, PARENT_GROUP_ID
+			FROM IKEP4_EV_GROUP
+			WHERE GROUP_ID = (select max(a.group_id) from ikep4_ev_group a inner join IKEP4_EV_USER_GROUP b on a.group_id = b.group_id 
+			and a.group_type_id = 'G0001'
+			and b.user_id = #userId#)
+			UNION ALL
+			SELECT TBL.GROUP_ID, TBL.PARENT_GROUP_ID
+			FROM IKEP4_EV_GROUP TBL, CTE
+			WHERE TBL.PARENT_GROUP_ID = CTE.GROUP_ID		
+		)
+		SELECT  /* [BoardItem_SqlMap.xml] BoardItem.latestListBySearchCondition */ 
+			<include refid="collpack.kms.board.dao.boardItem.sqlColumnList" />
+		FROM 
+		( 
+			SELECT 
+				E.* 
+			FROM 
+			( 
+				/* START========================================= */
+				SELECT Row_number() OVER (	ORDER BY 
+											<isNotEmpty property="sortColumn" >
+												<isEqual property="sortColumn" compareValue="ITEM_SEQ_ID">
+													A.ITEM_SEQ_ID
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="ATTACH_FILE_COUNT">
+													A.ATTACH_FILE_COUNT
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="IS_KNOWHOW">
+													B.IS_KNOWHOW
+												</isEqual>												
+												<isEqual property="sortColumn" compareValue="TITLE">
+													A.TITLE
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="REGISTER_NAME">
+													A.REGISTER_NAME
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="REGIST_DATE">
+													A.REGIST_DATE
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="HIT_COUNT">
+													A.HIT_COUNT
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="RECOMMEND_COUNT">
+													A.RECOMMEND_COUNT
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="LINEREPLY_COUNT">
+													A.LINEREPLY_COUNT
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="TARGET_SOURCE">
+													A.TARGET_SOURCE
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="STATUS">
+													A.INFO_GRADE
+													<isNotEmpty property="sortType" >
+													<isEqual property="sortType" compareValue="DESC">
+													DESC ,
+													</isEqual>
+													<isEqual property="sortType" compareValue="ASC">
+													ASC ,
+													</isEqual>
+													</isNotEmpty>
+													A.STATUS
+												</isEqual>
+											</isNotEmpty>
+						
+											<isNotEmpty property="sortType" >
+											<isEqual property="sortType" compareValue="DESC">
+											DESC ,
+											</isEqual>
+											<isEqual property="sortType" compareValue="ASC">
+											ASC ,
+											</isEqual>
+											</isNotEmpty>
+											A.item_display DESC ,
+											A.REGIST_DATE DESC) AS RNUM,
+					<include refid="collpack.kms.board.dao.boardItem.sqlExtendColumnList" /> 
+				from IKEP4_KMS_BD_ITEM A 
+				INNER JOIN IKEP4_KMS_BD_BOARD B 	ON A.BOARD_ID = B.BOARD_ID
+				WHERE  A.ITEM_DELETE = 0
+				AND A.STATUS not in ('0')
+				AND A.item_id in(
+				select C.item_id as item_id from ikep4_kms_announce_target C inner join CTE on CTE.group_id = C.target_Id
+				and C.is_group = 'Y'
+				union all
+				select C.item_id as item_id from ikep4_kms_announce_target C where C.target_id = #userId# and C.is_group = 'N'
+				group by item_id)
+				
+			<isNotEmpty property="searchColumn">
+				<isNotEmpty property="searchWord">
+					<isEqual property="searchColumn" compareValue="title">
+					  AND	A.TITLE LIKE '%' + #searchWord# + '%'
+					</isEqual>
+					<isEqual property="searchColumn" compareValue="registerName">
+					  AND	A.REGISTER_NAME LIKE '%' + #searchWord# + '%'
+					</isEqual>
+				</isNotEmpty>
+			</isNotEmpty>
+			<isNotEmpty property="startDate">
+			<![CDATA[   
+			AND A.REGIST_DATE >= #startDate#
+			]]> 
+			</isNotEmpty>
+			
+			<isNotEmpty property="endDate">
+			<![CDATA[   
+			AND A.REGIST_DATE <= #endDate#
+			]]> 
+			</isNotEmpty>
+			/* ===========================================END  */  
+		<![CDATA[   
+			) E
+			WHERE 
+				RNUM <=  #endRowIndex# /* 종료  */
+		) TBL
+		WHERE 
+			RNUM >  #startRowIndex# /* 시작 */
+		]]> 
+	</select>
+	
+	<select id="keyInfoListBySearchCondition" parameterClass="kmsBoardItemSearchCondition" resultMap="boardItemResult">  
+		WITH CTE AS 
+		(
+			SELECT GROUP_ID, PARENT_GROUP_ID
+			FROM IKEP4_EV_GROUP
+			WHERE GROUP_ID = (select max(a.group_id) from ikep4_ev_group a inner join IKEP4_EV_USER_GROUP b on a.group_id = b.group_id 
+			and a.group_type_id = 'G0001'
+			and b.user_id = #userId#)
+			UNION ALL
+			SELECT TBL.GROUP_ID, TBL.PARENT_GROUP_ID
+			FROM IKEP4_EV_GROUP TBL, CTE
+			WHERE TBL.PARENT_GROUP_ID = CTE.GROUP_ID		
+		)
+		SELECT  /* [BoardItem_SqlMap.xml] BoardItem.latestListBySearchCondition */ 
+			<include refid="collpack.kms.board.dao.boardItem.sqlColumnList" />
+		FROM 
+		( 
+			SELECT 
+				E.* 
+			FROM 
+			( 
+				/* START========================================= */
+				SELECT Row_number() OVER (	ORDER BY 
+											<isNotEmpty property="sortColumn" >
+												<isEqual property="sortColumn" compareValue="ITEM_SEQ_ID">
+													A.ITEM_SEQ_ID
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="ATTACH_FILE_COUNT">
+													A.ATTACH_FILE_COUNT
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="IS_KNOWHOW">
+													B.IS_KNOWHOW
+												</isEqual>												
+												<isEqual property="sortColumn" compareValue="TITLE">
+													A.TITLE
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="REGISTER_NAME">
+													A.REGISTER_NAME
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="REGIST_DATE">
+													A.REGIST_DATE
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="HIT_COUNT">
+													A.HIT_COUNT
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="RECOMMEND_COUNT">
+													A.RECOMMEND_COUNT
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="LINEREPLY_COUNT">
+													A.LINEREPLY_COUNT
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="TARGET_SOURCE">
+													A.TARGET_SOURCE
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="STATUS">
+													A.INFO_GRADE
+													<isNotEmpty property="sortType" >
+													<isEqual property="sortType" compareValue="DESC">
+													DESC ,
+													</isEqual>
+													<isEqual property="sortType" compareValue="ASC">
+													ASC ,
+													</isEqual>
+													</isNotEmpty>
+													A.STATUS
+												</isEqual>
+											</isNotEmpty>
+						
+											<isNotEmpty property="sortType" >
+											<isEqual property="sortType" compareValue="DESC">
+											DESC ,
+											</isEqual>
+											<isEqual property="sortType" compareValue="ASC">
+											ASC ,
+											</isEqual>
+											</isNotEmpty>
+											A.item_display DESC ,
+											A.REGIST_DATE DESC) AS RNUM,
+					<include refid="collpack.kms.board.dao.boardItem.sqlExtendColumnList" /> 
+				from IKEP4_KMS_BD_ITEM A 
+				INNER JOIN IKEP4_KMS_BD_BOARD B 	ON A.BOARD_ID = B.BOARD_ID
+				WHERE  A.ITEM_DELETE = 0
+				AND A.item_id in(
+				select C.item_id from IKEP4_KMS_BD_ASSESS_ITEM_MAP C
+				where C.assess_item = '1'
+				and C.item_display = '1')
+				
+			<isNotEmpty property="searchColumn">
+				<isNotEmpty property="searchWord">
+					<isEqual property="searchColumn" compareValue="title">
+					  AND	A.TITLE LIKE '%' + #searchWord# + '%'
+					</isEqual>
+					<isEqual property="searchColumn" compareValue="registerName">
+					  AND	A.REGISTER_NAME LIKE '%' + #searchWord# + '%'
+					</isEqual>
+				</isNotEmpty>
+			</isNotEmpty>
+			<isNotEmpty property="startDate">
+			<![CDATA[   
+			AND A.REGIST_DATE >= #startDate#
+			]]> 
+			</isNotEmpty>
+			
+			<isNotEmpty property="endDate">
+			<![CDATA[   
+			AND A.REGIST_DATE <= #endDate#
+			]]> 
+			</isNotEmpty>
+			/* ===========================================END  */  
+		<![CDATA[   
+			) E
+			WHERE 
+				RNUM <=  #endRowIndex# /* 종료  */
+		) TBL
+		WHERE 
+			RNUM >  #startRowIndex# /* 시작 */
+		]]> 
+	</select>
+	
+	<!-- 전문가 list count --> 
+	<select id="assessCountBySearchCondition" parameterClass="kmsBoardItemSearchCondition" resultClass="int">  
+			 SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
+			 SELECT /* [BoardItem_SqlMap.xml] BoardItem.latestCountBySearchCondition*/ 
+					COUNT(ITEM_ID)
+			   FROM  
+				  	IKEP4_KMS_BD_ITEM A
+				  	INNER JOIN IKEP4_KMS_BD_BOARD B 	ON A.BOARD_ID = B.BOARD_ID
+			  WHERE A.item_delete = 0
+			    AND B.IS_DELETE = 0
+			<isEqual property="admin" compareValue="true">
+			    AND A.STATUS IN (1,2)
+			</isEqual>
+			<isEqual property="admin" compareValue="false">
+                            AND A.STATUS = 2 
+                            AND A.EXPERT_ID = #assessorId#
+			</isEqual>
+			<isNotEmpty property="searchColumn">
+				<isNotEmpty property="searchWord">
+					<isEqual property="searchColumn" compareValue="title">
+					  AND	A.TITLE LIKE '%' + #searchWord# + '%'
+					</isEqual>
+					<isEqual property="searchColumn" compareValue="registerName">
+					  AND	A.REGISTER_NAME LIKE '%' + #searchWord# + '%'
+					</isEqual>
+				</isNotEmpty>
+			</isNotEmpty>
+	</select>
+	
+	<!-- MS SQL -->
+	<!-- 전문가 List Query -->
+	<select id="assessListBySearchCondition" parameterClass="kmsBoardItemSearchCondition" resultMap="boardItemResult">  
+		SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
+		SELECT  /* [BoardItem_SqlMap.xml] BoardItem.latestListBySearchCondition */ 
+			<include refid="collpack.kms.board.dao.boardItem.sqlColumnList" />
+		FROM 
+		( 
+			SELECT 
+				E.* 
+			FROM 
+			( 
+				/* START========================================= */
+				SELECT Row_number() OVER (	ORDER BY  
+											<isNotEmpty property="sortColumn" >
+												<isEqual property="sortColumn" compareValue="ITEM_SEQ_ID">
+													A.ITEM_SEQ_ID
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="ATTACH_FILE_COUNT">
+													A.ATTACH_FILE_COUNT
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="IS_KNOWHOW">
+													B.IS_KNOWHOW
+												</isEqual>												
+												<isEqual property="sortColumn" compareValue="TITLE">
+													A.TITLE
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="REGISTER_NAME">
+													A.REGISTER_NAME
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="REGIST_DATE">
+													A.REGIST_DATE
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="HIT_COUNT">
+													A.HIT_COUNT
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="RECOMMEND_COUNT">
+													A.RECOMMEND_COUNT
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="LINEREPLY_COUNT">
+													A.LINEREPLY_COUNT
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="TARGET_SOURCE">
+													A.TARGET_SOURCE
+												</isEqual>
+											</isNotEmpty>
+						
+											<isNotEmpty property="sortType" >
+											<isEqual property="sortType" compareValue="DESC">
+											DESC ,
+											</isEqual>
+											<isEqual property="sortType" compareValue="ASC">
+											ASC ,
+											</isEqual>
+											</isNotEmpty>
+											A.item_display DESC ,
+											A.REGIST_DATE DESC) AS RNUM,
+					<include refid="collpack.kms.board.dao.boardItem.sqlExtendColumnList" /> 
+				FROM   IKEP4_KMS_BD_ITEM A
+				  	   INNER JOIN IKEP4_KMS_BD_BOARD B 	ON A.BOARD_ID = B.BOARD_ID
+			       WHERE A.item_delete = 0
+			         AND B.IS_DELETE = 0
+			<isEqual property="admin" compareValue="true">
+			         AND A.STATUS IN (1,2)
+			</isEqual>
+			<isEqual property="admin" compareValue="false">
+                                 AND A.STATUS = 2 
+                                 AND A.EXPERT_ID = #assessorId#
+			</isEqual>
+			<isNotEmpty property="searchColumn">
+				<isNotEmpty property="searchWord">
+					<isEqual property="searchColumn" compareValue="title">
+					  AND	A.TITLE LIKE '%' + #searchWord# + '%'
+					</isEqual>
+					<isEqual property="searchColumn" compareValue="registerName">
+					  AND	A.REGISTER_NAME LIKE '%' + #searchWord# + '%'
+					</isEqual>
+				</isNotEmpty>
+			</isNotEmpty>
+			/* ===========================================END  */  
+		<![CDATA[   
+			) E
+			WHERE 
+				RNUM <=  #endRowIndex# /* 종료  */
+		) TBL
+		WHERE 
+			RNUM >  #startRowIndex# /* 시작 */
+		]]> 
+	</select>
+	<!-- ANSI -->
+	<update id="assessMove" parameterClass="java.util.Map"> 
+		UPDATE IKEP4_KMS_BD_ITEM /* [BoardItem_SqlMap.xml] collpack.kms.board.dao.boardItem.assessMove */
+		SET 
+			EXPERT_ID 		= #assessorId#,
+			EXPERT_NAME		= #assessorName#,
+			EXPERT_REQ_DATE	= CURRENT_TIMESTAMP,
+			STATUS			= #status#,
+			UPDATER_ID      = #updaterId#,
+			UPDATER_NAME    = #updaterName#,
+			UPDATE_DATE     = CURRENT_TIMESTAMP   
+		WHERE
+			ITEM_ID = #itemId# 
+	</update>	
+	
+	<!-- 지식조회 list count --> 
+	<select id="searchCountBySearchCondition" parameterClass="kmsBoardItemSearchCondition" resultClass="int">  
+			 SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
+			 SELECT /* [BoardItem_SqlMap.xml] BoardItem.latestCountBySearchCondition*/ 
+					COUNT(ITEM_ID)
+			   FROM  
+				  	IKEP4_KMS_BD_ITEM A
+				  	INNER JOIN IKEP4_KMS_BD_BOARD B 	ON A.BOARD_ID = B.BOARD_ID
+			  WHERE A.item_delete = 0
+
+                <![CDATA[ 
+                AND  A.STATUS > 2
+                ]]> 
+                AND B.IS_DELETE = 0
+			<isNotEmpty property="isKnowhow">
+				  AND B.IS_KNOWHOW = #isKnowhow#
+			</isNotEmpty> 
+<isEqual property="admin" compareValue="false">                
+		<isNotEmpty property="infoGrage">
+			<isEqual property="infoGrage" compareValue="A">
+				AND ( A.INFO_GRADE IN ('A', 'B', 'C') OR ( A.REGISTER_ID = #userId#  AND A.INFO_GRADE != 'E' ) )
+			</isEqual>
+			<isEqual property="infoGrage" compareValue="B">
+				AND (A.INFO_GRADE IN ('B', 'C') OR ( A.REGISTER_ID = #userId#  AND A.INFO_GRADE != 'E' ) )
+			</isEqual>
+			<isEqual property="infoGrage" compareValue="C">
+				AND (A.INFO_GRADE = 'C' OR ( A.REGISTER_ID = #userId#  AND A.INFO_GRADE != 'E' ) )
+			</isEqual>
+		</isNotEmpty>
+</isEqual>
+<isEqual property="admin" compareValue="true">
+				AND ( A.INFO_GRADE IN ('A', 'B', 'C'))
+</isEqual> 
+			<isNotEmpty property="searchColumn">
+				<isNotEmpty property="searchWord">
+					<isEqual property="searchColumn" compareValue="title">
+					  AND	replace(A.TITLE,' ','') LIKE '%' + replace(#searchWord#,' ','') + '%'
+					</isEqual>
+					<isEqual property="searchColumn" compareValue="registerName">
+					  AND	replace(A.REGISTER_NAME,' ','') LIKE '%' + replace(#searchWord#,' ','') + '%'
+					</isEqual>
+				</isNotEmpty>
+			</isNotEmpty>
+		<isNotEmpty property="searchRegType">
+			<isEqual property="searchRegType" compareValue="0">
+				AND CONVERT(VARCHAR(8), A.REGIST_DATE, 112) BETWEEN #searchStartRegDate# AND #searchEndRegDate#
+			</isEqual>
+			<isEqual property="searchRegType" compareValue="1">
+				AND CONVERT(VARCHAR(8), A.REGIST_DATE, 112) BETWEEN #searchStartRegDate# AND  CONVERT(NVARCHAR(8), GETDATE(), 112)
+			</isEqual>
+			<isEqual property="searchRegType" compareValue="2">
+				AND CONVERT(VARCHAR(8), A.REGIST_DATE, 112) BETWEEN '19000101' AND #searchEndRegDate#
+			</isEqual>	
+		</isNotEmpty>
+	</select>
+	
+	<!-- MS SQL -->
+	<!-- 지식조회 List Query -->
+	<select id="searchListBySearchCondition" parameterClass="kmsBoardItemSearchCondition" resultMap="boardItemResultPls">  
+		SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
+		SELECT  /* [BoardItem_SqlMap.xml] BoardItem.latestListBySearchCondition */ 
+			<include refid="collpack.kms.board.dao.boardItem.sqlColumnList" />
+			,color
+		FROM 
+		( 
+			SELECT 
+				E.* 
+			FROM 
+			( 
+				/* START========================================= */
+				SELECT Row_number() OVER (	ORDER BY  
+											<isNotEmpty property="sortColumn" >
+												<isEqual property="sortColumn" compareValue="ITEM_SEQ_ID">
+													A.ITEM_SEQ_ID
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="ATTACH_FILE_COUNT">
+													A.ATTACH_FILE_COUNT
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="IS_KNOWHOW">
+													B.IS_KNOWHOW
+												</isEqual>												
+												<isEqual property="sortColumn" compareValue="TITLE">
+													A.TITLE
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="REGISTER_NAME">
+													A.REGISTER_NAME
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="ASSESS_DATE">
+													A.ASSESS_DATE
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="REGIST_DATE">
+													A.REGIST_DATE
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="HIT_COUNT">
+													A.HIT_COUNT
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="RECOMMEND_COUNT">
+													A.RECOMMEND_COUNT
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="LINEREPLY_COUNT">
+													A.LINEREPLY_COUNT
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="TARGET_SOURCE">
+													A.TARGET_SOURCE
+												</isEqual>
+											</isNotEmpty>
+						
+											<isNotEmpty property="sortType" >
+											<isEqual property="sortType" compareValue="DESC">
+											DESC ,
+											</isEqual>
+											<isEqual property="sortType" compareValue="ASC">
+											ASC ,
+											</isEqual>
+											</isNotEmpty>
+											A.item_display DESC ,
+											 A.ASSESS_DATE DESC, A.REGIST_DATE DESC, A.ITEM_ID DESC) AS RNUM,
+					<include refid="collpack.kms.board.dao.boardItem.sqlExtendColumnList" />
+					,(select CASE WHEN br.item_id IS NOT NULL THEN (select top 1 color from ikep4_kms_special_user where category = '1') ELSE '' END 
+					from IKEP4_KMS_BD_REFERENCE br where br.register_id = (select top 1 su.user_id from ikep4_kms_special_user su where su.category = '1')
+					and br.item_id = A.item_id) as color 
+				FROM   IKEP4_KMS_BD_ITEM A
+				  	   INNER JOIN IKEP4_KMS_BD_BOARD B 	ON A.BOARD_ID = B.BOARD_ID
+				WHERE  A.ITEM_DELETE = 0
+
+                  <![CDATA[ 
+                  AND  A.STATUS > 2
+                  ]]>
+                  AND B.IS_DELETE = 0 
+			<isNotEmpty property="isKnowhow">
+				  AND B.IS_KNOWHOW = #isKnowhow#
+			</isNotEmpty> 
+<isEqual property="admin" compareValue="false">                
+		<isNotEmpty property="infoGrage">
+			<isEqual property="infoGrage" compareValue="A">
+				AND ( A.INFO_GRADE IN ('A', 'B', 'C') OR ( A.REGISTER_ID = #userId#  AND A.INFO_GRADE != 'E' ) )
+			</isEqual>
+			<isEqual property="infoGrage" compareValue="B">
+				AND (A.INFO_GRADE IN ('B', 'C') OR ( A.REGISTER_ID = #userId#  AND A.INFO_GRADE != 'E' ) )
+			</isEqual>
+			<isEqual property="infoGrage" compareValue="C">
+				AND (A.INFO_GRADE = 'C' OR ( A.REGISTER_ID = #userId#  AND A.INFO_GRADE != 'E' ) )
+			</isEqual>
+		</isNotEmpty>
+</isEqual>
+<isEqual property="admin" compareValue="true">
+				AND ( A.INFO_GRADE IN ('A', 'B', 'C'))
+</isEqual> 
+			<isNotEmpty property="searchColumn">
+				<isNotEmpty property="searchWord">
+					<isEqual property="searchColumn" compareValue="title">
+					  AND	replace(A.TITLE,' ','') LIKE '%' + replace(#searchWord#,' ','') + '%'
+					</isEqual>
+					<isEqual property="searchColumn" compareValue="registerName">
+					  AND	replace(A.REGISTER_NAME,' ','') LIKE '%' + replace(#searchWord#,' ','') + '%'
+					</isEqual>
+				</isNotEmpty>
+			</isNotEmpty>
+		<isNotEmpty property="searchRegType">
+			<isEqual property="searchRegType" compareValue="0">
+				AND CONVERT(VARCHAR(8), A.REGIST_DATE, 112) BETWEEN #searchStartRegDate# AND #searchEndRegDate#
+			</isEqual>
+			<isEqual property="searchRegType" compareValue="1">
+				AND CONVERT(VARCHAR(8), A.REGIST_DATE, 112) BETWEEN #searchStartRegDate# AND  CONVERT(NVARCHAR(8), GETDATE(), 112)
+			</isEqual>
+			<isEqual property="searchRegType" compareValue="2">
+				AND CONVERT(VARCHAR(8), A.REGIST_DATE, 112) BETWEEN '19000101' AND #searchEndRegDate#
+			</isEqual>	
+		</isNotEmpty>
+			/* ===========================================END  */  
+		<![CDATA[   
+			) E
+			WHERE 
+				RNUM <=  #endRowIndex# /* 종료  */
+		) TBL
+		WHERE 
+			RNUM >  #startRowIndex# /* 시작 */
+		]]> 
+	</select>	
+	
+	<!-- ANSI -->
+	<select id="getBoardItemPrint" parameterClass="string" resultMap="boardItemResultExtend"> 
+		SELECT /* [BoardItem_SqlMap.xml] collpack.kms.board.dao.boardItem.get */
+			<include refid="collpack.kms.board.dao.boardItem.sqlExtendColumnListByRead" />
+			 , C.EMP_NO 			AS EMP_NO
+			 , E.WORK_PLACE_NAME 	AS WORK_PLACE_NAME 
+		FROM  
+			IKEP4_KMS_BD_ITEM A
+			INNER JOIN IKEP4_KMS_BD_BOARD B 	ON A.BOARD_ID = B.BOARD_ID 
+			INNER JOIN IKEP4_EV_USER C ON A.REGISTER_ID = C.USER_ID
+			INNER JOIN IKEP4_EV_JOB_TITLE D ON D.JOB_TITLE_CODE=C.JOB_TITLE_CODE
+			INNER JOIN IKEP4_EV_WORK_PLACE E ON C.WORK_PLACE_CODE = E.WORK_PLACE_CODE 
+		WHERE A.ITEM_ID = #itemId# 
+			AND A.ITEM_DELETE = 0 
+	</select>
+	
+	<select id="getCaution" resultClass="kmsBoardItem"> 
+		SELECT
+		 	contents as caution
+		FROM  
+			ikep4_kms_caution
+	</select>
+	
+	<!-- E등급지식 list count --> 
+	<select id="einfogradeCountBySearchCondition" parameterClass="kmsBoardItemSearchCondition" resultClass="int">  
+			 SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
+			 SELECT /* [BoardItem_SqlMap.xml] BoardItem.latestCountBySearchCondition*/ 
+					 COUNT(ITEM_ID)
+			   FROM  
+				  	IKEP4_KMS_BD_ITEM A
+				  	INNER JOIN IKEP4_KMS_BD_BOARD B 	ON A.BOARD_ID = B.BOARD_ID
+				  	INNER JOIN IKEP4_EV_USER C ON C.USER_ID = A.REGISTER_ID
+				  	<isNotEmpty property="teamCode">
+						INNER JOIN IKEP4_EV_USER_GROUP H
+						ON H.USER_ID = A.REGISTER_ID
+						AND H.GROUP_ID = #teamCode#
+					</isNotEmpty>
+				WHERE  A.ITEM_DELETE = 0
+				<isNotEmpty property="gubun" >
+				<isEqual property="gubun" compareValue="0">
+					AND  A.INFO_GRADE = 'E'
+				</isEqual>
+				<isEqual property="gubun" compareValue="1">
+					AND  A.INFO_GRADE = 'E'
+				</isEqual>
+				<isEqual property="gubun" compareValue="2">
+					AND  A.INFO_GRADE IN ('A','B')
+				</isEqual>
+				</isNotEmpty>
+				  
+				  AND  B.IS_DELETE = 0
+<isEqual property="gubun" compareValue="0"> 				  
+				  AND  A.REGISTER_ID = #userId#
+</isEqual>				  
+			<isNotEmpty property="searchColumn">
+				<isNotEmpty property="searchWord">
+					<isEqual property="searchColumn" compareValue="title">
+					  AND	A.TITLE LIKE #searchWord# + '%'
+					</isEqual>
+					<isEqual property="searchColumn" compareValue="registerName">
+					  AND	A.REGISTER_NAME LIKE #searchWord# + '%'
+					</isEqual>
+				</isNotEmpty>
+			</isNotEmpty>
+			<isNotEmpty property="workPlaceName">			
+				AND
+				C.WORK_PLACE_CODE IN (
+					SELECT WORK_PLACE_CODE FROM IKEP4_EV_WORK_PLACE WHERE WORK_PLACE_NAME = #workPlaceName#
+				)
+			</isNotEmpty>	
+			<isNotEmpty property="registerName">
+				AND A.REGISTER_NAME LIKE '%' + #registerName# + '%'
+			</isNotEmpty>
+			<isNotEmpty property="startDate">
+			<![CDATA[   
+			AND A.REGIST_DATE >= #startDate#
+			]]> 
+			</isNotEmpty>
+			
+			<isNotEmpty property="endDate">
+			<![CDATA[   
+			AND A.REGIST_DATE <= #endDate#
+			]]> 
+			</isNotEmpty>
+	</select>
+	
+	<!-- MS SQL -->
+	<!-- E등급지식 List Query -->
+	<select id="einfogradeListBySearchCondition" parameterClass="kmsBoardItemSearchCondition" resultMap="boardItemResult">  
+		SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
+		SELECT  /* [BoardItem_SqlMap.xml] BoardItem.latestListBySearchCondition */ 
+			<include refid="collpack.kms.board.dao.boardItem.sqlColumnList" />
+		FROM 
+		( 
+			SELECT 
+				E.* 
+			FROM 
+			( 
+				/* START========================================= */
+				SELECT Row_number() OVER (	ORDER BY 
+											<isNotEmpty property="sortColumn" >
+												<isEqual property="sortColumn" compareValue="ITEM_SEQ_ID">
+													A.ITEM_SEQ_ID
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="ATTACH_FILE_COUNT">
+													A.ATTACH_FILE_COUNT
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="IS_KNOWHOW">
+													B.IS_KNOWHOW
+												</isEqual>												
+												<isEqual property="sortColumn" compareValue="TITLE">
+													A.TITLE
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="REGISTER_NAME">
+													A.REGISTER_NAME
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="REGIST_DATE">
+													A.REGIST_DATE
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="HIT_COUNT">
+													A.HIT_COUNT
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="RECOMMEND_COUNT">
+													A.RECOMMEND_COUNT
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="LINEREPLY_COUNT">
+													A.LINEREPLY_COUNT
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="TARGET_SOURCE">
+													A.TARGET_SOURCE
+												</isEqual>
+											</isNotEmpty>
+						
+											<isNotEmpty property="sortType" >
+											<isEqual property="sortType" compareValue="DESC">
+											DESC ,
+											</isEqual>
+											<isEqual property="sortType" compareValue="ASC">
+											ASC ,
+											</isEqual>
+											</isNotEmpty>
+											A.item_display DESC ,
+											A.REGIST_DATE DESC) AS RNUM,
+					<include refid="collpack.kms.board.dao.boardItem.sqlExtendColumnList" /> 
+				FROM   IKEP4_KMS_BD_ITEM A
+				  	   INNER JOIN IKEP4_KMS_BD_BOARD B 	ON A.BOARD_ID = B.BOARD_ID
+				  	   INNER JOIN IKEP4_EV_USER C ON C.USER_ID = A.REGISTER_ID
+				  	<isNotEmpty property="teamCode">
+						INNER JOIN IKEP4_EV_USER_GROUP H
+						ON H.USER_ID = A.REGISTER_ID
+						AND H.GROUP_ID = #teamCode#
+					</isNotEmpty>
+				WHERE  A.ITEM_DELETE = 0
+				<isNotEmpty property="gubun" >
+				<isEqual property="gubun" compareValue="0">
+					AND  A.INFO_GRADE = 'E'
+				</isEqual>
+				<isEqual property="gubun" compareValue="1">
+					AND  A.INFO_GRADE = 'E'
+				</isEqual>
+				<isEqual property="gubun" compareValue="2">
+					AND  A.INFO_GRADE IN ('A','B')
+				</isEqual>
+				</isNotEmpty>
+				  AND  B.IS_DELETE = 0
+<isEqual property="gubun" compareValue="0"> 				  
+				  AND  A.REGISTER_ID = #userId#
+</isEqual>					  
+			<isNotEmpty property="searchColumn">
+				<isNotEmpty property="searchWord">
+					<isEqual property="searchColumn" compareValue="title">
+					  AND	A.TITLE LIKE #searchWord# + '%'
+					</isEqual>
+					<isEqual property="searchColumn" compareValue="registerName">
+					  AND	A.REGISTER_NAME LIKE #searchWord# + '%'
+					</isEqual>
+				</isNotEmpty>
+			</isNotEmpty>
+			<isNotEmpty property="workPlaceName">			
+				AND
+				C.WORK_PLACE_CODE IN (
+					SELECT WORK_PLACE_CODE FROM IKEP4_EV_WORK_PLACE WHERE WORK_PLACE_NAME = #workPlaceName#
+				)
+			</isNotEmpty>	
+			<isNotEmpty property="registerName">
+				AND A.REGISTER_NAME LIKE '%' + #registerName# + '%'
+			</isNotEmpty>
+			<isNotEmpty property="startDate">
+			<![CDATA[   
+			AND A.REGIST_DATE >= #startDate#
+			]]> 
+			</isNotEmpty>
+			
+			<isNotEmpty property="endDate">
+			<![CDATA[   
+			AND A.REGIST_DATE <= #endDate#
+			]]> 
+			</isNotEmpty>
+			
+			/* ===========================================END  */  
+		<![CDATA[   
+			) E
+			WHERE 
+				RNUM <=  #endRowIndex# /* 종료  */
+		) TBL
+		WHERE 
+			RNUM >  #startRowIndex# /* 시작 */
+		]]> 
+	</select>	
+	
+	<select id="expertList" parameterClass="String" resultMap="expertResult">  
+		select a.category_id as CATEGORY_ID,
+		a.category_name as CATEGORY_NAME,
+		b.user_id as USER_ID,
+		c.user_name as USER_NAME,
+		c.team_name as TEAM_NAME,
+	d.job_title_name as JOB_TITLE_NAME
+		from ikep4_kms_expert_field a 
+		left outer join ikep4_kms_expert b
+		on b.category_id = a.category_id 
+		and a.delete_yn = 'Y'
+	
+		left outer join ikep4_ev_user c 
+		on c.user_id = b.user_id
+		and c.user_status = 'C'
+		left outer join IKEP4_EV_JOB_TITLE d
+	on d.job_title_code = c.job_title_code
+	</select>		
+	
+	<insert id="insertTargetGroup" parameterClass="kmsBoardItem"> 
+		INSERT INTO ikep4_kms_announce_target ( /* [boardItem_SqlMap.xml] collpack.kms.board.dao.boardItem.insertTargetGroup */
+			ITEM_ID, 
+			TARGET_ID, 
+			REGISTER_ID, 
+			REGISTER_NAME, 
+			REGIST_DATE, 
+			UPDATER_ID, 
+			UPDATER_NAME, 
+			UPDATE_DATE,
+			IS_GROUP
+		) VALUES (
+			#itemId#, 
+			#targetGroupId#, 
+			#registerId#, 
+			#registerName#, 
+			<isNotEmpty property="registDate">#registDate#,</isNotEmpty>
+			<isEmpty property="registDate">CURRENT_TIMESTAMP,</isEmpty>
+			#updaterId#, 
+			#updaterName#, 
+			<isNotEmpty property="registDate">#registDate#,</isNotEmpty>
+			<isEmpty property="registDate">CURRENT_TIMESTAMP,</isEmpty>
+			#isGroup#
+		) 
+	</insert>	
+	
+	<select id="selectTargetGroup" parameterClass="String" resultMap="kmsBoardItemTarget">  
+		select a.target_id as targetGroupId, b.group_name as targetGroupName
+		from ikep4_kms_announce_target a 
+		inner join IKEP4_EV_GROUP b 
+		on a.target_id = b.group_id
+		where a.item_id = #itemId#
+		and a.is_group = 'Y'
+	</select>
+	
+	<select id="selectTargetUser" parameterClass="String" resultMap="kmsBoardItemTarget">  
+		select a.target_id as targetGroupId, b.user_name as targetGroupName
+		from ikep4_kms_announce_target a 
+		inner join IKEP4_EV_USER b 
+		on a.target_id = b.user_id
+		where a.item_id = #itemId#
+		and a.is_group = 'N'
+	</select>
+	
+	<delete id="deleteTargetGroup" parameterClass="string"> 
+		DELETE FROM ikep4_kms_announce_target /* [BoardItem_SqlMap.xml] collpack.kms.board.dao.boardItem.deleteTargetGroup */
+		WHERE 
+			ITEM_ID = #itemId# 
+	</delete>   
+	
+	<select id="selectTargetUserList" parameterClass="String" resultMap="kmsBoardItemTargetUser">  
+		WITH CTE AS 
+		(
+			SELECT GROUP_ID, PARENT_GROUP_ID
+			FROM IKEP4_EV_GROUP
+			WHERE GROUP_ID = #id#
+			UNION ALL
+			SELECT TBL.GROUP_ID, TBL.PARENT_GROUP_ID
+			FROM IKEP4_EV_GROUP TBL, CTE
+			WHERE TBL.PARENT_GROUP_ID = CTE.GROUP_ID		
+		)
+		SELECT 		
+		  c.user_id as targetUserId
+		FROM 
+			CTE a inner join ikep4_ev_user_group b on a.GROUP_ID = b.group_id inner join IKEP4_EV_USER c on c.user_id = b.user_id
+			where c.user_status = 'C'
+			group by c.user_id
+	</select>
+	
+	<select id="selectKeyInfoUserList" parameterClass="String" resultMap="kmsBoardItemTargetUser">  
+		SELECT 		
+		  user_id as targetUserId
+		FROM 
+			ikep4_kms_key_info_permission
+			where alarm_yn = 'Y'
+	</select>
+	
+	<select id="getUserInfoList"  resultClass="User">
+		select user_id "userId", user_name "userName", USER_ENGLISH_NAME "userEnglishName", mail "mail", MAIL_PASSWORD "mailPassword"
+		from ikep4_ev_user
+		where user_id in 
+	      <iterate open="(" close=")" conjunction=",">
+	      		#[]#
+	      </iterate>		
+	</select>
+</sqlMap> 

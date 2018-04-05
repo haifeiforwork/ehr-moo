@@ -1,0 +1,843 @@
+/* 
+ * Copyright (C) 2011 LG CNS Inc.
+ * All rights reserved.
+ *
+ * 모든 권한은 LG CNS(http://www.lgcns.com)에 있으며,
+ * LG CNS의 허락없이 소스 및 이진형식으로 재배포, 사용하는 행위를 금지합니다.
+ */
+package com.lgcns.ikep4.portal.admin.member.web;
+
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.codehaus.jackson.map.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.support.SessionStatus;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.lgcns.ikep4.support.fileupload.service.FileService;
+import com.lgcns.ikep4.support.security.acl.annotations.AccessType;
+import com.lgcns.ikep4.support.security.acl.annotations.Attribute;
+import com.lgcns.ikep4.support.security.acl.annotations.IsAccess;
+import com.lgcns.ikep4.support.security.acl.validation.AccessingResult;
+import com.lgcns.ikep4.support.user.code.model.CompanyCode;
+import com.lgcns.ikep4.support.user.code.model.JobDuty;
+import com.lgcns.ikep4.support.user.group.model.Group;
+import com.lgcns.ikep4.support.user.group.service.GroupService;
+import com.lgcns.ikep4.support.user.member.model.User;
+import com.lgcns.ikep4.support.user.member.model.UserSearchCondition;
+import com.lgcns.ikep4.support.user.member.service.UserService;
+import com.lgcns.ikep4.framework.common.exception.IKEP4AjaxException;
+import com.lgcns.ikep4.framework.common.exception.IKEP4AjaxValidationException;
+import com.lgcns.ikep4.framework.common.exception.IKEP4AuthorizedException;
+import com.lgcns.ikep4.framework.validator.annotation.ValidEx;
+import com.lgcns.ikep4.framework.web.BaseController;
+import com.lgcns.ikep4.portal.main.model.Portal;
+import com.lgcns.ikep4.util.encrypt.EncryptUtil;
+import com.lgcns.ikep4.util.excel.ExcelUtil;
+import com.lgcns.ikep4.util.http.HttpUtil;
+import com.lgcns.ikep4.util.jco.PasswordModifyRFC;
+import com.lgcns.ikep4.util.lang.StringUtil;
+
+
+/**
+ * 사용자 관리 화면 컨트롤러
+ * 
+ * @author 양새로훈(yang.sae@gmail.com)
+ * @version $Id: UserController.java 19179 2012-06-11 07:47:15Z malboru80 $
+ */
+@Controller
+@RequestMapping(value = "/portal/admin/member/user")
+public class UserController extends BaseController {
+
+	@Autowired
+	private UserService userService;
+
+	@Autowired
+	private FileService fileService;
+
+	@Autowired
+	private GroupService groupService;
+	
+	private static final String ROOT_GROUP_ID = "A00000";
+
+	/**
+	 * 초기 사용자 트리를 그림
+	 * 
+	 * @param accessResult 사용자 권한체크 결과
+	 * @param searchCondition 목록 검색 조건
+	 * @return ModelAndView
+	 */
+	@RequestMapping("/getList.do")
+	public ModelAndView list(
+			@IsAccess(@Attribute(type = AccessType.SYSTEM, className = "Portal", operationName = { "MANAGE" }, resourceName = "Portal")) AccessingResult accessResult,
+			UserSearchCondition searchCondition) {
+
+		// FALSE인 경우 미승인 된 것이므로 IKEP4AuthorizedException을
+		// THROW하여 common/notAuthorized.jsp로 페이지 전환
+		if (!accessResult.isAccess()) {
+			throw new IKEP4AuthorizedException();
+		}
+
+		ModelAndView mav = new ModelAndView("portal/admin/member/user/list");
+		// 첫 팝업 호출시 ORG 타입으로 호출
+		List<Map<String, Object>> list = getOrgGroupAndUser(null);
+		Map<String, Object> items = new HashMap<String, Object>();
+		items.put("items", list);
+
+		String listJson = "";
+
+		try {
+			ObjectMapper mapper = new ObjectMapper();
+			listJson = mapper.writeValueAsString(items);
+		} catch (Exception ex) {
+			throw new IKEP4AjaxException("code", ex);
+		}
+
+		mav.addObject("deptItems", listJson);
+		mav.addObject("searchCondition", searchCondition);
+
+		return mav;
+	}
+
+	/**
+	 * 우측의 폼 화면에 들어가는 사용자 정보를 가져온다. 첫 로딩시에는 빈 폼을 보여주고 사용자가 리스트에서 항목을 선택하는 경우 해당
+	 * 항목의 ID를 이용하여 정보를 가져와서 보여준다.
+	 * 
+	 * @param accessResult 사용자 권한체크 결과
+	 * @param userId 상세정보를 요청받은 사용자 ID
+	 * @param model Model 객체
+	 * @return String 상세정보화면 URI
+	 */
+	@RequestMapping(value = "/form.do", method = RequestMethod.GET)
+	public String getForm(
+			@IsAccess(@Attribute(type = AccessType.SYSTEM, className = "Portal", operationName = { "MANAGE" }, resourceName = "Portal")) AccessingResult accessResult,
+			String userId, Model model) {
+
+		// FALSE인 경우 미승인 된 것이므로 IKEP4AuthorizedException을
+		// THROW하여 common/notAuthorized.jsp로 페이지 전환
+		if (!accessResult.isAccess()) {
+			throw new IKEP4AuthorizedException();
+		}
+
+		User user = null;
+		User sessionUser = (User) getRequestAttribute("ikep.user");
+		Portal portal = (Portal) getRequestAttribute("ikep.portal");
+		String strReturnForm = "portal/admin/member/user/form";
+		
+
+		if (!StringUtil.isEmpty((userId))) {
+
+			user = userService.read(userId);
+			List<Map<String, String>> groupList = userService.selectGroupForUser(userId);
+			user.setCheckIdFlag("modify");
+
+			if (user.getGroupId() != null && !"".equals(user.getGroupId())) {
+				user.setIsRepresentGroup("1");
+			} else {
+				user.setIsRepresentGroup("0");
+			}
+
+//			Group leadingGroup = userService.selectLeadingGroupAll(userId);
+			List<Group> groupsForLeader = userService.selectLeadingGroupAll(userId);
+
+//			if (leadingGroup != null) {
+//				user.setLeadingGroupId(leadingGroup.getGroupId());
+//			}
+
+			model.addAttribute("groupList", groupList);
+			model.addAttribute("groupsForLeader", groupsForLeader);
+			//무림 사용자와 일반 사용자를 분리한다...
+			if(!StringUtil.isEmpty(user.getEmpNo()))
+			{
+				strReturnForm = "portal/admin/member/user/editform";				
+			}
+			else
+			{
+				strReturnForm = "portal/admin/member/user/editContractform";
+			}
+		} else {
+			user = new User();
+			user.setIsRepresentGroup("1");
+			user.setUserStatus("C");
+			user.setCheckIdFlag("new");
+			strReturnForm = "portal/admin/member/user/addContractform";
+		}
+		
+		
+		List<JobDuty> jobDutyCodeList = new ArrayList<JobDuty>();
+			
+		JobDuty jobDutyEmpty = new JobDuty();		
+		jobDutyEmpty.setJobDutyCode(null);
+		jobDutyEmpty.setJobDutyName("직책없음");
+		
+		jobDutyCodeList.add(jobDutyEmpty);		
+		jobDutyCodeList.addAll(userService.selectJobDutyAll(portal.getPortalId()));
+		
+		List<CompanyCode> companyCodeList = new ArrayList<CompanyCode>();
+	
+		CompanyCode companyCodeEmpty = new CompanyCode();		
+		companyCodeEmpty.setCompanyCode(null);
+		companyCodeEmpty.setCompanyCodeName("회사없음");
+		
+		companyCodeList.add(companyCodeEmpty);		
+		companyCodeList.addAll(userService.selectCompanyCodeAll(portal.getPortalId()));
+
+		model.addAttribute("jobClassList", userService.selectJobClassAll(portal.getPortalId()));
+		model.addAttribute("timezoneList", userService.selectTimezoneAll(sessionUser.getLocaleCode()));
+		model.addAttribute("localeList", userService.selectLocaleCodeAll(sessionUser.getLocaleCode()));
+		model.addAttribute("nationList", userService.selectNationAll(sessionUser.getLocaleCode()));
+		model.addAttribute("companyList", companyCodeList);
+		model.addAttribute("workPlaceList", userService.selectWorkPlaceCodeAll(portal.getPortalId()));
+		model.addAttribute("jobDutyList", jobDutyCodeList);		
+		model.addAttribute("jobTitleList", userService.selectJobTitleAll(portal.getPortalId()));
+		model.addAttribute("user", user);
+		model.addAttribute("userLocaleCode", sessionUser.getLocaleCode());
+
+		return strReturnForm;
+	}
+
+	/**
+	 * 등록/수정시에 해당 사용자 ID의 중복을 체크하여 중복된 경우 "duplicated" 중복이 아닌 경우 "success"라는
+	 * 문자열을 반환한다.
+	 * 
+	 * @param accessResult 사용자 권한체크 결과
+	 * @param id 중복을 체크할 사용자 ID
+	 * @return String 중복 유무를 알려주는 문자열 Flag
+	 */
+	@RequestMapping(value = "/checkId.do")
+	public @ResponseBody
+	String checkId(
+			@IsAccess(@Attribute(type = AccessType.SYSTEM, className = "Portal", operationName = { "MANAGE" }, resourceName = "Portal")) AccessingResult accessResult,
+			String id) {
+
+		// FALSE인 경우 미승인 된 것이므로 IKEP4AuthorizedException을
+		// THROW하여 common/notAuthorized.jsp로 페이지 전환
+		if (!accessResult.isAccess()) {
+			throw new IKEP4AuthorizedException();
+		}
+
+		boolean result = userService.exists(id);
+
+		if (result) {
+			return "duplicated";
+		} else {
+			return "success";
+		}
+	}
+
+	/**
+	 * 사용자을 신규 등록하거나 수정한다. ID가 중복되는 경우 수정, 중복되지 않는 경우 생성 프로세스를 진행한다. 생성, 수정이 끝난
+	 * 후에는 해당 사용자의 ID를 반환하여 form을 불러오는데 사용하는데
+	 * 
+	 * @param user 신규/수정 등록하고자 하는 사용자 객체
+	 * @param result BindingResult 객체
+	 * @param status SessionStatus 객체
+	 * @param request HttpServletRequest 객체
+	 * @param accessResult 사용자 권한체크 결과
+	 * @return id 최종 등록한 사용자의 상세 정보를 가져오기 위한 사용자 ID
+	 */
+	@RequestMapping(value = "/createUser.do", method = RequestMethod.POST)
+	public @ResponseBody
+	String onSubmit(
+			@IsAccess(@Attribute(type = AccessType.SYSTEM, className = "Portal", operationName = { "MANAGE" }, resourceName = "Portal")) @ValidEx User user,
+			BindingResult result, SessionStatus status, HttpServletRequest request, AccessingResult accessResult) {
+
+		// FALSE인 경우 미승인 된 것이므로 IKEP4AuthorizedException을
+		// THROW하여 common/notAuthorized.jsp로 페이지 전환
+		if (!accessResult.isAccess()) {
+			throw new IKEP4AuthorizedException();
+		}
+
+		if (result.hasErrors()) {
+			throw new IKEP4AjaxValidationException(result, messageSource);
+		}
+
+		User sessionUser = (User) getRequestAttribute("ikep.user");
+		
+		Group group = new Group();
+		group = groupService.read(user.getGroupId());
+
+		String id = user.getUserId();
+		String preUserPassword = request.getParameter("preUserPassword");
+		String preMailPassword = request.getParameter("preMailPassword");
+		String teamName = group.getGroupName();
+		String teamEnglishName = group.getGroupEnglishName();
+		String isRepresentGroup = StringUtil.nvl(user.getIsRepresentGroup(), "0");
+
+		Portal portal = (Portal) getRequestAttribute("ikep.portal");
+		boolean isCodeExist = userService.exists(id);
+
+		if (isCodeExist) { // 수정
+			user.setIsRepresentGroup(isRepresentGroup);
+			user.setTeamName(teamName);
+			user.setTeamEnglishName(teamEnglishName);
+			user.setRegisterId(sessionUser.getUserId());
+			user.setRegisterName(sessionUser.getUserName());
+			user.setUpdaterId(sessionUser.getUserId());
+			user.setUpdaterName(sessionUser.getUserName());
+
+			/* 무림제지 비밀번호 변경기능을 관리페이지에서 따로 분리합니다. 2012.8.27
+			if (!user.getUserPassword().equals(preUserPassword)) {
+				user.setUserPassword(EncryptUtil.encryptSha(user.getUserId() + user.getUserPassword()));
+			}
+			*/
+
+			//if (!user.getMailPassword().equals(preMailPassword)) {
+			//	user.setMailPassword(EncryptUtil.encryptText(user.getMailPassword()));
+			//}
+			
+			userService.update(user);
+		} else { // 생성
+			user.setIsRepresentGroup(isRepresentGroup);
+			//user.setUserPassword(EncryptUtil.encryptSha(user.getUserId() + user.getUserPassword()));//ikep 원래소스
+			user.setUserPassword(EncryptUtil.encryptText( user.getUserPassword()));/// 무림제지 2012.08.31
+			//user.setMailPassword(EncryptUtil.encryptText(user.getMailPassword()));
+			user.setTeamName(teamName);
+			user.setTeamEnglishName(teamEnglishName);
+			user.setPortalId(portal.getPortalId());
+			user.setRegisterId(sessionUser.getUserId());
+			user.setRegisterName(sessionUser.getUserName());
+			user.setUpdaterId(sessionUser.getUserId());
+			user.setUpdaterName(sessionUser.getUserName());
+			
+			if(user.getLeader() == null || user.getLeader().equals(""))
+				user.setLeader("0");
+
+			userService.create(user);
+		}
+
+		status.setComplete();
+
+		return id;
+	}
+	
+
+	/**
+	 * 사용자를 삭제한다.
+	 * 
+	 * @param user 삭제할 사용자 객체
+	 * @param accessResult 사용자 권한체크 결과
+	 * @return String redirect 되는 URI
+	 */
+	@RequestMapping(value = "/deleteUser.do")
+	public String delete(
+			@IsAccess(@Attribute(type = AccessType.SYSTEM, className = "Portal", operationName = { "MANAGE" }, resourceName = "Portal")) User user,
+			AccessingResult accessResult) {
+
+		// FALSE인 경우 미승인 된 것이므로 IKEP4AuthorizedException을
+		// THROW하여 common/notAuthorized.jsp로 페이지 전환
+		if (!accessResult.isAccess()) {
+			throw new IKEP4AuthorizedException();
+		}
+
+		String pictureId = user.getPictureId();
+		String profilePictureId = user.getProfilePictureId();
+
+		if(!StringUtil.isEmpty(pictureId)) {
+			fileService.removeFileLink(pictureId, user.getUserId(), "PO");
+		}
+		if(!StringUtil.isEmpty(profilePictureId)) {
+			fileService.createFileLink(profilePictureId, user.getUserId(), "PO", user);
+		}
+		
+		userService.delete(user);
+
+		return "redirect:/portal/admin/member/user/getList.do";
+	}
+
+	/**
+	 * 해당 그룹에 속한 사용자를 가져온다.
+	 * 
+	 * @param accessResult 사용자 권한체크 결과
+	 * @param groupId 조회할 그룹 ID
+	 * @param response HttpServletResponse 객체
+	 * @return item 그룹에 해당하는 사용자 정보가 담긴 Map
+	 */
+	@RequestMapping("/requestGroupChildren.do")
+	@ResponseStatus(HttpStatus.OK)
+	public @ResponseBody
+	Map<String, Object> requestGroupChildren(
+			@IsAccess(@Attribute(type = AccessType.SYSTEM, className = "Portal", operationName = { "MANAGE" }, resourceName = "Portal")) AccessingResult accessResult,
+			@RequestParam(value = "groupId", required = false) String groupId, HttpServletResponse response) {
+
+		String tempGroupId = groupId;
+		
+		// FALSE인 경우 미승인 된 것이므로 IKEP4AuthorizedException을
+		// THROW하여 common/notAuthorized.jsp로 페이지 전환
+		if (!accessResult.isAccess()) {
+			throw new IKEP4AuthorizedException();
+		}
+
+		if (groupId == null || groupId.equals("")) {
+			tempGroupId = ROOT_GROUP_ID;
+		}
+
+		List<Map<String, Object>> list = null;
+		Map<String, Object> item = new HashMap<String, Object>();
+
+		try {
+			list = getOrgGroupAndUser(tempGroupId);
+
+			item.put("items", list);
+
+		} catch (Exception ex) {
+			throw new IKEP4AjaxException("code", ex);
+		}
+
+		return item;
+	}
+
+	/**
+	 * 해당 그룹에 대한 그룹과 사용자 정보를 가져옴
+	 * 
+	 * @param groupId 조회할 그룹의 ID
+	 * @return
+	 */
+	private List<Map<String, Object>> getOrgGroupAndUser(String groupId) {
+
+		User sessionuser = (User) getRequestAttribute("ikep.user");
+
+		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+
+		Group searchgroup = new Group();
+		searchgroup.setGroupId(groupId);
+		searchgroup.setRegisterId(sessionuser.getUserId());
+
+		List<Group> groupList = groupService.selectOrgGroup(searchgroup);
+		for (Group group : groupList) {
+			Map<String, Object> map = new HashMap<String, Object>();
+			map.put("type", "group");
+			if (sessionuser.getLocaleCode().equals("ko")) {
+				map.put("name", group.getGroupName());
+			} else {
+				map.put("name", group.getGroupEnglishName());
+			}
+			map.put("code", group.getGroupId());
+			map.put("groupTypeId", group.getGroupTypeId());
+			map.put("parent", group.getParentGroupId());
+			map.put("hasChild", group.getChildGroupCount());
+			list.add(map);
+		}
+
+		List<User> userList = userService.selectAllForTree(sessionuser.getLocaleCode(), groupId, sessionuser.getUserId());
+		for (User user : userList) {
+			Map<String, Object> map = new HashMap<String, Object>();
+			map.put("type", "user");
+			if (sessionuser.getLocaleCode().equals("ko")) {
+				map.put("name", user.getUserName());
+				map.put("jobTitleName", user.getJobTitleName());
+				map.put("teamName", user.getTeamName());
+			} else {
+				map.put("name", user.getUserEnglishName());
+				map.put("jobTitleName", user.getJobTitleEnglishName());
+				map.put("teamName", user.getTeamEnglishName());
+			}
+			map.put("code", "");
+			map.put("parent", user.getGroupId());
+			map.put("id", user.getUserId());
+			map.put("empNo", user.getEmpNo());
+			map.put("email", user.getMail());
+			map.put("mobile", user.getMobile());
+			list.add(map);
+		}
+
+		return list;
+	}
+
+	/**
+	 * MS Office Excel을 이용하여 사용자를 대량 입력하기 위한 양식을 내려받는 함수
+	 * 
+	 * @param accessResult 사용자 권한체크 결과
+	 * @param req HttpServletRequest 객체
+	 * @return mav
+	 */
+	@RequestMapping("/excelForm.do")
+	public ModelAndView excelForm(
+			@IsAccess(@Attribute(type = AccessType.SYSTEM, className = "Portal", operationName = { "MANAGE" }, resourceName = "Portal")) AccessingResult accessResult,
+			HttpServletRequest req) {
+
+		// FALSE인 경우 미승인 된 것이므로 IKEP4AuthorizedException을
+		// THROW하여 common/notAuthorized.jsp로 페이지 전환
+		if (!accessResult.isAccess()) {
+			throw new IKEP4AuthorizedException();
+		}
+
+		ModelAndView mav = new ModelAndView("portal/admin/member/user/excelForm");
+
+		// 더블 서밋방지 Token 셋팅
+		String token = HttpUtil.setToken(req);
+		mav.addObject("token", token);
+
+		return mav;
+	}
+
+	/**
+	 * 대량 입력을 위한 Excel 파일을 업로드하는 함수
+	 * 
+	 * @param accessResult 사용자 권한체크 결과
+	 * @param file 업로드할 Excel 파일
+	 * @param req HttpServletRequest 객체
+	 * @return mav
+	 */
+	@RequestMapping("/excelUpload.do")
+	public ModelAndView excelUpload(
+			@IsAccess(@Attribute(type = AccessType.SYSTEM, className = "Portal", operationName = { "MANAGE" }, resourceName = "Portal")) AccessingResult accessResult,
+			@RequestParam("file") CommonsMultipartFile file, HttpServletRequest req) {
+
+		// FALSE인 경우 미승인 된 것이므로 IKEP4AuthorizedException을
+		// THROW하여 common/notAuthorized.jsp로 페이지 전환
+		if (!accessResult.isAccess()) {
+			throw new IKEP4AuthorizedException();
+		}
+
+		ModelAndView mav = new ModelAndView("portal/admin/member/user/excelResult");
+
+		try {
+
+			// 더블 서밋방지 Token 체크
+			if (HttpUtil.isValidToken(req)) {
+
+				InputStream inp = file.getInputStream();
+
+				User userSession = (User) getRequestAttribute("ikep.user");
+				Portal portal = (Portal) getRequestAttribute("ikep.portal");
+
+				String className = "com.lgcns.ikep4.support.user.member.model.User";
+
+				List<Object> list = ExcelUtil.readExcel(className, inp, 1);
+
+				int successCount = 0;
+				int failCount = 0;
+				List<User> userList = new ArrayList<User>();
+
+				for (Object obj : list) {
+
+					try {
+
+						User user = (User) obj;
+						
+						if(user.getUserId()==null){
+							user.setSuccessYn("N");
+							user.setErrMsg("UserId field is empty : Check file template or row data");
+							userList.add(user);
+							failCount++;
+							continue;
+						}
+						if(user.getUserPassword()==null){
+							user.setSuccessYn("N");
+							user.setErrMsg("UserPassword field is empty : Check file template or row data");
+							userList.add(user);
+							failCount++;
+							continue;
+						}
+						if(user.getUserName()==null){
+							user.setSuccessYn("N");
+							user.setErrMsg("UserName field is empty : Check file template or row data");
+							userList.add(user);
+							failCount++;
+							continue;
+						}
+						if(user.getUserEnglishName()==null){
+							user.setSuccessYn("N");
+							user.setErrMsg("UserEnglishName field is empty : Check file template or row data");
+							userList.add(user);
+							failCount++;
+							continue;
+						}
+						
+						if(user.getUserStatus()==null){
+							user.setSuccessYn("N");
+							user.setErrMsg("UserStatus field is empty : Check file template or row data");
+							userList.add(user);
+							failCount++;
+							continue;
+						}
+						if(user.getGroupId()==null){
+							user.setSuccessYn("N");
+							user.setErrMsg("GroupId field is empty : Check file template or row data");
+							userList.add(user);
+							failCount++;
+							continue;
+						}
+						if(user.getLeader()==null){
+							user.setSuccessYn("N");
+							user.setErrMsg("Leader field is empty : Check file template or row data");
+							userList.add(user);
+							failCount++;
+							continue;
+						}
+						if(user.getJobClassName()==null){
+							user.setSuccessYn("N");
+							user.setErrMsg("JobClassName field is empty : Check file template or row data");
+							userList.add(user);
+							failCount++;
+							continue;
+						}
+						if(user.getJobRankName()==null){
+							user.setSuccessYn("N");
+							user.setErrMsg("JobRankName field is empty : Check file template or row data");
+							userList.add(user);
+							failCount++;
+							continue;
+						}
+						if(user.getJobDutyName()==null){
+							user.setSuccessYn("N");
+							user.setErrMsg("JobDutyName field is empty : Check file template or row data");
+							userList.add(user);
+							failCount++;
+							continue;
+						}
+						if(user.getJobPositionName()==null){
+							user.setSuccessYn("N");
+							user.setErrMsg("JobPositionName field is empty : Check file template or row data");
+							userList.add(user);
+							failCount++;
+							continue;
+						}
+						if(user.getJobTitleName()==null){
+							user.setSuccessYn("N");
+							user.setErrMsg("JobTitleName field is empty : Check file template or row data");
+							userList.add(user);
+							failCount++;
+							continue;
+						}
+						
+						
+						user.setRegisterId(userSession.getUserId());
+						user.setRegisterName(userSession.getUserName());
+						user.setUpdaterId(userSession.getUserId());
+						user.setUpdaterName(userSession.getUserName());
+						user.setPortalId(portal.getPortalId());
+						//user.setUserPassword(EncryptUtil.encryptSha(user.getUserId() + user.getUserPassword()));//ikep 원래소스
+						user.setUserPassword(EncryptUtil.encryptText(user.getUserPassword()));//무림제지 2012.08.31
+						
+						try{
+							user = setData(user);
+						}catch(NullPointerException ne){
+							user.setSuccessYn("N");
+							user.setErrMsg("Mandatory field is empty : Check row data");
+							userList.add(user);
+							failCount++;
+							continue;
+						}
+
+						if (userService.exists(user.getUserId())) {
+							userService.updateForExcel(user);
+						} else {
+							userService.createForExcel(user);
+						}
+
+						user.setSuccessYn("Y");
+						successCount++;
+
+					} catch (Exception e) {
+
+						User user = (User) obj;
+						user.setSuccessYn("N");
+						user.setErrMsg(e.getMessage());
+						userList.add(user);
+						failCount++;
+					}
+				}
+
+				mav.addObject("userList", userList);
+				mav.addObject("totalCount", list.size());
+				mav.addObject("successCount", successCount);
+				mav.addObject("failCount", failCount);
+
+				// Token 초기화
+				String token = HttpUtil.setToken(req);
+				mav.addObject("token", token);
+			}
+
+		} catch (Exception e) {
+			mav.addObject("totalCount", 0);
+			return mav;
+		}
+
+		return mav;
+	}
+
+	/**
+	 * 엑셀 입력에 필요한 사용자 정보를 세팅한다.
+	 * 
+	 * @param user 정보를 세팅할 사용자 객체
+	 * @return User 객체
+	 */
+	private User setData(User user) {
+
+		if (user.getUserStatus().equals("재직")) {
+			user.setUserStatus("C");
+		} else if (user.getUserStatus().equals("휴직")) {
+			user.setUserStatus("H");
+		} else {
+			user.setUserStatus("T");
+		}
+
+		if (user.getLeader().equals("예")) {
+			user.setLeader("1");
+		} else {
+			user.setLeader("0");
+		}
+
+		Map<String, String> param = new HashMap<String, String>();
+		param.put("paramField", "group_name");
+		param.put("paramTable", "ikep4_ev_group");
+		param.put("paramCondition", "group_id");
+		param.put("paramValue", user.getGroupId());
+
+		user.setTeamName(userService.selectJobCode(param));
+
+		param.clear();
+		param.put("paramField", "job_class_code");
+		param.put("paramTable", "ikep4_ev_job_class");
+		param.put("paramCondition", "job_class_name");
+		param.put("paramValue", user.getJobClassName());
+
+		user.setJobClassCode(userService.selectJobCode(param));
+
+		param.clear();
+		param.put("paramField", "job_rank_code");
+		param.put("paramTable", "ikep4_ev_job_rank");
+		param.put("paramCondition", "job_rank_name");
+		param.put("paramValue", user.getJobRankName());
+
+		user.setJobRankCode(userService.selectJobCode(param));
+
+		param.clear();
+		param.put("paramField", "job_duty_code");
+		param.put("paramTable", "ikep4_ev_job_duty");
+		param.put("paramCondition", "job_duty_name");
+		param.put("paramValue", user.getJobDutyName());
+
+		user.setJobDutyCode(userService.selectJobCode(param));
+
+		param.clear();
+		param.put("paramField", "job_position_code");
+		param.put("paramTable", "ikep4_ev_job_position");
+		param.put("paramCondition", "job_position_name");
+		param.put("paramValue", user.getJobPositionName());
+
+		user.setJobPositionCode(userService.selectJobCode(param));
+
+		param.clear();
+		param.put("paramField", "job_title_code");
+		param.put("paramTable", "ikep4_ev_job_title");
+		param.put("paramCondition", "job_title_name");
+		param.put("paramValue", user.getJobTitleName());
+
+		user.setJobTitleCode(userService.selectJobCode(param));
+
+		user.setLocaleCode("ko");
+		user.setTimezoneId("GMT000000009");
+
+		return user;
+	}
+
+	/**
+	 * 사용자의 패스워드를 초기화하는 화면을 보여줌
+	 * 
+	 * @param accessResult 사용자 권한체크 결과
+	 * @param userId 패스워드를 초기화할 사용자의 ID
+	 * @param isAllUser 전체 사용자인이 아닌지 체크하는 플래그
+	 * @return ModelAndView
+	 */
+	@RequestMapping("/initPasswordForm.do")
+	public ModelAndView initPasswordForm(
+			@IsAccess(@Attribute(type = AccessType.SYSTEM, className = "Portal", operationName = { "MANAGE" }, resourceName = "Portal")) AccessingResult accessResult,
+			String userId, String isAllUser) {
+
+		// FALSE인 경우 미승인 된 것이므로 IKEP4AuthorizedException을
+		// THROW하여 common/notAuthorized.jsp로 페이지 전환
+		if (!accessResult.isAccess()) {
+			throw new IKEP4AuthorizedException();
+		}
+
+		ModelAndView mav = new ModelAndView("portal/admin/member/user/initPasswordForm");
+
+		mav.addObject("userId", userId);
+		mav.addObject("isAllUser", isAllUser);
+
+		return mav;
+	}
+
+	/**
+	 * 사용자의 패스워드를 초기화한다.
+	 * 
+	 * @param accessResult 사용자 권한체크 결과
+	 * @param userId 패스워드를 초기화할 사용자의 ID
+	 * @param userPassword 새로 설정할 패스워드
+	 * @param isAllUser 전체 사용자인이 아닌지 체크하는 플래그
+	 * @return 성공을 알리는 문자열 플래그
+	 */
+	@RequestMapping("/initPassword.do")
+	public @ResponseBody
+	String initPassword(
+			@IsAccess(@Attribute(type = AccessType.SYSTEM, className = "Portal", operationName = { "MANAGE" }, resourceName = "Portal")) AccessingResult accessResult,
+			String userId, String userPassword, String isAllUser,  HttpServletRequest request) {
+
+		// FALSE인 경우 미승인 된 것이므로 IKEP4AuthorizedException을
+		// THROW하여 common/notAuthorized.jsp로 페이지 전환
+		if (!accessResult.isAccess()) {
+			throw new IKEP4AuthorizedException();
+		}
+
+		UserSearchCondition searchCondition = new UserSearchCondition();
+		searchCondition.setUserId(userId);
+
+		if (isAllUser != null && isAllUser.equals("Y")) {
+			searchCondition.setIsAllUser(isAllUser);
+		} else {
+			searchCondition.setIsAllUser(null);
+		}
+
+		List<User> userList = userService.selectForPassword(searchCondition);
+
+		List<User> upadteList = new ArrayList<User>();
+		for (User user : userList) {
+			//user.setUserPassword(EncryptUtil.encryptSha(user.getUserId() + userPassword));//ikep 원래소스
+			user.setUserPassword(EncryptUtil.encryptText( userPassword));//무림제지 소스 2012.08.31
+			upadteList.add(user);
+		}
+		int resultInt =0;
+		int bwresultInt =0;
+		int aporesultInt =0;
+		int tempresultInt =0;
+		userService.updateForPassword(upadteList);
+		userService.updateMsgForPassword(upadteList);
+		PasswordModifyRFC passwordModifyRFC=new PasswordModifyRFC();
+		if(userPassword.equals("a1234567")){
+			tempresultInt = passwordModifyRFC.bwPasswordReset(userId.toUpperCase(), request);
+			tempresultInt = passwordModifyRFC.sapPasswordReset(userId.toUpperCase(), request);
+			tempresultInt = passwordModifyRFC.apoPasswordReset(userId.toUpperCase(), request);
+		}else{
+			tempresultInt = passwordModifyRFC.bwPasswordReset(userId.toUpperCase(), request);
+			tempresultInt = passwordModifyRFC.sapPasswordReset(userId.toUpperCase(), request);
+			tempresultInt = passwordModifyRFC.apoPasswordReset(userId.toUpperCase(), request);
+			resultInt = passwordModifyRFC.sapPasswordModify(userId, "a1234567", userPassword ,request);
+			bwresultInt = passwordModifyRFC.bwPasswordModify(userId, "a1234567", userPassword ,request);
+			aporesultInt = passwordModifyRFC.apoPasswordModify(userId, "a1234567", userPassword ,request);
+		}
+		
+
+		return "success";
+	}
+
+}

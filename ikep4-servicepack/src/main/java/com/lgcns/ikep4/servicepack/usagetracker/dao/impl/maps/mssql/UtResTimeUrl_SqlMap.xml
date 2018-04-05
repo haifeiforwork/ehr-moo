@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="com.lgcns.ikep4.servicepack.usagetracker.utResTimeUrl" >
+	
+	<typeAlias alias="UtResTimeUrl" type="com.lgcns.ikep4.servicepack.usagetracker.model.UtResTimeUrl"/>
+	<typeAlias alias="UtSearchCondition" type="com.lgcns.ikep4.servicepack.usagetracker.search.UtSearchCondition"/>
+	
+	<select id="countBySearchCondition" parameterClass="UtSearchCondition" resultClass="int">  
+		SELECT COUNT(*) /* [UtResTimeUrl_SqlMap.xml] com.lgcns.ikep4.servicepack.usagetracker.utResTimeUrl.countBySearchCondition */
+		  FROM IKEP4_UT_RES_TIME_URL
+	     WHERE PORTAL_ID = #portalId#
+	</select>
+	
+	<select id="listBySearchCondition" parameterClass="UtSearchCondition" resultClass="UtResTimeUrl">  
+		SELECT * /* [UtResTimeUrl_SqlMap.xml] com.lgcns.ikep4.servicepack.usagetracker.utResTimeUrl.listBySearchCondition */
+		  FROM ( 
+			     SELECT  A.*
+			     FROM ( 
+				         SELECT Row_number() OVER (ORDER BY REGIST_DATE desc) AS RNUM,
+					         	RES_TIME_URL_ID  resTimeUrlId,
+								RES_TIME_URL_NAME  resTimeUrlName,
+								RES_TIME_URL  resTimeUrl,
+								USAGE  usage,
+								REGISTER_ID  registerId,
+								REGISTER_NAME  registerName,
+								REGIST_DATE  registDate
+				           FROM  IKEP4_UT_RES_TIME_URL
+		    			  WHERE  PORTAL_ID = #portalId#
+			  
+		    	) A WHERE RNUM <![CDATA[<=]]>   #endRowIndex# /* 종료  */
+		) A WHERE RNUM <![CDATA[>]]>   #startRowIndex# /* 시작 */
+	</select>
+	
+	<select id="listResTimeUrl" parameterClass="java.lang.String" resultClass="UtResTimeUrl">
+		/* [UtResTimeUrl_SqlMap.xml] com.lgcns.ikep4.servicepack.usagetracker.utResTimeUrl.listResTimeUrl */  
+        SELECT 
+         	RES_TIME_URL_ID  resTimeUrlId,
+			RES_TIME_URL_NAME  resTimeUrlName,
+			RES_TIME_URL  resTimeUrl,
+			USAGE  usage,
+			REGISTER_ID  registerId,
+			REGISTER_NAME  registerName,
+			REGIST_DATE  registDate
+          FROM  IKEP4_UT_RES_TIME_URL
+ 		 WHERE  PORTAL_ID = #portalId#
+	  	 ORDER BY REGIST_DATE desc
+	</select>
+	
+	
+	
+	<delete id="remove" parameterClass="java.lang.String"> 
+	    delete  /* [UtResTimeUrl_SqlMap.xml] com.lgcns.ikep4.servicepack.usagetracker.utResTimeUrl.remove */
+	      from IKEP4_UT_RES_TIME_URL
+	     where RES_TIME_URL_ID = #resTimeUrlId#
+	</delete>
+	 
+	<select id="get" parameterClass="java.lang.String" resultClass="UtResTimeUrl"> 
+	     /* [UtResTimeUrl_SqlMap.xml] com.lgcns.ikep4.servicepack.usagetracker.utResTimeUrl.get */
+	     select RES_TIME_URL_ID  resTimeUrlId,
+				RES_TIME_URL_NAME  resTimeUrlName,
+				RES_TIME_URL  resTimeUrl,
+				USAGE  usage,
+				REGISTER_ID  registerId,
+				REGISTER_NAME  registerName,
+				REGIST_DATE  registDate           
+	       from IKEP4_UT_RES_TIME_URL
+	      where RES_TIME_URL_ID = #resTimeUrlId#
+	</select>
+	
+	<select id="existsURL" parameterClass="java.lang.String" resultClass="int"> 
+	   SELECT COUNT(*) /* [UtResTimeUrl_SqlMap.xml] com.lgcns.ikep4.servicepack.usagetracker.utResTimeUrl.existsURL */
+	     from IKEP4_UT_RES_TIME_URL
+	    where RES_TIME_URL = #resTimeUrl#
+	</select>
+	
+	<insert id="create" parameterClass="UtResTimeUrl">
+		/* [UtResTimeUrl_SqlMap.xml] com.lgcns.ikep4.servicepack.usagetracker.utResTimeUrl.create */ 
+	    insert into IKEP4_UT_RES_TIME_URL (RES_TIME_URL_ID, PORTAL_ID, RES_TIME_URL_NAME, RES_TIME_URL, USAGE, REGISTER_ID, REGISTER_NAME, REGIST_DATE)
+	    values (#resTimeUrlId#, #portalId#, #resTimeUrlName#, #resTimeUrl#, #usage#, #registerId#, #registerName#, CURRENT_TIMESTAMP)
+	</insert>
+	
+	<update id="update" parameterClass="UtResTimeUrl"> 
+	   update IKEP4_UT_RES_TIME_URL /* [utMenu_SqlMap.xml] utMenu.update */
+	      set RES_TIME_URL_NAME = #resTimeUrlName#,
+		      RES_TIME_URL = #resTimeUrl#,
+		      USAGE = #usage#
+	    where RES_TIME_URL_ID = #resTimeUrlId#
+	</update>
+	
+	<select id="getResTimeUrl" parameterClass="UtResTimeUrl" resultClass="UtResTimeUrl"> 
+	    SELECT /* [UtResTimeUrl_SqlMap.xml] com.lgcns.ikep4.servicepack.usagetracker.utResTimeUrl.getResTimeUrl */
+	    	TOP 1
+	    	RES_TIME_URL_ID  resTimeUrlId,
+			RES_TIME_URL_NAME  resTimeUrlName,
+			RES_TIME_URL  resTimeUrl,
+			USAGE  usage,
+			REGISTER_ID  registerId,
+			REGISTER_NAME  registerName,
+			REGIST_DATE  registDate
+	     from IKEP4_UT_RES_TIME_URL
+	    where RES_TIME_URL = #resTimeUrl#
+	      and PORTAL_ID = #portalId#
+	      and USAGE = 0
+	  </select>  	  
+</sqlMap>

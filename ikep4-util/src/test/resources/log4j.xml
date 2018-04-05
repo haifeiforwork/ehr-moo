@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE log4j:configuration PUBLIC "-//LOGGER" "log4j.dtd">
+
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+
+	<!-- Appenders -->
+	<appender name="console" class="org.apache.log4j.ConsoleAppender">
+		<param name="Target" value="System.out" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="[%d{HH:mm:ss.SSS}] %-5p %C{1}.%M(%F:%L) - %m%n" />
+		</layout>
+	</appender>
+	
+	<appender name="file" class="org.apache.log4j.RollingFileAppender">
+		<!-- Log 파일 생성 위치 -->
+		<param name="File" value="/logs/test/ikep4.log" />
+		<param name="Append" value="true" />
+		<param name="MaxFileSize" value="1024KB" />
+        <param name="MaxBackupIndex" value="10" />
+        <param name="ImmediateFlush" value="true" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="[%d{HH:mm:ss.SSS}] %-5p %C{1}.%M(%F:%L) - %m%n"/>
+		</layout>
+    </appender>
+
+	<!-- 3rdparty Loggers -->
+	<category name="java.sql.Connection">
+		<priority value="info"/>
+	</category>
+	<category name="java.sql.Statment">
+		<priority value="info"/>
+	</category>
+	<category name="java.sql.PreparedStatment">
+		<priority value="info"/>
+	</category>
+	<category name="java.sql.ResultSet">
+		<priority value="info"/>
+	</category>
+	
+	<logger name="org.springframework.core">
+		<level value="info" />
+	</logger>
+
+	<logger name="org.springframework.beans">
+		<level value="info" />
+	</logger>
+	
+	<logger name="org.springframework.context">
+		<level value="info" />
+	</logger>
+
+	<logger name="org.springframework.web">
+		<level value="info" />
+	</logger>
+	
+	<logger name="com.lgcns.ikep4.framework">
+		<level value="debug" />
+	</logger>
+	
+	<logger name="com.lgcns.ikep4.util">
+		<level value="debug" />
+	</logger>
+	
+
+	<!-- Root Logger -->
+	<root>
+		<priority value="warn" />
+		<appender-ref ref="console" />
+		<!-- <appender-ref ref="file"/> -->
+	</root>
+	
+</log4j:configuration>

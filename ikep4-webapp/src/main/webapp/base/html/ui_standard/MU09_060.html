@@ -1,0 +1,264 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ko">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>iKEP 4.00</title>
+<link rel="stylesheet" type="text/css" href="../../css/theme01/jquery_ui_custom.css" />
+<link rel="stylesheet" type="text/css" href="../../css/common.css" />
+<link rel="stylesheet" type="text/css" href="../../css/theme01/theme.css" />
+<script type="text/javascript" src="../../js/jquery/jquery-1.6.2.min.js"></script>
+<script type="text/javascript" src="../../js/jquery/jquery-ui-1.8.13.min.without.datepicker.js"></script>
+<script type="text/javascript" src="../../js/langResource/ko.js"></script>
+<script type="text/javascript" src="../../js/common.pack.js"></script>
+<style>
+#categorys {
+	width:100%;
+}
+#categorys thead tr {
+	height:25px;
+	text-align:center;
+}
+#categorys thead tr th {
+	border:1px solid #777;
+}
+#categorys tbody tr {
+	height:25px;
+	text-align:center;
+}
+#categorys tbody tr td {
+	border:1px solid #c8c8c8;
+	background:#eaeaea;
+}
+#categorys tbody tr td.textLeft {
+	padding-left:5px;
+}
+
+#categorys tbody tr.ui-state-highlight1 {
+	height:25px;
+	width:100%;
+	background:#000;
+}
+
+#categorys tbody tr.tr-highlight {
+     height:3em;
+     border:1px solid red;
+     background-color:red;
+}
+
+</style>
+<script type="text/javascript">
+<!--
+(function($) {
+	$(document).ready(function() {
+		// left menu setting
+		 iKEP.setLeftMenu();
+		  
+		 $("#categorys > tbody").sortable({	
+			items: "tr",
+			//helper : "clone",
+			start: function(e,ui){
+				var otherItem = ui.item.siblings().not(":empty").eq(0);
+				iKEP.debug(otherItem);
+				var itemChildren = ui.item.children();
+				otherItem.children().each(function(idx) {
+					iKEP.debug($(this).width());
+					$(itemChildren[idx]).width($(this).width()).height($(this).height());
+				});
+				//clearSelect();
+            },
+			stop: function(e,ui){
+				//sortArray();
+            },
+            placeholder: 'ui-state-highlight1',
+			revert:true
+		});
+		 
+		 
+	});
+})(jQuery);
+-->
+</script>
+</head>
+
+<body>
+
+<!--skipNavigation Start-->
+<div id="skipNavigation">
+	<p><a href="#topInfo">헤더정보영역 바로가기</a></p>
+	<p><a href="#topMenu">탑메뉴 바로가기</a></p>	
+	<p><a href="#blockHeaderSub">퀵메뉴 바로가기</a></p>
+	<p><a href="#leftMenu">레프트메뉴 바로가기</a></p>	
+	<p><a href="#mainContents">컨텐츠영역 바로가기</a></p>	
+</div>
+<!--//skipNavigation End-->
+
+<!--wrapper Start-->
+<div id="wrapper">
+
+	<!--blockContainer Start-->
+	<div id="blockContainer">
+
+		<!--blockHeader Start-->
+		<div id="blockHeader">	
+		
+			<!--topInfo Start-->	
+			<div id="topInfo">
+				<h1 class="none">헤더정보영역</h1>
+				<div id="topLogo">
+					<a href="#a"><img src="../../images/common/logo.png" alt="iKEP Logo" /></a>
+				</div>
+			</div>
+			<!--//topInfo End-->
+						
+			<!--topMenu Start-->
+			<div id="topMenu">
+				<h1 class="none">탑메뉴</h1>			
+			</div>
+			<!--//topMenu End-->		
+
+			<!--blockHeaderSub Start-->
+			<div id="blockHeaderSub">
+				<h1 class="none">퀵메뉴</h1>		
+			</div>
+			<!--//blockHeaderSub End-->
+										
+		</div>
+		<!--//blockHeader End-->
+		
+		<!--blockMain Start-->
+		<div id="blockMain">
+
+			<!--leftMenu Start-->
+			<div id="leftMenu">
+				<h1 class="none">레프트메뉴</h1>
+				<h2>Corporate Vocabulary</h2>
+				<div class="blockButton_2 mb10"> 
+					<a class="button_2" href="#a"><span><img src="../../images/icon/ic_corporate.png" alt="" />용어등록</span></a>				
+				</div>
+				<div class="left_fixed">
+					<ul>			
+						<li class="liFirst licurrent"><a href="#a">Personal</a>
+							<ul>
+								<li class="no_child"><a href="#a">My To-Do</a></li>
+								<li class="no_child licurrent"><a href="#a">완료한 업무</a></li>
+								<li class="no_child"><a href="#a">지시한 업무</a></li>		
+								<li class="no_child liLast"><a href="#a">작업 등록</a></li>							
+							</ul>					
+						</li>
+						<li class="opened"><a href="#a">Report</a>
+							<ul>
+								<li class="no_child liLast"><a href="#a">개인업무 현황</a></li>
+							</ul>
+						</li>				
+						<li class="opened"><a href="#a">Administrator</a>
+							<ul>
+								<li class="no_child liLast"><a href="#a">연계시스템</a></li>
+								<li class="no_child liLast"><a href="#a">연계업무</a></li>
+							</ul>
+						</li>					
+					</ul>
+				</div>
+			</div>	
+			<!--//leftMenu End-->
+				
+			<!--mainContents Start-->
+			<div id="mainContents" >
+
+				<!-- 0628 수정 start -->
+				<h1 class="none">컨텐츠영역</h1>
+
+				<!--pageTitle Start-->
+				<div id="pageTitle">
+					<h2>사전관리</h2>
+				</div>
+				<!--//pageTitle End-->
+								
+				<div class="corner_RoundBox01 mb10">
+					사전 목록은 Drag &amp; Drop으로 이동할 수 있습니다.
+					<div class="l_t_corner"></div>
+					<div class="r_t_corner"></div>
+					<div class="l_b_corner"></div>
+					<div class="r_b_corner"></div>					
+				</div>
+				<!-- //0628 수정 end -->
+				
+				<!--blockListTable Start-->
+				<div class="">
+					<table summary="사전관리" id="categorys" style="width:100%;">
+						<caption></caption>
+						<colgroup>
+							<col width="5%"></col>
+							<col width="60%"></col>
+							<col width="15%"></col>
+							<col width="20%"></col>
+						</colgroup>
+						<thead>
+							<tr>
+								<th scope="col">번호</th>
+								<th scope="col">사전명</th>
+								<th scope="col">등록 용어수</th>
+								<th scope="col">등록일</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>1</td>
+								<td class="textLeft">생산</td>
+								<td>220</td>
+								<td>2011.02.21.13:00:22</td>
+							</tr>
+							<tr>
+								<td>2</td>
+								<td class="textLeft"><span class="notice"><a href="#a">마케팅</a></span></td>
+								<td>213</td>
+								<td>2011.02.21.13:00:22</td>
+							</tr>
+							<tr>
+								<td>3</td>
+								<td class="textLeft">인사/노무</td>
+								<td>98</td>
+								<td>2011.02.21.13:00:22</td>
+							</tr>
+							<tr>
+								<td>4</td>
+								<td class="textLeft">IT/신기술</td>
+								<td>65</td>
+								<td>2011.02.21.13:00:22</td>
+							</tr>
+							<tr>
+								<td>5</td>
+								<td class="textLeft">모바일플랫폼</td>
+								<td>34</td>
+								<td>2011.02.21.13:00:22</td>
+							</tr>										
+						</tbody>
+					</table>
+				</div>
+				<!--//blockListTable End-->
+				
+				<div class="blockBlank_10px"></div>
+				
+				<!--blockButton Start-->
+				<div class="blockButton"> 
+					<ul>
+						<li><a class="button" href="#a"><span>등록</span></a></li>
+						<li><a class="button" href="#a"><span>수정</span></a></li>
+						<li><a class="button" href="#a"><span>삭제</span></a></li>
+					</ul>
+				</div>
+				<!--//blockButton End-->
+
+			</div>
+			<!--//mainContents End-->
+			<div class="clear"></div>
+		</div>
+		<!--//blockMain End-->
+		
+	</div>
+	<!--//blockContainer End-->
+	
+		
+</div>
+<!--//wrapper End-->
+</body>
+</html>

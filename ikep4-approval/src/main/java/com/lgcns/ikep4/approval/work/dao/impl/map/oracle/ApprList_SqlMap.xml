@@ -1,0 +1,2514 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="com.lgcns.ikep4.approval.work.dao.ApprList" >
+	<typeAlias alias="ApprList"					type="com.lgcns.ikep4.approval.work.model.ApprList"/>
+	<typeAlias alias="ApprListSearchCondition"	type="com.lgcns.ikep4.approval.work.search.ApprListSearchCondition"/>
+	
+	<resultMap id="ApprListResult" class="ApprList"> 
+		<result property="apprId" 				column="APPR_ID" 			jdbcType="VARCHAR"/>
+		<result property="formId" 				column="FORM_ID" 			jdbcType="VARCHAR"/>
+		<result property="formName" 			column="FORM_NAME" 			jdbcType="VARCHAR"/>
+		<result property="apprDocType" 			column="APPR_DOC_TYPE" 		jdbcType="VARCHAR"/>
+		<result property="apprDocNo" 			column="APPR_DOC_NO" 		jdbcType="VARCHAR"/>
+		<result property="isHidden" 			column="IS_HIDDEN" 			jdbcType="VARCHAR"/>
+		<result property="codeName" 		    column="CODE_NAME" 			jdbcType="VARCHAR"/>
+		<result property="apprTitle" 			column="APPR_TITLE" 		jdbcType="VARCHAR"/>
+		<result property="apprReqDate"			column="APPR_REQ_DATE" 		jdbcType="TIMESTAMP"/>
+		<result property="apprDocStatus" 		column="APPR_DOC_STATUS" 	jdbcType="VARCHAR"/>
+		<result property="registDate" 			column="REGIST_DATE"		jdbcType="TIMESTAMP"/>
+		<result property="registerId" 		    column="REGISTER_ID" 		jdbcType="VARCHAR"/>
+		<result property="registerName" 		column="REGISTER_NAME" 	    jdbcType="VARCHAR"/>
+		<result property="teamName" 		    column="TEAM_NAME" 			jdbcType="VARCHAR"/>
+		<result property="apprEndDate" 		    column="APPR_END_DATE" 		jdbcType="TIMESTAMP"/>
+	</resultMap>
+	
+	<resultMap id="ApprListResultExt" class="ApprList" extends="ApprListResult"> 
+		<result property="entrustId" 			column="ENTRUST_ID" 		jdbcType="VARCHAR"/>
+		<result property="entrustUserId" 		column="ENTRUST_USER_ID" 	jdbcType="VARCHAR"/>
+		<result property="apprType" 			column="APPR_TYPE" 			jdbcType="VARCHAR"/>
+		<result property="approvalId" 			column="APPROVER_ID" 		jdbcType="VARCHAR"/>
+		<result property="listSortType" 		column="LIST_SORT_TYPE" 	jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	<resultMap id="ApprListLineExamResult" class="ApprList" extends="ApprListResult"> 
+		<result property="entrustUserName" 		column="ENTRUST_USER_NAME" 	jdbcType="VARCHAR"/>
+		<result property="entrustUserId" 		column="ENTRUST_USER_ID" 	jdbcType="VARCHAR"/>
+		<result property="entrustId" 			column="ENTRUST_ID" 		jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	<resultMap id="ApprListUserDocResultExt" class="ApprList" extends="ApprListResult"> 
+		<result property="folderId" 		column="FOLDER_ID" 			jdbcType="VARCHAR"/>
+		<result property="folderName" 		column="FOLDER_NAME" 		jdbcType="VARCHAR"/>
+		<result property="folderParentId" 	column="FOLDER_PARENT_ID" 	jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	<resultMap id="ApprIntegrateListResult" class="ApprList"> 
+		<result property="apprId" 				column="APPR_ID" 			jdbcType="VARCHAR"/>
+		<result property="formId" 				column="FORM_ID" 			jdbcType="VARCHAR"/>
+		<result property="formName" 			column="FORM_NAME" 			jdbcType="VARCHAR"/>
+		<result property="apprDocType" 			column="APPR_DOC_TYPE" 		jdbcType="VARCHAR"/>
+		<result property="codeName" 		    column="CODE_NAME" 			jdbcType="VARCHAR"/>
+		<result property="apprTitle" 			column="APPR_TITLE" 		jdbcType="VARCHAR"/>
+		<result property="apprReqDate"			column="APPR_REQ_DATE" 		jdbcType="TIMESTAMP"/>
+		<result property="apprDocStatus" 		column="APPR_DOC_STATUS" 	jdbcType="VARCHAR"/>
+		<result property="registDate" 			column="REGIST_DATE"		jdbcType="TIMESTAMP"/>
+		<result property="registerId" 		    column="REGISTER_ID" 		jdbcType="VARCHAR"/>
+		<result property="registerName" 		column="REGISTER_NAME" 	    jdbcType="VARCHAR"/>
+		<result property="apprEndDate" 		    column="APPR_END_DATE" 		jdbcType="TIMESTAMP"/>
+		<result property="apprDocNo" 		    column="APPR_DOC_NO" 		jdbcType="VARCHAR"/>
+		<result property="mListType" 		    column="LIST_TYPE" 			jdbcType="VARCHAR"/>
+		<result property="apprGroupId" 		    column="APPR_GROUP_ID" 		jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	<resultMap id="ApprListDeptResult" class="ApprList"> 
+		<result property="apprId" 				column="APPR_ID" 			jdbcType="VARCHAR"/>
+		<result property="formId" 				column="FORM_ID" 			jdbcType="VARCHAR"/>
+		<result property="formName" 			column="FORM_NAME" 			jdbcType="VARCHAR"/>
+		<result property="apprDocType" 			column="APPR_DOC_TYPE" 		jdbcType="VARCHAR"/>
+		<result property="codeName" 		    column="CODE_NAME" 			jdbcType="VARCHAR"/>
+		<result property="apprTitle" 			column="APPR_TITLE" 		jdbcType="VARCHAR"/>
+		<result property="apprReqDate"			column="APPR_REQ_DATE" 		jdbcType="TIMESTAMP"/>
+		<result property="apprDocStatus" 		column="APPR_DOC_STATUS" 	jdbcType="VARCHAR"/>
+		<result property="registDate" 			column="REGIST_DATE"		jdbcType="TIMESTAMP"/>
+		<result property="registerId" 		    column="REGISTER_ID" 		jdbcType="VARCHAR"/>
+		<result property="registerName" 		column="REGISTER_NAME" 	    jdbcType="VARCHAR"/>
+		<result property="apprGroupName" 		column="APPR_GROUP_NAME" 	jdbcType="VARCHAR"/>
+		<result property="recRegisterId" 		column="REC_REGISTER_ID" 	jdbcType="VARCHAR"/>
+		<result property="recRegisterName" 		column="REC_REGISTER_NAME" 	jdbcType="VARCHAR"/>
+		<result property="apprEndDate" 		    column="APPR_END_DATE" 		jdbcType="TIMESTAMP"/>
+		<result property="apprDocNo" 		    column="APPR_DOC_NO" 		jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	<resultMap id="ApprListExamResult" class="ApprList" extends="ApprListDeptResult"> 
+		<result property="approvalId" 			column="APPROVER_ID" 		jdbcType="VARCHAR"/>
+		<result property="apprStatus" 			column="APPR_STATUS" 		jdbcType="VARCHAR"/>
+		<result property="examReqId" 			column="EXAM_REQ_ID" 		jdbcType="VARCHAR"/>
+		<result property="examReqName" 			column="EXAM_REQ_NAME" 		jdbcType="VARCHAR"/>
+		<result property="examReqDate" 			column="EXAM_REQ_DATE" 		jdbcType="TIMESTAMP"/>
+		<result property="examDate" 			column="EXAM_DATE" 			jdbcType="TIMESTAMP"/>
+	</resultMap>
+	
+	<select id="listByMyRequest" parameterClass="ApprListSearchCondition" resultMap="ApprListResult"> 
+	SELECT /* [ApprList_SqlMap.xml] approval.admin.dao.ApprList.listByMyRequest */ 
+		*
+	FROM 
+	( 
+		SELECT ROWNUM AS RNUM, A.* FROM 
+		( 
+			/* START========================================= */
+			SELECT  AD.APPR_ID,
+			        AD.FORM_ID,
+			        AF.FORM_NAME,
+			        AD.APPR_DOC_TYPE,
+			        AD.APPR_DOC_NO,
+			        AD.IS_HIDDEN,
+			        AC.CODE_KR_NAME CODE_NAME,
+			        AD.APPR_TITLE,
+			        AD.APPR_REQ_DATE,
+			        AD.APPR_DOC_STATUS,
+			        AD.REGIST_DATE,
+			        AD.REGISTER_ID,
+	                AD.REGISTER_NAME,
+	                EU.TEAM_NAME TEAM_NAME,
+	                AD.APPR_END_DATE
+			 FROM IKEP4_APPR_DOC AD 	INNER JOIN IKEP4_APPR_FORM AF 	ON AD.FORM_ID = AF.FORM_ID
+			  															AND AD.PORTAL_ID = AF.PORTAL_ID
+			  							INNER JOIN IKEP4_APPR_CODE AC 	ON AC.CODE_ID = AF.FORM_PARENT_ID
+			  							INNER JOIN IKEP4_EV_USER EU		ON EU.USER_ID = AD.REGISTER_ID
+			 WHERE AD.PORTAL_ID = #portalId#
+				<isNotEmpty property="listType">
+					<isEqual property="listType" compareValue="myRequestList">
+					AND	AD.APPR_DOC_STATUS IN ('1','2')
+					AND  AD.REGISTER_ID = #userId#
+					AND  AD.IS_HIDDEN = 0
+					AND PARENT_APPR_ID IS NULL
+					</isEqual>
+					<isEqual property="listType" compareValue="myRequestListComplete">
+					AND	AD.APPR_DOC_STATUS IN ('2')
+					AND  AD.REGISTER_ID = #userId#
+					AND  AD.IS_HIDDEN = 0
+					AND PARENT_APPR_ID IS NULL
+					</isEqual>
+					<isEqual property="listType" compareValue="tempList">
+					AND	AD.APPR_DOC_STATUS IN ('0')
+					AND  AD.REGISTER_ID = #userId#
+					AND  AD.IS_HIDDEN = 0
+					AND PARENT_APPR_ID IS NULL
+					</isEqual>
+					<isEqual property="listType" compareValue="rejectList">
+					AND	AD.APPR_DOC_STATUS IN ('3','4')
+					AND  AD.REGISTER_ID = #userId#
+					AND  AD.IS_HIDDEN = 0
+					AND PARENT_APPR_ID IS NULL
+					</isEqual>
+					<isEqual property="listType" compareValue="listApprDocAllAdmin">
+					AND	AD.APPR_DOC_STATUS IN ('0','1','2','3','4','6','7')
+					AND  AD.IS_HIDDEN = 0
+					</isEqual>
+					<isEqual property="listType" compareValue="listApprDocAllUser">
+					AND	AD.APPR_DOC_STATUS IN ('1','2','3','4','6','7')
+					AND  AD.IS_HIDDEN = 0
+					AND	AD.PARENT_APPR_ID IS NULL
+					</isEqual>
+					<isEqual property="listType" compareValue="listApprDocSecurity">
+					AND	AD.APPR_DOC_STATUS IN ('0','1','2','3','4','6','7')
+					</isEqual>
+				</isNotEmpty>
+				<isNotEmpty property="searchFormName">
+				AND	UPPER(AF.FORM_NAME) LIKE '%' || UPPER(#searchFormName#) || '%'
+				</isNotEmpty>
+				<isNotEmpty property="searchApprDocType">
+				AND	AD.APPR_DOC_TYPE = #searchApprDocType#
+				</isNotEmpty>
+				<isNotEmpty property="searchIsHidden">
+				AND	AD.IS_HIDDEN = #searchIsHidden#
+				</isNotEmpty>
+				<isNotEmpty property="searchApprDocNo">
+				AND	UPPER(AD.APPR_DOC_NO) LIKE '%' || UPPER(#searchApprDocNo#) || '%'
+				</isNotEmpty>
+				<isNotEmpty property="searchApprDocStatus">
+				AND	AD.APPR_DOC_STATUS = #searchApprDocStatus#
+				</isNotEmpty>
+				<isNotEmpty property="searchApprTitle">
+				AND	UPPER(AD.APPR_TITLE) LIKE '%' || UPPER(#searchApprTitle#) || '%'
+				</isNotEmpty>
+				<isNotNull property="searchStartDate"><isNotEmpty property="searchStartDate">
+					<isNotNull property="searchEndDate"><isNotEmpty property="searchEndDate">
+						AND AD.APPR_REQ_DATE BETWEEN TO_DATE(#searchStartDate#) AND TO_DATE(#searchEndDate#)+1
+					</isNotEmpty></isNotNull>
+				</isNotEmpty></isNotNull>
+				<isNotEmpty property="searchUserName">
+				AND	UPPER(AD.REGISTER_NAME) LIKE '%' || UPPER(#searchUserName#) || '%'
+				</isNotEmpty>
+			ORDER BY
+			<isNotEmpty property="sortColumn">
+	    	<isEqual property="sortColumn" compareValue="apprTitle">
+	    	AD.APPR_TITLE
+			</isEqual>
+			<isEqual property="sortColumn" compareValue="apprReqDate">
+	    	AD.APPR_REQ_DATE
+			</isEqual>
+			<isEqual property="sortColumn" compareValue="registDate">
+	    	AD.REGIST_DATE
+			</isEqual>		
+			<isEqual property="sortColumn" compareValue="apprEndDate">
+	    	AD.APPR_END_DATE
+			</isEqual>					
+			</isNotEmpty>
+	    	
+			<isNotEmpty property="sortType">
+	    	<isEqual property="sortType" compareValue="DESC">
+	    	DESC,
+			</isEqual>
+			<isEqual property="sortType" compareValue="ASC">
+	    	ASC,
+			</isEqual>
+			</isNotEmpty>
+	    	AD.APPR_ID DESC    	
+			/* ===========================================END  */ 
+	<![CDATA[
+		) A WHERE ROWNUM <=  #endRowIndex# /* 종료  */
+	) WHERE RNUM >  #startRowIndex# /* 시작 */
+	]]> 
+	</select>
+	 
+	<select id="countByMyRequest" parameterClass="ApprListSearchCondition" resultClass="int">
+		SELECT /* [ApprList_SqlMap.xml] approval.admin.dao.ApprList.countByMyRequest*/ 
+			COUNT(A.APPR_ID) 
+				FROM 
+				(SELECT  AD.APPR_ID,
+			        AD.FORM_ID,
+			        AF.FORM_NAME,
+			        AD.APPR_DOC_TYPE,
+			        AD.APPR_DOC_NO,
+			        AD.IS_HIDDEN,
+			        AC.CODE_KR_NAME CODE_NAME,
+			        AD.APPR_TITLE,
+			        AD.APPR_REQ_DATE,
+			        AD.APPR_DOC_STATUS,
+			        AD.REGIST_DATE,
+			        AD.REGISTER_ID,
+	                AD.REGISTER_NAME,
+	                EU.TEAM_NAME TEAM_NAME,
+	                AD.APPR_END_DATE
+				FROM IKEP4_APPR_DOC AD 	INNER JOIN IKEP4_APPR_FORM AF 	ON AD.FORM_ID = AF.FORM_ID
+			  															AND AD.PORTAL_ID = AF.PORTAL_ID
+			  							INNER JOIN IKEP4_APPR_CODE AC 	ON AC.CODE_ID = AF.FORM_PARENT_ID
+			  							INNER JOIN IKEP4_EV_USER EU		ON EU.USER_ID = AD.REGISTER_ID
+			 	WHERE AD.PORTAL_ID = #portalId#
+					<isNotEmpty property="listType">
+						<isEqual property="listType" compareValue="myRequestList">
+						AND	AD.APPR_DOC_STATUS IN ('1','2')
+						AND  AD.REGISTER_ID = #userId#
+						AND  AD.IS_HIDDEN = 0
+						AND PARENT_APPR_ID IS NULL
+						</isEqual>
+						<isEqual property="listType" compareValue="myRequestListComplete">
+						AND	AD.APPR_DOC_STATUS IN ('2')
+						AND  AD.REGISTER_ID = #userId#
+						AND  AD.IS_HIDDEN = 0
+						AND PARENT_APPR_ID IS NULL
+						</isEqual>
+						<isEqual property="listType" compareValue="tempList">
+						AND	AD.APPR_DOC_STATUS IN ('0')
+						AND  AD.REGISTER_ID = #userId#
+						AND  AD.IS_HIDDEN = 0
+						AND PARENT_APPR_ID IS NULL
+						</isEqual>
+						<isEqual property="listType" compareValue="rejectList">
+						AND	AD.APPR_DOC_STATUS IN ('3','4')
+						AND  AD.REGISTER_ID = #userId#
+						AND  AD.IS_HIDDEN = 0
+						AND PARENT_APPR_ID IS NULL
+						</isEqual>
+						<isEqual property="listType" compareValue="listApprDocAllAdmin">
+						AND	AD.APPR_DOC_STATUS IN ('0','1','2','3','4','6','7')
+						AND  AD.IS_HIDDEN = 0
+						</isEqual>
+						<isEqual property="listType" compareValue="listApprDocAllUser">
+						AND	AD.APPR_DOC_STATUS IN ('1','2','3','4','6','7')
+						AND  AD.IS_HIDDEN = 0
+						AND	AD.PARENT_APPR_ID IS NULL
+						</isEqual>
+						<isEqual property="listType" compareValue="listApprDocSecurity">
+						AND	AD.APPR_DOC_STATUS IN ('0','1','2','3','4','6','7')
+						</isEqual>
+					</isNotEmpty>
+					<isNotEmpty property="searchFormName">
+					AND	UPPER(AF.FORM_NAME) LIKE '%' || UPPER(#searchFormName#) || '%'
+					</isNotEmpty>
+					<isNotEmpty property="searchApprDocType">
+					AND	AD.APPR_DOC_TYPE = #searchApprDocType#
+					</isNotEmpty>
+					<isNotEmpty property="searchIsHidden">
+					AND	AD.IS_HIDDEN = #searchIsHidden#
+					</isNotEmpty>
+					<isNotEmpty property="searchApprDocNo">
+					AND	UPPER(AD.APPR_DOC_NO) LIKE '%' || UPPER(#searchApprDocNo#) || '%'
+					</isNotEmpty>
+					<isNotEmpty property="searchApprDocStatus">
+					AND	AD.APPR_DOC_STATUS = #searchApprDocStatus#
+					</isNotEmpty>
+					<isNotEmpty property="searchApprTitle">
+					AND	UPPER(AD.APPR_TITLE) LIKE '%' || UPPER(#searchApprTitle#) || '%'
+					</isNotEmpty>
+					<isNotNull property="searchStartDate"><isNotEmpty property="searchStartDate">
+						<isNotNull property="searchEndDate"><isNotEmpty property="searchEndDate">
+							AND AD.APPR_REQ_DATE BETWEEN TO_DATE(#searchStartDate#) AND TO_DATE(#searchEndDate#)+1
+						</isNotEmpty></isNotNull>
+					</isNotEmpty></isNotNull>
+					<isNotEmpty property="searchUserName">
+					AND	UPPER(AD.REGISTER_NAME) LIKE '%' || UPPER(#searchUserName#) || '%'
+					</isNotEmpty>
+				) A
+	</select>
+	
+	<select id="listBySearchCondition" parameterClass="ApprListSearchCondition" resultMap="ApprListResultExt"> 
+		SELECT
+			/* [ApprList_SqlMap.xml] approval.admin.dao.ApprList.listBySearchCondition */ 
+			*
+		FROM 
+		( 
+			SELECT ROWNUM AS RNUM, A.* FROM 
+			( 
+				<isEqual property="listType" compareValue="listCompleteAppr">
+				<isNotEmpty property="searchlistSortType">
+				SELECT * 
+				FROM 
+				(
+				</isNotEmpty>
+				</isEqual>
+
+					/* START========================================= */
+
+					SELECT 
+						
+						AD.APPR_ID,
+						AD.FORM_ID,
+						AF.FORM_NAME,
+						AD.APPR_DOC_TYPE,
+						AD.APPR_DOC_NO,
+						AD.IS_HIDDEN,
+						AC.CODE_KR_NAME CODE_NAME,
+						AD.APPR_TITLE,
+						AD.APPR_REQ_DATE,
+						AD.APPR_DOC_STATUS,
+						AD.REGIST_DATE,
+						AD.REGISTER_ID,
+						AD.REGISTER_NAME,
+						AD.APPR_GROUP_NAME TEAM_NAME,
+						AD.APPR_END_DATE,
+						AL.ENTRUST_ID,
+						AL.ENTRUST_USER_ID,
+						AL.APPR_TYPE,
+						AL.APPROVER_ID
+						<isEqual property="listType" compareValue="listCompleteAppr">
+						,CASE 
+						WHEN AL.APPR_STATUS = 4 THEN 'AA'
+						WHEN AL.APPR_STATUS IS NULL THEN 'AR'
+						WHEN AL.APPR_STATUS = 2 THEN 'AL'
+						END LIST_SORT_TYPE 
+						</isEqual>
+						<isNotEqual property="listType" compareValue="listCompleteAppr">
+						,'' LIST_SORT_TYPE
+						</isNotEqual>
+					FROM 
+						IKEP4_APPR_DOC AD 	
+						INNER JOIN IKEP4_APPR_FORM AF 	ON AD.FORM_ID = AF.FORM_ID AND AD.PORTAL_ID = AF.PORTAL_ID
+
+						<isEqual property="listType" compareValue="listCompleteAppr">
+						/** 완료문서 결재한 문서 **/
+						INNER JOIN 
+						(  
+							SELECT 
+								APPR_ID, APPR_STATUS,APPR_TYPE, APPROVER_ID, APPR_DATE,  APPR_ORDER, ENTRUST_ID,ENTRUST_USER_ID
+							FROM
+								IKEP4_APPR_LINE AL 
+							WHERE 
+								AL.APPR_STATUS IN (2,4)
+								AND AL.APPR_TYPE IN (0,1,2)
+								AND ( AL.APPROVER_ID = #userId#  OR AL.ENTRUST_USER_ID =#userId# )
+						) AL ON AD.APPR_ID = AL.APPR_ID
+						LEFT OUTER JOIN 
+						( 
+							SELECT 
+								APPR_ID, 
+								USER_ID 
+							FROM 
+								IKEP4_APPR_REFERENCE 
+							WHERE
+								USER_ID = #userId#
+						) AR  ON AD.APPR_ID = AR.APPR_ID AND AR.USER_ID = #userId#
+						</isEqual>
+
+						INNER JOIN IKEP4_APPR_CODE AC 	ON AC.CODE_ID = AF.FORM_PARENT_ID
+
+						<isNotEmpty property="listType">
+						<isEqual property="listType" compareValue="listApprTodo">
+						INNER JOIN  
+						(  
+							SELECT
+								APPR_ID, APPR_STATUS,APPR_TYPE, APPROVER_ID, APPR_DATE, APPR_ORDER, AE.ENTRUST_ID,AE.ENTRUST_USER_ID
+							FROM 
+								IKEP4_APPR_LINE AL 
+								LEFT OUTER JOIN
+								(
+									SELECT 
+										ENTRUST_USER_ID ,ENTRUST_ID
+									FROM
+										IKEP4_APPR_ENTRUST
+									WHERE
+										SIGN_USER_ID = #userId# 
+										AND  USAGE = 1
+										AND	SYSDATE BETWEEN ENTRUST_START_DATE and ENTRUST_END_DATE
+								) AE ON AL.APPROVER_ID = AE.ENTRUST_USER_ID
+							WHERE 
+								( AL.APPROVER_ID = #userId#  OR AL.APPROVER_ID =AE.ENTRUST_USER_ID )
+								AND AL.APPR_TYPE IN (0,1,2)
+								AND AL.APPR_STATUS = 1
+						) AL ON AD.APPR_ID = AL.APPR_ID 		                    
+		                     
+						</isEqual>
+
+						<isEqual property="listType" compareValue="listApprComplete">
+						/** 결재문서 결재한 문서 **/
+						INNER JOIN IKEP4_APPR_LINE AL ON 
+						(AD.APPR_ID=AL.APPR_ID AND ( AL.APPROVER_ID=#userId# OR AL.ENTRUST_USER_ID=#userId# ) AND AL.APPR_TYPE IN (0,1,2) )    							
+						</isEqual>
+
+						<isEqual property="listType" compareValue="listApprAgreement">
+						INNER JOIN IKEP4_APPR_LINE AL ON AD.APPR_ID = AL.APPR_ID  AND AL.APPR_TYPE IN (0,1,2)
+						</isEqual>
+						</isNotEmpty>
+
+					WHERE 
+						AD.PORTAL_ID = #portalId#
+						AND  AD.IS_HIDDEN = 0
+						
+						<isNotEmpty property="listType">
+						<isEqual property="listType" compareValue="listApprTodo">
+						AND AD.APPR_DOC_STATUS = 1
+						</isEqual>
+						<isEqual property="listType" compareValue="listApprComplete">
+						/* 결재문서 결재한 문서 */
+						AND AD.APPR_DOC_STATUS IN (1,3)
+						AND AL.APPR_DATE IS NOT NULL
+						AND AL.APPR_STATUS IN (2,3,4)
+						</isEqual>
+						<isEqual property="listType" compareValue="listCompleteAppr">
+						/* 완료문서 결재한 문서 */
+						AND AD.APPR_DOC_STATUS = 2
+						AND	AD.PARENT_APPR_ID IS NULL
+						</isEqual>
+						<isEqual property="listType" compareValue="listApprAgreement">
+						AND AL.APPR_DATE IS NOT NULL
+						AND AL.APPR_STATUS = 4
+						AND AD.APPR_DOC_STATUS = 2
+						AND 
+						(
+							AL.APPROVER_ID = #userId# 
+							OR AL.ENTRUST_USER_ID = #userId#
+							OR AL.APPROVER_ID IN 
+							(
+								SELECT ENTRUST_USER_ID 
+								FROM IKEP4_APPR_ENTRUST 
+								WHERE SIGN_USER_ID = #userId#
+								AND USAGE = 1
+								AND SYSDATE BETWEEN ENTRUST_START_DATE and ENTRUST_END_DATE
+							)
+						)
+						</isEqual>
+						</isNotEmpty>
+						
+						<isNotEmpty property="searchFormName">
+						AND	UPPER(AF.FORM_NAME) LIKE '%' || UPPER(#searchFormName#) || '%'
+						</isNotEmpty>
+						<isNotEmpty property="searchApprTitle">
+						AND	UPPER(AD.APPR_TITLE) LIKE '%' || UPPER(#searchApprTitle#) || '%'
+						</isNotEmpty>
+						<isNotEmpty property="searchApprDocNo">
+						AND	UPPER(AD.APPR_DOC_NO) LIKE '%' || UPPER(#searchApprDocNo#) || '%'
+						</isNotEmpty>
+						<isNotNull property="searchStartDate"><isNotEmpty property="searchStartDate">
+						<isNotNull property="searchEndDate"><isNotEmpty property="searchEndDate">
+						AND AD.APPR_REQ_DATE BETWEEN TO_DATE(#searchStartDate#) AND TO_DATE(#searchEndDate#)+1
+						</isNotEmpty></isNotNull>
+						</isNotEmpty></isNotNull>
+						<isNotEmpty property="searchUserName">
+						AND	UPPER(AD.REGISTER_NAME) LIKE '%' || UPPER(#searchUserName#) || '%'
+						</isNotEmpty>
+						<isNotEmpty property="searchApprDocStatus">
+						AND	AD.APPR_DOC_STATUS = #searchApprDocStatus#
+						</isNotEmpty>
+						ORDER BY
+						<isNotEmpty property="sortColumn">
+						<isEqual property="sortColumn" compareValue="apprTitle">
+						AD.APPR_TITLE
+						</isEqual>
+						<isEqual property="sortColumn" compareValue="apprReqDate">
+						AD.APPR_REQ_DATE
+						</isEqual>
+						<isEqual property="sortColumn" compareValue="registDate">
+						AD.REGIST_DATE
+						</isEqual>			
+						<isEqual property="sortColumn" compareValue="apprEndDate">
+						AD.APPR_END_DATE
+						</isEqual>			
+						</isNotEmpty>
+
+						<isNotEmpty property="sortType">
+						<isEqual property="sortType" compareValue="DESC">
+						DESC
+						</isEqual>
+						<isEqual property="sortType" compareValue="ASC">
+						ASC
+						</isEqual>
+						</isNotEmpty>
+
+						/**
+						AD.APPR_ID DESC  
+						**/  	
+						/* ===========================================END  */
+				<isEqual property="listType" compareValue="listCompleteAppr">
+				<isNotEmpty property="searchlistSortType">
+				) 
+				WHERE LIST_SORT_TYPE = #searchlistSortType#
+				</isNotEmpty>
+				</isEqual>
+		<![CDATA[
+			) A 
+			WHERE 
+				ROWNUM <=  #endRowIndex# /* 종료  */
+		) A
+		WHERE 
+			RNUM >  #startRowIndex# /* 시작 */
+		]]>
+	</select>
+	
+	<select id="countBySearchCondition" parameterClass="ApprListSearchCondition" resultClass="int">
+	SELECT
+		/* [ApprList_SqlMap.xml] approval.admin.dao.ApprList."countBySearchCondition" */ 
+		COUNT(A.APPR_ID)
+	FROM
+	(
+		<isEqual property="listType" compareValue="listCompleteAppr">
+		<isNotEmpty property="searchlistSortType">
+		SELECT * 
+		FROM 
+		(
+		</isNotEmpty>
+		</isEqual>
+
+			SELECT  
+				AD.APPR_ID,
+				AD.FORM_ID,
+				AF.FORM_NAME,
+				AD.APPR_DOC_TYPE,
+				AD.APPR_DOC_NO,
+				AD.IS_HIDDEN,
+				AC.CODE_KR_NAME CODE_NAME,
+				AD.APPR_TITLE,
+				AD.APPR_REQ_DATE,
+				AD.APPR_DOC_STATUS,
+				AD.REGIST_DATE,
+				AD.REGISTER_ID,
+				AD.REGISTER_NAME,
+				AD.APPR_GROUP_NAME TEAM_NAME,
+				AD.APPR_END_DATE,
+				AL.ENTRUST_ID,
+				AL.ENTRUST_USER_ID,
+				AL.APPR_TYPE,
+				AL.APPROVER_ID
+				<isEqual property="listType" compareValue="listCompleteAppr">
+				,CASE 
+				WHEN AL.APPR_STATUS = 4 THEN 'AA'
+				WHEN AL.APPR_STATUS IS NULL THEN 'AR'
+				WHEN AL.APPR_STATUS = 2 THEN 'AL'
+				END LIST_SORT_TYPE 
+				</isEqual>
+				<isNotEqual property="listType" compareValue="listCompleteAppr">
+				,'' LIST_SORT_TYPE
+				</isNotEqual>
+			FROM
+				IKEP4_APPR_DOC AD 	
+				INNER JOIN IKEP4_APPR_FORM AF 	ON AD.FORM_ID = AF.FORM_ID AND AD.PORTAL_ID = AF.PORTAL_ID
+				
+				<isEqual property="listType" compareValue="listCompleteAppr">
+				/* 완료문서 결재한문서 */
+				INNER JOIN 
+				(  
+					SELECT 
+						APPR_ID, APPR_STATUS,APPR_TYPE, APPROVER_ID, APPR_DATE,  APPR_ORDER, ENTRUST_ID,ENTRUST_USER_ID
+					FROM
+						IKEP4_APPR_LINE AL 
+					WHERE 
+						AL.APPR_STATUS IN (2,4)
+						AND AL.APPR_TYPE IN (0,1,2)
+						AND ( AL.APPROVER_ID = #userId#  OR AL.ENTRUST_USER_ID =#userId# )
+				) AL ON AD.APPR_ID = AL.APPR_ID
+				LEFT OUTER JOIN 
+				( 
+					SELECT 
+						APPR_ID, 
+						USER_ID 
+					FROM 
+						IKEP4_APPR_REFERENCE 
+					WHERE
+						USER_ID = #userId#
+				) AR  ON AD.APPR_ID = AR.APPR_ID AND AR.USER_ID = #userId#
+				</isEqual>
+
+				INNER JOIN IKEP4_APPR_CODE AC 	ON AC.CODE_ID = AF.FORM_PARENT_ID
+
+				<isNotEmpty property="listType">
+				<isEqual property="listType" compareValue="listApprTodo">
+				INNER JOIN  
+				(  
+					SELECT
+						APPR_ID, APPR_STATUS,APPR_TYPE, APPROVER_ID, APPR_DATE, APPR_ORDER, AE.ENTRUST_ID,AE.ENTRUST_USER_ID
+					FROM 
+						IKEP4_APPR_LINE AL 
+						LEFT OUTER JOIN
+						(
+							SELECT 
+								ENTRUST_USER_ID ,ENTRUST_ID
+							FROM
+								IKEP4_APPR_ENTRUST
+							WHERE
+								SIGN_USER_ID = #userId# 
+								AND  USAGE = 1
+								AND	SYSDATE BETWEEN ENTRUST_START_DATE and ENTRUST_END_DATE
+						) AE ON AL.APPROVER_ID = AE.ENTRUST_USER_ID
+					WHERE 
+						( AL.APPROVER_ID = #userId#  OR AL.APPROVER_ID =AE.ENTRUST_USER_ID )
+						AND AL.APPR_TYPE IN (0,1,2)
+						AND AL.APPR_STATUS = 1
+				) AL ON AD.APPR_ID = AL.APPR_ID 			
+				</isEqual>
+				<isEqual property="listType" compareValue="listApprComplete">
+				/* 결재문서 결재한문서 */
+				INNER JOIN IKEP4_APPR_LINE AL ON 
+				(AD.APPR_ID=AL.APPR_ID AND ( AL.APPROVER_ID=#userId# OR AL.ENTRUST_USER_ID=#userId# ) AND AL.APPR_TYPE IN (0,1,2) )
+
+				</isEqual>
+				<isEqual property="listType" compareValue="listApprAgreement">
+				INNER JOIN IKEP4_APPR_LINE AL ON AD.APPR_ID = AL.APPR_ID  AND AL.APPR_TYPE IN (0,1,2)
+				</isEqual>
+				</isNotEmpty>
+
+			WHERE 
+				AD.PORTAL_ID = #portalId#
+				AND  AD.IS_HIDDEN = 0
+				
+				<isNotEmpty property="listType">
+				<isEqual property="listType" compareValue="listApprTodo">
+				AND AD.APPR_DOC_STATUS = 1
+				</isEqual>
+				<isEqual property="listType" compareValue="listApprComplete">
+				/* 결재문서 결재한 문서 */
+				AND AD.APPR_DOC_STATUS IN (1,3)
+				AND AL.APPR_DATE IS NOT NULL
+				AND AL.APPR_STATUS IN (2,3,4)
+				</isEqual>
+				<isEqual property="listType" compareValue="listCompleteAppr">
+				/* 완료문서 결재한 문서 */
+				AND AD.APPR_DOC_STATUS = 2
+				AND	AD.PARENT_APPR_ID IS NULL
+				</isEqual>
+				<isEqual property="listType" compareValue="listApprAgreement">
+				AND AL.APPR_DATE IS NOT NULL
+				AND AL.APPR_STATUS = 4
+				AND AD.APPR_DOC_STATUS = 2
+				AND 
+				(
+					AL.APPROVER_ID = #userId# 
+					OR AL.ENTRUST_USER_ID = #userId#
+					OR AL.APPROVER_ID IN 
+					(
+						SELECT ENTRUST_USER_ID 
+						FROM IKEP4_APPR_ENTRUST 
+						WHERE SIGN_USER_ID = #userId#
+						AND USAGE = 1
+						AND SYSDATE BETWEEN ENTRUST_START_DATE and ENTRUST_END_DATE
+					)
+				)
+				</isEqual>
+				</isNotEmpty>
+
+				<isNotEmpty property="searchFormName">
+					AND	UPPER(AF.FORM_NAME) LIKE '%' || UPPER(#searchFormName#) || '%'
+				</isNotEmpty>
+				<isNotEmpty property="searchApprDocNo">
+					AND	UPPER(AD.APPR_DOC_NO) LIKE '%' || UPPER(#searchApprDocNo#) || '%'
+				</isNotEmpty>
+				<isNotEmpty property="searchApprTitle">
+					AND	UPPER(AD.APPR_TITLE) LIKE '%' || UPPER(#searchApprTitle#) || '%'
+				</isNotEmpty>
+				<isNotNull property="searchStartDate"><isNotEmpty property="searchStartDate">
+				<isNotNull property="searchEndDate"><isNotEmpty property="searchEndDate">
+					AND AD.APPR_REQ_DATE BETWEEN TO_DATE(#searchStartDate#) AND TO_DATE(#searchEndDate#)+1
+				</isNotEmpty></isNotNull>
+				</isNotEmpty></isNotNull>
+				<isNotEmpty property="searchUserName">
+					AND	UPPER(AD.REGISTER_NAME) LIKE '%' || UPPER(#searchUserName#) || '%'
+				</isNotEmpty>
+				<isNotEmpty property="searchApprDocStatus">
+					AND	AD.APPR_DOC_STATUS = #searchApprDocStatus#
+				</isNotEmpty>
+
+		<isEqual property="listType" compareValue="listCompleteAppr">
+		<isNotEmpty property="searchlistSortType">
+		) AA
+		WHERE
+			AA.LIST_SORT_TYPE = #searchlistSortType#
+		</isNotEmpty>
+		</isEqual>
+	) A
+	</select>
+	
+	<select id="listBySearchConditionRef" parameterClass="ApprListSearchCondition" resultMap="ApprListResult"> 
+	SELECT /* [ApprList_SqlMap.xml] approval.admin.dao.ApprList.listBySearchConditionRef */ 
+		*
+	FROM
+	(
+		SELECT ROWNUM AS RNUM, A.* FROM
+		(
+			/* START========================================= */
+			SELECT  AD.APPR_ID,
+			        AD.FORM_ID,
+			        AF.FORM_NAME,
+			        AD.APPR_DOC_TYPE,
+			        AD.APPR_DOC_NO,
+			        AD.IS_HIDDEN,
+			        AC.CODE_KR_NAME CODE_NAME,
+			        AD.APPR_TITLE,
+			        AD.APPR_REQ_DATE,
+			        AD.APPR_DOC_STATUS,
+			        AD.REGIST_DATE,
+			        AD.REGISTER_ID,
+	                AD.REGISTER_NAME,
+	                EU.TEAM_NAME TEAM_NAME,
+	                AD.APPR_END_DATE
+			 FROM IKEP4_APPR_DOC AD 	INNER JOIN IKEP4_APPR_FORM AF 	ON AD.FORM_ID = AF.FORM_ID
+			  															AND AD.PORTAL_ID = AF.PORTAL_ID
+			  							INNER JOIN IKEP4_APPR_CODE AC 	ON AC.CODE_ID = AF.FORM_PARENT_ID
+			  							INNER JOIN IKEP4_EV_USER EU		ON EU.USER_ID = AD.REGISTER_ID
+			  							INNER JOIN IKEP4_APPR_REFERENCE AR 	ON AD.APPR_ID = AR.APPR_ID
+			 WHERE AD.PORTAL_ID = #portalId#
+			  AND  AD.IS_HIDDEN = 0
+			  AND  AR.USER_ID = #userId#
+				<isNotEmpty property="listType">
+					<isEqual property="listType" compareValue="listApprReference">
+					AND	AD.APPR_DOC_STATUS IN ('1','2','3')
+					</isEqual>
+					<isEqual property="listType" compareValue="listApprCompleteRef">
+					AND	AD.APPR_DOC_STATUS IN ('2')
+					</isEqual>
+				</isNotEmpty>
+				<isNotEmpty property="searchFormName">
+				AND	UPPER(AF.FORM_NAME) LIKE '%' || UPPER(#searchFormName#) || '%'
+				</isNotEmpty>
+				<isNotEmpty property="searchApprDocStatus">
+				AND	AD.APPR_DOC_STATUS = #searchApprDocStatus#
+				</isNotEmpty>
+				<isNotEmpty property="searchApprTitle">
+				AND	UPPER(AD.APPR_TITLE) LIKE '%' || UPPER(#searchApprTitle#) || '%'
+				</isNotEmpty>
+				<isNotEmpty property="searchUserName">
+				AND	UPPER(AD.REGISTER_NAME) LIKE '%' || UPPER(#searchUserName#) || '%'
+				</isNotEmpty>
+				<isNotEmpty property="searchApprDocNo">
+					AND	UPPER(AD.APPR_DOC_NO) LIKE '%' || UPPER(#searchApprDocNo#) || '%'
+					</isNotEmpty>
+				<isNotNull property="searchStartDate"><isNotEmpty property="searchStartDate">
+					<isNotNull property="searchEndDate"><isNotEmpty property="searchEndDate">
+						AND AD.APPR_REQ_DATE BETWEEN TO_DATE(#searchStartDate#) AND TO_DATE(#searchEndDate#)+1
+					</isNotEmpty></isNotNull>
+				</isNotEmpty></isNotNull>
+			ORDER BY
+			<isNotEmpty property="sortColumn">
+	    	<isEqual property="sortColumn" compareValue="apprTitle">
+	    	AD.APPR_TITLE
+			</isEqual>
+			<isEqual property="sortColumn" compareValue="apprReqDate">
+	    	AD.APPR_REQ_DATE
+			</isEqual>
+			<isEqual property="sortColumn" compareValue="registDate">
+	    	AD.REGIST_DATE
+			</isEqual>		
+			<isEqual property="sortColumn" compareValue="apprEndDate">
+		    	AD.APPR_END_DATE
+				</isEqual>				
+			</isNotEmpty>
+	    	
+			<isNotEmpty property="sortType">
+	    	<isEqual property="sortType" compareValue="DESC">
+	    	DESC,
+			</isEqual>
+			<isEqual property="sortType" compareValue="ASC">
+	    	ASC,
+			</isEqual>
+			</isNotEmpty>
+	    	AD.APPR_ID DESC    	
+			/* ===========================================END  */ 
+	<![CDATA[
+		) A WHERE ROWNUM <=  #endRowIndex# /* 종료  */
+	) WHERE RNUM >  #startRowIndex# /* 시작 */
+	]]> 
+	</select>
+	
+	<select id="countBySearchConditionRef" parameterClass="ApprListSearchCondition" resultClass="int">
+		SELECT /* [ApprList_SqlMap.xml] approval.admin.dao.ApprList.countBySearchConditionRef*/ 
+			COUNT(A.APPR_ID) 
+				FROM 
+				(SELECT  AD.APPR_ID,
+			        AD.FORM_ID,
+			        AF.FORM_NAME,
+			        AD.APPR_DOC_TYPE,
+			        AD.APPR_DOC_NO,
+			        AD.IS_HIDDEN,
+			        AC.CODE_KR_NAME CODE_NAME,
+			        AD.APPR_TITLE,
+			        AD.APPR_REQ_DATE,
+			        AD.APPR_DOC_STATUS,
+			        AD.REGIST_DATE,
+			        AD.REGISTER_ID,
+	                AD.REGISTER_NAME,
+	                EU.TEAM_NAME TEAM_NAME,
+	                AD.APPR_END_DATE
+				 FROM IKEP4_APPR_DOC AD 	INNER JOIN IKEP4_APPR_FORM AF 	ON AD.FORM_ID = AF.FORM_ID
+			  															AND AD.PORTAL_ID = AF.PORTAL_ID
+				  							INNER JOIN IKEP4_APPR_CODE AC 	ON AC.CODE_ID = AF.FORM_PARENT_ID
+				  							INNER JOIN IKEP4_EV_USER EU		ON EU.USER_ID = AD.REGISTER_ID
+				  							INNER JOIN IKEP4_APPR_REFERENCE AR 	ON AD.APPR_ID = AR.APPR_ID
+			 	  WHERE AD.PORTAL_ID = #portalId#
+			 	  AND  AD.IS_HIDDEN = 0
+				  AND  AR.USER_ID = #userId#
+					<isNotEmpty property="listType">
+						<isEqual property="listType" compareValue="listApprReference">
+						AND	AD.APPR_DOC_STATUS IN ('1','2','3')
+						</isEqual>
+						<isEqual property="listType" compareValue="listApprCompleteRef">
+						AND	AD.APPR_DOC_STATUS IN ('2')
+						</isEqual>
+					</isNotEmpty>
+					<isNotEmpty property="searchFormName">
+					AND	UPPER(AF.FORM_NAME) LIKE '%' || UPPER(#searchFormName#) || '%'
+					</isNotEmpty>
+					<isNotEmpty property="searchApprDocStatus">
+					AND	AD.APPR_DOC_STATUS = #searchApprDocStatus#
+					</isNotEmpty>
+					<isNotEmpty property="searchApprTitle">
+					AND	UPPER(AD.APPR_TITLE) LIKE '%' || UPPER(#searchApprTitle#) || '%'
+					</isNotEmpty>
+					<isNotEmpty property="searchApprDocNo">
+					AND	UPPER(AD.APPR_DOC_NO) LIKE '%' || UPPER(#searchApprDocNo#) || '%'
+					</isNotEmpty>
+					<isNotEmpty property="searchUserName">
+					AND	UPPER(AD.REGISTER_NAME) LIKE '%' || UPPER(#searchUserName#) || '%'
+					</isNotEmpty>
+					<isNotNull property="searchStartDate"><isNotEmpty property="searchStartDate">
+						<isNotNull property="searchEndDate"><isNotEmpty property="searchEndDate">
+							AND AD.APPR_REQ_DATE BETWEEN TO_DATE(#searchStartDate#) AND TO_DATE(#searchEndDate#)+1
+						</isNotEmpty></isNotNull>
+					</isNotEmpty></isNotNull>
+				) A
+	</select>
+	
+	<select id="listBySearchConditionLineEntrust" parameterClass="ApprListSearchCondition" resultMap="ApprListLineExamResult"> 
+	SELECT /* [ApprList_SqlMap.xml] dapproval.admin.dao.ApprList.listBySearchConditionLineEntrust */ 
+		*
+	FROM 
+	( 
+		SELECT ROWNUM AS RNUM, A.* FROM 
+		( 
+			SELECT  AA.*
+			FROM (
+			/* START========================================= */
+			SELECT  
+					DISTINCT AD.APPR_ID,
+                    AD.FORM_ID,
+                    AF.FORM_NAME,
+                    AD.APPR_DOC_TYPE,
+                    AD.APPR_DOC_NO,
+                    AD.IS_HIDDEN,
+                    AC.CODE_KR_NAME CODE_NAME,
+                    AD.APPR_TITLE,
+                    AD.APPR_REQ_DATE,
+                    AD.APPR_DOC_STATUS,
+                    AD.REGIST_DATE,
+                    AD.REGISTER_ID,
+                    AD.REGISTER_NAME,
+                    EU.TEAM_NAME TEAM_NAME,
+                    AD.APPR_END_DATE,
+                    AL.ENTRUST_USER_NAME,
+                    AL.ENTRUST_USER_ID,
+                    AE.ENTRUST_ID
+			  FROM IKEP4_APPR_DOC AD 	INNER JOIN IKEP4_APPR_FORM AF 	ON AD.FORM_ID = AF.FORM_ID
+			  															AND AD.PORTAL_ID = AF.PORTAL_ID
+			  							INNER JOIN IKEP4_APPR_CODE AC 	ON AC.CODE_ID = AF.FORM_PARENT_ID
+			  							INNER JOIN IKEP4_EV_USER EU		ON EU.USER_ID = AD.REGISTER_ID 
+			  							INNER JOIN IKEP4_APPR_LINE AL 	ON AD.APPR_ID = AL.APPR_ID
+			  							INNER JOIN IKEP4_APPR_ENTRUST AE 	
+			  							<isNotEmpty property="listType">
+											<isEqual property="listType" compareValue="listApprEntrust">
+											ON  AE.SIGN_USER_ID = AL.ENTRUST_USER_ID
+											AND AL.APPROVER_ID = AE.ENTRUST_USER_ID
+											</isEqual>
+											<isEqual property="listType" compareValue="listApprDelegate">
+											ON  AE.ENTRUST_ID = AL.ENTRUST_ID
+											AND AL.APPROVER_ID = #userId#
+											</isEqual>
+										</isNotEmpty>
+			 WHERE AD.PORTAL_ID = #portalId#
+	          AND  AD.APPR_DOC_STATUS IN ('1','2','3')
+			  AND  AD.IS_HIDDEN = 0
+			  AND  AL.ENTRUST_USER_ID IS NOT NULL
+				<isNotEmpty property="searchFormName">
+				AND	UPPER(AF.FORM_NAME) LIKE '%' || UPPER(#searchFormName#) || '%'
+				</isNotEmpty>
+				<isNotEmpty property="searchApprDocStatus">
+				AND	AD.APPR_DOC_STATUS = #searchApprDocStatus#
+				</isNotEmpty>
+				<isNotEmpty property="searchUserName">
+				AND	UPPER(AD.REGISTER_NAME) LIKE '%' || UPPER(#searchUserName#) || '%'
+				</isNotEmpty>
+				<isNotEmpty property="searchEntrustUserName">
+				AND	UPPER(AL.ENTRUST_USER_NAME) LIKE '%' || UPPER(#searchEntrustUserName#) || '%'
+				</isNotEmpty>
+				<isNotEmpty property="searchApprTitle">
+				AND	UPPER(AD.APPR_TITLE) LIKE '%' || UPPER(#searchApprTitle#) || '%'
+				</isNotEmpty>
+				<isNotEmpty property="listType">
+					<isEqual property="listType" compareValue="listApprEntrust">
+					AND  AE.ENTRUST_ID = #entrustId#
+					AND	TO_CHAR(AL.APPR_DATE,'yyyy.mm.dd') <![CDATA[>=]]> #searchStartDate# 
+					AND TO_CHAR(AL.APPR_DATE,'yyyy.mm.dd') <![CDATA[<=]]> #searchEndDate#
+					</isEqual>
+					<isEqual property="listType" compareValue="listApprDelegate">
+						<isNotNull property="searchStartDate"><isNotEmpty property="searchStartDate">
+							<isNotNull property="searchEndDate"><isNotEmpty property="searchEndDate">
+								AND	TO_CHAR(AD.APPR_REQ_DATE,'yyyy.mm.dd') <![CDATA[>=]]> #searchStartDate# 
+								AND TO_CHAR(AD.APPR_REQ_DATE,'yyyy.mm.dd') <![CDATA[<=]]> #searchEndDate#
+							</isNotEmpty></isNotNull>
+						</isNotEmpty></isNotNull>
+					</isEqual>
+				</isNotEmpty>
+			ORDER BY
+			<isNotEmpty property="sortColumn">
+	    	<isEqual property="sortColumn" compareValue="apprTitle">
+	    	AD.APPR_TITLE
+			</isEqual>
+			<isEqual property="sortColumn" compareValue="apprReqDate">
+	    	AD.APPR_REQ_DATE
+			</isEqual>
+			<isEqual property="sortColumn" compareValue="registDate">
+	    	AD.REGIST_DATE
+			</isEqual>		
+			<isEqual property="sortColumn" compareValue="apprEndDate">
+		    	AD.APPR_END_DATE
+				</isEqual>				
+			</isNotEmpty>
+	    	
+			<isNotEmpty property="sortType">
+	    	<isEqual property="sortType" compareValue="DESC">
+	    	DESC,
+			</isEqual>
+			<isEqual property="sortType" compareValue="ASC">
+	    	ASC,
+			</isEqual>
+			</isNotEmpty>
+	    	AD.APPR_ID DESC    	
+			/* ===========================================END  */ 
+			) AA
+	<![CDATA[
+		) A WHERE ROWNUM <=  #endRowIndex# /* 종료  */
+	) WHERE RNUM >  #startRowIndex# /* 시작 */
+	]]> 
+	</select>
+	
+	<select id="countBySearchConditionLineEntrust" parameterClass="ApprListSearchCondition" resultClass="int">
+		SELECT /* [ApprList_SqlMap.xml] dapproval.admin.dao.ApprList.countBySearchConditionLineEntrust*/ 
+			COUNT(A.APPR_ID) 
+				FROM 
+				(SELECT  DISTINCT AD.APPR_ID,
+                    AD.FORM_ID,
+                    AF.FORM_NAME,
+                    AD.APPR_DOC_TYPE,
+                    AD.APPR_DOC_NO,
+                    AD.IS_HIDDEN,
+                    AC.CODE_KR_NAME CODE_NAME,
+                    AD.APPR_TITLE,
+                    AD.APPR_REQ_DATE,
+                    AD.APPR_DOC_STATUS,
+                    AD.REGIST_DATE,
+                    AD.REGISTER_ID,
+                    AD.REGISTER_NAME,
+                    EU.TEAM_NAME TEAM_NAME,
+                    AD.APPR_END_DATE,
+                    AL.ENTRUST_USER_NAME,
+                    AL.ENTRUST_USER_ID,
+                    AE.ENTRUST_ID
+				 FROM IKEP4_APPR_DOC AD 	INNER JOIN IKEP4_APPR_FORM AF 	ON AD.FORM_ID = AF.FORM_ID
+			  															AND AD.PORTAL_ID = AF.PORTAL_ID
+			  							INNER JOIN IKEP4_APPR_CODE AC 	ON AC.CODE_ID = AF.FORM_PARENT_ID
+			  							INNER JOIN IKEP4_EV_USER EU		ON EU.USER_ID = AD.REGISTER_ID 
+			  							INNER JOIN IKEP4_APPR_LINE AL 	ON AD.APPR_ID = AL.APPR_ID
+			  							INNER JOIN IKEP4_APPR_ENTRUST AE 	
+			  							<isNotEmpty property="listType">
+											<isEqual property="listType" compareValue="listApprEntrust">
+											ON  AE.SIGN_USER_ID = AL.ENTRUST_USER_ID
+											AND AL.APPROVER_ID = AE.ENTRUST_USER_ID
+											</isEqual>
+											<isEqual property="listType" compareValue="listApprDelegate">
+											ON  AE.ENTRUST_ID = AL.ENTRUST_ID
+											AND AL.APPROVER_ID = #userId#
+											</isEqual>
+										</isNotEmpty>
+				 WHERE AD.PORTAL_ID = #portalId#
+		          AND  AD.APPR_DOC_STATUS IN ('1','2','3')
+				  AND  AD.IS_HIDDEN = 0
+				  AND  AL.ENTRUST_USER_ID IS NOT NULL
+				 	<isNotEmpty property="searchFormName">
+					AND	UPPER(AF.FORM_NAME) LIKE '%' || UPPER(#searchFormName#) || '%'
+					</isNotEmpty>
+					<isNotEmpty property="searchApprDocStatus">
+					AND	AD.APPR_DOC_STATUS = #searchApprDocStatus#
+					</isNotEmpty>
+					<isNotEmpty property="searchUserName">
+					AND	UPPER(AD.REGISTER_NAME) LIKE '%' || UPPER(#searchUserName#) || '%'
+					</isNotEmpty>
+					<isNotEmpty property="searchEntrustUserName">
+					AND	UPPER(AL.ENTRUST_USER_NAME) LIKE '%' || UPPER(#searchEntrustUserName#) || '%'
+					</isNotEmpty>
+					<isNotEmpty property="searchApprTitle">
+					AND	UPPER(AD.APPR_TITLE) LIKE '%' || UPPER(#searchApprTitle#) || '%'
+					</isNotEmpty>
+					<isNotEmpty property="listType">
+					<isEqual property="listType" compareValue="listApprEntrust">
+					AND  AE.ENTRUST_ID = #entrustId#
+					AND	TO_CHAR(AL.APPR_DATE,'yyyy.mm.dd') <![CDATA[>=]]> #searchStartDate# 
+					AND TO_CHAR(AL.APPR_DATE,'yyyy.mm.dd') <![CDATA[<=]]> #searchEndDate#
+					</isEqual>
+					<isEqual property="listType" compareValue="listApprDelegate">
+						<isNotNull property="searchStartDate"><isNotEmpty property="searchStartDate">
+							<isNotNull property="searchEndDate"><isNotEmpty property="searchEndDate">
+								AND	TO_CHAR(AD.APPR_REQ_DATE,'yyyy.mm.dd') <![CDATA[>=]]> #searchStartDate# 
+								AND TO_CHAR(AD.APPR_REQ_DATE,'yyyy.mm.dd') <![CDATA[<=]]> #searchEndDate#
+							</isNotEmpty></isNotNull>
+						</isNotEmpty></isNotNull>
+					</isEqual>
+				</isNotEmpty>
+				) A
+	</select>
+	
+	<select id="listBySearchConditionUserDoc" parameterClass="ApprListSearchCondition" resultMap="ApprListUserDocResultExt"> 
+	SELECT /* [ApprList_SqlMap.xml] dapproval.admin.dao.ApprList.listBySearchConditionUserDoc */ 
+		*
+	FROM 
+	( 
+		SELECT ROWNUM AS RNUM, A.* FROM 
+		( 
+			SELECT   AA.*
+			FROM (
+			/* START========================================= */
+			SELECT  DISTINCT AD.APPR_ID,
+                    AD.FORM_ID,
+                    AF.FORM_NAME,
+                    AD.APPR_DOC_TYPE,
+                    AD.APPR_DOC_NO,
+                    AD.IS_HIDDEN,
+                    AC.CODE_KR_NAME CODE_NAME,
+                    AD.APPR_TITLE,
+                    AD.APPR_REQ_DATE,
+                    AD.APPR_DOC_STATUS,
+                    AD.REGIST_DATE,
+                    AD.REGISTER_ID,
+                    AD.REGISTER_NAME,
+                    EU.TEAM_NAME TEAM_NAME,
+                    AD.APPR_END_DATE,
+                    AUD.FOLDER_ID,
+                    AUF.FOLDER_NAME,
+                    AUF.FOLDER_PARENT_ID
+			  FROM IKEP4_APPR_DOC AD 	INNER JOIN IKEP4_APPR_FORM AF 	ON AD.FORM_ID = AF.FORM_ID
+			  															AND AD.PORTAL_ID = AF.PORTAL_ID
+			  							INNER JOIN IKEP4_APPR_CODE AC 	ON AC.CODE_ID = AF.FORM_PARENT_ID
+			  							INNER JOIN IKEP4_EV_USER EU		ON EU.USER_ID = AD.REGISTER_ID 
+			  							INNER JOIN IKEP4_APPR_USER_DOC AUD	ON AD.APPR_ID = AUD.APPR_ID
+			  							INNER JOIN IKEP4_APPR_USER_FOLDER AUF	ON AUD.FOLDER_ID = AUF.FOLDER_ID
+			 WHERE AD.PORTAL_ID = #portalId#
+	          AND  AD.APPR_DOC_STATUS = '2'
+			  AND  AD.IS_HIDDEN = 0
+			  AND  AUD.FOLDER_ID = #folderId#	
+			ORDER BY
+			<isNotEmpty property="sortColumn">
+	    	<isEqual property="sortColumn" compareValue="apprTitle">
+	    	AD.APPR_TITLE
+			</isEqual>
+			<isEqual property="sortColumn" compareValue="apprEndDate">
+		    	AD.APPR_END_DATE
+				</isEqual>				
+			</isNotEmpty>
+	    	
+			<isNotEmpty property="sortType">
+	    	<isEqual property="sortType" compareValue="DESC">
+	    	DESC,
+			</isEqual>
+			<isEqual property="sortType" compareValue="ASC">
+	    	ASC,
+			</isEqual>
+			</isNotEmpty>
+	    	AD.APPR_ID DESC    	
+			/* ===========================================END  */ 
+			) AA
+	<![CDATA[
+		) A WHERE ROWNUM <=  #endRowIndex# /* 종료  */
+	) WHERE RNUM >  #startRowIndex# /* 시작 */
+	]]> 
+	</select>
+	
+	<select id="countBySearchConditionUserDoc" parameterClass="ApprListSearchCondition" resultClass="int">
+		SELECT /* [ApprList_SqlMap.xml] dapproval.admin.dao.ApprList.countBySearchConditionUserDoc*/ 
+			COUNT(A.APPR_ID) 
+				FROM 
+				(SELECT  DISTINCT AD.APPR_ID,
+                    AD.FORM_ID,
+                    AF.FORM_NAME,
+                    AD.APPR_DOC_TYPE,
+                    AD.APPR_DOC_NO,
+                    AD.IS_HIDDEN,
+                    AC.CODE_KR_NAME CODE_NAME,
+                    AD.APPR_TITLE,
+                    AD.APPR_REQ_DATE,
+                    AD.APPR_DOC_STATUS,
+                    AD.REGIST_DATE,
+                    AD.REGISTER_ID,
+                    AD.REGISTER_NAME,
+                    EU.TEAM_NAME TEAM_NAME,
+                    AD.APPR_END_DATE,
+                    AUD.FOLDER_ID
+				 FROM IKEP4_APPR_DOC AD 	INNER JOIN IKEP4_APPR_FORM AF 	ON AD.FORM_ID = AF.FORM_ID
+			  															AND AD.PORTAL_ID = AF.PORTAL_ID
+			  							INNER JOIN IKEP4_APPR_CODE AC 	ON AC.CODE_ID = AF.FORM_PARENT_ID
+			  							INNER JOIN IKEP4_EV_USER EU		ON EU.USER_ID = AD.REGISTER_ID 
+			  							INNER JOIN IKEP4_APPR_USER_DOC AUD	ON AD.APPR_ID = AUD.APPR_ID
+				 WHERE AD.PORTAL_ID = #portalId#
+		          AND  AD.APPR_DOC_STATUS = '2'
+				  AND  AD.IS_HIDDEN = 0
+				  AND  AUD.FOLDER_ID = #folderId#				 	
+			) A
+	</select>
+	
+	<select id="listBySearchConditionRead" parameterClass="ApprListSearchCondition" resultMap="ApprListResult"> 
+		SELECT /* [ApprList_SqlMap.xml] approval.admin.dao.ApprList.listBySearchConditionRead */ 
+			*
+		FROM 
+		( 
+			SELECT ROWNUM AS RNUM, A.* FROM 
+			( 
+				SELECT  AA.*
+				FROM (
+				/* START========================================= */
+				SELECT  
+						DISTINCT AD.APPR_ID,
+				        AD.FORM_ID,
+				        AF.FORM_NAME,
+				        AD.APPR_DOC_TYPE,
+				        AD.APPR_DOC_NO,
+				        AD.IS_HIDDEN,
+				        AC.CODE_KR_NAME CODE_NAME,
+				        AD.APPR_TITLE,
+				        AD.APPR_REQ_DATE,
+				        AD.APPR_DOC_STATUS,
+				        AD.REGIST_DATE,
+				        AD.REGISTER_ID,
+		                AD.REGISTER_NAME,
+		                EU.TEAM_NAME TEAM_NAME,
+		                AD.APPR_END_DATE
+				 FROM IKEP4_APPR_DOC AD 	INNER JOIN IKEP4_APPR_FORM AF 	ON AD.FORM_ID = AF.FORM_ID
+				  															AND AD.PORTAL_ID = AF.PORTAL_ID
+				  							INNER JOIN IKEP4_APPR_CODE AC 	ON AC.CODE_ID = AF.FORM_PARENT_ID
+				  							INNER JOIN IKEP4_EV_USER EU		ON EU.USER_ID = AD.REGISTER_ID
+				  							INNER JOIN IKEP4_APPR_READ AR 	ON AD.APPR_ID = AR.APPR_ID
+				 WHERE AD.PORTAL_ID = #portalId#
+			  	  AND  AD.IS_HIDDEN = 0
+				  <isNotEmpty property="listType">
+						<isEqual property="listType" compareValue="listApprReading">
+						AND  (AR.READ_ID = #userId# OR  AR.READ_ID = #groupId#) 
+						AND	AD.PARENT_APPR_ID IS NULL
+						</isEqual>
+						<isEqual property="listType" compareValue="listApprReadingAssign">
+						AND  AD.REGISTER_ID = #userId#  
+						</isEqual>
+				  </isNotEmpty>
+				    AND	AD.APPR_DOC_STATUS = '2'
+					<isNotEmpty property="searchFormName">
+					AND	UPPER(AF.FORM_NAME) LIKE '%' || UPPER(#searchFormName#) || '%'
+					</isNotEmpty>
+					<isNotEmpty property="searchApprDocStatus">
+					AND	AD.APPR_DOC_STATUS = #searchApprDocStatus#
+					</isNotEmpty>
+					<isNotEmpty property="searchUserName">
+					AND	UPPER(AD.REGISTER_NAME) LIKE '%' || UPPER(#searchUserName#) || '%'
+					</isNotEmpty>
+					<isNotEmpty property="searchApprTitle">
+					AND	UPPER(AD.APPR_TITLE) LIKE '%' || UPPER(#searchApprTitle#) || '%'
+					</isNotEmpty>
+					<isNotNull property="searchStartDate"><isNotEmpty property="searchStartDate">
+						<isNotNull property="searchEndDate"><isNotEmpty property="searchEndDate">
+							AND AD.APPR_REQ_DATE BETWEEN TO_DATE(#searchStartDate#) AND TO_DATE(#searchEndDate#)+1
+						</isNotEmpty></isNotNull>
+					</isNotEmpty></isNotNull>
+				ORDER BY
+				<isNotEmpty property="sortColumn">
+		    	<isEqual property="sortColumn" compareValue="apprTitle">
+		    	AD.APPR_TITLE
+				</isEqual>
+				<isEqual property="sortColumn" compareValue="apprReqDate">
+		    	AD.APPR_REQ_DATE
+				</isEqual>
+				<isEqual property="sortColumn" compareValue="registDate">
+		    	AD.REGIST_DATE
+				</isEqual>
+				<isEqual property="sortColumn" compareValue="apprEndDate">
+		    	AD.APPR_END_DATE
+				</isEqual>						
+				</isNotEmpty>
+		    	
+				<isNotEmpty property="sortType">
+		    	<isEqual property="sortType" compareValue="DESC">
+		    	DESC,
+				</isEqual>
+				<isEqual property="sortType" compareValue="ASC">
+		    	ASC,
+				</isEqual>
+				</isNotEmpty>
+		    	AD.APPR_ID DESC    	
+				/* ===========================================END  */ 
+				) AA
+		<![CDATA[
+			) A WHERE ROWNUM <=  #endRowIndex# /* 종료  */
+		) WHERE RNUM >  #startRowIndex# /* 시작 */
+		]]> 
+	</select>
+	
+	<select id="countBySearchConditionRead" parameterClass="ApprListSearchCondition" resultClass="int">
+		SELECT /* [ApprList_SqlMap.xml] approval.admin.dao.ApprList.countBySearchConditionRead*/ 
+			COUNT(A.APPR_ID) 
+				FROM
+				(SELECT  DISTINCT AD.APPR_ID,
+				        AD.FORM_ID,
+				        AF.FORM_NAME,
+				        AD.APPR_DOC_TYPE,
+				        AD.APPR_DOC_NO,
+				        AD.IS_HIDDEN,
+				        AC.CODE_KR_NAME CODE_NAME,
+				        AD.APPR_TITLE,
+				        AD.APPR_REQ_DATE,
+				        AD.APPR_DOC_STATUS,
+				        AD.REGIST_DATE,
+				        AD.REGISTER_ID,
+		                AD.REGISTER_NAME,
+		                EU.TEAM_NAME TEAM_NAME,
+		                AD.APPR_END_DATE
+				 FROM IKEP4_APPR_DOC AD 	INNER JOIN IKEP4_APPR_FORM AF 	ON AD.FORM_ID = AF.FORM_ID
+				  															AND AD.PORTAL_ID = AF.PORTAL_ID
+				  							INNER JOIN IKEP4_APPR_CODE AC 	ON AC.CODE_ID = AF.FORM_PARENT_ID
+				  							INNER JOIN IKEP4_EV_USER EU		ON EU.USER_ID = AD.REGISTER_ID
+				  							INNER JOIN IKEP4_APPR_READ AR 	ON AD.APPR_ID = AR.APPR_ID
+				 WHERE AD.PORTAL_ID = #portalId#
+			  	  AND  AD.IS_HIDDEN = 0
+				  <isNotEmpty property="listType">
+						<isEqual property="listType" compareValue="listApprReading">
+						AND  (AR.READ_ID = #userId# OR  AR.READ_ID = #groupId#) 
+						AND	AD.PARENT_APPR_ID IS NULL
+						</isEqual>
+						<isEqual property="listType" compareValue="listApprReadingAssign">
+						AND  AD.REGISTER_ID = #userId#  
+						</isEqual>
+				  </isNotEmpty>
+				  AND	AD.APPR_DOC_STATUS = '2'
+					<isNotEmpty property="searchFormName">
+					AND	UPPER(AF.FORM_NAME) LIKE '%' || UPPER(#searchFormName#) || '%'
+					</isNotEmpty>
+					<isNotEmpty property="searchUserName">
+					AND	UPPER(AD.REGISTER_NAME) LIKE '%' || UPPER(#searchUserName#) || '%'
+					</isNotEmpty>
+					<isNotEmpty property="searchApprDocStatus">
+					AND	UPPER(AD.APPR_DOC_STATUS) LIKE '%' || UPPER(#searchApprDocStatus#) || '%'
+					</isNotEmpty>
+					<isNotEmpty property="searchApprTitle">
+					AND	UPPER(AD.APPR_TITLE) LIKE '%' || UPPER(#searchApprTitle#) || '%'
+					</isNotEmpty>
+					<isNotNull property="searchStartDate"><isNotEmpty property="searchStartDate">
+						<isNotNull property="searchEndDate"><isNotEmpty property="searchEndDate">
+							AND AD.APPR_REQ_DATE BETWEEN TO_DATE(#searchStartDate#) AND TO_DATE(#searchEndDate#)+1
+						</isNotEmpty></isNotNull>
+					</isNotEmpty></isNotNull>
+				) A
+	</select>
+	
+	<select id="listBySearchConditionIntegrate" parameterClass="ApprListSearchCondition" resultMap="ApprIntegrateListResult"> 
+	<![CDATA[
+	SELECT 
+		/* [ApprList_SqlMap.xml] approval.admin.dao.ApprList.listBySearchConditionIntegrate */ 
+		*
+	FROM 
+	( 
+		SELECT ROWNUM AS RNUM, A.* 
+		FROM 
+		(
+			SELECT
+				AD.APPR_ID,
+				AD.FORM_ID,
+				AF.FORM_NAME,
+				AD.APPR_DOC_TYPE,
+				AC.CODE_KR_NAME CODE_NAME,
+				AD.APPR_TITLE,
+				AD.APPR_REQ_DATE,
+				AD.APPR_DOC_STATUS,
+				AD.REGIST_DATE,
+				AD.REGISTER_ID,
+				AD.REGISTER_NAME,
+				AD.APPR_END_DATE,
+				AD.APPR_DOC_NO,
+				'' LIST_TYPE,
+				AD.APPR_GROUP_ID
+			FROM
+				(
+
+					/* 내가 기안한 문서 + 팀내(일반문서) */	
+					SELECT
+						APPR_ID
+					FROM
+						IKEP4_APPR_DOC
+					WHERE
+						REGISTER_ID = #userId#
+						OR 
+						(
+							/** 팀내 일반문서조회 **/
+							APPR_GROUP_ID IN 
+							(
+								SELECT 
+									A.GROUP_ID 
+								FROM 
+									IKEP4_EV_USER_GROUP A  
+									INNER JOIN IKEP4_EV_GROUP B ON A.GROUP_ID = B.GROUP_ID 
+								WHERE 
+									B.GROUP_TYPE_ID = 'G0001' 
+									AND A.USER_ID = #userId#
+							) 
+							AND    APPR_SECURITY_TYPE = 0 /** 일반문서 **/
+						)
+
+					UNION
+
+					/*  내가 결재선에 포함된 문서 */ 
+					SELECT 
+						APPR_ID
+					FROM
+						IKEP4_APPR_LINE
+					WHERE
+						APPR_TYPE IN (0,1,2)
+						AND ( APPROVER_ID = #userId#
+						OR ENTRUST_USER_ID = #userId# )
+
+					UNION 
+
+					/* 내가 참조자인 경우 */ 
+					SELECT
+						APPR_ID
+					FROM
+						IKEP4_APPR_REFERENCE
+					WHERE
+						USER_ID=#userId#
+
+					UNION 
+
+					/* 내가 열람권자인 경우 */ 
+					SELECT 
+						APPR_ID
+					FROM 
+						IKEP4_APPR_READ 
+					WHERE 
+						READ_ID = #userId#  /** 열람권자 사용자 조회 **/
+						OR READ_ID IN 
+						(
+							/** 열람권자 그룹 조회 **/
+							SELECT
+								A.GROUP_ID 
+							FROM
+								IKEP4_EV_USER_GROUP A  
+								INNER JOIN IKEP4_EV_GROUP B ON A.GROUP_ID = B.GROUP_ID 
+							WHERE
+								B.GROUP_TYPE_ID = 'G0001'
+								AND A.USER_ID = #userId#
+						)
+				) A
+				INNER JOIN IKEP4_APPR_DOC AD	ON AD.APPR_ID=A.APPR_ID
+				INNER JOIN IKEP4_APPR_FORM AF	ON AD.PORTAL_ID = AF.PORTAL_ID AND AD.FORM_ID = AF.FORM_ID
+				INNER JOIN IKEP4_APPR_CODE AC	ON AC.CODE_ID = AF.FORM_PARENT_ID
+			WHERE
+				AD.APPR_DOC_STATUS = 2
+				AND  AD.PORTAL_ID = #portalId#
+				AND  AD.IS_HIDDEN = 0
+				AND	 AD.PARENT_APPR_ID IS NULL			
+	]]> 
+				<isNotEmpty property="searchFormName">
+					AND	UPPER(AD.FORM_NAME) LIKE '%' || UPPER(#searchFormName#) || '%'
+				</isNotEmpty>
+				<isNotEmpty property="searchApprDocNo">
+					AND	UPPER(AD.APPR_DOC_NO) LIKE '%' || UPPER(#searchApprDocNo#) || '%'
+				</isNotEmpty>
+				<isNotEmpty property="searchApprTitle">
+					AND	UPPER(AD.APPR_TITLE) LIKE '%' || UPPER(#searchApprTitle#) || '%'
+				</isNotEmpty>
+				<isNotNull property="searchStartDate"><isNotEmpty property="searchStartDate">
+				<isNotNull property="searchEndDate"><isNotEmpty property="searchEndDate">
+					AND AD.APPR_REQ_DATE BETWEEN TO_DATE(#searchStartDate#) AND TO_DATE(#searchEndDate#)+1
+				</isNotEmpty></isNotNull>
+				</isNotEmpty></isNotNull>
+				<isNotEmpty property="searchUserName">
+					AND	UPPER(AD.REGISTER_NAME) LIKE '%' || UPPER(#searchUserName#) || '%'
+				</isNotEmpty>
+				<isNotEmpty property="searchGroupId">
+					AND	AD.APPR_GROUP_ID = #searchGroupId#
+				</isNotEmpty>
+				ORDER BY
+				<isNotEmpty property="sortColumn">
+				<isEqual property="sortColumn" compareValue="apprTitle">
+					AD.APPR_TITLE
+				</isEqual>
+				<isEqual property="sortColumn" compareValue="apprReqDate">
+					AD.APPR_REQ_DATE
+				</isEqual>
+				<isEqual property="sortColumn" compareValue="registDate">
+					AD.REGIST_DATE
+				</isEqual>			
+				<isEqual property="sortColumn" compareValue="apprEndDate">
+					AD.APPR_END_DATE
+				</isEqual>			
+				</isNotEmpty>
+
+				<isNotEmpty property="sortType">
+				<isEqual property="sortType" compareValue="DESC">
+					DESC
+				</isEqual>
+				<isEqual property="sortType" compareValue="ASC">
+					ASC
+				</isEqual>
+				</isNotEmpty>
+	<![CDATA[
+		) A 
+		WHERE
+			ROWNUM <=  #endRowIndex# /* 종료  */
+	) WHERE 
+		RNUM >  #startRowIndex# /* 시작 */
+	]]> 
+	</select>
+	<!-- select id="listBySearchConditionIntegrate" parameterClass="ApprListSearchCondition" resultMap="ApprIntegrateListResult"> 
+	<![CDATA[
+		SELECT /* [ApprList_SqlMap.xml] approval.admin.dao.ApprList.listBySearchConditionIntegrate */ 
+			*
+		FROM 
+		( 
+			SELECT ROWNUM AS RNUM, A.* FROM 
+			(
+				SELECT  *
+		        FROM
+		            (
+		            
+		              /* 내가 기안한 문서 */  	
+		              SELECT  AD.APPR_ID,
+		                      AD.FORM_ID,
+		                      AF.FORM_NAME,
+		                      AD.APPR_DOC_TYPE,
+		                      AC.CODE_KR_NAME CODE_NAME,
+		                      AD.APPR_TITLE,
+		                      AD.APPR_REQ_DATE,
+		                      AD.APPR_DOC_STATUS,
+		                      AD.REGIST_DATE,
+		                      AD.REGISTER_ID,
+		                      AD.REGISTER_NAME,
+		                      AD.APPR_END_DATE,
+		                      AD.APPR_DOC_NO,
+	                          'APPR_AD' LIST_TYPE,
+	                          AD.APPR_GROUP_ID
+		              FROM IKEP4_APPR_DOC AD 	INNER JOIN IKEP4_APPR_FORM AF 	ON AD.FORM_ID = AF.FORM_ID
+					  															AND AD.PORTAL_ID = AF.PORTAL_ID
+					  							INNER JOIN IKEP4_APPR_CODE AC 	ON AC.CODE_ID = AF.FORM_PARENT_ID
+		              WHERE AD.APPR_DOC_STATUS = 2
+				  	  AND  AD.PORTAL_ID = #portalId#
+				  	  AND  AD.IS_HIDDEN = 0
+		              AND  AD.REGISTER_ID = #userId#
+		              AND  AD.APPR_DOC_STATUS = 2
+		              
+		              UNION ALL
+		              
+		              /* 내가 기안한 문서(X), 내가 결재선에 포함된 문서 */ 
+		              SELECT  AD.APPR_ID,
+		                      AD.FORM_ID,
+		                      AF.FORM_NAME,
+		                      AD.APPR_DOC_TYPE,
+		                      AC.CODE_KR_NAME CODE_NAME,
+		                      AD.APPR_TITLE,
+		                      AD.APPR_REQ_DATE,
+		                      AD.APPR_DOC_STATUS,
+		                      AD.REGIST_DATE,
+		                      AD.REGISTER_ID,
+		                      AD.REGISTER_NAME,
+		                      AD.APPR_END_DATE,
+		                      AD.APPR_DOC_NO,
+	                          'APPR_AL' LIST_TYPE,
+	                          AD.APPR_GROUP_ID 
+		              FROM IKEP4_APPR_DOC AD 	INNER JOIN IKEP4_APPR_FORM AF 	ON AD.FORM_ID = AF.FORM_ID
+					  															AND AD.PORTAL_ID = AF.PORTAL_ID
+					  							INNER JOIN IKEP4_APPR_CODE AC 	ON AC.CODE_ID = AF.FORM_PARENT_ID
+					  							INNER JOIN IKEP4_APPR_LINE AL 	ON AD.APPR_ID = AL.APPR_ID
+		              WHERE AD.APPR_DOC_STATUS = 2
+				  	  AND  AD.PORTAL_ID = #portalId#
+				  	  AND  AD.IS_HIDDEN = 0
+		              AND  AD.REGISTER_ID != #userId#
+		              AND AL.APPR_DATE IS NOT NULL
+		              AND AL.APPR_STATUS = 2
+		              AND AL.APPR_TYPE <= 2
+		              AND  (AL.APPROVER_ID = #userId# 
+		              		OR AL.ENTRUST_USER_ID = #userId# 
+		              		)
+										  	  
+		              UNION ALL
+		              
+		              /* 내가 기안한 문서(X), 내가 결재선에 포함된 문서(X), 참조자인 경우 */ 
+		              SELECT  DISTINCT AD.APPR_ID,
+		                      AD.FORM_ID,
+		                      AF.FORM_NAME,
+		                      AD.APPR_DOC_TYPE,
+		                      AC.CODE_KR_NAME CODE_NAME,
+		                      AD.APPR_TITLE,
+		                      AD.APPR_REQ_DATE,
+		                      AD.APPR_DOC_STATUS,
+		                      AD.REGIST_DATE,
+		                      AD.REGISTER_ID,
+		                      AD.REGISTER_NAME,
+		                      AD.APPR_END_DATE,
+		                      AD.APPR_DOC_NO,
+	                          'APPR_AR' LIST_TYPE,
+	                          AD.APPR_GROUP_ID
+		              FROM IKEP4_APPR_DOC AD 	INNER JOIN IKEP4_APPR_FORM AF 	ON AD.FORM_ID = AF.FORM_ID
+					  															AND AD.PORTAL_ID = AF.PORTAL_ID
+					  							INNER JOIN IKEP4_APPR_CODE AC 	ON AC.CODE_ID = AF.FORM_PARENT_ID
+					  							INNER JOIN IKEP4_APPR_LINE AL 	ON AD.APPR_ID = AL.APPR_ID
+					  							INNER JOIN IKEP4_APPR_REFERENCE AR 	ON AD.APPR_ID = AR.APPR_ID
+		              WHERE AD.APPR_DOC_STATUS = 2
+				  	  AND  AD.PORTAL_ID = #portalId#
+				  	  AND  AD.IS_HIDDEN = 0
+		              AND  AD.REGISTER_ID != #userId# 
+		              AND  AR.USER_ID=#userId#
+		              AND  AL.APPR_STATUS = 2
+	                  AND  (AL.APPROVER_ID != #userId# OR  AL.ENTRUST_USER_ID != #userId#) 
+	                  
+		              UNION ALL 
+		              
+		              /* 내가 기안한 문서(X), 내가 결재선에 포함된 문서(X), 참조자인 경우(X), 열람권자인 경우 */ 
+		              SELECT  DISTINCT AD.APPR_ID,
+		                      AD.FORM_ID,
+		                      AF.FORM_NAME,
+		                      AD.APPR_DOC_TYPE,
+		                      AC.CODE_KR_NAME CODE_NAME,
+		                      AD.APPR_TITLE,
+		                      AD.APPR_REQ_DATE,
+		                      AD.APPR_DOC_STATUS,
+		                      AD.REGIST_DATE,
+		                      AD.REGISTER_ID,
+		                      AD.REGISTER_NAME,
+		                      AD.APPR_END_DATE,
+		                      AD.APPR_DOC_NO,
+	                          'APPR_ARE' LIST_TYPE ,
+	                          AD.APPR_GROUP_ID
+		              FROM IKEP4_APPR_DOC AD 	INNER JOIN IKEP4_APPR_FORM AF 	ON AD.FORM_ID = AF.FORM_ID
+					  															AND AD.PORTAL_ID = AF.PORTAL_ID
+					  							INNER JOIN IKEP4_APPR_CODE AC 	ON AC.CODE_ID = AF.FORM_PARENT_ID
+					  							INNER JOIN IKEP4_APPR_LINE AL 	ON AD.APPR_ID = AL.APPR_ID
+					  							INNER JOIN IKEP4_APPR_REFERENCE AR 	ON AD.APPR_ID = AR.APPR_ID
+					  							INNER JOIN IKEP4_APPR_READ ARE 	ON AD.APPR_ID = ARE.APPR_ID
+		              WHERE AD.APPR_DOC_STATUS = 2
+				  	  AND  AD.PORTAL_ID = #portalId#
+				  	  AND  AD.IS_HIDDEN = 0
+		              AND  AD.REGISTER_ID != #userId# 
+		              AND  AR.USER_ID !=#userId#
+	                  AND  AL.APPR_STATUS = 2
+	                  AND  (AL.APPROVER_ID != #userId# OR  AL.ENTRUST_USER_ID != #userId#)
+		              AND  
+			                CASE 
+			                      WHEN ARE.READ_TYPE = 0 THEN
+			                          CASE WHEN  ARE.READ_ID = #userId# THEN 'TRUE'
+			                               ELSE 'FALSE'
+			                          END
+			                      WHEN ARE.READ_TYPE = 1 THEN
+			                          CASE WHEN  ARE.READ_ID IN (select a.GROUP_ID from IKEP4_EV_USER_GROUP a  
+                                                   INNER JOIN ikep4_ev_group b on a.group_id = b.group_id 
+                                                   where b.group_type_id = 'G0001' 
+                                                   and a.USER_ID = #userId#) THEN 'TRUE'
+			                               ELSE 'FALSE'
+			                          END
+			                  END = 'TRUE'
+			                  
+			          UNION ALL
+			          
+			          /* 내가 기안한 문서(X), 내가 결재선에 포함된 문서(X), 참조자인 경우(X), 열람권자인 경우(X), 결재문서 기안부서 =내팀 ID and 문서타입이 일반인 경우 */ 
+			          SELECT  DISTINCT AD.APPR_ID,
+		                      AD.FORM_ID,
+		                      AF.FORM_NAME,
+		                      AD.APPR_DOC_TYPE,
+		                      AC.CODE_KR_NAME CODE_NAME,
+		                      AD.APPR_TITLE,
+		                      AD.APPR_REQ_DATE,
+		                      AD.APPR_DOC_STATUS,
+		                      AD.REGIST_DATE,
+		                      AD.REGISTER_ID,
+		                      AD.REGISTER_NAME,
+		                      AD.APPR_END_DATE,
+		                      AD.APPR_DOC_NO,
+	                          'APPR_DEPT' LIST_TYPE ,
+	                          AD.APPR_GROUP_ID
+		              FROM IKEP4_APPR_DOC AD 	INNER JOIN IKEP4_APPR_FORM AF 	ON AD.FORM_ID = AF.FORM_ID
+					  															AND AD.PORTAL_ID = AF.PORTAL_ID
+					  							INNER JOIN IKEP4_APPR_CODE AC 	ON AC.CODE_ID = AF.FORM_PARENT_ID
+					  							INNER JOIN IKEP4_APPR_LINE AL 	ON AD.APPR_ID = AL.APPR_ID
+					  							INNER JOIN IKEP4_APPR_REFERENCE AR 	ON AD.APPR_ID = AR.APPR_ID
+					  							INNER JOIN IKEP4_APPR_READ ARE 	ON AD.APPR_ID = ARE.APPR_ID
+		              WHERE AD.APPR_DOC_STATUS = 2
+				  	  AND  AD.PORTAL_ID = 'P000001'
+				  	  AND  AD.IS_HIDDEN = 0
+		              AND  AD.REGISTER_ID != #userId#
+	                  AND (ARE.READ_ID != 'user4' OR ARE.READ_ID NOT IN (select a.GROUP_ID from IKEP4_EV_USER_GROUP a  
+                                                   INNER JOIN ikep4_ev_group b on a.group_id = b.group_id 
+                                                   where b.group_type_id = 'G0001' 
+                                                   and a.USER_ID = #userId#))
+	                  AND  AD.APPR_GROUP_ID IN (select a.GROUP_ID from IKEP4_EV_USER_GROUP a  
+                                                   INNER JOIN ikep4_ev_group b on a.group_id = b.group_id 
+                                                   where b.group_type_id = 'G0001' 
+                                                   and a.USER_ID = #userId#)
+	                  AND  AR.USER_ID != #userId#
+	                  AND  AL.APPR_STATUS = 2
+	                  AND  AL.APPR_TYPE <= 2
+	                  AND  (AL.APPROVER_ID != #userId# OR  AL.ENTRUST_USER_ID != #userId#)
+	                  AND   AD.APPR_SECURITY_TYPE = 0
+		            ) AD
+		       WHERE 1 = 1
+		       ]]> 
+		          <isNotEmpty property="searchFormName">
+					AND	UPPER(AD.FORM_NAME) LIKE '%' || UPPER(#searchFormName#) || '%'
+					</isNotEmpty>
+					<isNotEmpty property="searchApprDocNo">
+					AND	UPPER(AD.APPR_DOC_NO) LIKE '%' || UPPER(#searchApprDocNo#) || '%'
+					</isNotEmpty>
+					<isNotEmpty property="searchApprTitle">
+					AND	UPPER(AD.APPR_TITLE) LIKE '%' || UPPER(#searchApprTitle#) || '%'
+					</isNotEmpty>
+					<isNotNull property="searchStartDate"><isNotEmpty property="searchStartDate">
+						<isNotNull property="searchEndDate"><isNotEmpty property="searchEndDate">
+							AND AD.APPR_REQ_DATE BETWEEN TO_DATE(#searchStartDate#) AND TO_DATE(#searchEndDate#)+1
+						</isNotEmpty></isNotNull>
+					</isNotEmpty></isNotNull>
+					<isNotEmpty property="searchUserName">
+					AND	UPPER(AD.REGISTER_NAME) LIKE '%' || UPPER(#searchUserName#) || '%'
+					</isNotEmpty>
+					<isNotEmpty property="searchGroupId">
+					AND	AD.APPR_GROUP_ID = #searchGroupId#
+					</isNotEmpty>
+				ORDER BY
+				<isNotEmpty property="sortColumn">
+		    	<isEqual property="sortColumn" compareValue="apprTitle">
+		    	AD.APPR_TITLE
+				</isEqual>
+				<isEqual property="sortColumn" compareValue="apprReqDate">
+		    	AD.APPR_REQ_DATE
+				</isEqual>
+				<isEqual property="sortColumn" compareValue="registDate">
+		    	AD.REGIST_DATE
+				</isEqual>			
+				<isEqual property="sortColumn" compareValue="apprEndDate">
+		    	AD.APPR_END_DATE
+				</isEqual>			
+				</isNotEmpty>
+		    	
+				<isNotEmpty property="sortType">
+		    	<isEqual property="sortType" compareValue="DESC">
+		    	DESC
+				</isEqual>
+				<isEqual property="sortType" compareValue="ASC">
+		    	ASC
+				</isEqual>
+				</isNotEmpty>
+	<![CDATA[
+			) A WHERE ROWNUM <=  #endRowIndex# /* 종료  */
+		) WHERE RNUM >  #startRowIndex# /* 시작 */
+	]]> 
+	</select-->	
+	<select id="countBySearchConditionIntegrate" parameterClass="ApprListSearchCondition" resultClass="int">
+	SELECT 
+		/* [APPRLIST_SQLMAP.XML] APPROVAL.ADMIN.DAO.APPRLIST.COUNTBYSEARCHCONDITIONINTEGRATE */ 
+		COUNT(A.APPR_ID) 
+	FROM 
+	( 
+	
+		SELECT
+			AD.APPR_ID
+		FROM 
+			(  
+	
+				/* 내가 기안한 문서 + 팀내(일반문서) */  	
+				SELECT
+					APPR_ID
+				FROM
+					IKEP4_APPR_DOC
+				WHERE
+					REGISTER_ID = #userId#
+					OR 
+					(
+						/** 팀내 일반문서조회 **/
+						APPR_GROUP_ID IN 
+						(
+							SELECT 
+								A.GROUP_ID 
+							FROM 
+								IKEP4_EV_USER_GROUP A  
+								INNER JOIN IKEP4_EV_GROUP B ON A.GROUP_ID = B.GROUP_ID 
+							WHERE 
+								B.GROUP_TYPE_ID = 'G0001' 
+								AND A.USER_ID = #userId#
+						) 
+						AND    APPR_SECURITY_TYPE = 0 /** 일반문서 **/
+					)
+	
+				UNION
+	
+				/*  내가 결재선에 포함된 문서 */ 
+				SELECT 
+					APPR_ID
+				FROM
+					IKEP4_APPR_LINE
+				WHERE
+					APPR_TYPE IN (0,1,2)
+					AND ( APPROVER_ID = #userId#
+					OR ENTRUST_USER_ID = #userId# )
+	
+				UNION
+	
+				/* 내가 참조자인 경우 */ 
+				SELECT
+					APPR_ID 
+				FROM
+					IKEP4_APPR_REFERENCE
+				WHERE
+					USER_ID=#userId#
+	
+				UNION
+	
+				/* 내가 열람권자인 경우 */ 
+				SELECT 
+					APPR_ID 
+				FROM 
+					IKEP4_APPR_READ 
+				WHERE 
+					READ_ID = #userId#  /** 열람권자 사용자 조회 **/
+					OR READ_ID IN 
+					(
+						/** 열람권자 그룹 조회 **/
+						SELECT
+							A.GROUP_ID 
+						FROM
+							IKEP4_EV_USER_GROUP A  
+							INNER JOIN IKEP4_EV_GROUP B ON A.GROUP_ID = B.GROUP_ID 
+						WHERE
+							B.GROUP_TYPE_ID = 'G0001' 
+							AND A.USER_ID = #userId#
+					)
+	
+	
+			) A
+			INNER JOIN IKEP4_APPR_DOC AD	ON AD.APPR_ID=A.APPR_ID
+			INNER JOIN IKEP4_APPR_FORM AF	ON AD.PORTAL_ID = AF.PORTAL_ID AND AD.FORM_ID = AF.FORM_ID
+			INNER JOIN IKEP4_APPR_CODE AC	ON AC.CODE_ID = AF.FORM_PARENT_ID
+		WHERE
+			AD.APPR_DOC_STATUS = 2
+			AND  AD.PORTAL_ID = #portalId#
+			AND  AD.IS_HIDDEN = 0
+			AND	 AD.PARENT_APPR_ID IS NULL	
+		<isNotEmpty property="searchFormName">
+			AND	UPPER(AD.FORM_NAME) LIKE '%' || UPPER(#searchFormName#) || '%'
+		</isNotEmpty>
+		<isNotEmpty property="searchApprDocNo">
+			AND	UPPER(AD.APPR_DOC_NO) LIKE '%' || UPPER(#searchApprDocNo#) || '%'
+		</isNotEmpty>
+		<isNotEmpty property="searchApprTitle">
+			AND	UPPER(AD.APPR_TITLE) LIKE '%' || UPPER(#searchApprTitle#) || '%'
+		</isNotEmpty>
+		<isNotNull property="searchStartDate"><isNotEmpty property="searchStartDate">
+		<isNotNull property="searchEndDate"><isNotEmpty property="searchEndDate">
+			AND AD.APPR_REQ_DATE BETWEEN TO_DATE(#searchStartDate#) AND TO_DATE(#searchEndDate#)+1
+		</isNotEmpty></isNotNull>
+		</isNotEmpty></isNotNull>
+		<isNotEmpty property="searchUserName">
+			AND	UPPER(AD.REGISTER_NAME) LIKE '%' || UPPER(#searchUserName#) || '%'
+		</isNotEmpty>
+		<isNotEmpty property="searchGroupId">
+			AND	AD.APPR_GROUP_ID = #searchGroupId#
+		</isNotEmpty>			
+	) A 
+	</select>
+	<!-- select id="countBySearchConditionIntegrate" parameterClass="ApprListSearchCondition" resultClass="int">
+		<![CDATA[
+			SELECT /* [ApprList_SqlMap.xml] approval.admin.dao.ApprList.countBySearchConditionIntegrate */ 
+				COUNT(A.APPR_ID) 
+			FROM 
+			( 
+				
+		      SELECT  *
+		        FROM
+		            (
+		            
+		          /* 내가 기안한 문서 */  	
+		              SELECT  AD.APPR_ID,
+		                      AD.FORM_ID,
+		                      AF.FORM_NAME,
+		                      AD.APPR_DOC_TYPE,
+		                      AC.CODE_KR_NAME CODE_NAME,
+		                      AD.APPR_TITLE,
+		                      AD.APPR_REQ_DATE,
+		                      AD.APPR_DOC_STATUS,
+		                      AD.REGIST_DATE,
+		                      AD.REGISTER_ID,
+		                      AD.REGISTER_NAME,
+		                      AD.APPR_END_DATE,
+		                      AD.APPR_DOC_NO,
+	                          'APPR_AD' LIST_TYPE,
+	                          AD.APPR_GROUP_ID
+		              FROM IKEP4_APPR_DOC AD 	INNER JOIN IKEP4_APPR_FORM AF 	ON AD.FORM_ID = AF.FORM_ID
+					  															AND AD.PORTAL_ID = AF.PORTAL_ID
+					  							INNER JOIN IKEP4_APPR_CODE AC 	ON AC.CODE_ID = AF.FORM_PARENT_ID
+		              WHERE AD.APPR_DOC_STATUS = 2
+				  	  AND  AD.PORTAL_ID = #portalId#
+				  	  AND  AD.IS_HIDDEN = 0
+		              AND  AD.REGISTER_ID = #userId#
+		              AND  AD.APPR_DOC_STATUS = 2
+		              
+		              UNION ALL
+		              
+		              /* 내가 기안한 문서(X), 내가 결재선에 포함된 문서 */ 
+		              SELECT  AD.APPR_ID,
+		                      AD.FORM_ID,
+		                      AF.FORM_NAME,
+		                      AD.APPR_DOC_TYPE,
+		                      AC.CODE_KR_NAME CODE_NAME,
+		                      AD.APPR_TITLE,
+		                      AD.APPR_REQ_DATE,
+		                      AD.APPR_DOC_STATUS,
+		                      AD.REGIST_DATE,
+		                      AD.REGISTER_ID,
+		                      AD.REGISTER_NAME,
+		                      AD.APPR_END_DATE,
+		                      AD.APPR_DOC_NO,
+	                          'APPR_AL' LIST_TYPE,
+	                          AD.APPR_GROUP_ID 
+		              FROM IKEP4_APPR_DOC AD 	INNER JOIN IKEP4_APPR_FORM AF 	ON AD.FORM_ID = AF.FORM_ID
+					  															AND AD.PORTAL_ID = AF.PORTAL_ID
+					  							INNER JOIN IKEP4_APPR_CODE AC 	ON AC.CODE_ID = AF.FORM_PARENT_ID
+					  							INNER JOIN IKEP4_APPR_LINE AL 	ON AD.APPR_ID = AL.APPR_ID
+		              WHERE AD.APPR_DOC_STATUS = 2
+				  	  AND  AD.PORTAL_ID = #portalId#
+				  	  AND  AD.IS_HIDDEN = 0
+		              AND  AD.REGISTER_ID != #userId#
+		              AND AL.APPR_DATE IS NOT NULL
+		              AND AL.APPR_STATUS  = 2
+		              AND AL.APPR_TYPE <= 2
+		              AND  (AL.APPROVER_ID = #userId# 
+		              		OR AL.ENTRUST_USER_ID = #userId# 
+		              		)
+										  	  
+		              UNION ALL
+		              
+		              /* 내가 기안한 문서(X), 내가 결재선에 포함된 문서(X), 참조자인 경우 */ 
+		              SELECT  DISTINCT AD.APPR_ID,
+		                      AD.FORM_ID,
+		                      AF.FORM_NAME,
+		                      AD.APPR_DOC_TYPE,
+		                      AC.CODE_KR_NAME CODE_NAME,
+		                      AD.APPR_TITLE,
+		                      AD.APPR_REQ_DATE,
+		                      AD.APPR_DOC_STATUS,
+		                      AD.REGIST_DATE,
+		                      AD.REGISTER_ID,
+		                      AD.REGISTER_NAME,
+		                      AD.APPR_END_DATE,
+		                      AD.APPR_DOC_NO,
+	                          'APPR_AR' LIST_TYPE,
+	                          AD.APPR_GROUP_ID
+		              FROM IKEP4_APPR_DOC AD 	INNER JOIN IKEP4_APPR_FORM AF 	ON AD.FORM_ID = AF.FORM_ID
+					  															AND AD.PORTAL_ID = AF.PORTAL_ID
+					  							INNER JOIN IKEP4_APPR_CODE AC 	ON AC.CODE_ID = AF.FORM_PARENT_ID
+					  							INNER JOIN IKEP4_APPR_LINE AL 	ON AD.APPR_ID = AL.APPR_ID
+					  							INNER JOIN IKEP4_APPR_REFERENCE AR 	ON AD.APPR_ID = AR.APPR_ID
+		              WHERE AD.APPR_DOC_STATUS = 2
+				  	  AND  AD.PORTAL_ID = #portalId#
+				  	  AND  AD.IS_HIDDEN = 0
+		              AND  AD.REGISTER_ID != #userId# 
+		              AND  AR.USER_ID=#userId#
+		              AND  AL.APPR_STATUS = 2
+	                  AND  (AL.APPROVER_ID != #userId# OR  AL.ENTRUST_USER_ID != #userId#) 
+	                  
+		              UNION ALL 
+		              
+		              /* 내가 기안한 문서(X), 내가 결재선에 포함된 문서(X), 참조자인 경우(X), 열람권자인 경우 */ 
+		              SELECT  DISTINCT AD.APPR_ID,
+		                      AD.FORM_ID,
+		                      AF.FORM_NAME,
+		                      AD.APPR_DOC_TYPE,
+		                      AC.CODE_KR_NAME CODE_NAME,
+		                      AD.APPR_TITLE,
+		                      AD.APPR_REQ_DATE,
+		                      AD.APPR_DOC_STATUS,
+		                      AD.REGIST_DATE,
+		                      AD.REGISTER_ID,
+		                      AD.REGISTER_NAME,
+		                      AD.APPR_END_DATE,
+		                      AD.APPR_DOC_NO,
+	                          'APPR_ARE' LIST_TYPE ,
+	                          AD.APPR_GROUP_ID
+		              FROM IKEP4_APPR_DOC AD 	INNER JOIN IKEP4_APPR_FORM AF 	ON AD.FORM_ID = AF.FORM_ID
+					  															AND AD.PORTAL_ID = AF.PORTAL_ID
+					  							INNER JOIN IKEP4_APPR_CODE AC 	ON AC.CODE_ID = AF.FORM_PARENT_ID
+					  							INNER JOIN IKEP4_APPR_LINE AL 	ON AD.APPR_ID = AL.APPR_ID
+					  							INNER JOIN IKEP4_APPR_REFERENCE AR 	ON AD.APPR_ID = AR.APPR_ID
+					  							INNER JOIN IKEP4_APPR_READ ARE 	ON AD.APPR_ID = ARE.APPR_ID
+		              WHERE AD.APPR_DOC_STATUS = 2
+				  	  AND  AD.PORTAL_ID = #portalId#
+				  	  AND  AD.IS_HIDDEN = 0
+		              AND  AD.REGISTER_ID != #userId# 
+		              AND  AR.USER_ID !=#userId#
+	                  AND  AL.APPR_STATUS = 2
+	                  AND  (AL.APPROVER_ID != #userId# OR  AL.ENTRUST_USER_ID != #userId#)
+		              AND  
+			                CASE 
+			                      WHEN ARE.READ_TYPE = 0 THEN
+			                          CASE WHEN  ARE.READ_ID = #userId# THEN 'TRUE'
+			                               ELSE 'FALSE'
+			                          END
+			                      WHEN ARE.READ_TYPE = 1 THEN
+			                          CASE WHEN  ARE.READ_ID IN (select a.GROUP_ID from IKEP4_EV_USER_GROUP a  
+                                                   INNER JOIN ikep4_ev_group b on a.group_id = b.group_id 
+                                                   where b.group_type_id = 'G0001' 
+                                                   and a.USER_ID = #userId#) THEN 'TRUE'
+			                               ELSE 'FALSE'
+			                          END
+			                  END = 'TRUE'
+			                  
+			          UNION ALL
+			          
+			          /* 내가 기안한 문서(X), 내가 결재선에 포함된 문서(X), 참조자인 경우(X), 열람권자인 경우(X), 결재문서 기안부서 =내팀 ID and 문서타입이 일반인 경우 */ 
+			          SELECT  DISTINCT AD.APPR_ID,
+		                      AD.FORM_ID,
+		                      AF.FORM_NAME,
+		                      AD.APPR_DOC_TYPE,
+		                      AC.CODE_KR_NAME CODE_NAME,
+		                      AD.APPR_TITLE,
+		                      AD.APPR_REQ_DATE,
+		                      AD.APPR_DOC_STATUS,
+		                      AD.REGIST_DATE,
+		                      AD.REGISTER_ID,
+		                      AD.REGISTER_NAME,
+		                      AD.APPR_END_DATE,
+		                      AD.APPR_DOC_NO,
+	                          'APPR_DEPT' LIST_TYPE ,
+	                          AD.APPR_GROUP_ID
+		              FROM IKEP4_APPR_DOC AD 	INNER JOIN IKEP4_APPR_FORM AF 	ON AD.FORM_ID = AF.FORM_ID
+					  															AND AD.PORTAL_ID = AF.PORTAL_ID
+					  							INNER JOIN IKEP4_APPR_CODE AC 	ON AC.CODE_ID = AF.FORM_PARENT_ID
+					  							INNER JOIN IKEP4_APPR_LINE AL 	ON AD.APPR_ID = AL.APPR_ID
+					  							INNER JOIN IKEP4_APPR_REFERENCE AR 	ON AD.APPR_ID = AR.APPR_ID
+					  							INNER JOIN IKEP4_APPR_READ ARE 	ON AD.APPR_ID = ARE.APPR_ID
+		              WHERE AD.APPR_DOC_STATUS = 2
+				  	  AND  AD.PORTAL_ID = 'P000001'
+				  	  AND  AD.IS_HIDDEN = 0
+		              AND  AD.REGISTER_ID != #userId#
+	                  AND (ARE.READ_ID != 'user4' OR ARE.READ_ID NOT IN (select a.GROUP_ID from IKEP4_EV_USER_GROUP a  
+                                                   INNER JOIN ikep4_ev_group b on a.group_id = b.group_id 
+                                                   where b.group_type_id = 'G0001' 
+                                                   and a.USER_ID = #userId#))
+	                  AND  AD.APPR_GROUP_ID IN (select a.GROUP_ID from IKEP4_EV_USER_GROUP a  
+                                                   INNER JOIN ikep4_ev_group b on a.group_id = b.group_id 
+                                                   where b.group_type_id = 'G0001' 
+                                                   and a.USER_ID = #userId#)
+	                  AND  AR.USER_ID != #userId#
+	                  AND  AL.APPR_STATUS = 2
+	                  AND  AL.APPR_TYPE <= 2
+	                  AND  (AL.APPROVER_ID != #userId# OR  AL.ENTRUST_USER_ID != #userId#)
+	                  AND   AD.APPR_SECURITY_TYPE = 0
+		            ) AD
+		       WHERE 1 = 1
+		       ]]> 
+		          <isNotEmpty property="searchFormName">
+					AND	UPPER(AD.FORM_NAME) LIKE '%' || UPPER(#searchFormName#) || '%'
+					</isNotEmpty>
+					<isNotEmpty property="searchApprDocNo">
+					AND	UPPER(AD.APPR_DOC_NO) LIKE '%' || UPPER(#searchApprDocNo#) || '%'
+					</isNotEmpty>
+					<isNotEmpty property="searchApprTitle">
+					AND	UPPER(AD.APPR_TITLE) LIKE '%' || UPPER(#searchApprTitle#) || '%'
+					</isNotEmpty>
+					<isNotNull property="searchStartDate"><isNotEmpty property="searchStartDate">
+						<isNotNull property="searchEndDate"><isNotEmpty property="searchEndDate">
+							AND AD.APPR_REQ_DATE BETWEEN TO_DATE(#searchStartDate#) AND TO_DATE(#searchEndDate#)+1
+						</isNotEmpty></isNotNull>
+					</isNotEmpty></isNotNull>
+					<isNotEmpty property="searchUserName">
+					AND	UPPER(AD.REGISTER_NAME) LIKE '%' || UPPER(#searchUserName#) || '%'
+					</isNotEmpty>
+					<isNotEmpty property="searchGroupId">
+					AND	AD.APPR_GROUP_ID = #searchGroupId#
+					</isNotEmpty>			
+		<![CDATA[
+			) A 
+		]]> 
+	</select-->	
+	<select id="listBySearchConditionDeptRec" parameterClass="ApprListSearchCondition" resultMap="ApprListDeptResult"> 
+	SELECT 
+		/* [ApprList_SqlMap.xml] approval.admin.dao.ApprList.listBySearchConditionDeptRec */ 
+		*
+	FROM 
+	(
+		SELECT 
+			ROWNUM AS RNUM, 
+			A.* 
+		FROM 
+		( 
+			/* START========================================= */
+			SELECT
+				AD.APPR_ID,
+				AD.FORM_ID,
+				AF.FORM_NAME,
+				AD.APPR_DOC_TYPE,
+				AC.CODE_KR_NAME CODE_NAME,
+				AD.APPR_TITLE,
+				AD.APPR_REQ_DATE,
+				AD.APPR_DOC_STATUS,
+				AD.REGIST_DATE,
+				<isEqual property="listType" compareValue="listApprDeptRec">
+				AAD.REGISTER_ID,
+				AAD.REGISTER_NAME,
+				AAD.APPR_GROUP_NAME,
+				AD.REGISTER_ID REC_REGISTER_ID,
+				AD.REGISTER_NAME REC_REGISTER_NAME,
+				</isEqual>
+				<isEqual property="listType" compareValue="listApprDeptIntegrate">
+				AD.REGISTER_ID,
+				AD.REGISTER_NAME,
+				AD.APPR_GROUP_NAME,
+				AD.REGISTER_ID REC_REGISTER_ID,
+				AD.REGISTER_NAME REC_REGISTER_NAME,
+				</isEqual>
+				<isEqual property="listType" compareValue="listApprUserRec">
+				AAD.REGISTER_ID,
+				AAD.REGISTER_NAME,
+				AAD.APPR_GROUP_NAME,
+				AD.REGISTER_ID REC_REGISTER_ID,
+				AD.REGISTER_NAME REC_REGISTER_NAME,
+				</isEqual>
+				AD.APPR_END_DATE,
+				AD.APPR_DOC_NO
+			FROM 
+				IKEP4_APPR_DOC AD 	
+				INNER JOIN IKEP4_APPR_FORM	AF	ON AD.FORM_ID	= AF.FORM_ID 
+				INNER JOIN IKEP4_APPR_CODE	AC	ON AC.CODE_ID	= AF.FORM_PARENT_ID
+				<isNotEmpty property="listType">
+				<isNotEqual property="listType" compareValue="listApprDeptIntegrate">
+				INNER JOIN IKEP4_APPR_DOC	AAD	ON AAD.APPR_ID	= AD.PARENT_APPR_ID
+				INNER JOIN IKEP4_APPR_LINE	AL	ON AAD.APPR_ID	= AL.APPR_ID 
+				</isNotEqual>
+				</isNotEmpty>
+			WHERE 
+				AD.PORTAL_ID = #portalId#
+				AND  AD.IS_HIDDEN = 0
+
+				<isNotEmpty property="listType">
+				<isEqual property="listType" compareValue="listApprDeptIntegrate">
+				AND  AD.APPR_SECURITY_TYPE	= '0'
+				AND  AD.APPR_DOC_STATUS		= '2'
+				AND	AD.PARENT_APPR_ID IS NULL
+				</isEqual>
+				
+				<isEqual property="listType" compareValue="listApprDeptRec">
+				AND AL.APPROVER_TYPE	=1
+				AND AD.APPROVER_ID	=AL.APPROVER_ID
+				<isEqual property="receptionUser" compareValue="true">
+					AND AL.APPROVER_ID IN (SELECT GROUP_ID FROM IKEP4_APPR_RECEPTION WHERE RECEPTIONIST_ID =  #userId#)
+				</isEqual>
+				<isEqual property="receptionUser" compareValue="false">
+					AND AL.APPROVER_ID IN (select a.GROUP_ID from IKEP4_EV_USER_GROUP a  
+                                         INNER JOIN ikep4_ev_group b on a.group_id = b.group_id 
+                                         where b.group_type_id = 'G0001' 
+                                         and a.USER_ID = #userId#)	
+				</isEqual>					
+				</isEqual>
+				
+				<isEqual property="listType" compareValue="listApprUserRec">
+				AND AL.APPROVER_TYPE	=0
+				AND AL.APPR_TYPE		=3
+				AND AD.APPROVER_ID		=AL.APPROVER_ID
+				AND AL.APPROVER_ID		=#userId#
+				</isEqual>				
+				</isNotEmpty>
+
+				<isNotEmpty property="searchFormName">
+				AND	UPPER(AF.FORM_NAME) LIKE '%' || UPPER(#searchFormName#) || '%'
+				</isNotEmpty>
+
+				<isNotEmpty property="searchApprTitle">
+				AND	UPPER(AD.APPR_TITLE) LIKE '%' || UPPER(#searchApprTitle#) || '%'
+				</isNotEmpty>
+
+				<isNotEmpty property="searchApprDocNo">
+				AND	UPPER(AD.APPR_DOC_NO) LIKE '%' || UPPER(#searchApprDocNo#) || '%'
+				</isNotEmpty>
+
+				<isNotEmpty property="searchStartDate">
+				<isNotEmpty property="searchEndDate">
+				AND AD.APPR_REQ_DATE BETWEEN TO_DATE(#searchStartDate#) AND TO_DATE(#searchEndDate#)+1
+				</isNotEmpty>
+				</isNotEmpty>
+
+				<isNotEmpty property="searchApprDocType">
+				AND	AD.APPR_DOC_TYPE = #searchApprDocType#
+				</isNotEmpty>
+
+				<isNotEmpty property="searchApprDocStatus">
+				AND	AD.APPR_DOC_STATUS = #searchApprDocStatus#
+				</isNotEmpty>
+
+				<isNotEmpty property="searchUserName">
+				AND	UPPER(AD.REGISTER_NAME) LIKE '%' || UPPER(#searchUserName#) || '%'
+				</isNotEmpty>
+
+				<isNotEmpty property="searchGroupId">
+				AND	AD.APPR_GROUP_ID = #searchGroupId#
+				</isNotEmpty>
+
+			ORDER BY
+				<isNotEmpty property="sortColumn">
+				<isEqual property="sortColumn" compareValue="apprTitle">
+				AD.APPR_TITLE
+				</isEqual>
+				<isEqual property="sortColumn" compareValue="apprReqDate">
+				AD.APPR_REQ_DATE
+				</isEqual>
+				<isEqual property="sortColumn" compareValue="apprEndDate">
+				AD.APPR_END_DATE
+				</isEqual>
+				</isNotEmpty>
+
+				<isNotEmpty property="sortType">
+				<isEqual property="sortType" compareValue="DESC">
+				DESC,
+				</isEqual>
+				<isEqual property="sortType" compareValue="ASC">
+				ASC,
+				</isEqual>
+				</isNotEmpty>
+				AD.APPR_ID DESC    	
+				/* ===========================================END  */ 
+	<![CDATA[
+			) A WHERE 
+				ROWNUM <=  #endRowIndex# /* 종료  */
+		) WHERE 
+			RNUM >  #startRowIndex# /* 시작 */
+	]]> 
+	</select>
+	
+	<select id="countBySearchConditionDeptRec" parameterClass="ApprListSearchCondition" resultClass="int">
+	SELECT 
+		/* [ApprList_SqlMap.xml] approval.admin.dao.ApprList.countBySearchConditionDeptRec*/ 
+		COUNT(A.APPR_ID) 
+	FROM
+	(
+		SELECT
+			AD.APPR_ID,
+			AD.FORM_ID,
+			AF.FORM_NAME,
+			AD.APPR_DOC_TYPE,
+			AC.CODE_KR_NAME CODE_NAME,
+			AD.APPR_TITLE,
+			AD.APPR_REQ_DATE,
+			AD.APPR_DOC_STATUS,
+			AD.REGIST_DATE,
+			AD.REGISTER_ID,
+			AD.REGISTER_NAME,
+			AD.APPR_GROUP_NAME,
+			AD.REGISTER_NAME REC_REGISTER_NAME,
+			AD.APPR_END_DATE,
+			AD.APPR_DOC_NO
+		FROM 
+			IKEP4_APPR_DOC AD 	
+			INNER JOIN IKEP4_APPR_FORM	AF	ON AD.FORM_ID	= AF.FORM_ID 
+			INNER JOIN IKEP4_APPR_CODE	AC	ON AC.CODE_ID	= AF.FORM_PARENT_ID
+			<isNotEmpty property="listType">
+			<isNotEqual property="listType" compareValue="listApprDeptIntegrate">
+			INNER JOIN IKEP4_APPR_DOC	AAD	ON AAD.APPR_ID	= AD.PARENT_APPR_ID
+			INNER JOIN IKEP4_APPR_LINE	AL	ON AAD.APPR_ID	= AL.APPR_ID 
+			</isNotEqual>
+			</isNotEmpty>
+		WHERE
+			AD.PORTAL_ID = #portalId#
+			AND  AD.IS_HIDDEN = 0
+
+
+			<isNotEmpty property="listType">
+			<isEqual property="listType" compareValue="listApprDeptIntegrate">
+			AND  AD.APPR_SECURITY_TYPE = '0'
+			AND  AD.APPR_DOC_STATUS = '2'
+			AND	AD.PARENT_APPR_ID IS NULL
+			</isEqual>
+				
+			<isEqual property="listType" compareValue="listApprDeptRec">
+			AND AL.APPROVER_TYPE	=1
+			AND AD.APPROVER_ID	=AL.APPROVER_ID
+			<isEqual property="receptionUser" compareValue="true">
+				AND AL.APPROVER_ID IN (SELECT GROUP_ID FROM IKEP4_APPR_RECEPTION WHERE RECEPTIONIST_ID =  #userId#)
+			</isEqual>
+			<isEqual property="receptionUser" compareValue="false">
+				AND AL.APPROVER_ID IN (select a.GROUP_ID from IKEP4_EV_USER_GROUP a  
+                                         INNER JOIN ikep4_ev_group b on a.group_id = b.group_id 
+                                         where b.group_type_id = 'G0001' 
+                                         and a.USER_ID = #userId#)	
+			</isEqual>					
+			</isEqual>
+				
+			<isEqual property="listType" compareValue="listApprUserRec">
+			AND AL.APPROVER_TYPE	=0
+			AND AL.APPR_TYPE		=3
+			AND AD.APPROVER_ID		=AL.APPROVER_ID
+			AND AL.APPROVER_ID		=#userId#
+			</isEqual>				
+			</isNotEmpty>
+
+			<isNotEmpty property="searchFormName">
+			AND	UPPER(AF.FORM_NAME) LIKE '%' || UPPER(#searchFormName#) || '%'
+			</isNotEmpty>
+
+			<isNotEmpty property="searchApprTitle">
+			AND	UPPER(AD.APPR_TITLE) LIKE '%' || UPPER(#searchApprTitle#) || '%'
+			</isNotEmpty>
+
+			<isNotEmpty property="searchApprDocNo">
+			AND	UPPER(AD.APPR_DOC_NO) LIKE '%' || UPPER(#searchApprDocNo#) || '%'
+			</isNotEmpty>
+
+			<isNotEmpty property="searchStartDate">
+			<isNotEmpty property="searchEndDate">
+			AND AD.APPR_REQ_DATE BETWEEN TO_DATE(#searchStartDate#) AND TO_DATE(#searchEndDate#)+1
+			</isNotEmpty>
+			</isNotEmpty>
+
+			<isNotEmpty property="searchApprDocType">
+			AND	AD.APPR_DOC_TYPE = #searchApprDocType#
+			</isNotEmpty>
+
+			<isNotEmpty property="searchApprDocStatus">
+			AND	AD.APPR_DOC_STATUS = #searchApprDocStatus#
+			</isNotEmpty>
+
+			<isNotEmpty property="searchUserName">
+			AND	UPPER(AD.REGISTER_NAME) LIKE '%' || UPPER(#searchUserName#) || '%'
+			</isNotEmpty>
+
+			<isNotEmpty property="searchGroupId">
+			AND	AD.APPR_GROUP_ID = #searchGroupId#
+			</isNotEmpty>
+
+	) A
+	</select>
+	
+	<select id="listBySearchConditionExam" parameterClass="ApprListSearchCondition" resultMap="ApprListExamResult"> 
+	SELECT /* [ApprList_SqlMap.xml] approval.admin.dao.ApprList.listBySearchConditionExam */ 
+		*
+	FROM 
+	( 
+		SELECT ROWNUM AS RNUM, A.* FROM 
+		( 
+			SELECT AA.*
+			FROM (
+			/* START========================================= */
+			SELECT  DISTINCT 
+						  AD.APPR_ID,
+                          AD.FORM_ID,
+		                  AF.FORM_NAME,
+		                  AD.APPR_DOC_TYPE,
+		                  AC.CODE_KR_NAME CODE_NAME,
+		                  AD.APPR_TITLE,
+		                  AD.APPR_REQ_DATE,
+		                  AD.APPR_DOC_STATUS,
+		                  AD.REGIST_DATE,
+		                  AD.REGISTER_ID,
+		                  AD.REGISTER_NAME,
+                          AD.APPR_GROUP_NAME,
+                          AD.REGISTER_ID REC_REGISTER_ID,
+                          AD.REGISTER_NAME REC_REGISTER_NAME,
+		                  AD.APPR_END_DATE,
+                          AL.APPROVER_ID,
+                          AL.APPR_STATUS,
+                          AE.EXAM_REQ_ID,
+                          EU.USER_NAME EXAM_REQ_NAME,
+                          AE.EXAM_REQ_DATE,
+                          AD.APPR_DOC_NO,
+                          AE.EXAM_DATE
+              FROM IKEP4_APPR_DOC AD 	INNER JOIN IKEP4_APPR_FORM AF 	ON AD.FORM_ID = AF.FORM_ID
+			  															AND AD.PORTAL_ID = AF.PORTAL_ID
+			  							INNER JOIN IKEP4_APPR_CODE AC 	ON AC.CODE_ID = AF.FORM_PARENT_ID
+			  							INNER JOIN IKEP4_APPR_LINE AL 	ON AD.APPR_ID = AL.APPR_ID
+			  							INNER JOIN IKEP4_APPR_EXAM AE 	ON AE.APPR_ID = AD.APPR_ID
+			  															AND AE.APPR_ID = AL.APPR_ID
+			  															AND (AL.APPROVER_ID = AE.EXAM_FIRST_REQ_ID 
+			  																OR AL.APPROVER_ID IN (
+			  																		SELECT ENTRUST_USER_ID 
+														 	  						 FROM IKEP4_APPR_ENTRUST 
+														 	  						WHERE SIGN_USER_ID = AE.EXAM_FIRST_REQ_ID
+														 	  						  AND USAGE = 1
+																				  	  AND SYSDATE BETWEEN ENTRUST_START_DATE and ENTRUST_END_DATE
+																					)
+																			)
+										INNER JOIN IKEP4_EV_USER EU		ON EU.USER_ID = AE.EXAM_REQ_ID
+		      WHERE AD.PORTAL_ID = #portalId#
+			  	AND  AD.IS_HIDDEN = 0
+			  	AND  AE.EXAM_USER_ID = #userId#
+			  		<isNotEmpty property="listType">
+						<isEqual property="listType" compareValue="listApprRequestExam">
+						AND  AL.APPR_STATUS = 1
+						AND	 EXAM_STATUS = 0
+						AND	 EXAM_CONTENT IS NULL
+						</isEqual>
+						<isEqual property="listType" compareValue="listApprCompleteExam">
+						AND  AD.APPR_DOC_STATUS IN ('2') 
+						AND	 EXAM_STATUS = 1
+						AND	 EXAM_CONTENT IS NOT NULL
+						AND  AE.EXAM_DATE IS NOT NULL
+						AND	AD.PARENT_APPR_ID IS NULL
+						</isEqual>
+						<isEqual property="listType" compareValue="listApprExam">
+						AND  AD.APPR_DOC_STATUS IN ('1','2','3') 
+						AND	 EXAM_STATUS = 1
+						AND	 EXAM_CONTENT IS NOT NULL
+						AND  AE.EXAM_DATE IS NOT NULL
+						</isEqual>
+					</isNotEmpty>
+					<isNotEmpty property="searchFormName">
+						AND	UPPER(AF.FORM_NAME) LIKE '%' || UPPER(#searchFormName#) || '%'
+					</isNotEmpty>
+					<isNotEmpty property="searchApprTitle">
+					AND	UPPER(AD.APPR_TITLE) LIKE '%' || UPPER(#searchApprTitle#) || '%'
+					</isNotEmpty>
+					<isNotEmpty property="searchApprDocNo">
+						AND	UPPER(AD.APPR_DOC_NO) LIKE '%' || UPPER(#searchApprDocNo#) || '%'
+						</isNotEmpty>
+					<isNotNull property="searchStartDate"><isNotEmpty property="searchStartDate">
+						<isNotNull property="searchEndDate"><isNotEmpty property="searchEndDate">
+							AND AE.EXAM_REQ_DATE BETWEEN TO_DATE(#searchStartDate#) AND TO_DATE(#searchEndDate#)+1
+						</isNotEmpty></isNotNull>
+					</isNotEmpty></isNotNull>
+					<isNotEmpty property="searchUserName">
+					AND	UPPER(AD.REGISTER_NAME) LIKE '%' || UPPER(#searchUserName#) || '%'
+					</isNotEmpty>
+					<isNotEmpty property="searchApprDocStatus">
+					AND	AD.APPR_DOC_STATUS = #searchApprDocStatus#
+					</isNotEmpty>
+				<isNotEmpty property="listType">
+					<isEqual property="listType" compareValue="listApprRequestExam">
+						<isNotEmpty property="searchReqUserName">
+						AND	(SELECT USER_NAME	 FROM IKEP4_EV_USER	WHERE USER_ID = AE.EXAM_REQ_ID) LIKE '%' || UPPER(#searchReqUserName#) || '%'
+						</isNotEmpty>
+					</isEqual>
+				</isNotEmpty>
+			ORDER BY
+			<isNotEmpty property="sortColumn">
+	    	<isEqual property="sortColumn" compareValue="apprTitle">
+	    	AD.APPR_TITLE
+			</isEqual>
+			<isEqual property="sortColumn" compareValue="apprReqDate">
+	    	AD.APPR_REQ_DATE
+			</isEqual>
+			<isEqual property="sortColumn" compareValue="examReqDate">
+	    	AE.EXAM_REQ_DATE
+			</isEqual>
+			<isEqual property="sortColumn" compareValue="examDate">
+	    	AE.EXAM_DATE
+			</isEqual>
+			</isNotEmpty>
+	    	
+			<isNotEmpty property="sortType">
+	    	<isEqual property="sortType" compareValue="DESC">
+	    	DESC,
+			</isEqual>
+			<isEqual property="sortType" compareValue="ASC">
+	    	ASC,
+			</isEqual>
+			</isNotEmpty>
+	    	AD.APPR_ID DESC    	
+			/* ===========================================END  */ 
+			) AA
+	<![CDATA[
+		) A WHERE ROWNUM <=  #endRowIndex# /* 종료  */
+	) WHERE RNUM >  #startRowIndex# /* 시작 */
+	]]> 
+	</select>
+	
+	<select id="countBySearchConditionExam" parameterClass="ApprListSearchCondition" resultClass="int">
+		SELECT /* [ApprList_SqlMap.xml] approval.admin.dao.ApprList.countBySearchConditionExam*/ 
+			COUNT(A.APPR_ID) 
+			 FROM 
+			 (
+			 SELECT  DISTINCT 
+						  AD.APPR_ID,
+                          AD.FORM_ID,
+		                  AF.FORM_NAME,
+		                  AD.APPR_DOC_TYPE,
+		                  AC.CODE_KR_NAME CODE_NAME, 
+		                  AD.APPR_TITLE,
+		                  AD.APPR_REQ_DATE,
+		                  AD.APPR_DOC_STATUS,
+		                  AD.REGIST_DATE,
+		                  AD.REGISTER_ID,
+		                  AD.REGISTER_NAME,
+                          AD.APPR_GROUP_NAME,
+                          AD.REGISTER_NAME REC_REGISTER_NAME,
+		                  AD.APPR_END_DATE,
+                          AL.APPROVER_ID,
+                          AL.APPR_STATUS,
+                          AE.EXAM_REQ_ID,
+                          EU.USER_NAME EXAM_REQ_NAME,
+                          AE.EXAM_REQ_DATE,
+                          AD.APPR_DOC_NO,
+                          AE.EXAM_DATE
+		     FROM IKEP4_APPR_DOC AD 	INNER JOIN IKEP4_APPR_FORM AF 	ON AD.FORM_ID = AF.FORM_ID
+			  															AND AD.PORTAL_ID = AF.PORTAL_ID
+			  							INNER JOIN IKEP4_APPR_CODE AC 	ON AC.CODE_ID = AF.FORM_PARENT_ID
+			  							INNER JOIN IKEP4_APPR_LINE AL 	ON AD.APPR_ID = AL.APPR_ID
+			  							INNER JOIN IKEP4_APPR_EXAM AE 	ON AE.APPR_ID = AD.APPR_ID
+			  															AND AE.APPR_ID = AL.APPR_ID
+			  															AND (AL.APPROVER_ID = AE.EXAM_FIRST_REQ_ID 
+			  																OR AL.APPROVER_ID IN (
+			  																		SELECT ENTRUST_USER_ID 
+														 	  						 FROM IKEP4_APPR_ENTRUST 
+														 	  						WHERE SIGN_USER_ID = AE.EXAM_FIRST_REQ_ID
+														 	  						  AND USAGE = 1
+																				  	  AND SYSDATE BETWEEN ENTRUST_START_DATE and ENTRUST_END_DATE
+																					)
+																			)
+										INNER JOIN IKEP4_EV_USER EU		ON EU.USER_ID = AE.EXAM_REQ_ID
+		      WHERE AD.PORTAL_ID = #portalId#
+			  	AND  AD.IS_HIDDEN = 0
+			  	AND  AE.EXAM_USER_ID = #userId#
+			  		<isNotEmpty property="listType">
+						<isEqual property="listType" compareValue="listApprRequestExam">
+						AND  AL.APPR_STATUS = 1
+						AND	 EXAM_STATUS = 0
+						AND	 EXAM_CONTENT IS NULL
+						</isEqual>
+						<isEqual property="listType" compareValue="listApprCompleteExam">
+						AND  AD.APPR_DOC_STATUS IN ('2') 
+						AND	 EXAM_STATUS = 1
+						AND	 EXAM_CONTENT IS NOT NULL
+						AND	AD.PARENT_APPR_ID IS NULL
+						</isEqual>
+						<isEqual property="listType" compareValue="listApprExam">
+						AND  AD.APPR_DOC_STATUS IN ('1','2','3') 
+						AND	 EXAM_STATUS = 1
+						AND	 EXAM_CONTENT IS NOT NULL
+						AND  AE.EXAM_DATE IS NOT NULL
+						</isEqual>
+					</isNotEmpty>
+					<isNotEmpty property="searchFormName">
+						AND	UPPER(AF.FORM_NAME) LIKE '%' || UPPER(#searchFormName#) || '%'
+					</isNotEmpty>
+					<isNotEmpty property="searchApprTitle">
+					AND	UPPER(AD.APPR_TITLE) LIKE '%' || UPPER(#searchApprTitle#) || '%'
+					</isNotEmpty>
+					<isNotEmpty property="searchApprDocNo">
+						AND	UPPER(AD.APPR_DOC_NO) LIKE '%' || UPPER(#searchApprDocNo#) || '%'
+						</isNotEmpty>
+					<isNotNull property="searchStartDate"><isNotEmpty property="searchStartDate">
+						<isNotNull property="searchEndDate"><isNotEmpty property="searchEndDate">
+							AND AE.EXAM_REQ_DATE BETWEEN TO_DATE(#searchStartDate#) AND TO_DATE(#searchEndDate#)+1
+						</isNotEmpty></isNotNull>
+					</isNotEmpty></isNotNull>
+					<isNotEmpty property="searchUserName">
+					AND	UPPER(AD.REGISTER_NAME) LIKE '%' || UPPER(#searchUserName#) || '%'
+					</isNotEmpty>
+					<isNotEmpty property="searchApprDocStatus">
+					AND	AD.APPR_DOC_STATUS = #searchApprDocStatus#
+					</isNotEmpty>
+				<isNotEmpty property="listType">
+					<isEqual property="listType" compareValue="listApprRequestExam">
+						<isNotEmpty property="searchReqUserName">
+						AND	(SELECT USER_NAME	 FROM IKEP4_EV_USER	WHERE USER_ID = AE.EXAM_REQ_ID) LIKE '%' || UPPER(#searchReqUserName#) || '%'
+						</isNotEmpty>
+					</isEqual>
+				</isNotEmpty>
+			) A
+	</select>
+	
+	<select id="getUserName" parameterClass="String" resultClass="String">
+		SELECT /* [ApprList_SqlMap.xml] approval.admin.dao.ApprList.getUserName */ 
+			USER_NAME
+		 FROM IKEP4_EV_USER
+		WHERE USER_ID = #userId#
+	</select>
+	
+	<update id="updateSetSecurity" parameterClass="Map" >
+		UPDATE  /* [ApprList_SqlMap.xml] approval.admin.dao.ApprList.updateSetSecurity */ 
+			IKEP4_APPR_DOC
+		 SET
+		 	IS_HIDDEN = #isHidden# 
+		WHERE APPR_ID = #apprId#
+	</update>
+	
+</sqlMap>

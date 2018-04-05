@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="support.quartz.dao.BatchManage">
+	<typeAlias alias = "BatchTrigger" type="com.lgcns.ikep4.support.quartz.model.BatchTrigger" />
+	<typeAlias alias = "BatchSearchCondition" type="com.lgcns.ikep4.support.quartz.model.BatchSearchCondition"/>
+	<typeAlias alias = "BatchCronJobDetail" type="com.lgcns.ikep4.support.quartz.model.BatchCronJobDetail"/>
+	<typeAlias alias = "BatchSimpleJobDetail" type="com.lgcns.ikep4.support.quartz.model.BatchSimpleJobDetail"/>
+	<typeAlias alias = "QuartzLog" type="com.lgcns.ikep4.support.quartz.model.QuartzLog"/>
+
+	<!-- Trigger 테이블 조회 결과 -->
+	<resultMap id="batchTrigger" class="BatchTrigger">
+		<result property="triggerName" column="TRIGGER_NAME" />
+		<result property="jobName" column="JOB_NAME" />
+		<result property="triggerType" column="TRIGGER_TYPE" />
+		<result property="triggerStatus" column="TRIGGER_STATE" />
+	</resultMap>
+	
+	<resultMap id="quartzLog" class="QuartzLog">
+		<result property="id" column="NUM" />
+		<result property="jobName" column="JOB_NAME" />
+		<result property="errorCause" column="ERROR_CAUSE" />
+		<result property="result" column="RESULT" />
+		<result property="startDate" column="START_DATE" />
+		<result property="endDate" column="END_DATE" />
+	</resultMap>
+
+	<select id="listTrigger" parameterClass="BatchSearchCondition"
+		resultMap="batchTrigger">
+		<![CDATA[
+		/* [BatchManage_SqlMap.xml] support.quartz.dao.BatchManageDao.listTrigger */
+		SELECT *
+		FROM
+		(
+		    SELECT 
+		        Row_number() OVER
+		    (
+		]]>
+				<isNotEmpty property="sortColumn">
+	   				<isEqual property="sortColumn" compareValue="TRIGGER_NAME">
+			    		<isEqual property="sortType" compareValue="ASC">
+		    			ORDER BY 			TRIGGER_NAME ASC
+			    		</isEqual>
+			    		<isEqual property="sortType" compareValue="DESC">
+		    			ORDER BY 			TRIGGER_NAME DESC
+			    		</isEqual>
+			    	</isEqual>
+		   			<isEqual property="sortColumn" compareValue="JOB_NAME">
+			    		<isEqual property="sortType" compareValue="ASC">
+		    			ORDER BY 			JOB_NAME ASC
+			    		</isEqual>
+			    		<isEqual property="sortType" compareValue="DESC">
+		    			ORDER BY 			JOB_NAME DESC
+			    		</isEqual>
+			    	</isEqual>
+		   			<isEqual property="sortColumn" compareValue="TRIGGER_TYPE">
+			    		<isEqual property="sortType" compareValue="ASC">
+		    			ORDER BY 			TRIGGER_TYPE ASC
+			    		</isEqual>
+			    		<isEqual property="sortType" compareValue="DESC">
+		    			ORDER BY 			TRIGGER_TYPE DESC
+			    		</isEqual>
+		    		</isEqual>
+		    		<isEqual property="sortColumn" compareValue="TRIGGER_STATUS">
+			    		<isEqual property="sortType" compareValue="ASC">
+		    			ORDER BY 			TRIGGER_STATE ASC
+			    		</isEqual>
+			    		<isEqual property="sortType" compareValue="DESC">
+		    			ORDER BY 			TRIGGER_STATE DESC
+			    		</isEqual>
+		    		</isEqual>
+		    	</isNotEmpty>
+		    	<isEmpty property="sortColumn">
+			   			ORDER BY 			TRIGGER_NAME
+		   		</isEmpty>
+		   	<![CDATA[
+		   		) AS RNUM,
+		    	TRIGGER_NAME,
+	            JOB_NAME,
+	            TRIGGER_TYPE,
+	            TRIGGER_STATE
+		    FROM IKEP4_QRTZ_TRIGGERS
+	        WHERE 1 = 1  AND TRIGGER_GROUP = 'IKEP4_JOBS'
+		]]>
+			<isNotEmpty property="searchColumn">
+					<isNotEmpty property="searchWord">
+						<isEqual property="searchColumn" compareValue="TRIGGER_NAME">
+						AND	UPPER(TRIGGER_NAME) LIKE UPPER('%' + #searchWord# + '%')
+						</isEqual>
+					</isNotEmpty>
+			</isNotEmpty>
+		<![CDATA[
+		    ) C
+		    WHERE C.RNUM > #startRowIndex# 
+			AND C.RNUM <= #endRowIndex#
+		]]>
+	</select>
+	
+	<select id="listBatchLog" parameterClass="BatchSearchCondition"
+		resultMap="quartzLog">
+		<![CDATA[
+		/* [BatchManage_SqlMap.xml] support.quartz.dao.BatchManageDao.listBatchLog */
+		SELECT *
+		FROM
+		(
+		    SELECT 
+		        Row_number() OVER
+		        (
+		 ]]>
+		 		<isNotEmpty property="sortColumn">
+	   				<isEqual property="sortColumn" compareValue="JOB_NAME">
+			    		<isEqual property="sortType" compareValue="ASC">
+		    			ORDER BY 			JOB_NAME ASC
+			    		</isEqual>
+			    		<isEqual property="sortType" compareValue="DESC">
+		    			ORDER BY 			JOB_NAME DESC
+			    		</isEqual>
+			    	</isEqual>
+		   			<isEqual property="sortColumn" compareValue="START_DATE">
+			    		<isEqual property="sortType" compareValue="ASC">
+		    			ORDER BY 			"START_DATE" ASC
+			    		</isEqual>
+			    		<isEqual property="sortType" compareValue="DESC">
+		    			ORDER BY 			"START_DATE" DESC
+			    		</isEqual>
+			    	</isEqual>
+		   			<isEqual property="sortColumn" compareValue="END_DATE">
+			    		<isEqual property="sortType" compareValue="ASC">
+		    			ORDER BY 			END_DATE ASC
+			    		</isEqual>
+			    		<isEqual property="sortType" compareValue="DESC">
+		    			ORDER BY 			END_DATE DESC
+			    		</isEqual>
+		    		</isEqual>
+		    		<isEqual property="sortColumn" compareValue="RESULT">
+			    		<isEqual property="sortType" compareValue="ASC">
+		    			ORDER BY 			RESULT ASC
+			    		</isEqual>
+			    		<isEqual property="sortType" compareValue="DESC">
+		    			ORDER BY 			RESULT DESC
+			    		</isEqual>
+		    		</isEqual>
+		    		<isEqual property="sortColumn" compareValue="ERROR_CAUSE">
+			    		<isEqual property="sortType" compareValue="ASC">
+		    			ORDER BY 			ERROR_CAUSE ASC
+			    		</isEqual>
+			    		<isEqual property="sortType" compareValue="DESC">
+		    			ORDER BY 			ERROR_CAUSE DESC
+			    		</isEqual>
+		    		</isEqual>
+		    	</isNotEmpty>
+		    	<isEmpty property="sortColumn">
+			   			ORDER BY 			ID DESC
+		   		</isEmpty>
+		   		<![CDATA[
+		   		) AS NUM,
+		            JOB_NAME,
+		            START_DATE,
+		            END_DATE,
+		            RESULT,
+		            ERROR_CAUSE
+		        FROM IKEP4_QRTZ_LOG
+		        WHERE 1 = 1
+		]]>
+				<isNotEmpty property="searchColumn">
+					<isNotEmpty property="searchWord">
+						<isEqual property="searchColumn" compareValue="JOB_NAME">
+						AND	UPPER(JOB_NAME) LIKE UPPER('%' + #searchWord# + '%')
+						</isEqual>
+					</isNotEmpty>
+				</isNotEmpty>
+		<![CDATA[
+		    ) C
+		    WHERE C.NUM > #startRowIndex# 
+			AND C.NUM <= #endRowIndex#
+		]]>
+	</select>
+	
+	<select id="countListTrigger" parameterClass="BatchSearchCondition" resultClass="int">  
+  		<![CDATA[
+  		/* [BatchManage_SqlMap.xml] support.quartz.dao.BatchManageDao.countListTrigger */ 
+		SELECT				COUNT(*)
+		FROM 				IKEP4_QRTZ_TRIGGERS
+		WHERE 				1 = 1 AND TRIGGER_GROUP = 'IKEP4_JOBS' 			
+		]]>
+		<isNotEmpty property="searchColumn">
+		<isNotEmpty property="searchWord">
+		<isEqual property="searchColumn" compareValue="TRIGGER_NAME">
+		AND 				UPPER(TRIGGER_NAME) LIKE UPPER('%' + #searchWord# + '%')
+		</isEqual>
+		</isNotEmpty>
+		</isNotEmpty>
+  	</select>
+  	
+  	<select id="countListBatchLog" parameterClass="BatchSearchCondition" resultClass="int">  
+  		<![CDATA[
+  		/* [Portal_SqlMap.xml] support.quartz.dao.BatchManageDao.countListBatchLog */ 
+		SELECT				COUNT(*)
+		FROM 				IKEP4_QRTZ_LOG
+		WHERE 				1 = 1		
+		]]>
+		<isNotEmpty property="searchColumn">
+		<isNotEmpty property="searchWord">
+		<isEqual property="searchColumn" compareValue="JOB_NAME">
+		AND 				UPPER(JOB_NAME) LIKE UPPER('%' + #searchWord# + '%')
+		</isEqual>
+		</isNotEmpty>
+		</isNotEmpty>
+  	</select>
+  	
+  	<insert id="createBatchLog" parameterClass="QuartzLog">
+  		<![CDATA[
+  		/* [BatchManage_SqlMap.xml] support.quartz.dao.BatchManageDao.createBatchLog */ 
+		INSERT INTO IKEP4_QRTZ_LOG
+		(
+			ID, 
+			JOB_NAME,
+			ERROR_CAUSE, 
+			RESULT, 
+			START_DATE, 
+			END_DATE 
+		)
+		VALUES
+		(
+			#id#,
+			#jobName#,
+			#errorCause#,
+			#result#,
+			#startDate#,
+			#endDate#
+		)	
+		]]>
+  	</insert>
+  	
+  	<select id="getJobStatus" parameterClass="java.lang.String" resultClass="java.lang.String">  
+  		<![CDATA[
+  		/* [Portal_SqlMap.xml] support.quartz.dao.BatchManageDao.getJobStatus */ 
+		SELECT				TRIGGER_STATE
+		FROM 				IKEP4_QRTZ_TRIGGERS
+		WHERE 				JOB_NAME = #jobName# AND JOB_GROUP = 'IKEP4_JOBS' AND TRIGGER_GROUP = 'IKEP4_JOBS'	
+		]]>
+  	</select>
+  	
+  	<select id="getJobCondition" parameterClass="java.lang.String" resultClass="java.lang.String">  
+  		<![CDATA[
+  		/* [Portal_SqlMap.xml] support.quartz.dao.BatchManageDao.getJobCondition */ 
+  		select job_condition from IKEP4_QRTZ_JOB_DETAILS
+		where job_name = #jobName#
+		]]>
+  	</select>
+  	
+  	<update id="updateJobCondition" parameterClass="BatchCronJobDetail">
+  		update IKEP4_QRTZ_JOB_DETAILS
+  		set job_condition = #jobCondition#
+  		where job_name = #jobName#
+  	</update>
+  	
+  	<update id="updateJobConditionSimple" parameterClass="BatchSimpleJobDetail">
+  		update IKEP4_QRTZ_JOB_DETAILS
+  		set job_condition = #jobCondition#
+  		where job_name = #jobName#
+  	</update>
+</sqlMap>

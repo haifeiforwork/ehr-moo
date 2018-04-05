@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="portal.admin.screen.portalDefPageLayout" >
+	<typeAlias alias = "PortalDefPageLayout" type="com.lgcns.ikep4.portal.admin.screen.model.PortalDefPageLayout"/>
+
+	<resultMap id="defPageLayoutResult" class="PortalDefPageLayout">
+		<result property="defaultPageLayoutId" column="DEFAULT_PAGE_LAYOUT_ID"/>
+		<result property="pageId" column="PAGE_ID"/>
+		<result property="layoutId" column="LAYOUT_ID"/>
+		<result property="colIndex" column="COL_INDEX"/>
+		<result property="width" column="WIDTH"/>
+		<result property="registerId" column="REGISTER_ID"/>
+		<result property="registerName" column="REGISTER_NAME"/>
+		<result property="registDate" column="REGIST_DATE"/>
+		<result property="updaterId" column="UPDATER_ID"/>
+		<result property="updaterName" column="UPDATER_NAME"/>
+		<result property="updateDate" column="UPDATE_DATE"/>
+	</resultMap>
+
+	<select id="listDefPageLayout" parameterClass="String" resultMap="defPageLayoutResult">
+	  <![CDATA[
+	  	   /* [PortalDefPageLayout_SqlMap.xml] portal.admin.screen.portalDefPageLayout.listDefPageLayout */
+		   SELECT 
+			    DEFAULT_PAGE_LAYOUT_ID, 
+			    PAGE_ID, 
+			    LAYOUT_ID, 
+			    COL_INDEX, 
+			    WIDTH, 
+			    REGISTER_ID, 
+			    REGISTER_NAME, 
+			    REGIST_DATE, 
+			    UPDATER_ID, 
+			    UPDATER_NAME, 
+			    UPDATE_DATE 
+			  FROM IKEP4_PO_DEF_PAGE_LAYOUT
+			 WHERE page_id = #pageId#
+		]]>
+	</select>
+	
+	<delete id="removeDefPageLayout" parameterClass="String">
+      <![CDATA[
+      	   /* [PortalDefPageLayout_SqlMap.xml] portal.admin.screen.portalDefPageLayout.removeDefPageLayout */
+	       DELETE FROM IKEP4_PO_DEF_PAGE_LAYOUT WHERE page_id = #pageId# 
+ 	   ]]>    
+	</delete>
+	
+	<insert id="createDefPageLayout" parameterClass="PortalDefPageLayout"> 
+      <![CDATA[
+      	   /* [PortalDefPageLayout_SqlMap.xml] portal.admin.screen.portalDefPageLayout.createDefPageLayout */ 
+           INSERT INTO IKEP4_PO_DEF_PAGE_LAYOUT (DEFAULT_PAGE_LAYOUT_ID, PAGE_ID, LAYOUT_ID, COL_INDEX, WIDTH, REGISTER_ID, REGISTER_NAME, REGIST_DATE, UPDATER_ID, UPDATER_NAME, UPDATE_DATE)  
+           VALUES (#defaultPageLayoutId#, #pageId#, #layoutId#, #colIndex#, #width#, #registerId#, #registerName#, NOW(), #updaterId#, #updaterName#, NOW())
+       ]]>
+   </insert>
+</sqlMap>

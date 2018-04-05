@@ -1,0 +1,327 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="support.customer.dao.realty">
+
+
+<typeAlias alias="Realty" type="com.lgcns.ikep4.support.customer.model.Realty" />
+<typeAlias alias="RealtySearchCondition" type="com.lgcns.ikep4.support.customer.search.RealtySearchCondition" />
+
+
+
+<resultMap id="RealtyResult" class="com.lgcns.ikep4.support.customer.model.Realty">
+		<result column="ROWNUM" 		    property="rowNum" 			jdbcType="VARCHAR" />
+		<result column="SEQNUM" 		    property="seqNum" 			jdbcType="DECIMAL" />
+		<result column="CUSTOMER_ID" 		    property="customerId" 			jdbcType="VARCHAR" />
+		<result column="CUSTOMER_NAME" 		    property="customerName" 			jdbcType="VARCHAR" />
+		<result column="NO" 		    property="no" 			jdbcType="VARCHAR" />
+		<result column="DIVISION" 		    property="division" 			jdbcType="VARCHAR" />
+		<result column="ADDRESS" 		    property="address" 			jdbcType="VARCHAR" />
+		<result column="OWNER" 		    property="owner" 			jdbcType="VARCHAR" />
+		<result column="RELATION" 		    property="relation" 			jdbcType="VARCHAR" />
+		<result column="PYEONG_SPACE" 		    property="pyeongSpace" 			jdbcType="VARCHAR" />
+		<result column="PYEONG_BUILDING" 		    property="pyeongBuilding" 			jdbcType="VARCHAR" />
+		<result column="METER_SPACE" 		    property="meterSpace" 			jdbcType="VARCHAR" />
+		<result column="METER_BUILDING" 		    property="meterBuilding" 			jdbcType="VARCHAR" />
+		<result column="METER_SUM" 		    property="meterSum" 			jdbcType="VARCHAR" />
+		<result column="TOTAL_SUM" 		    property="totalSum" 			jdbcType="VARCHAR" />
+		<result column="RIGHT_DATE" 		    property="rightDate" 			jdbcType="VARCHAR" />
+		<result column="COLLATERAL" 		    property="collateral" 			jdbcType="VARCHAR" />
+		<result column="RIGHT_SUM" 		    property="rightSum" 			jdbcType="VARCHAR" />
+		<result column="DEBT" 		    property="debt" 			jdbcType="VARCHAR" />
+		<result column="NOTE" 		    property="note" 			jdbcType="VARCHAR" />
+		<result column="REGISTER_ID" 	    property="registerId"   	jdbcType="VARCHAR" />
+		<result column="REGISTER_NAME"  	property="registerName" 	jdbcType="VARCHAR" />		
+		<result column="REGIST_DATE"   		property="registDate" 		jdbcType="VARCHAR" />		
+	</resultMap>
+	<resultMap  id="RealtyExtendsResult" extends="RealtyResult" class="com.lgcns.ikep4.support.customer.model.Realty">
+		<result column="JOB_RANK_NAME"          property="user.jobRankName"         jdbcType="VARCHAR" />
+	    <result column="TEAM_NAME"              property="user.teamName"            jdbcType="VARCHAR" />
+	    <result column="JOB_DUTY_NAME"          property="user.jobDutyName"         jdbcType="VARCHAR" />
+	    <result column="JOB_POSITION_NAME"      property="user.jobPositionName"     jdbcType="VARCHAR" />
+	    <result column="JOB_TITLE_NAME"         property="user.jobTitleName"        jdbcType="VARCHAR" />  
+	    <result column="PICTURE_ID"             property="user.pictureId"           jdbcType="VARCHAR" />   
+	    <result column="PROFILE_PICTURE_ID"     property="user.profilePictureId"    jdbcType="VARCHAR" />  
+		<result column="USER_NAME"              property="user.userName"            jdbcType="VARCHAR" />
+		<result column="USER_ENGLISH_NAME"      property="user.userEnglishName"     jdbcType="VARCHAR" />
+		<result column="JOB_TITLE_ENGLISH_NAME" property="user.jobTitleEnglishName" jdbcType="VARCHAR" />
+		<result column="TEAM_ENGLISH_NAME"      property="user.teamEnglishName"     jdbcType="VARCHAR" /> 
+		<result column="HIT_COUNT"      property="hitCount"     jdbcType="VARCHAR" /> 
+	</resultMap>
+	
+	<resultMap id="RealtyResultExcel" class="com.lgcns.ikep4.support.customer.model.Realty">
+		<result column="CUSTOMER_ID" 		    property="customerId" 			jdbcType="VARCHAR" />
+		<result column="CUSTOMER_NAME" 		    property="customerName" 			jdbcType="VARCHAR" />
+	</resultMap>
+	
+<sql id="sqlColumnList">
+	customer_id
+	,customer_name
+	,no
+	,division
+	,address
+	,owner
+	,relation
+	,pyeong_space
+	,pyeong_building
+	,meter_space
+	,meter_building
+	,meter_sum
+	,total_sum
+	,right_date
+	,collateral
+	,right_sum
+	,debt
+	,note
+	,UPDATER_ID
+	,UPDATER_NAME
+	,UPDATE_DATE
+	,REGISTER_ID
+	,REGISTER_NAME
+	,REGIST_DATE
+</sql>	
+	
+
+<select id="realtyListBySearchCondition" parameterClass="RealtySearchCondition" resultMap="RealtyExtendsResult">
+SELECT /* [Realty_SqlMap.xml] Realty.realtyListBySearchCondition */
+		*
+		FROM (
+		SELECT A.* FROM (
+		/* START========================================= */
+		SELECT ROW_NUMBER()
+		OVER(ORDER BY 
+		
+				 <isNotEmpty property="sortColumn">
+				<isEqual property="sortColumn" compareValue="REGISTER_NAME">
+					<isEqual property="sortType" compareValue="DESC">
+						item.REGISTER_NAME DESC
+					</isEqual>
+					<isEqual property="sortType" compareValue="ASC">
+						item.REGISTER_NAME ASC
+					</isEqual>
+				</isEqual> 
+				<isEqual property="sortColumn" compareValue="NAME">
+					<isEqual property="sortType" compareValue="DESC">
+						item.customer_name DESC
+					</isEqual>
+					<isEqual property="sortType" compareValue="ASC">
+						item.customer_name ASC
+					</isEqual>
+				</isEqual>
+				<isEqual property="sortColumn" compareValue="REGIST_DATE">
+					<isEqual property="sortType" compareValue="DESC">
+						CONVERT(VARCHAR, item.REGIST_DATE, 102) DESC
+					</isEqual>
+					<isEqual property="sortType" compareValue="ASC">
+						CONVERT(VARCHAR, item.REGIST_DATE, 102) ASC
+					</isEqual>
+				</isEqual>
+				   </isNotEmpty>
+				   <isEmpty property="sortColumn">  
+						 item.customer_name ASC
+					 </isEmpty> 
+				  ) AS ROWNUM
+			,item.SEQNUM
+			,item.customer_id
+			,item.customer_name
+			,item.no
+			,item.division
+			,item.address
+			,item.owner
+			,item.relation
+			,item.pyeong_space
+			,item.pyeong_building
+			,item.meter_space
+			,item.meter_building
+			,item.meter_sum
+			,item.total_sum
+			,item.right_date
+			,item.collateral
+			,item.right_sum
+			,item.debt
+			,item.note
+			,item.REGISTER_ID
+			,item.REGISTER_NAME
+			,item.REGIST_DATE
+			,item.HIT_COUNT
+			,usr.TEAM_NAME          AS TEAM_NAME,  
+		     usr.PICTURE_ID         AS PICTURE_ID, 
+		     usr.PROFILE_PICTURE_ID AS PROFILE_PICTURE_ID,     
+		    (SELECT JOB_RANK_NAME FROM IKEP4_EV_JOB_RANK WITH (NOLOCK) WHERE IKEP4_EV_JOB_RANK.JOB_RANK_CODE = usr.JOB_RANK_CODE) AS JOB_RANK_NAME,
+			(SELECT JOB_DUTY_NAME FROM IKEP4_EV_JOB_DUTY WITH (NOLOCK) WHERE IKEP4_EV_JOB_DUTY.JOB_DUTY_CODE = usr.JOB_DUTY_CODE) AS JOB_DUTY_NAME,
+			(SELECT JOB_POSITION_NAME FROM IKEP4_EV_JOB_POSITION WITH (NOLOCK) WHERE IKEP4_EV_JOB_POSITION.JOB_POSITION_CODE = usr.JOB_POSITION_CODE) AS JOB_POSITION_NAME,
+			(SELECT JOB_TITLE_NAME FROM IKEP4_EV_JOB_TITLE WITH (NOLOCK) WHERE IKEP4_EV_JOB_TITLE.JOB_TITLE_CODE = usr.JOB_TITLE_CODE) AS JOB_TITLE_NAME, 
+		     usr.USER_NAME  AS USER_NAME,
+		     usr.USER_ENGLISH_NAME  AS USER_ENGLISH_NAME,
+		     usr.TEAM_ENGLISH_NAME  AS TEAM_ENGLISH_NAME,  
+		    (SELECT JOB_TITLE_ENGLISH_NAME FROM IKEP4_EV_JOB_TITLE WITH (NOLOCK) WHERE IKEP4_EV_JOB_TITLE.JOB_TITLE_CODE = usr.JOB_TITLE_CODE) AS JOB_TITLE_ENGLISH_NAME
+		FROM REALTY item WITH (NOLOCK) INNER JOIN IKEP4_EV_USER usr WITH (NOLOCK)
+	    ON item.REGISTER_ID = usr.USER_ID 
+		<isNotEmpty property="searchColumn">
+			<isNotEmpty property="searchWord">
+				<isEqual property="searchColumn" compareValue="customer">
+					where 
+					item.CUSTOMER_NAME LIKE '%' + #searchWord# + '%'
+				</isEqual>
+				<isEqual property="searchColumn" compareValue="registerName">
+					where 
+					item.REGISTER_NAME LIKE '%' + #searchWord# + '%'
+				</isEqual>
+				<isEqual property="searchColumn" compareValue="registDate">
+					where 
+					CONVERT(VARCHAR, item.REGIST_DATE, 102) = #searchWord#
+				</isEqual>	
+			</isNotEmpty>
+		</isNotEmpty>
+		/* ===========================================END */  
+		<![CDATA[   
+		    ) A WHERE ROWNUM <=  #endRowIndex# /* 종료  */
+		) TBL WHERE ROWNUM >  #startRowIndex# /* 시작 */ 
+	    ]]> ;
+		
+</select>
+<select id="selectRealty" parameterClass="String" resultMap="RealtyResultExcel">
+	select ID CUSTOMER_ID, NAME CUSTOMER_NAME from BASICINFO_MASTER
+	where id not in (select a.customer_id from realty a)
+</select>
+
+
+<select id="countBySearchCondition" parameterClass="RealtySearchCondition" resultClass="int">
+	SELECT /* [Realty_SqlMap.xml] Realty.countBySearchCondition */
+	COUNT(*)
+	FROM REALTY item WITH (NOLOCK) INNER JOIN IKEP4_EV_USER usr WITH (NOLOCK)
+	  ON item.REGISTER_ID = usr.USER_ID 
+	<isNotEmpty property="searchColumn">
+		<isNotEmpty property="searchWord">
+			<isEqual property="searchColumn" compareValue="customer">
+				where 
+				item.CUSTOMER_NAME LIKE '%' + #searchWord# + '%'
+			</isEqual>
+			<isEqual property="searchColumn" compareValue="registerName">
+				where 
+				item.REGISTER_NAME LIKE '%' + #searchWord# + '%'
+			</isEqual>
+			<isEqual property="searchColumn" compareValue="registDate">
+				where 
+				CONVERT(VARCHAR, item.REGIST_DATE, 102) = #searchWord#
+			</isEqual>		
+		</isNotEmpty>
+	</isNotEmpty>
+</select>
+
+<select id="getRealty" parameterClass="int" resultMap="RealtyResult">
+		SELECT /* [Realty_SqlMap.xml] Realty.getRealty */
+		ROW_NUMBER() OVER(ORDER BY item.REGIST_DATE DESC) AS ROWNUM
+			,item.SEQNUM
+			,item.CUSTOMER_ID
+			,item.CUSTOMER_NAME
+			,item.NO
+			,item.DIVISION
+			,item.ADDRESS
+			,item.OWNER
+			,item.RELATION
+			,item.PYEONG_SPACE
+			,item.PYEONG_BUILDING
+			,item.METER_SPACE
+			,item.METER_BUILDING
+			,item.METER_SUM
+			,item.TOTAL_SUM
+			,item.RIGHT_DATE
+			,item.COLLATERAL
+			,item.RIGHT_SUM
+			,item.DEBT
+			,item.NOTE
+			,item.REGISTER_ID
+			,item.REGISTER_NAME
+			,item.REGIST_DATE
+		FROM REALTY item WITH (NOLOCK) 
+		WHERE item.SEQNUM=#itemId#
+  </select>
+  
+  <insert id="createRealty" parameterClass="Realty">
+  
+  INSERT INTO REALTY (/* [Realty_SqlMap.xml] Realty.createRealty */
+  <include refid="support.customer.dao.realty.sqlColumnList" />
+  )
+  VALUES(
+	#customerId#,
+	#customerName#,
+	#no#,
+	#division#,
+	#address#,
+	#owner#,
+	#relation#,
+	#pyeongSpace#,
+	#pyeongBuilding#,
+	#meterSpace#,
+	#meterBuilding#,
+	#meterSum#,
+	#totalSum#,
+	#rightDate#,
+	#collateral#,
+	#rightSum#,
+	#debt#,
+	#note#,
+	#updaterId#,
+	#updaterName#,
+	CURRENT_TIMESTAMP,
+	#registerId#,
+	#registerName#,
+	CURRENT_TIMESTAMP
+  )
+  
+  	<selectKey resultClass="int" keyProperty="seqNum"> 
+           SELECT @@IDENTITY AS seqNum
+    </selectKey>	
+
+  
+  </insert>
+  
+  <update id="updateRealty" parameterClass="Realty">
+  UPDATE REALTY /* [Realty_SqlMap.xml] Realty.updateRealty */
+  SET
+  	customer_id	 =	#customerId#,
+	customer_name	 =	#customerName#,
+	no	 =	#no#,
+	division	 =	#division#,
+	address	 =	#address#,
+	owner	 =	#owner#,
+	relation	 =	#relation#,
+	pyeong_space	 =	#pyeongSpace#,
+	pyeong_building	 =	#pyeongBuilding#,
+	meter_space	 =	#meterSpace#,
+	meter_building	 =	#meterBuilding#,
+	meter_sum	 =	#meterSum#,
+	total_sum	 =	#totalSum#,
+	right_date	 =	#rightDate#,
+	collateral	 =	#collateral#,
+	right_sum	 =	#rightSum#,
+	debt	 =	#debt#,
+	note	 =	#note#,
+	UPDATER_ID = #updaterId#,
+	UPDATER_NAME = #updaterName#,
+	UPDATE_DATE = CURRENT_TIMESTAMP 
+  WHERE SEQNUM = #seqNum#
+  </update>
+  
+ <delete id="deleteRealty" parameterClass="Realty">
+ DELETE FROM REALTY /* [Realty_SqlMap.xml] Realty.deleteRealty */
+ WHERE SEQNUM = #seqNum#
+ </delete>
+ 
+ 
+   <!-- ANSI -->
+  <update id="updateLinereplyCount" parameterClass="string">
+    UPDATE REALTY /* [QualityClaim_SqlMap.xml] QualityClaimItem.updateLinereplyCount */
+    SET    LINEREPLY_COUNT = (SELECT COUNT(*) FROM CUSTOMER_LINEREPLY WHERE ITEM_ID = #itemId# AND ITEM_TYPE = 'CH')
+    WHERE SEQNUM = #itemId# 
+  </update>
+  
+  
+  <update id="syncCustomerName" parameterClass="Realty">
+  UPDATE REALTY
+  SET customer_name = #customerName#
+  WHERE customer_id = #customerId#
+  </update>
+
+
+</sqlMap>

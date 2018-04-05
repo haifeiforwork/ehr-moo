@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="support.user.code.dao.LocaleCode" >
+	<typeAlias alias = "LocaleCode" type="com.lgcns.ikep4.support.user.code.model.LocaleCode"/>
+	<typeAlias alias = "SearchCondition" type="com.lgcns.ikep4.support.user.code.model.AdminSearchCondition"/>
+
+	<resultMap id="result" class="LocaleCode">
+		<result property="localeCode" column="LOCALE_CODE" columnIndex="1"/>
+		<result property="localeName" column="LOCALE_NAME" columnIndex="2"/>
+		<result property="description" column="DESCRIPTION" columnIndex="3"/>
+		<result property="sortOrder" column="SORT_ORDER" columnIndex="4"/>
+		<result property="registerId" column="REGISTER_ID" columnIndex="5"/>
+		<result property="registerName" column="REGISTER_NAME" columnIndex="6"/>
+		<result property="updaterId" column="UPDATER_ID" columnIndex="7"/>
+		<result property="updaterName" column="UPDATER_NAME" columnIndex="8"/>
+		<result property="registDate" column="REGIST_DATE" columnIndex="9"/>
+		<result property="updateDate" column="UPDATE_DATE" columnIndex="10"/>
+		<result property="num" column="NUM" columnIndex="11"/>
+	</resultMap>
+	
+	<resultMap id="getResult" class="LocaleCode">
+		<result property="localeCode" column="LOCALE_CODE" columnIndex="1"/>
+		<result property="localeName" column="LOCALE_NAME" columnIndex="2"/>
+		<result property="description" column="DESCRIPTION" columnIndex="3"/>
+		<result property="sortOrder" column="SORT_ORDER" columnIndex="4"/>
+		<result property="registerId" column="REGISTER_ID" columnIndex="5"/>
+		<result property="registerName" column="REGISTER_NAME" columnIndex="6"/>
+		<result property="updaterId" column="UPDATER_ID" columnIndex="7"/>
+		<result property="updaterName" column="UPDATER_NAME" columnIndex="8"/>
+		<result property="registDate" column="REGIST_DATE" columnIndex="9"/>
+		<result property="updateDate" column="UPDATE_DATE" columnIndex="10"/>
+	</resultMap>
+	
+	<resultMap id="sortOrderResult" class="LocaleCode">
+		<result property="sortOrder" column="SORT_ORDER" columnIndex="1"/>
+	</resultMap>
+	
+	<!-- 신규 등록 -->
+	<insert id="insert" parameterClass="LocaleCode"> 
+	<![CDATA[
+		INSERT INTO /* [LocaleCode_SqlMap.xml] support.user.code.dao.LocaleCode.insert */
+			IKEP4_EV_LOCALE (
+			LOCALE_CODE, 
+			LOCALE_NAME, 
+			DESCRIPTION,
+			SORT_ORDER,
+			REGISTER_ID, 
+			REGISTER_NAME,
+			UPDATER_ID, 
+			UPDATER_NAME,
+			REGIST_DATE, 
+			UPDATE_DATE)
+		VALUES ( 
+			#localeCode#,
+			#localeName#,
+			#description#,
+			#sortOrder#,
+		    #registerId#,
+		    #registerName#,
+		    #updaterId#,
+		    #updaterName#,
+		    NOW(), 
+		    NOW())
+	]]>
+   </insert>
+   
+   <!-- 상세정보 -->
+	<select id="select" parameterClass="java.lang.String" resultMap="getResult">
+	<![CDATA[
+		SELECT /* [LocaleCode_SqlMap.xml] support.user.code.dao.LocaleCode.select */
+		    LOCALE_CODE,
+		    LOCALE_NAME,
+		    DESCRIPTION,
+		    SORT_ORDER,
+		    REGISTER_ID,
+		    REGISTER_NAME,
+		    UPDATER_ID,
+		    UPDATER_NAME,
+		    REGIST_DATE,
+		    UPDATE_DATE
+		FROM 
+		    IKEP4_EV_LOCALE
+		WHERE
+			LOCALE_CODE = #localeCode#
+	]]>
+	</select>
+	
+	<select id="localeInfo" parameterClass="Map" resultMap="getResult">
+	<![CDATA[
+		SELECT /* [LocaleCode_SqlMap.xml] support.user.code.dao.LocaleCode.select */
+		    A.LOCALE_CODE,
+		    B.ITEM_MESSAGE as LOCALE_NAME,
+		    A.DESCRIPTION,
+		    A.SORT_ORDER,
+		    A.REGISTER_ID,
+		    A.REGISTER_NAME,
+		    A.UPDATER_ID,
+		    A.UPDATER_NAME,
+		    A.REGIST_DATE,
+		    A.UPDATE_DATE
+		FROM IKEP4_EV_LOCALE A
+		INNER JOIN IKEP4_I18N_MESSAGE B ON B.FIELD_NAME = 'localeName' AND A.LOCALE_CODE = B.ITEM_ID AND B.LOCALE_CODE = #userLocaleCode#
+		WHERE A.LOCALE_CODE = #localeCode#
+	]]>
+	</select>
+	
+	<!-- 기존 정보 수정 -->
+	<update id="update" parameterClass="LocaleCode">
+	<![CDATA[
+		UPDATE /* [LocaleCode_SqlMap.xml] support.user.code.dao.LocaleCode.update */
+			IKEP4_EV_LOCALE
+		SET
+			LOCALE_NAME = #localeName#,
+			DESCRIPTION = #description#,
+			SORT_ORDER = #sortOrder#,
+			UPDATER_ID = #updaterId#,
+			UPDATER_NAME = #updaterName#,
+			UPDATE_DATE = NOW()
+		WHERE
+			LOCALE_CODE = #localeCode#
+	]]>
+	</update>
+   
+	<!-- 삭제 -->
+	<delete id="delete" parameterClass="java.lang.String">
+	<![CDATA[
+		DELETE /* [LocaleCode_SqlMap.xml] support.user.code.dao.LocaleCode.delete */ 
+		FROM IKEP4_EV_LOCALE
+		WHERE
+			LOCALE_CODE = #localeCode#
+	]]>
+	</delete>
+	
+	<!-- 목록 가져오기 페이지정보로 -->
+	<select id="selectAll" parameterClass="SearchCondition" resultMap="result">
+		<![CDATA[
+		SELECT				/* [LocaleCode_SqlMap.xml] support.user.code.dao.LocaleCode.selectAll */
+							(CASE tbl1.LOCALE_CODE WHEN tbl1.LOCALE_CODE THEN @ROWNUM := @ROWNUM + 1 ELSE @ROWNUM := 1 END) AS NUM,
+		    				tbl1.*
+		FROM 				(			
+							SELECT				A.LOCALE_CODE,
+											    B.ITEM_MESSAGE AS LOCALE_NAME,
+											    A.DESCRIPTION,
+											    A.SORT_ORDER,
+											    A.REGISTER_ID AS REGISTER_ID,
+											    A.REGISTER_NAME AS REGISTER_NAME,
+											    A.UPDATER_ID AS UPDATER_ID,
+											    A.UPDATER_NAME AS UPDATER_NAME,
+											    A.REGIST_DATE AS REGIST_DATE,
+											    A.UPDATE_DATE AS UPDATE_DATE
+							FROM 				IKEP4_EV_LOCALE A
+						    JOIN 				IKEP4_I18N_MESSAGE B
+						    ON 					A.LOCALE_CODE = B.ITEM_ID
+						    AND 				B.FIELD_NAME = #fieldName#
+						    AND 				B.LOCALE_CODE = #userLocaleCode#
+		        			WHERE 				1 = 1
+		]]>
+							<isNotEmpty property="searchWord">
+							<isEqual property="searchColumn" compareValue="title">
+							AND					UPPER(A.LOCALE_NAME) LIKE CONCAT('%', UPPER(#searchWord#), '%')
+							</isEqual>
+							<isEqual property="searchColumn" compareValue="code">
+							AND					A.LOCALE_CODE LIKE CONCAT('%', #searchWord#, '%')
+							</isEqual>
+							</isNotEmpty>
+						    <isNotNull property="sortColumn">
+							<isEqual property="sortColumn" compareValue="SORT_ORDER">
+							<isEqual property="sortType" compareValue="ASC">
+							ORDER BY 			A.SORT_ORDER ASC
+							</isEqual>
+							<isEqual property="sortType" compareValue="DESC">
+							ORDER BY 			A.SORT_ORDER DESC
+							</isEqual>
+							</isEqual>
+							<isEqual property="sortColumn" compareValue="LOCALE_CODE">
+							<isEqual property="sortType" compareValue="ASC">
+							ORDER BY			A.LOCALE_CODE ASC
+							</isEqual>
+							<isEqual property="sortType" compareValue="DESC">
+							ORDER BY 			A.LOCALE_CODE DESC
+							</isEqual>
+							</isEqual>
+							<isEqual property="sortColumn" compareValue="LOCALE_NAME">
+							<isEqual property="sortType" compareValue="ASC">
+							ORDER BY 			A.LOCALE_NAME ASC
+							</isEqual>
+							<isEqual property="sortType" compareValue="DESC">
+							ORDER BY 			A.LOCALE_NAME DESC
+							</isEqual>
+							</isEqual>
+							</isNotNull>
+							<isNull property="sortColumn">
+							ORDER BY 			A.SORT_ORDER ASC
+							</isNull>
+		<![CDATA[
+							LIMIT				#startRowIndex#, #pagePerRecord#
+							) tbl1,
+							(
+							SELECT				@ROWNUM := #startRowIndex#
+							) tbl2
+		]]>
+	</select>
+	
+	<select id="selectCount" parameterClass="SearchCondition" resultClass="int">
+	<![CDATA[
+		SELECT /* [LocaleCode_SqlMap.xml] support.user.code.dao.LocaleCode.selectCount */
+			COUNT(*) 
+		FROM 
+		    IKEP4_EV_LOCALE A
+		    JOIN IKEP4_I18N_MESSAGE B
+		    ON A.LOCALE_CODE = B.ITEM_ID
+		    AND B.FIELD_NAME = #fieldName#
+		    AND B.LOCALE_CODE = #userLocaleCode#
+        WHERE 1 = 1
+	]]>
+		<isNotEmpty property="searchWord">
+			<isEqual property="searchColumn" compareValue="title">
+				AND	UPPER(A.LOCALE_NAME) LIKE CONCAT('%', UPPER(#searchWord#), '%')
+			</isEqual>
+			<isEqual property="searchColumn" compareValue="code">
+				AND	A.LOCALE_CODE LIKE CONCAT('%', #searchWord#, '%')
+			</isEqual>
+		</isNotEmpty>
+	</select>
+	
+	<select id="getAll" parameterClass="java.lang.String" resultMap="getResult">
+	<![CDATA[
+		SELECT /* [LOCALECODE_SQLMAP.XML] SUPPORT.USER.CODE.DAO.LOCALECODE.GETALL */
+			A.LOCALE_CODE, 
+			B.ITEM_MESSAGE AS LOCALE_NAME, 
+			A.DESCRIPTION, 
+			A.SORT_ORDER, 
+			A.REGISTER_ID,
+			A.REGISTER_NAME, 
+			A.UPDATER_ID, 
+			A.UPDATER_NAME, 
+			A.REGIST_DATE, 
+			A.UPDATE_DATE
+		FROM IKEP4_EV_LOCALE A
+			JOIN IKEP4_I18N_MESSAGE B
+			ON A.LOCALE_CODE = B.ITEM_ID
+		WHERE B.LOCALE_CODE = #localeCode#
+		ORDER BY A.SORT_ORDER
+	]]>
+	</select>
+
+	<select id="checkCode" parameterClass="java.lang.String" resultClass="java.lang.String">
+	<![CDATA[
+		SELECT /* [LocaleCode_SqlMap.xml] support.user.code.dao.LocaleCode.checkCode */
+			COUNT(LOCALE_CODE)
+		FROM
+			IKEP4_EV_LOCALE
+		WHERE
+			LOCALE_CODE = #localeCode#	
+	]]>
+	</select>
+
+	<select id="getMaxSortOrder" resultClass="java.lang.String">
+	<![CDATA[
+		SELECT /* [LocaleCode_SqlMap.xml] support.user.code.dao.LocaleCode.getMaxSortOrder */
+			LPAD((MAX(SORT_ORDER)+1), 5, '0') AS SORT_ORDER
+		FROM
+			IKEP4_EV_LOCALE
+	]]>
+	</select>
+	
+	<insert id="updateSortOrder" parameterClass="LocaleCode">
+	<![CDATA[
+		UPDATE /* [LocaleCode_SqlMap.xml] support.user.code.dao.LocaleCode.updateSortOrder */
+			IKEP4_EV_LOCALE
+    	SET 
+    		SORT_ORDER = #sortOrder#
+    	WHERE 
+    		LOCALE_CODE = #localeCode#
+   	]]>
+	</insert>
+	
+	<select id="selectGoUp" parameterClass="java.util.Map" resultMap="getResult">
+	<![CDATA[	
+		SELECT				/* [LocaleCode_SqlMap.xml] support.user.code.dao.LocaleCode.selectGoUp */
+							tbl.*
+		FROM 				(
+							SELECT				* 
+							FROM 				IKEP4_EV_LOCALE 
+							WHERE 				SORT_ORDER < #sortOrder#
+							ORDER BY 			SORT_ORDER DESC
+							) tbl 
+		LIMIT 1
+	]]>
+    </select>
+    
+    <select id="selectGoDown" parameterClass="java.util.Map" resultMap="getResult">
+	<![CDATA[	
+		SELECT				/* [LocaleCode_SqlMap.xml] support.user.code.dao.LocaleCode.selectGoDown */
+							tbl.*
+		FROM 				(
+							SELECT				* 
+							FROM 				IKEP4_EV_LOCALE 
+							WHERE 				SORT_ORDER > #sortOrder#
+							ORDER BY 			SORT_ORDER ASC
+							) tbl 
+		LIMIT 1
+	]]>
+    </select>
+</sqlMap>

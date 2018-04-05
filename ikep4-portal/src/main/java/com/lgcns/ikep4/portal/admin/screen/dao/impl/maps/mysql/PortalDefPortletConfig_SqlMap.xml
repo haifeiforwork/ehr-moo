@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="portal.admin.screen.portalDefPortletConfig" >
+	<typeAlias alias = "PortalDefPortletConfig" type="com.lgcns.ikep4.portal.admin.screen.model.PortalDefPortletConfig"/>
+
+	<resultMap id="defPortletConfigResult" class="PortalDefPortletConfig">
+		<result property="defaultPortletConfigId" column="DEFAULT_PORTLET_CONFIG_ID"/>
+		<result property="portletId" column="PORTLET_ID"/>
+		<result property="colIndex" column="COL_INDEX"/>
+		<result property="rowIndex" column="ROW_INDEX"/>
+		<result property="viewMode" column="VIEW_MODE"/>
+		<result property="headerMode" column="HEADER_MODE"/>
+		<result property="registerId" column="REGISTER_ID"/>
+		<result property="registerName" column="REGISTER_NAME"/>
+		<result property="registDate" column="REGIST_DATE"/>
+		<result property="updaterId" column="UPDATER_ID"/>
+		<result property="updaterName" column="UPDATER_NAME"/>
+		<result property="updateDate" column="UPDATE_DATE"/>
+		<result property="defaultPageLayoutId" column="DEFAULT_PAGE_LAYOUT_ID"/>
+	</resultMap>
+
+	<select id="listDefPageLayoutPortlet" parameterClass="java.util.HashMap" resultMap="defPortletConfigResult">
+	  <![CDATA[
+	  	   /* [PortalDefPortletConfig_SqlMap.xml] portal.admin.screen.portalDefPortletConfig.listDefPageLayoutPortlet */
+		   SELECT 
+			    a.DEFAULT_PORTLET_CONFIG_ID, 
+			    a.PORTLET_ID, 
+			    a.COL_INDEX, 
+			    a.ROW_INDEX, 
+			    a.VIEW_MODE,
+			    b.HEADER_MODE, 
+			    a.REGISTER_ID, 
+			    a.REGISTER_NAME, 
+			    a.REGIST_DATE, 
+			    a.UPDATER_ID, 
+			    a.UPDATER_NAME, 
+			    a.UPDATE_DATE, 
+			    a.DEFAULT_PAGE_LAYOUT_ID 
+			 FROM IKEP4_PO_DEF_PORTLET_CONFIG a inner join
+			      IKEP4_PO_PORTLET b on a.portlet_id = b.portlet_id inner join 
+			      IKEP4_VW_PERMIT_SYS_RESOURCE c ON b.PORTLET_ID = c.RESOURCE_NAME
+			WHERE a.DEFAULT_PAGE_LAYOUT_ID = #defaultPageLayoutId#
+			  AND b.status = 1
+			  AND c.OPERATION_NAME IN ('READ')
+			  AND c.CLASS_NAME='Portal-Portlet'
+			  AND c.USER_ID IN (#userId#, 'OPEN')
+			ORDER BY row_index
+		]]>
+	</select>
+	
+	<select id="listDefPortlet" parameterClass="java.util.HashMap" resultMap="defPortletConfigResult">
+	  <![CDATA[
+	  	   /* [PortalDefPortletConfig_SqlMap.xml] portal.admin.screen.portalDefPortletConfig.listDefPortlet */
+		   SELECT 
+			    a.DEFAULT_PORTLET_CONFIG_ID, 
+			    a.PORTLET_ID, 
+			    a.COL_INDEX, 
+			    a.ROW_INDEX, 
+			    a.VIEW_MODE,
+			    b.HEADER_MODE, 
+			    a.REGISTER_ID, 
+			    a.REGISTER_NAME, 
+			    a.REGIST_DATE, 
+			    a.UPDATER_ID, 
+			    a.UPDATER_NAME, 
+			    a.UPDATE_DATE, 
+			    a.DEFAULT_PAGE_LAYOUT_ID 
+			 FROM IKEP4_PO_DEF_PORTLET_CONFIG a inner join
+			      IKEP4_PO_PORTLET b on a.portlet_id = b.portlet_id
+			WHERE b.status = 1
+			  AND a.DEFAULT_PAGE_LAYOUT_ID IN
+	    ]]>    
+		    <iterate property="defPageLayoutList" open="(" close=")" conjunction=",">
+				#defPageLayoutList[].defaultPageLayoutId#
+			</iterate>
+	  <![CDATA[
+			ORDER BY col_index, row_index
+		]]>
+	</select>
+	
+	<delete id="removeDefPortletAll" parameterClass="java.util.HashMap">
+      <![CDATA[
+      	   /* [PortalDefPortletConfig_SqlMap.xml] portal.admin.screen.portalDefPortletConfig.removeDefPortletAll */
+	       DELETE FROM IKEP4_PO_DEF_PORTLET_CONFIG WHERE default_page_layout_id IN
+ 	   ]]>    
+		    <iterate property="defPageLayoutList" open="(" close=")" conjunction=",">
+				#defPageLayoutList[].defaultPageLayoutId#
+			</iterate>
+	</delete>
+	
+	<insert id="createDefPortlet" parameterClass="PortalDefPortletConfig"> 
+      <![CDATA[
+      	   /* [PortalDefPortletConfig_SqlMap.xml] portal.admin.screen.portalDefPortletConfig.createDefPortlet */ 
+           INSERT INTO IKEP4_PO_DEF_PORTLET_CONFIG (DEFAULT_PORTLET_CONFIG_ID, PORTLET_ID, COL_INDEX, ROW_INDEX, VIEW_MODE, REGISTER_ID, REGISTER_NAME, REGIST_DATE, UPDATER_ID, UPDATER_NAME, UPDATE_DATE, DEFAULT_PAGE_LAYOUT_ID)  
+           VALUES (#defaultPortletConfigId#, #portletId#, #colIndex#, #rowIndex#, #viewMode#, #registerId#, #registerName#, NOW(), #updaterId#, #updaterName#, NOW(), #defaultPageLayoutId#)
+       ]]>
+   </insert>
+   
+   <delete id="removeDefPortletConfigAll" parameterClass="String">
+      <![CDATA[
+      	   /* [PortalDefPortletConfig_SqlMap.xml] portal.admin.screen.portalDefPortletConfig.removeDefPortletConfigAll */
+	       DELETE FROM IKEP4_PO_DEF_PORTLET_CONFIG WHERE portlet_id = #portletId#
+ 	   ]]>    
+	</delete>
+</sqlMap>

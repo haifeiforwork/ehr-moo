@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="support.user.code.dao.City">
+	<typeAlias alias="City" type="com.lgcns.ikep4.support.user.code.model.City" />
+	<typeAlias alias="SearchCondition" type="com.lgcns.ikep4.support.user.code.model.AdminSearchCondition" />
+
+	<resultMap id="result" class="City">
+		<result property="cityId" column="CITY_ID" />
+		<result property="nationCode" column="NATION_CODE" />
+		<result property="cityName" column="CITY_NAME" />
+		<result property="cityEnglishName" column="CITY_ENGLISH_NAME" />
+		<result property="registerId" column="REGISTER_ID" />
+		<result property="registerName" column="REGISTER_NAME" />
+		<result property="updaterId" column="UPDATER_ID" />
+		<result property="updaterName" column="UPDATER_NAME" />
+		<result property="registDate" column="REGIST_DATE" />
+		<result property="updateDate" column="UPDATE_DATE" />
+		<result property="num" column="NUM" />
+	</resultMap>
+
+	<resultMap id="getResult" class="City">
+		<result property="cityId" column="CITY_ID" />
+		<result property="nationCode" column="NATION_CODE" />
+		<result property="cityName" column="CITY_NAME" />
+		<result property="cityEnglishName" column="CITY_ENGLISH_NAME" />
+		<result property="registerId" column="REGISTER_ID" />
+		<result property="registerName" column="REGISTER_NAME" />
+		<result property="updaterId" column="UPDATER_ID" />
+		<result property="updaterName" column="UPDATER_NAME" />
+		<result property="registDate" column="REGIST_DATE" />
+		<result property="updateDate" column="UPDATE_DATE" />
+	</resultMap>
+
+
+
+	<!-- 목록 가져오기 -->
+	<select id="selectAll" parameterClass="SearchCondition"
+		resultMap="result">
+	<![CDATA[
+		SELECT /* [City_SqlMap.xml] support.user.code.dao.City.selectAll */
+		    *
+		FROM 
+		( 
+		    SELECT 
+		        ROWNUM AS NUM, 
+		        A.* 
+		    FROM 
+		    ( 
+				SELECT 
+					A.CITY_ID AS CITY_ID,
+					A.NATION_CODE AS NATION_CODE,
+				    B.ITEM_MESSAGE AS CITY_NAME,
+				    A.CITY_ENGLISH_NAME AS CITY_ENGLISH_NAME,
+				    A.REGISTER_ID AS REGISTER_ID,
+				    A.REGISTER_NAME AS REGISTER_NAME,
+				    A.UPDATER_ID AS UPDATER_ID,
+				    A.UPDATER_NAME AS UPDATER_NAME,
+				    A.REGIST_DATE AS REGIST_DATE,
+				    A.UPDATE_DATE AS UPDATE_DATE
+				FROM 
+				    IKEP4_EV_CITY A
+				    INNER JOIN IKEP4_I18N_MESSAGE B
+				    ON A.CITY_ID = B.ITEM_ID
+				    AND B.FIELD_NAME = #fieldName#
+				    AND B.LOCALE_CODE = #userLocaleCode#
+		        WHERE A.NATION_CODE = #nationCode#
+	]]>
+		<isNotNull property="searchColumn">
+			<isEqual property="searchColumn" compareValue="title">
+				AND
+				UPPER(CITY_NAME) LIKE '%' || UPPER(#searchWord#) || '%'
+			</isEqual>
+			<isEqual property="searchColumn" compareValue="code">
+				AND
+				NATION_CODE LIKE '%' || #searchWord# || '%'
+			</isEqual>
+		</isNotNull>
+		<isNotNull property="sortColumn">
+			<isEqual property="sortColumn" compareValue="NATION_CODE">
+				<isEqual property="sortType" compareValue="ASC">
+					ORDER BY
+					NATION_CODE ASC
+				</isEqual>
+				<isEqual property="sortType" compareValue="DESC">
+					ORDER BY
+					NATION_CODE DESC
+				</isEqual>
+			</isEqual>
+			<isEqual property="sortColumn" compareValue="CITY_NAME">
+				<isEqual property="sortType" compareValue="ASC">
+					ORDER BY
+					CITY_NAME ASC
+				</isEqual>
+				<isEqual property="sortType" compareValue="DESC">
+					ORDER BY
+					CITY_NAME DESC
+				</isEqual>
+			</isEqual>
+		</isNotNull>
+		<isNull property="sortColumn">
+			ORDER BY REGIST_DATE DESC, NATION_CODE ASC
+		</isNull>
+	<![CDATA[
+		    ) A 
+		    WHERE ROWNUM <=  #endRowIndex# /* 종료  */
+		) 
+		WHERE NUM >  #startRowIndex# /* 시작 */
+	]]>
+	</select>
+
+
+
+	<select id="selectCount" parameterClass="SearchCondition"
+		resultClass="int">
+	<![CDATA[
+		SELECT /* [Nation_SqlMap.xml] support.user.code.dao.City.selectCount */ 
+		    COUNT(*)
+		FROM 
+		    IKEP4_EV_CITY A
+        WHERE A.NATION_CODE = #nationCode#
+	]]>
+		<isNotEmpty property="searchColumn">
+			<isEqual property="searchColumn" compareValue="title">
+				AND
+				UPPER(A.CITY_NAME) LIKE '%' || UPPER(#searchWord#) || '%'
+			</isEqual>
+			<isEqual property="searchColumn" compareValue="code">
+				AND
+				A.NATION_CODE LIKE '%' || #searchWord# || '%'
+			</isEqual>
+		</isNotEmpty>
+	</select>
+
+	
+	<!-- 상세정보 -->
+	<select id="select" parameterClass="java.lang.String" resultMap="getResult">
+	<![CDATA[
+		SELECT /* [City_SqlMap.xml] support.user.code.dao.City.select */
+			CITY_ID,
+		    NATION_CODE,
+		    CITY_NAME,
+		    CITY_ENGLISH_NAME,
+		    REGISTER_ID,
+		    REGISTER_NAME,
+		    UPDATER_ID,
+		    UPDATER_NAME,
+		    REGIST_DATE,
+		    UPDATE_DATE
+		FROM 
+		    IKEP4_EV_CITY
+		WHERE
+			CITY_ID = #code#
+	]]>
+	</select>
+	
+	
+	
+	<select id="checkCode" parameterClass="java.lang.String"
+		resultClass="java.lang.String">
+	<![CDATA[
+		SELECT /* [City_SqlMap.xml] support.user.code.dao.City.checkCode */
+			COUNT(CITY_ID)
+		FROM
+			IKEP4_EV_CITY
+		WHERE
+			CITY_ID = #code#	
+	]]>
+	</select>
+	
+	<!-- 신규 등록 -->
+	<insert id="insert" parameterClass="City"> 
+	<![CDATA[
+		INSERT INTO /* [City_SqlMap.xml] support.user.code.dao.City.insert */
+			IKEP4_EV_CITY (
+			CITY_ID, 
+			NATION_CODE,
+			CITY_NAME,
+			CITY_ENGLISH_NAME, 
+			REGISTER_ID, 
+			REGISTER_NAME,
+			UPDATER_ID, 
+			UPDATER_NAME,
+			REGIST_DATE, 
+			UPDATE_DATE)
+		VALUES ( 
+			#cityId#,
+			#nationCode#,
+			#cityName#,
+			#cityEnglishName#,
+		    #registerId#,
+		    #registerName#,
+		    #updaterId#,
+		    #updaterName#,
+		    SYSDATE,
+		    SYSDATE)
+	]]>
+	</insert>
+	
+		<!-- 기존 정보 수정 -->
+	<update id="update" parameterClass="City">
+	<![CDATA[
+		UPDATE /* [City_SqlMap.xml] support.user.code.dao.City.update */
+			IKEP4_EV_CITY
+		SET
+			CITY_NAME = #cityName#,
+			CITY_ENGLISH_NAME = #cityEnglishName#,
+			UPDATER_ID = #updaterId#,
+			UPDATER_NAME = #updaterName#,
+			UPDATE_DATE = SYSDATE
+		WHERE
+			CITY_ID = #cityId#
+	]]>
+	</update>
+	
+	<!-- 삭제 -->
+	<delete id="delete" parameterClass="java.lang.String">
+	<![CDATA[
+		DELETE /* [City_SqlMap.xml] support.user.code.dao.City.delete */ 
+		FROM IKEP4_EV_CITY
+		WHERE
+			CITY_ID = #code#
+	]]>
+	</delete>
+
+</sqlMap>

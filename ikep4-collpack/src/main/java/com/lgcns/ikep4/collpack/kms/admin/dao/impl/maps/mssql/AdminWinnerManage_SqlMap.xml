@@ -1,0 +1,894 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="collpack.kms.admin.dao.AdminWinnerManage">
+
+	<typeAlias alias="AdminWinner"                	  type="com.lgcns.ikep4.collpack.kms.admin.model.AdminWinner"/>	
+	<typeAlias alias="KmsAdminSearchCondition"        type="com.lgcns.ikep4.collpack.kms.admin.search.KmsAdminSearchCondition"/>
+
+	<resultMap id="result"  class="com.lgcns.ikep4.collpack.kms.admin.model.AdminWinner">
+		<result column="ROWNUM" property="rowNum" jdbcType="VARCHAR" javaType="String"/>
+		<result column="ITEM_SEQ" property="itemSeq" jdbcType="VARCHAR" javaType="String"/>
+		<result column="WINNER_ID" property="winnerId" jdbcType="VARCHAR" javaType="String"/>
+		<result column="IS_MONTH" property="isMonth" jdbcType="VARCHAR" javaType="String"/>
+		<result column="IS_MONTH_VALUE" property="isMonthValue" jdbcType="VARCHAR" javaType="String"/>
+		<result column="WIN_YEAR" property="winYear" jdbcType="VARCHAR" javaType="String"/>
+		<result column="WIN_GB" property="winGb" jdbcType="VARCHAR" javaType="String"/>
+		<result column="SORT" property="sort" jdbcType="VARCHAR" javaType="String"/>
+		<result column="MARK" property="mark" jdbcType="VARCHAR" javaType="String"/>		
+		<result column="CONVERSION_MARK" property="conversionMark" jdbcType="VARCHAR" javaType="String"/>
+		<result column="REGIST_DATE" property="registDate" jdbcType="VARCHAR" javaType="String"/>
+		<result column="USER_NAME" property="userName" jdbcType="VARCHAR" javaType="String"/>
+		<result column="JOB_TITLE_NAME" property="jobTitleName" jdbcType="VARCHAR" javaType="String"/>
+		<result column="TEAM_NAME" property="teamName" jdbcType="VARCHAR" javaType="String"/>
+		<result column="WORK_PLACE_NAME" property="workPlaceName" jdbcType="VARCHAR" javaType="String"/>
+		<result column="REG_CNT" property="regCnt" jdbcType="VARCHAR" javaType="String"/>
+	</resultMap>
+	
+	<resultMap id="resultPeople"  class="com.lgcns.ikep4.collpack.kms.admin.model.AdminWinner">
+		<result column="ROWNUM" property="rowNum" jdbcType="VARCHAR" javaType="String"/>
+		<result column="ITEM_SEQ" property="itemSeq" jdbcType="VARCHAR" javaType="String"/>
+		<result column="WINNER_ID" property="winnerId" jdbcType="VARCHAR" javaType="String"/>
+		<result column="IS_MONTH" property="isMonth" jdbcType="VARCHAR" javaType="String"/>
+		<result column="IS_MONTH_VALUE" property="isMonthValue" jdbcType="VARCHAR" javaType="String"/>
+		<result column="WIN_YEAR" property="winYear" jdbcType="VARCHAR" javaType="String"/>
+		<result column="WIN_GB" property="winGb" jdbcType="VARCHAR" javaType="String"/>
+		<result column="SORT" property="sort" jdbcType="VARCHAR" javaType="String"/>
+		<result column="REGIST_DATE" property="registDate" jdbcType="VARCHAR" javaType="String"/>
+		<result column="USER_NAME" property="userName" jdbcType="VARCHAR" javaType="String"/>
+		<result column="JOB_TITLE_NAME" property="jobTitleName" jdbcType="VARCHAR" javaType="String"/>
+		<result column="TEAM_NAME" property="teamName" jdbcType="VARCHAR" javaType="String"/>
+		<result column="WORK_PLACE_NAME" property="workPlaceName" jdbcType="VARCHAR" javaType="String"/>
+		<result column="REASON" property="reason" jdbcType="VARCHAR" javaType="String"/>
+		<result column="IMAGE_FILE_ID" property="imageFileId" jdbcType="VARCHAR" javaType="String"/>
+	</resultMap>
+	
+	<resultMap id="resultTeam"  class="com.lgcns.ikep4.collpack.kms.admin.model.AdminWinner">
+		<result column="ROWNUM" property="rowNum" jdbcType="VARCHAR" javaType="String"/>
+		<result column="ITEM_SEQ" property="itemSeq" jdbcType="VARCHAR" javaType="String"/>
+		<result column="WINNER_ID" property="winnerId" jdbcType="VARCHAR" javaType="String"/>
+		<result column="IS_MONTH" property="isMonth" jdbcType="VARCHAR" javaType="String"/>
+		<result column="IS_MONTH_VALUE" property="isMonthValue" jdbcType="VARCHAR" javaType="String"/>
+		<result column="WIN_YEAR" property="winYear" jdbcType="VARCHAR" javaType="String"/>
+		<result column="WIN_GB" property="winGb" jdbcType="VARCHAR" javaType="String"/>
+		<result column="SORT" property="sort" jdbcType="VARCHAR" javaType="String"/>
+		<result column="REGIST_DATE" property="registDate" jdbcType="VARCHAR" javaType="String"/>
+		<result column="GROUP_NAME" property="teamName" jdbcType="VARCHAR" javaType="String"/>
+		<result column="IMAGE_FILE_ID" property="imageFileId" jdbcType="VARCHAR" javaType="String"/>
+		<result column="REASON" property="reason" jdbcType="VARCHAR" javaType="String"/>
+	</resultMap>
+	
+	<resultMap id="resultAward"  class="com.lgcns.ikep4.collpack.kms.admin.model.AdminWinner">
+		<result column="ROWNUM" property="rowNum" jdbcType="VARCHAR" javaType="String"/>
+		<result column="ITEM_SEQ" property="itemSeq" jdbcType="VARCHAR" javaType="String"/>
+		<result column="WINNER_ID" property="winnerId" jdbcType="VARCHAR" javaType="String"/>
+		<result column="WINNER_NAME" property="winnerName" jdbcType="VARCHAR" javaType="String"/>
+		<result column="IS_MONTH" property="isMonth" jdbcType="VARCHAR" javaType="String"/>
+		<result column="IS_MONTH_VALUE" property="isMonthValue" jdbcType="VARCHAR" javaType="String"/>
+		<result column="WIN_YEAR" property="winYear" jdbcType="VARCHAR" javaType="String"/>
+		<result column="WIN_GB" property="winGb" jdbcType="VARCHAR" javaType="String"/>
+		<result column="SORT" property="sort" jdbcType="VARCHAR" javaType="String"/>
+		<result column="REGIST_DATE" property="registDate" jdbcType="VARCHAR" javaType="String"/>
+		<result column="IMAGE_FILE_ID" property="imageFileId" jdbcType="VARCHAR" javaType="String"/>
+	</resultMap>
+	 
+	 
+	<!-- ANSI --> 
+	<select id="countBySearchCondition" parameterClass="KmsAdminSearchCondition" resultClass="int">  
+		SELECT /* [AdminWinner_SqlMap.xml] collpack.kms.admin.dao.AdminWinnerManage.countBySearchCondition */
+			COUNT(*)			
+		FROM IKEP4_KMS_WINNER
+		WHERE 1=1
+		<isNotEmpty property="searchWord">
+			<isEqual property="searchColumn" compareValue="userName">
+				AND WINNER_ID IN ( SELECT USER_ID FROM IKEP4_EV_USER WHERE USER_NAME LIKE '%' +  #searchWord# + '%' )
+			</isEqual>
+			<isEqual property="searchColumn" compareValue="userId">
+				AND WINNER_ID = #searchWord#
+			</isEqual>
+		</isNotEmpty>
+		<isNotEmpty property="winYear">
+			AND WIN_YEAR = #winYear#			
+		</isNotEmpty>	
+	</select>  	
+	
+	<select id="countPeopleBySearchCondition" parameterClass="KmsAdminSearchCondition" resultClass="int">  
+		SELECT /* [AdminWinner_SqlMap.xml] collpack.kms.admin.dao.AdminWinnerManage.countPeopleBySearchCondition */
+			COUNT(*)			
+		FROM IKEP4_KMS_HANDSOME_PEOPLE
+		WHERE 1=1
+		<isNotEmpty property="searchWord">
+			<isEqual property="searchColumn" compareValue="userName">
+				AND WINNER_ID IN ( SELECT USER_ID FROM IKEP4_EV_USER WHERE USER_NAME LIKE '%' +  #searchWord# + '%' )
+			</isEqual>
+			<isEqual property="searchColumn" compareValue="userId">
+				AND WINNER_ID = #searchWord#
+			</isEqual>
+		</isNotEmpty>
+		<isNotEmpty property="winYear">
+			AND WIN_YEAR = #winYear#			
+		</isNotEmpty>	
+	</select>  
+	
+	<select id="countTeamBySearchCondition" parameterClass="KmsAdminSearchCondition" resultClass="int">  
+		SELECT /* [AdminWinner_SqlMap.xml] collpack.kms.admin.dao.AdminWinnerManage.countTeamBySearchCondition */
+			COUNT(*)			
+		FROM IKEP4_KMS_HANDSOME_TEAM
+		WHERE 1=1
+		<isNotEmpty property="searchWord">
+			<isEqual property="searchColumn" compareValue="teamName">
+				AND WINNER_ID IN ( SELECT GROUP_ID FROM IKEP4_EV_GROUP WHERE GROUP_NAME LIKE '%' +  #searchWord# + '%' )
+			</isEqual>
+		</isNotEmpty>
+		<isNotEmpty property="winYear">
+			AND WIN_YEAR = #winYear#			
+		</isNotEmpty>	
+	</select>  
+	
+	<select id="countAwardBySearchCondition" parameterClass="KmsAdminSearchCondition" resultClass="int">  
+		SELECT /* [AdminWinner_SqlMap.xml] collpack.kms.admin.dao.AdminWinnerManage.countAwardBySearchCondition */
+			COUNT(*)			
+		FROM IKEP4_KMS_AWARD
+		WHERE 1=1
+		<isNotEmpty property="searchWord">
+			<isEqual property="searchColumn" compareValue="winnerName">
+				AND WINNER_NAME LIKE '%' +  #searchWord# + '%' 
+			</isEqual>
+		</isNotEmpty>
+		<isNotEmpty property="winYear">
+			AND WIN_YEAR = #winYear#			
+		</isNotEmpty>	
+	</select>
+		
+	<select id="countByPortletSearchCondition" parameterClass="KmsAdminSearchCondition" resultClass="int">
+		SELECT /* [AdminWinner_SqlMap.xml] collpack.kms.admin.dao.AdminWinnerManage.countByPortletSearchCondition */
+			COUNT(*)
+		FROM IKEP4_KMS_WINNER A INNER JOIN IKEP4_EV_USER B
+			 ON A.WINNER_ID = B.USER_ID
+			 LEFT JOIN  IKEP4_EV_JOB_TITLE C ON C.JOB_TITLE_CODE = B.JOB_TITLE_CODE
+			 LEFT JOIN  IKEP4_EV_WORK_PLACE D ON D.WORK_PLACE_CODE = B.WORK_PLACE_CODE
+			 where A.IS_MONTH = #disMode#
+	</select>
+	
+	<select id="countPeopleByPortletSearchCondition" parameterClass="KmsAdminSearchCondition" resultClass="int">
+		SELECT /* [AdminWinner_SqlMap.xml] collpack.kms.admin.dao.AdminWinnerManage.countPeopleByPortletSearchCondition */
+			COUNT(*)
+		FROM IKEP4_KMS_HANDSOME_PEOPLE A INNER JOIN IKEP4_EV_USER B
+			 ON A.WINNER_ID = B.USER_ID
+			 LEFT JOIN  IKEP4_EV_JOB_TITLE C ON C.JOB_TITLE_CODE = B.JOB_TITLE_CODE
+			 LEFT JOIN  IKEP4_EV_WORK_PLACE D ON D.WORK_PLACE_CODE = B.WORK_PLACE_CODE
+			 where A.IS_MONTH = (select is_month from IKEP4_KMS_WINNER_DISPLAY)
+	</select>
+	
+	<select id="countTeamByPortletSearchCondition" parameterClass="KmsAdminSearchCondition" resultClass="int">
+		SELECT /* [AdminWinner_SqlMap.xml] collpack.kms.admin.dao.AdminWinnerManage.countTeamByPortletSearchCondition */
+			COUNT(*)
+		FROM IKEP4_KMS_HANDSOME_TEAM A INNER JOIN IKEP4_EV_GROUP B
+			 ON A.WINNER_ID = B.GROUP_ID
+			 where A.IS_MONTH = (select is_month from IKEP4_KMS_WINNER_DISPLAY)
+	</select>
+	
+	<select id="countAwardByPortletSearchCondition" parameterClass="KmsAdminSearchCondition" resultClass="int">
+		SELECT /* [AdminWinner_SqlMap.xml] collpack.kms.admin.dao.AdminWinnerManage.countAwardByPortletSearchCondition */
+			COUNT(*)
+		FROM IKEP4_KMS_AWARD A 
+		where A.IS_MONTH = (select is_month from IKEP4_KMS_WINNER_DISPLAY)
+	</select>
+	
+	<select id="getWinnerListByPortlet" parameterClass="KmsAdminSearchCondition" resultMap="result">
+		 SELECT /* [AdminWinner_SqlMap.xml] collpack.kms.admin.dao.AdminWinnerManage.getWinnerListByPortlet */
+			ROWNUM, ITEM_SEQ, WINNER_ID, IS_MONTH, 
+			IS_MONTH_VALUE = 
+				CASE is_month
+         		WHEN '0' THEN '월간'
+         		WHEN '1' THEN '분기'
+         		WHEN '2' THEN '연간'         
+      			END,
+			WIN_YEAR, WIN_GB, SORT, MARK, CONVERSION_MARK, REGIST_DATE, USER_NAME, JOB_TITLE_NAME, TEAM_NAME, WORK_PLACE_NAME, REG_CNT
+		FROM 
+		( 
+			SELECT 
+				D.* 
+			FROM 
+			( 							
+				SELECT Row_number() OVER (				
+								 ORDER BY  A.WIN_YEAR desc, A.WIN_GB desc
+				
+				 ) AS ROWNUM, A.ITEM_SEQ,				
+					A.WINNER_ID, A.IS_MONTH, A.WIN_YEAR, A.WIN_GB, A.SORT, A.MARK, A.CONVERSION_MARK, 
+					CONVERT(NVARCHAR, A.REGIST_DATE, 102) AS REGIST_DATE, B.USER_NAME, C.JOB_TITLE_NAME, B.TEAM_NAME, D.WORK_PLACE_NAME, A.REG_CNT		
+				FROM IKEP4_KMS_WINNER A INNER JOIN IKEP4_EV_USER B
+					 ON A.WINNER_ID = B.USER_ID
+					 LEFT JOIN  IKEP4_EV_JOB_TITLE C ON C.JOB_TITLE_CODE = B.JOB_TITLE_CODE
+					 LEFT JOIN  IKEP4_EV_WORK_PLACE D ON D.WORK_PLACE_CODE = B.WORK_PLACE_CODE
+					 where A.IS_MONTH = #disMode#				 	
+		<![CDATA[   
+			) D
+			WHERE 
+				ROWNUM <=  #endRowIndex# /* 종료  */
+		) TBL  
+		WHERE 
+			ROWNUM >  #startRowIndex# /* 시작 */
+			order by sort asc
+		]]> 
+	
+	</select>
+	
+	<select id="getWinnerPeopleListByPortlet" parameterClass="KmsAdminSearchCondition" resultMap="resultPeople">
+		 SELECT /* [AdminWinner_SqlMap.xml] collpack.kms.admin.dao.AdminWinnerManage.getWinnerPeopleListByPortlet */
+			ROWNUM, ITEM_SEQ, WINNER_ID, IS_MONTH, 
+			IS_MONTH_VALUE = 
+				CASE is_month
+         		WHEN '0' THEN '월간'
+         		WHEN '1' THEN '분기'
+         		WHEN '2' THEN '연간'         
+      			END,
+			WIN_YEAR, WIN_GB, SORT, REGIST_DATE, USER_NAME, JOB_TITLE_NAME, TEAM_NAME, WORK_PLACE_NAME, IMAGE_FILE_ID, REASON
+		FROM 
+		( 
+			SELECT 
+				D.* 
+			FROM 
+			( 							
+				SELECT Row_number() OVER (				
+								 ORDER BY  A.WIN_YEAR desc, A.WIN_GB desc
+				
+				 ) AS ROWNUM, A.ITEM_SEQ,				
+					A.WINNER_ID, A.IS_MONTH, A.WIN_YEAR, A.WIN_GB, A.SORT, 
+					CONVERT(NVARCHAR, A.REGIST_DATE, 102) AS REGIST_DATE, B.USER_NAME, C.JOB_TITLE_NAME, B.TEAM_NAME, D.WORK_PLACE_NAME,
+					CASE WHEN B.PROFILE_PICTURE_PATH = '' THEN B.SAP_PROFILE_PICTURE_PATH
+                 	WHEN B.PROFILE_PICTURE_PATH IS NULL THEN B.SAP_PROFILE_PICTURE_PATH
+                 	ELSE B.PROFILE_PICTURE_PATH
+                 	END AS IMAGE_FILE_ID, A.REASON 		
+				FROM IKEP4_KMS_HANDSOME_PEOPLE A INNER JOIN IKEP4_EV_USER B
+					 ON A.WINNER_ID = B.USER_ID
+					 LEFT JOIN  IKEP4_EV_JOB_TITLE C ON C.JOB_TITLE_CODE = B.JOB_TITLE_CODE
+					 LEFT JOIN  IKEP4_EV_WORK_PLACE D ON D.WORK_PLACE_CODE = B.WORK_PLACE_CODE
+					 where A.IS_MONTH = (select is_month from IKEP4_KMS_WINNER_DISPLAY)				 	
+		<![CDATA[   
+			) D
+			WHERE 
+				ROWNUM <=  #endRowIndex# /* 종료  */
+		) TBL  
+		WHERE 
+			ROWNUM >  #startRowIndex# /* 시작 */
+			order by sort asc
+		]]> 
+	
+	</select>
+	
+	<select id="getWinnerTeamListByPortlet" parameterClass="KmsAdminSearchCondition" resultMap="resultTeam">
+		 SELECT /* [AdminWinner_SqlMap.xml] collpack.kms.admin.dao.AdminWinnerManage.getWinnerTeamListByPortlet */
+			ROWNUM, ITEM_SEQ, WINNER_ID, IS_MONTH, 
+			IS_MONTH_VALUE = 
+				CASE is_month
+         		WHEN '0' THEN '월간'
+         		WHEN '1' THEN '분기'
+         		WHEN '2' THEN '연간'         
+      			END,
+			WIN_YEAR, WIN_GB, SORT, REGIST_DATE,  GROUP_NAME, IMAGE_FILE_ID, REASON
+		FROM 
+		( 
+			SELECT 
+				D.* 
+			FROM 
+			( 							
+				SELECT Row_number() OVER (				
+								 ORDER BY  A.WIN_YEAR desc, A.WIN_GB desc
+				
+				 ) AS ROWNUM, A.ITEM_SEQ,				
+					A.WINNER_ID, A.IS_MONTH, A.WIN_YEAR, A.WIN_GB, A.SORT, 
+					CONVERT(NVARCHAR, A.REGIST_DATE, 102) AS REGIST_DATE,  B.GROUP_NAME, A.IMAGE_FILE_ID, A.REASON		
+				FROM IKEP4_KMS_HANDSOME_TEAM A INNER JOIN IKEP4_EV_GROUP B
+					 ON A.WINNER_ID = B.GROUP_ID
+					 where A.IS_MONTH = (select is_month from IKEP4_KMS_WINNER_DISPLAY)					 	
+		<![CDATA[   
+			) D
+			WHERE 
+				ROWNUM <=  #endRowIndex# /* 종료  */
+		) TBL  
+		WHERE 
+			ROWNUM >  #startRowIndex# /* 시작 */
+			order by sort asc
+		]]> 
+	
+	</select>
+	
+	<select id="getWinnerAwardListByPortlet" parameterClass="KmsAdminSearchCondition" resultMap="resultAward">
+		 SELECT /* [AdminWinner_SqlMap.xml] collpack.kms.admin.dao.AdminWinnerManage.getWinnerAwardListByPortlet */
+			ROWNUM, ITEM_SEQ, WINNER_ID, IS_MONTH, 
+			IS_MONTH_VALUE = 
+				CASE is_month
+         		WHEN '0' THEN '월간'
+         		WHEN '1' THEN '분기'
+         		WHEN '2' THEN '연간'         
+      			END,
+			WIN_YEAR, WIN_GB, SORT, REGIST_DATE, WINNER_NAME, IMAGE_FILE_ID
+		FROM 
+		( 
+			SELECT 
+				D.* 
+			FROM 
+			( 							
+				SELECT Row_number() OVER (				
+								 ORDER BY  A.WIN_YEAR desc, A.WIN_GB desc
+				
+				 ) AS ROWNUM, A.ITEM_SEQ,				
+					A.WINNER_ID, A.IS_MONTH, A.WIN_YEAR, A.WIN_GB, A.SORT, 
+					CONVERT(NVARCHAR, A.REGIST_DATE, 102) AS REGIST_DATE, A.WINNER_NAME, A.IMAGE_FILE_ID
+				FROM IKEP4_KMS_AWARD A 
+				where A.IS_MONTH = (select is_month from IKEP4_KMS_WINNER_DISPLAY)				 	
+		<![CDATA[   
+			) D
+			WHERE 
+				ROWNUM <=  #endRowIndex# /* 종료  */
+		) TBL  
+		WHERE 
+			ROWNUM >  #startRowIndex# /* 시작 */
+			order by sort asc
+		]]> 
+	
+	</select>
+	
+	<select id="getWinnerList" parameterClass="KmsAdminSearchCondition" resultMap="result">
+		SELECT /* [AdminWinner_SqlMap.xml] collpack.kms.admin.dao.AdminWinnerManage.getWinnerList */
+			ROWNUM, ITEM_SEQ, WINNER_ID, IS_MONTH, 
+			IS_MONTH_VALUE = 
+				CASE is_month
+         		WHEN '0' THEN '월간'
+         		WHEN '1' THEN '분기'
+         		WHEN '2' THEN '연간'         
+      			END,
+			WIN_YEAR, WIN_GB, SORT, MARK, CONVERSION_MARK, REGIST_DATE, USER_NAME, JOB_TITLE_NAME, TEAM_NAME, WORK_PLACE_NAME, REG_CNT
+		FROM 
+		( 
+			SELECT 
+				D.* 
+			FROM 
+			( 							
+				SELECT Row_number() OVER (	
+				
+								<isNotEmpty property="sortColumn" >
+									<isEqual property="sortColumn" compareValue="WIN_GB">
+ 										ORDER BY A.WIN_GB
+ 									</isEqual>
+ 									<isEqual property="sortColumn" compareValue="IS_MONTH">
+ 										ORDER BY A.IS_MONTH
+ 									</isEqual>
+ 									<isEqual property="sortColumn" compareValue="SORT">
+ 										ORDER BY A.SORT
+ 									</isEqual>
+ 									<isEqual property="sortColumn" compareValue="MARK">
+ 										ORDER BY A.MARK
+ 									</isEqual>
+ 									<isEqual property="sortColumn" compareValue="CONVERSION_MARK">
+ 										ORDER BY A.CONVERSION_MARK
+ 									</isEqual>   																	
+ 									<isEqual property="sortColumn" compareValue="REGIST_DATE">
+ 										ORDER BY A.REGIST_DATE
+ 									</isEqual>
+ 									<isEqual property="sortColumn" compareValue="TEAM_NAME">
+ 										ORDER BY B.TEAM_NAME
+ 									</isEqual>
+ 									<isEqual property="sortColumn" compareValue="REG_CNT">
+ 										ORDER BY A.REG_CNT
+ 									</isEqual>
+
+ 									<isEqual property="sortType" compareValue="ASC">
+ 										ASC
+ 									</isEqual>
+ 									<isEqual property="sortType" compareValue="DESC">
+ 										DESC
+ 									</isEqual>   									
+ 									
+ 								</isNotEmpty>  
+ 							 	<isEmpty property="sortColumn"> ORDER BY  A.REGIST_DATE DESC </isEmpty>
+				
+				 ) AS ROWNUM, A.ITEM_SEQ,				
+					A.WINNER_ID, A.IS_MONTH, A.WIN_YEAR, A.WIN_GB, A.SORT, A.MARK, A.CONVERSION_MARK, 
+					CONVERT(NVARCHAR, A.REGIST_DATE, 102) AS REGIST_DATE, B.USER_NAME, C.JOB_TITLE_NAME, B.TEAM_NAME, D.WORK_PLACE_NAME, A.REG_CNT		
+				FROM IKEP4_KMS_WINNER A INNER JOIN IKEP4_EV_USER B
+					 ON A.WINNER_ID = B.USER_ID
+					 LEFT JOIN  IKEP4_EV_JOB_TITLE C ON C.JOB_TITLE_CODE = B.JOB_TITLE_CODE
+					 LEFT JOIN  IKEP4_EV_WORK_PLACE D ON D.WORK_PLACE_CODE = B.WORK_PLACE_CODE
+					 WHERE 1=1   			
+				<isNotEmpty property="searchWord">
+					<isEqual property="searchColumn" compareValue="userName">
+						AND WINNER_ID IN ( SELECT USER_ID FROM IKEP4_EV_USER WHERE USER_NAME LIKE '%' + #searchWord# + '%' )
+					</isEqual>
+					<isEqual property="searchColumn" compareValue="userId">
+						AND WINNER_ID = #searchWord#
+					</isEqual>
+				</isNotEmpty>
+				<isNotEmpty property="winYear">
+					AND WIN_YEAR = #winYear#			
+				</isNotEmpty>	
+				 
+		<![CDATA[   
+			) D
+			WHERE 
+				ROWNUM <=  #endRowIndex# /* 종료  */
+		) TBL  
+		WHERE 
+			ROWNUM >  #startRowIndex# /* 시작 */  
+		]]> 
+	
+	</select>
+	
+	<select id="getWinnerPeopleList" parameterClass="KmsAdminSearchCondition" resultMap="resultPeople">
+		SELECT /* [AdminWinner_SqlMap.xml] collpack.kms.admin.dao.AdminWinnerManage.getWinnerPeopleList */
+			ROWNUM, ITEM_SEQ, WINNER_ID, IS_MONTH, 
+			IS_MONTH_VALUE = 
+				CASE is_month
+         		WHEN '0' THEN '월간'
+         		WHEN '1' THEN '분기'
+         		WHEN '2' THEN '연간'         
+      			END,
+			WIN_YEAR, WIN_GB, SORT, REGIST_DATE, USER_NAME, JOB_TITLE_NAME, TEAM_NAME, WORK_PLACE_NAME, IMAGE_FILE_ID, REASON
+		FROM 
+		( 
+			SELECT 
+				D.* 
+			FROM 
+			( 							
+				SELECT Row_number() OVER (	
+				
+								<isNotEmpty property="sortColumn" >
+									<isEqual property="sortColumn" compareValue="WIN_GB">
+ 										ORDER BY A.WIN_GB
+ 									</isEqual>
+ 									<isEqual property="sortColumn" compareValue="IS_MONTH">
+ 										ORDER BY A.IS_MONTH
+ 									</isEqual>
+ 									<isEqual property="sortColumn" compareValue="SORT">
+ 										ORDER BY A.SORT
+ 									</isEqual>
+ 									<isEqual property="sortColumn" compareValue="REGIST_DATE">
+ 										ORDER BY A.REGIST_DATE
+ 									</isEqual>
+ 									<isEqual property="sortColumn" compareValue="TEAM_NAME">
+ 										ORDER BY B.TEAM_NAME
+ 									</isEqual>
+ 									<isEqual property="sortType" compareValue="ASC">
+ 										ASC
+ 									</isEqual>
+ 									<isEqual property="sortType" compareValue="DESC">
+ 										DESC
+ 									</isEqual>   									
+ 									
+ 								</isNotEmpty>  
+ 							 	<isEmpty property="sortColumn"> ORDER BY  A.REGIST_DATE DESC </isEmpty>
+				
+				 ) AS ROWNUM, A.ITEM_SEQ,				
+					A.WINNER_ID, A.IS_MONTH, A.WIN_YEAR, A.WIN_GB, A.SORT,  
+					CONVERT(NVARCHAR, A.REGIST_DATE, 102) AS REGIST_DATE, B.USER_NAME, C.JOB_TITLE_NAME, B.TEAM_NAME, D.WORK_PLACE_NAME,
+					CASE WHEN B.PROFILE_PICTURE_PATH = '' THEN B.SAP_PROFILE_PICTURE_PATH
+                 	WHEN B.PROFILE_PICTURE_PATH IS NULL THEN B.SAP_PROFILE_PICTURE_PATH
+                 	ELSE B.PROFILE_PICTURE_PATH
+                 	END AS IMAGE_FILE_ID, A.REASON 			
+				FROM IKEP4_KMS_HANDSOME_PEOPLE A INNER JOIN IKEP4_EV_USER B
+					 ON A.WINNER_ID = B.USER_ID
+					 LEFT JOIN  IKEP4_EV_JOB_TITLE C ON C.JOB_TITLE_CODE = B.JOB_TITLE_CODE
+					 LEFT JOIN  IKEP4_EV_WORK_PLACE D ON D.WORK_PLACE_CODE = B.WORK_PLACE_CODE
+					 WHERE 1=1   			
+				<isNotEmpty property="searchWord">
+					<isEqual property="searchColumn" compareValue="userName">
+						AND WINNER_ID IN ( SELECT USER_ID FROM IKEP4_EV_USER WHERE USER_NAME LIKE '%' + #searchWord# + '%' )
+					</isEqual>
+					<isEqual property="searchColumn" compareValue="userId">
+						AND WINNER_ID = #searchWord#
+					</isEqual>
+				</isNotEmpty>
+				<isNotEmpty property="winYear">
+					AND WIN_YEAR = #winYear#			
+				</isNotEmpty>	
+				 
+		<![CDATA[   
+			) D
+			WHERE 
+				ROWNUM <=  #endRowIndex# /* 종료  */
+		) TBL  
+		WHERE 
+			ROWNUM >  #startRowIndex# /* 시작 */  
+		]]> 
+	
+	</select>
+	
+	<select id="getWinnerTeamList" parameterClass="KmsAdminSearchCondition" resultMap="resultTeam">
+		SELECT /* [AdminWinner_SqlMap.xml] collpack.kms.admin.dao.AdminWinnerManage.getWinnerTeamList */
+			ROWNUM, ITEM_SEQ, WINNER_ID, IS_MONTH, 
+			IS_MONTH_VALUE = 
+				CASE is_month
+         		WHEN '0' THEN '월간'
+         		WHEN '1' THEN '분기'
+         		WHEN '2' THEN '연간'         
+      			END,
+			WIN_YEAR, WIN_GB, SORT, REGIST_DATE, GROUP_NAME, IMAGE_FILE_ID, REASON
+		FROM 
+		( 
+			SELECT 
+				D.* 
+			FROM 
+			( 							
+				SELECT Row_number() OVER (	
+				
+								<isNotEmpty property="sortColumn" >
+									<isEqual property="sortColumn" compareValue="WIN_GB">
+ 										ORDER BY A.WIN_GB
+ 									</isEqual>
+ 									<isEqual property="sortColumn" compareValue="IS_MONTH">
+ 										ORDER BY A.IS_MONTH
+ 									</isEqual>
+ 									<isEqual property="sortColumn" compareValue="SORT">
+ 										ORDER BY A.SORT
+ 									</isEqual>
+ 									<isEqual property="sortColumn" compareValue="REGIST_DATE">
+ 										ORDER BY A.REGIST_DATE
+ 									</isEqual>
+ 									<isEqual property="sortColumn" compareValue="GROUP_NAME">
+ 										ORDER BY B.GROUP_NAME
+ 									</isEqual>
+ 									<isEqual property="sortType" compareValue="ASC">
+ 										ASC
+ 									</isEqual>
+ 									<isEqual property="sortType" compareValue="DESC">
+ 										DESC
+ 									</isEqual>   									
+ 									
+ 								</isNotEmpty>  
+ 							 	<isEmpty property="sortColumn"> ORDER BY  A.REGIST_DATE DESC </isEmpty>
+				
+				 ) AS ROWNUM, A.ITEM_SEQ,				
+					A.WINNER_ID, A.IS_MONTH, A.WIN_YEAR, A.WIN_GB, A.SORT,  
+					CONVERT(NVARCHAR, A.REGIST_DATE, 102) AS REGIST_DATE, B.GROUP_NAME, A.IMAGE_FILE_ID, A.REASON	
+				FROM IKEP4_KMS_HANDSOME_TEAM A INNER JOIN IKEP4_EV_GROUP B
+					 ON A.WINNER_ID = B.GROUP_ID
+					 WHERE 1=1   			
+				<isNotEmpty property="searchWord">
+					<isEqual property="searchColumn" compareValue="groupName">
+						AND WINNER_ID IN ( SELECT GROUP_ID FROM IKEP4_EV_GROUP WHERE GROUP_NAME LIKE '%' + #searchWord# + '%' )
+					</isEqual>
+					<isEqual property="searchColumn" compareValue="groupId">
+						AND WINNER_ID = #searchWord#
+					</isEqual>
+				</isNotEmpty>
+				<isNotEmpty property="winYear">
+					AND WIN_YEAR = #winYear#			
+				</isNotEmpty>	
+				 
+		<![CDATA[   
+			) D
+			WHERE 
+				ROWNUM <=  #endRowIndex# /* 종료  */
+		) TBL  
+		WHERE 
+			ROWNUM >  #startRowIndex# /* 시작 */  
+		]]> 
+	
+	</select>
+	
+	<select id="getWinnerAwardList" parameterClass="KmsAdminSearchCondition" resultMap="resultAward">
+		SELECT /* [AdminWinner_SqlMap.xml] collpack.kms.admin.dao.AdminWinnerManage.getWinnerAwardList */
+			ROWNUM, ITEM_SEQ, WINNER_ID, IS_MONTH, 
+			IS_MONTH_VALUE = 
+				CASE is_month
+         		WHEN '0' THEN '월간'
+         		WHEN '1' THEN '분기'
+         		WHEN '2' THEN '연간'         
+      			END,
+			WIN_YEAR, WIN_GB, SORT, REGIST_DATE, WINNER_NAME, IMAGE_FILE_ID
+		FROM 
+		( 
+			SELECT 
+				D.* 
+			FROM 
+			( 							
+				SELECT Row_number() OVER (	
+				
+								<isNotEmpty property="sortColumn" >
+									<isEqual property="sortColumn" compareValue="WIN_GB">
+ 										ORDER BY A.WIN_GB
+ 									</isEqual>
+ 									<isEqual property="sortColumn" compareValue="IS_MONTH">
+ 										ORDER BY A.IS_MONTH
+ 									</isEqual>
+ 									<isEqual property="sortColumn" compareValue="SORT">
+ 										ORDER BY A.SORT
+ 									</isEqual>
+ 									<isEqual property="sortColumn" compareValue="REGIST_DATE">
+ 										ORDER BY A.REGIST_DATE
+ 									</isEqual>
+ 									<isEqual property="sortColumn" compareValue="GROUP_NAME">
+ 										ORDER BY A.WINNER_NAME
+ 									</isEqual>
+ 									<isEqual property="sortType" compareValue="ASC">
+ 										ASC
+ 									</isEqual>
+ 									<isEqual property="sortType" compareValue="DESC">
+ 										DESC
+ 									</isEqual>   									
+ 									
+ 								</isNotEmpty>  
+ 							 	<isEmpty property="sortColumn"> ORDER BY  A.REGIST_DATE DESC </isEmpty>
+				
+				 ) AS ROWNUM, A.ITEM_SEQ,				
+					A.WINNER_ID, A.IS_MONTH, A.WIN_YEAR, A.WIN_GB, A.SORT,  
+					CONVERT(NVARCHAR, A.REGIST_DATE, 102) AS REGIST_DATE, A.WINNER_NAME, A.IMAGE_FILE_ID	
+				FROM IKEP4_KMS_AWARD A 
+					 WHERE 1=1   			
+				<isNotEmpty property="searchWord">
+					<isEqual property="searchColumn" compareValue="winnerName">
+						AND WINNER_NAME LIKE '%' + #searchWord# + '%' 
+					</isEqual>
+				</isNotEmpty>
+				<isNotEmpty property="winYear">
+					AND WIN_YEAR = #winYear#			
+				</isNotEmpty>	
+				 
+		<![CDATA[   
+			) D
+			WHERE 
+				ROWNUM <=  #endRowIndex# /* 종료  */
+		) TBL  
+		WHERE 
+			ROWNUM >  #startRowIndex# /* 시작 */  
+		]]> 
+	
+	</select>
+	
+	<delete id="deleteWinner" parameterClass="AdminWinner">		
+		DELETE /* [AdminWinner_SqlMap.xml] collpack.kms.admin.dao.AdminWinnerManage.deleteWinner */
+		FROM IKEP4_KMS_WINNER
+		WHERE 		
+		ITEM_SEQ IN 
+		<iterate property="itemSeqs" open="(" close=")" conjunction=",">
+			#itemSeqs[]#
+		</iterate>	
+	</delete>
+	
+	<delete id="deleteWinnerPeople" parameterClass="AdminWinner">		
+		DELETE /* [AdminWinner_SqlMap.xml] collpack.kms.admin.dao.AdminWinnerManage.deleteWinnerPeople */
+		FROM IKEP4_KMS_HANDSOME_PEOPLE
+		WHERE 		
+		ITEM_SEQ IN 
+		<iterate property="itemSeqs" open="(" close=")" conjunction=",">
+			#itemSeqs[]#
+		</iterate>	
+	</delete>
+	
+	<delete id="deleteWinnerTeam" parameterClass="AdminWinner">		
+		DELETE /* [AdminWinner_SqlMap.xml] collpack.kms.admin.dao.AdminWinnerManage.deleteWinnerTeam */
+		FROM IKEP4_KMS_HANDSOME_TEAM
+		WHERE 		
+		ITEM_SEQ IN 
+		<iterate property="itemSeqs" open="(" close=")" conjunction=",">
+			#itemSeqs[]#
+		</iterate>	
+	</delete>
+	
+	<delete id="deleteWinnerAward" parameterClass="AdminWinner">		
+		DELETE /* [AdminWinner_SqlMap.xml] collpack.kms.admin.dao.AdminWinnerManage.deleteWinnerAward */
+		FROM IKEP4_KMS_AWARD
+		WHERE 		
+		ITEM_SEQ IN 
+		<iterate property="itemSeqs" open="(" close=")" conjunction=",">
+			#itemSeqs[]#
+		</iterate>	
+	</delete>
+	
+	<update id="displayWinner" parameterClass="String">		
+		UPDATE /* [AdminWinner_SqlMap.xml] collpack.kms.admin.dao.AdminWinnerManage.displayWinner */
+		IKEP4_KMS_WINNER_DISPLAY  
+		SET IS_MONTH=#isMonth#, UPDATE_DATE = CURRENT_TIMESTAMP
+	</update>
+	
+	<select id="getDisplay" resultClass="String">		
+		SELECT /* [AdminWinner_SqlMap.xml] collpack.kms.admin.dao.AdminWinnerManage.getDisplay */ IS_MONTH
+		FROM IKEP4_KMS_WINNER_DISPLAY  		
+	</select>
+	
+	<insert id="saveWinner" parameterClass="AdminWinner">		
+		INSERT /* [AdminWinner_SqlMap.xml] collpack.kms.admin.dao.AdminWinnerManage.saveWinner */ INTO IKEP4_KMS_WINNER
+		(WINNER_ID, IS_MONTH, WIN_YEAR, WIN_GB, SORT, MARK, CONVERSION_MARK, REG_CNT)
+		VALUES
+		(#winnerId#, #isMonth#, #winYear#, #winGb#, #sort#, #mark#, #conversionMark#, #regCnt#)	
+	</insert>
+	
+	<insert id="saveWinnerPeople" parameterClass="AdminWinner">		
+		INSERT /* [AdminWinner_SqlMap.xml] collpack.kms.admin.dao.AdminWinnerManage.saveWinnerPeople */ INTO IKEP4_KMS_HANDSOME_PEOPLE
+		(WINNER_ID, IS_MONTH, WIN_YEAR, WIN_GB, SORT, REASON)
+		VALUES
+		(#winnerId#, #isMonth#, #winYear#, #winGb#, #sort#, #reason#)	
+	</insert>
+	
+	<insert id="saveWinnerTeam" parameterClass="AdminWinner">		
+		INSERT /* [AdminWinner_SqlMap.xml] collpack.kms.admin.dao.AdminWinnerManage.saveWinnerTeam */ INTO IKEP4_KMS_HANDSOME_TEAM
+		(WINNER_ID, IS_MONTH, WIN_YEAR, WIN_GB, SORT, IMAGE_FILE_ID, REASON)
+		VALUES
+		(#winnerId#, #isMonth#, #winYear#, #winGb#, #sort#, #imageFileId#, #reason#)	
+	</insert>
+	
+	<insert id="saveWinnerAward" parameterClass="AdminWinner">		
+		INSERT /* [AdminWinner_SqlMap.xml] collpack.kms.admin.dao.AdminWinnerManage.saveWinnerAward */ INTO IKEP4_KMS_AWARD
+		(WINNER_ID, IS_MONTH, WIN_YEAR, WIN_GB, SORT, IMAGE_FILE_ID, WINNER_NAME)
+		VALUES
+		(#winnerId#, #isMonth#, #winYear#, #winGb#, #sort#, #imageFileId#, #winnerName#)	
+	</insert>
+	
+	<select id="getWinner" parameterClass="String" resultClass="AdminWinner">
+		SELECT /* [AdminWinner_SqlMap.xml] collpack.kms.admin.dao.AdminWinnerManage.getWinner */
+					A.ITEM_SEQ AS itemSeq,				
+					A.WINNER_ID AS winnerId, 
+					A.IS_MONTH as isMonth, 
+					isMonthValue = 
+						CASE is_month
+		         		WHEN '0' THEN '월간'
+		         		WHEN '1' THEN '분기'
+		         		WHEN '2' THEN '연간'         
+		      			END ,
+					A.WIN_YEAR as winYear, 
+					A.WIN_GB as winGb, 
+					A.SORT as sort, 
+					A.MARK as mark, 
+					A.CONVERSION_MARK as conversionMark, 
+					CONVERT(NVARCHAR, A.REGIST_DATE, 102) AS registDate, 
+					B.USER_NAME as userName, 
+					C.JOB_TITLE_NAME as jobTitleName, 
+					B.TEAM_NAME as teamName, 
+					D.WORK_PLACE_NAME as workPlaceName,
+					A.REG_CNT as regCnt		
+				FROM IKEP4_KMS_WINNER A INNER JOIN IKEP4_EV_USER B
+					 ON A.WINNER_ID = B.USER_ID
+					 LEFT JOIN  IKEP4_EV_JOB_TITLE C ON C.JOB_TITLE_CODE = B.JOB_TITLE_CODE
+					 LEFT JOIN  IKEP4_EV_WORK_PLACE D ON D.WORK_PLACE_CODE = B.WORK_PLACE_CODE
+					 WHERE A.ITEM_SEQ = #itemSeq#  
+	</select>
+	
+	<select id="getWinnerPeople" parameterClass="String" resultClass="AdminWinner">
+		SELECT /* [AdminWinner_SqlMap.xml] collpack.kms.admin.dao.AdminWinnerManage.getWinnerPeople */
+					A.ITEM_SEQ AS itemSeq,				
+					A.WINNER_ID AS winnerId, 
+					A.IS_MONTH as isMonth, 
+					isMonthValue = 
+						CASE is_month
+		         		WHEN '0' THEN '월간'
+		         		WHEN '1' THEN '분기'
+		         		WHEN '2' THEN '연간'         
+		      			END ,
+					A.WIN_YEAR as winYear, 
+					A.WIN_GB as winGb, 
+					A.SORT as sort, 
+					CONVERT(NVARCHAR, A.REGIST_DATE, 102) AS registDate, 
+					B.USER_NAME as userName, 
+					C.JOB_TITLE_NAME as jobTitleName, 
+					B.TEAM_NAME as teamName, 
+					D.WORK_PLACE_NAME as workPlaceName,
+					A.REASON as reason
+				FROM IKEP4_KMS_HANDSOME_PEOPLE A INNER JOIN IKEP4_EV_USER B
+					 ON A.WINNER_ID = B.USER_ID
+					 LEFT JOIN  IKEP4_EV_JOB_TITLE C ON C.JOB_TITLE_CODE = B.JOB_TITLE_CODE
+					 LEFT JOIN  IKEP4_EV_WORK_PLACE D ON D.WORK_PLACE_CODE = B.WORK_PLACE_CODE
+					 WHERE A.ITEM_SEQ = #itemSeq#  
+	</select>
+	
+	<select id="getWinnerTeam" parameterClass="String" resultClass="AdminWinner">
+		SELECT /* [AdminWinner_SqlMap.xml] collpack.kms.admin.dao.AdminWinnerManage.getWinnerTeam */
+					A.ITEM_SEQ AS itemSeq,				
+					A.WINNER_ID AS winnerId, 
+					A.IS_MONTH as isMonth, 
+					isMonthValue = 
+						CASE is_month
+		         		WHEN '0' THEN '월간'
+		         		WHEN '1' THEN '분기'
+		         		WHEN '2' THEN '연간'         
+		      			END ,
+					A.WIN_YEAR as winYear, 
+					A.WIN_GB as winGb, 
+					A.SORT as sort, 
+					CONVERT(NVARCHAR, A.REGIST_DATE, 102) AS registDate, 
+					A.IMAGE_FILE_ID as imageFileId,
+					B.GROUP_NAME as teamName,
+					A.REASON as reason
+				FROM IKEP4_KMS_HANDSOME_TEAM A INNER JOIN IKEP4_EV_GROUP B
+					 ON A.WINNER_ID = B.GROUP_ID
+					 WHERE A.ITEM_SEQ = #itemSeq#  
+	</select>
+	
+	<select id="getWinnerAward" parameterClass="String" resultClass="AdminWinner">
+		SELECT /* [AdminWinner_SqlMap.xml] collpack.kms.admin.dao.AdminWinnerManage.getWinnerAward */
+					A.ITEM_SEQ AS itemSeq,				
+					A.WINNER_ID AS winnerId, 
+					A.IS_MONTH as isMonth, 
+					isMonthValue = 
+						CASE is_month
+		         		WHEN '0' THEN '월간'
+		         		WHEN '1' THEN '분기'
+		         		WHEN '2' THEN '연간'         
+		      			END ,
+					A.WIN_YEAR as winYear, 
+					A.WIN_GB as winGb, 
+					A.SORT as sort, 
+					CONVERT(NVARCHAR, A.REGIST_DATE, 102) AS registDate, 
+					A.IMAGE_FILE_ID as imageFileId,
+					A.WINNER_NAME as winnerName
+				FROM IKEP4_KMS_AWARD A 
+					 WHERE A.ITEM_SEQ = #itemSeq#  
+	</select>
+	
+	
+	<update id="updateWinner" parameterClass="AdminWinner">		
+		UPDATE /* [AdminWinner_SqlMap.xml] collpack.kms.admin.dao.AdminWinnerManage.updateWinner */
+		IKEP4_KMS_WINNER  
+		SET WIN_YEAR = #winYear#,
+			WIN_GB = #winGb#,
+			SORT = #sort#, 
+			IS_MONTH = #isMonth#,
+			MARK = #mark#,
+			CONVERSION_MARK = #conversionMark#, 
+			REG_CNT = #regCnt#,
+			UPDATE_DATE = CURRENT_TIMESTAMP
+		WHERE ITEM_SEQ = #itemSeq#
+	</update>
+	
+	<update id="updateWinnerPeople" parameterClass="AdminWinner">		
+		UPDATE /* [AdminWinner_SqlMap.xml] collpack.kms.admin.dao.AdminWinnerManage.updateWinnerPeople */
+		IKEP4_KMS_HANDSOME_PEOPLE  
+		SET WIN_YEAR = #winYear#,
+			WIN_GB = #winGb#,
+			SORT = #sort#, 
+			IS_MONTH = #isMonth#,
+			REASON = #reason#,
+			UPDATE_DATE = CURRENT_TIMESTAMP
+		WHERE ITEM_SEQ = #itemSeq#
+	</update>
+	
+	<update id="updateWinnerTeam" parameterClass="AdminWinner">		
+		UPDATE /* [AdminWinner_SqlMap.xml] collpack.kms.admin.dao.AdminWinnerManage.updateWinnerTeam */
+		IKEP4_KMS_HANDSOME_TEAM 
+		SET WIN_YEAR = #winYear#,
+			WIN_GB = #winGb#,
+			SORT = #sort#, 
+			IS_MONTH = #isMonth#,
+			REASON = #reason#,
+			UPDATE_DATE = CURRENT_TIMESTAMP,
+			IMAGE_FILE_ID = #imageFileId#
+		WHERE ITEM_SEQ = #itemSeq#
+	</update>
+	
+	<update id="updateWinnerAward" parameterClass="AdminWinner">		
+		UPDATE /* [AdminWinner_SqlMap.xml] collpack.kms.admin.dao.AdminWinnerManage.updateWinnerAward */
+		IKEP4_KMS_AWARD 
+		SET WIN_YEAR = #winYear#,
+			WIN_GB = #winGb#,
+			SORT = #sort#, 
+			IS_MONTH = #isMonth#,
+			UPDATE_DATE = CURRENT_TIMESTAMP,
+			IMAGE_FILE_ID = #imageFileId#
+		WHERE ITEM_SEQ = #itemSeq#
+	</update>
+	
+	<select id="getAssessStandard"  resultClass="java.util.HashMap">
+		SELECT /* [AdminWinner_SqlMap.xml] collpack.kms.admin.dao.AdminWinnerManage.getAssessStandard */
+			IS_KNOWHOW as isKnowHow, MARK_RATE as markRate, REG_CNT_RATE as regCntRate, VIEW_CNT_RATE as viewCntRate,
+			RECOMMEND_CNT_RATE as recommendCntRate, LINEREPLY_CNT_RATE as lineReplyCntRate,
+			USAGE_CNT_RATE as usageCntRate, TOTAL_RATE as totalRate
+		FROM
+			IKEP4_KMS_ASSESS_STANDARD	
+	</select>
+	
+	
+	
+	<update id="saveAssessStandard" parameterClass="java.util.Map">		
+		UPDATE /* [AdminWinner_SqlMap.xml] collpack.kms.admin.dao.AdminWinnerManage.saveAssessStandard */
+		IKEP4_KMS_ASSESS_STANDARD  
+		SET IS_KNOWHOW = #isKnowHow#,
+			MARK_RATE = #markRate#,
+			REG_CNT_RATE = #regCntRate#,
+			VIEW_CNT_RATE = #viewCntRate#,
+			RECOMMEND_CNT_RATE = #recommendCntRate#,
+			LINEREPLY_CNT_RATE = #lineReplyCntRate#,
+			USAGE_CNT_RATE = #usageCntRate#,
+			TOTAL_RATE = #totalRate#,
+			REGIST_DATE = CURRENT_TIMESTAMP		
+	</update>
+	
+</sqlMap>

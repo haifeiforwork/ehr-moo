@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="socialpack.microblogging.dao.search" >
+	<typeAlias alias = "Search" type="com.lgcns.ikep4.socialpack.microblogging.model.Search"/>
+	<typeAlias alias = "MblogSearchCondition" type="com.lgcns.ikep4.socialpack.microblogging.search.MblogSearchCondition"/>
+	
+	<!-- IKEP4_MB_SEARCH 테이블 조회 결과 -->
+	<resultMap id="result" class="Search">
+		<result property="searchId" 			column="SEARCH_ID" 				/>
+		<result property="searchWord" 			column="SEARCH_WORD" 			/>
+		<result property="searchUserId" 		column="SEARCH_USER_ID" 		/>
+		<result property="registDate" 			column="REGIST_DATE" 			/>
+		<result property="isSave" 				column="IS_SAVE" 				/>
+	</resultMap>
+	
+	<!-- insert -->
+	<insert id="insert" parameterClass="Search"> 
+      <![CDATA[ 
+           INSERT INTO IKEP4_MB_SEARCH ( /* [Search_SqlMap.xml] search.select */ 
+           SEARCH_ID, SEARCH_WORD, SEARCH_USER_ID, REGIST_DATE, IS_SAVE)  
+           VALUES (#searchId#, #searchWord#, #searchUserId#, sysdate, #isSave#)
+       ]]>
+   </insert>
+   
+	<!-- update -->
+	<update id="update" parameterClass="Search">
+	  <![CDATA[
+		   UPDATE IKEP4_MB_SEARCH  /* [Search_SqlMap.xml] search.update */ 
+		   SET IS_SAVE 		= #isSave#
+		   WHERE SEARCH_ID = #searchId#
+	   ]]>
+	</update>
+	
+   <!-- select -->
+	<select id="select" parameterClass="java.lang.String" resultMap="result">
+	  <![CDATA[
+		   SELECT /* [Search_SqlMap.xml] search.select */ 
+		    * FROM IKEP4_MB_SEARCH WHERE SEARCH_ID = #id#
+	   ]]>
+	</select>
+	   
+   <!-- delete -->
+   <delete id="delete" parameterClass="java.lang.String">
+      <![CDATA[
+	       DELETE FROM IKEP4_MB_SEARCH   /* [Search_SqlMap.xml] search.delete */ 
+	       WHERE SEARCH_ID = #id#
+	   ]]>
+	</delete>
+		
+	<!-- list -->
+	<select id="selectListBySearchUserId" parameterClass="Search" resultMap="result">
+	  <![CDATA[
+		   SELECT /* [Search_SqlMap.xml] search.selectListBySearchUserId */ 
+		    * FROM IKEP4_MB_SEARCH WHERE SEARCH_USER_ID = #searchUserId# AND IS_SAVE = 1
+	   ]]>
+	</select>
+	
+	
+	<!-- selectCount -->
+	<select id="selectCount" parameterClass="Search" resultClass="java.lang.Integer">
+	  <![CDATA[
+		   SELECT /* [Search_SqlMap.xml] search.selectCount */ 
+		   COUNT(SEARCH_ID) 
+		   FROM IKEP4_MB_SEARCH WHERE SEARCH_WORD = #searchWord# AND SEARCH_USER_ID = #searchUserId# AND IS_SAVE = 1
+	   ]]>
+	</select>
+	
+	<!-- list -->
+	<select id="selectTrendList" parameterClass="MblogSearchCondition" resultClass="java.lang.String">
+	  
+			SELECT  /* [Search_SqlMap.xml] search.selectTrendList */ 
+				A.MBTAG_FULL_NAME as SEARCH_WORD
+			FROM
+			(
+				SELECT mbtag.MBTAG_FULL_NAME, COUNT(*) CNT
+				FROM IKEP4_MB_MBTAG mbtag, IKEP4_MB_MBLOG2TAG mblog2tag, IKEP4_MB_MBLOG mblog
+				WHERE mbtag.MBTAG_ID 		= mblog2tag.MBTAG_ID
+				  AND mbtag.PORTAL_ID 		= mblog2tag.PORTAL_ID
+	  		  	  AND mbtag.PORTAL_ID 		= #portalId#
+				  AND mblog2tag.MBLOG_ID 	= mblog.MBLOG_ID
+				  AND mblog.REGIST_DATE 	<![CDATA[>]]> ADD_MONTHS(SYSDATE, - 1)
+				<isNotEmpty property="mbgroupId">
+	  		  		AND mblog.MBGROUP_ID 	= #mbgroupId#
+				</isNotEmpty>
+				GROUP BY mbtag.MBTAG_FULL_NAME
+				ORDER BY CNT DESC
+			)A
+			WHERE ROWNUM <![CDATA[<=]]> 5
+			
+			UNION
+			
+			SELECT SEARCH_WORD  as SEARCH_WORD
+			FROM
+			(
+				SELECT SEARCH_WORD, COUNT(*) CNT
+				FROM IKEP4_MB_SEARCH
+				WHERE REGIST_DATE <![CDATA[>]]> ADD_MONTHS(SYSDATE, - 1)
+				GROUP BY SEARCH_WORD
+				ORDER BY CNT DESC
+			)
+			WHERE ROWNUM <![CDATA[<=]]> 5
+	</select>
+	
+</sqlMap>

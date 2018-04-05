@@ -1,0 +1,772 @@
+
+
+
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ko">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+
+
+<title>iKEP 4.00</title>
+
+<link rel="stylesheet" type="text/css" href="/ikep4-webapp/base/css/theme01/jquery_ui_custom.css" />
+<link rel="stylesheet" type="text/css" href="/ikep4-webapp/base/css/common.css" />
+<link rel="stylesheet" type="text/css" href="/ikep4-webapp/base/css/theme01/theme.css" />
+
+<script type="text/javascript" src="/ikep4-webapp/base/js/jquery/jquery-1.5.2.min.js"></script>
+<script type="text/javascript" src="/ikep4-webapp/base/js/jquery/jquery-ui-1.8.13.min.without.datepicker.js"></script>
+<script type="text/javascript" src="/ikep4-webapp/base/js/jquery/jquery.ui.datepicker.customize.pack.js"></script>
+<script type="text/javascript" src="/ikep4-webapp/base/js/jquery/jquery.jstree.pack.js"></script>
+<script type="text/javascript" src="/ikep4-webapp/base/js/jquery/jquery.validate-1.8.min.js"></script>
+<script type="text/javascript" src="/ikep4-webapp/base/js/jquery/plugins.pack.js"></script>
+<script type="text/javascript">var contextRoot = "/ikep4-webapp";</script>
+
+<script type="text/javascript" src="/ikep4-webapp/base/js/etc.plugins.pack.js"></script>
+<script type="text/javascript" src="/ikep4-webapp/base/js/langResource/ko.js"></script>
+<script type="text/javascript" src="/ikep4-webapp/base/js/common.pack.js"></script>
+</head>
+<body class="bg_lefttree">
+<!--wrapper Start-->
+<div id="wrapper"> 
+	<!--blockContainer Start-->
+	<div id="blockContainer"> 
+		<!--blockMain Start-->
+		<div id="blockMain">
+			
+
+
+
+
+ 
+
+
+
+
+
+
+<script type="text/javascript" src="/ikep4-webapp/base/js/jquery/jquery.jstree.pack.js"></script>
+<script type="text/javascript">
+<!--
+var $groupTree;
+var $searchWordId;
+var isExtendTree = false;
+
+(function($) {
+    $jq(document).ready(function() {
+    	//iKEP.iFrameMenuOnclick('/ikep4-webapp/portal/main/listUser.do');
+    	
+    	/* 페이지 로딩시 Tree 영역 윈도우 높이로 조절 */
+		resizeTreeContentHeight();
+		
+		/* 윈도우 resize 이벤트 발생 시 tree 영역 document 높이로 조절 */
+		$(window).bind("resize", resizeTreeContentHeight);	
+		
+		/* tree 영역 넓히기 */
+		$("#btnDivSize").click(
+			function(){
+				extendTreeContent();
+			}
+		);	
+    	
+    	$("#userTree").bind("loaded.jstree", function (event, data) {
+    		var $TopItem = $("ul > li:first", this);
+			$(this).jstree("open_node", $TopItem.children("a")[0], false);
+// 				var $selectItem = $(initTreeItem);
+// 				while(true) {
+// 					$selectItem = $selectItem.parents("li:first", this);
+// 					if($selectItem.length > 0) {
+// 						$("#userTree").jstree("open_node", $selectItem[0], false);
+// 					} else {break;}
+// 				}
+        });
+    	
+    	
+    	var treeItems = [
+    		{"groupTypeId":"G0001","name":"LG Hausys","hasChild":"125","parent":null,"code":"GD0000001","type":"group"},
+			{"groupTypeId":"G0001","name":"사장실","hasChild":"117","parent":"GD0000001","code":"GD0000002","type":"group"},
+			{"groupTypeId":"G0001","name":"하이테크사업본부","hasChild":"119","parent":"GD0000001","code":"GD0000003","type":"group"},
+			{"groupTypeId":"G0001","name":"금융/통신사업본부","hasChild":"117","parent":"GD0000001","code":"GD0000004","type":"group"},
+			{"groupTypeId":"G0001","name":"공공/SOC사업본부","hasChild":"119","parent":"GD0000001","code":"GD0000005","type":"group"},
+			{"groupTypeId":"G0001","name":"솔루션사업본부","hasChild":"121","parent":"GD0000001","code":"GD0000006","type":"group"},
+			{"groupTypeId":"G0001","name":"전략/마케팅본부","hasChild":"121","parent":"GD0000001","code":"GD0000007","type":"group"},
+			{"groupTypeId":"G0001","name":"경영지원본부","hasChild":"118","parent":"GD0000001","code":"GD0000008","type":"group"},
+			{"groupTypeId":"G0001","name":"경영관리부문","hasChild":"117","parent":"GD0000001","code":"GD0000009","type":"group"},
+			{"groupTypeId":"G0001","name":"심리상담실A","hasChild":"118","parent":"GD0000001","code":"GD0000010","type":"group"},
+			{"groupTypeId":"G0001","name":"LG 화학","hasChild":"1","parent":null,"code":"GD1000001","type":"group"},
+			{"groupTypeId":"G0001","name":"본부기획팀","hasChild":"111","parent":"GD0000003","code":"GD0000017","type":"group"},
+			{"groupTypeId":"G0001","name":"전자사업부","hasChild":"117","parent":"GD0000003","code":"GD0000018","type":"group"},
+			{"groupTypeId":"G0001","name":"제조사업부","hasChild":"117","parent":"GD0000003","code":"GD0000019","type":"group"},
+			{"groupTypeId":"G0001","name":"서비스사업부","hasChild":"113","parent":"GD0000003","code":"GD0000020","type":"group"},
+			{"groupTypeId":"G0001","name":"하이테크사업부","hasChild":"115","parent":"GD0000003","code":"GD0000021","type":"group"},
+			{"groupTypeId":"G0001","name":"전자/ERP서비스부문","hasChild":"115","parent":"GD0000003","code":"GD0000022","type":"group"},
+			{"groupTypeId":"G0001","name":"엔지니어링서비스부문","hasChild":"114","parent":"GD0000003","code":"GD0000023","type":"group"},
+			{"groupTypeId":"G0001","name":"스마트소프트웨어부문","hasChild":"115","parent":"GD0000003","code":"GD0000024","type":"group"},
+			{"groupTypeId":"G0001","name":"제조사업담당","hasChild":"113","parent":"GD0000021","code":"GD0000079","type":"group"},
+			{"groupTypeId":"G0001","name":"물류/서비스사업담당","hasChild":"113","parent":"GD0000021","code":"GD0000080","type":"group"},
+			{"groupTypeId":"G0001","name":"의료사업담당","hasChild":"114","parent":"GD0000021","code":"GD0000081","type":"group"},
+			{"groupTypeId":"G0001","name":"Hynix사업담당","hasChild":"114","parent":"GD0000021","code":"GD0000082","type":"group"},
+			{"groupTypeId":"G0001","name":"제조엔지니어링사업팀","hasChild":"111","parent":"GD0000079","code":"GD0000083","type":"group"},
+			{"groupTypeId":"G0001","name":"제조SI사업팀","hasChild":"111","parent":"GD0000079","code":"GD0000084","type":"group"},
+			{"groupTypeId":"G0001","name":"IKEP TFT","hasChild":"2","parent":"GD0000001","code":"100000857631","type":"group"},
+			{"groupTypeId":"G0001","name":"LG Hausys(sub)","hasChild":"3","parent":null,"code":"100019337305","type":"group"},
+			{"id":"user10000","teamName":"LG Hausys","email":"ikepuser0@gmail.com","name":"사용자10000 사장 (팀장)","empNo":"E10000","parent":"GD0000001","code":"","type":"user","mobile":"55555","jobTitle":"사장"},
+			{"id":"user10002","teamName":"LG Hausys","email":"ikepuser2@gmail.com","name":"사용자10002 사원 (팀장)","empNo":"E10002","parent":"GD0000001","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10273","teamName":"하이테크사업본부","email":"ikepuser13@gmail.com","name":"사용자10273 사원 (팀장)","empNo":"E10273","parent":"GD0000003","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user12073","teamName":"하이테크사업부","email":"ikepuser13@gmail.com","name":"사용자12073 사원 (팀장)","empNo":"E12073","parent":"GD0000021","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user7675","teamName":"제조사업담당","email":"ikepuser15@gmail.com","name":"사용자7675 사원 (팀장)","empNo":"E7675","parent":"GD0000079","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"yshan","teamName":"LG Hausys","email":null,"name":"한윤석23 부장","empNo":"00017494","parent":"GD0000001","code":"","type":"user","mobile":"010-7712-7255","jobTitle":"부장"},
+			{"id":"hkmoond","teamName":"LG Hausys","email":null,"name":"문헌규 차장","empNo":"00051927","parent":"GD0000001","code":"","type":"user","mobile":"019-218-8216","jobTitle":"차장"},
+			{"id":"yjsongc","teamName":"LG Hausys","email":null,"name":"송영준 차장","empNo":"00069512","parent":"GD0000001","code":"","type":"user","mobile":"019-432-7372","jobTitle":"차장"},
+			{"id":"mwchae","teamName":"LG Hausys","email":null,"name":"채민우 차장","empNo":"00202903","parent":"GD0000001","code":"","type":"user","mobile":"010-3904-4083","jobTitle":"차장"},
+			{"id":"admin","teamName":"LG Hausys","email":"ikepuser0@gmail.com","name":"관리자 과장","empNo":"E0","parent":"GD0000001","code":"","type":"user","mobile":"010-2039-2331","jobTitle":"과장"},
+			{"id":"idoti","teamName":"LG Hausys","email":null,"name":"박춘성 과장","empNo":"00201774","parent":"GD0000001","code":"","type":"user","mobile":"010-7651-1533","jobTitle":"과장"},
+			{"id":"arnold","teamName":"LG Hausys","email":null,"name":"이규업 과장","empNo":"00031303","parent":"GD0000001","code":"","type":"user","mobile":"019-9167-7598","jobTitle":"과장"},
+			{"id":"hcjung","teamName":"LG Hausys","email":null,"name":"정현철 과장","empNo":"00206645","parent":"GD0000001","code":"","type":"user","mobile":"010-7939-3066","jobTitle":"과장"},
+			{"id":"handul4","teamName":"LG Hausys","email":null,"name":"handul4한 대리","empNo":"14","parent":"GD0000001","code":"","type":"user","mobile":"14","jobTitle":"대리"},
+			{"id":"kokok","teamName":"LG Hausys","email":null,"name":"koko 사원","empNo":"000000","parent":"GD0000001","code":"","type":"user","mobile":"00000","jobTitle":"사원"},
+			{"id":"lplplplp","teamName":"LG Hausys","email":null,"name":"lplplp 사원","empNo":null,"parent":"GD0000001","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"test001","teamName":"LG Hausys","email":null,"name":"test001 사원","empNo":"001001","parent":"GD0000001","code":"","type":"user","mobile":"0100100100","jobTitle":"사원"},
+			{"id":"test002","teamName":"LG Hausys","email":null,"name":"test002 사원","empNo":"002002","parent":"GD0000001","code":"","type":"user","mobile":"0100202020","jobTitle":"사원"},
+			{"id":"test003","teamName":"LG Hausys","email":null,"name":"test003 사원","empNo":"003003","parent":"GD0000001","code":"","type":"user","mobile":"020300303","jobTitle":"사원"},
+			{"id":"testpic003","teamName":"LG Hausys","email":null,"name":"testpic003 사원","empNo":null,"parent":"GD0000001","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"testuser001","teamName":"LG Hausys","email":null,"name":"testuser001 사원","empNo":null,"parent":"GD0000001","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"bw","teamName":"LG Hausys","email":null,"name":"게시글 쓰기가능자 사원","empNo":null,"parent":"GD0000001","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"ba","teamName":"LG Hausys","email":null,"name":"게시판 관리자 사원","empNo":null,"parent":"GD0000001","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"bn","teamName":"LG Hausys","email":null,"name":"게시판 권한 없는 사람 사원","empNo":null,"parent":"GD0000001","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"br","teamName":"LG Hausys","email":null,"name":"게시판 읽기 가능자 사원","empNo":null,"parent":"GD0000001","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"itksha","teamName":"LG Hausys","email":null,"name":"김상혁 사원","empNo":"00206609","parent":"GD0000001","code":"","type":"user","mobile":"010-5622-0320","jobTitle":"사원"},
+			{"id":"yjkimi","teamName":"LG Hausys","email":null,"name":"김연진 사원","empNo":"00018427","parent":"GD0000001","code":"","type":"user","mobile":"010-7737-4167","jobTitle":"사원"},
+			{"id":"crabes","teamName":"LG Hausys","email":"testuser@testdomain.co.kr","name":"박정욱 사원","empNo":"E1","parent":"GD0000001","code":"","type":"user","mobile":"010-1234-1234","jobTitle":"사원"},
+			{"id":"crabes1","teamName":"LG Hausys","email":null,"name":"박정욱1 사원","empNo":"E1","parent":"GD0000001","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"crabes2","teamName":"LG Hausys","email":null,"name":"박정욱2 사원","empNo":"E1","parent":"GD0000001","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"crabes3","teamName":"LG Hausys","email":null,"name":"박정욱3 사원","empNo":"E1","parent":"GD0000001","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"crabes4","teamName":"LG Hausys","email":null,"name":"박정욱4 사원","empNo":"E1","parent":"GD0000001","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user1","teamName":"LG Hausys","email":"ikepuser2@gmail.com","name":"사용자1 사원","empNo":"E11","parent":"GD0000001","code":"","type":"user","mobile":"010-882-8855","jobTitle":"사원"},
+			{"id":"user10","teamName":"LG Hausys","email":"ikepuser11@gmail.com","name":"사용자10 사원","empNo":"E10","parent":"GD0000001","code":"","type":"user","mobile":"01022223333","jobTitle":"사원"},
+			{"id":"user10003","teamName":"LG Hausys","email":"ikepuser3@gmail.com","name":"사용자10003 사원","empNo":"E10003","parent":"GD0000001","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10004","teamName":"LG Hausys","email":"ikepuser4@gmail.com","name":"사용자10004 사원","empNo":"E10004","parent":"GD0000001","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10005","teamName":"LG Hausys","email":"ikepuser5@gmail.com","name":"사용자10005 사원","empNo":"E10005","parent":"GD0000001","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10006","teamName":"LG Hausys","email":"ikepuser6@gmail.com","name":"사용자10006 사원","empNo":"E10006","parent":"GD0000001","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10007","teamName":"LG Hausys","email":"ikepuser7@gmail.com","name":"사용자10007 사원","empNo":"E10007","parent":"GD0000001","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10008","teamName":"LG Hausys","email":"ikepuser8@gmail.com","name":"사용자10008 사원","empNo":"E10008","parent":"GD0000001","code":"","type":"user","mobile":"01088885551","jobTitle":"사원"},
+			{"id":"user10009","teamName":"LG Hausys","email":"ikepuser9@gmail.com","name":"사용자10009 사원","empNo":"E10009","parent":"GD0000001","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user1001","teamName":"LG Hausys","email":"ikepuser1@gmail.com","name":"사용자1001 사원","empNo":"E1001","parent":"GD0000001","code":"","type":"user","mobile":"01080001001","jobTitle":"사원"},
+			{"id":"user10010","teamName":"LG Hausys","email":"ikepuser10@gmail.com","name":"사용자10010 사원","empNo":"E10010","parent":"GD0000001","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10011","teamName":"LG Hausys","email":"ikepuser11@gmail.com","name":"사용자10011 사원","empNo":"E10011","parent":"GD0000001","code":"","type":"user","mobile":"01098982323","jobTitle":"사원"},
+			{"id":"user10012","teamName":"LG Hausys","email":"ikepuser12@gmail.com","name":"사용자10012 사원","empNo":"E10012","parent":"GD0000001","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10013","teamName":"LG Hausys","email":"ikepuser13@gmail.com","name":"사용자10013 사원","empNo":"E10013","parent":"GD0000001","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10014","teamName":"LG Hausys","email":"ikepuser14@gmail.com","name":"사용자10014 사원","empNo":"E10014","parent":"GD0000001","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10015","teamName":"LG Hausys","email":"ikepuser15@gmail.com","name":"사용자10015 사원","empNo":"E10015","parent":"GD0000001","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10016","teamName":"LG Hausys","email":"ikepuser16@gmail.com","name":"사용자10016 사원","empNo":"E10016","parent":"GD0000001","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10017","teamName":"LG Hausys","email":"ikepuser17@gmail.com","name":"사용자10017 사원","empNo":"E10017","parent":"GD0000001","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10018","teamName":"LG Hausys","email":"ikepuser18@gmail.com","name":"사용자10018 사원","empNo":"E10018","parent":"GD0000001","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10019","teamName":"LG Hausys","email":"ikepuser19@gmail.com","name":"사용자10019 사원","empNo":"E10019","parent":"GD0000001","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user1002","teamName":"LG Hausys","email":"ikepuser2@gmail.com","name":"사용자1002 사원","empNo":"E1002","parent":"GD0000001","code":"","type":"user","mobile":"01080001002","jobTitle":"사원"},
+			{"id":"user10020","teamName":"LG Hausys","email":"ikepuser0@gmail.com","name":"사용자10020 사원","empNo":"E10020","parent":"GD0000001","code":"","type":"user","mobile":"01088885552","jobTitle":"사원"},
+			{"id":"user10021","teamName":"LG Hausys","email":"ikepuser1@gmail.com","name":"사용자10021 사원","empNo":"E10021","parent":"GD0000001","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10022","teamName":"LG Hausys","email":"ikepuser2@gmail.com","name":"사용자10022 사원","empNo":"E10022","parent":"GD0000001","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10023","teamName":"LG Hausys","email":"ikepuser3@gmail.com","name":"사용자10023 사원","empNo":"E10023","parent":"GD0000001","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10024","teamName":"LG Hausys","email":"ikepuser4@gmail.com","name":"사용자10024 사원","empNo":"E10024","parent":"GD0000001","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10025","teamName":"LG Hausys","email":"ikepuser5@gmail.com","name":"사용자10025 사원","empNo":"E10025","parent":"GD0000001","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10026","teamName":"LG Hausys","email":"ikepuser6@gmail.com","name":"사용자10026 사원","empNo":"E10026","parent":"GD0000001","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10027","teamName":"LG Hausys","email":"ikepuser7@gmail.com","name":"사용자10027 사원","empNo":"E10027","parent":"GD0000001","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10028","teamName":"LG Hausys","email":"ikepuser8@gmail.com","name":"사용자10028 사원","empNo":"E10028","parent":"GD0000001","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10029","teamName":"LG Hausys","email":"ikepuser9@gmail.com","name":"사용자10029 사원","empNo":"E10029","parent":"GD0000001","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user1003","teamName":"LG Hausys","email":"ikepuser3@gmail.com","name":"사용자1003 사원","empNo":"E1003","parent":"GD0000001","code":"","type":"user","mobile":"01080001003","jobTitle":"사원"},
+			{"id":"user10030","teamName":"LG Hausys","email":"ikepuser10@gmail.com","name":"사용자10030 사원","empNo":"E10030","parent":"GD0000001","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10031","teamName":"LG Hausys","email":"ikepuser11@gmail.com","name":"사용자10031 사원","empNo":"E10031","parent":"GD0000001","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10032","teamName":"LG Hausys","email":"ikepuser12@gmail.com","name":"사용자10032 사원","empNo":"E10032","parent":"GD0000001","code":"","type":"user","mobile":"01088885553","jobTitle":"사원"},
+			{"id":"user10033","teamName":"LG Hausys","email":"ikepuser13@gmail.com","name":"사용자10033 사원","empNo":"E10033","parent":"GD0000001","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10034","teamName":"LG Hausys","email":"ikepuser14@gmail.com","name":"사용자10034 사원","empNo":"E10034","parent":"GD0000001","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10035","teamName":"LG Hausys","email":"ikepuser15@gmail.com","name":"사용자10035 사원","empNo":"E10035","parent":"GD0000001","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10036","teamName":"LG Hausys","email":"ikepuser16@gmail.com","name":"사용자10036 사원","empNo":"E10036","parent":"GD0000001","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10037","teamName":"LG Hausys","email":"ikepuser17@gmail.com","name":"사용자10037 사원","empNo":"E10037","parent":"GD0000001","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10038","teamName":"LG Hausys","email":"ikepuser18@gmail.com","name":"사용자10038 사원","empNo":"E10038","parent":"GD0000001","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10039","teamName":"LG Hausys","email":"ikepuser19@gmail.com","name":"사용자10039 사원","empNo":"E10039","parent":"GD0000001","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user1004","teamName":"LG Hausys","email":"ikepuser4@gmail.com","name":"사용자1004 사원","empNo":"E1004","parent":"GD0000001","code":"","type":"user","mobile":"01080001004","jobTitle":"사원"},
+			{"id":"user10040","teamName":"LG Hausys","email":"ikepuser0@gmail.com","name":"사용자10040 사원","empNo":"E10040","parent":"GD0000001","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10041","teamName":"LG Hausys","email":"ikepuser1@gmail.com","name":"사용자10041 사원","empNo":"E10041","parent":"GD0000001","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10042","teamName":"LG Hausys","email":"ikepuser2@gmail.com","name":"사용자10042 사원","empNo":"E10042","parent":"GD0000001","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10043","teamName":"LG Hausys","email":"ikepuser3@gmail.com","name":"사용자10043 사원","empNo":"E10043","parent":"GD0000001","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10044","teamName":"LG Hausys","email":"ikepuser4@gmail.com","name":"사용자10044 사원","empNo":"E10044","parent":"GD0000001","code":"","type":"user","mobile":"01088885554","jobTitle":"사원"},
+			{"id":"user10045","teamName":"LG Hausys","email":"ikepuser5@gmail.com","name":"사용자10045 사원","empNo":"E10045","parent":"GD0000001","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10046","teamName":"LG Hausys","email":"ikepuser6@gmail.com","name":"사용자10046 사원","empNo":"E10046","parent":"GD0000001","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10047","teamName":"LG Hausys","email":"ikepuser7@gmail.com","name":"사용자10047 사원","empNo":"E10047","parent":"GD0000001","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10048","teamName":"LG Hausys","email":"ikepuser8@gmail.com","name":"사용자10048 사원","empNo":"E10048","parent":"GD0000001","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10049","teamName":"LG Hausys","email":"ikepuser9@gmail.com","name":"사용자10049 사원","empNo":"E10049","parent":"GD0000001","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user1005","teamName":"LG Hausys","email":"ikepuser5@gmail.com","name":"사용자1005 사원","empNo":"E1005","parent":"GD0000001","code":"","type":"user","mobile":"01080001005","jobTitle":"사원"},
+			{"id":"user10050","teamName":"LG Hausys","email":"ikepuser10@gmail.com","name":"사용자10050 사원","empNo":"E10050","parent":"GD0000001","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10051","teamName":"LG Hausys","email":"ikepuser11@gmail.com","name":"사용자10051 사원","empNo":"E10051","parent":"GD0000001","code":"","type":"user","mobile":"01033914419","jobTitle":"사원"},
+			{"id":"user10052","teamName":"LG Hausys","email":"ikepuser12@gmail.com","name":"사용자10052 사원","empNo":"E10052","parent":"GD0000001","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10053","teamName":"LG Hausys","email":"ikepuser13@gmail.com","name":"사용자10053 사원","empNo":"E10053","parent":"GD0000001","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10054","teamName":"LG Hausys","email":"ikepuser14@gmail.com","name":"사용자10054 사원","empNo":"E10054","parent":"GD0000001","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10055","teamName":"LG Hausys","email":"ikepuser15@gmail.com","name":"사용자10055 사원","empNo":"E10055","parent":"GD0000001","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10056","teamName":"LG Hausys","email":"ikepuser16@gmail.com","name":"사용자10056 사원","empNo":"E10056","parent":"GD0000001","code":"","type":"user","mobile":"01088885555","jobTitle":"사원"},
+			{"id":"user10057","teamName":"LG Hausys","email":"ikepuser17@gmail.com","name":"사용자10057 사원","empNo":"E10057","parent":"GD0000001","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10058","teamName":"LG Hausys","email":"ikepuser18@gmail.com","name":"사용자10058 사원","empNo":"E10058","parent":"GD0000001","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10059","teamName":"LG Hausys","email":"ikepuser19@gmail.com","name":"사용자10059 사원","empNo":"E10059","parent":"GD0000001","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user1006","teamName":"LG Hausys","email":"ikepuser6@gmail.com","name":"사용자1006 사원","empNo":"E1006","parent":"GD0000001","code":"","type":"user","mobile":"01080001006","jobTitle":"사원"},
+			{"id":"user10060","teamName":"LG Hausys","email":"ikepuser0@gmail.com","name":"사용자10060 사원","empNo":"E10060","parent":"GD0000001","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10061","teamName":"LG Hausys","email":"ikepuser1@gmail.com","name":"사용자10061 사원","empNo":"E10061","parent":"GD0000001","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10062","teamName":"LG Hausys","email":"ikepuser2@gmail.com","name":"사용자10062 사원","empNo":"E10062","parent":"GD0000001","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10063","teamName":"LG Hausys","email":"ikepuser3@gmail.com","name":"사용자10063 사원","empNo":"E10063","parent":"GD0000001","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10064","teamName":"LG Hausys","email":"ikepuser4@gmail.com","name":"사용자10064 사원","empNo":"E10064","parent":"GD0000001","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10065","teamName":"LG Hausys","email":"ikepuser5@gmail.com","name":"사용자10065 사원","empNo":"E10065","parent":"GD0000001","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10066","teamName":"LG Hausys","email":"ikepuser6@gmail.com","name":"사용자10066 사원","empNo":"E10066","parent":"GD0000001","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10067","teamName":"LG Hausys","email":"ikepuser7@gmail.com","name":"사용자10067 사원","empNo":"E10067","parent":"GD0000001","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10068","teamName":"LG Hausys","email":"ikepuser8@gmail.com","name":"사용자10068 사원","empNo":"E10068","parent":"GD0000001","code":"","type":"user","mobile":"01088885556","jobTitle":"사원"},
+			{"id":"user10069","teamName":"LG Hausys","email":"ikepuser9@gmail.com","name":"사용자10069 사원","empNo":"E10069","parent":"GD0000001","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user1007","teamName":"LG Hausys","email":"ikepuser7@gmail.com","name":"사용자1007 사원","empNo":"E1007","parent":"GD0000001","code":"","type":"user","mobile":"01080001007","jobTitle":"사원"},
+			{"id":"user10070","teamName":"심리상담실A","email":"ikepuser10@gmail.com","name":"사용자10070 사원","empNo":"E10070","parent":"GD0000001","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10071","teamName":"심리상담실A","email":"ikepuser11@gmail.com","name":"사용자10071 사원","empNo":"E10071","parent":"GD0000001","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10072","teamName":"심리상담실A","email":"ikepuser12@gmail.com","name":"사용자10072 사원","empNo":"E10072","parent":"GD0000001","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10174","teamName":"하이테크사업본부","email":"ikepuser14@gmail.com","name":"사용자10174 사원","empNo":"E10174","parent":"GD0000003","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10175","teamName":"하이테크사업본부","email":"ikepuser15@gmail.com","name":"사용자10175 사원","empNo":"E10175","parent":"GD0000003","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10176","teamName":"하이테크사업본부","email":"ikepuser16@gmail.com","name":"사용자10176 사원","empNo":"E10176","parent":"GD0000003","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10177","teamName":"하이테크사업본부","email":"ikepuser17@gmail.com","name":"사용자10177 사원","empNo":"E10177","parent":"GD0000003","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10178","teamName":"하이테크사업본부","email":"ikepuser18@gmail.com","name":"사용자10178 사원","empNo":"E10178","parent":"GD0000003","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10179","teamName":"하이테크사업본부","email":"ikepuser19@gmail.com","name":"사용자10179 사원","empNo":"E10179","parent":"GD0000003","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user1018","teamName":"하이테크사업본부","email":"ikepuser18@gmail.com","name":"사용자1018 사원","empNo":"E1018","parent":"GD0000003","code":"","type":"user","mobile":"01080001018","jobTitle":"사원"},
+			{"id":"user10180","teamName":"하이테크사업본부","email":"ikepuser0@gmail.com","name":"사용자10180 사원","empNo":"E10180","parent":"GD0000003","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10181","teamName":"하이테크사업본부","email":"ikepuser1@gmail.com","name":"사용자10181 사원","empNo":"E10181","parent":"GD0000003","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10182","teamName":"하이테크사업본부","email":"ikepuser2@gmail.com","name":"사용자10182 사원","empNo":"E10182","parent":"GD0000003","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10183","teamName":"하이테크사업본부","email":"ikepuser3@gmail.com","name":"사용자10183 사원","empNo":"E10183","parent":"GD0000003","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10184","teamName":"하이테크사업본부","email":"ikepuser4@gmail.com","name":"사용자10184 사원","empNo":"E10184","parent":"GD0000003","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10185","teamName":"하이테크사업본부","email":"ikepuser5@gmail.com","name":"사용자10185 사원","empNo":"E10185","parent":"GD0000003","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10186","teamName":"하이테크사업본부","email":"ikepuser6@gmail.com","name":"사용자10186 사원","empNo":"E10186","parent":"GD0000003","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10187","teamName":"하이테크사업본부","email":"ikepuser7@gmail.com","name":"사용자10187 사원","empNo":"E10187","parent":"GD0000003","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10188","teamName":"하이테크사업본부","email":"ikepuser8@gmail.com","name":"사용자10188 사원","empNo":"E10188","parent":"GD0000003","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10189","teamName":"하이테크사업본부","email":"ikepuser9@gmail.com","name":"사용자10189 사원","empNo":"E10189","parent":"GD0000003","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user1019","teamName":"하이테크사업본부","email":"ikepuser19@gmail.com","name":"사용자1019 사원","empNo":"E1019","parent":"GD0000003","code":"","type":"user","mobile":"01080001019","jobTitle":"사원"},
+			{"id":"user10190","teamName":"하이테크사업본부","email":"ikepuser10@gmail.com","name":"사용자10190 사원","empNo":"E10190","parent":"GD0000003","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10191","teamName":"하이테크사업본부","email":"ikepuser11@gmail.com","name":"사용자10191 사원","empNo":"E10191","parent":"GD0000003","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10192","teamName":"하이테크사업본부","email":"ikepuser12@gmail.com","name":"사용자10192 사원","empNo":"E10192","parent":"GD0000003","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10193","teamName":"하이테크사업본부","email":"ikepuser13@gmail.com","name":"사용자10193 사원","empNo":"E10193","parent":"GD0000003","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10194","teamName":"하이테크사업본부","email":"ikepuser14@gmail.com","name":"사용자10194 사원","empNo":"E10194","parent":"GD0000003","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10195","teamName":"하이테크사업본부","email":"ikepuser15@gmail.com","name":"사용자10195 사원","empNo":"E10195","parent":"GD0000003","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10196","teamName":"하이테크사업본부","email":"ikepuser16@gmail.com","name":"사용자10196 사원","empNo":"E10196","parent":"GD0000003","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10197","teamName":"하이테크사업본부","email":"ikepuser17@gmail.com","name":"사용자10197 사원","empNo":"E10197","parent":"GD0000003","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10198","teamName":"하이테크사업본부","email":"ikepuser18@gmail.com","name":"사용자10198 사원","empNo":"E10198","parent":"GD0000003","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10199","teamName":"하이테크사업본부","email":"ikepuser19@gmail.com","name":"사용자10199 사원","empNo":"E10199","parent":"GD0000003","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user102","teamName":"하이테크사업본부","email":"ikepuser2@gmail.com","name":"사용자102 사원","empNo":"E102","parent":"GD0000003","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user1020","teamName":"하이테크사업본부","email":"ikepuser0@gmail.com","name":"사용자1020 사원","empNo":"E1020","parent":"GD0000003","code":"","type":"user","mobile":"01080001020","jobTitle":"사원"},
+			{"id":"user10200","teamName":"하이테크사업본부","email":"ikepuser0@gmail.com","name":"사용자10200 사원","empNo":"E10200","parent":"GD0000003","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10201","teamName":"하이테크사업본부","email":"ikepuser1@gmail.com","name":"사용자10201 사원","empNo":"E10201","parent":"GD0000003","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10202","teamName":"하이테크사업본부","email":"ikepuser2@gmail.com","name":"사용자10202 사원","empNo":"E10202","parent":"GD0000003","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10203","teamName":"하이테크사업본부","email":"ikepuser3@gmail.com","name":"사용자10203 사원","empNo":"E10203","parent":"GD0000003","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10204","teamName":"하이테크사업본부","email":"ikepuser4@gmail.com","name":"사용자10204 사원","empNo":"E10204","parent":"GD0000003","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10205","teamName":"하이테크사업본부","email":"ikepuser5@gmail.com","name":"사용자10205 사원","empNo":"E10205","parent":"GD0000003","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10206","teamName":"하이테크사업본부","email":"ikepuser6@gmail.com","name":"사용자10206 사원","empNo":"E10206","parent":"GD0000003","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10207","teamName":"하이테크사업본부","email":"ikepuser7@gmail.com","name":"사용자10207 사원","empNo":"E10207","parent":"GD0000003","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10208","teamName":"하이테크사업본부","email":"ikepuser8@gmail.com","name":"사용자10208 사원","empNo":"E10208","parent":"GD0000003","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10209","teamName":"하이테크사업본부","email":"ikepuser9@gmail.com","name":"사용자10209 사원","empNo":"E10209","parent":"GD0000003","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user1021","teamName":"하이테크사업본부","email":"ikepuser1@gmail.com","name":"사용자1021 사원","empNo":"E1021","parent":"GD0000003","code":"","type":"user","mobile":"01080001021","jobTitle":"사원"},
+			{"id":"user10210","teamName":"하이테크사업본부","email":"ikepuser10@gmail.com","name":"사용자10210 사원","empNo":"E10210","parent":"GD0000003","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10211","teamName":"하이테크사업본부","email":"ikepuser11@gmail.com","name":"사용자10211 사원","empNo":"E10211","parent":"GD0000003","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10212","teamName":"하이테크사업본부","email":"ikepuser12@gmail.com","name":"사용자10212 사원","empNo":"E10212","parent":"GD0000003","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10213","teamName":"하이테크사업본부","email":"ikepuser13@gmail.com","name":"사용자10213 사원","empNo":"E10213","parent":"GD0000003","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10214","teamName":"하이테크사업본부","email":"ikepuser14@gmail.com","name":"사용자10214 사원","empNo":"E10214","parent":"GD0000003","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10215","teamName":"하이테크사업본부","email":"ikepuser15@gmail.com","name":"사용자10215 사원","empNo":"E10215","parent":"GD0000003","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10216","teamName":"하이테크사업본부","email":"ikepuser16@gmail.com","name":"사용자10216 사원","empNo":"E10216","parent":"GD0000003","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10217","teamName":"하이테크사업본부","email":"ikepuser17@gmail.com","name":"사용자10217 사원","empNo":"E10217","parent":"GD0000003","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10218","teamName":"하이테크사업본부","email":"ikepuser18@gmail.com","name":"사용자10218 사원","empNo":"E10218","parent":"GD0000003","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10219","teamName":"하이테크사업본부","email":"ikepuser19@gmail.com","name":"사용자10219 사원","empNo":"E10219","parent":"GD0000003","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user1022","teamName":"하이테크사업본부","email":"ikepuser2@gmail.com","name":"사용자1022 사원","empNo":"E1022","parent":"GD0000003","code":"","type":"user","mobile":"01080001022","jobTitle":"사원"},
+			{"id":"user10220","teamName":"하이테크사업본부","email":"ikepuser0@gmail.com","name":"사용자10220 사원","empNo":"E10220","parent":"GD0000003","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10221","teamName":"하이테크사업본부","email":"ikepuser1@gmail.com","name":"사용자10221 사원","empNo":"E10221","parent":"GD0000003","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10222","teamName":"하이테크사업본부","email":"ikepuser2@gmail.com","name":"사용자10222 사원","empNo":"E10222","parent":"GD0000003","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10223","teamName":"하이테크사업본부","email":"ikepuser3@gmail.com","name":"사용자10223 사원","empNo":"E10223","parent":"GD0000003","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10224","teamName":"하이테크사업본부","email":"ikepuser4@gmail.com","name":"사용자10224 사원","empNo":"E10224","parent":"GD0000003","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10225","teamName":"하이테크사업본부","email":"ikepuser5@gmail.com","name":"사용자10225 사원","empNo":"E10225","parent":"GD0000003","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10226","teamName":"하이테크사업본부","email":"ikepuser6@gmail.com","name":"사용자10226 사원","empNo":"E10226","parent":"GD0000003","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10227","teamName":"하이테크사업본부","email":"ikepuser7@gmail.com","name":"사용자10227 사원","empNo":"E10227","parent":"GD0000003","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10228","teamName":"하이테크사업본부","email":"ikepuser8@gmail.com","name":"사용자10228 사원","empNo":"E10228","parent":"GD0000003","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10229","teamName":"하이테크사업본부","email":"ikepuser9@gmail.com","name":"사용자10229 사원","empNo":"E10229","parent":"GD0000003","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user1023","teamName":"하이테크사업본부","email":"ikepuser3@gmail.com","name":"사용자1023 사원","empNo":"E1023","parent":"GD0000003","code":"","type":"user","mobile":"01080001023","jobTitle":"사원"},
+			{"id":"user10230","teamName":"하이테크사업본부","email":"ikepuser10@gmail.com","name":"사용자10230 사원","empNo":"E10230","parent":"GD0000003","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10231","teamName":"하이테크사업본부","email":"ikepuser11@gmail.com","name":"사용자10231 사원","empNo":"E10231","parent":"GD0000003","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10232","teamName":"하이테크사업본부","email":"ikepuser12@gmail.com","name":"사용자10232 사원","empNo":"E10232","parent":"GD0000003","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10233","teamName":"하이테크사업본부","email":"ikepuser13@gmail.com","name":"사용자10233 사원","empNo":"E10233","parent":"GD0000003","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10234","teamName":"하이테크사업본부","email":"ikepuser14@gmail.com","name":"사용자10234 사원","empNo":"E10234","parent":"GD0000003","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10235","teamName":"하이테크사업본부","email":"ikepuser15@gmail.com","name":"사용자10235 사원","empNo":"E10235","parent":"GD0000003","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10236","teamName":"하이테크사업본부","email":"ikepuser16@gmail.com","name":"사용자10236 사원","empNo":"E10236","parent":"GD0000003","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10237","teamName":"하이테크사업본부","email":"ikepuser17@gmail.com","name":"사용자10237 사원","empNo":"E10237","parent":"GD0000003","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10238","teamName":"하이테크사업본부","email":"ikepuser18@gmail.com","name":"사용자10238 사원","empNo":"E10238","parent":"GD0000003","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10239","teamName":"하이테크사업본부","email":"ikepuser19@gmail.com","name":"사용자10239 사원","empNo":"E10239","parent":"GD0000003","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user1024","teamName":"하이테크사업본부","email":"ikepuser4@gmail.com","name":"사용자1024 사원","empNo":"E1024","parent":"GD0000003","code":"","type":"user","mobile":"01080001024","jobTitle":"사원"},
+			{"id":"user10240","teamName":"하이테크사업본부","email":"ikepuser0@gmail.com","name":"사용자10240 사원","empNo":"E10240","parent":"GD0000003","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10241","teamName":"하이테크사업본부","email":"ikepuser1@gmail.com","name":"사용자10241 사원","empNo":"E10241","parent":"GD0000003","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10242","teamName":"하이테크사업본부","email":"ikepuser2@gmail.com","name":"사용자10242 사원","empNo":"E10242","parent":"GD0000003","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10243","teamName":"하이테크사업본부","email":"ikepuser3@gmail.com","name":"사용자10243 사원","empNo":"E10243","parent":"GD0000003","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10244","teamName":"하이테크사업본부","email":"ikepuser4@gmail.com","name":"사용자10244 사원","empNo":"E10244","parent":"GD0000003","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10245","teamName":"하이테크사업본부","email":"ikepuser5@gmail.com","name":"사용자10245 사원","empNo":"E10245","parent":"GD0000003","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10246","teamName":"하이테크사업본부","email":"ikepuser6@gmail.com","name":"사용자10246 사원","empNo":"E10246","parent":"GD0000003","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10247","teamName":"하이테크사업본부","email":"ikepuser7@gmail.com","name":"사용자10247 사원","empNo":"E10247","parent":"GD0000003","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10248","teamName":"하이테크사업본부","email":"ikepuser8@gmail.com","name":"사용자10248 사원","empNo":"E10248","parent":"GD0000003","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10249","teamName":"하이테크사업본부","email":"ikepuser9@gmail.com","name":"사용자10249 사원","empNo":"E10249","parent":"GD0000003","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user1025","teamName":"하이테크사업본부","email":"ikepuser5@gmail.com","name":"사용자1025 사원","empNo":"E1025","parent":"GD0000003","code":"","type":"user","mobile":"01080001025","jobTitle":"사원"},
+			{"id":"user10250","teamName":"하이테크사업본부","email":"ikepuser10@gmail.com","name":"사용자10250 사원","empNo":"E10250","parent":"GD0000003","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10251","teamName":"하이테크사업본부","email":"ikepuser11@gmail.com","name":"사용자10251 사원","empNo":"E10251","parent":"GD0000003","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10252","teamName":"하이테크사업본부","email":"ikepuser12@gmail.com","name":"사용자10252 사원","empNo":"E10252","parent":"GD0000003","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10253","teamName":"하이테크사업본부","email":"ikepuser13@gmail.com","name":"사용자10253 사원","empNo":"E10253","parent":"GD0000003","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10254","teamName":"하이테크사업본부","email":"ikepuser14@gmail.com","name":"사용자10254 사원","empNo":"E10254","parent":"GD0000003","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10255","teamName":"하이테크사업본부","email":"ikepuser15@gmail.com","name":"사용자10255 사원","empNo":"E10255","parent":"GD0000003","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10256","teamName":"하이테크사업본부","email":"ikepuser16@gmail.com","name":"사용자10256 사원","empNo":"E10256","parent":"GD0000003","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10257","teamName":"하이테크사업본부","email":"ikepuser17@gmail.com","name":"사용자10257 사원","empNo":"E10257","parent":"GD0000003","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10258","teamName":"하이테크사업본부","email":"ikepuser18@gmail.com","name":"사용자10258 사원","empNo":"E10258","parent":"GD0000003","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10259","teamName":"하이테크사업본부","email":"ikepuser19@gmail.com","name":"사용자10259 사원","empNo":"E10259","parent":"GD0000003","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user1026","teamName":"하이테크사업본부","email":"ikepuser6@gmail.com","name":"사용자1026 사원","empNo":"E1026","parent":"GD0000003","code":"","type":"user","mobile":"01080001026","jobTitle":"사원"},
+			{"id":"user10260","teamName":"하이테크사업본부","email":"ikepuser0@gmail.com","name":"사용자10260 사원","empNo":"E10260","parent":"GD0000003","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10261","teamName":"하이테크사업본부","email":"ikepuser1@gmail.com","name":"사용자10261 사원","empNo":"E10261","parent":"GD0000003","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10262","teamName":"하이테크사업본부","email":"ikepuser2@gmail.com","name":"사용자10262 사원","empNo":"E10262","parent":"GD0000003","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10263","teamName":"하이테크사업본부","email":"ikepuser3@gmail.com","name":"사용자10263 사원","empNo":"E10263","parent":"GD0000003","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10264","teamName":"하이테크사업본부","email":"ikepuser4@gmail.com","name":"사용자10264 사원","empNo":"E10264","parent":"GD0000003","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10265","teamName":"하이테크사업본부","email":"ikepuser5@gmail.com","name":"사용자10265 사원","empNo":"E10265","parent":"GD0000003","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10266","teamName":"하이테크사업본부","email":"ikepuser6@gmail.com","name":"사용자10266 사원","empNo":"E10266","parent":"GD0000003","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10267","teamName":"하이테크사업본부","email":"ikepuser7@gmail.com","name":"사용자10267 사원","empNo":"E10267","parent":"GD0000003","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10268","teamName":"하이테크사업본부","email":"ikepuser8@gmail.com","name":"사용자10268 사원","empNo":"E10268","parent":"GD0000003","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10269","teamName":"하이테크사업본부","email":"ikepuser9@gmail.com","name":"사용자10269 사원","empNo":"E10269","parent":"GD0000003","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user1027","teamName":"하이테크사업본부","email":"ikepuser7@gmail.com","name":"사용자1027 사원","empNo":"E1027","parent":"GD0000003","code":"","type":"user","mobile":"01080001027","jobTitle":"사원"},
+			{"id":"user10270","teamName":"하이테크사업본부","email":"ikepuser10@gmail.com","name":"사용자10270 사원","empNo":"E10270","parent":"GD0000003","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10271","teamName":"하이테크사업본부","email":"ikepuser11@gmail.com","name":"사용자10271 사원","empNo":"E10271","parent":"GD0000003","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user10272","teamName":"하이테크사업본부","email":"ikepuser12@gmail.com","name":"사용자10272 사원","empNo":"E10272","parent":"GD0000003","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user11975","teamName":"하이테크사업부","email":"ikepuser15@gmail.com","name":"사용자11975 사원","empNo":"E11975","parent":"GD0000021","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user11976","teamName":"하이테크사업부","email":"ikepuser16@gmail.com","name":"사용자11976 사원","empNo":"E11976","parent":"GD0000021","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user11977","teamName":"하이테크사업부","email":"ikepuser17@gmail.com","name":"사용자11977 사원","empNo":"E11977","parent":"GD0000021","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user11978","teamName":"하이테크사업부","email":"ikepuser18@gmail.com","name":"사용자11978 사원","empNo":"E11978","parent":"GD0000021","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user11979","teamName":"하이테크사업부","email":"ikepuser19@gmail.com","name":"사용자11979 사원","empNo":"E11979","parent":"GD0000021","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user1198","teamName":"하이테크사업부","email":"ikepuser18@gmail.com","name":"사용자1198 사원","empNo":"E1198","parent":"GD0000021","code":"","type":"user","mobile":"01080001198","jobTitle":"사원"},
+			{"id":"user11980","teamName":"하이테크사업부","email":"ikepuser0@gmail.com","name":"사용자11980 사원","empNo":"E11980","parent":"GD0000021","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user11981","teamName":"하이테크사업부","email":"ikepuser1@gmail.com","name":"사용자11981 사원","empNo":"E11981","parent":"GD0000021","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user11982","teamName":"하이테크사업부","email":"ikepuser2@gmail.com","name":"사용자11982 사원","empNo":"E11982","parent":"GD0000021","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user11983","teamName":"하이테크사업부","email":"ikepuser3@gmail.com","name":"사용자11983 사원","empNo":"E11983","parent":"GD0000021","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user11984","teamName":"하이테크사업부","email":"ikepuser4@gmail.com","name":"사용자11984 사원","empNo":"E11984","parent":"GD0000021","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user11985","teamName":"하이테크사업부","email":"ikepuser5@gmail.com","name":"사용자11985 사원","empNo":"E11985","parent":"GD0000021","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user11986","teamName":"하이테크사업부","email":"ikepuser6@gmail.com","name":"사용자11986 사원","empNo":"E11986","parent":"GD0000021","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user11987","teamName":"하이테크사업부","email":"ikepuser7@gmail.com","name":"사용자11987 사원","empNo":"E11987","parent":"GD0000021","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user11988","teamName":"하이테크사업부","email":"ikepuser8@gmail.com","name":"사용자11988 사원","empNo":"E11988","parent":"GD0000021","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user11989","teamName":"하이테크사업부","email":"ikepuser9@gmail.com","name":"사용자11989 사원","empNo":"E11989","parent":"GD0000021","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user1199","teamName":"하이테크사업부","email":"ikepuser19@gmail.com","name":"사용자1199 사원","empNo":"E1199","parent":"GD0000021","code":"","type":"user","mobile":"01080001199","jobTitle":"사원"},
+			{"id":"user11990","teamName":"하이테크사업부","email":"ikepuser10@gmail.com","name":"사용자11990 사원","empNo":"E11990","parent":"GD0000021","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user11991","teamName":"하이테크사업부","email":"ikepuser11@gmail.com","name":"사용자11991 사원","empNo":"E11991","parent":"GD0000021","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user11992","teamName":"하이테크사업부","email":"ikepuser12@gmail.com","name":"사용자11992 사원","empNo":"E11992","parent":"GD0000021","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user11993","teamName":"하이테크사업부","email":"ikepuser13@gmail.com","name":"사용자11993 사원","empNo":"E11993","parent":"GD0000021","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user11994","teamName":"하이테크사업부","email":"ikepuser14@gmail.com","name":"사용자11994 사원","empNo":"E11994","parent":"GD0000021","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user11995","teamName":"하이테크사업부","email":"ikepuser15@gmail.com","name":"사용자11995 사원","empNo":"E11995","parent":"GD0000021","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user11996","teamName":"하이테크사업부","email":"ikepuser16@gmail.com","name":"사용자11996 사원","empNo":"E11996","parent":"GD0000021","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user11997","teamName":"하이테크사업부","email":"ikepuser17@gmail.com","name":"사용자11997 사원","empNo":"E11997","parent":"GD0000021","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user11998","teamName":"하이테크사업부","email":"ikepuser18@gmail.com","name":"사용자11998 사원","empNo":"E11998","parent":"GD0000021","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user11999","teamName":"하이테크사업부","email":"ikepuser19@gmail.com","name":"사용자11999 사원","empNo":"E11999","parent":"GD0000021","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user12","teamName":"하이테크사업부","email":"ikepuser13@gmail.com","name":"사용자12 사원","empNo":"E12","parent":"GD0000021","code":"","type":"user","mobile":"01062621542","jobTitle":"사원"},
+			{"id":"user120","teamName":"하이테크사업부","email":"ikepuser0@gmail.com","name":"사용자120 사원","empNo":"E120","parent":"GD0000021","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user1200","teamName":"하이테크사업부","email":"ikepuser0@gmail.com","name":"사용자1200 사원","empNo":"E1200","parent":"GD0000021","code":"","type":"user","mobile":"01080001200","jobTitle":"사원"},
+			{"id":"user12000","teamName":"하이테크사업부","email":"ikepuser0@gmail.com","name":"사용자12000 사원","empNo":"E12000","parent":"GD0000021","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user12001","teamName":"하이테크사업부","email":"ikepuser1@gmail.com","name":"사용자12001 사원","empNo":"E12001","parent":"GD0000021","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user12002","teamName":"하이테크사업부","email":"ikepuser2@gmail.com","name":"사용자12002 사원","empNo":"E12002","parent":"GD0000021","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user12003","teamName":"하이테크사업부","email":"ikepuser3@gmail.com","name":"사용자12003 사원","empNo":"E12003","parent":"GD0000021","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user12004","teamName":"하이테크사업부","email":"ikepuser4@gmail.com","name":"사용자12004 사원","empNo":"E12004","parent":"GD0000021","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user12005","teamName":"하이테크사업부","email":"ikepuser5@gmail.com","name":"사용자12005 사원","empNo":"E12005","parent":"GD0000021","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user12006","teamName":"하이테크사업부","email":"ikepuser6@gmail.com","name":"사용자12006 사원","empNo":"E12006","parent":"GD0000021","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user12007","teamName":"하이테크사업부","email":"ikepuser7@gmail.com","name":"사용자12007 사원","empNo":"E12007","parent":"GD0000021","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user12008","teamName":"하이테크사업부","email":"ikepuser8@gmail.com","name":"사용자12008 사원","empNo":"E12008","parent":"GD0000021","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user12009","teamName":"하이테크사업부","email":"ikepuser9@gmail.com","name":"사용자12009 사원","empNo":"E12009","parent":"GD0000021","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user1201","teamName":"하이테크사업부","email":"ikepuser1@gmail.com","name":"사용자1201 사원","empNo":"E1201","parent":"GD0000021","code":"","type":"user","mobile":"01080001201","jobTitle":"사원"},
+			{"id":"user12010","teamName":"하이테크사업부","email":"ikepuser10@gmail.com","name":"사용자12010 사원","empNo":"E12010","parent":"GD0000021","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user12011","teamName":"하이테크사업부","email":"ikepuser11@gmail.com","name":"사용자12011 사원","empNo":"E12011","parent":"GD0000021","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user12012","teamName":"하이테크사업부","email":"ikepuser12@gmail.com","name":"사용자12012 사원","empNo":"E12012","parent":"GD0000021","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user12013","teamName":"하이테크사업부","email":"ikepuser13@gmail.com","name":"사용자12013 사원","empNo":"E12013","parent":"GD0000021","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user12014","teamName":"하이테크사업부","email":"ikepuser14@gmail.com","name":"사용자12014 사원","empNo":"E12014","parent":"GD0000021","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user12015","teamName":"하이테크사업부","email":"ikepuser15@gmail.com","name":"사용자12015 사원","empNo":"E12015","parent":"GD0000021","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user12016","teamName":"하이테크사업부","email":"ikepuser16@gmail.com","name":"사용자12016 사원","empNo":"E12016","parent":"GD0000021","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user12017","teamName":"하이테크사업부","email":"ikepuser17@gmail.com","name":"사용자12017 사원","empNo":"E12017","parent":"GD0000021","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user12018","teamName":"하이테크사업부","email":"ikepuser18@gmail.com","name":"사용자12018 사원","empNo":"E12018","parent":"GD0000021","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user12019","teamName":"하이테크사업부","email":"ikepuser19@gmail.com","name":"사용자12019 사원","empNo":"E12019","parent":"GD0000021","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user1202","teamName":"하이테크사업부","email":"ikepuser2@gmail.com","name":"사용자1202 사원","empNo":"E1202","parent":"GD0000021","code":"","type":"user","mobile":"01080001202","jobTitle":"사원"},
+			{"id":"user12020","teamName":"하이테크사업부","email":"ikepuser0@gmail.com","name":"사용자12020 사원","empNo":"E12020","parent":"GD0000021","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user12021","teamName":"하이테크사업부","email":"ikepuser1@gmail.com","name":"사용자12021 사원","empNo":"E12021","parent":"GD0000021","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user12022","teamName":"하이테크사업부","email":"ikepuser2@gmail.com","name":"사용자12022 사원","empNo":"E12022","parent":"GD0000021","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user12023","teamName":"하이테크사업부","email":"ikepuser3@gmail.com","name":"사용자12023 사원","empNo":"E12023","parent":"GD0000021","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user12024","teamName":"하이테크사업부","email":"ikepuser4@gmail.com","name":"사용자12024 사원","empNo":"E12024","parent":"GD0000021","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user12025","teamName":"하이테크사업부","email":"ikepuser5@gmail.com","name":"사용자12025 사원","empNo":"E12025","parent":"GD0000021","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user12026","teamName":"하이테크사업부","email":"ikepuser6@gmail.com","name":"사용자12026 사원","empNo":"E12026","parent":"GD0000021","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user12027","teamName":"하이테크사업부","email":"ikepuser7@gmail.com","name":"사용자12027 사원","empNo":"E12027","parent":"GD0000021","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user12028","teamName":"하이테크사업부","email":"ikepuser8@gmail.com","name":"사용자12028 사원","empNo":"E12028","parent":"GD0000021","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user12029","teamName":"하이테크사업부","email":"ikepuser9@gmail.com","name":"사용자12029 사원","empNo":"E12029","parent":"GD0000021","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user1203","teamName":"하이테크사업부","email":"ikepuser3@gmail.com","name":"사용자1203 사원","empNo":"E1203","parent":"GD0000021","code":"","type":"user","mobile":"01080001203","jobTitle":"사원"},
+			{"id":"user12030","teamName":"하이테크사업부","email":"ikepuser10@gmail.com","name":"사용자12030 사원","empNo":"E12030","parent":"GD0000021","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user12031","teamName":"하이테크사업부","email":"ikepuser11@gmail.com","name":"사용자12031 사원","empNo":"E12031","parent":"GD0000021","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user12032","teamName":"하이테크사업부","email":"ikepuser12@gmail.com","name":"사용자12032 사원","empNo":"E12032","parent":"GD0000021","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user12033","teamName":"하이테크사업부","email":"ikepuser13@gmail.com","name":"사용자12033 사원","empNo":"E12033","parent":"GD0000021","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user12034","teamName":"하이테크사업부","email":"ikepuser14@gmail.com","name":"사용자12034 사원","empNo":"E12034","parent":"GD0000021","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user12035","teamName":"하이테크사업부","email":"ikepuser15@gmail.com","name":"사용자12035 사원","empNo":"E12035","parent":"GD0000021","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user12036","teamName":"하이테크사업부","email":"ikepuser16@gmail.com","name":"사용자12036 사원","empNo":"E12036","parent":"GD0000021","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user12037","teamName":"하이테크사업부","email":"ikepuser17@gmail.com","name":"사용자12037 사원","empNo":"E12037","parent":"GD0000021","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user12038","teamName":"하이테크사업부","email":"ikepuser18@gmail.com","name":"사용자12038 사원","empNo":"E12038","parent":"GD0000021","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user12039","teamName":"하이테크사업부","email":"ikepuser19@gmail.com","name":"사용자12039 사원","empNo":"E12039","parent":"GD0000021","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user1204","teamName":"하이테크사업부","email":"ikepuser4@gmail.com","name":"사용자1204 사원","empNo":"E1204","parent":"GD0000021","code":"","type":"user","mobile":"01080001204","jobTitle":"사원"},
+			{"id":"user12040","teamName":"하이테크사업부","email":"ikepuser0@gmail.com","name":"사용자12040 사원","empNo":"E12040","parent":"GD0000021","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user12041","teamName":"하이테크사업부","email":"ikepuser1@gmail.com","name":"사용자12041 사원","empNo":"E12041","parent":"GD0000021","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user12042","teamName":"하이테크사업부","email":"ikepuser2@gmail.com","name":"사용자12042 사원","empNo":"E12042","parent":"GD0000021","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user12043","teamName":"하이테크사업부","email":"ikepuser3@gmail.com","name":"사용자12043 사원","empNo":"E12043","parent":"GD0000021","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user12044","teamName":"하이테크사업부","email":"ikepuser4@gmail.com","name":"사용자12044 사원","empNo":"E12044","parent":"GD0000021","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user12045","teamName":"하이테크사업부","email":"ikepuser5@gmail.com","name":"사용자12045 사원","empNo":"E12045","parent":"GD0000021","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user12046","teamName":"하이테크사업부","email":"ikepuser6@gmail.com","name":"사용자12046 사원","empNo":"E12046","parent":"GD0000021","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user12047","teamName":"하이테크사업부","email":"ikepuser7@gmail.com","name":"사용자12047 사원","empNo":"E12047","parent":"GD0000021","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user12048","teamName":"하이테크사업부","email":"ikepuser8@gmail.com","name":"사용자12048 사원","empNo":"E12048","parent":"GD0000021","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user12049","teamName":"하이테크사업부","email":"ikepuser9@gmail.com","name":"사용자12049 사원","empNo":"E12049","parent":"GD0000021","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user1205","teamName":"하이테크사업부","email":"ikepuser5@gmail.com","name":"사용자1205 사원","empNo":"E1205","parent":"GD0000021","code":"","type":"user","mobile":"01080001205","jobTitle":"사원"},
+			{"id":"user12050","teamName":"하이테크사업부","email":"ikepuser10@gmail.com","name":"사용자12050 사원","empNo":"E12050","parent":"GD0000021","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user12051","teamName":"하이테크사업부","email":"ikepuser11@gmail.com","name":"사용자12051 사원","empNo":"E12051","parent":"GD0000021","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user12052","teamName":"하이테크사업부","email":"ikepuser12@gmail.com","name":"사용자12052 사원","empNo":"E12052","parent":"GD0000021","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user12053","teamName":"하이테크사업부","email":"ikepuser13@gmail.com","name":"사용자12053 사원","empNo":"E12053","parent":"GD0000021","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user12054","teamName":"하이테크사업부","email":"ikepuser14@gmail.com","name":"사용자12054 사원","empNo":"E12054","parent":"GD0000021","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user12055","teamName":"하이테크사업부","email":"ikepuser15@gmail.com","name":"사용자12055 사원","empNo":"E12055","parent":"GD0000021","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user12056","teamName":"하이테크사업부","email":"ikepuser16@gmail.com","name":"사용자12056 사원","empNo":"E12056","parent":"GD0000021","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user12057","teamName":"하이테크사업부","email":"ikepuser17@gmail.com","name":"사용자12057 사원","empNo":"E12057","parent":"GD0000021","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user12058","teamName":"하이테크사업부","email":"ikepuser18@gmail.com","name":"사용자12058 사원","empNo":"E12058","parent":"GD0000021","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user12059","teamName":"하이테크사업부","email":"ikepuser19@gmail.com","name":"사용자12059 사원","empNo":"E12059","parent":"GD0000021","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user1206","teamName":"하이테크사업부","email":"ikepuser6@gmail.com","name":"사용자1206 사원","empNo":"E1206","parent":"GD0000021","code":"","type":"user","mobile":"01080001206","jobTitle":"사원"},
+			{"id":"user12060","teamName":"하이테크사업부","email":"ikepuser0@gmail.com","name":"사용자12060 사원","empNo":"E12060","parent":"GD0000021","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user12061","teamName":"하이테크사업부","email":"ikepuser1@gmail.com","name":"사용자12061 사원","empNo":"E12061","parent":"GD0000021","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user12062","teamName":"하이테크사업부","email":"ikepuser2@gmail.com","name":"사용자12062 사원","empNo":"E12062","parent":"GD0000021","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user12063","teamName":"하이테크사업부","email":"ikepuser3@gmail.com","name":"사용자12063 사원","empNo":"E12063","parent":"GD0000021","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user12064","teamName":"하이테크사업부","email":"ikepuser4@gmail.com","name":"사용자12064 사원","empNo":"E12064","parent":"GD0000021","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user12065","teamName":"하이테크사업부","email":"ikepuser5@gmail.com","name":"사용자12065 사원","empNo":"E12065","parent":"GD0000021","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user12066","teamName":"하이테크사업부","email":"ikepuser6@gmail.com","name":"사용자12066 사원","empNo":"E12066","parent":"GD0000021","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user12067","teamName":"하이테크사업부","email":"ikepuser7@gmail.com","name":"사용자12067 사원","empNo":"E12067","parent":"GD0000021","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user12068","teamName":"하이테크사업부","email":"ikepuser8@gmail.com","name":"사용자12068 사원","empNo":"E12068","parent":"GD0000021","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user12069","teamName":"하이테크사업부","email":"ikepuser9@gmail.com","name":"사용자12069 사원","empNo":"E12069","parent":"GD0000021","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user1207","teamName":"하이테크사업부","email":"ikepuser7@gmail.com","name":"사용자1207 사원","empNo":"E1207","parent":"GD0000021","code":"","type":"user","mobile":"01080001207","jobTitle":"사원"},
+			{"id":"user12070","teamName":"하이테크사업부","email":"ikepuser10@gmail.com","name":"사용자12070 사원","empNo":"E12070","parent":"GD0000021","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user12071","teamName":"하이테크사업부","email":"ikepuser11@gmail.com","name":"사용자12071 사원","empNo":"E12071","parent":"GD0000021","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user12072","teamName":"하이테크사업부","email":"ikepuser12@gmail.com","name":"사용자12072 사원","empNo":"E12072","parent":"GD0000021","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user7576","teamName":"제조사업담당","email":"ikepuser16@gmail.com","name":"사용자7576 사원","empNo":"E7576","parent":"GD0000079","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user7577","teamName":"제조사업담당","email":"ikepuser17@gmail.com","name":"사용자7577 사원","empNo":"E7577","parent":"GD0000079","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user7578","teamName":"제조사업담당","email":"ikepuser18@gmail.com","name":"사용자7578 사원","empNo":"E7578","parent":"GD0000079","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user7579","teamName":"제조사업담당","email":"ikepuser19@gmail.com","name":"사용자7579 사원","empNo":"E7579","parent":"GD0000079","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user758","teamName":"제조사업담당","email":"ikepuser18@gmail.com","name":"사용자758 사원","empNo":"E758","parent":"GD0000079","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user7580","teamName":"제조사업담당","email":"ikepuser0@gmail.com","name":"사용자7580 사원","empNo":"E7580","parent":"GD0000079","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user7581","teamName":"제조사업담당","email":"ikepuser1@gmail.com","name":"사용자7581 사원","empNo":"E7581","parent":"GD0000079","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user7582","teamName":"제조사업담당","email":"ikepuser2@gmail.com","name":"사용자7582 사원","empNo":"E7582","parent":"GD0000079","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user7583","teamName":"제조사업담당","email":"ikepuser3@gmail.com","name":"사용자7583 사원","empNo":"E7583","parent":"GD0000079","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user7584","teamName":"제조사업담당","email":"ikepuser4@gmail.com","name":"사용자7584 사원","empNo":"E7584","parent":"GD0000079","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user7585","teamName":"제조사업담당","email":"ikepuser5@gmail.com","name":"사용자7585 사원","empNo":"E7585","parent":"GD0000079","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user7586","teamName":"제조사업담당","email":"ikepuser6@gmail.com","name":"사용자7586 사원","empNo":"E7586","parent":"GD0000079","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user7587","teamName":"제조사업담당","email":"ikepuser7@gmail.com","name":"사용자7587 사원","empNo":"E7587","parent":"GD0000079","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user7588","teamName":"제조사업담당","email":"ikepuser8@gmail.com","name":"사용자7588 사원","empNo":"E7588","parent":"GD0000079","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user7589","teamName":"제조사업담당","email":"ikepuser9@gmail.com","name":"사용자7589 사원","empNo":"E7589","parent":"GD0000079","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user759","teamName":"제조사업담당","email":"ikepuser19@gmail.com","name":"사용자759 사원","empNo":"E759","parent":"GD0000079","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user7590","teamName":"제조사업담당","email":"ikepuser10@gmail.com","name":"사용자7590 사원","empNo":"E7590","parent":"GD0000079","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user7591","teamName":"제조사업담당","email":"ikepuser11@gmail.com","name":"사용자7591 사원","empNo":"E7591","parent":"GD0000079","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user7592","teamName":"제조사업담당","email":"ikepuser12@gmail.com","name":"사용자7592 사원","empNo":"E7592","parent":"GD0000079","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user7593","teamName":"제조사업담당","email":"ikepuser13@gmail.com","name":"사용자7593 사원","empNo":"E7593","parent":"GD0000079","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user7594","teamName":"제조사업담당","email":"ikepuser14@gmail.com","name":"사용자7594 사원","empNo":"E7594","parent":"GD0000079","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user7595","teamName":"제조사업담당","email":"ikepuser15@gmail.com","name":"사용자7595 사원","empNo":"E7595","parent":"GD0000079","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user7596","teamName":"제조사업담당","email":"ikepuser16@gmail.com","name":"사용자7596 사원","empNo":"E7596","parent":"GD0000079","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user7597","teamName":"제조사업담당","email":"ikepuser17@gmail.com","name":"사용자7597 사원","empNo":"E7597","parent":"GD0000079","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user7598","teamName":"제조사업담당","email":"ikepuser18@gmail.com","name":"사용자7598 사원","empNo":"E7598","parent":"GD0000079","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user7599","teamName":"제조사업담당","email":"ikepuser19@gmail.com","name":"사용자7599 사원","empNo":"E7599","parent":"GD0000079","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user76","teamName":"제조사업담당","email":"ikepuser16@gmail.com","name":"사용자76 사원","empNo":"E76","parent":"GD0000079","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user760","teamName":"제조사업담당","email":"ikepuser0@gmail.com","name":"사용자760 사원","empNo":"E760","parent":"GD0000079","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user7600","teamName":"제조사업담당","email":"ikepuser0@gmail.com","name":"사용자7600 사원","empNo":"E7600","parent":"GD0000079","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user7601","teamName":"제조사업담당","email":"ikepuser1@gmail.com","name":"사용자7601 사원","empNo":"E7601","parent":"GD0000079","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user7602","teamName":"제조사업담당","email":"ikepuser2@gmail.com","name":"사용자7602 사원","empNo":"E7602","parent":"GD0000079","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user7603","teamName":"제조사업담당","email":"ikepuser3@gmail.com","name":"사용자7603 사원","empNo":"E7603","parent":"GD0000079","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user7604","teamName":"제조사업담당","email":"ikepuser4@gmail.com","name":"사용자7604 사원","empNo":"E7604","parent":"GD0000079","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user7605","teamName":"제조사업담당","email":"ikepuser5@gmail.com","name":"사용자7605 사원","empNo":"E7605","parent":"GD0000079","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user7606","teamName":"제조사업담당","email":"ikepuser6@gmail.com","name":"사용자7606 사원","empNo":"E7606","parent":"GD0000079","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user7607","teamName":"제조사업담당","email":"ikepuser7@gmail.com","name":"사용자7607 사원","empNo":"E7607","parent":"GD0000079","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user7608","teamName":"제조사업담당","email":"ikepuser8@gmail.com","name":"사용자7608 사원","empNo":"E7608","parent":"GD0000079","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user7609","teamName":"제조사업담당","email":"ikepuser9@gmail.com","name":"사용자7609 사원","empNo":"E7609","parent":"GD0000079","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user761","teamName":"제조사업담당","email":"ikepuser1@gmail.com","name":"사용자761 사원","empNo":"E761","parent":"GD0000079","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user7610","teamName":"제조사업담당","email":"ikepuser10@gmail.com","name":"사용자7610 사원","empNo":"E7610","parent":"GD0000079","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user7611","teamName":"제조사업담당","email":"ikepuser11@gmail.com","name":"사용자7611 사원","empNo":"E7611","parent":"GD0000079","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user7612","teamName":"제조사업담당","email":"ikepuser12@gmail.com","name":"사용자7612 사원","empNo":"E7612","parent":"GD0000079","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user7613","teamName":"제조사업담당","email":"ikepuser13@gmail.com","name":"사용자7613 사원","empNo":"E7613","parent":"GD0000079","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user7614","teamName":"제조사업담당","email":"ikepuser14@gmail.com","name":"사용자7614 사원","empNo":"E7614","parent":"GD0000079","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user7615","teamName":"제조사업담당","email":"ikepuser15@gmail.com","name":"사용자7615 사원","empNo":"E7615","parent":"GD0000079","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user7616","teamName":"제조사업담당","email":"ikepuser16@gmail.com","name":"사용자7616 사원","empNo":"E7616","parent":"GD0000079","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user7617","teamName":"제조사업담당","email":"ikepuser17@gmail.com","name":"사용자7617 사원","empNo":"E7617","parent":"GD0000079","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user7618","teamName":"제조사업담당","email":"ikepuser18@gmail.com","name":"사용자7618 사원","empNo":"E7618","parent":"GD0000079","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user7619","teamName":"제조사업담당","email":"ikepuser19@gmail.com","name":"사용자7619 사원","empNo":"E7619","parent":"GD0000079","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user762","teamName":"제조사업담당","email":"ikepuser2@gmail.com","name":"사용자762 사원","empNo":"E762","parent":"GD0000079","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user7620","teamName":"제조사업담당","email":"ikepuser0@gmail.com","name":"사용자7620 사원","empNo":"E7620","parent":"GD0000079","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user7621","teamName":"제조사업담당","email":"ikepuser1@gmail.com","name":"사용자7621 사원","empNo":"E7621","parent":"GD0000079","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user7622","teamName":"제조사업담당","email":"ikepuser2@gmail.com","name":"사용자7622 사원","empNo":"E7622","parent":"GD0000079","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user7623","teamName":"제조사업담당","email":"ikepuser3@gmail.com","name":"사용자7623 사원","empNo":"E7623","parent":"GD0000079","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user7624","teamName":"제조사업담당","email":"ikepuser4@gmail.com","name":"사용자7624 사원","empNo":"E7624","parent":"GD0000079","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user7625","teamName":"제조사업담당","email":"ikepuser5@gmail.com","name":"사용자7625 사원","empNo":"E7625","parent":"GD0000079","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user7626","teamName":"제조사업담당","email":"ikepuser6@gmail.com","name":"사용자7626 사원","empNo":"E7626","parent":"GD0000079","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user7627","teamName":"제조사업담당","email":"ikepuser7@gmail.com","name":"사용자7627 사원","empNo":"E7627","parent":"GD0000079","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user7628","teamName":"제조사업담당","email":"ikepuser8@gmail.com","name":"사용자7628 사원","empNo":"E7628","parent":"GD0000079","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user7629","teamName":"제조사업담당","email":"ikepuser9@gmail.com","name":"사용자7629 사원","empNo":"E7629","parent":"GD0000079","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user763","teamName":"제조사업담당","email":"ikepuser3@gmail.com","name":"사용자763 사원","empNo":"E763","parent":"GD0000079","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user7630","teamName":"제조사업담당","email":"ikepuser10@gmail.com","name":"사용자7630 사원","empNo":"E7630","parent":"GD0000079","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user7631","teamName":"제조사업담당","email":"ikepuser11@gmail.com","name":"사용자7631 사원","empNo":"E7631","parent":"GD0000079","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user7632","teamName":"제조사업담당","email":"ikepuser12@gmail.com","name":"사용자7632 사원","empNo":"E7632","parent":"GD0000079","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user7633","teamName":"제조사업담당","email":"ikepuser13@gmail.com","name":"사용자7633 사원","empNo":"E7633","parent":"GD0000079","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user7634","teamName":"제조사업담당","email":"ikepuser14@gmail.com","name":"사용자7634 사원","empNo":"E7634","parent":"GD0000079","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user7635","teamName":"제조사업담당","email":"ikepuser15@gmail.com","name":"사용자7635 사원","empNo":"E7635","parent":"GD0000079","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user7636","teamName":"제조사업담당","email":"ikepuser16@gmail.com","name":"사용자7636 사원","empNo":"E7636","parent":"GD0000079","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user7637","teamName":"제조사업담당","email":"ikepuser17@gmail.com","name":"사용자7637 사원","empNo":"E7637","parent":"GD0000079","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user7638","teamName":"제조사업담당","email":"ikepuser18@gmail.com","name":"사용자7638 사원","empNo":"E7638","parent":"GD0000079","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user7639","teamName":"제조사업담당","email":"ikepuser19@gmail.com","name":"사용자7639 사원","empNo":"E7639","parent":"GD0000079","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user764","teamName":"제조사업담당","email":"ikepuser4@gmail.com","name":"사용자764 사원","empNo":"E764","parent":"GD0000079","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user7640","teamName":"제조사업담당","email":"ikepuser0@gmail.com","name":"사용자7640 사원","empNo":"E7640","parent":"GD0000079","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user7641","teamName":"제조사업담당","email":"ikepuser1@gmail.com","name":"사용자7641 사원","empNo":"E7641","parent":"GD0000079","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user7642","teamName":"제조사업담당","email":"ikepuser2@gmail.com","name":"사용자7642 사원","empNo":"E7642","parent":"GD0000079","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user7643","teamName":"제조사업담당","email":"ikepuser3@gmail.com","name":"사용자7643 사원","empNo":"E7643","parent":"GD0000079","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user7644","teamName":"제조사업담당","email":"ikepuser4@gmail.com","name":"사용자7644 사원","empNo":"E7644","parent":"GD0000079","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user7645","teamName":"제조사업담당","email":"ikepuser5@gmail.com","name":"사용자7645 사원","empNo":"E7645","parent":"GD0000079","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user7646","teamName":"제조사업담당","email":"ikepuser6@gmail.com","name":"사용자7646 사원","empNo":"E7646","parent":"GD0000079","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user7647","teamName":"제조사업담당","email":"ikepuser7@gmail.com","name":"사용자7647 사원","empNo":"E7647","parent":"GD0000079","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user7648","teamName":"제조사업담당","email":"ikepuser8@gmail.com","name":"사용자7648 사원","empNo":"E7648","parent":"GD0000079","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user7649","teamName":"제조사업담당","email":"ikepuser9@gmail.com","name":"사용자7649 사원","empNo":"E7649","parent":"GD0000079","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user765","teamName":"제조사업담당","email":"ikepuser5@gmail.com","name":"사용자765 사원","empNo":"E765","parent":"GD0000079","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user7650","teamName":"제조사업담당","email":"ikepuser10@gmail.com","name":"사용자7650 사원","empNo":"E7650","parent":"GD0000079","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user7651","teamName":"제조사업담당","email":"ikepuser11@gmail.com","name":"사용자7651 사원","empNo":"E7651","parent":"GD0000079","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user7652","teamName":"제조사업담당","email":"ikepuser12@gmail.com","name":"사용자7652 사원","empNo":"E7652","parent":"GD0000079","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user7653","teamName":"제조사업담당","email":"ikepuser13@gmail.com","name":"사용자7653 사원","empNo":"E7653","parent":"GD0000079","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user7654","teamName":"제조사업담당","email":"ikepuser14@gmail.com","name":"사용자7654 사원","empNo":"E7654","parent":"GD0000079","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user7655","teamName":"제조사업담당","email":"ikepuser15@gmail.com","name":"사용자7655 사원","empNo":"E7655","parent":"GD0000079","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user7656","teamName":"제조사업담당","email":"ikepuser16@gmail.com","name":"사용자7656 사원","empNo":"E7656","parent":"GD0000079","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user7657","teamName":"제조사업담당","email":"ikepuser17@gmail.com","name":"사용자7657 사원","empNo":"E7657","parent":"GD0000079","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user7658","teamName":"제조사업담당","email":"ikepuser18@gmail.com","name":"사용자7658 사원","empNo":"E7658","parent":"GD0000079","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user7659","teamName":"제조사업담당","email":"ikepuser19@gmail.com","name":"사용자7659 사원","empNo":"E7659","parent":"GD0000079","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user766","teamName":"제조사업담당","email":"ikepuser6@gmail.com","name":"사용자766 사원","empNo":"E766","parent":"GD0000079","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user7660","teamName":"제조사업담당","email":"ikepuser0@gmail.com","name":"사용자7660 사원","empNo":"E7660","parent":"GD0000079","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user7661","teamName":"제조사업담당","email":"ikepuser1@gmail.com","name":"사용자7661 사원","empNo":"E7661","parent":"GD0000079","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user7662","teamName":"제조사업담당","email":"ikepuser2@gmail.com","name":"사용자7662 사원","empNo":"E7662","parent":"GD0000079","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user7663","teamName":"제조사업담당","email":"ikepuser3@gmail.com","name":"사용자7663 사원","empNo":"E7663","parent":"GD0000079","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user7664","teamName":"제조사업담당","email":"ikepuser4@gmail.com","name":"사용자7664 사원","empNo":"E7664","parent":"GD0000079","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user7665","teamName":"제조사업담당","email":"ikepuser5@gmail.com","name":"사용자7665 사원","empNo":"E7665","parent":"GD0000079","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user7666","teamName":"제조사업담당","email":"ikepuser6@gmail.com","name":"사용자7666 사원","empNo":"E7666","parent":"GD0000079","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user7667","teamName":"제조사업담당","email":"ikepuser7@gmail.com","name":"사용자7667 사원","empNo":"E7667","parent":"GD0000079","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user7668","teamName":"제조사업담당","email":"ikepuser8@gmail.com","name":"사용자7668 사원","empNo":"E7668","parent":"GD0000079","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user7669","teamName":"제조사업담당","email":"ikepuser9@gmail.com","name":"사용자7669 사원","empNo":"E7669","parent":"GD0000079","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user767","teamName":"제조사업담당","email":"ikepuser7@gmail.com","name":"사용자767 사원","empNo":"E767","parent":"GD0000079","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user7670","teamName":"제조사업담당","email":"ikepuser10@gmail.com","name":"사용자7670 사원","empNo":"E7670","parent":"GD0000079","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user7671","teamName":"제조사업담당","email":"ikepuser11@gmail.com","name":"사용자7671 사원","empNo":"E7671","parent":"GD0000079","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user7672","teamName":"제조사업담당","email":"ikepuser12@gmail.com","name":"사용자7672 사원","empNo":"E7672","parent":"GD0000079","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user7673","teamName":"제조사업담당","email":"ikepuser13@gmail.com","name":"사용자7673 사원","empNo":"E7673","parent":"GD0000079","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user7674","teamName":"제조사업담당","email":"ikepuser14@gmail.com","name":"사용자7674 사원","empNo":"E7674","parent":"GD0000079","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"testuser01","teamName":"LG Hausys","email":null,"name":"사용자테스트01 사원","empNo":null,"parent":"GD0000001","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user100","teamName":"LG Hausys","email":"ikepuser0@gmail.com","name":"최성우사용자100 사원","empNo":"E100","parent":"GD0000001","code":"","type":"user","mobile":"016-111-1111","jobTitle":"사원"}
+		];
+    	
+    	/*var treeItems = [
+       		{"groupTypeId":"G0001","name":"LG Hausys","hasChild":"125","parent":null,"code":"GD0000001","type":"group"},
+   			{"groupTypeId":"G0001","name":"사장실","hasChild":"117","parent":"GD0000001","code":"GD0000002","type":"group"},
+   			{"groupTypeId":"G0001","name":"하이테크사업본부","hasChild":"119","parent":"GD0000001","code":"GD0000003","type":"group", "icon":"teamopenoff"},
+   			{"groupTypeId":"G0001","name":"솔루션사업본부","hasChild":"121","parent":"GD0000001","code":"GD0000006","type":"group", "icon":"teamopenon"},
+			
+			//{"groupTypeId":"G0001","name":"경영지원본부","hasChild":"118","parent":"GD0000001","code":"GD0000008","type":"group"},
+			//{"groupTypeId":"G0001","name":"경영관리부문","hasChild":"117","parent":"GD0000001","code":"GD0000009","type":"group"},
+			{"groupTypeId":"G0001","name":"제조사업부","hasChild":"117","parent":"GD0000003","code":"GD0000019","type":"group"},
+			{"groupTypeId":"G0001","name":"서비스사업부","hasChild":"113","parent":"GD0000003","code":"GD0000020","type":"group"},
+			{"groupTypeId":"G0001","name":"하이테크사업부","hasChild":"115","parent":"GD0000003","code":"GD0000021","type":"group"},
+			{"groupTypeId":"G0001","name":"전자/ERP서비스부문","hasChild":"115","parent":"GD0000003","code":"GD0000022","type":"group"},
+			{"groupTypeId":"G0001","name":"엔지니어링서비스부문","hasChild":"114","parent":"GD0000003","code":"GD0000023","type":"group"},
+			{"groupTypeId":"G0001","name":"제조사업담당","hasChild":"113","parent":"GD0000021","code":"GD0000079","type":"group"},
+			{"groupTypeId":"G0001","name":"물류/서비스사업담당","hasChild":"113","parent":"GD0000021","code":"GD0000080","type":"group"},
+			{"groupTypeId":"G0001","name":"의료사업담당","hasChild":"114","parent":"GD0000021","code":"GD0000081","type":"group"},
+			{"id":"yshan","teamName":"LG Hausys","email":null,"name":"한윤석23 부장","empNo":"00017494","parent":"GD0000001","code":"","type":"user","mobile":"010-7712-7255","jobTitle":"부장"},
+			{"id":"hkmoond","teamName":"LG Hausys","email":null,"name":"문헌규 차장","empNo":"00051927","parent":"GD0000001","code":"","type":"user","mobile":"019-218-8216","jobTitle":"차장"},
+			//{"id":"yjsongc","teamName":"LG Hausys","email":null,"name":"송영준 차장","empNo":"00069512","parent":"GD0000001","code":"","type":"user","mobile":"019-432-7372","jobTitle":"차장"},
+			//{"id":"mwchae","teamName":"LG Hausys","email":null,"name":"채민우 차장","empNo":"00202903","parent":"GD0000001","code":"","type":"user","mobile":"010-3904-4083","jobTitle":"차장"},
+			//{"id":"admin","teamName":"LG Hausys","email":"ikepuser0@gmail.com","name":"관리자 과장","empNo":"E0","parent":"GD0000001","code":"","type":"user","mobile":"010-2039-2331","jobTitle":"과장"},
+			//{"id":"idoti","teamName":"LG Hausys","email":null,"name":"박춘성 과장","empNo":"00201774","parent":"GD0000001","code":"","type":"user","mobile":"010-7651-1533","jobTitle":"과장"},
+			//{"id":"arnold","teamName":"LG Hausys","email":null,"name":"이규업 과장","empNo":"00031303","parent":"GD0000001","code":"","type":"user","mobile":"019-9167-7598","jobTitle":"과장"},
+			//{"id":"hcjung","teamName":"LG Hausys","email":null,"name":"정현철 과장","empNo":"00206645","parent":"GD0000001","code":"","type":"user","mobile":"010-7939-3066","jobTitle":"과장"},
+			{"id":"handul4","teamName":"LG Hausys","email":null,"name":"handul4한 대리","empNo":"14","parent":"GD0000001","code":"","type":"user","mobile":"14","jobTitle":"대리"},
+			{"groupTypeId":"G0001","name":"전략/마케팅본부","hasChild":"121","parent":"GD0000001","code":"GD0000007","type":"group"},
+			{"id":"user11975","teamName":"하이테크사업부","email":"ikepuser15@gmail.com","name":"사용자11975 사원","empNo":"E11975","parent":"GD0000021","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user11976","teamName":"하이테크사업부","email":"ikepuser16@gmail.com","name":"사용자11976 사원","empNo":"E11976","parent":"GD0000021","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"user11977","teamName":"하이테크사업부","email":"ikepuser17@gmail.com","name":"사용자11977 사원","empNo":"E11977","parent":"GD0000021","code":"","type":"user","mobile":null,"jobTitle":"사원"},
+			{"id":"kokok","teamName":"LG Hausys","email":null,"name":"koko 사원","empNo":"000000","parent":"GD0000001","code":"","type":"user","mobile":"00000","jobTitle":"사원"}
+    	];*/
+	
+		$groupTree = $("#userTree").jstree({	// 조직도 생성
+			plugins : [ "themes", "json_data", "ui", "search"],
+			json_data : {
+				data : iKEP.arrayToTreeData(treeItems, null, true, null),
+				ajax : {
+					url : "/ikep4-webapp/support/popup/requestGroupChildren.do",
+					data : function ($el) {	//$el : current item 
+						return { 
+							 "operation" : "get_children",  
+							 "groupId" : $el == -1 ? '': $el.attr("code")
+							,"controlType" : "ORG"
+							,"controlTabType" : "USER"
+							,"selectType" : "USER"
+							,"userId" :  ""
+						}; 
+					},
+					success : function(data) {
+						return iKEP.arrayToTreeData(data.items, null, true, null);
+					}
+				}
+			},
+			search : {
+				case_insensitive : true,
+				ajax : {
+					//url : iKEP.getContextRoot() + "/test/testSearch.do",
+					url : iKEP.getContextRoot() + "/portal/main/getDeptPath.do",
+					success : function(result, state, xhr) {
+						var items = [];
+						if(result.length > 0) {
+							$.each(result, function() {
+								items.push("#treeItem_" + this.toString());
+							});
+						}
+						
+						return items;
+					},
+					complete : function(xhr, state) {
+						if(state == "parsererror") {
+							alert("요청하신 사용자를 찾을 수 없습니다.");
+						}
+					}
+				}
+			},
+			core : {animation : 100}
+		}).bind("search.jstree", function(event, data) {
+			var $searchItem = $("#treeItem_" + data.rslt.str);
+			if($searchItem.length > 0) {
+				var $anchor = $searchItem.children("a");
+				$anchor.addClass("jstree-search");
+
+				setTimeout(function() {
+					var $container = $("div.leftTree_2");
+					var itemPosition = $anchor.offset();
+					var offsetPosition = $container.position();
+					
+					//if(itemPosition.top > offsetPosition.top)
+						$container.scrollTop(itemPosition.top - offsetPosition.top + $container.scrollTop());
+						//$anchor.focus();
+					
+					//$jq("#userTree").ajaxLoadComplete();
+				}, 300);
+			}
+		}).delegate("a[href$='#']", "click", function (e) { // clicking node text expands and contracts it
+			e.preventDefault();
+			this.blur(); 
+			$("#userTree").jstree("toggle_node", this, false, true); 
+			//$("#producttree").jstree("toggle_node", this); 
+        });
+    	
+    	
+/*    	
+    	
+			
+			
+				$jq("#contentIframe").attr("src", "/ikep4-webapp/support/profile/getProfile.do");
+			
+		
+    	
+    	 $jq("#userTree").delegate("a", "click", function () {
+		    	
+   		 	var type =  $.parseJSON( $jq(this).parent().attr("data")).type;
+   		 	
+   		 	if(type == 'group') {
+   		 		var groupId = $.parseJSON( $jq(this).parent().attr("data")).code;
+   		 		$jq("#contentIframe").attr("src", "/ikep4-webapp/portal/main/listUser.do?groupId=" + groupId);
+   		 	} else {
+   		 		var userId = $.parseJSON( $jq(this).parent().attr("data")).id;
+   		 		$jq("#contentIframe").attr("src", "/ikep4-webapp/support/profile/getProfile.do?targetUserId=" + userId);
+   		 	}
+	     });
+*/    	 
+    	 //$("#treeDept").bind("dblclick", dblClickOrg);
+    });
+
+	/* window risize 시 Tree 윈도우높이로 조절 */
+	resizeTreeContentHeight = function(){	
+		var $treeOutDiv = $(".leftTree_2"); // Tree out div
+		var paddingHeight = 10;
+		$treeOutDiv.height( $(window).height() - $treeOutDiv.position().top - paddingHeight);
+	}
+	
+	/* tree 영역 넓히기 */
+	extendTreeContent = function(){
+		if(isExtendTree){ // tree 영역이 넓혀져 있는 경우
+			$("#btnDivSize").removeClass("btn_tr_reduce");
+			$("#btnDivSize").addClass("btn_tr_enlarge");
+			$("#sizeAction").html("<span>Enlarge</span>");
+			$(".leftTree_2").width(185);
+			$("#mainContents").css("margin-left",205);
+			isExtendTree = false;
+		}else{  // tree 영역이 기본으로 있는 경우
+			$("#btnDivSize").removeClass("btn_tr_enlarge");
+			$("#btnDivSize").addClass("btn_tr_reduce");
+			$("#sizeAction").html("<span>Reduce</span>");
+			var leftMargin = 205;
+			var tWidth = $(".leftTree_2")[0].scrollWidth;
+			if(tWidth-20 > 185){
+				$(".leftTree_2").width(tWidth);
+				leftMargin = tWidth+20;
+				$("#mainContents").css("margin-left",leftMargin);
+			}		    
+		    isExtendTree = true;
+		}
+	}
+    
+})(jQuery);
+
+
+function profileResize() {
+	iKEP.iFrameResize('#contentIframe');
+}
+
+function treeSearch(userId) {
+	treeSearchReset();
+	
+	//$jq("#userTree").ajaxLoadStart();
+	$groupTree.jstree("search", userId);	//'user33157', 'user27562'
+}
+
+function treeSearchReset() {
+	//$groupTree.jstree("clear_search");
+	//$jq("div.leftTree_2").scrollTop(0);
+	$jq("a.jstree-search", $groupTree).removeClass("jstree-search");
+}
+
+function createGroupTree(searchUserId) {
+	treeSearch(searchUserId);
+};
+
+
+//-->
+</script>
+
+<form id="userlistForm" action="/ikep4-webapp/portal/main/listUser.do" method="post" target="contentIframe" onsubmit="return false;">
+	<input type="hidden" name="searchWord" value=""/>
+	<input type="hidden" name="searchColumn" value=""/>
+</form>
+<h1 class="none">트리영역</h1>
+<h2 class="treeTitle">Organization</h2>
+<div class="btn_tr_enlarge" id="btnDivSize"><a href="#a" id="sizeAction"><span>Enlarge</span></a></div>	
+
+<div class="leftTree_2">
+	<div id="userTree"></div>
+</div>			
+			 
+			<div id="mainContents" style="margin:0 0 0 205px;background:#fff;">
+				<div class="mainCon_tree_sub">
+					
+<iframe id="contentIframe" name="contentIframe" width="100%"  onload="iKEP.iFrameResize('#contentIframe');" scrolling="no" frameborder="0"></iframe>
+				</div>
+			</div>
+		</div>
+		<!--blockMain End--> 
+	</div>
+
+	<!--blockContainer End-->
+</div>
+<!--wrapper End-->
+</body>
+</html>

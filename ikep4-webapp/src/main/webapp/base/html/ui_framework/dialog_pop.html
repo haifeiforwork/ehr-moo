@@ -1,0 +1,71 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ko">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Home</title>
+<link rel="stylesheet" type="text/css" href="../../css/guide.css" />
+<link rel="stylesheet" type="text/css" href="../../css/theme01/jquery_ui_custom.css" />
+<link rel="stylesheet" type="text/css" href="../../css/common.css" />
+<link rel="stylesheet" type="text/css" href="../../css/theme01/theme.css" />
+<script type="text/javascript" src="../../js/jquery/jquery-1.6.2.min.js"></script>
+<script type="text/javascript" src="../../js/jquery/jquery-ui-1.8.13.min.without.datepicker.js"></script>
+<script type="text/javascript">var contextRoot = "/ikep4-webapp";</script>
+<script type="text/javascript" src="../../js/langResource/ko.js"></script>
+<script type="text/javascript" src="../../js/common.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$(document).ready(function() {
+		var dialog1, dialog2;
+		$(".button > a").bind("click", function(event) {
+			switch($(this).text()) {
+				case "open1" :
+					dialog1 = $("#dialog").dialog();
+					$("#dialog a").bind("click", function() {
+						if($(this).text() == "close") dialog1.dialog("close");
+					});
+					break;
+				case "open2" :
+					dialog2 = new iKEP.Dialog({title : "Ajax", url:"ajax.html", modal:false});
+					break;
+				case "close" :
+					dialog2.close();
+					break;
+				case "modal1" :
+					var result = iKEP.dialogOpen("../../test/popup.html", {width:300, height:300, resizable:false}, "param");
+					alert("return value");
+					iKEP.debug(result);
+					break;
+				case "modal2" :
+					iKEP.dialogOpen("../../test/popup.html", {width:300, height:300, resizable:false, callback:function(result) {
+						alert("callback : dialog");
+						iKEP.debug(result);
+					}}, "param");
+					break;
+				case "modeless" :
+					iKEP.dialogOpen("../../test/popup.html", {width:300, height:300, resizable:false, modal:false, callback:function(result) {
+						alert("callback : modaless");
+						iKEP.debug(result);
+					}}, "param");
+					break;
+				case "popup" :
+					iKEP.popupOpen("../../test/popup.html", {width:300, height:300, resizable:true, callback : function(result) {
+						alert("callback : popup");
+						iKEP.debug(result);
+					}});
+					alert("test");
+					break;
+			}
+		});
+	});
+})(jQuery);
+</script>
+</head>
+
+<body class="popup">
+<div class="button">Interactive : <a>open1</a> <a>open2</a> <a>close</a> <a>modal1</a> <a>modal2</a> <a>modeless</a> <a>popup</a></div>
+<div id="dialog" title="Basic dialog">
+	<p>This is the default dialog which is useful for displaying information. The dialog window can be moved, resized and closed with the 'x' icon.</p>
+	<p><a>close</a></p>
+</div>
+</body>
+</html>

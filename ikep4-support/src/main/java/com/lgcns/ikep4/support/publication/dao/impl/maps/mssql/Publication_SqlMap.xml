@@ -1,0 +1,321 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="support.publication.dao.publication">
+
+
+<typeAlias alias="Publication" type="com.lgcns.ikep4.support.publication.model.Publication"/>
+<typeAlias alias="PublicationSearchCondition" type="com.lgcns.ikep4.support.publication.search.PublicationSearchCondition"/>
+
+<resultMap class="Publication" id="PublicationResult">
+	<result column="ROWNUM" 			property="rowNum" />
+	<result column="ID" 		    	property="id" />
+	<result column="TYPE" 			    property="type" />
+	<result column="COMPANY_NAME" 		property="companyName" />
+	<result column="NAME" 				property="name" />
+	<result column="ADDRESS" 			property="address" />
+	<result column="TEL_NO" 			property="telNo" />
+	<result column="E_MAIL" 			property="eMail" />
+	<result column="GROUP_ID" 			property="groupId" />
+	<result column="GROUP_NAME" 		property="groupName" />
+	<result column="ZIP1_NO" 			property="zip1No" />
+	<result column="ZIP2_NO" 			property="zip2No" />
+	<result column="COUNT" 				property="count" />
+	<result column="REGISTER_ID" 	    		property="registerId"   	 />
+	<result column="REGISTER_NAME"  			property="registerName" 	 />	
+    <result column="REGIST_DATE"    			property="registDate" 	     />		
+</resultMap>
+
+<resultMap class="Publication" id="PublicationExtendsResult">
+	<result column="ID" 		    	property="id" />
+	<result column="TYPE" 			    property="type" />
+	<result column="COMPANY_NAME" 		property="companyName" />
+	<result column="NAME" 				property="name" />
+	<result column="ADDRESS" 			property="address" />
+	<result column="TEL_NO" 			property="telNo" />
+	<result column="E_MAIL" 			property="eMail" />
+	<result column="GROUP_ID" 			property="groupId" />
+	<result column="GROUP_NAME" 		property="groupName" />
+	<result column="ZIP1_NO" 			property="zip1No" />
+	<result column="ZIP2_NO" 			property="zip2No" />
+	<result column="COUNT" 				property="count" />
+	<result column="UPDATER_ID" 	    	property="updaterId"   	 />
+	<result column="UPDATER_NAME"  			property="updaterName" 	 />	
+    <result column="UPDATE_DATE"    		property="updateDate" 	     />		
+	<result column="REGISTER_ID" 	    	property="registerId"   	 />
+	<result column="REGISTER_NAME"  		property="registerName" 	 />	
+    <result column="REGIST_DATE"    		property="registDate" 	     />		
+</resultMap>
+
+
+<select id="countBySearchCondition" parameterClass="PublicationSearchCondition" resultClass="int">
+
+
+	SELECT /*[Publication_SqlMap.xml] support.publication.dao.Publication.countBySearchCondition */
+		count(*)
+	FROM PUBLICATION
+	WHERE 1=1
+	<isNotEmpty property="type">
+	AND TYPE = #type#	
+	</isNotEmpty>	
+	<isNotEmpty property="groupId">
+	AND GROUP_ID = #groupId#	
+	</isNotEmpty>
+	<isNotEmpty property="searchColumn">
+		<isNotEmpty property="searchWord">
+			<isEqual property="searchColumn" compareValue="companyName">
+				AND 
+				COMPANY_NAME LIKE '%' + #searchWord# + '%'
+			</isEqual>
+			<isEqual property="searchColumn" compareValue="name">
+				AND 
+				NAME LIKE '%' + #searchWord# + '%'
+			</isEqual>		
+		</isNotEmpty>
+	 </isNotEmpty> 	
+</select>
+
+<select id="publicationBySearchCondition" parameterClass="PublicationSearchCondition" resultMap="PublicationResult">
+	 SELECT /* [Publication_SqlMap.xml] publicationListBySearchCondition */
+ *
+  FROM (SELECT AA.*
+          FROM ( /* START========================================= */
+    SELECT	ROW_NUMBER() OVER( ORDER BY
+			   <isNotEmpty property="sortColumn">
+			   	<isEqual property="sortColumn" compareValue="TYPE">
+					<isEqual property="sortType" compareValue="DESC">
+						TYPE DESC, GROUP_NAME DESC ,  COMPANY_NAME ASC
+					</isEqual>
+					<isEqual property="sortType" compareValue="ASC">
+						TYPE ASC, GROUP_NAME ASC,  COMPANY_NAME ASC
+					</isEqual>
+				</isEqual>
+			   	<isEqual property="sortColumn" compareValue="GROUP_ID">
+					<isEqual property="sortType" compareValue="DESC">
+						GROUP_NAME DESC ,  COMPANY_NAME ASC
+					</isEqual>
+					<isEqual property="sortType" compareValue="ASC">
+						GROUP_NAME ASC,  COMPANY_NAME ASC
+					</isEqual>
+				</isEqual>
+				<isEqual property="sortColumn" compareValue="COMPANY_NAME">
+					<isEqual property="sortType" compareValue="DESC">
+						COMPANY_NAME DESC
+					</isEqual>
+					<isEqual property="sortType" compareValue="ASC">
+						COMPANY_NAME ASC
+					</isEqual>
+				</isEqual>
+				<isEqual property="sortColumn" compareValue="NAME">
+					<isEqual property="sortType" compareValue="DESC">
+						NAME DESC,  COMPANY_NAME ASC
+					</isEqual>
+					<isEqual property="sortType" compareValue="ASC">
+						NAME ASC,  COMPANY_NAME ASC
+					</isEqual>
+				</isEqual>
+				<isEqual property="sortColumn" compareValue="ADDRESS">
+					<isEqual property="sortType" compareValue="DESC">
+						ADDRESS DESC,  COMPANY_NAME ASC
+					</isEqual>
+					<isEqual property="sortType" compareValue="ASC">
+						ADDRESS ASC,  COMPANY_NAME ASC
+					</isEqual>
+				</isEqual>
+				<isEqual property="sortColumn" compareValue="REGIST_DATE">
+					<isEqual property="sortType" compareValue="DESC">
+						REGIST_DATE DESC,  COMPANY_NAME ASC
+					</isEqual>
+					<isEqual property="sortType" compareValue="ASC">
+						REGIST_DATE ASC,  COMPANY_NAME ASC
+					</isEqual>
+				</isEqual>
+			  </isNotEmpty>
+			 <isEmpty property="sortColumn">  
+				REGIST_DATE DESC, COMPANY_NAME ASC 
+			 </isEmpty>	) AS ROWNUM ,
+              ID,
+              TYPE,
+              GROUP_ID,
+              GROUP_NAME,
+              COMPANY_NAME,
+			  NAME,
+			  RTRIM(ZIP1_NO)+RTRIM(ZIP2_NO) as ZIP1_NO,
+			  ZIP2_NO,
+			  ADDRESS,
+			  TEL_NO,
+			  E_MAIL,
+			  COUNT,
+			  REGISTER_ID,
+		      REGISTER_NAME,
+		      REGIST_DATE	   
+	    FROM PUBLICATION
+	   WHERE  1=1
+	<isNotEmpty property="type">
+	AND TYPE = #type#	
+	</isNotEmpty>	
+	<isNotEmpty property="groupId">
+	AND GROUP_ID = #groupId#	
+	</isNotEmpty>
+	<isNotEmpty property="searchColumn">
+		<isNotEmpty property="searchWord">
+			<isEqual property="searchColumn" compareValue="companyName">
+				AND 
+				COMPANY_NAME LIKE '%' + #searchWord# + '%'
+			</isEqual>
+			<isEqual property="searchColumn" compareValue="name">
+				AND 
+				NAME LIKE '%' + #searchWord# + '%'
+			</isEqual>		
+		</isNotEmpty>
+	 </isNotEmpty> 	
+	   /* ===========================================END */
+       	<![CDATA[   
+                ) AA
+         WHERE ROWNUM <= #endRowIndex# /* 종료  */
+        ) TBL
+		 WHERE ROWNUM > #startRowIndex# /* 시작 */ 
+		
+   ]]> ;	
+</select>
+
+<select id="getPublication" parameterClass="String" resultMap="PublicationExtendsResult">
+	SELECT 
+		ID,           
+		TYPE,         
+		COMPANY_NAME, 
+		NAME,         
+		ADDRESS,      
+		TEL_NO,       
+		E_MAIL,       
+		GROUP_ID,     
+		GROUP_NAME,   
+		RTRIM(ZIP1_NO)+RTRIM(ZIP2_NO) as ZIP1_NO, 
+		ZIP2_NO,      
+		COUNT,        
+		UPDATER_ID,   
+		UPDATER_NAME, 
+		UPDATE_DATE,
+		REGISTER_ID,  
+		REGISTER_NAME,
+		REGIST_DATE
+	FROM PUBLICATION
+	WHERE ID = #id# 
+</select>
+
+
+<update id="modifyPublication" parameterClass="Publication">
+ UPDATE PUBLICATION
+ SET 
+	TYPE=#type#,         
+    COMPANY_NAME=#companyName#, 
+    NAME=#name#,         
+    ADDRESS=#address#,      
+    TEL_NO=#telNo#,       
+    E_MAIL=#eMail#,       
+    GROUP_ID=#groupId#,     
+    GROUP_NAME=#groupName#,   
+    ZIP1_NO=#zip1No#,      
+    ZIP2_NO=#zip2No#,      
+    COUNT=#count#,        
+    UPDATER_ID=#updaterId#,   
+    UPDATER_NAME=#updaterName#, 
+    UPDATE_DATE= CURRENT_TIMESTAMP,
+    REGISTER_ID=#registerId#,  
+    REGISTER_NAME=#registerName#,
+    REGIST_DATE= CURRENT_TIMESTAMP
+  WHERE id= #id#
+</update>
+
+
+<insert id="createPublication" parameterClass="Publication">
+	INSERT INTO PUBLICATION(
+		ID,           
+		TYPE,         
+		COMPANY_NAME, 
+		NAME,         
+		ADDRESS,      
+		TEL_NO,       
+		E_MAIL,       
+		GROUP_ID,     
+		GROUP_NAME,   
+		ZIP1_NO,      
+		ZIP2_NO,      
+		COUNT,        
+		UPDATER_ID,   
+		UPDATER_NAME, 
+		UPDATE_DATE,
+		REGISTER_ID,  
+		REGISTER_NAME,
+		REGIST_DATE
+	)
+	VALUES(
+		#id#,
+		#type#,
+		#companyName#,
+		#name#,
+		#address#,
+		#telNo#,
+		#eMail#,
+		#groupId#,
+		#groupName#,
+		#zip1No#,
+		#zip2No#,
+		#count#,
+		#updaterId#,
+		#updaterName#,
+		CURRENT_TIMESTAMP,
+		#registerId#,
+		#registerName#,
+		CURRENT_TIMESTAMP
+	)	
+
+
+
+</insert>
+
+<delete id="deletePublication" parameterClass="String">
+DELETE FROM PUBLICATION 
+WHERE ID = #id#
+</delete>
+
+
+<select id="listPublicationForIamMoorim" resultClass="java.util.HashMap">
+
+select 
+	TYPE,
+	company_name,
+	name,
+	address,
+	tel_no,
+	e_mail,
+	group_id,
+	group_name,
+	RTRIM(ZIP1_NO)+RTRIM(ZIP2_NO) as ZIP1_NO,
+	zip2_no,
+	count
+from tmp3_publication
+
+</select>
+
+
+<select id="listPublicationForGoodPaper" resultClass="java.util.HashMap">
+
+select 
+	TYPE,
+	company_name,
+	name,
+	address,
+	tel_no,
+	e_mail,
+	group_id,
+	group_name,
+	RTRIM(ZIP1_NO)+RTRIM(ZIP2_NO) as ZIP1_NO,
+	zip2_no,
+	count
+from tmp2_publication 
+
+</select>
+
+
+</sqlMap>

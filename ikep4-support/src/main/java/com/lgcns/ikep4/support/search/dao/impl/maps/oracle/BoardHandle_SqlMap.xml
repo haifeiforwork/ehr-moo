@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="support.search.dao.BoardHandle" >
+	
+	<!-- class declare  -->
+	<typeAlias alias="boardHandle" 			type="com.lgcns.ikep4.support.search.model.BoardHandle" />
+	
+   	<!-- textContents update -->
+   	<update id="updateTextContents" parameterClass="boardHandle"> 
+      	/* [BoardHandle.xml] support.search.dao.BoardHandle.updateTextContents */ 
+     	UPDATE 	
+     	<isEqual property="module" compareValue="BD">
+     			IKEP4_BD_ITEM
+		</isEqual>
+		<isEqual property="module" compareValue="WS">
+     			IKEP4_WS_BD_ITEM
+		</isEqual>
+		<isEqual property="module" compareValue="ID">
+     			IKEP4_ID_IDEA
+		</isEqual>
+		<isEqual property="module" compareValue="FR">
+     			IKEP4_FR_ITEM
+		</isEqual>
+		<isEqual property="module" compareValue="QA">
+     			IKEP4_QA_QNA
+		</isEqual>
+		<isEqual property="module" compareValue="SB">
+     			IKEP4_SB_BD_ITEM
+		</isEqual>
+		<isEqual property="module" compareValue="NO">
+     			IKEP4_NO_NOTE
+		</isEqual>
+		<isEqual property="module" compareValue="CK">
+     			IKEP4_CK_KNOWLEDGE
+		</isEqual>
+		SET 	TEXT_CONTENTS = #textContents#
+		<isNotEqual property="module" compareValue="QA">
+			<isNotEqual property="module" compareValue="NO">
+			WHERE 	ITEM_ID = #itemId#
+			</isNotEqual>
+		</isNotEqual>
+		<isEqual property="module" compareValue="QA">
+		WHERE 	QNA_ID = #itemId#
+		</isEqual>
+		<isEqual property="module" compareValue="NO">
+		WHERE 	NOTE_ID = #itemId#
+		</isEqual>
+   	</update>
+   
+</sqlMap>

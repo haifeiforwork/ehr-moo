@@ -1,0 +1,878 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="lightpack.award.dao.award">
+  <typeAlias alias="Award" type="com.lgcns.ikep4.lightpack.award.model.Award"/>
+  <resultMap id="awardResult" class="com.lgcns.ikep4.lightpack.award.model.Award"> 
+    <result column="BOARD_ID"           jdbcType="VARCHAR" property="awardId" />
+    <result column="BOARD_PARENT_ID"    jdbcType="VARCHAR" property="awardParentId" />
+    <result column="SORT_ORDER"         jdbcType="DECIMAL" property="sortOrder" />
+    <result column="BOARD_NAME"         jdbcType="VARCHAR" property="awardName" />
+    <result column="BOARD_ROOT_ID"      jdbcType="VARCHAR" property="awardRootId" />
+    <result column="BOARD_DESCRIPTION"  jdbcType="VARCHAR" property="awardDescription" />
+    <result column="BOARD_TYPE"         jdbcType="VARCHAR" property="awardType" />
+    <result column="URL"                jdbcType="VARCHAR" property="url" />
+    <result column="LIST_TYPE"          jdbcType="VARCHAR" property="listType" />
+    <result column="ANONYMOUS"          jdbcType="DECIMAL" property="anonymous" />
+    <result column="RSS"                jdbcType="DECIMAL" property="rss" />
+    <result column="FILE_SIZE"          jdbcType="DECIMAL" property="fileSize" />
+    <result column="IMAGE_FILE_SIZE"    jdbcType="DECIMAL" property="imageFileSize" />
+    <result column="IMAGE_WIDTH"        jdbcType="DECIMAL" property="imageWidth" />
+    <result column="PAGE_NUM"           jdbcType="DECIMAL" property="pageNum" />
+    <result column="DOC_POPUP"          jdbcType="DECIMAL" property="docPopup" />
+    <result column="REPLY"              jdbcType="DECIMAL" property="reply" />
+    <result column="LINEREPLY"          jdbcType="DECIMAL" property="linereply" />
+    <result column="RESTRICTION_TYPE"   jdbcType="VARCHAR" property="restrictionType" />
+    <result column="READ_PERMISSION"    jdbcType="DECIMAL" property="readPermission" />
+    <result column="WRITE_PERMISSION"   jdbcType="DECIMAL" property="writePermission" /> 
+    <result column="ADMIN_PERMISSION"   jdbcType="DECIMAL" property="adminPermission" /> 
+    <result column="BOARD_POPUP"        jdbcType="DECIMAL" property="awardPopup" /> 
+    <result column="FILE_ATTACH_OPTION" jdbcType="DECIMAL" property="fileAttachOption" />
+    <result column="ALLOW_TYPE"         jdbcType="VARCHAR" property="allowType" /> 
+    <result column="PORTAL_ID"          jdbcType="VARCHAR" property="portalId" />
+    <result column="PORTLET"            jdbcType="NUMBER"  property="portlet" />
+    <result column="BOARD_DELETE"       jdbcType="NUMBER"  property="awardDelete" />
+    <result column="REGISTER_ID"        jdbcType="VARCHAR" property="registerId" />
+    <result column="REGISTER_NAME"      jdbcType="VARCHAR" property="registerName" />
+    <result column="REGIST_DATE"        jdbcType="DATE"    property="registDate" />
+    <result column="UPDATER_ID"         jdbcType="VARCHAR" property="updaterId" />
+    <result column="UPDATER_NAME"       jdbcType="VARCHAR" property="updaterName" />
+    <result column="UPDATE_DATE"        jdbcType="DATE"    property="updateDate" />
+    <result column="BOARD_ENGLISH_NAME"         jdbcType="VARCHAR" property="awardEnglishName" />
+    <result column="BOARD_ENGLISH_DESCRIPTION"  jdbcType="VARCHAR" property="awardEnglishDescription" />
+    <result column="MOVE"				jdbcType="DECIMAL" property="move" />
+    <result column="WORD_HEAD"			jdbcType="DECIMAL" property="wordHead" />
+    <result column="CONTENTS_READ_PERMISSION"	jdbcType="DECIMAL" property="contentsReadPermission" nullValue="0"/>
+    <result column="CONTENTS_READ_MAIL"	jdbcType="DECIMAL" property="contentsReadMail" nullValue="0"/>
+    <result column="MOBILE_USE"	jdbcType="DECIMAL" property="mobileUse" nullValue="0"/>
+    <result column="MOBILE_WRITE_USE"	jdbcType="DECIMAL" property="mobileWriteUse" nullValue="0"/>
+    <result column="COLOR_USE"	jdbcType="DECIMAL" property="colorUse" nullValue="0"/>
+  </resultMap>    
+
+ <resultMap id="awardResult2" class="com.lgcns.ikep4.lightpack.award.model.Award"> 
+    <result column="BOARD_ID"           jdbcType="VARCHAR" property="awardId" />
+    <result column="BOARD_PARENT_ID"    jdbcType="VARCHAR" property="awardParentId" />
+    <result column="SORT_ORDER"         jdbcType="DECIMAL" property="sortOrder" />
+    <result column="BOARD_NAME"         jdbcType="VARCHAR" property="awardName" />
+    <result column="BOARD_ROOT_ID"      jdbcType="VARCHAR" property="awardRootId" />
+    <result column="BOARD_DESCRIPTION"  jdbcType="VARCHAR" property="awardDescription" />
+    <result column="BOARD_TYPE"         jdbcType="VARCHAR" property="awardType" />
+    <result column="URL"                jdbcType="VARCHAR" property="url" />
+    <result column="LIST_TYPE"          jdbcType="VARCHAR" property="listType" />
+    <result column="ANONYMOUS"          jdbcType="DECIMAL" property="anonymous" />
+    <result column="RSS"                jdbcType="DECIMAL" property="rss" />
+    <result column="FILE_SIZE"          jdbcType="DECIMAL" property="fileSize" />
+    <result column="IMAGE_FILE_SIZE"    jdbcType="DECIMAL" property="imageFileSize" />
+    <result column="IMAGE_WIDTH"        jdbcType="DECIMAL" property="imageWidth" />
+    <result column="PAGE_NUM"           jdbcType="DECIMAL" property="pageNum" />
+    <result column="DOC_POPUP"          jdbcType="DECIMAL" property="docPopup" />
+    <result column="REPLY"              jdbcType="DECIMAL" property="reply" />
+    <result column="LINEREPLY"          jdbcType="DECIMAL" property="linereply" />
+    <result column="RESTRICTION_TYPE"   jdbcType="VARCHAR" property="restrictionType" />
+    <result column="READ_PERMISSION"    jdbcType="DECIMAL" property="readPermission" />
+    <result column="WRITE_PERMISSION"   jdbcType="DECIMAL" property="writePermission" /> 
+    <result column="ADMIN_PERMISSION"   jdbcType="DECIMAL" property="adminPermission" /> 
+    <result column="BOARD_POPUP"        jdbcType="DECIMAL" property="awardPopup" /> 
+    <result column="FILE_ATTACH_OPTION" jdbcType="DECIMAL" property="fileAttachOption" />
+    <result column="ALLOW_TYPE"         jdbcType="VARCHAR" property="allowType" /> 
+    <result column="PORTAL_ID"          jdbcType="VARCHAR" property="portalId" />
+    <result column="PORTLET"            jdbcType="NUMBER"  property="portlet" />
+    <result column="VIEW_COUNT"         jdbcType="VARCHAR"  property="viewCount" />
+    <result column="BOARD_DELETE"       jdbcType="NUMBER"  property="awardDelete" />
+    <result column="REGISTER_ID"        jdbcType="VARCHAR" property="registerId" />
+    <result column="REGISTER_NAME"      jdbcType="VARCHAR" property="registerName" />
+    <result column="REGIST_DATE"        jdbcType="DATE"    property="registDate" />
+    <result column="UPDATER_ID"         jdbcType="VARCHAR" property="updaterId" />
+    <result column="UPDATER_NAME"       jdbcType="VARCHAR" property="updaterName" />
+    <result column="UPDATE_DATE"        jdbcType="DATE"    property="updateDate" />
+    <result column="BOARD_ENGLISH_NAME"         jdbcType="VARCHAR" property="awardEnglishName" />
+    <result column="BOARD_ENGLISH_DESCRIPTION"  jdbcType="VARCHAR" property="awardEnglishDescription" />
+  </resultMap>                          
+  <resultMap id="awardMarkResult" class="com.lgcns.ikep4.lightpack.award.model.Award"> 
+    <result column="BOARD_ID"           jdbcType="VARCHAR" property="awardId" />
+    <result column="BOARD_PARENT_ID"    jdbcType="VARCHAR" property="awardParentId" />
+    <result column="SORT_ORDER"         jdbcType="DECIMAL" property="sortOrder" />
+    <result column="BOARD_NAME"         jdbcType="VARCHAR" property="awardName" />
+    <result column="BOARD_ROOT_ID"      jdbcType="VARCHAR" property="awardRootId" />
+    <result column="BOARD_DESCRIPTION"  jdbcType="VARCHAR" property="awardDescription" />
+    <result column="BOARD_TYPE"         jdbcType="VARCHAR" property="awardType" />
+    <result column="URL"                jdbcType="VARCHAR" property="url" />
+    <result column="LIST_TYPE"          jdbcType="VARCHAR" property="listType" />
+    <result column="ANONYMOUS"          jdbcType="DECIMAL" property="anonymous" />
+    <result column="RSS"                jdbcType="DECIMAL" property="rss" />
+    <result column="FILE_SIZE"          jdbcType="DECIMAL" property="fileSize" />
+    <result column="IMAGE_FILE_SIZE"    jdbcType="DECIMAL" property="imageFileSize" />
+    <result column="IMAGE_WIDTH"        jdbcType="DECIMAL" property="imageWidth" />
+    <result column="PAGE_NUM"           jdbcType="DECIMAL" property="pageNum" />
+    <result column="DOC_POPUP"          jdbcType="DECIMAL" property="docPopup" />
+    <result column="REPLY"              jdbcType="DECIMAL" property="reply" />
+    <result column="LINEREPLY"          jdbcType="DECIMAL" property="linereply" />
+    <result column="RESTRICTION_TYPE"   jdbcType="VARCHAR" property="restrictionType" />
+    <result column="READ_PERMISSION"    jdbcType="DECIMAL" property="readPermission" />
+    <result column="WRITE_PERMISSION"   jdbcType="DECIMAL" property="writePermission" /> 
+    <result column="ADMIN_PERMISSION"   jdbcType="DECIMAL" property="adminPermission" /> 
+    <result column="BOARD_POPUP"        jdbcType="DECIMAL" property="awardPopup" /> 
+    <result column="FILE_ATTACH_OPTION" jdbcType="DECIMAL" property="fileAttachOption" />
+    <result column="ALLOW_TYPE"         jdbcType="VARCHAR" property="allowType" /> 
+    <result column="PORTAL_ID"          jdbcType="VARCHAR" property="portalId" />
+    <result column="PORTLET"            jdbcType="NUMBER"  property="portlet" />
+    <result column="VIEW_COUNT"         jdbcType="VARCHAR"  property="viewCount" />
+    <result column="BOARD_DELETE"       jdbcType="NUMBER"  property="awardDelete" />
+    <result column="REGISTER_ID"        jdbcType="VARCHAR" property="registerId" />
+    <result column="REGISTER_NAME"      jdbcType="VARCHAR" property="registerName" />
+    <result column="REGIST_DATE"        jdbcType="DATE"    property="registDate" />
+    <result column="UPDATER_ID"         jdbcType="VARCHAR" property="updaterId" />
+    <result column="UPDATER_NAME"       jdbcType="VARCHAR" property="updaterName" />
+    <result column="UPDATE_DATE"        jdbcType="DATE"    property="updateDate" />
+    <result column="BOARD_ENGLISH_NAME"         jdbcType="VARCHAR" property="awardEnglishName" />
+    <result column="BOARD_ENGLISH_DESCRIPTION"  jdbcType="VARCHAR" property="awardEnglishDescription" />
+  </resultMap>
+                      
+  <resultMap id="awardIndentationResult" extends="awardResult" class="com.lgcns.ikep4.lightpack.award.model.Award"> 
+    <result column="INDENTATION" jdbcType="VARCHAR" property="indentation" /> 
+    <result column="HAS_CHILDREN" jdbcType="DECIMAL" property="hasChildren" />
+  </resultMap> 
+  <resultMap id="awardResultEx" extends="awardResult"  class="com.lgcns.ikep4.lightpack.award.model.Award">  
+    <result column="HAS_CHILDREN" jdbcType="DECIMAL" property="hasChildren" />
+  </resultMap>
+  
+  <resultMap id="awardMenuResult" class="com.lgcns.ikep4.lightpack.award.model.Award">
+  	<result column="BOARD_ID"           	jdbcType="VARCHAR" 	property="awardId" />
+    <result column="BOARD_NAME"     jdbcType="VARCHAR"	property="awardName" />
+  </resultMap>
+  
+  <sql id="sqlColumnList">
+    BOARD_ID, 
+    BOARD_PARENT_ID,
+    SORT_ORDER, 
+    BOARD_NAME, 
+    BOARD_ROOT_ID, 
+    BOARD_DESCRIPTION, 
+    BOARD_TYPE, 
+    URL, 
+    LIST_TYPE, 
+    ANONYMOUS,
+    RSS, 
+    FILE_SIZE, 
+    IMAGE_FILE_SIZE, 
+    IMAGE_WIDTH, 
+    PAGE_NUM, 
+    DOC_POPUP, 
+    REPLY, 
+    LINEREPLY, 
+    RESTRICTION_TYPE, 
+    READ_PERMISSION, 
+    WRITE_PERMISSION, 
+    ADMIN_PERMISSION, 
+    BOARD_POPUP,     
+    FILE_ATTACH_OPTION,
+    ALLOW_TYPE,        
+    PORTAL_ID, 
+    PORTLET,
+    BOARD_DELETE,
+    REGISTER_ID, 
+    REGISTER_NAME, 
+    REGIST_DATE, 
+    UPDATER_ID, 
+    UPDATER_NAME, 
+    UPDATE_DATE,
+    BOARD_ENGLISH_NAME,
+    BOARD_ENGLISH_DESCRIPTION,
+    MOVE,
+    WORD_HEAD,
+    CONTENTS_READ_PERMISSION,
+    CONTENTS_READ_MAIL,
+    MOBILE_USE,
+    MOBILE_WRITE_USE,
+    COLOR_USE
+  </sql> 
+  <sql id="sqlmarkColumnList">
+    PORTLET_CONFIG_ID,
+    BOARD_ID, 
+    VIEW_COUNT, 
+    REGISTER_ID, 
+    REGIST_DATE, 
+    UPDATER_ID, 
+    UPDATE_DATE 
+  </sql> 
+  <sql id="sqlmarkColumnList2">
+    A.BOARD_ID, 
+    A.BOARD_PARENT_ID,
+    A.SORT_ORDER, 
+    A.BOARD_NAME, 
+    A.BOARD_ROOT_ID, 
+    A.BOARD_DESCRIPTION, 
+    A.BOARD_TYPE, 
+    A.URL, 
+    A.LIST_TYPE, 
+    A.ANONYMOUS,
+    A.RSS, 
+    A.FILE_SIZE, 
+    A.IMAGE_FILE_SIZE, 
+    A.IMAGE_WIDTH, 
+    A.PAGE_NUM, 
+    A.DOC_POPUP, 
+    A.REPLY, 
+    A.LINEREPLY, 
+    A.RESTRICTION_TYPE, 
+    A.READ_PERMISSION, 
+    A.WRITE_PERMISSION,  
+    A.ADMIN_PERMISSION, 
+    A.BOARD_POPUP,     
+    A.FILE_ATTACH_OPTION,
+    A.ALLOW_TYPE,        
+    A.PORTAL_ID, 
+    A.PORTLET,
+	(SELECT max(VIEW_COUNT) 
+	FROM IKEP4_PO_PORTLET_MARKBOARD C 
+	WHERE C.BOARD_ID = B.BOARD_ID AND C.PORTLET_CONFIG_ID = B.PORTLET_CONFIG_ID
+	) VIEW_COUNT,    
+    A.BOARD_DELETE,
+    A.REGISTER_ID, 
+    A.REGISTER_NAME, 
+    A.REGIST_DATE, 
+    A.UPDATER_ID, 
+    A.UPDATER_NAME, 
+    A.UPDATE_DATE,
+    A.BOARD_ENGLISH_NAME,
+    A.BOARD_ENGLISH_DESCRIPTION
+  </sql> 
+
+  <select id="getParents" parameterClass="string" resultMap="awardResult">
+  	WITH CTE AS (
+  		SELECT 	1 LEV, *
+		FROM  	IKEP4_AW_AWARD
+		WHERE 	BOARD_DELETE = 0
+			AND	BOARD_ID =  #awardId#
+		UNION ALL
+		SELECT	LEV + 1, TBL.*
+		FROM  	IKEP4_AW_AWARD TBL, CTE
+		WHERE 	TBL.BOARD_DELETE = 0
+			AND	CTE.BOARD_PARENT_ID = TBL.BOARD_ID
+  	)
+	SELECT /* [Award_SqlMap.xml] lightpack.award.dao.award.getParents */
+	      <include refid="lightpack.award.dao.award.sqlColumnList" />  
+ 	FROM (
+		SELECT LEV, <include refid="lightpack.award.dao.award.sqlColumnList" />
+		FROM  CTE
+	) TBL
+	ORDER BY LEV DESC
+  </select>
+  
+  <!-- ANSI -->
+  <select id="getChildren" parameterClass="string" resultMap="awardResult">
+	SELECT /* [Award_SqlMap.xml] lightpack.award.dao.award.getChildren */
+	       <include refid="lightpack.award.dao.award.sqlColumnList" />
+ 	FROM  IKEP4_AW_AWARD
+	WHERE BOARD_PARENT_ID = #awardId#
+	AND   BOARD_DELETE = 0
+  </select>
+  
+    <!-- MS SQL -->
+  <select id="readHasPermissionAward" parameterClass="string" resultMap="awardResult"> 
+	SELECT /* [Award_SqlMap.xml] lightpack.award.dao.award.get */  TOP 1 *
+	FROM (
+		SELECT  <include refid="lightpack.award.dao.award.sqlColumnList" />
+		FROM   IKEP4_AW_AWARD 
+		WHERE  BOARD_ROOT_ID = #awardRootId#
+		AND    BOARD_PARENT_ID IS NULL 
+		AND    BOARD_TYPE = 0
+		AND    BOARD_DELETE = 0
+	) TBL
+	ORDER BY SORT_ORDER ASC
+  </select>
+  
+  <!-- ANSI -->
+  <select id="get" parameterClass="string" resultMap="awardResult">
+    SELECT /* [Award_SqlMap.xml] lightpack.award.dao.award.get */ 
+    <include refid="lightpack.award.dao.award.sqlColumnList" />
+    FROM  IKEP4_AW_AWARD
+    WHERE BOARD_ID = #awardId#
+  </select>
+  
+  <!-- MS SQL -->
+  <select id="nextDeletedAward" resultMap="awardResult">
+    SELECT /* [Award_SqlMap.xml] lightpack.award.dao.award.nextDeletedAward */ 
+    		TOP 1 <include refid="lightpack.award.dao.award.sqlColumnList" />
+    FROM  IKEP4_AW_AWARD
+    WHERE BOARD_DELETE = 1
+  </select>  
+  
+  <!-- ANSI -->
+  <select id="exists" parameterClass="string" resultClass="int">
+    SELECT /* [Award_SqlMap.xml] lightpack.award.dao.award.exists */
+    	  COUNT(*)
+    FROM  IKEP4_AW_AWARD
+    WHERE BOARD_ID = #awardId#
+  </select>
+  
+  <!-- ANSI -->
+  <select id="listBySelectedAwardForPublicAward" parameterClass="string" resultMap="awardResult"> 
+	SELECT /* [Award_SqlMap.xml] lightpack.award.dao.award.listBySelectedAwardForPublicAward */ 
+	       <include refid="lightpack.award.dao.award.sqlColumnList"/>
+	FROM   IKEP4_AW_AWARD  A
+	WHERE  PORTLET = 1 
+	AND    BOARD_DELETE = 0
+	ORDER BY SORT_ORDER ASC
+  </select>
+  
+  <select id="listByAwardRootIdMap" parameterClass="Map" resultClass="Award">
+		SELECT /* [Award_SqlMap.xml] lightpack.award.dao.award.listByAwardRootIdMap */ 
+			 BOARD_ID		awardId,
+			BOARD_PARENT_ID	awardParentId,
+			BOARD_NAME		awardName,
+			BOARD_TYPE		awardType,
+			URL				url,
+			LIST_TYPE		listType,
+			PORTAL_ID		portalId,
+			SORT_ORDER		sortOrder,
+			BOARD_ROOT_ID	awardRootId
+		FROM
+			IKEP4_AW_AWARD
+		WHERE  BOARD_ROOT_ID   = #awardRootId# 
+	      AND BOARD_DELETE=0
+		ORDER BY 
+			SORT_ORDER ASC
+	</select>
+	
+<!-- 수정해야함 -->	
+  <select id="listByAwardRootIdPermission" parameterClass="map" resultMap="awardIndentationResult"> 
+
+	/* [Award_SqlMap.xml] lightpack.award.dao.award.listByAwardRootId */		
+  	WITH CTE AS (
+  		SELECT 	CONVERT(NVARCHAR, '/' + CONVERT(VARCHAR, SORT_ORDER+1000)) PATH_ORDER,
+  				1 INDENTATION,
+		       	A1.*
+       	FROM 	IKEP4_AW_AWARD  A1 inner join 
+			 IKEP4_VW_PERMIT_SYS_RESOURCE B on A1.BOARD_ID  = B.RESOURCE_NAME
+		WHERE	BOARD_ROOT_ID = #awardRootId# 
+			AND PORTAL_Id = #portalId#
+			AND	BOARD_DELETE = 0
+	    	AND	BOARD_PARENT_ID is null
+	    	AND B.OPERATION_NAME IN ('READ')
+	    	AND B.CLASS_NAME='Award-Award'
+	    	AND B.USER_ID IN (#userId#, 'OPEN')	     
+	    UNION ALL
+	    SELECT	CONVERT(NVARCHAR, CTE.PATH_ORDER + '/' + CONVERT(VARCHAR, A2.SORT_ORDER+1000)) PATH_ORDER,
+	    		INDENTATION + 1,
+		       	A2.*
+		FROM	IKEP4_AW_AWARD A2 
+			    ,CTE
+			    ,IKEP4_VW_PERMIT_SYS_RESOURCE B
+		WHERE	A2.BOARD_ROOT_ID = #awardRootId# 
+			AND	A2.BOARD_DELETE = 0
+			AND A2.BOARD_ID  = B.RESOURCE_NAME
+			AND B.OPERATION_NAME IN ('READ')
+	    	AND B.CLASS_NAME='Award-Award'
+	    	AND B.USER_ID IN (#userId#, 'OPEN')	     
+			AND	CTE.BOARD_ID = A2.BOARD_PARENT_ID 
+  	)
+	SELECT INDENTATION,
+	       (SELECT	COUNT(*) FROM IKEP4_AW_AWARD B WHERE CTE.BOARD_ID = B.BOARD_PARENT_ID AND B.BOARD_DELETE = 0) AS HAS_CHILDREN,
+	       <include refid="lightpack.award.dao.award.sqlColumnList"/>
+	FROM CTE
+	ORDER BY PATH_ORDER 
+	
+  </select>	
+  
+  <!-- MS SQL -->
+  <select id="listByAwardRootId" parameterClass="map" resultMap="awardIndentationResult"> 
+	/* [Award_SqlMap.xml] lightpack.award.dao.award.listByAwardRootId */		
+  	WITH CTE AS (
+  		SELECT 	CONVERT(NVARCHAR, '/' + CONVERT(VARCHAR, SORT_ORDER+1000)) PATH_ORDER,
+  				1 INDENTATION,
+		       	A1.*
+       	FROM 	IKEP4_AW_AWARD  A1
+		WHERE	BOARD_ROOT_ID = #awardRootId# 
+			AND PORTAL_Id = #portalId#
+			AND	BOARD_DELETE = 0
+	    	AND	BOARD_PARENT_ID is null
+	    UNION ALL
+	    SELECT	CONVERT(NVARCHAR, CTE.PATH_ORDER + '/' + CONVERT(VARCHAR, A2.SORT_ORDER+1000)) PATH_ORDER,
+	    		INDENTATION + 1,
+		       	A2.*
+		FROM	IKEP4_AW_AWARD A2, CTE
+		WHERE	A2.BOARD_ROOT_ID = #awardRootId# 
+			AND	A2.BOARD_DELETE = 0
+			AND	CTE.BOARD_ID = A2.BOARD_PARENT_ID 
+  	)
+	SELECT INDENTATION,
+	       (SELECT	COUNT(*) FROM IKEP4_AW_AWARD B WHERE CTE.BOARD_ID = B.BOARD_PARENT_ID AND B.BOARD_DELETE = 0) AS HAS_CHILDREN,
+	       <include refid="lightpack.award.dao.award.sqlColumnList"/>
+	FROM CTE
+	ORDER BY PATH_ORDER 
+  </select>
+  
+  <!-- ANSI -->
+  <select id="listAwardTypeAward" resultMap="awardResult"> 
+	SELECT /* [Award_SqlMap.xml] lightpack.award.dao.award.listAwardTypeAward */ 
+	      <include refid="lightpack.award.dao.award.sqlColumnList"/>
+	FROM  IKEP4_AW_AWARD 
+	WHERE BOARD_TYPE = 0
+	AND   BOARD_DELETE = 0
+	ORDER BY BOARD_NAME
+  </select>
+  
+  <!-- ANSI -->
+  <select id="listChildrenAward" parameterClass="string" resultMap="awardResultEx">
+	SELECT /* [Award_SqlMap.xml] lightpack.award.dao.award.listChildrenAward */ 
+	<include refid="lightpack.award.dao.award.sqlColumnList"/>,
+	       (SELECT COUNT(*) FROM IKEP4_AW_AWARD B WHERE A.BOARD_ID = B.BOARD_PARENT_ID AND B.BOARD_DELETE = 0) AS HAS_CHILDREN
+    FROM   IKEP4_AW_AWARD A
+    <isNotEmpty>
+		WHERE BOARD_PARENT_ID = #awardId#
+		AND   BOARD_DELETE = 0
+	</isNotEmpty>
+    <isEmpty>
+		WHERE BOARD_PARENT_ID IS NULL
+		AND   BOARD_DELETE = 0
+	</isEmpty>	
+    ORDER BY SORT_ORDER ASC
+  </select>
+  
+ <!-- 수정해야함 -->
+  <select id="listChildrenAwardPortal" parameterClass="map" resultMap="awardResultEx">
+	SELECT /* [Award_SqlMap.xml] lightpack.award.dao.award.listChildrenAward */ 
+	<include refid="lightpack.award.dao.award.sqlColumnList"/>,
+	       (SELECT COUNT(*) FROM IKEP4_AW_AWARD B WHERE A.BOARD_ID = B.BOARD_PARENT_ID) AS HAS_CHILDREN
+    FROM   IKEP4_AW_AWARD A
+    <isNotEmpty property="awardId">
+		WHERE BOARD_PARENT_ID = #awardId#
+		AND   BOARD_DELETE = 0
+	</isNotEmpty>
+    <isEmpty property="awardId">
+		WHERE BOARD_PARENT_ID IS NULL
+		AND   BOARD_DELETE = 0
+	</isEmpty>	
+		AND    PORTAL_ID = #portalId#
+    ORDER BY SORT_ORDER ASC
+  </select>
+  
+  <!-- ANSI -->
+  <insert id="create" parameterClass="Award">
+    INSERT INTO IKEP4_AW_AWARD ( /* [award_SqlMap.xml] lightpack.award.dao.award.insert */
+     <include refid="lightpack.award.dao.award.sqlColumnList" />
+    ) 
+    SELECT 
+      #awardId#,
+      #awardParentId#,   
+      ISNULL(MAX(A.SORT_ORDER), -1) + 1,
+      #awardName#,        
+      #awardRootId#,      
+      #awardDescription#, 
+      #awardType#,        
+      #url#,    
+      #listType#,         
+      #anonymous#,        
+      #rss#,    
+      #fileSize#,         
+      #imageFileSize#,    
+      #imageWidth#,       
+      #pageNum#,
+      #docPopup#,         
+      #reply#,  
+      #linereply#,        
+      #restrictionType#,  
+      #readPermission#,   
+      #writePermission#,  
+      #adminPermission#,
+      #awardPopup#, 
+      #fileAttachOption#,  
+      #allowType#, 
+      #portalId#,   
+      #portlet#,     
+      #awardDelete#, 
+      #registerId#,       
+      #registerName#,     
+      CURRENT_TIMESTAMP,       
+      #updaterId#,        
+      #updaterName#,      
+      CURRENT_TIMESTAMP,
+      #awardEnglishName#,
+      #awardEnglishDescription#,
+      #move#,
+      #wordHead#,
+      #contentsReadPermission#,
+      #contentsReadMail#,
+      #mobileUse#,
+      #mobileWriteUse#,
+      #colorUse#
+      FROM	IKEP4_AW_AWARD A
+      <isNotEmpty property="awardParentId">
+	  WHERE A.BOARD_PARENT_ID = #awardParentId#  
+	  </isNotEmpty>
+      <isEmpty property="awardParentId">
+	  WHERE A.BOARD_PARENT_ID IS NULL  
+	  </isEmpty> 
+  </insert>
+  
+  <!-- ANSI -->
+  <update id="updateAwardDeleteField" parameterClass="map">
+    UPDATE IKEP4_AW_AWARD /* [award_SqlMap.xml] lightpack.award.dao.award.updateAwardDeleteField */
+    SET    BOARD_DELETE  =  #status#
+    WHERE  BOARD_ID = #awardId#
+  </update>
+
+  <!-- ANSI -->
+  <update id="updateMove" parameterClass="Award">
+    UPDATE IKEP4_AW_AWARD /* [award_SqlMap.xml] lightpack.award.dao.award.updateMove */
+    SET    BOARD_PARENT_ID  =  #awardParentId#,
+           SORT_ORDER       =  #sortOrder#, 
+           UPDATER_ID       =  #updaterId#,
+           UPDATER_NAME     =  #updaterName#,
+           UPDATE_DATE      =  CURRENT_TIMESTAMP  
+    WHERE  BOARD_ID = #awardId#
+  </update>      
+
+  <!-- ANSI -->
+  <update id="updateRemovePortlet">
+    UPDATE IKEP4_AW_AWARD /* [award_SqlMap.xml] lightpack.award.dao.award.updateRemovePortlet */
+    SET    PORTLET  = 0
+  </update>  
+   
+  <!-- ANSI -->
+  <update id="updateSetupPortlet" parameterClass="string">
+    UPDATE IKEP4_AW_AWARD /* [award_SqlMap.xml] lightpack.award.dao.award.updateSetupPortlet */
+    SET    PORTLET  = 1 
+    WHERE  BOARD_ID = #awardId#
+  </update> 
+  
+    <!-- ANSI -->
+  <update id="updateSortOderIncrease" parameterClass="Award">
+    UPDATE IKEP4_AW_AWARD /* [award_SqlMap.xml] lightpack.award.dao.award.updateSortOderIncrease */
+    SET    SORT_ORDER      =  SORT_ORDER + 1
+    WHERE  1 = 1
+    <isEmpty property="awardParentId">
+    AND  BOARD_PARENT_ID IS NULL
+    </isEmpty>
+    <isNotEmpty property="awardParentId">
+    AND  BOARD_PARENT_ID = #awardParentId#
+    </isNotEmpty>
+    AND    SORT_ORDER &gt;= #sortOrder#
+  </update>   
+ 
+  <!-- ANSI -->
+  <update id="updateSortOderDecrease" parameterClass="Award">
+    UPDATE IKEP4_AW_AWARD /* [award_SqlMap.xml] lightpack.award.dao.award.updateSortOderDecrease */
+    SET    SORT_ORDER      =  SORT_ORDER - 1
+    WHERE  1 = 1
+    <isEmpty property="awardParentId">
+    AND  BOARD_PARENT_ID IS NULL
+    </isEmpty>
+    <isNotEmpty property="awardParentId">
+    AND  BOARD_PARENT_ID = #awardParentId#
+    </isNotEmpty>
+    AND    SORT_ORDER &gt; #sortOrder#
+  </update> 
+  
+  <!-- ANSI -->
+  <update id="update" parameterClass="Award">
+    UPDATE IKEP4_AW_AWARD /* [award_SqlMap.xml] lightpack.award.dao.award.update */
+    SET    BOARD_ID           =  #awardId#,
+           BOARD_PARENT_ID    =  #awardParentId#,
+           SORT_ORDER         =  #sortOrder#,
+           BOARD_NAME         =  #awardName#,
+           BOARD_ROOT_ID      =  #awardRootId#,
+           BOARD_DESCRIPTION  =  #awardDescription#,
+           BOARD_TYPE         =  #awardType#,
+           URL                =  #url#,
+           LIST_TYPE          =  #listType#,
+           ANONYMOUS          =  #anonymous#,
+           RSS                =  #rss#,
+           FILE_SIZE          =  #fileSize#,
+           IMAGE_FILE_SIZE    =  #imageFileSize#,
+           IMAGE_WIDTH        =  #imageWidth#,
+           PAGE_NUM           =  #pageNum#,
+           DOC_POPUP          =  #docPopup#,
+           REPLY              =  #reply#,
+           LINEREPLY          =  #linereply#,
+           RESTRICTION_TYPE   =  #restrictionType#,
+           READ_PERMISSION    =  #readPermission#,
+           WRITE_PERMISSION   =  #writePermission#, 
+           ADMIN_PERMISSION   =  #adminPermission#,
+           BOARD_POPUP        =  #awardPopup#,
+    	   FILE_ATTACH_OPTION =  #fileAttachOption#,   
+   		   ALLOW_TYPE         =  #allowType#,  
+           PORTAL_ID          =  #portalId#, 
+           PORTLET            =  #portlet#,
+           BOARD_DELETE       =  #awardDelete#,
+           UPDATER_ID         =  #updaterId#,
+           UPDATER_NAME       =  #updaterName#,
+           UPDATE_DATE        =  CURRENT_TIMESTAMP ,
+           BOARD_ENGLISH_NAME =  #awardEnglishName#,
+      	   BOARD_ENGLISH_DESCRIPTION =  #awardEnglishDescription#,
+      	   MOVE			      =	#move#,
+      	   WORD_HEAD			  =	#wordHead#,
+      	   CONTENTS_READ_PERMISSION = #contentsReadPermission#,
+           CONTENTS_READ_MAIL =#contentsReadMail#,
+           MOBILE_USE = #mobileUse#,
+     	   MOBILE_WRITE_USE =#mobileWriteUse#
+    WHERE  BOARD_ID = #awardId#
+  </update> 
+  
+  <!-- ANSI -->
+  <delete id="physicalDelete" parameterClass="string">
+    DELETE FROM IKEP4_AW_AWARD /* [award_SqlMap.xml] lightpack.award.dao.award.physicalDelete */
+    WHERE  BOARD_ID = #awardId#
+  </delete>
+  
+  <select id="selectAwardMenuType" resultClass="String">
+  	select val from ikep4_aw_config where code = 'MENU_TYPE'
+  </select>
+  
+  <update id="updateAwardMenuType" parameterClass="String">
+  	update ikep4_aw_config set val = #type#
+  	where code = 'MENU_TYPE'
+  </update>
+  
+  <!-- MarkAward 처리용-->
+  <select id="listBySelectedAwardForMarkAward" parameterClass="string" resultClass="Award">
+  	/* [Award_SqlMap.xml] lightpack.award.dao.award.listBySelectedAwardForMarkAward */  
+	SELECT 
+		   A.BOARD_ID  awardId,
+		   A.BOARD_NAME  awardName,
+	       B.VIEW_COUNT  viewCount
+	FROM   IKEP4_AW_AWARD  A INNER JOIN IKEP4_PO_PORTLET_MARKBOARD B ON A.BOARD_ID = B.BOARD_ID
+	WHERE  B.PORTLET_CONFIG_ID = #portletConfigId#
+	AND    BOARD_DELETE = 0
+  </select>
+  
+  <select id="listAwardTypeAwardmark" parameterClass="map" resultClass="Award"> 
+WITH CTE AS (
+  		SELECT 	CONVERT(NVARCHAR, '/' + CONVERT(VARCHAR, SORT_ORDER+1000)) PATH_ORDER,
+  				1 INDENTATION,
+		       	A1.*
+       	FROM 	IKEP4_AW_AWARD  A1 inner join 
+			 IKEP4_VW_PERMIT_SYS_RESOURCE B on A1.BOARD_ID  = B.RESOURCE_NAME
+		WHERE	BOARD_ROOT_ID = #awardRootId# 
+			AND PORTAL_Id = #portalId#
+			AND	BOARD_DELETE = 0
+	    	AND	BOARD_PARENT_ID is null
+	    	AND B.OPERATION_NAME IN ('READ')
+	    	AND B.CLASS_NAME='Award-Award'
+	    	AND B.USER_ID IN (#userId#, 'OPEN')	     
+	    UNION ALL
+	    SELECT	CONVERT(NVARCHAR, CTE.PATH_ORDER + '/' + CONVERT(VARCHAR, A2.SORT_ORDER+1000)) PATH_ORDER,
+	    		INDENTATION + 1,
+		       	A2.*
+		FROM	IKEP4_AW_AWARD A2 
+			    ,CTE
+			    ,IKEP4_VW_PERMIT_SYS_RESOURCE B
+		WHERE	A2.BOARD_ROOT_ID = #awardRootId# 
+			AND	A2.BOARD_DELETE = 0
+			AND A2.BOARD_ID  = B.RESOURCE_NAME
+			AND B.OPERATION_NAME IN ('READ')
+	    	AND B.CLASS_NAME='Award-Award'
+	    	AND B.USER_ID IN (#userId#, 'OPEN')	     
+			AND	CTE.BOARD_ID = A2.BOARD_PARENT_ID 
+  	)
+	SELECT   BOARD_ID  awardId, 
+	       BOARD_NAME  awardName, 
+	     (SELECT COUNT(BOARD_ID) 
+	         FROM IKEP4_PO_PORTLET_MARKBOARD B 
+	        WHERE B.BOARD_ID = CTE.BOARD_ID 
+	          AND B.PORTLET_CONFIG_ID = #portletConfigId#
+	       ) portlet, 
+	 	       (SELECT max(VIEW_COUNT) 
+	         FROM IKEP4_PO_PORTLET_MARKBOARD B 
+	        WHERE B.BOARD_ID = CTE.BOARD_ID 
+	          AND B.PORTLET_CONFIG_ID = #portletConfigId#
+	       ) viewCount 
+	FROM CTE where BOARD_TYPE = 0 
+	   AND BOARD_DELETE = 0 
+	   AND BOARD_ID NOT IN ('100000793108','100000793116')
+	ORDER BY BOARD_NAME 
+  </select>
+  
+  <delete id="deleteSetupPortletMark" parameterClass="string">
+  	/* [award_SqlMap.xml] lightpack.award.dao.award.deleteSetupPortletMark */
+    DELETE FROM IKEP4_PO_PORTLET_MARKBOARD 
+	 WHERE PORTLET_CONFIG_ID = #portletConfigId#
+  </delete>
+  
+  <insert id="createSetupPortletMark" parameterClass="map">
+  	/* [award_SqlMap.xml] lightpack.award.dao.award.updateSetupPortletMark */
+    INSERT INTO IKEP4_PO_PORTLET_MARKBOARD ( 
+      PORTLET_CONFIG_ID,
+      BOARD_ID, 
+      VIEW_COUNT, 
+      REGISTER_ID, 
+      REGIST_DATE, 
+      UPDATER_ID, 
+      UPDATE_DATE
+    ) VALUES (
+      #portletConfigId#,
+      #awardId#,
+      #viewCount#,
+      #registerId#,       
+      CURRENT_TIMESTAMP,       
+      #updaterId#,        
+      CURRENT_TIMESTAMP
+    )
+  </insert>  
+  
+  <update id="updateDisplayAwardParentItem" parameterClass="String">
+  <![CDATA[
+  	update IKEP4_AW_ITEM
+	set item_display = '0', dis_start_date = null, dis_end_date = null
+	where item_display = '1'
+	and dis_end_date < getdate()
+	and step = '0'
+	]]>
+  </update>
+  
+  <update id="updateDisplayAwardItem" parameterClass="String">
+  <![CDATA[
+  	update IKEP4_AW_ITEM
+	set item_display = '0', dis_start_date = null, dis_end_date = null
+	where item_display = '1'
+	and step <> '0'
+	and item_group_id in(select item_id from IKEP4_AW_ITEM where step = '0' and item_display = '0')
+  ]]>
+  </update>
+  
+  <select id="listByAwardRootIdMobile" parameterClass="map" resultMap="awardIndentationResult"> 
+    /* [Award_SqlMap.xml] lightpack.award.dao.award.listByAwardRootId */		
+  	WITH CTE AS (
+  		SELECT 	CONVERT(NVARCHAR, '/' + CONVERT(VARCHAR, SORT_ORDER+1000)) PATH_ORDER,
+  				1 INDENTATION,
+		       	A1.*
+       	FROM 	IKEP4_AW_AWARD  A1
+		WHERE	BOARD_ROOT_ID = #awardRootId# 
+			AND PORTAL_Id = #portalId#
+			AND	BOARD_DELETE = 0
+	    	AND	BOARD_PARENT_ID is null
+	    	AND MOBILE_USE = 1
+	    UNION ALL
+	    SELECT	CONVERT(NVARCHAR, CTE.PATH_ORDER + '/' + CONVERT(VARCHAR, A2.SORT_ORDER+1000)) PATH_ORDER,
+	    		INDENTATION + 1,
+		       	A2.*
+		FROM	IKEP4_AW_AWARD A2, CTE
+		WHERE	A2.BOARD_ROOT_ID = #awardRootId# 
+			AND	A2.BOARD_DELETE = 0
+			AND A2.MOBILE_USE = 1
+			AND	CTE.BOARD_ID = A2.BOARD_PARENT_ID 
+  	)
+	SELECT INDENTATION,
+	       (SELECT	COUNT(*) FROM IKEP4_AW_AWARD B WHERE CTE.BOARD_ID = B.BOARD_PARENT_ID AND B.BOARD_DELETE = 0) AS HAS_CHILDREN,
+	       <include refid="lightpack.award.dao.award.sqlColumnList"/>
+	FROM CTE
+	<![CDATA[
+    ORDER BY PATH_ORDER 
+    ]]>  
+  </select>
+  
+  <select id="listByAwardRootIdPer" parameterClass="map" resultMap="awardIndentationResult"> 
+	  	/* [Award_SqlMap.xml] lightpack.award.dao.award.listByAwardRootId */		
+  	WITH CTE AS (
+  		SELECT 	CONVERT(NVARCHAR, '/' + CONVERT(VARCHAR, SORT_ORDER+1000)) PATH_ORDER,
+  				1 INDENTATION,
+		       	A1.*
+       	FROM 	IKEP4_AW_AWARD  A1 inner join 
+			 IKEP4_VW_PERMIT_SYS_RESOURCE B on A1.BOARD_ID  = B.RESOURCE_NAME
+		WHERE	BOARD_ROOT_ID = #awardRootId# 
+			AND PORTAL_Id = #portalId#
+			AND	BOARD_DELETE = 0
+	    	AND	BOARD_PARENT_ID is null
+	    	AND B.OPERATION_NAME IN ('READ')
+	    	AND B.CLASS_NAME='Award-Award'
+	    	AND B.USER_ID IN (#userId#, 'OPEN')	     
+	    UNION ALL
+	    SELECT	CONVERT(NVARCHAR, CTE.PATH_ORDER + '/' + CONVERT(VARCHAR, A2.SORT_ORDER+1000)) PATH_ORDER,
+	    		INDENTATION + 1,
+		       	A2.*
+		FROM	IKEP4_AW_AWARD A2 
+			    ,CTE
+			    ,IKEP4_VW_PERMIT_SYS_RESOURCE B
+		WHERE	A2.BOARD_ROOT_ID = #awardRootId# 
+			AND	A2.BOARD_DELETE = 0
+			AND A2.BOARD_ID  = B.RESOURCE_NAME
+			AND B.OPERATION_NAME IN ('READ')
+	    	AND B.CLASS_NAME='Award-Award'
+	    	AND B.USER_ID IN (#userId#, 'OPEN')	     
+			AND	CTE.BOARD_ID = A2.BOARD_PARENT_ID 
+  	)
+	SELECT INDENTATION,
+	       (SELECT	COUNT(*) FROM IKEP4_AW_AWARD B WHERE CTE.BOARD_ID = B.BOARD_PARENT_ID AND B.BOARD_DELETE = 0) AS HAS_CHILDREN,
+	       <include refid="lightpack.award.dao.award.sqlColumnList"/>
+	FROM CTE
+	 <![CDATA[
+  	 WHERE BOARD_TYPE <> '0'
+	]]>
+	ORDER BY PATH_ORDER
+  </select>
+  
+  <select id="listByAwardRootIdPerMobile" parameterClass="map" resultMap="awardIndentationResult"> 
+	/* [Award_SqlMap.xml] lightpack.award.dao.award.listByAwardRootId */		
+  	WITH CTE AS (
+  		SELECT 	CONVERT(NVARCHAR, '/' + CONVERT(VARCHAR, SORT_ORDER+1000)) PATH_ORDER,
+  				1 INDENTATION,
+		       	A1.*
+       	FROM 	IKEP4_AW_AWARD  A1 inner join 
+			 IKEP4_VW_PERMIT_SYS_RESOURCE B on A1.BOARD_ID  = B.RESOURCE_NAME
+		WHERE	BOARD_ROOT_ID = #awardRootId# 
+			AND PORTAL_Id = #portalId#
+			AND	BOARD_DELETE = 0
+	    	AND	BOARD_PARENT_ID is null
+	    	AND B.OPERATION_NAME IN ('READ')
+	    	AND B.CLASS_NAME='Award-Award'
+	    	AND B.USER_ID IN (#userId#, 'OPEN')	     
+	    UNION ALL
+	    SELECT	CONVERT(NVARCHAR, CTE.PATH_ORDER + '/' + CONVERT(VARCHAR, A2.SORT_ORDER+1000)) PATH_ORDER,
+	    		INDENTATION + 1,
+		       	A2.*
+		FROM	IKEP4_AW_AWARD A2 
+			    ,CTE
+			    ,IKEP4_VW_PERMIT_SYS_RESOURCE B
+		WHERE	A2.BOARD_ROOT_ID = #awardRootId# 
+			AND	A2.BOARD_DELETE = 0
+			AND A2.BOARD_ID  = B.RESOURCE_NAME
+			AND B.OPERATION_NAME IN ('READ')
+	    	AND B.CLASS_NAME='Award-Award'
+	    	AND B.USER_ID IN (#userId#, 'OPEN')	     
+			AND	CTE.BOARD_ID = A2.BOARD_PARENT_ID 
+  	)
+	SELECT INDENTATION,
+	       (SELECT	COUNT(*) FROM IKEP4_AW_AWARD B WHERE CTE.BOARD_ID = B.BOARD_PARENT_ID AND B.BOARD_DELETE = 0) AS HAS_CHILDREN,
+	       BOARD_ID,  BOARD_PARENT_ID,  SORT_ORDER, 
+		    BOARD_NAME,    BOARD_ROOT_ID,    BOARD_DESCRIPTION, 
+		    BOARD_TYPE,    URL,    LIST_TYPE, 
+		    ANONYMOUS,   RSS,    FILE_SIZE, 
+		    IMAGE_FILE_SIZE,    IMAGE_WIDTH,    PAGE_NUM, 
+		    DOC_POPUP,    REPLY,    LINEREPLY, 
+		    RESTRICTION_TYPE,    READ_PERMISSION,    WRITE_PERMISSION, ADMIN_PERMISSION,  		   
+		    BOARD_POPUP,       FILE_ATTACH_OPTION,   ALLOW_TYPE,        
+		    PORTAL_ID,    PORTLET,   BOARD_DELETE,
+		    REGISTER_ID,    REGISTER_NAME,    REGIST_DATE, 
+		    UPDATER_ID,    UPDATER_NAME,   CTE. UPDATE_DATE,
+		    BOARD_ENGLISH_NAME,    BOARD_ENGLISH_DESCRIPTION,   MOVE,
+		    WORD_HEAD,    CONTENTS_READ_PERMISSION,   CONTENTS_READ_MAIL,
+		    MOBILE_USE,    MOBILE_WRITE_USE, COLOR_USE
+	FROM CTE
+	INNER JOIN (SELECT * FROM IKEP4_CO_MENULIST_MOBILE WHERE USER_ID=#userId# and type='BOARD') Aa ON CTE.award_id = Aa.ITEM_ID
+	<!--  <![CDATA[
+  	 WHERE BOARD_TYPE <> '2'
+	]]> -->
+	ORDER BY PATH_ORDER
+  </select>
+  
+  <select id="getAwardMenuList" resultMap="awardMenuResult"> 
+    /* [Award_SqlMap.xml] lightpack.award.dao.award.listByAwardRootId */		
+  	SELECT 
+		ROW_NUMBER() OVER(ORDER BY BOARD_PARENT_ID) AS NUM,
+	    BOARD_ID,
+	    BOARD_NAME,
+	    TYPE = 'BOARD'
+	FROM  IKEP4_AW_AWARD 
+	WHERE  BOARD_TYPE != 2
+	AND		  BOARD_DELETE = 0
+  </select>
+  
+  <select id="userAuthMgntYn" parameterClass="String" resultClass="int">
+		SELECT                                            
+			COUNT(*)                                 
+		FROM 
+			TB_USER_AUTH_MGNT 
+		WHERE WORK_GBN_CD = '40'
+		  AND EMP_NO = #userId#
+	</select>
+</sqlMap>

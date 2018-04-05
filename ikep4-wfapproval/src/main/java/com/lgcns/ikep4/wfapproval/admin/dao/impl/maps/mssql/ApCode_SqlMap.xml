@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="com.lgcns.ikep4.wfapproval.admin.dao.ApCode" >
+	<typeAlias alias="ApCode" type="com.lgcns.ikep4.wfapproval.admin.model.ApCode"/>
+	
+	
+	<!--코드관리 테이블 조회 결과 -->
+	<resultMap id="ApCodeResult" class="ApCode" groupBy="codeId">
+		<result property="codeId" 			column="CODE_ID" 			jdbcType="VARCHAR"/>
+		<result property="parentCodeId" 	column="PARENT_CODE_ID" 	jdbcType="VARCHAR"/>
+		<result property="krName" 			column="KR_NAME" 			jdbcType="VARCHAR"/>
+		<result property="enName" 			column="EN_NAME" 			jdbcType="VARCHAR"/>
+		<result property="codeValue" 		column="CODE_VALUE" 		jdbcType="VARCHAR"/>
+		<result property="codeDesc" 		column="CODE_DESC" 			jdbcType="VARCHAR"/>
+		<result property="codeType"			column="CODE_TYPE" 			jdbcType="VARCHAR"/>
+		<result property="codeOrder"		column="CODE_ORDER" 		jdbcType="VARCHAR"/>
+		<result property="codeUse"			column="CODE_USE" 			jdbcType="VARCHAR"/>
+		<result property="registDate" 		column="REGIST_DATE" 		jdbcType="TIMESTAMP"/>
+		<result property="modifyDate" 		column="MODIFY_DATE" 		jdbcType="TIMESTAMP"/>
+		<result property="childCount" 		column="CHILD_COUNT" 		jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	<sql id="sqlColumnList">
+		  CODE_ID
+		, PARENT_CODE_ID
+		, KR_NAME
+		, EN_NAME
+		, CODE_VALUE
+		, CODE_DESC
+		, CODE_TYPE
+		, CODE_ORDER
+		, CODE_USE
+		, REGIST_DATE
+		, MODIFY_DATE
+	</sql>
+	
+	<!-- MS SQL -->
+	<!-- Root 그룹 하위목록 가져오기 -->
+	<select id="listRootApCode" parameterClass="String" resultMap="ApCodeResult">
+		/* [ApCode_SqlMap.xml] listRootApCode */
+		<![CDATA[
+			WITH CTE (	CODE_ID, PARENT_CODE_ID, KR_NAME, EN_NAME, CODE_VALUE, CODE_DESC, 
+						CODE_TYPE, CODE_ORDER, CODE_USE, REGIST_DATE, MODIFY_DATE, LEV ) AS 
+			(	SELECT	CODE_ID, PARENT_CODE_ID, KR_NAME, EN_NAME, CODE_VALUE, CODE_DESC, 
+						CODE_TYPE, CODE_ORDER, CODE_USE, REGIST_DATE, MODIFY_DATE, 1 LEV
+				FROM 	IKEP4_AP_CODE
+				WHERE  	PARENT_CODE_ID = '-1'
+				UNION ALL
+				SELECT 	iac.CODE_ID, iac.PARENT_CODE_ID, iac.KR_NAME, iac.EN_NAME, iac.CODE_VALUE, iac.CODE_DESC, 
+						iac.CODE_TYPE, iac.CODE_ORDER, iac.CODE_USE, iac.REGIST_DATE, iac.MODIFY_DATE, LEV + 1
+				FROM 	IKEP4_AP_CODE iac,
+						CTE
+				WHERE  	iac.PARENT_CODE_ID = CTE.CODE_ID 
+						AND LEV < #iLevel#
+			)
+			SELECT 	CODE_ID, PARENT_CODE_ID, KR_NAME, EN_NAME, CODE_VALUE, CODE_DESC, 
+					CODE_TYPE, CODE_ORDER, CODE_USE, REGIST_DATE, MODIFY_DATE,
+					(SELECT COUNT(CODE_ID) FROM IKEP4_AP_CODE WHERE PARENT_CODE_ID = CTE.CODE_ID) CHILD_COUNT
+			FROM	CTE
+			ORDER BY PARENT_CODE_ID, CODE_ORDER, KR_NAME
+		]]>
+	</select>
+	
+	<!-- ANSI -->
+	<!-- 선택그룹 하위목록 가져오기 -->
+	<select id="listGroupApCode" parameterClass="String" resultMap="ApCodeResult">
+		/* [ApCode_SqlMap.xml] listGroupApCode */
+		SELECT <include refid="sqlColumnList" />
+		     , (SELECT COUNT(code_id) FROM IKEP4_AP_CODE WHERE parent_code_id = iac.code_id) CHILD_COUNT
+		FROM   IKEP4_AP_CODE iac
+		<dynamic prepend="where">
+			<isNotNull>
+				iac.PARENT_CODE_ID = #codeId#
+			</isNotNull>
+		</dynamic>
+		ORDER  BY iac.CODE_ORDER, iac.KR_NAME
+	</select>
+	
+	<!-- ANSI -->
+	<!-- 공통코드 목록 가져오기 [Korea] -->
+	<select id="listGroupApCodeByValueKr" parameterClass="String" resultClass="ApCode">
+		/* [ApCode_SqlMap.xml] listGroupApCodeByValueKr */
+		SELECT CODE_ID 		AS codeId
+			 , KR_NAME		AS krName
+			 , EN_NAME		AS enName
+			 , CODE_VALUE	AS codeValue
+			 , KR_NAME		AS codeName
+		FROM   IKEP4_AP_CODE IAC
+		WHERE  IAC.CODE_USE = 'Y'
+		<isNotNull>
+				AND IAC.PARENT_CODE_ID = (SELECT CODE_ID FROM IKEP4_AP_CODE WHERE CODE_VALUE = #codeValue# )
+		</isNotNull>
+		ORDER  BY IAC.CODE_ORDER, IAC.KR_NAME
+	</select>
+	
+	<!-- ANSI -->
+	<!-- 공통코드 목록 가져오기 [English] -->
+	<select id="listGroupApCodeByValueEn" parameterClass="String" resultClass="ApCode">
+		/* [ApCode_SqlMap.xml] listGroupApCodeByValueEn */
+		SELECT CODE_ID 		AS codeId
+			 , KR_NAME		AS krName
+			 , EN_NAME		AS enName
+			 , CODE_VALUE	AS codeValue
+			 , EN_NAME		AS codeName
+		FROM   IKEP4_AP_CODE IAC
+		WHERE  IAC.CODE_USE = 'Y'
+		<isNotNull>
+				AND IAC.PARENT_CODE_ID = (SELECT CODE_ID FROM IKEP4_AP_CODE WHERE CODE_VALUE = #codeValue# )
+		</isNotNull>
+		ORDER  BY IAC.CODE_ORDER, IAC.EN_NAME
+	</select>
+	
+	<!-- ANSI -->
+	<select id="select" parameterClass="String" resultMap="ApCodeResult">
+		/* [ApCode_SqlMap.xml] select */
+		
+		SELECT <include refid="sqlColumnList" /> , '' CHILD_COUNT
+		FROM 	IKEP4_AP_CODE 
+		WHERE 	CODE_ID = #codeId#
+	</select>
+	
+	<!-- ANSI -->
+	<select id="selectCount" parameterClass="String" resultClass="Integer">
+		/* [ApCode_SqlMap.xml] selectCount */
+		
+	  	<![CDATA[
+		   	SELECT COUNT(CODE_ID) FROM IKEP4_AP_CODE WHERE CODE_ID = #codeId#
+	   	]]>
+	</select>
+	
+	<!-- ANSI -->
+	<select id="selectChildCount" parameterClass="String" resultClass="Integer">
+		/* [ApCode_SqlMap.xml] selectChildCount */
+		
+	  	<![CDATA[
+		   	SELECT COUNT(CODE_ID) FROM IKEP4_AP_CODE WHERE PARENT_CODE_ID = #parentCodeId#
+	   	]]>
+	</select>
+	
+	<!-- ANSI -->	
+	<insert id="create" parameterClass="ApCode">
+		/* [ApCode_SqlMap.xml] create */
+		
+      	<![CDATA[ 
+           INSERT INTO IKEP4_AP_CODE 
+           		  (CODE_ID		, PARENT_CODE_ID	, KR_NAME		, EN_NAME		, CODE_VALUE
+				, CODE_DESC		, CODE_TYPE			, CODE_ORDER	, CODE_USE		, REGIST_DATE
+				, MODIFY_DATE)
+           VALUES (#codeId#		, #parentCodeId#	, #krName#		, #enName#		, #codeValue#
+           		, #codeDesc#	, #codeType#		, #codeOrder#	, #codeUse#		, CURRENT_TIMESTAMP
+				, CURRENT_TIMESTAMP)
+       	]]>
+   	</insert>
+   	
+   	<!-- ANSI -->
+   	<update id="update" parameterClass="ApCode">
+   		/* [ApCode_SqlMap.xml] update */
+		
+		   	UPDATE 	IKEP4_AP_CODE 
+		   	SET 	MODIFY_DATE 	= CURRENT_TIMESTAMP
+			
+			<isNotEmpty property="krName">
+				, KR_NAME 		= #krName#
+			</isNotEmpty>
+			<isNotEmpty property="enName">
+				, EN_NAME 		= #enName#
+			</isNotEmpty>
+			<isNotEmpty property="codeValue">
+				, CODE_VALUE 	= #codeValue#
+			</isNotEmpty>
+			<isNotEmpty property="codeDesc">
+				, CODE_DESC 	= #codeDesc#
+			</isNotEmpty>
+			<isNotEmpty property="codeType">
+				, CODE_TYPE 	= #codeType#
+			</isNotEmpty>
+			<isNotEmpty property="codeOrder">
+				, CODE_ORDER 	= #codeOrder#
+			</isNotEmpty>
+			<isNotEmpty property="codeUse">
+				, CODE_USE 		= #codeUse#
+			</isNotEmpty>
+			
+		   	WHERE 	CODE_ID 		= #codeId#
+	</update>
+	
+	<!-- ANSI -->
+	<update id="updateApCodeOrder" parameterClass="ApCode">
+   		/* [ApCode_SqlMap.xml] updateApCodeOrder */
+		
+	  	<![CDATA[
+		   	UPDATE 	IKEP4_AP_CODE 
+		   	SET 	CODE_ORDER 		= #codeOrder#
+			   	  , MODIFY_DATE 	= CURRENT_TIMESTAMP 
+		   	WHERE 	CODE_ID 		= #codeId#
+	   	]]>
+	</update>
+   
+   	<!-- ANSI -->
+	<delete id="delete" parameterClass="String">
+		/* [ApCode_SqlMap.xml] delete */
+		
+      <![CDATA[
+	       	DELETE FROM IKEP4_AP_CODE WHERE CODE_ID = #codeId#
+	   ]]>
+	</delete>
+	
+	
+</sqlMap>

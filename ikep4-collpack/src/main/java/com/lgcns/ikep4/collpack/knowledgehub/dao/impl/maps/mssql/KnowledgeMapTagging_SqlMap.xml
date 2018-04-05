@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="collpack.knowledgehub.dao.KnowledgeMapTagging">
+	<typeAlias alias="KnowledgeMapTaggingPK" type="com.lgcns.ikep4.collpack.knowledgehub.model.KnowledgeMapTaggingPK"/>
+	<typeAlias alias="KnowledgeMapTagging" type="com.lgcns.ikep4.collpack.knowledgehub.model.KnowledgeMapTagging"/>
+
+	<resultMap class="KnowledgeMapTagging" id="result">
+		<result column="TAG" property="tag" jdbcType="VARCHAR" javaType="String"/>
+		<result column="CATEGORY_ID" property="categoryId" jdbcType="VARCHAR" javaType="String"/>
+		<result column="SORT_ORDER" property="sortOrder" jdbcType="NUMBER" javaType="Integer"/>
+	</resultMap>
+
+<!-- ANSI -->
+<!-- Tagging 입력 -->
+	<insert id="create" parameterClass="KnowledgeMapTagging">
+	<![CDATA[
+		INSERT /* [KnowledgeMapTagging_SqlMap.xml] collpack.knowledgehub.dao.KnowledgeMapTagging.create */
+		       INTO IKEP4_KM_TAGGING (
+		       TAG
+		     , CATEGORY_ID
+		     , SORT_ORDER
+		       )
+		VALUES (
+		       #tag#
+		     , #categoryId#
+		     , #sortOrder#
+		       )
+	]]>
+	</insert>
+
+<!-- ANSI -->
+<!-- Tagging 수정 -->
+	<update id="update" parameterClass="KnowledgeMapTagging">
+	<![CDATA[
+		UPDATE /* [KnowledgeMapTagging_SqlMap.xml] collpack.knowledgehub.dao.KnowledgeMapTagging.update */
+		       IKEP4_KM_TAGGING
+		   SET SORT_ORDER = #sortOrder#
+		 WHERE TAG = #tag#
+		   AND CATEGORY_ID = #categoryId#
+	]]>
+	</update>
+
+<!-- ANSI -->
+<!-- Tagging 삭제 -->
+	<delete id="remove" parameterClass="KnowledgeMapTaggingPK">
+	<![CDATA[
+		DELETE /* [KnowledgeMapTagging_SqlMap.xml] collpack.knowledgehub.dao.KnowledgeMapTagging.remove */
+		       IKEP4_KM_TAGGING
+		 WHERE TAG = #tag#
+		   AND CATEGORY_ID = #categoryId#
+	]]>
+	</delete>
+
+<!-- ANSI -->
+<!-- Tagging 조회 -->
+	<select id="get" parameterClass="KnowledgeMapTaggingPK" resultMap="result">
+	<![CDATA[
+		SELECT /* [KnowledgeMapTagging_SqlMap.xml] kcollpack.knowledgehub.dao.KnowledgeMapTagging.get */
+		       TAG
+		     , CATEGORY_ID
+		     , SORT_ORDER
+		  FROM IKEP4_KM_TAGGING
+		 WHERE TAG = #tag#
+		   AND CATEGORY_ID = #categoryId#
+	]]>
+	</select>
+
+<!-- ANSI -->
+<!-- Tagging 조회 -->
+	<select id="list" resultMap="result">
+	<![CDATA[
+		SELECT /* [KnowledgeMapTagging_SqlMap.xml] collpack.knowledgehub.dao.KnowledgeMapTagging.list */
+		       TAG
+		     , CATEGORY_ID
+		     , SORT_ORDER
+		  FROM IKEP4_KM_TAGGING
+		 ORDER BY SORT_ORDER
+	]]>
+	</select>
+
+<!-- ANSI -->
+<!-- Category별 Tagging 조회 -->
+	<select id="listByCategoryId" parameterClass="string" resultMap="result">
+	<![CDATA[
+		SELECT /* [KnowledgeMapTagging_SqlMap.xml] collpack.knowledgehub.dao.KnowledgeMapTagging.listByCategoryId */
+		       TAG
+		     , CATEGORY_ID
+		     , SORT_ORDER
+		  FROM IKEP4_KM_TAGGING
+		 WHERE CATEGORY_ID = #categoryId#
+		 ORDER BY SORT_ORDER
+	]]>
+	</select>
+
+<!-- ANSI -->
+<!-- Tagging 삭제  (categoryId 에 해당하는 자료 일괄삭제)-->
+	<delete id="removeByCategoryId" parameterClass="String">
+	<![CDATA[
+		DELETE /* [KnowledgeMapTagging_SqlMap.xml] collpack.knowledgehub.dao.KnowledgeMapTagging.removeByCategoryId */
+		       IKEP4_KM_TAGGING
+		 WHERE CATEGORY_ID = #categoryId#
+	]]>
+	</delete>
+
+<!-- MS SQL -->
+<!-- Tagging 삭제  (categoryId 에 해당하는 자료 일괄삭제)-->
+	<delete id="removeByCategoryIdHierarchy" parameterClass="String">
+	<![CDATA[
+		WITH CTE AS (
+			SELECT	*
+			FROM	IKEP4_KM_CATEGORY
+			WHERE	CATEGORY_ID = #categoryId#
+			UNION ALL
+			SELECT	C.*
+			FROM	IKEP4_KM_CATEGORY C, CTE
+			WHERE	CTE.CATEGORY_ID = C.CATEGORY_PARENT_ID
+		)
+		DELETE /* [KnowledgeMapTagging_SqlMap.xml] collpack.knowledgehub.dao.KnowledgeMapTagging.removeByCategoryIdHierarchy */
+		       IKEP4_KM_TAGGING
+		 WHERE CATEGORY_ID IN (
+		                       SELECT CATEGORY_ID FROM CTE
+		                      )
+	]]>
+	</delete>
+
+</sqlMap>

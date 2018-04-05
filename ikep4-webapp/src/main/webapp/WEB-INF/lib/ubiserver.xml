@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<UbiServer version="4.0.0000.0000">
+	<Environment licensePath=""
+		admin="YWRtcEBzc3dkIQ=="
+		adminImgUri="./ubi4/js/images"
+		xslPath=""
+		osCharset="KSC5601" />
+	<LogInfo logPath=""
+		timeZone="GMT+9"
+		rowSize="5"
+		backupStyle="date"
+		backupSize="30"
+		backupPattern="yyyy-MM-dd"
+		useLog="true"
+		info="false" />
+	<Resources>
+		<DataSource id="SAMPLE_DB1" type="lookup" dataSourceName="jdbc/tutorial" charset="KSC5601" />
+		<DataSource id="SAMPLE_DB2" type="nonlookup" dataSourceName="jdbc/oradb" charset="KSC5601" />
+		<DataSource id="SAMPLE_DB4" type="lookup" dataSourceName="jdbc/ikep4ds" charset="KSC5601" />
+		<DataSource id="SAMPLE_DB3"
+			type="direct"
+			vendor="Oracle"
+			driverClassName="oracle.jdbc.driver.OracleDriver"
+			url="jdbc:oracle:thin:@192.168.0.1:1521:SID"
+			charset="KSC5601"
+			username="scott"
+			passsword="tiger" />
+		<DataSource id="MOORIM_SAP"
+			type="direct"
+			vendor="SAP"
+			driverClassName="com.ubidcs.sap.driver.UbiSAPDriver"
+			url="jdbc:ubidbc:sap:@10.1.5.15;sapclient=300;lang=KO;sn=00;type=as;r3name=MED;group=SPACE"
+			charset="KSC5601"
+			username="eptest"
+			passsword="a1234567" />
+	</Resources>
+	<UbiServiceInfo urftype="normal" connectionTime="1800000">
+		<UbiService ip="localhost" port="16996" />
+	</UbiServiceInfo>
+</UbiServer>

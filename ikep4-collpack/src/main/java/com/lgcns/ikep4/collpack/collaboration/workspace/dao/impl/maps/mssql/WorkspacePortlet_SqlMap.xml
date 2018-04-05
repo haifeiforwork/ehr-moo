@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="collpack.collaboration.workspace.dao.WorkspacePortlet">
+
+	<typeAlias alias="WorkspacePortlet" type="com.lgcns.ikep4.collpack.collaboration.workspace.model.WorkspacePortlet" />
+
+	<sql id="sqlColumnList">
+		PORTLET_ID AS portletId,
+		PORTLET_NAME AS portletName,
+		VIEW_URL AS viewUrl,
+		SORT_ORDER AS sortOrder,
+		IS_DEFAULT AS isDefault,
+		PORTLET_ENGLISH_NAME AS portletEnglishName
+	</sql>
+
+	<!-- ANSI -->
+	<select id="get" parameterClass="java.lang.String" resultClass="WorkspacePortlet">
+		SELECT /* [WorkspacePortlet_SqlMap.xml] collpack.collaboration.workspace.dao.WorkspacePortlet.get */
+			<include refid="collpack.collaboration.workspace.dao.WorkspacePortlet.sqlColumnList" />
+		FROM 
+			IKEP4_WS_PORTLET
+		WHERE
+			PORTLET_ID = #portletId#
+	</select>
+
+	<!-- ANSI -->
+	<select id="exists" parameterClass="java.lang.String"	resultClass="int">
+		SELECT /* [WorkspacePortlet_SqlMap.xml] collpack.collaboration.workspace.dao.WorkspacePortlet.exists */
+			COUNT(*)
+		FROM
+			IKEP4_WS_PORTLET
+		WHERE
+			PORTLET_ID = #portletId# 
+	</select>
+
+	<!-- ANSI -->
+	<select id="listAllPortlet" parameterClass="WorkspacePortlet" resultClass="WorkspacePortlet">
+		SELECT /* [WorkspacePortlet_SqlMap.xml]	collpack.collaboration.workspace.dao.WorkspacePortlet.listAllPortlet */
+			<include refid="collpack.collaboration.workspace.dao.WorkspacePortlet.sqlColumnList" />
+		FROM 
+			IKEP4_WS_PORTLET
+		<dynamic>
+			<!-- 디폴트 포틀릿 요청시에만 -->
+			<isNotEmpty property="isDefault">
+				<isEqual property="isDefault" compareValue="1" prepend="WHERE">
+					IS_DEFAULT = #isDefault#
+				</isEqual>
+			</isNotEmpty>
+		</dynamic>
+		ORDER BY SORT_ORDER
+	</select>
+
+	<!-- ANSI -->
+	<select id="countAllPortlet" parameterClass="WorkspacePortlet"	resultClass="int">
+		SELECT /* [WorkspacePortlet_SqlMap.xml] collpack.collaboration.workspace.dao.WorkspacePortlet.countAllPortlet */
+		COUNT(*)
+		FROM IKEP4_WS_PORTLET
+		<dynamic>
+			<!-- 디폴트 포틀릿 요청시에만 -->
+			<isNotEmpty property="isDefault">
+				<isEqual property="isDefault" compareValue="1" prepend="WHERE">
+					IS_DEFAULT = #isDefault#
+				</isEqual>
+			</isNotEmpty>
+		</dynamic>
+		ORDER BY SORT_ORDER
+	</select>
+	
+	<!-- MS SQL -->
+	<select id="listAllWorkspacePortlet" parameterClass="String" resultClass="WorkspacePortlet">
+		SELECT /* [WorkspacePortlet_SqlMap.xml]	collpack.collaboration.workspace.dao.WorkspacePortlet.listAllWorkspacePortlet */
+			PORTLET_ID AS portletId,
+			PORTLET_NAME AS portletName,
+			VIEW_URL AS viewUrl,
+			SORT_ORDER AS sortOrder,
+			IS_DEFAULT AS isDefault,
+			BOARD_ID	AS boardId,
+			PORTLET_ENGLISH_NAME AS portletEnglishName
+		FROM 
+		(
+			SELECT
+				PORTLET_ID,
+				PORTLET_NAME,
+				VIEW_URL,
+				SORT_ORDER , 
+				IS_DEFAULT,
+				'' AS BOARD_ID,
+				PORTLET_ENGLISH_NAME
+			FROM  
+				IKEP4_WS_PORTLET 
+			WHERE 
+				IS_DEFAULT=1
+				
+			UNION ALL
+			
+			SELECT
+				'WS_PORTLET_09' AS PORTLET_ID,
+				BOARD_NAME AS PORTLET_NAME,
+				'' VIEW_URL,
+				(Row_number() OVER (ORDER BY B.BOARD_ID)) + 6 AS SORT_ORDER,
+				0 AS IS_DEFAULT,
+				BOARD_ID,
+				BOARD_NAME PORTLET_ENGLISH_NAME
+			FROM 
+				IKEP4_WS_BD_BOARD B  
+			WHERE
+				WORKSPACE_ID =#workspaceId#
+				AND BOARD_TYPE=0 AND IS_DELETE=0
+		) TBL
+		ORDER BY 
+			SORT_ORDER 
+	</select>
+
+	<!-- MS SQL -->
+	<select id="countAllWorkspacePortlet" parameterClass="String"	resultClass="int">
+		SELECT /* [WorkspacePortlet_SqlMap.xml] collpack.collaboration.workspace.dao.WorkspacePortlet.countAllWorkspacePortlet */
+			COUNT(*)
+		FROM 
+		(
+			SELECT
+				PORTLET_ID,
+				PORTLET_NAME,
+				VIEW_URL,
+				SORT_ORDER , 
+				IS_DEFAULT
+			FROM 
+				IKEP4_WS_PORTLET A
+			WHERE 
+				IS_DEFAULT=1
+			UNION ALL
+			SELECT
+				'WS_PORTLET_09' AS PORTLET_ID,
+				BOARD_NAME AS PORTLET_NAME,
+				'' AS VIEW_URL,
+				(Row_number() OVER (ORDER BY B.BOARD_ID)) + 6 AS SORT_ORDER,
+				0 AS IS_DEFAULT
+			FROM 
+				IKEP4_WS_BD_BOARD B  
+			WHERE
+				WORKSPACE_ID =#workspaceId#
+				AND BOARD_TYPE=0 AND IS_DELETE=0
+		) TBL
+	</select>
+	
+	<!-- ANSI -->
+	<insert id="create" parameterClass="WorkspacePortlet">
+	<![CDATA[
+		INSERT INTO IKEP4_WS_PORTLET /* [WorkspacePortlet_SqlMap.xml] collpack.collaboration.workspace.dao.WorkspacePortlet.create */
+		(
+			PORTLET_ID,		PORTLET_NAME,	VIEW_URL,	SORT_ORDER,		IS_DEFAULT	,PORTLET_ENGLISH_NAME
+		) 
+		VALUES 
+		(
+			#portletId#,	#portletName#,	#viewUrl#,	#sortOrder#,	#isDefault#, #portletEnglishName#
+		)
+	]]>			
+	</insert>
+
+	<!-- ANSI -->
+	<update id="update" parameterClass="WorkspacePortlet">
+		UPDATE IKEP4_WS_PORTLET
+			/* [WorkspacePortlet_SqlMap.xml] collpack.collaboration.workspace.dao.WorkspacePortlet.update */
+		SET 
+			PORTLET_NAME = #portletName#,
+			VIEW_URL = #viewUrl#,
+			IS_DEFAULT = #isDefault#,
+			SORT_ORDER = #sortOrder#
+		WHERE
+			PORTLET_ID = #portletId# 
+	</update>
+
+	<!-- ANSI -->
+	<delete id="physicalDelete" parameterClass="java.lang.String">
+		DELETE FROM IKEP4_WS_PORTLET 
+			/* [WorkspacePortlet_SqlMap.xml] collpack.collaboration.workspace.dao.WorkspacePortlet.physicalDelete */
+		WHERE 
+			PORTLET_ID = #portletId#  
+	</delete>
+
+</sqlMap> 

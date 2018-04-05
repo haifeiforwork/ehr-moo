@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="collpack.workmanual.dao.approvalLine">
+	<typeAlias alias = "ApprovalLine" type="com.lgcns.ikep4.collpack.workmanual.model.ApprovalLine"/>
+	<typeAlias alias = "ApprovalLinePk" type="com.lgcns.ikep4.collpack.workmanual.model.ApprovalLinePk"/>
+	<typeAlias alias = "ManualVersionPk" type="com.lgcns.ikep4.collpack.workmanual.model.ManualVersionPk"/>
+	<typeAlias alias = "ManualPk" type="com.lgcns.ikep4.collpack.workmanual.model.ManualPk"/>
+	
+	<!-- 테이블 조회 결과 -->
+	<resultMap id="approvalLineResult" class="ApprovalLine">
+		<result property="approvalId"                       column="APPROVAL_ID"                   />
+		<result property="approvalLine"                     column="APPROVAL_LINE"                 />
+		<result property="approvalUserId"                   column="APPROVAL_USER_ID"              />
+		<result property="approvalDate"                     column="APPROVAL_DATE"                 />
+		<result property="approvalResult"                   column="APPROVAL_RESULT"               />
+		<result property="approvalComment"                  column="APPROVAL_COMMENT"              />
+		<result property="approvalUserName"                 column="APPROVAL_USER_NAME"            />
+		<result property="approvalUserTeamName"             column="APPROVAL_USER_TEAM_NAME"       />
+		<result property="approvalUserJobTitleName"         column="APPROVAL_USER_JOB_TITLE_NAME"  />
+		<result property="approvalUserEnglishName"          column="APPROVAL_USER_ENGLISH_NAME"    />
+		<result property="approvalUserTeamEnglishName"      column="TEAM_ENGLISH_NAME"             />
+		<result property="approvalUserJobTitleEnglishName"  column="JOB_TITLE_ENGLISH_NAME"        />
+	</resultMap>
+	
+	<insert id="create" parameterClass="ApprovalLine"> 
+      <![CDATA[ 
+           INSERT INTO IKEP4_WM_APPROVAL_LINE (/* [ApprovalLine_SqlMap.xml] ApprovalLine.create */
+           		APPROVAL_ID, APPROVAL_LINE, APPROVAL_USER_ID, APPROVAL_RESULT)  
+           VALUES (#approvalId#, #approvalLine#, #approvalUserId#, #approvalResult#)
+       ]]>
+   </insert>
+   
+	<select id="get" parameterClass="ApprovalLinePk" resultMap="approvalLineResult">
+	  <![CDATA[
+		   SELECT /* [ApprovalLine_SqlMap.xml] ApprovalLine.get */
+				  A.*,
+				  '' AS APPROVAL_USER_NAME,
+				  '' AS APPROVAL_USER_TEAM_NAME,
+				  '' AS APPROVAL_USER_JOB_TITLE_NAME,       
+				  '' AS APPROVAL_USER_ENGLISH_NAME,         
+				  '' AS TEAM_ENGLISH_NAME,    
+				  '' AS JOB_TITLE_ENGLISH_NAME
+		     FROM IKEP4_WM_APPROVAL_LINE A
+		    WHERE A.APPROVAL_ID = #approvalId#
+		      AND A.APPROVAL_LINE = #approvalLine# 
+	   ]]>
+	</select>
+	
+	<update id="update" parameterClass="ApprovalLine">
+	  <![CDATA[
+		   UPDATE IKEP4_WM_APPROVAL_LINE /* [ApprovalLine_SqlMap.xml] ApprovalLine.update */ 
+		      SET APPROVAL_USER_ID   = #approvalUserId#,
+				  APPROVAL_DATE      = SYSDATE,
+				  APPROVAL_RESULT    = #approvalResult#,
+				  APPROVAL_COMMENT   = #approvalComment#
+		    WHERE APPROVAL_ID = #approvalId#
+		      AND APPROVAL_LINE = #approvalLine# 
+	   ]]>
+	</update>
+   
+   <delete id="remove" parameterClass="ApprovalLinePk">
+      <![CDATA[
+	       DELETE FROM IKEP4_WM_APPROVAL_LINE /* [ApprovalLine_SqlMap.xml] ApprovalLine.remove */ 
+	        WHERE APPROVAL_ID = #approvalId#
+		      AND APPROVAL_LINE = #approvalLine# 
+	   ]]>
+	</delete>
+	
+	<select id="count" parameterClass="ApprovalLinePk" resultClass="java.lang.Integer">
+	  <![CDATA[
+		   SELECT /* [ApprovalLine_SqlMap.xml] ApprovalLine.count */ 
+		   		  COUNT(1) 
+		     FROM IKEP4_WM_APPROVAL_LINE 
+		    WHERE APPROVAL_ID = #approvalId#
+		      AND APPROVAL_LINE = #approvalLine# 
+	   ]]>
+	</select>
+   
+	<!-- //결재자 정보 - ManualId -->
+	<select id="listApprovalLineByManualId" parameterClass="ManualPk" resultMap="approvalLineResult">
+	  <![CDATA[
+		   SELECT /* [ApprovalLine_SqlMap.xml] ApprovalLine.listApprovalLineByManualId */
+				  D.*,
+				  E.USER_NAME AS APPROVAL_USER_NAME,
+				  E.TEAM_NAME AS APPROVAL_USER_TEAM_NAME,
+				  F.JOB_TITLE_NAME AS APPROVAL_USER_JOB_TITLE_NAME,       
+				  E.USER_ENGLISH_NAME AS APPROVAL_USER_ENGLISH_NAME,         
+				  E.TEAM_ENGLISH_NAME AS TEAM_ENGLISH_NAME,    
+				  F.JOB_TITLE_ENGLISH_NAME AS JOB_TITLE_ENGLISH_NAME
+		     FROM IKEP4_WM_MANUAL A,
+		     	  IKEP4_WM_MANUAL_VERSION B,
+		          IKEP4_WM_APPROVAL C,
+		          IKEP4_WM_APPROVAL_LINE D,
+		          IKEP4_EV_USER E, 
+                  IKEP4_EV_JOB_TITLE F
+		    WHERE A.MANUAL_ID = #manualId#
+		      AND A.PORTAL_ID = #portalId#
+		      AND B.MANUAL_ID = A.MANUAL_ID
+		      AND B.VERSION = A.VERSION
+		      AND C.MANUAL_ID = B.MANUAL_ID
+		      AND C.VERSION_ID = B.VERSION_ID
+		      AND D.APPROVAL_ID = C.APPROVAL_ID
+			  AND E.USER_ID = D.APPROVAL_USER_ID
+		      AND F.JOB_TITLE_CODE = E.JOB_TITLE_CODE
+		      AND F.PORTAL_ID = E.PORTAL_ID
+		    ORDER BY D.APPROVAL_LINE
+	   ]]>
+	</select>
+   
+	<!-- //결재자 정보 - VersionId -->
+	<select id="listApprovalLineByVersionId" parameterClass="ManualVersionPk" resultMap="approvalLineResult">
+	  <![CDATA[
+		   SELECT /* [ApprovalLine_SqlMap.xml] ApprovalLine.listApprovalLineByVersionId */
+				  D.*,
+				  E.USER_NAME AS APPROVAL_USER_NAME,
+				  E.TEAM_NAME AS APPROVAL_USER_TEAM_NAME,
+				  F.JOB_TITLE_NAME AS APPROVAL_USER_JOB_TITLE_NAME,       
+				  E.USER_ENGLISH_NAME AS APPROVAL_USER_ENGLISH_NAME,         
+				  E.TEAM_ENGLISH_NAME AS TEAM_ENGLISH_NAME,    
+				  F.JOB_TITLE_ENGLISH_NAME AS JOB_TITLE_ENGLISH_NAME
+		     FROM IKEP4_WM_MANUAL_VERSION B,
+		          IKEP4_WM_APPROVAL C,
+		          IKEP4_WM_APPROVAL_LINE D,
+		          IKEP4_EV_USER E, 
+                  IKEP4_EV_JOB_TITLE F
+		    WHERE B.VERSION_ID = #versionId#
+		      AND B.PORTAL_ID = #portalId#
+		      AND C.MANUAL_ID = B.MANUAL_ID
+		      AND C.VERSION_ID = B.VERSION_ID
+		      AND D.APPROVAL_ID = C.APPROVAL_ID
+			  AND E.USER_ID = D.APPROVAL_USER_ID
+		      AND F.JOB_TITLE_CODE = E.JOB_TITLE_CODE
+		      AND F.PORTAL_ID = E.PORTAL_ID
+		    ORDER BY D.APPROVAL_LINE
+	   ]]>
+	</select>
+   
+	<!-- //결재정보 삭제 -->
+	<delete id="removeAll" parameterClass="java.lang.String">
+      <![CDATA[
+	       DELETE FROM IKEP4_WM_APPROVAL_LINE /* [ApprovalLine_SqlMap.xml] ApprovalLine.removeAll */ 
+	        WHERE APPROVAL_ID = #approvalId#
+	   ]]>
+	</delete>
+   
+	<!-- //결재자 정보 -->
+	<select id="listApprovalLine" parameterClass="java.lang.String" resultMap="approvalLineResult">
+	  <![CDATA[
+		   SELECT /* [ApprovalLine_SqlMap.xml] ApprovalLine.listApprovalLine */
+				  A.*,
+				  B.USER_NAME AS APPROVAL_USER_NAME,
+				  B.TEAM_NAME AS APPROVAL_USER_TEAM_NAME,
+				  C.JOB_TITLE_NAME AS APPROVAL_USER_JOB_TITLE_NAME,       
+				  B.USER_ENGLISH_NAME AS APPROVAL_USER_ENGLISH_NAME,         
+				  B.TEAM_ENGLISH_NAME AS TEAM_ENGLISH_NAME,    
+				  C.JOB_TITLE_ENGLISH_NAME AS JOB_TITLE_ENGLISH_NAME
+		     FROM IKEP4_WM_APPROVAL_LINE A,
+		          IKEP4_EV_USER B, 
+                  IKEP4_EV_JOB_TITLE C
+		    WHERE A.APPROVAL_ID = #approvalId#
+			  AND B.USER_ID = A.APPROVAL_USER_ID
+		      AND C.JOB_TITLE_CODE = B.JOB_TITLE_CODE
+		      AND C.PORTAL_ID = B.PORTAL_ID
+		    ORDER BY A.APPROVAL_LINE
+	   ]]>
+	</select>
+	
+	<!-- //다음 결재자 미결재 상태로 변경 -->
+	<update id="updateNextApproval" parameterClass="ApprovalLinePk">
+	  <![CDATA[
+		   UPDATE IKEP4_WM_APPROVAL_LINE /* [ApprovalLine_SqlMap.xml] ApprovalLine.updateNextApproval */ 
+		      SET APPROVAL_RESULT = 'B'
+		    WHERE APPROVAL_ID = #approvalId#
+		      AND APPROVAL_LINE = #approvalLine# 
+	   ]]>
+	</update>
+	
+	<!-- //결재 순번 증가 -->
+	<update id="updateApprovalLineUp" parameterClass="ApprovalLinePk">
+	  <![CDATA[
+		   UPDATE IKEP4_WM_APPROVAL_LINE /* [ApprovalLine_SqlMap.xml] ApprovalLine.updateApprovalLineUp */ 
+		      SET APPROVAL_LINE = APPROVAL_LINE + 1
+		    WHERE APPROVAL_ID = #approvalId#
+		      AND APPROVAL_LINE > #approvalLine# 
+	   ]]>
+	</update>
+	
+	<!-- //결재 순번 감소 -->
+	<update id="updateApprovalLineDown" parameterClass="ApprovalLinePk">
+	  <![CDATA[
+		   UPDATE IKEP4_WM_APPROVAL_LINE /* [ApprovalLine_SqlMap.xml] ApprovalLine.updateApprovalLineDown */ 
+		      SET APPROVAL_LINE = APPROVAL_LINE - 1
+		    WHERE APPROVAL_ID = #approvalId#
+		      AND APPROVAL_LINE > #approvalLine# 
+	   ]]>
+	</update>
+</sqlMap>

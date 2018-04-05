@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="portal.portlet.portletCampaignMessages" >
+    <typeAlias alias="PortletCampaignMessages" type="com.lgcns.ikep4.portal.portlet.model.PortletCampaignMessages"/>
+
+    <!-- ANSI -->
+    <insert id="createPortletCampaignMessages" parameterClass="PortletCampaignMessages"> 
+      <![CDATA[
+           /* [PortletCampaignMessages_SqlMap.xml] portal.portlet.portletCampaignMessages.createPortletCampaignMessages */
+           INSERT INTO IKEP4_PO_PORTLET_CAMPAIGNMESSAGES (PORTLET_CONFIG_ID, IMAGE_FILE_ID, BOARD_ID, ITEM_ID, TARGET, REGISTER_ID, REGISTER_NAME, REGIST_DATE, UPDATER_ID, UPDATER_NAME, UPDATE_DATE,SUMMARY,LOCATION,IMG_WIDTH,IMG_HEIGHT,SUBJECT)  
+           VALUES (#portletConfigId#, #imageFileId#, #boardId#, #itemId#, #target#, #registerId#, #registerName#, CURRENT_TIMESTAMP, #updaterId#, #updaterName#, CURRENT_TIMESTAMP ,#summary#,#location#,#imgWidth#,#imgHeight#,#subject#)
+       ]]>
+   </insert>
+   
+   <insert id="createPortletManagementPolicy" parameterClass="PortletCampaignMessages"> 
+      <![CDATA[
+           /* [PortletCampaignMessages_SqlMap.xml] portal.portlet.portletCampaignMessages.createPortletManagementPolicy */
+           INSERT INTO IKEP4_PO_PORTLET_MANAGEMENTPOLICY (PORTLET_CONFIG_ID, IMAGE_FILE_ID, BOARD_ID, ITEM_ID, TARGET, REGISTER_ID, REGISTER_NAME, REGIST_DATE, UPDATER_ID, UPDATER_NAME, UPDATE_DATE,SUMMARY,LOCATION,IMG_WIDTH,IMG_HEIGHT,SUBJECT)  
+           VALUES (#portletConfigId#, #imageFileId#, #boardId#, #itemId#, #target#, #registerId#, #registerName#, CURRENT_TIMESTAMP, #updaterId#, #updaterName#, CURRENT_TIMESTAMP ,#summary#,#location#,#imgWidth#,#imgHeight#,#subject#)
+       ]]>
+   </insert>
+
+    <!-- ANSI -->
+    <select id="getPortletCampaignMessages" resultClass="PortletCampaignMessages">
+      <![CDATA[
+           /* [PortletCampaignMessages_SqlMap.xml] portal.portlet.portletCampaignMessages.getPortletCampaignMessages */
+           SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
+           SELECT
+              PORTLET_CONFIG_ID  portletConfigId,
+              IMAGE_FILE_ID     imageFileId, 
+              BOARD_ID          boardId,
+              ITEM_ID           itemId,
+              TARGET            target,
+              REGISTER_ID       registerId, 
+              REGISTER_NAME     registerName, 
+              REGIST_DATE       registDate, 
+              UPDATER_ID        updaterId, 
+              UPDATER_NAME      updaterName, 
+              UPDATE_DATE       updateDate,
+              SUMMARY           summary,
+              LOCATION          location,
+              IMG_WIDTH         imgWidth,
+              IMG_HEIGHT        imgHeight,
+              SUBJECT           subject
+            FROM IKEP4_PO_PORTLET_CAMPAIGNMESSAGES
+       ]]>
+    </select>
+    
+    <select id="getPortletManagementPolicy" resultClass="PortletCampaignMessages">
+      <![CDATA[
+           /* [PortletCampaignMessages_SqlMap.xml] portal.portlet.portletCampaignMessages.getPortletManagementPolicy */
+           SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
+           SELECT
+              PORTLET_CONFIG_ID  portletConfigId,
+              IMAGE_FILE_ID     imageFileId, 
+              BOARD_ID          boardId,
+              ITEM_ID           itemId,
+              TARGET            target,
+              REGISTER_ID       registerId, 
+              REGISTER_NAME     registerName, 
+              REGIST_DATE       registDate, 
+              UPDATER_ID        updaterId, 
+              UPDATER_NAME      updaterName, 
+              UPDATE_DATE       updateDate,
+              SUMMARY           summary,
+              LOCATION          location,
+              IMG_WIDTH         imgWidth,
+              IMG_HEIGHT        imgHeight,
+              SUBJECT           subject
+            FROM IKEP4_PO_PORTLET_MANAGEMENTPOLICY
+       ]]>
+    </select>
+    
+    <!-- ANSI -->
+    <update id="updatePortletCampaignMessages" parameterClass="PortletCampaignMessages">
+      <![CDATA[
+           /* [PortletCampaignMessages_SqlMap.xml] portal.portlet.portletCampaignMessages.updatePortletCampaignMessages */
+           UPDATE IKEP4_PO_PORTLET_CAMPAIGNMESSAGES
+              SET IMAGE_FILE_ID = #imageFileId#,
+                  BOARD_ID = #boardId#,
+                  ITEM_ID = #itemId#,
+                  TARGET = #target#, 
+                  UPDATER_ID = #updaterId#,
+                  UPDATER_NAME = #updaterName#,
+                  UPDATE_DATE = CURRENT_TIMESTAMP,
+                    SUMMARY         = #summary#,
+                    LOCATION        = #location#,
+                    IMG_WIDTH       = #imgWidth#,
+                    IMG_HEIGHT      = #imgHeight#,
+                    SUBJECT         = #subject#
+       ]]>
+    </update>
+    
+    <update id="updatePortletManagementPolicy" parameterClass="PortletCampaignMessages">
+      <![CDATA[
+           /* [PortletCampaignMessages_SqlMap.xml] portal.portlet.portletCampaignMessages.updatePortletManagementPolicy */
+           UPDATE IKEP4_PO_PORTLET_MANAGEMENTPOLICY
+              SET IMAGE_FILE_ID = #imageFileId#,
+                  BOARD_ID = #boardId#,
+                  ITEM_ID = #itemId#,
+                  TARGET = #target#, 
+                  UPDATER_ID = #updaterId#,
+                  UPDATER_NAME = #updaterName#,
+                  UPDATE_DATE = CURRENT_TIMESTAMP,
+                    SUMMARY         = #summary#,
+                    LOCATION        = #location#,
+                    IMG_WIDTH       = #imgWidth#,
+                    IMG_HEIGHT      = #imgHeight#,
+                    SUBJECT         = #subject#
+       ]]>
+    </update>
+    
+</sqlMap>

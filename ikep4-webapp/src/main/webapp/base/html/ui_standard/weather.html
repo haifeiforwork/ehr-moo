@@ -1,0 +1,270 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+<style type="text/css"> 
+  td {white-space:normal; height:auto; word-break:break-all;}
+	dl {display:block; width:260px;}
+	dt {width:80px;font-size:11px; font-weight:bold; float:left; text-align:center;}
+	dd {width:160px; float:right; height:14px;}
+	dd.temper {font-size:14px; font-weight:bold; margin:0px 0 5px 0;color:#CCCCCC;}
+	span.over {color:#ff150e;}
+	span.under {color:#1b8fff;}
+	span.fover {color:#707070;}
+  .dlWrap {border-top:1px dotted #d9e6f8; padding-top:7px; _width:300px;}
+	.ddIn {width:60px; height:55px; float:left;s}
+	.ddIn dl {padding:0 5px 0 0;display:inline;width:60px; }
+	.ddIn dd,.ddIn dt {width:60px; text-align:center; margin:0; padding:0; }
+	.ddIn dt {height:14px;}
+	#weekly_weather {
+		position:absolute;
+		background-color:#FFFFFF;
+		border:1px solid #bdc4c8;
+		padding:5px; _padding:2px;
+		width:120px;
+	}
+	#weekly_weather dl{
+		width:100%;
+	}
+	#weekly_weather dd {
+		display:inline-block;
+		float:none;
+		padding:5px 5px 3px 5px; 
+		margin:0;
+		width:100%;
+		vertical-align:top;
+	}
+	#weekly_weather dt {
+		display:inline-block;
+		float:none;
+		text-align:center;
+		vertical-align:middle;
+		background-color:#8896a9;
+		color:#FFFFFF;
+		width:100%;
+		margin-bottom:5px;
+		padding-top:3px;;
+	}	
+	
+</style>
+</head>
+<body>
+<div id="whole">
+<form method="post" name="mainForm" onSubmit="return false">
+<div id="edit_display" style="display:none">
+<table class="portletSet">
+	<tr>
+		<th width="30%">국가/지역</th>
+		<td width="70%">
+			<select name="nation_list" id="nation_list" onChange="javaScript:checkNation();">
+			
+				<option  value="1000000000036" >대만</option>
+			
+				<option  value="1000000000001" selected>대한민국</option>
+			
+				<option  value="1000000000015" >독일</option>
+			
+				<option  value="1000000000112" >러시아</option>
+			
+				<option  value="1000000000106" >리비아</option>
+			
+				<option  value="1000000000045" >말레시아</option>
+			
+				<option  value="1000000000127" >몽골</option>
+			
+				<option  value="1000000000029" >미국</option>
+			
+				<option  value="1000000000118" >베트남</option>
+			
+				<option  value="1000000000101" >브라질</option>
+			
+				<option  value="1000000000040" >싱가폴</option>
+			
+				<option  value="1000000000102" >아르헨티나</option>
+			
+				<option  value="1000000000105" >알제리</option>
+			
+				<option  value="1000000000115" >야쿠티아</option>
+			
+				<option  value="1000000000107" >요르단</option>
+			
+				<option  value="1000000000108" >이란</option>
+			
+				<option  value="1000000000116" >인도</option>
+			
+				<option  value="1000000000120" >인도네시아</option>
+			
+				<option  value="1000000000017" >일본</option>
+			
+				<option  value="1000000000016" >중국</option>
+			
+				<option  value="1000000000103" >칠레</option>
+			
+				<option  value="1000000000113" >카자흐스탄</option>
+			
+				<option  value="1000000000121" >태국</option>
+			
+				<option  value="1000000000014" >터키</option>
+			
+				<option  value="1000000000011" >폴란드</option>
+			
+				<option  value="1000000000104" >호주</option>
+			
+				<option  value="1000000000226" >홍콩</option>
+			
+				<option  value="1000000000109" >U.A.E</option>
+			
+			</select>
+		</td>
+	</tr>
+ 
+	<tr>
+		<th>도시 추가</th>
+		<td>
+		<div id="city_select">
+		<select name="city_list" id="city_list">
+			
+				<option name='서울' value='0000000000000' >서울</option>
+			
+				<option name='구미' value='0000000000003' >구미</option>
+			
+				<option name='파주' value='0000000000004' >파주</option>
+			
+				<option name='제주' value='0000000000005' >제주</option>
+			
+			</select>
+			<input type="image" onClick="javaScript:addCity();" src='../../images/lgi/button/btn_add.gif' alt="add" /><a href="javaScript:addCity();">추가</a>
+			</div>
+		</td>
+	</tr>
+ 
+	<tr>
+		<th>선택 도시</th>
+		<td>
+			<div id="selected_city">
+			
+			
+				<span id='0000000000000'>서울<input type="image" onClick="javaScript:delCity('0000000000000')" src='../../images/lgi/button/btn_close.gif' alt="del" /></span>
+			
+				<span id='0000000000003'>구미<input type="image" onClick="javaScript:delCity('0000000000003')" src='../../images/lgi/button/btn_close.gif' alt="del" /></span>
+			
+			
+			</div>
+		</td>
+	</tr>
+	<tr>
+	 <th colspan="2">(지역은 최대 5개까지만 저장 가능합니다.)</th>
+	</tr>
+	<tr>
+		<td colspan="2" class="Lbtn"><input type="image" onClick="javaScript:saveWeather();" src='../../images/lgi/portlet/btn_save_KO.gif'></td>
+	</tr>
+</table>
+</div>
+ 
+ 
+ 
+ 		<h5 class="portlet">서울</h5>	
+ 
+ 
+ 
+ 
+<dl style="margin:-10px 0 5px 0;">
+	<dt><img src='../../images/portlet/weather/weather_cloudy.png' alt="mostly sunny" /></dt>
+	<dd class="temper"><span class="over">-2℃</span>&nbsp; <span class="fover">(28℉)</span>
+	</dd>
+	<dd>부분적으로 흐림</dd>
+	<dd>바람: 북풍, 14 km/h</dd>
+	<dd>습도: 43%</dd>
+</dl>
+<dl class="dlWrap" >
+	<dd class="ddIn">	
+		<dl class="ddIn">
+		<dt>월</dt>
+		<dd><a onMouseOver="mouseOver(0,'월','0','7','맑음')" onMouseOut="mouseOut()" ><img src='../../images/portlet/weather/weather_sunny_s.png'  /></a></dd>
+		</dl>
+	</dd>
+		<dd class="ddIn">	
+		<dl class="ddIn">
+		<dt>화</dt>
+		<dd><a onMouseOver="mouseOver(1,'화','4','11','부분적으로 흐림')" onMouseOut="mouseOut()" ><img src='../../images/portlet/weather/weather_cloudy_s.png' /></a></dd>
+		</dl>
+	</dd>
+		<dd class="ddIn">	
+		<dl class="ddIn">
+		<dt>수</dt>
+		<dd><a onMouseOver="mouseOver(2,'수','3','12','부분적으로 흐림')" onMouseOut="mouseOut()" ><img src='../../images/portlet/weather/weather_cloudy_s.png'  /></a></dd>
+		</dl>
+	</dd>
+		<dd class="ddIn">	
+		<dl class="ddIn">
+		<dt>목</dt>
+		<dd><a onMouseOver="mouseOver(3,'목','3','12','맑음')" onMouseOut="mouseOut()" ><img src='../../images/portlet/weather/weather_sunny_s.png'  /></a></dd>
+		</dl>
+	</dd>
+</dl>
+ 
+ 
+ 
+ 
+ 		<h5 class="portlet Lcontinued">구미</h5>
+ 
+ 
+ 
+<dl style="margin:-10px 0 5px 0;">
+	<dt><img src='../../images/portlet/weather/weather_cloudy.png' alt="mostly sunny" /></dt>
+	<dd class="temper"><span class="over">6℃</span>&nbsp; <span class="fover">(43℉)</span>
+	</dd>
+	<dd>대체로 흐림</dd>
+	<dd>바람: 북서풍, 19 km/h</dd>
+	<dd>습도: 29%</dd>
+</dl>
+<dl class="dlWrap" >
+	<dd class="ddIn">	
+		<dl class="ddIn">
+		<dt>월</dt>
+		<dd><a onMouseOver="mouseOver(0,'월','-1','10','맑음')" onMouseOut="mouseOut()" ><img src='../../images/portlet/weather/weather_sunny_s.png'  /></a></dd>
+		</dl>
+	</dd>
+		<dd class="ddIn">	
+		<dl class="ddIn">
+		<dt>화</dt>
+		<dd><a onMouseOver="mouseOver(1,'화','1','12','맑음')" onMouseOut="mouseOut()" ><img src='../../images/portlet/weather/weather_sunny_s.png' /></a></dd>
+		</dl>
+	</dd>
+		<dd class="ddIn">	
+		<dl class="ddIn">
+		<dt>수</dt>
+		<dd><a onMouseOver="mouseOver(2,'수','2','13','맑음')" onMouseOut="mouseOut()" ><img src='../../images/portlet/weather/weather_sunny_s.png'  /></a></dd>
+		</dl>
+	</dd>
+		<dd class="ddIn">	
+		<dl class="ddIn">
+		<dt>목</dt>
+		<dd><a onMouseOver="mouseOver(3,'목','3','14','맑음')" onMouseOut="mouseOut()" ><img src='../../images/portlet/weather/weather_sunny_s.png'  /></a></dd>
+		</dl>
+	</dd>
+</dl>
+ 
+<div id="overDiv" class="Lpopup" style="position: absolute; z-index: 10; width:100; visibility: hidden"></div>
+</form>
+ 
+</div>
+<script> 
+document.onmousemove = mouseMove;
+var sizeHeight=120;
+if(document.body.scrollHeight==0)
+{
+	setTimeout("eval('sizeHeight=document.body.scrollHeight;')",2000);
+	//setTimeout("parent.rePortlet('iframe_B000000000001_1295604011062',sizeHeight)", 2100);
+	setTimeout('parentResizingForWeather()',2150);
+	setTimeout('parent.parent.resizing(10)',2180);
+}
+else
+{
+	//setTimeout("parent.rePortlet('iframe_B000000000001_1295604011062', document.body.scrollHeight)", 20);
+	setTimeout('parentResizingForWeather()',30);
+	setTimeout('parent.parent.resizing(10)',40);
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="com.lgcns.ikep4.approval.admin.dao.ApprCode" >
+	<typeAlias alias="apprCode" type="com.lgcns.ikep4.approval.admin.model.ApprCode"/>
+	
+	
+	<!--코드관리 테이블 조회 결과 -->
+	<resultMap id="apprCodeResult" class="apprCode" groupBy="codeId">
+		<result property="codeId" 			column="CODE_ID" 			jdbcType="VARCHAR"/>
+		<result property="parentCodeId" 	column="PARENT_CODE_ID" 	jdbcType="VARCHAR"/>
+		<result property="codeKrName" 	    column="CODE_KR_NAME" 	    jdbcType="VARCHAR"/>
+		<result property="codeEnName" 	    column="CODE_EN_NAME" 		jdbcType="VARCHAR"/>
+		<result property="codeValue" 		column="CODE_VALUE" 		jdbcType="VARCHAR"/>
+		<result property="codeDesc" 		column="CODE_DESC" 			jdbcType="VARCHAR"/>
+		<result property="codeType"			column="CODE_TYPE" 			jdbcType="VARCHAR"/>
+		<result property="codeOrder"		column="CODE_ORDER" 		jdbcType="VARCHAR"/>
+		<result property="usage"			column="USAGE" 			    jdbcType="VARCHAR"/>
+		<result property="registDate" 		column="REGIST_DATE" 		jdbcType="DATE"/>
+		<result property="updateDate" 		column="UPDATE_DATE" 		jdbcType="DATE"/>
+		<result property="childCount" 		column="CHILD_COUNT" 		jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	<!--코드관리 테이블 조회 결과 -->
+	<resultMap id="apprCodeListResult" class="apprCode" groupBy="codeId">
+		<result property="codeId" 			column="CODE_ID" 			jdbcType="VARCHAR"/>
+		<result property="parentCodeId" 	column="PARENT_CODE_ID" 	jdbcType="VARCHAR"/>
+		<result property="codeName" 	    column="CODE_NAME" 	    	jdbcType="VARCHAR"/>
+		<result property="childCount" 		column="CHILD_COUNT" 		jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	<sql id="sqlColumnList">
+		  CODE_ID
+		, PARENT_CODE_ID
+		, CODE_KR_NAME
+		, CODE_EN_NAME
+		, CODE_VALUE
+		, CODE_DESC
+		, CODE_TYPE
+		, CODE_ORDER
+		, `USAGE`
+		, REGIST_DATE
+		, UPDATE_DATE
+	</sql>
+	
+	<!-- Root 그룹 하위목록 가져오기 -->
+	<select id="getApprCodeList" parameterClass="Map" resultMap="apprCodeListResult">
+		/* [ApprCode_SqlMap.xml] listFormCategoryApprCode */
+		<![CDATA[
+			SELECT 	    A.CODE_ID,
+						CASE B.LEVEL WHEN 1 THEN NULL
+						ELSE A.PARENT_CODE_ID
+						END PARENT_CODE_ID,
+			 			CASE #localeCode# WHEN 'ko' THEN A.CODE_KR_NAME
+						ELSE IFNULL(A.CODE_EN_NAME, A.CODE_KR_NAME)
+						END CODE_NAME,
+		]]>
+			            <isNotEmpty property="usage">
+						CONCAT(
+						CASE #localeCode# WHEN 'ko' THEN A.CODE_KR_NAME
+						ELSE IFNULL(A.CODE_EN_NAME, A.CODE_KR_NAME)
+						END, '(', fncChildApprFormCountByCodeId(A.CODE_ID, #usage#), ')') CHILD_COUNT 
+						</isNotEmpty>
+						<isEmpty property="usage">
+						'' CHILD_COUNT
+						</isEmpty>
+		<![CDATA[
+			FROM (
+			    SELECT    fncChildApprCodes() AS code_id, @level as level, @rownum as rownum
+			    FROM    (SELECT  @start_with := #codeId#, @id := @start_with, @level := 0, @rownum := 0, @code_order := -1) A1, ikep4_appr_code
+			    WHERE    @id IS NOT NULL
+			) B inner join ikep4_appr_code A
+			ON B.code_id = A.code_id
+			WHERE A.usage = 1
+			ORDER BY    A.PARENT_CODE_ID, A.CODE_ORDER,A.CODE_KR_NAME
+		]]>
+	</select>
+	
+	<select id="getCodeIdByCodeValue" parameterClass="Map" resultClass="String">
+		/* [ApprCode_SqlMap.xml] selectCodeIdByCodeValue */
+	  	<![CDATA[
+		   	SELECT CODE_ID FROM IKEP4_APPR_CODE WHERE PORTAL_ID = #portalId# AND CODE_VALUE = #codeValue#
+	   	]]>
+	</select>
+	
+	<!-- Root 그룹 하위목록 가져오기 -->
+	<select id="listRootApprCode" parameterClass="Map" resultMap="apprCodeResult">
+		/* [ApprCode_SqlMap.xml] listRootApprCode */
+		<![CDATA[
+			SELECT A.*
+				, (SELECT COUNT(code_id) FROM IKEP4_APPR_CODE C WHERE C.parent_code_id = A.code_id) CHILD_COUNT
+			FROM (
+			    SELECT    fncChildApprCodes() AS code_id, @level as level, @rownum as rownum
+			    FROM    (SELECT  @start_with := (SELECT CODE_ID FROM ikep4_appr_code Z WHERE Z.parent_code_id='-1'), @id := @start_with, @level := 0, @rownum := 0, @code_order := -1) A1, ikep4_appr_code
+			    WHERE    @id IS NOT NULL
+			) B inner join ikep4_appr_code A
+            ON B.code_id = A.code_id
+            WHERE A.PORTAL_ID = #portalId#
+            AND B.level <= #level#
+            ORDER  BY A.parent_code_id, A.code_order,A.code_kr_name
+		]]>
+	</select>
+	
+	<!-- 선택그룹 하위목록 가져오기 -->
+	<select id="listGroupApprCode" parameterClass="String" resultMap="apprCodeResult">
+		/* [ApprCode_SqlMap.xml] listGroupApprCode */
+		SELECT <include refid="sqlColumnList" />
+		     , (SELECT COUNT(code_id) FROM IKEP4_APPR_CODE WHERE parent_code_id = iac.code_id) CHILD_COUNT
+		FROM   IKEP4_APPR_CODE iac
+		WHERE	iac.PARENT_CODE_ID = #codeId#
+		ORDER  BY iac.CODE_ORDER, iac.CODE_KR_NAME
+	</select>
+	
+	<!-- 공통코드 목록 가져오기 [Korea] -->
+	<select id="listGroupApprCodeByValueKr" parameterClass="String" resultClass="apprCode">
+		/* [ApprCode_SqlMap.xml] listGroupApprCodeByValueKr */
+		SELECT CODE_ID 		AS codeId
+			 , CODE_KR_NAME		AS codeKrName
+			 , CODE_EN_NAME		AS codeEnName
+			 , CODE_VALUE	AS codeValue
+			 , CODE_KR_NAME		AS codeName
+		FROM   IKEP4_APPR_CODE IAC
+		WHERE  IAC.USAGE = '1'
+		AND IAC.PARENT_CODE_ID = (SELECT CODE_ID FROM IKEP4_APPR_CODE WHERE CODE_VALUE = #codeValue# )
+		ORDER  BY IAC.CODE_ORDER, IAC.CODE_KR_NAME
+	</select>
+	
+	<!-- 공통코드 목록 가져오기 [English] -->
+	<select id="listGroupApprCodeByValueEn" parameterClass="String" resultClass="apprCode">
+		/* [ApprCode_SqlMap.xml] listGroupApprCodeByValueEn */
+		SELECT CODE_ID 		AS codeId
+			 , CODE_KR_NAME		AS codeKrName
+			 , CODE_EN_NAME		AS codeEnName
+			 , CODE_VALUE	AS codeValue
+			 , CODE_EN_NAME		AS codeName
+		FROM   IKEP4_APPR_CODE IAC
+		WHERE  IAC.USAGE = '1'
+		AND IAC.PARENT_CODE_ID = (SELECT CODE_ID FROM IKEP4_APPR_CODE WHERE CODE_VALUE = #codeValue# )
+		ORDER  BY IAC.CODE_ORDER, IAC.CODE_EN_NAME
+	</select>
+	
+	<select id="select" parameterClass="String" resultMap="apprCodeResult">
+		/* [ApprCode_SqlMap.xml] select */
+		
+		SELECT <include refid="sqlColumnList" /> , '' CHILD_COUNT
+		FROM 	IKEP4_APPR_CODE 
+		WHERE 	CODE_ID = #codeId#
+	</select>
+	
+	<select id="selectCount" parameterClass="String" resultClass="Integer">
+		/* [ApprCode_SqlMap.xml] selectCount */
+		
+	  	<![CDATA[
+		   	SELECT COUNT(CODE_ID) FROM IKEP4_APPR_CODE WHERE CODE_ID = #codeId#
+	   	]]>
+	</select>
+	
+	<select id="selectChildCount" parameterClass="String" resultClass="Integer">
+		/* [ApprCode_SqlMap.xml] selectChildCount */
+		
+	  	<![CDATA[
+		   	SELECT COUNT(CODE_ID) FROM IKEP4_APPR_CODE WHERE PARENT_CODE_ID = #parentCodeId#
+	   	]]>
+	</select>
+		
+	<insert id="create" parameterClass="apprCode">
+		/* [ApprCode_SqlMap.xml] create */
+		
+      	<![CDATA[ 
+           INSERT INTO IKEP4_APPR_CODE 
+           		  (PORTAL_ID, CODE_ID		, PARENT_CODE_ID	, CODE_KR_NAME		, CODE_EN_NAME		, CODE_VALUE
+				, CODE_DESC		, CODE_TYPE			, CODE_ORDER	, `USAGE`		, REGIST_DATE
+				, UPDATE_DATE)
+           VALUES (#portalId#, #codeId#		, #parentCodeId#	, #codeKrName#		, #codeEnName#		, #codeValue#
+           		, #codeDesc#	, #codeType#		, #codeOrder#	, #usage#		, NOW()
+				, NOW())
+       	]]>
+   	</insert>
+   
+   	<update id="update" parameterClass="apprCode">
+   		/* [ApprCode_SqlMap.xml] update */
+		
+		   	UPDATE 	IKEP4_APPR_CODE 
+		   	SET 	UPDATE_DATE 	= NOW()
+			
+			<isNotEmpty property="codeKrName">
+				, CODE_KR_NAME 		= #codeKrName#
+			</isNotEmpty>
+			<isNotEmpty property="codeEnName">
+				, CODE_EN_NAME 		= #codeEnName#
+			</isNotEmpty>
+			<isNotEmpty property="codeValue">
+				, CODE_VALUE 	= #codeValue#
+			</isNotEmpty>
+			<isNotEmpty property="codeDesc">
+				, CODE_DESC 	= #codeDesc#
+			</isNotEmpty>
+			<isNotEmpty property="codeType">
+				, CODE_TYPE 	= #codeType#
+			</isNotEmpty>
+			<isNotEmpty property="codeOrder">
+				, CODE_ORDER 	= #codeOrder#
+			</isNotEmpty>
+			<isNotEmpty property="usage">
+				, `USAGE` 		= #usage#
+			</isNotEmpty>
+			
+		   	WHERE 	CODE_ID 		= #codeId#
+	</update>
+	
+	<update id="updateApprCodeOrder" parameterClass="apprCode">
+   		/* [ApprCode_SqlMap.xml] updateApprCodeOrder */
+		
+	  	<![CDATA[
+		   	UPDATE 	IKEP4_APPR_CODE 
+		   	SET 	CODE_ORDER 		= #codeOrder#
+			   	  , UPDATE_DATE 	= NOW() 
+		   	WHERE 	CODE_ID 		= #codeId#
+	   	]]>
+	</update>
+   
+	<delete id="delete" parameterClass="String">
+		/* [ApprCode_SqlMap.xml] delete */
+		
+      <![CDATA[
+	       	DELETE FROM IKEP4_APPR_CODE WHERE CODE_ID = #codeId#
+	   ]]>
+	</delete>
+	
+	
+</sqlMap>

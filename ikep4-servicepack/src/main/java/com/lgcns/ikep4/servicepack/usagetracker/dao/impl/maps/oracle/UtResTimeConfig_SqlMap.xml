@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="com.lgcns.ikep4.servicepack.usagetracker.utResTimeConfig" >
+	
+	<typeAlias alias="UtResTimeConfig" type="com.lgcns.ikep4.servicepack.usagetracker.model.UtResTimeConfig"/>
+	
+	
+	<select id="existsConfig" parameterClass="java.lang.String" resultClass="int">
+		/* [UtResTimeConfig_SqlMap.xml] com.lgcns.ikep4.servicepack.usagetracker.utResTimeConfig.existsConfig */ 
+	    SELECT COUNT(*) 
+	      FROM IKEP4_UT_RES_TIME_CONFIG
+	     WHERE PORTAL_ID = #portalId#
+	</select>
+	
+	<insert id="create" parameterClass="UtResTimeConfig">
+		/* [UtResTimeConfig_SqlMap.xml] com.lgcns.ikep4.servicepack.usagetracker.utResTimeConfig.create */ 
+	    insert into IKEP4_UT_RES_TIME_CONFIG (PORTAL_ID, RES_TIME_CONFIG_SECOND)
+	    values (#portalId#, #resTimeConfigSecond#)
+	</insert>
+	
+	<update id="update" parameterClass="UtResTimeConfig">
+		/* [UtResTimeConfig_SqlMap.xml] com.lgcns.ikep4.servicepack.usagetracker.utResTimeConfig.update */ 
+	   update IKEP4_UT_RES_TIME_CONFIG 
+	      set RES_TIME_CONFIG_SECOND = #resTimeConfigSecond#
+	    where portal_id = #portalId#
+	</update>
+	
+	<select id="get" parameterClass="java.lang.String" resultClass="UtResTimeConfig"> 
+	     /* [UtResTimeConfig_SqlMap.xml] com.lgcns.ikep4.servicepack.usagetracker.utResTimeConfig.get */
+	     select RES_TIME_CONFIG_SECOND  resTimeConfigSecond
+	       from IKEP4_UT_RES_TIME_CONFIG
+ 		  where portal_id = #portalId#
+	</select>
+</sqlMap>

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="socialpack.socialblog.dao.SocialCategory">
+
+	<typeAlias alias="SocialCategory"                	type="com.lgcns.ikep4.socialpack.socialblog.model.SocialCategory"/>
+  
+	<!-- IKEP4_AD_ADDRGROUP 테이블 조회 결과 -->
+	<resultMap id="resultSocialCategory" class="SocialCategory">
+		<result property="categoryId" column="CATEGORY_ID" columnIndex="1"/>
+		<result property="categoryName" column="CATEGORY_NAME" columnIndex="2"/>
+		<result property="sortOrder" column="SORT_ORDER" columnIndex="3"/>
+		<result property="blogId" column="BLOG_ID" columnIndex="4"/>
+		
+	</resultMap>
+
+	<sql id="sqlColumnList"> 
+	    CATEGORY_ID, 
+	    CATEGORY_NAME, 
+	    SORT_ORDER,
+	    BLOG_ID
+	</sql>  
+    
+    <!-- ANSI -->
+	<select id="get" parameterClass="java.lang.String" resultMap="resultSocialCategory"> 
+		SELECT 
+			/* [SocialCategory_SqlMap.xml] socialpack.socialblog.dao.SocialCategory.get */
+			<include refid="socialpack.socialblog.dao.SocialCategory.sqlColumnList" /> 
+		FROM  IKEP4_SB_CATEGORY
+    	WHERE CATEGORY_ID = #categoryId# 
+	</select>
+  
+  	<!-- ANSI -->
+	<select id="exists" parameterClass="java.lang.String" resultClass="int"> 
+		SELECT /* [SocialCategory_SqlMap.xml] socialpack.socialblog.dao.SocialCategory.exists */
+			COUNT(*)
+		FROM  IKEP4_SB_CATEGORY
+		WHERE CATEGORY_ID = #categoryId# 
+	</select> 
+  
+  	<!-- ANSI -->
+	<select id="listByBlogId" parameterClass="java.lang.String" resultMap="resultSocialCategory">  
+		SELECT 
+			/* [SocialCategory_SqlMap.xml] socialpack.socialblog.dao.SocialCategory.listByBlogId */ 
+			<include refid="socialpack.socialblog.dao.SocialCategory.sqlColumnList" /> 
+		FROM   IKEP4_SB_CATEGORY 
+		WHERE  BLOG_ID = #blogId# 
+		ORDER BY SORT_ORDER
+	</select>   
+	
+	<!-- ANSI -->
+	<select id="countBlogId" parameterClass="java.lang.String" resultClass="int">  
+		SELECT /* [SocialCategory_SqlMap.xml] socialpack.socialblog.dao.SocialCategory.countBlogId */ 
+           COUNT(*)
+		FROM   IKEP4_SB_CATEGORY 
+		WHERE  BLOG_ID = #blogId# 
+  	</select>
+	
+	<!-- MS SQL -->  	
+  	<select id="getMaxSortOrder" parameterClass="java.lang.String" resultClass="int"> 
+		SELECT
+			/* [SocialCategory_SqlMap.xml] socialpack.socialblog.dao.SocialCategory.getMaxSortOrder */ 
+			ISNULL(MAX(SORT_ORDER),0) + 1
+		FROM IKEP4_SB_CATEGORY 
+		WHERE  BLOG_ID = #blogId# 
+	</select>
+ 	
+ 	<!-- ANSI -->
+	<insert id="create" parameterClass="SocialCategory"> 
+		INSERT INTO IKEP4_SB_CATEGORY ( 
+			/* [SocialCategory_SqlMap.xml] socialpack.socialblog.dao.SocialCategory.create */
+			<include refid="socialpack.socialblog.dao.SocialCategory.sqlColumnList" />
+		) VALUES (
+			#categoryId#, 
+			#categoryName#, 
+			#sortOrder#, 
+			#blogId#
+    	) 
+	</insert>
+	
+	<!-- ANSI -->
+	<update id="update" parameterClass="SocialCategory"> 
+		UPDATE IKEP4_SB_CATEGORY 
+			/* [SocialCategory_SqlMap.xml] socialpack.socialblog.dao.SocialCategory.update */
+    	SET CATEGORY_NAME     = #categoryName#,
+          	SORT_ORDER    = #sortOrder#
+		WHERE CATEGORY_ID = #categoryId# 
+	</update>
+ 
+ 	<!-- ANSI -->
+	<delete id="physicalDelete" parameterClass="java.lang.String"> 
+		DELETE FROM IKEP4_SB_CATEGORY 
+			/* [SocialCategory_SqlMap.xml] socialpack.socialblog.dao.SocialCategory.physicalDelete */
+		WHERE CATEGORY_ID = #categoryId# 
+	</delete>  
+	  
+</sqlMap> 

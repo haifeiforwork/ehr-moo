@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="lightpack.meeting.dao.meetingroom" >
+	
+	<typeAlias alias="MeetingRoom" type="com.lgcns.ikep4.lightpack.meetingroom.model.MeetingRoom"/>
+	
+	<resultMap id="Result" class="MeetingRoom">
+		<result property="meetingRoomId" column="MEETING_ROOM_ID" />
+		<result property="meetingRoomName" column="MEETING_ROOM_NAME" />
+		<result property="meetingRoomEnglishName" column="MEETING_ROOM_ENGLISH_NAME" />
+		<result property="buildingId" column="BUILDING_ID" />
+		<result property="buildingName" column="BUILDING_NAME" />
+		<result property="floorId" column="FLOOR_ID" />
+		<result property="floorName" column="FLOOR_NAME" />
+		<result property="managerId" column="MANAGER_ID" />
+		<result property="managerName" column="MANAGER_NAME" />
+		<result property="equipment" column="EQUIPMENT" />
+		<result property="capacity" column="CAPACITY" />
+		<result property="area" column="AREA" />
+		<result property="phone" column="PHONE" />
+		<result property="description" column="DESCRIPTION" />
+		<result property="fileId" column="FILE_ID" />
+		<result property="useFlag" column="USE_FLAG" />
+		<result property="sortOrder" column="SORT_ORDER" />
+		<result property="portalId" column="PORTAL_ID" />
+		<result property="autoApprove" column="AUTO_APPROVE" />
+	</resultMap>
+	
+	<insert id="insert" parameterClass="MeetingRoom"> 
+		INSERT INTO			IKEP4_MR_MEETING_ROOM 
+							(
+							MEETING_ROOM_ID,
+							MEETING_ROOM_NAME,
+							MEETING_ROOM_ENGLISH_NAME,
+							BUILDING_ID,
+							FLOOR_ID,
+							MANAGER_ID,
+							EQUIPMENT,
+							CAPACITY,
+							AREA,
+							PHONE,
+							EQUIPMENT_NAME,
+							DESCRIPTION,
+							FILE_ID,
+							USE_FLAG,
+							SORT_ORDER,
+							PORTAL_ID,
+							REGISTER_ID,
+							REGISTER_NAME,
+							REGIST_DATE,
+							UPDATER_ID,
+							UPDATER_NAME,
+							UPDATE_DATE,
+							AUTO_APPROVE
+							) 
+		VALUES 				( 
+							#meetingRoomId#,
+							#meetingRoomName#,
+							#meetingRoomEnglishName#,
+							#buildingId#,
+							#floorId#,
+							#managerId#,
+							#equipment#,
+							#capacity#,
+							#area#,
+							#phone#,
+							#equipmentName#,
+							#description#,
+							#fileId#,
+							#useFlag#,
+							#sortOrder#,
+							#portalId#,
+							#registerId#,
+							#registerName#,
+							NOW(),
+							#updaterId#,
+							#updaterName#,
+							NOW(),
+							<isEmpty property="autoApprove">'N'</isEmpty>
+							<isNotEmpty property="autoApprove">#autoApprove#</isNotEmpty>
+							)
+   	</insert>	
+   
+   	<update id="update" parameterClass="MeetingRoom">
+		UPDATE 				IKEP4_MR_MEETING_ROOM
+		SET					MEETING_ROOM_NAME = #meetingRoomName#,
+							MEETING_ROOM_ENGLISH_NAME = #meetingRoomEnglishName#,
+					       	BUILDING_ID = #buildingId#,
+					       	FLOOR_ID = #floorId#,
+					       	MANAGER_ID = #managerId#,
+					       	EQUIPMENT = #equipment#,
+					       	CAPACITY = #capacity#,
+					       	AREA = #area#,
+					       	PHONE = #phone#,
+					       	DESCRIPTION = #description#,
+					       	FILE_ID = #fileId#,
+					       	USE_FLAG = #useFlag#,
+					       	UPDATER_ID = #updaterId#,
+					       	UPDATER_NAME = #updaterName#,
+					       	UPDATE_DATE = NOW(),
+					       	<isEmpty property="autoApprove">AUTO_APPROVE = 'N'</isEmpty>
+							<isNotEmpty property="autoApprove">AUTO_APPROVE = #autoApprove#</isNotEmpty>
+		WHERE  				MEETING_ROOM_ID = #meetingRoomId#
+	</update>
+	
+	<delete id="delete" parameterClass="String">
+     	DELETE 				IKEP4_MR_MEETING_ROOM 
+		WHERE 				MEETING_ROOM_ID = #meetingRoomId#
+	</delete>
+	
+	<select id="get" parameterClass="String" resultMap="Result">
+		SELECT				A.MEETING_ROOM_ID, 
+							A.MEETING_ROOM_NAME,
+							A.MEETING_ROOM_ENGLISH_NAME, 
+		   					A.BUILDING_ID, 
+		   					C.BUILDING_FLOOR_NAME AS BUILDING_NAME,
+		   					A.FLOOR_ID,
+		   					D.BUILDING_FLOOR_NAME AS FLOOR_NAME,
+		   					A.MANAGER_ID, 
+		   					B.USER_NAME AS MANAGER_NAME,  
+		   					A.EQUIPMENT, 
+		   					A.CAPACITY, 
+		   					A.AREA, 
+		   					A.PHONE, 
+		   					A.DESCRIPTION, 
+		   					A.FILE_ID, 
+		   					A.USE_FLAG, 
+		   					A.SORT_ORDER,
+		   					A.PORTAL_ID,
+		   					A.AUTO_APPROVE
+		FROM 				IKEP4_MR_MEETING_ROOM A 
+		LEFT OUTER JOIN 	IKEP4_EV_USER B		
+		ON 					A.MANAGER_ID = B.USER_ID
+		LEFT OUTER JOIN 	IKEP4_MR_BUILDING_FLOOR C
+		ON 					A.BUILDING_ID = C.BUILDING_FLOOR_ID
+		LEFT OUTER JOIN 	IKEP4_MR_BUILDING_FLOOR D
+		ON 					A.FLOOR_ID = D.BUILDING_FLOOR_ID
+		WHERE 				A.MEETING_ROOM_ID = #meetingRoomId#
+	</select>
+	
+	<select id="select" parameterClass="MeetingRoom" resultMap="Result">
+	  	SELECT				A.MEETING_ROOM_ID, 
+							A.MEETING_ROOM_NAME,
+							A.MEETING_ROOM_ENGLISH_NAME, 
+		   					A.BUILDING_ID, 
+		   					C.BUILDING_FLOOR_NAME AS BUILDING_NAME,
+		   					A.FLOOR_ID,
+		   					D.BUILDING_FLOOR_NAME AS FLOOR_NAME,
+		   					A.MANAGER_ID, 
+		   					B.USER_NAME AS MANAGER_NAME,  
+		   					A.EQUIPMENT, 
+		   					A.CAPACITY, 
+		   					A.AREA, 
+		   					A.PHONE, 
+		   					A.DESCRIPTION, 
+		   					A.FILE_ID, 
+		   					A.USE_FLAG, 
+		   					A.SORT_ORDER,
+		   					A.PORTAL_ID,
+		   					A.AUTO_APPROVE
+		FROM 				IKEP4_MR_MEETING_ROOM A 
+		LEFT OUTER JOIN 	IKEP4_EV_USER B		
+		ON 					A.MANAGER_ID = B.USER_ID
+		LEFT OUTER JOIN 	IKEP4_MR_BUILDING_FLOOR C
+		ON 					A.BUILDING_ID = C.BUILDING_FLOOR_ID
+		LEFT OUTER JOIN 	IKEP4_MR_BUILDING_FLOOR D
+		ON 					A.FLOOR_ID = D.BUILDING_FLOOR_ID
+		WHERE 				A.PORTAL_ID = #portalId#
+		<isNotEmpty property="buildingId" prepend="AND">
+							A.BUILDING_ID = #buildingId#
+		</isNotEmpty>
+		<isNotEmpty property="floorId" prepend="AND">
+							A.FLOOR_ID = #floorId#
+		</isNotEmpty>
+		<isNotEmpty property="isRecent" prepend="AND">
+		<![CDATA[		
+							A.MEETING_ROOM_ID IN (
+								SELECT				tbl.MEETING_ROOM_ID
+								FROM				(
+											SELECT 				DISTINCT SCHEDULE_ID, MEETING_ROOM_ID
+										  	FROM 				IKEP4_SD_SCHEDULE
+										 	WHERE 				REGISTER_ID = #registerId#
+										 	AND 				MEETING_ROOM_ID IS NOT NULL
+										 	ORDER BY			SCHEDULE_ID DESC
+										 	LIMIT 10
+							 	) tbl
+							)
+		]]>							
+		</isNotEmpty>
+		<isNotEmpty property="isFavorite" prepend="AND">
+		<![CDATA[		
+							A.MEETING_ROOM_ID IN (
+								SELECT				MEETING_ROOM_ID
+				  				FROM 				IKEP4_MR_FAVORITE
+				 				WHERE 				USER_ID = #registerId#
+							)
+		]]>							
+		</isNotEmpty>
+		ORDER BY 			BUILDING_NAME, FLOOR_NAME
+	</select>
+	
+	<select id="selectSortOrder" resultClass="String">
+		SELECT 				LPAD(IFNULL(MAX(SORT_ORDER), 0) + 1, 13, '0')
+		FROM 				IKEP4_MR_MEETING_ROOM 
+    </select>
+    
+    <insert id="updateSortOrder" parameterClass="MeetingRoom">
+		UPDATE 				IKEP4_MR_MEETING_ROOM
+    	SET					SORT_ORDER = #sortOrder#
+    	WHERE 				MEETING_ROOM_ID = #meetingRoomId#
+	</insert>
+	
+	<insert id="addFavorite" parameterClass="MeetingRoom"> 
+		INSERT INTO 		IKEP4_MR_FAVORITE 
+							(
+							USER_ID,
+							MEETING_ROOM_ID,
+							REGIST_DATE
+		   					) 
+		VALUES 				( 
+							#registerId#,
+				 			#meetingRoomId#,
+				 			NOW()
+				 			)
+   	</insert>	
+   	
+   	<delete id="delFavorite" parameterClass="MeetingRoom"> 
+		DELETE 
+		FROM 				IKEP4_MR_FAVORITE 
+		WHERE 				USER_ID = #registerId#
+	  	AND 				MEETING_ROOM_ID = #meetingRoomId#
+   	</delete>
+	
+	<select id="checkFavorite" parameterClass="MeetingRoom" resultClass="String">
+	  	SELECT 				COUNT(*) 
+  		FROM 				IKEP4_MR_FAVORITE
+	  	WHERE 				USER_ID = #registerId#
+	  	AND 				MEETING_ROOM_ID = #meetingRoomId#
+	</select>
+</sqlMap>

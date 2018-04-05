@@ -1,0 +1,196 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ko">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Home</title>
+<link rel="stylesheet" type="text/css" href="../../css/guide.css" />
+<link rel="stylesheet" type="text/css" href="../../css/theme01/jquery_ui_custom.css" />
+<link rel="stylesheet" type="text/css" href="../../css/common.css" />
+<link rel="stylesheet" type="text/css" href="../../css/theme01/theme.css" />
+<link rel="stylesheet" type="text/css" href="../../css/syntaxhighlighter_3.0.83/shCoreDefault.css"/>
+<script type="text/javascript" src="../../js/jquery/jquery-1.6.2.min.js"></script>
+<script type="text/javascript" src="../../js/jquery/jquery-ui-1.8.13.min.without.datepicker.js"></script>
+<script type="text/javascript" src="../../js/syntaxhighlighter_3.0.83/shCore.js"></script>
+<script type="text/javascript" src="../../js/syntaxhighlighter_3.0.83/shBrushJScript.js"></script>
+<script type="text/javascript">var contextRoot = "/ikep4-webapp";</script>
+<script type="text/javascript" src="../../js/langResource/ko.js"></script>
+<script type="text/javascript" src="../../js/common.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$(document).ready(function() {
+		//SyntaxHighlighter.all();
+		SyntaxHighlighter.highlight();
+		
+		var dialog1, dialog2 = null;
+		$(".button > a").bind("click", function(event) {
+			switch($(this).text()) {
+				case "open1" :
+					dialog1 = $("#dialog").dialog();
+					$("#dialog a").bind("click", function() {
+						if($(this).text() == "close") dialog1.dialog("close");
+					});
+					break;
+				case "open2" :
+					if (dialog2 == null) {
+						dialog2 = iKEP.showDialog({
+							title: "Ajax",
+							url: "ajax.html",
+							width:400,
+							height:500,
+							modal: true,
+							isDestroy : false
+						});
+					} else {
+						dialog2.open();
+					}
+					break;
+				case "close" :
+					dialog2.close();
+					break;
+				case "modal1" :
+					var result = iKEP.dialogOpen("../../test/popup.html", {width:300, height:300, resizable:false}, "param");
+					alert("return value");
+					iKEP.debug(result);
+					break;
+				case "modal2" :
+					iKEP.dialogOpen("../../test/popup.html", {width:300, height:300, resizable:false, callback:function(result) {
+						alert("callback : dialog");
+						iKEP.debug(result);
+					}}, "param");
+					break;
+				case "modeless" :
+					iKEP.dialogOpen("../../test/popup.html", {width:300, height:300, resizable:false, modal:false, callback:function(result) {
+						alert("callback : modaless");
+						iKEP.debug(result);
+					}}, "param");
+					break;
+				case "popup" :
+					iKEP.popupOpen("../../test/popup.html", {width:300, height:300, resizable:true, callback : function(result) {
+						alert("callback : popup");
+						iKEP.debug(result);
+					}});
+					alert("test");
+					break;
+			}
+		});
+	});
+})(jQuery);
+</script>
+</head>
+
+<body>
+<!--guideWrapper Start-->
+<div id="guideConFrame">
+
+	<div class="guideConTitle"><h2>Dialog</h2><a class="refer" target="_blank" href="http://jqueryui.com/demos/dialog/">reference</a></div>
+	
+	<!--UI_sample_area Start-->
+	<h4>UI sample</h4>
+	<a target="_blank" href="dialog_pop.html">New Window</a>
+	<div class="UI_sample">
+		
+		<!--UI_sample Start-->
+		<div class="button">Interactive : <a>open1</a> <a>open2</a> <a>close</a> <a>modal1</a> <a>modal2</a> <a>modeless</a> <a>popup</a></div>
+		<div id="dialog" title="Basic dialog">
+			<p>This is the default dialog which is useful for displaying information. The dialog window can be moved, resized and closed with the 'x' icon.</p>
+			<p><a>close</a></p>
+		</div>
+
+		<!--//UI_sample End-->
+		
+		<div class="UI_sum">
+			summary
+		</div>
+	</div>
+	<!--//UI_sample_area End-->
+
+	<!--UI_source Start-->
+	<h4>View source</h4>
+	<div class="UI_source">
+		<pre class="brush: js;">
+	var dialog1 = $("#dialog").dialog();
+	dialog1.dialog("close");
+	
+	var dialog2 = iKEP.showDialog({
+		title : "Ajax",
+		url : "ajax.html",
+		modal : true
+	});
+	dialog2.close();
+		</pre>
+	</div>	
+	<!--UI_source End-->	
+
+	<!--Method Start-->	
+	<h4>Method & Properties</h4>
+	<div class="UI_method">
+		<ul>
+			<li><span>Options</span>
+				<ul>
+					<li>modal</li>
+					<li>width / height</li>
+					<li>maxWidth / maxHeight</li>
+					<li>minWidth / minHeight</li>
+					<li>position : [right, right] / center|left|right|top|bottom</li>
+					<li></li>
+				</ul>
+			</li>
+			<li><span><b>iKEP.showDialog</b> : iKEP.Dialog를 wrapping한 메서드로 해당 메서드 내부에서 iKEP.Dialog를 생성하며, 프레임 기반에서 최상위 프레임에서 뜨도록 하기 위해 추가 되었음</span>
+				<ul>
+					<li>title</li>
+					<li>url</li>
+					<li>isDestroy</li>
+					<li>scroll : ["auto"], no - 스크롤바 생성 안함</li>
+					<li><span>params : dialog 화면 로드 후 전달되는 파라미터</span><br/>
+						지정한 "url"페이지에서 "fnCaller(param, dialog)" 글로벌 함수를 정의해 두면 이 함수를 호출하며 두개의 파라미터 중 첫번째 파라미터로 이 params을 전송한다.<br/>
+						* 두번째 파라미터로 생성된 dialog객체를 전달 하며 이를 통해 "close"등의 기능을 수행할 수 있다.
+					</li>
+					<li><span>callback : dialog 화면에서 dialog화면을 생성한 화면으로 인터페이스 할 수 있는 메서드로 returnValue 파라미터로 넘길 수 있다.</span><br/>
+						* dialog화면에서 정의한 fnCaller를 통해 전달 받은 dialog 객체의 메서드로 호출할 수 있다.
+					</li>
+				</ul>
+			</li>
+			<li><span>Method</span>
+				<ul>
+					<li>open</li>
+					<li>close</li>
+					<li>callback(result)</li>
+				</ul>
+			</li>
+			<li><span>Popup Window</span>
+				<ul>
+					<li><span>iKEP.dialogOpen(url, options, argument)</span>
+						<ul>
+							<li>url </li>
+							<li><span>options</span>
+								<ul>
+									<li>width : default - 200</li>
+									<li>height : default - 200</li>
+									<li>left</li>
+									<li>top</li>
+									<li>resizable : default - true / false</li>
+									<li>modal : default - true / false</li>
+									<li>callback : function(result)</li>
+								</ul>
+							</li>
+							<li>argument : jsonObject - 서버로 전달되는 argument는 아님(서버 전송을 원할 경우 url에 queryString형태로 붙혀야 함.)</li>
+						</ul>
+					</li>
+					<li>iKEP.popupOpen(url, options, windowName)</li>
+					<li>iKEP.getPopupArgument()</li>
+					<li>iKEP.returnPopup(result)</li>
+				</ul>
+			</li>
+		</ul>
+	</div>
+	<!--//Method End-->
+	
+	<!-- //Event Start -->
+	<h4>Event</h4>
+	<div class="UI_event"></div>
+	<!-- //Event End -->
+	
+</div>
+<!--//guideWrapper End-->
+</body>
+</html>

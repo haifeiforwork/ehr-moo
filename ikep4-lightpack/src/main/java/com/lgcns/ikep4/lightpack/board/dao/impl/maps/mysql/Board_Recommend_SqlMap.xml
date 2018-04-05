@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="lightpack.board.dao.boardRecommend">
+  <typeAlias alias="BoardRecommend"   type="com.lgcns.ikep4.lightpack.board.model.BoardRecommend"/>
+  <typeAlias alias="BoardRecommendPK" type="com.lgcns.ikep4.lightpack.board.model.BoardRecommendPK"/>
+  
+  <resultMap class="com.lgcns.ikep4.lightpack.board.model.BoardRecommend" id="boardRecommendResult"> 
+    <result column="ITEM_ID"     jdbcType="VARCHAR" property="itemId" />
+    <result column="REGISTER_ID" jdbcType="VARCHAR" property="registerId" />
+    <result column="REGIST_DATE" jdbcType="DATE"    property="registDate" />
+  </resultMap> 
+   
+  <insert id="create" parameterClass="BoardRecommend"> 
+    INSERT INTO IKEP4_BD_RECOMMEND /* [Board_Recommend_SqlMap.xml] lightpack.board.dao.boardRecommend.insert */ 
+           (ITEM_ID, REGISTER_ID, REGIST_DATE)
+    VALUES (#itemId#, #registerId#,  NOW())
+  </insert>
+   
+  <select id="exists" parameterClass="BoardRecommendPK" resultClass="int">
+    SELECT /* [Board_Recommend_SqlMap.xml] lightpack.board.dao.boardRecommend.exists */
+           COUNT(*)
+    FROM   IKEP4_BD_RECOMMEND
+    WHERE  ITEM_ID = #itemId#
+    AND    REGISTER_ID = #registerId#
+  </select> 
+  
+  <update id="update" parameterClass="BoardRecommend"> 
+    UPDATE IKEP4_BD_RECOMMEND /* [Board_Recommend_SqlMap.xml] lightpack.board.dao.boardRecommend.update */
+    SET REGIST_DATE = NOW()
+    WHERE ITEM_ID = #itemId#
+    AND REGISTER_ID = #registerId#
+  </update>
+  <delete id="removeByItemId" parameterClass="string"> 
+    DELETE FROM IKEP4_BD_RECOMMEND /* [Board_Recommend_SqlMap.xml] lightpack.board.dao.boardRecommend.removeByItemId */
+    WHERE ITEM_ID = #itemId#
+  </delete>   
+</sqlMap>

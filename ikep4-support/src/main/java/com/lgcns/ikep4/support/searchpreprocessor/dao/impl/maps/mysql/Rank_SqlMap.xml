@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="com.lgcns.ikep4.support.searchpreprocessor.rank">
+  
+	<typeAlias alias="spRank"       type="com.lgcns.ikep4.support.searchpreprocessor.model.Rank"/>
+  
+  	<resultMap class="spRank" id="baseResultMap">
+    	<result column="SEARCH_KEYWORD_ID" jdbcType="VARCHAR" property="searchKeywordId" />
+    	<result column="SEARCH_RANK" jdbcType="DECIMAL" property="searchRank" />
+    	<result column="PRE_SEARCH_RANK" jdbcType="DECIMAL" property="preSearchRank" />
+  	</resultMap>
+
+   	<sql id="sqlColumnList"> 
+	  	SEARCH_KEYWORD_ID, 
+	  	SEARCH_RANK, 
+	  	PRE_SEARCH_RANK
+  	</sql> 
+  
+  	<select id="get" parameterClass="string" resultMap="baseResultMap">
+    	SELECT				<include refid="com.lgcns.ikep4.support.searchpreprocessor.rank.sqlColumnList" />
+    	FROM 				IKEP4_SP_RANK
+    	WHERE 				SEARCH_KEYWORD_ID = #searchKeywordId#
+  	</select>
+  
+  	<select id="exists"  parameterClass="string" resultClass="int">
+    	SELECT 				COUNT(*) 
+    	FROM 				IKEP4_SP_RANK
+    	WHERE 				SEARCH_KEYWORD_ID = #searchKeywordId#
+  	</select>
+  
+  	<delete id="remove" parameterClass="string">
+	    DELETE 
+	    FROM 				IKEP4_SP_RANK
+	    WHERE 				SEARCH_KEYWORD_ID = #searchKeywordId#
+  	</delete>
+  
+  	<insert id="create" parameterClass="spRank">
+    	INSERT INTO 		IKEP4_SP_RANK 
+    						(
+    						<include refid="com.lgcns.ikep4.support.searchpreprocessor.rank.sqlColumnList" />
+    						)
+    	VALUES 				(
+					        #searchKeywordId#,
+					        #searchRank#,
+					        #preSearchRank#
+      	)
+  	</insert>
+  
+  	<update id="update" parameterClass="spRank">
+    	UPDATE 				IKEP4_SP_RANK
+    	SET 				SEARCH_RANK = #searchRank#,
+        					PRE_SEARCH_RANK = #preSearchRank#
+    	WHERE 				SEARCH_KEYWORD_ID = #searchKeywordId#
+  	</update>
+  
+   	<select id="getRankList" resultMap="baseResultMap">
+    	SELECT  			<include refid="com.lgcns.ikep4.support.searchpreprocessor.rank.sqlColumnList" />
+    	FROM 				IKEP4_SP_RANK
+    	ORDER BY 			SEARCH_RANK DESC, 
+    						PRE_SEARCH_RANK DESC
+  	</select>
+  
+  	<delete id="removeAll">
+    	DELETE 
+    	FROM 				IKEP4_SP_RANK
+  	</delete>
+  
+</sqlMap>

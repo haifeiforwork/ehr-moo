@@ -1,0 +1,58 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ko">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Home</title>
+<link rel="stylesheet" type="text/css" href="../../css/guide.css" />
+<link rel="stylesheet" type="text/css" href="../../css/theme01/jquery_ui_custom.css" />
+<link rel="stylesheet" type="text/css" href="../../css/common.css" />
+<link rel="stylesheet" type="text/css" href="../../css/theme01/theme.css" />>
+<script type="text/javascript" src="../../js/jquery/jquery-1.6.2.min.js"></script>
+<script type="text/javascript" src="../../js/jquery/jquery-ui-1.8.13.min.without.datepicker.js"></script>
+<script type="text/javascript" src="../../js/langResource/ko.js"></script>
+<script type="text/javascript" src="../../js/common.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$(document).ready(function() {
+		$("#div1").resizable();
+		
+		$("#div2").resizable({
+			maxWidth:500,
+			maxHeight:300,
+			minWidth:100,
+			minHeight:50
+		});
+		
+		$("#txt1").resizable({
+			//containment : "parent",
+			maxHeight : 200,
+			maxWidth : $("#txt1").parent().width(),
+			handles : "se"
+		});
+	});
+})(jQuery);
+</script>
+<style type="text/css">
+	textarea + .ui-resizable-se {
+		bottom: 14px;
+	}
+	</style>
+
+</head>
+
+<body class="popup">
+	<div id="div1" style="width:200px; height:100px; border:1px solid #ccc; background-color:white;">
+		<h4 style="background-color:#eee; cursor:default;">title</h4>
+		<div style="padding:5px 10px;">body</div>
+	</div>
+	<br/>
+	<div id="div2" style="width:200px; height:100px; border:1px solid #ccc; background-color:white;">
+		<h4 style="background-color:#eee; cursor:default;">title</h4>
+		<div style="padding:5px 10px;">body</div>
+	</div>
+	<br/>
+	<div>
+		<textarea id="txt1" cols="30" rows="5">content....</textarea>
+	</div>
+</body>
+</html>

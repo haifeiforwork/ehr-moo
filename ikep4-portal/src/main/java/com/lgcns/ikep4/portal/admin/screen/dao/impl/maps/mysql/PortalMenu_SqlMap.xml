@@ -1,0 +1,462 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="portal.admin.screen.portalMenu" >
+	<typeAlias alias="PortalMenu" type="com.lgcns.ikep4.portal.admin.screen.model.PortalMenu"/>
+	
+	<resultMap id="result" class="PortalMenu">
+		<result column="MENU_ID" 			property="menuId" 			columnIndex="1"/>
+		<result column="MENU_NAME" 			property="menuName" 		columnIndex="2"/>
+		<result column="DESCRIPTION"		property="description" 		columnIndex="3"/>
+		<result column="PARENT_MENU_ID"		property="parentMenuId"		columnIndex="4"/>
+		<result column="SYSTEM_CODE"		property="systemCode"		columnIndex="5"/>
+		<result column="SORT_ORDER"			property="sortOrder"		columnIndex="6"/>
+		<result column="MENU_TYPE"			property="menuType"			columnIndex="7"/>
+		<result column="URL"				property="url"				columnIndex="8"/>
+		<result column="TARGET"				property="target"			columnIndex="9"/>
+		<result column="REGISTER_ID"		property="registerId"		columnIndex="10"/>
+		<result column="REGISTER_NAME"		property="registerName"		columnIndex="11"/>
+		<result column="REGIST_DATE"		property="registDate"		columnIndex="12"/>
+		<result column="UPDATER_ID"			property="updaterId"		columnIndex="13"/>
+		<result column="UPDATER_NAME"		property="updaterName"		columnIndex="14"/>
+		<result column="UPDATE_DATE"		property="updateDate"		columnIndex="15"/>
+		<result column="ICON_ID"			property="iconId"			columnIndex="16"/>
+		<result column="URL_TYPE"			property="urlType"			columnIndex="17"/>
+	</resultMap>
+	
+	<resultMap id="listResult" class="PortalMenu">
+		<result column="NUM"				property="num" 				columnIndex="1"/>
+		<result column="DEPTH_LEVEL"		property="depthLevel" 		columnIndex="2"/>
+		<result column="MENU_ID" 			property="menuId" 			columnIndex="3"/>
+		<result column="MENU_NAME" 			property="menuName" 		columnIndex="4"/>
+		<result column="DESCRIPTION"		property="description" 		columnIndex="5"/>
+		<result column="PARENT_MENU_ID"		property="parentMenuId"		columnIndex="6"/>
+		<result column="SYSTEM_CODE"		property="systemCode"		columnIndex="7"/>
+		<result column="SORT_ORDER"			property="sortOrder"		columnIndex="8"/>
+		<result column="MENU_TYPE"			property="menuType"			columnIndex="9"/>
+		<result column="URL"				property="url"				columnIndex="10"/>
+		<result column="TARGET"				property="target"			columnIndex="11"/>
+		<result column="ICON_ID"			property="iconId"			columnIndex="12"/>
+		<result column="URL_TYPE"			property="urlType"			columnIndex="13"/>
+	</resultMap>
+	
+	<resultMap id="menuResult" class="PortalMenu">
+		<result column="NUM"				property="num" 				columnIndex="1"/>
+		<result column="DEPTH_LEVEL"		property="depthLevel" 		columnIndex="2"/>
+		<result column="MENU_ID" 			property="menuId" 			columnIndex="3"/>
+		<result column="MENU_NAME" 			property="menuName" 		columnIndex="4"/>
+		<result column="DESCRIPTION"		property="description" 		columnIndex="5"/>
+		<result column="PARENT_MENU_ID"		property="parentMenuId"		columnIndex="6"/>
+		<result column="SYSTEM_CODE"		property="systemCode"		columnIndex="7"/>
+		<result column="SORT_ORDER"			property="sortOrder"		columnIndex="8"/>
+		<result column="MENU_TYPE"			property="menuType"			columnIndex="9"/>
+		<result column="URL"				property="url"				columnIndex="10"/>
+		<result column="TARGET"				property="target"			columnIndex="11"/>
+		<result column="ICON_ID"			property="iconId"			columnIndex="12"/>
+		<result column="URL_TYPE"			property="urlType"			columnIndex="13"/>
+	</resultMap>
+	
+	<sql id="sqlColumnList">
+		MENU_ID,
+		MENU_NAME,
+		DESCRIPTION,
+		PARENT_MENU_ID,
+		SYSTEM_CODE,
+		SORT_ORDER,
+		MENU_TYPE,
+		URL,
+		TARGET,
+		REGISTER_ID,
+		REGISTER_NAME,
+		REGIST_DATE,
+		UPDATER_ID,
+		UPDATER_NAME,
+		UPDATE_DATE,
+		ICON_ID,
+		URL_TYPE
+	</sql>
+	
+	<select id="list" parameterClass="java.util.Map" resultMap="listResult">
+		<![CDATA[
+		/* [PortalMenu_SqlMap.xml] portal.admin.screen.portalMenu.list */
+    	SELECT 				C.NUM,
+    						C.DEPTH_LEVEL, 
+							C.MENU_ID, 
+							D.ITEM_MESSAGE AS MENU_NAME, 
+							C.DESCRIPTION, 
+							C.PARENT_MENU_ID, 
+							C.SYSTEM_CODE, 
+							C.SORT_ORDER, 
+							C.MENU_TYPE, 
+							C.URL, 
+							C.TARGET, 
+							C.REGISTER_ID, 
+							C.REGISTER_NAME, 
+							C.REGIST_DATE, 
+							C.UPDATER_ID, 
+							C.UPDATER_NAME, 
+							C.UPDATE_DATE, 
+							C.ICON_ID, 
+							C.URL_TYPE  
+		FROM				(
+		]]>
+							<!-- SELECT				ROWNUM AS NUM,
+												LEVEL AS DEPTH_LEVEL, 
+												A.MENU_ID, 
+												A.MENU_NAME, 
+												A.DESCRIPTION, 
+												A.PARENT_MENU_ID, 
+												A.SYSTEM_CODE, 
+												A.SORT_ORDER, 
+												A.MENU_TYPE, 
+												A.URL, 
+												A.TARGET, 
+												A.REGISTER_ID, 
+												A.REGISTER_NAME, 
+												DATE_FORMAT(A.REGIST_DATE, '%Y-%m-%d') AS REGIST_DATE, 
+												A.UPDATER_ID, 
+												A.UPDATER_NAME, 
+												DATE_FORMAT(A.UPDATE_DATE, '%Y-%m-%d') AS UPDATE_DATE, 
+												A.ICON_ID, 
+												A.URL_TYPE
+							FROM 				IKEP4_PO_MENU A
+              				INNER JOIN  		IKEP4_PO_SYSTEM B
+				            ON          		A.SYSTEM_CODE = B.SYSTEM_CODE
+				            AND         		B.SYSTEM_NAME = #systemName#
+				            AND         		B.PORTAL_ID = #portalId#
+							START WITH 			A.PARENT_MENU_ID IS NULL
+							CONNECT BY 			PRIOR A.MENU_ID = A.PARENT_MENU_ID 
+							ORDER SIBLINGS BY 	A.SORT_ORDER -->
+		<![CDATA[							
+							SELECT				ROWNUM AS NUM,
+												DEPTH_LEVEL, 
+												A.MENU_ID, 
+												A.MENU_NAME, 
+												A.DESCRIPTION, 
+												A.PARENT_MENU_ID, 
+												A.SYSTEM_CODE, 
+												A.SORT_ORDER, 
+												A.MENU_TYPE, 
+												A.URL, 
+												A.TARGET, 
+												A.REGISTER_ID, 
+												A.REGISTER_NAME, 
+												DATE_FORMAT(A.REGIST_DATE, '%Y-%m-%d') AS REGIST_DATE, 
+												A.UPDATER_ID, 
+												A.UPDATER_NAME, 
+												DATE_FORMAT(A.UPDATE_DATE, '%Y-%m-%d') AS UPDATE_DATE, 
+												A.ICON_ID, 
+												A.URL_TYPE
+							FROM 				IKEP4_PO_MENU A
+								INNER JOIN (select @rownum := @rownum + 1 as rownum, depth_level, menu_id from (
+									SELECT	C.DEPTH_LEVEL, C.MENU_ID, C.MENU_NAME, C.PARENT_MENU_ID, CONCAT(A.SORT_ORDER, C.SORT_ORDER) SORT_ORDER, @rownum := 0
+									FROM	ikep4_po_menu A
+											INNER JOIN IKEP4_PO_SYSTEM B ON A.SYSTEM_CODE = B.SYSTEM_CODE AND B.SYSTEM_NAME = #systemName# AND B.PORTAL_ID = #portalId#
+									        INNER JOIN (SELECT	1 AS DEPTH_LEVEL, PARENT_MENU_ID, MENU_ID, MENU_NAME, SORT_ORDER, MENU_ID AS SORT_ID, SYSTEM_CODE
+										        FROM	ikep4_po_menu
+										        WHERE	PARENT_MENU_ID IS NULL
+										        UNION ALL
+										        SELECT	2 AS DEPTH_LEVEL, PARENT_MENU_ID, MENU_ID, MENU_NAME, SORT_ORDER, PARENT_MENU_ID AS SORT_ID, SYSTEM_CODE
+										        FROM	ikep4_po_menu
+										        WHERE	PARENT_MENU_ID IN(SELECT 	 MENU_ID FROM ikep4_po_menu WHERE	   PARENT_MENU_ID IS NULL)
+									        ) C ON B.SYSTEM_CODE = C.SYSTEM_CODE AND A.MENU_ID = C.SORT_ID
+									order by sort_order) A
+								) B on A.MENU_ID = B.MENU_ID
+							) C
+		INNER JOIN 			IKEP4_I18N_MESSAGE D 
+		ON 					C.MENU_ID = D.ITEM_ID
+		AND 				D.FIELD_NAME = #fieldName# 
+		AND 				D.LOCALE_CODE = #localeCode#
+		ORDER BY			C.NUM ASC
+		]]>
+	</select>
+	<select id="menuList" parameterClass="java.util.Map" resultMap="menuResult">
+		<![CDATA[
+		/* [PortalMenu_SqlMap.xml] portal.admin.screen.portalMenu.menuList */
+		SELECT				C.NUM,
+    						C.DEPTH_LEVEL,
+		                  	C.MENU_ID,
+		                  	D.ITEM_MESSAGE AS MENU_NAME,
+		                  	C.DESCRIPTION,
+		                  	C.PARENT_MENU_ID,
+		                  	C.SYSTEM_CODE,
+		                  	C.SORT_ORDER,
+		                  	C.MENU_TYPE,
+		                  	C.URL,
+		                  	C.TARGET,
+		                  	C.ICON_ID,
+		                  	C.URL_TYPE
+		FROM				(
+							SELECT				B.NUM,
+												B.DEPTH_LEVEL,
+							                  	B.MENU_ID,
+							                  	B.DESCRIPTION,
+							                  	B.PARENT_MENU_ID,
+							                  	B.SYSTEM_CODE,
+							                  	B.SORT_ORDER,
+							                  	B.MENU_TYPE,
+							                  	B.URL,
+							                  	B.TARGET,
+							                  	B.ICON_ID,
+							                  	B.URL_TYPE
+							FROM              	IKEP4_VW_PERMIT_SYS_RESOURCE A
+							INNER JOIN        	(
+							                  	SELECT				ROWNUM AS NUM,
+																	DEPTH_LEVEL, 
+																	A.MENU_ID, 
+																	A.MENU_NAME, 
+																	A.DESCRIPTION, 
+																	A.PARENT_MENU_ID, 
+																	A.SYSTEM_CODE, 
+																	A.SORT_ORDER, 
+																	A.MENU_TYPE, 
+																	A.URL, 
+																	A.TARGET, 
+																	A.ICON_ID, 
+																	A.URL_TYPE
+												FROM 				IKEP4_PO_MENU A
+													INNER JOIN (select @rownum := @rownum + 1 as rownum, depth_level, menu_id from (
+														SELECT	C.DEPTH_LEVEL, C.MENU_ID, C.MENU_NAME, C.PARENT_MENU_ID, CONCAT(A.SORT_ORDER, C.SORT_ORDER) SORT_ORDER, @rownum := 0
+														FROM	ikep4_po_menu A
+																INNER JOIN IKEP4_PO_SYSTEM B ON A.SYSTEM_CODE = B.SYSTEM_CODE AND B.SYSTEM_NAME = #systemName# AND B.PORTAL_ID = #portalId#
+														        INNER JOIN (SELECT	1 AS DEPTH_LEVEL, PARENT_MENU_ID, MENU_ID, MENU_NAME, SORT_ORDER, MENU_ID AS SORT_ID, SYSTEM_CODE
+															        FROM	ikep4_po_menu
+															        WHERE	PARENT_MENU_ID IS NULL
+															        UNION ALL
+															        SELECT	2 AS DEPTH_LEVEL, PARENT_MENU_ID, MENU_ID, MENU_NAME, SORT_ORDER, PARENT_MENU_ID AS SORT_ID, SYSTEM_CODE
+															        FROM	ikep4_po_menu
+															        WHERE	PARENT_MENU_ID IN(SELECT 	 MENU_ID FROM ikep4_po_menu WHERE	   PARENT_MENU_ID IS NULL)
+														        ) C ON B.SYSTEM_CODE = C.SYSTEM_CODE AND A.MENU_ID = C.SORT_ID
+														order by sort_order) A
+													) B on A.MENU_ID = B.MENU_ID
+							                  	) B
+							ON                	A.RESOURCE_NAME = B.MENU_ID
+							AND               	A.OPERATION_NAME = #operationName#
+							AND               	A.CLASS_NAME = #className#
+							AND               	A.USER_ID IN (#userId#, 'OPEN')
+							) C
+		INNER JOIN        	IKEP4_I18N_MESSAGE D
+		ON                	C.MENU_ID = D.ITEM_ID
+		AND               	D.FIELD_NAME = #fieldName#
+		AND               	D.LOCALE_CODE = #localeCode#
+		ORDER BY			C.NUM ASC
+		]]>
+	</select>
+	<select id="listByParentMenuId" parameterClass="java.util.Map" resultMap="result">
+		<![CDATA[
+		/* [PortalMenu_SqlMap.xml] portal.admin.screen.portalMenu.listByParentMenuId */
+		SELECT				A.MENU_ID,
+							A.MENU_NAME,
+							A.DESCRIPTION,
+							A.PARENT_MENU_ID,
+							A.SYSTEM_CODE,
+							A.SORT_ORDER,
+							A.MENU_TYPE,
+							A.URL,
+							A.TARGET,
+							A.REGISTER_ID,
+							A.REGISTER_NAME,
+							DATE_FORMAT(A.REGIST_DATE, '%Y-%m-%d') AS REGIST_DATE,
+							A.UPDATER_ID,
+							A.UPDATER_NAME,
+							DATE_FORMAT(A.UPDATE_DATE, '%Y-%m-%d') AS UPDATE_DATE,
+							A.ICON_ID,
+							A.URL_TYPE
+		FROM				IKEP4_PO_MENU A
+		INNER JOIN			IKEP4_PO_SYSTEM B
+		ON					A.SYSTEM_CODE = B.SYSTEM_CODE
+		AND					B.SYSTEM_NAME = #systemName#
+		AND					B.PORTAL_ID = #portalId#
+		]]>
+		<dynamic>
+		<isNull property="parentMenuId">
+		<![CDATA[
+		WHERE				A.PARENT_MENU_ID IS NULL
+		]]>
+		</isNull>
+		<isNotNull property="parentMenuId">
+		<![CDATA[
+		WHERE				A.PARENT_MENU_ID = #parentMenuId#
+		]]>
+		</isNotNull>
+		</dynamic>
+		<![CDATA[
+    	ORDER BY			A.SORT_ORDER
+		]]>
+	</select>
+	<select id="get" parameterClass="string" resultMap="result"> 
+		<![CDATA[
+		/* [PortalMenu_SqlMap.xml] portal.admin.screen.portalMenu.get */
+    	SELECT				MENU_ID,
+							MENU_NAME,
+							DESCRIPTION,
+							PARENT_MENU_ID,
+							SYSTEM_CODE,
+							SORT_ORDER,
+							MENU_TYPE,
+							URL,
+							TARGET,
+							REGISTER_ID,
+							REGISTER_NAME,
+							DATE_FORMAT(REGIST_DATE, '%Y-%m-%d') AS REGIST_DATE,
+							UPDATER_ID,
+							UPDATER_NAME,
+							DATE_FORMAT(UPDATE_DATE, '%Y-%m-%d') AS UPDATE_DATE,
+							ICON_ID,
+							URL_TYPE
+    	FROM  				IKEP4_PO_MENU
+    	WHERE 				MENU_ID = #menuId# 
+    	]]>
+ 	</select>
+	
+	<insert id="create" parameterClass="PortalMenu"> 
+		<selectKey resultClass="string" keyProperty="sortOrder" >
+		<![CDATA[
+		SELECT				CASE 
+							WHEN MAX(IFNULL(CAST(SORT_ORDER AS DECIMAL), 100000)) IS NULL THEN '0000000000001'
+              				ELSE LPAD((MAX(IFNULL(CAST(SORT_ORDER AS DECIMAL), 100000))+1), 13, '0') 
+              				END  
+    	FROM         		IKEP4_PO_MENU
+		]]>
+		</selectKey>
+	
+		<![CDATA[
+		/* [PortalMenu_SqlMap.xml] portal.admin.screen.portalMenu.create */
+		INSERT	INTO		IKEP4_PO_MENU 
+							(
+		]]>
+							<include refid="portal.admin.screen.portalMenu.sqlColumnList" />
+		<![CDATA[
+							)
+		VALUES	 			(
+							#menuId#,
+							#menuName#,
+							#description#,
+							]]>
+							<dynamic>
+							<isNull property="parentMenuId">
+							<![CDATA[
+							NULL,
+							]]>
+							</isNull>
+							<isNotNull property="parentMenuId">
+							<![CDATA[
+							#parentMenuId#,
+							]]>
+							</isNotNull>
+							</dynamic>		
+							<![CDATA[
+							#systemCode#,
+							#sortOrder#,
+							#menuType#,
+							#url#,
+							#target#,
+							#registerId#,
+						    #registerName#,
+						    NOW(),
+						    #updaterId#,
+						    #updaterName#,
+						    NOW(),
+						    #iconId#,
+						    #urlType#
+						    )
+		]]>
+	</insert>
+	
+	<update id="update" parameterClass="PortalMenu"> 
+ 		<![CDATA[
+ 		/* [PortalMenu_SqlMap.xml] portal.admin.screen.portalMenu.update */
+    	UPDATE				IKEP4_PO_MENU
+    	SET					MENU_NAME = #menuName#,
+							DESCRIPTION = #description#,
+							]]>
+							<dynamic>
+							<isNull property="parentMenuId">
+							<![CDATA[
+							PARENT_MENU_ID = NULL,
+							]]>
+							</isNull>
+							<isNotNull property="parentMenuId">
+							<![CDATA[
+							PARENT_MENU_ID = #parentMenuId#,
+							]]>
+							</isNotNull>
+							</dynamic>		
+							<![CDATA[
+							SYSTEM_CODE = #systemCode#,
+							SORT_ORDER = #sortOrder#,
+							MENU_TYPE = #menuType#,
+							URL = #url#,
+							TARGET = #target#,
+							UPDATER_ID = #updaterId#,
+							UPDATER_NAME = #updaterName#,
+							UPDATE_DATE = NOW(),
+							ICON_ID = #iconId#,
+							URL_TYPE = #urlType#
+		WHERE				MENU_ID= #menuId#
+    	]]>
+  	</update>
+	
+	<delete id="delete" parameterClass="string"> 
+  		<![CDATA[
+  		/* [PortalMenu_SqlMap.xml] portal.admin.screen.portalMenu.delete */
+    	DELETE FROM IKEP4_PO_MENU WHERE MENU_ID IN 
+    	(
+    	]]>
+			<!--
+			SELECT MENU_ID
+		   	FROM IKEP4_PO_MENU
+		   	START WITH MENU_ID = #menuId#
+		   	CONNECT BY PRIOR MENU_ID = PARENT_MENU_ID
+		   	-->
+		<![CDATA[
+		   	select menu_id from (
+				SELECT	fncChildMenus() AS menu_id, @level as level, @rownum as rownum
+				FROM	(SELECT  @start_with := #menuId#, @id := @start_with, @level := -1, @rownum := 0, @sort_order := 0) tbl1, ikep4_po_menu
+				WHERE	@id IS NOT NULL
+			) A
+			where menu_id is not null
+    	)
+       	]]>
+  	</delete> 
+  	
+  	<select id="listMenuAll" parameterClass="java.util.Map" resultMap="listResult">
+		<![CDATA[
+		/* [PortalMenu_SqlMap.xml] portal.admin.screen.portalMenu.listMenuAll */
+		SELECT				ROWNUM AS NUM,
+							DEPTH_LEVEL, 
+							A.MENU_ID, 
+							A.MENU_NAME, 
+							A.DESCRIPTION, 
+							A.PARENT_MENU_ID, 
+							A.SYSTEM_CODE, 
+							A.SORT_ORDER, 
+							A.MENU_TYPE, 
+							A.URL, 
+							A.TARGET, 
+							A.REGISTER_ID, 
+							A.REGISTER_NAME, 
+							DATE_FORMAT(A.REGIST_DATE, '%Y-%m-%d') AS REGIST_DATE, 
+							A.UPDATER_ID, 
+							A.UPDATER_NAME, 
+							DATE_FORMAT(A.UPDATE_DATE, '%Y-%m-%d') AS UPDATE_DATE, 
+							A.ICON_ID, 
+							A.URL_TYPE
+		FROM 				IKEP4_PO_MENU A
+			INNER JOIN (select @rownum := @rownum + 1 as rownum, depth_level, menu_id from (
+				SELECT	C.DEPTH_LEVEL, C.MENU_ID, C.MENU_NAME, C.PARENT_MENU_ID, CONCAT(A.SORT_ORDER, C.SORT_ORDER) SORT_ORDER, @rownum := 0
+				FROM	ikep4_po_menu A
+						INNER JOIN IKEP4_PO_SYSTEM B ON A.SYSTEM_CODE = B.SYSTEM_CODE AND B.SYSTEM_NAME = #systemName# AND B.PORTAL_ID = #portalId#
+				        INNER JOIN (SELECT	1 AS DEPTH_LEVEL, PARENT_MENU_ID, MENU_ID, MENU_NAME, SORT_ORDER, MENU_ID AS SORT_ID, SYSTEM_CODE
+					        FROM	ikep4_po_menu
+					        WHERE	PARENT_MENU_ID IS NULL
+					        UNION ALL
+					        SELECT	2 AS DEPTH_LEVEL, PARENT_MENU_ID, MENU_ID, MENU_NAME, SORT_ORDER, PARENT_MENU_ID AS SORT_ID, SYSTEM_CODE
+					        FROM	ikep4_po_menu
+					        WHERE	PARENT_MENU_ID IN(SELECT 	 MENU_ID FROM ikep4_po_menu WHERE	   PARENT_MENU_ID IS NULL)
+				        ) C ON B.SYSTEM_CODE = C.SYSTEM_CODE AND A.MENU_ID = C.SORT_ID
+				order by sort_order) A
+			) B on A.MENU_ID = B.MENU_ID
+		]]>
+	</select>
+</sqlMap>

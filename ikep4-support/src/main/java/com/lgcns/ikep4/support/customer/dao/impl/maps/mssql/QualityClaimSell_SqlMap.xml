@@ -1,0 +1,510 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace = "support.customer.dao.qualityClaimSell">
+<typeAlias alias="CustomerQualityClaimSellSearchCondition" type="com.lgcns.ikep4.support.customer.search.CustomerQualityClaimSellSearchCondition" />
+<typeAlias alias="QualityClaimSellItem" type="com.lgcns.ikep4.support.customer.model.QualityClaimSellHistory" />
+
+	<resultMap id="QualityClaimSellHistoryResult" class="com.lgcns.ikep4.support.customer.model.QualityClaimSellHistory">
+		<result column="ROWNUM" 		    property="rowNum" 			jdbcType="VARCHAR" />
+		<result column="SEQNUM" 		    property="seqNum" 			jdbcType="DECIMAL" />
+		<result column="ID" 			    property="customerId" 		jdbcType="VARCHAR" />
+		<result column="COUNSEL_DATE" 		property="counselDate" 		jdbcType="VARCHAR" />
+		<result column="COUNSELOR" 			property="counselor" 		jdbcType="VARCHAR" />
+		<result column="SALESMAN" 			property="salesman" 		jdbcType="VARCHAR" />
+		<result column="CUSTOMER" 			property="customer" 		jdbcType="VARCHAR" />
+		<result column="CLIENT" 			property="client" 			jdbcType="VARCHAR" />
+		<result column="PHONE1" 			property="clientPhone" 		jdbcType="VARCHAR" />
+		<result column="FABRICATION" 		property="fabrication" 		jdbcType="VARCHAR" />
+		<result column="CHARGE" 			property="charge" 			jdbcType="VARCHAR" />
+		<result column="PHONE2" 			property="chargePhone" 		jdbcType="VARCHAR" />
+		<result column="SUBJECT" 			property="subject"			jdbcType="VARCHAR" />
+		<result column="CONTENT" 			property="content" 			jdbcType="VARCHAR" />
+		<result column="ACTIONS" 			property="actions" 			jdbcType="VARCHAR" />
+		<result column="CLAIMS" 			property="claims" 			jdbcType="VARCHAR" />
+		<result column="FACILITY_HISTORY" 	property="facilityHistory" 	jdbcType="VARCHAR" />
+		<result column="JIJONG" 			property="jijong" 			jdbcType="VARCHAR" />
+		<result column="FACTORY" 			property="factory" 			jdbcType="VARCHAR" />
+		<result column="CLAIM_GUBUN" 		property="claimGubun" 		jdbcType="VARCHAR" />
+		<result column="WEIGHT" 			property="weight" 			jdbcType="VARCHAR" />
+		<result column="MAIN_PRINT" 		property="mainPrint" 		jdbcType="VARCHAR" />
+		<result column="MAIN_COMPANY" 		property="mainCompany" 		jdbcType="VARCHAR" />
+		<result column="MAIN_CONNECTION" 	property="mainConnection" 	jdbcType="VARCHAR" />
+		<result column="LINEREPLY_COUNT" 	property="linereplyCount" 	jdbcType="DECIMAL" />
+		<result column="REGISTER_ID" 	    property="registerId"   	jdbcType="VARCHAR" />
+		<result column="REGISTER_NAME"  	property="registerName" 	jdbcType="VARCHAR" />
+		<result column="REGIST_DATE"	  	property="registDate"	 	jdbcType="VARCHAR" />
+		<result column="SUB_COUNT"	  		property="subCount"	 		jdbcType="VARCHAR" />
+		<result column="RELATION_COMPANY"	property="relationCompany"	jdbcType="VARCHAR" />
+		<result column="FAX"				property="fax"				jdbcType="VARCHAR" />
+		<result column="ADDRESS"			property="address"			jdbcType="VARCHAR" />
+		<result column="SUB_ID"	  			property="subId"	 	jdbcType="VARCHAR" />
+		<result column="HIT_COUNT"	  			property="hitCount"	 	jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<resultMap  id="QualityClaimSellHistoryExtendsResult" extends="QualityClaimSellHistoryResult"  class="com.lgcns.ikep4.support.customer.model.QualityClaimSellHistory">
+	    <result column="JOB_RANK_NAME"          property="user.jobRankName"         jdbcType="VARCHAR" />
+	    <result column="TEAM_NAME"              property="user.teamName"            jdbcType="VARCHAR" />
+	    <result column="JOB_DUTY_NAME"          property="user.jobDutyName"         jdbcType="VARCHAR" />
+	    <result column="JOB_POSITION_NAME"      property="user.jobPositionName"     jdbcType="VARCHAR" />
+	    <result column="JOB_TITLE_NAME"         property="user.jobTitleName"        jdbcType="VARCHAR" />  
+	    <result column="PICTURE_ID"             property="user.pictureId"           jdbcType="VARCHAR" />   
+	    <result column="PROFILE_PICTURE_ID"     property="user.profilePictureId"    jdbcType="VARCHAR" />  
+		<result column="USER_NAME"              property="user.userName"            jdbcType="VARCHAR" />
+		<result column="USER_ENGLISH_NAME"      property="user.userEnglishName"     jdbcType="VARCHAR" />
+		<result column="JOB_TITLE_ENGLISH_NAME" property="user.jobTitleEnglishName" jdbcType="VARCHAR" />
+		<result column="TEAM_ENGLISH_NAME"      property="user.teamEnglishName"     jdbcType="VARCHAR" /> 
+	
+	</resultMap>
+
+<sql id="sqlColumnList">
+		 ID
+		,COUNSEL_DATE
+		,COUNSELOR
+		,SALESMAN
+		,CUSTOMER
+		,CLIENT
+		,PHONE1
+		,FABRICATION
+		,CHARGE
+		,PHONE2
+		,SUBJECT
+		,CONTENT
+		,ACTIONS
+		,CLAIMS
+		,FACILITY_HISTORY
+		,JIJONG
+		,FACTORY
+		,CLAIM_GUBUN
+		,WEIGHT
+		,MAIN_PRINT
+		,MAIN_COMPANY
+		,MAIN_CONNECTION
+		,LINEREPLY_COUNT
+		,DELETE_FLAG
+		,UPDATER_ID
+		,UPDATER_NAME
+		,UPDATE_DATE
+		,REGISTER_ID
+		,REGISTER_NAME
+		,REGIST_DATE
+		,FACTORY_NAME
+		,CLAIM_GUBUN_NAME
+		,RELATION_COMPANY
+		,FAX
+		,ADDRESS
+ </sql>
+
+
+<select id="qualityClaimSellListBySearchCondition" parameterClass="CustomerQualityClaimSellSearchCondition" resultMap="QualityClaimSellHistoryResult">
+SELECT /* [QualityClaimSell_SqlMap.xml] QualityClaimSell.qualityClaimSellListBySearchCondition */
+		*
+		FROM (
+		SELECT A.* FROM (
+		/* START========================================= */
+		SELECT ROW_NUMBER()
+		OVER(ORDER BY  
+		       <isNotEmpty property="sortColumn">
+		       <isEqual property="sortColumn" compareValue="CLAIM_GUBUN">
+					<isEqual property="sortType" compareValue="DESC">
+						(select top 1 claim_gubun_sub from CUSTOMER_CLAIM_SUB where item_id = item.SEQNUM order by counsel_sub_date desc) DESC , (select top 1 counsel_sub_date from CUSTOMER_CLAIM_SUB where item_id = item.SEQNUM order by counsel_sub_date desc) DESC
+					</isEqual>
+					<isEqual property="sortType" compareValue="ASC">
+						(select top 1 claim_gubun_sub from CUSTOMER_CLAIM_SUB where item_id = item.SEQNUM order by counsel_sub_date desc) ASC , (select top 1 counsel_sub_date from CUSTOMER_CLAIM_SUB where item_id = item.SEQNUM order by counsel_sub_date desc) DESC
+					</isEqual>
+				</isEqual>
+				<isEqual property="sortColumn" compareValue="NAME">
+					<isEqual property="sortType" compareValue="DESC">
+						CUSTOMER DESC , (select top 1 counsel_sub_date from CUSTOMER_CLAIM_SUB where item_id = item.SEQNUM order by counsel_sub_date desc) DESC
+					</isEqual>
+					<isEqual property="sortType" compareValue="ASC">
+						CUSTOMER ASC , (select top 1 counsel_sub_date from CUSTOMER_CLAIM_SUB where item_id = item.SEQNUM order by counsel_sub_date desc) DESC
+					</isEqual>
+				</isEqual>
+				<isEqual property="sortColumn" compareValue="SUBJECT">
+					<isEqual property="sortType" compareValue="DESC">
+						 (select top 1 subject_sub from CUSTOMER_CLAIM_SUB where item_id = item.SEQNUM order by counsel_sub_date desc) DESC, (select top 1 counsel_sub_date from CUSTOMER_CLAIM_SUB where item_id = item.SEQNUM order by counsel_sub_date desc) DESC
+					</isEqual>
+					<isEqual property="sortType" compareValue="ASC">
+						 (select top 1 subject_sub from CUSTOMER_CLAIM_SUB where item_id = item.SEQNUM order by counsel_sub_date desc) ASC,  (select top 1 counsel_sub_date from CUSTOMER_CLAIM_SUB where item_id = item.SEQNUM order by counsel_sub_date desc) DESC
+					</isEqual>
+				</isEqual>
+				<isEqual property="sortColumn" compareValue="COUNSELOR">
+					<isEqual property="sortType" compareValue="DESC">
+						 (select top 1 counselor_sub from CUSTOMER_CLAIM_SUB where item_id = item.SEQNUM order by counsel_sub_date desc) DESC, (select top 1 counsel_sub_date from CUSTOMER_CLAIM_SUB where item_id = item.SEQNUM order by counsel_sub_date desc) DESC
+					</isEqual>
+					<isEqual property="sortType" compareValue="ASC">
+						 (select top 1 counselor_sub from CUSTOMER_CLAIM_SUB where item_id = item.SEQNUM order by counsel_sub_date desc) ASC,  (select top 1 counsel_sub_date from CUSTOMER_CLAIM_SUB where item_id = item.SEQNUM order by counsel_sub_date desc) DESC
+					</isEqual>
+				</isEqual>
+				<isEqual property="sortColumn" compareValue="CLIENT">
+					<isEqual property="sortType" compareValue="DESC">
+						 CLIENT DESC, COUNSEL_DATE DESC
+					</isEqual>
+					<isEqual property="sortType" compareValue="ASC">
+						 CLIENT ASC,  COUNSEL_DATE DESC
+					</isEqual>
+				</isEqual>
+				<isEqual property="sortColumn" compareValue="COUNSEL_DATE">
+					<isEqual property="sortType" compareValue="DESC">
+						(select top 1 counsel_sub_date from CUSTOMER_CLAIM_SUB where item_id = item.SEQNUM order by counsel_sub_date desc) DESC
+					</isEqual>
+					<isEqual property="sortType" compareValue="ASC">
+						(select top 1 counsel_sub_date from CUSTOMER_CLAIM_SUB where item_id = item.SEQNUM order by counsel_sub_date desc) ASC
+					</isEqual>
+				</isEqual>
+				<isEqual property="sortColumn" compareValue="FACTORY">
+					<isEqual property="sortType" compareValue="DESC">
+						(select top 1 factory_sub from CUSTOMER_CLAIM_SUB where item_id = item.SEQNUM order by counsel_sub_date desc) DESC, (select top 1 counsel_sub_date from CUSTOMER_CLAIM_SUB where item_id = item.SEQNUM order by counsel_sub_date desc) DESC
+					</isEqual>
+					<isEqual property="sortType" compareValue="ASC">
+						(select top 1 factory_sub from CUSTOMER_CLAIM_SUB where item_id = item.SEQNUM order by counsel_sub_date desc) ASC, (select top 1 counsel_sub_date from CUSTOMER_CLAIM_SUB where item_id = item.SEQNUM order by counsel_sub_date desc) DESC
+					</isEqual>
+				</isEqual> 
+				</isNotEmpty>
+				 <isEmpty property="sortColumn">  
+					 (select top 1 counsel_sub_date from CUSTOMER_CLAIM_SUB where item_id = item.SEQNUM order by counsel_sub_date desc) DESC, CUSTOMER ASC
+				 </isEmpty>   ) AS ROWNUM
+			,item.SEQNUM
+			,item.ID
+			,(select top 1 counsel_sub_date from CUSTOMER_CLAIM_SUB where item_id = item.SEQNUM order by counsel_sub_date desc) AS COUNSEL_DATE
+			,(select top 1 counselor_sub from CUSTOMER_CLAIM_SUB where item_id = item.SEQNUM order by counsel_sub_date desc) AS COUNSELOR
+			,item.SALESMAN
+			,item.CUSTOMER
+			,item.CLIENT
+			,item.PHONE1
+			,item.FABRICATION
+			,item.CHARGE
+			,item.PHONE2
+			,(select top 1 subject_sub from CUSTOMER_CLAIM_SUB where item_id = item.SEQNUM order by counsel_sub_date desc) AS SUBJECT
+			,item.CONTENT
+			,item.ACTIONS
+			,item.CLAIMS
+			,item.FACILITY_HISTORY
+			,item.JIJONG
+			,(select top 1 factory_sub from CUSTOMER_CLAIM_SUB where item_id = item.SEQNUM order by counsel_sub_date desc) AS FACTORY
+			,(select top 1 claim_gubun_sub from CUSTOMER_CLAIM_SUB where item_id = item.SEQNUM order by counsel_sub_date desc) AS CLAIM_GUBUN
+			,item.WEIGHT
+			,item.MAIN_PRINT
+			,item.MAIN_COMPANY
+			,item.MAIN_CONNECTION
+			,item.LINEREPLY_COUNT
+			,item.REGISTER_ID
+			,item.REGISTER_NAME
+			,item.REGIST_DATE
+			,item.SUB_COUNT
+			,item.RELATION_COMPANY
+			,item.FAX
+			,item.ADDRESS
+			,item.SUB_ID
+			,item.HIT_COUNT
+			,usr.TEAM_NAME          AS TEAM_NAME,  
+		     usr.PICTURE_ID         AS PICTURE_ID, 
+		     usr.PROFILE_PICTURE_ID AS PROFILE_PICTURE_ID,     
+		    (SELECT JOB_RANK_NAME FROM IKEP4_EV_JOB_RANK with (nolock) WHERE IKEP4_EV_JOB_RANK.JOB_RANK_CODE = usr.JOB_RANK_CODE) AS JOB_RANK_NAME,
+			(SELECT JOB_DUTY_NAME FROM IKEP4_EV_JOB_DUTY with (nolock) WHERE IKEP4_EV_JOB_DUTY.JOB_DUTY_CODE = usr.JOB_DUTY_CODE) AS JOB_DUTY_NAME,
+			(SELECT JOB_POSITION_NAME FROM IKEP4_EV_JOB_POSITION with (nolock) WHERE IKEP4_EV_JOB_POSITION.JOB_POSITION_CODE = usr.JOB_POSITION_CODE) AS JOB_POSITION_NAME,
+			(SELECT JOB_TITLE_NAME FROM IKEP4_EV_JOB_TITLE with (nolock) WHERE IKEP4_EV_JOB_TITLE.JOB_TITLE_CODE = usr.JOB_TITLE_CODE) AS JOB_TITLE_NAME, 
+		     usr.USER_NAME  AS USER_NAME,
+		     usr.USER_ENGLISH_NAME  AS USER_ENGLISH_NAME,
+		     usr.TEAM_ENGLISH_NAME  AS TEAM_ENGLISH_NAME,  
+		    (SELECT JOB_TITLE_ENGLISH_NAME FROM IKEP4_EV_JOB_TITLE WHERE IKEP4_EV_JOB_TITLE.JOB_TITLE_CODE = usr.JOB_TITLE_CODE) AS JOB_TITLE_ENGLISH_NAME
+		FROM CL_HISTORY item with (nolock) INNER JOIN IKEP4_EV_USER usr with (nolock)
+	    ON item.REGISTER_ID = usr.USER_ID 
+		WHERE DELETE_FLAG = 'N'
+		<isNotEmpty property="searchColumn">
+			<isNotEmpty property="searchWord">
+				<isEqual property="searchColumn" compareValue="customer">
+					AND 
+					item.CUSTOMER LIKE '%' + #searchWord# + '%'
+						</isEqual>
+				<isEqual property="searchColumn" compareValue="subject">
+					AND (item.SUBJECT
+					LIKE '%' + #searchWord# + '%'
+					OR item.SEQNUM in (select sub.ITEM_ID from CUSTOMER_CLAIM_SUB sub where sub.SUBJECT_SUB LIKE '%' + #searchWord# + '%' AND sub.LINEREPLY_DELETE = '0'))
+						</isEqual>
+				<isEqual property="searchColumn" compareValue="counselor">
+					AND (item.COUNSELOR
+					LIKE '%' + #searchWord# + '%'
+					OR item.SEQNUM in (select sub.ITEM_ID from CUSTOMER_CLAIM_SUB sub where sub.COUNSELOR_SUB LIKE '%' + #searchWord# + '%' AND sub.LINEREPLY_DELETE = '0'))
+						</isEqual>
+				<isEqual property="searchColumn" compareValue="client">
+					AND item.CLIENT
+					LIKE '%' + #searchWord# + '%'
+				</isEqual>
+				<isEqual property="searchColumn" compareValue="factory">
+					AND (item.FACTORY_NAME
+					LIKE '%' + #searchWord# + '%'
+					OR item.SEQNUM in (select sub.ITEM_ID from CUSTOMER_CLAIM_SUB sub where sub.FACTORY_SUB_NAME LIKE '%' + #searchWord# + '%' AND sub.LINEREPLY_DELETE = '0'))
+				</isEqual>
+				<isEqual property="searchColumn" compareValue="jijong">
+					AND (item.JIJONG
+					LIKE '%' + #searchWord# + '%'
+					OR item.SEQNUM in (select sub.ITEM_ID from CUSTOMER_CLAIM_SUB sub where sub.JIJONG_SUB LIKE '%' + #searchWord# + '%' AND sub.LINEREPLY_DELETE = '0'))
+				</isEqual>
+				<isEqual property="searchColumn" compareValue="weight">
+					AND (item.WEIGHT
+					LIKE '%' + #searchWord# + '%'
+					OR item.SEQNUM in (select sub.ITEM_ID from CUSTOMER_CLAIM_SUB sub where sub.WEIGHT_SUB LIKE '%' + #searchWord# + '%' AND sub.LINEREPLY_DELETE = '0'))
+				</isEqual>
+				<isEqual property="searchColumn" compareValue="claimGubun">
+					AND (item.CLAIM_GUBUN_NAME
+					LIKE '%' + #searchWord# + '%'
+					OR item.SEQNUM in (select sub.ITEM_ID from CUSTOMER_CLAIM_SUB sub where sub.CLAIM_GUBUN_SUB_NAME LIKE '%' + #searchWord# + '%' AND sub.LINEREPLY_DELETE = '0'))
+				</isEqual>
+				<isEqual property="searchColumn" compareValue="counselDate">
+					AND (item.COUNSEL_DATE
+					LIKE '%' + #searchWord# + '%'
+					OR item.SEQNUM in (select sub.ITEM_ID from CUSTOMER_CLAIM_SUB sub where sub.COUNSEL_SUB_DATE LIKE '%' + #searchWord# + '%' AND sub.LINEREPLY_DELETE = '0'))
+				</isEqual>		
+			</isNotEmpty>
+		</isNotEmpty>
+		/* ===========================================END */  
+		<![CDATA[   
+		    ) A WHERE ROWNUM <=  #endRowIndex# /* 종료  */
+		) TBL WHERE ROWNUM >  #startRowIndex# /* 시작 */ 
+	    ]]>		
+		
+</select>
+
+
+<select id="countBySearchCondition" parameterClass="CustomerQualityClaimSellSearchCondition" resultClass="int">
+	SELECT /* [QualityClaimSell_SqlMap.xml] */
+	COUNT(*)
+	FROM CL_HISTORY item INNER JOIN IKEP4_EV_USER usr
+	  ON item.REGISTER_ID = usr.USER_ID 
+	WHERE DELETE_FLAG = 'N'
+	<isNotEmpty property="searchColumn">
+		<isNotEmpty property="searchWord">
+			<isEqual property="searchColumn" compareValue="customer">
+				AND
+				item.CUSTOMER LIKE '%' + #searchWord# + '%'
+					</isEqual>
+			<isEqual property="searchColumn" compareValue="subject">
+				AND (item.SUBJECT
+				LIKE '%' + #searchWord# + '%'
+				OR item.SEQNUM in (select sub.ITEM_ID from CUSTOMER_CLAIM_SUB sub where sub.SUBJECT_SUB LIKE '%' + #searchWord# + '%' AND sub.LINEREPLY_DELETE = '0'))
+					</isEqual>
+			<isEqual property="searchColumn" compareValue="counselor">
+				AND (item.COUNSELOR
+				LIKE '%' + #searchWord# + '%'
+				OR item.SEQNUM in (select sub.ITEM_ID from CUSTOMER_CLAIM_SUB sub where sub.COUNSELOR_SUB LIKE '%' + #searchWord# + '%' AND sub.LINEREPLY_DELETE = '0'))
+					</isEqual>
+			<isEqual property="searchColumn" compareValue="client">
+				AND item.CLIENT
+				LIKE '%' + #searchWord# + '%'
+			</isEqual>
+			<isEqual property="searchColumn" compareValue="factory">
+				AND (item.FACTORY_NAME
+				LIKE '%' + #searchWord# + '%'
+				OR item.SEQNUM in (select sub.ITEM_ID from CUSTOMER_CLAIM_SUB sub where sub.FACTORY_SUB_NAME LIKE '%' + #searchWord# + '%' AND sub.LINEREPLY_DELETE = '0'))
+			</isEqual>
+			<isEqual property="searchColumn" compareValue="jijong">
+				AND (item.JIJONG
+				LIKE '%' + #searchWord# + '%'
+				OR item.SEQNUM in (select sub.ITEM_ID from CUSTOMER_CLAIM_SUB sub where sub.JIJONG_SUB LIKE '%' + #searchWord# + '%' AND sub.LINEREPLY_DELETE = '0'))
+			</isEqual>
+			<isEqual property="searchColumn" compareValue="weight">
+				AND item.WEIGHT
+				LIKE '%' + #searchWord# + '%'
+			</isEqual>
+			<isEqual property="searchColumn" compareValue="claimGubun">
+				AND item.CLAIM_GUBUN_NAME
+				LIKE '%' + #searchWord# + '%'
+			</isEqual>		
+			<isEqual property="searchColumn" compareValue="counselDate">
+				AND (item.COUNSEL_DATE
+				LIKE '%' + #searchWord# + '%'
+				OR item.SEQNUM in (select sub.ITEM_ID from CUSTOMER_CLAIM_SUB sub where sub.COUNSEL_SUB_DATE LIKE '%' + #searchWord# + '%' AND sub.LINEREPLY_DELETE = '0'))
+			</isEqual>	
+		</isNotEmpty>
+	</isNotEmpty>
+</select>
+
+	
+<select id="getQualityClaimSell" parameterClass="int" resultMap="QualityClaimSellHistoryResult">
+		SELECT
+		ROW_NUMBER() OVER(ORDER BY COUNSEL_DATE DESC) AS ROWNUM
+			,SEQNUM
+			,ID
+			,COUNSEL_DATE
+			,COUNSELOR
+			,SALESMAN
+			,CUSTOMER
+			,CLIENT
+			,PHONE1
+			,FABRICATION
+			,CHARGE
+			,PHONE2
+			,SUBJECT
+			,CONTENT
+			,ACTIONS
+			,CLAIMS
+			,FACILITY_HISTORY
+			,JIJONG
+			,FACTORY
+			,CLAIM_GUBUN
+			,WEIGHT
+			,MAIN_PRINT
+			,MAIN_COMPANY
+			,MAIN_CONNECTION
+			,LINEREPLY_COUNT
+			,REGISTER_ID
+			,REGISTER_NAME
+			,REGIST_DATE
+			,SUB_COUNT
+			,RELATION_COMPANY
+			,FAX
+			,ADDRESS
+			,SUB_ID
+			,HIT_COUNT
+		FROM CL_HISTORY with (nolock)
+		WHERE DELETE_FLAG = 'N'
+	   	AND   SEQNUM=#itemId#
+  </select>
+
+
+	<insert id="createQualityClaimSell" parameterClass="QualityClaimSellItem">
+		
+	 
+		INSERT INTO CL_HISTORY ( /* [QualityClaimSell_SqlMap.xml] QualityClaimSellItem.createQualityClaimSell */
+		<include refid="support.customer.dao.qualityClaimSell.sqlColumnList" />
+		) 
+		VALUES (
+		'',
+		#counselDate#,
+		#counselor#,
+		#salesman#,
+		#customer#,
+		#client#,
+		#clientPhone#,
+		#fabrication#,
+		#charge#,
+		#chargePhone#,
+		#subject#,
+		#content#,
+		#actions#,
+		#claims#,
+		#facilityHistory#,
+		#jijong#,
+		#factory#,
+		#claimGubun#,
+		#weight#,
+		#mainPrint#,
+		#mainCompany#,
+		#mainConnection#,
+		#linereplyCount#,
+		#deleteFlag#,
+		#updaterId#,
+		#updaterName#,
+		CURRENT_TIMESTAMP,
+		#registerId#,
+		#registerName#,
+		CURRENT_TIMESTAMP,
+		#factoryName#,
+		#claimGubunName#,
+		#relationCompany#,
+		#fax#,
+		#address#
+		)
+		
+		<selectKey resultClass="int" keyProperty="seqNum"> 
+               SELECT @@IDENTITY AS seqNum
+        </selectKey>	
+
+				
+	</insert>
+
+
+	<update id="updateQualityClaimSell" parameterClass="QualityClaimSellItem">
+		UPDATE CL_HISTORY /* [QualityClaimSell_SqlMap.xml] QualityClaimSellItem.updateQualityClaimSell */
+		SET 
+		 COUNSEL_DATE = #counselDate#
+		,COUNSELOR = #counselor#
+		,SALESMAN = #salesman#
+		,CUSTOMER = #customer#
+		,CLIENT = #client#
+		,PHONE1 = #clientPhone#
+		,FABRICATION =#fabrication#
+		,CHARGE =#charge#
+		,PHONE2 =#chargePhone#
+		,SUBJECT =#subject#
+		,CONTENT =#content#
+		,ACTIONS =#actions#
+		,CLAIMS =#claims#
+		,FACILITY_HISTORY =#facilityHistory#
+ 		,JIJONG =#jijong#
+ 		,FACTORY = #factory#
+ 		,CLAIM_GUBUN = #claimGubun#
+ 		,WEIGHT = #weight#
+		,MAIN_PRINT =#mainPrint#
+		,MAIN_COMPANY =#mainCompany#
+		,MAIN_CONNECTION =#mainConnection#
+		,UPDATER_ID = #updaterId#
+		,UPDATER_NAME = #updaterName#
+		,UPDATE_DATE = CURRENT_TIMESTAMP
+		,FACTORY_NAME = #factoryName#
+		,CLAIM_GUBUN_NAME = #claimGubunName#
+		,RELATION_COMPANY = #relationCompany#
+		,FAX = #fax#
+		,ADDRESS = #address#
+		WHERE SEQNUM = #seqNum#
+  	</update>
+
+	<update id="updateQualityClaimSellMaster" parameterClass="QualityClaimSellItem">
+		UPDATE CL_HISTORY /* [QualityClaimSell_SqlMap.xml] QualityClaimSellItem.updateQualityClaimSell */
+		SET 
+		 COUNSEL_DATE = #counselDate#
+		,COUNSELOR = #counselor#
+		,SUBJECT =#subject#
+		,CONTENT =#content#
+ 		,JIJONG =#jijong#
+ 		,FACTORY = #factory#
+ 		,CLAIM_GUBUN = #claimGubun#
+ 		,WEIGHT = #weight#
+		,UPDATER_ID = #updaterId#
+		,UPDATER_NAME = #updaterName#
+		,UPDATE_DATE = CURRENT_TIMESTAMP
+		,FACTORY_NAME = #factoryName#
+		,CLAIM_GUBUN_NAME = #claimGubunName#
+		WHERE SEQNUM = #seqNum#
+  	</update>
+	<update id="deleteQualityClaimSell" parameterClass="QualityClaimSellItem">
+	UPDATE CL_HISTORY /* [QualityClaimSell_SqlMap.xml] QualityClaimSellItem.deleteQualityClaimSell */
+	SET DELETE_FLAG = 'Y'
+		,UPDATER_ID = #updaterId#
+		,UPDATER_NAME = #updaterName#
+		,UPDATE_DATE = CURRENT_TIMESTAMP
+	WHERE SEQNUM = #seqNum#
+	
+	</update>
+
+
+  <!-- ANSI -->
+  <update id="updateLinereplyCount" parameterClass="string">
+    UPDATE CL_HISTORY /* [QualityClaimSell_SqlMap.xml] QualityClaimSellItem.updateLinereplyCount */
+    SET    LINEREPLY_COUNT = (SELECT COUNT(*) FROM CUSTOMER_LINEREPLY WHERE ITEM_ID = #itemId# AND ITEM_TYPE = 'CL')
+    WHERE SEQNUM = #itemId# 
+  </update> 
+
+  <update id="updateQualityClaimSellMoreCount" parameterClass="string">
+    UPDATE CL_HISTORY /* [QualityClaim_SqlMap.xml] QualityClaimItem.updateSubCount */
+    SET    SUB_COUNT = (SELECT COUNT(*) FROM CUSTOMER_CLAIM_SUB WHERE ITEM_ID = #itemId# AND ITEM_TYPE = 'CL')
+    WHERE SEQNUM = #itemId# 
+  </update> 
+
+  <update id="updateQualityClaimSellMoreInfo" parameterClass="QualityClaimSellItem">
+    UPDATE CL_HISTORY /* [QualityClaim_SqlMap.xml] QualityClaimItem.updateQualityClaimSellMoreInfo */
+    SET    SUB_COUNT = (SELECT COUNT(*) FROM CUSTOMER_CLAIM_SUB WHERE ITEM_ID = #itemId# AND ITEM_TYPE = 'CL'),
+    SUB_ID = #subId#
+    WHERE SEQNUM = #seqNum#
+  </update> 
+
+
+
+
+
+
+
+
+
+</sqlMap>

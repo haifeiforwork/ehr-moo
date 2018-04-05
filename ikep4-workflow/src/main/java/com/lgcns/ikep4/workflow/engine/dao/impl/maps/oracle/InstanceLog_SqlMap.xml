@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="com.lgcns.ikep4.workflow.engine.model.InstanceLogBean" >
+	<typeAlias alias = "InstanceLogBean" type="com.lgcns.ikep4.workflow.engine.model.InstanceLogBean"/>
+	
+	<!-- Activity 테이블 조회 결과 -->
+	<resultMap id="result" class="InstanceLogBean">
+		<result property="instanceLogId" 	column="LOG_ID"			columnIndex="1"/> 
+		<result property="instanceId" 		column="INSTANCE_ID"	columnIndex="2"/>
+		<result property="processId" 		column="PROCESS_ID"		columnIndex="3"/>
+		<result property="processVer" 		column="PROCESS_VER"	columnIndex="4"/>
+		<result property="parentInsId" 		column="PARENT_INS_ID"	columnIndex="5"/>
+		<result property="activityId" 		column="ACTIVITY_ID"	columnIndex="6"/>
+		<result property="beforeLogId" 		column="BEFORE_LOG_ID"	columnIndex="7"/>
+		<result property="afterLogId" 		column="AFTER_LOG_ID"	columnIndex="8"/>
+		<result property="message" 			column="MESSAGE"		columnIndex="9"/>
+		<result property="title" 			column="TITLE"			columnIndex="10"/>
+		<result property="performerId" 		column="PERFORMER_ID"	columnIndex="11"/>
+		<result property="performerOrg" 	column="PERFORMER_ORG"	columnIndex="12"/>
+		<result property="varLog" 			column="VAR_LOG"		columnIndex="13"/>
+		<result property="state" 			column="STATE"			columnIndex="14"/>
+		<result property="result" 			column="RESULT"			columnIndex="15"/>
+		<result property="createDate" 		column="CREATE_DATE"	columnIndex="16"/>
+		<result property="assignDate" 		column="ASSIGN_DATE"	columnIndex="17"/>
+		<result property="selectDate" 		column="SELECT_DATE"	columnIndex="18"/>
+		<result property="dueDate" 			column="DUE_DATE"		columnIndex="19"/>
+		<result property="updateDate" 		column="UPDATE_DATE"	columnIndex="20"/>
+		<result property="finishedDate" 	column="FINISHED_DATE "	columnIndex="21"/> 
+	</resultMap>
+	
+	<!-- insert -->
+	<insert id="com.lgcns.ikep4.workflow.engine.model.InstanceLogBean.insert" parameterClass="InstanceLogBean">
+      <![CDATA[ 
+      		/* [InstanceLog_SqlMap.xml] com.lgcns.ikep4.workflow.engine.model.InstanceLogBean.insert */ 
+      
+			INSERT INTO IKEP4_WF_INSTANCE_LOG (							
+			LOG_ID, INSTANCE_ID, PROCESS_ID, PROCESS_VER, MI_SEQ, MI_BLOCK, PARENT_INS_ID, PERFORMER_ID, 
+			PERFORMER_ORG, STATE, ACTIVITY_ID, BEFORE_LOG_ID, AFTER_LOG_ID, CREATE_DATE, DUE_DATE, 
+			UPDATE_DATE, FINISHED_DATE	)				
+			VALUES ( 	#instanceLogId#, #instanceId#, #processId#, #processVer#, #miSeq#, #miBlock#, #parentInsId#, #performerId#, 
+			#performerOrg#, #state#, #activityId#, #beforeLogId#, #afterLogId#, #createDate#, #dueDate#, 
+			#updateDate#, #finishedDate# )						
+       ]]>
+   </insert>
+   
+   
+	<update id="com.lgcns.ikep4.workflow.engine.model.InstanceLogBean.update" parameterClass="InstanceLogBean">
+      <![CDATA[ 
+      		/* [InstanceLog_SqlMap.xml] com.lgcns.ikep4.workflow.engine.model.InstanceLogBean.update */ 
+      
+			UPDATE 	IKEP4_WF_INSTANCE_LOG 
+			   SET 	PERFORMER_ID = #performerId#, 
+			   		STATE = #state#,
+				   	UPDATE_DATE = sysdate
+			 WHERE 	LOG_ID = #instanceLogId#
+       ]]>
+   </update>  
+   
+   	<update id="com.lgcns.ikep4.workflow.engine.model.InstanceLogBean.updateDelegate" parameterClass="InstanceLogBean">
+      <![CDATA[ 
+      		/* [InstanceLog_SqlMap.xml] com.lgcns.ikep4.workflow.engine.model.InstanceLogBean.updateDelegate */ 
+      
+			UPDATE 	IKEP4_WF_INSTANCE_LOG 
+			   SET 	PERFORMER_ID = #delegatorId#, 
+			   		DELEGATOR_ID = #performerId#,
+				   	UPDATE_DATE = sysdate
+			 WHERE 	LOG_ID = #instanceLogId#
+       ]]>
+   </update> 
+   
+   
+   	<update id="com.lgcns.ikep4.workflow.engine.model.InstanceLogBean.updateSelectWorkItem" parameterClass="InstanceLogBean">
+      <![CDATA[ 
+      		/* [InstanceLog_SqlMap.xml] com.lgcns.ikep4.workflow.engine.model.InstanceLogBean.updateSelectWorkItem */ 
+      
+			UPDATE 	IKEP4_WF_INSTANCE_LOG 
+			   SET 	PERFORMER_ID = #performerId#, 
+			   		STATE = 'SELECTED'
+				   	UPDATE_DATE = sysdate
+			 WHERE 	LOG_ID = #instanceLogId#
+       ]]>
+   </update>    
+   
+   
+   
+   
+</sqlMap>

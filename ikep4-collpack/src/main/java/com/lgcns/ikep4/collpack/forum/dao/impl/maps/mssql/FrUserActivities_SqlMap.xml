@@ -1,0 +1,343 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="collpack.fourm.dao.FrUserActivities" >
+
+	<typeAlias alias = "FrUserActivities" type="com.lgcns.ikep4.collpack.forum.model.FrUserActivities"/>
+
+ 	<typeAlias alias = "FrSearch" type="com.lgcns.ikep4.collpack.forum.model.FrSearch"/>
+
+  <resultMap id="FrUserActivitiesResult" class="FrUserActivities" >
+    <result column="USER_ID" 				property="userId"  />
+    <result column="DISCUSSION_RANK" 		property="discussionRank"  />
+    <result column="DISCUSSION_SCORE" 		property="discussionScore"  />
+    <result column="DISCUSSION_COUNT" 		property="discussionCount"  />
+    <result column="ITEM_COUNT" 			property="itemCount" />
+    <result column="LINEREPLY_COUNT" 		property="linereplyCount" />
+    <result column="BEST_ITEM_COUNT" 		property="bestItemCount" />
+    <result column="BEST_LINEREPLY_COUNT" 	property="bestLinereplyCount"  />
+    <result column="FAVORITE_COUNT" 		property="favoriteCount"  />
+    <result column="AGREEMENT_COUNT" 		property="agreementCount" />
+    <result column="OPPOSITION_COUNT" 		property="oppositionCount" />
+    <result column="RECOMMEND_COUNT" 		property="recommendCount" />
+    <result column="TEAM_NAME" 				property="teamName" />
+	<result column="JOB_TITLE_NAME" 		property="jobTitleName" />
+	<result column="USER_NAME" 				property="userName" />
+	<result column="USER_ENGLISH_NAME" 		property="userEnglishName" 		/>
+	<result column="TEAM_ENGLISH_NAME" 		property="teamEnglishName" 		/>
+	<result column="JOB_TITLE_ENGLISH_NAME" property="jobTitleEnglishName" 	/>
+	<result column="PICTURE_PATH" property="picturePath" 	/>
+	<result column="PROFILE_PICTURE_PATH" property="profilePicturePath" 	/>
+  </resultMap>
+  
+  <resultMap id="UserInfoResult" class="FrUserActivities" >
+    <result column="USER_ID" 				property="userId"  />
+	<result column="TEAM_NAME" 				property="teamName" />
+	<result column="JOB_TITLE_NAME" 		property="jobTitleName" />
+	<result column="USER_NAME" 				property="userName" />
+	<result column="USER_ENGLISH_NAME" 		property="userEnglishName" 		/>
+	<result column="TEAM_ENGLISH_NAME" 		property="teamEnglishName" 		/>
+	<result column="JOB_TITLE_ENGLISH_NAME" property="jobTitleEnglishName" 	/>
+	<result column="PICTURE_PATH" property="picturePath" 	/>
+	<result column="PROFILE_PICTURE_PATH" property="profilePicturePath" 	/>
+  </resultMap>
+  
+  <sql id="FrUserActivities_Column_List" >
+   	A.USER_ID
+     ,A.DISCUSSION_RANK
+     ,A.DISCUSSION_SCORE
+     ,A.DISCUSSION_COUNT
+     ,A.ITEM_COUNT
+     ,A.LINEREPLY_COUNT
+     ,A.BEST_ITEM_COUNT
+     ,A.BEST_LINEREPLY_COUNT
+     ,A.FAVORITE_COUNT
+     ,A.AGREEMENT_COUNT
+     ,A.OPPOSITION_COUNT
+     ,A.RECOMMEND_COUNT
+     ,C.TEAM_NAME
+     ,D.JOB_TITLE_NAME
+     ,C.USER_NAME
+     ,C.USER_ENGLISH_NAME
+  	 ,C.TEAM_ENGLISH_NAME
+  	 ,D.JOB_TITLE_ENGLISH_NAME
+  	 ,C.PICTURE_PATH
+  	 ,C.PROFILE_PICTURE_PATH
+  </sql>
+  
+  <!-- ANSI -->
+   <insert id="create" parameterClass="FrUserActivities" >
+    INSERT INTO IKEP4_FR_USER_ACTIVITIES (			/* [FrUserActivities_SqlMap.xml] FrUserActivities.create */ 
+    	USER_ID
+    	, DISCUSSION_RANK
+    	, DISCUSSION_SCORE
+    	, DISCUSSION_COUNT
+    	, ITEM_COUNT
+    	, LINEREPLY_COUNT
+    	, BEST_ITEM_COUNT
+    	, BEST_LINEREPLY_COUNT
+    	, FAVORITE_COUNT
+    	, AGREEMENT_COUNT
+    	, OPPOSITION_COUNT
+    	, RECOMMEND_COUNT
+      ) VALUES (
+      		#userId#
+	      , 0
+	      , 0
+	        <isNotEqual compareValue="-1"  property="discussionCount" prepend="," >
+		     	#discussionCount#
+		    </isNotEqual>
+		    <isEqual compareValue="-1"  property="discussionCount" prepend="," >
+		     	 0
+		    </isEqual>
+		     <isNotEqual compareValue="-1"  property="itemCount" prepend="," >
+		     	#itemCount#
+		    </isNotEqual>
+		    <isEqual compareValue="-1"  property="itemCount" prepend="," >
+		     	 0
+		    </isEqual>
+		    <isNotEqual compareValue="-1"  property="linereplyCount" prepend="," >
+		     	#linereplyCount#
+		    </isNotEqual>
+		    <isEqual compareValue="-1"  property="linereplyCount" prepend="," >
+		     	 0
+		    </isEqual>
+		    <isNotEqual compareValue="-1"  property="bestItemCount" prepend="," >
+		     	#bestItemCount#
+		    </isNotEqual>
+		    <isEqual compareValue="-1"  property="bestItemCount" prepend="," >
+		     	 0
+		    </isEqual>
+		    <isNotEqual compareValue="-1"  property="bestLinereplyCount" prepend="," >
+		     	#bestLinereplyCount#
+		    </isNotEqual>
+		    <isEqual compareValue="-1"  property="bestLinereplyCount" prepend="," >
+		     	 0
+		    </isEqual>
+		    <isNotEqual compareValue="-1"  property="favoriteCount" prepend="," >
+		     	#favoriteCount#
+		    </isNotEqual>
+		    <isEqual compareValue="-1"  property="favoriteCount" prepend="," >
+		     	 0
+		    </isEqual>
+		    <isNotEqual compareValue="-1"  property="agreementCount" prepend="," >
+		     	#agreementCount#
+		    </isNotEqual>
+		    <isEqual compareValue="-1"  property="agreementCount" prepend="," >
+		     	 0
+		    </isEqual>
+		    <isNotEqual compareValue="-1"  property="oppositionCount" prepend="," >
+		     	#oppositionCount#
+		    </isNotEqual>
+		    <isEqual compareValue="-1"  property="oppositionCount" prepend="," >
+		     	 0
+		    </isEqual>
+		    <isNotEqual compareValue="-1"  property="recommendCount" prepend="," >
+		     	#recommendCount#
+		    </isNotEqual>
+		    <isEqual compareValue="-1"  property="recommendCount" prepend="," >
+		     	 0
+		    </isEqual>
+      )
+  </insert>
+  
+  <!-- ANSI -->
+   <select id="exists" resultClass="int" parameterClass="String" >
+    SELECT 					/* [FrUserActivities_SqlMap.xml] FrUserActivities.get */ 
+	    COUNT(USER_ID)
+    FROM IKEP4_FR_USER_ACTIVITIES
+    WHERE USER_ID = #userId#
+  </select>
+  
+  <!-- ANSI -->
+   <select id="get" resultMap="FrUserActivitiesResult" parameterClass="String" >
+    SELECT 					/* [FrUserActivities_SqlMap.xml] FrUserActivities.get */ 
+	    
+	    <include refid="FrUserActivities_Column_List" />
+	    
+    FROM IKEP4_FR_USER_ACTIVITIES A, IKEP4_EV_USER C, IKEP4_EV_JOB_TITLE D
+    WHERE A.USER_ID = #userId#
+	     AND A.USER_ID = C.USER_ID
+	     AND C.JOB_TITLE_CODE = D.JOB_TITLE_CODE
+  </select>
+  
+  <!-- ANSI -->
+  <select id="getUserInfo" resultMap="UserInfoResult" parameterClass="String" >
+    SELECT 					/* [IdUserActivities_SqlMap.xml] collpack.ideation.dao.IdUserActivities.getUserInfo */ 
+	    
+	   	 C.USER_ID
+	     ,C.TEAM_NAME
+	     ,D.JOB_TITLE_NAME
+	     ,C.USER_NAME
+	     ,C.USER_ENGLISH_NAME
+	  	 ,C.TEAM_ENGLISH_NAME
+	  	 ,D.JOB_TITLE_ENGLISH_NAME
+	     ,C.PICTURE_PATH
+  		 ,C.PROFILE_PICTURE_PATH
+    FROM IKEP4_EV_USER C, IKEP4_EV_JOB_TITLE D
+    WHERE #userId# = C.USER_ID
+	     AND C.JOB_TITLE_CODE = D.JOB_TITLE_CODE
+  </select>
+  
+  <!-- ANSI -->
+  <select id="list" resultMap="FrUserActivitiesResult" parameterClass="FrSearch" >
+	    SELECT			/* [FrUserActivities_SqlMap.xml] FrUserActivities.list */ 		
+		    
+	         <include refid="FrUserActivities_Column_List" />
+	         
+	     FROM IKEP4_FR_USER_ACTIVITIES A, IKEP4_EV_USER C, IKEP4_EV_JOB_TITLE D
+	     WHERE A.USER_ID = C.USER_ID
+		     AND C.JOB_TITLE_CODE = D.JOB_TITLE_CODE
+		    <isNotEmpty prepend="AND" property="endRowIndex">
+		   		A.DISCUSSION_RANK &lt;= #endRowIndex# 
+		   		AND A.DISCUSSION_RANK &gt; 0
+		    </isNotEmpty>
+		    <isNotEmpty prepend="AND" property="portalId">
+	    	 	D.PORTAL_ID = #portalId#
+	    	</isNotEmpty>
+   		<isNotEmpty prepend="ORDER BY" property="isBest">
+    	 	A.DISCUSSION_SCORE DESC
+    	</isNotEmpty>
+	    	
+  </select>
+  
+  <!-- ANSI -->
+  <update id="update" parameterClass="FrUserActivities" >
+    UPDATE IKEP4_FR_USER_ACTIVITIES			/* [FrUserActivities_SqlMap.xml] FrUserActivities.update */
+     <dynamic prepend="set" >
+      <isNotEqual compareValue="-1" prepend="," property="discussionRank" >
+        DISCUSSION_RANK = #discussionRank#
+      </isNotEqual>
+       <isNotEqual compareValue="-1"  prepend="," property="discussionScore" >
+        DISCUSSION_SCORE = #discussionScore#
+      </isNotEqual>
+      <isNotEqual compareValue="-1"  prepend="," property="discussionCount" >
+        DISCUSSION_COUNT = #discussionCount#
+      </isNotEqual>
+      <isNotEqual compareValue="-1"  prepend="," property="itemCount" >
+        ITEM_COUNT = #itemCount#
+      </isNotEqual>
+      <isNotEqual compareValue="-1"  prepend="," property="linereplyCount" >
+        LINEREPLY_COUNT = #linereplyCount#
+      </isNotEqual>
+      <isNotEqual compareValue="-1"  prepend="," property="bestItemCount" >
+        BEST_ITEM_COUNT = #bestItemCount#
+      </isNotEqual>
+      <isNotEqual compareValue="-1"  prepend="," property="bestLinereplyCount" >
+        BEST_LINEREPLY_COUNT = #bestLinereplyCount#
+      </isNotEqual>
+      <isNotEqual compareValue="-1"  prepend="," property="favoriteCount" >
+        FAVORITE_COUNT = #favoriteCount#
+      </isNotEqual>
+      <isNotEqual compareValue="-1"  prepend="," property="agreementCount" >
+        AGREEMENT_COUNT = #agreementCount#
+      </isNotEqual>
+      <isNotEqual compareValue="-1"  prepend="," property="oppositionCount" >
+        OPPOSITION_COUNT = #oppositionCount#
+     </isNotEqual>
+      <isNotEqual compareValue="-1"  prepend="," property="recommendCount" >
+        RECOMMEND_COUNT = #recommendCount#
+      </isNotEqual>
+    </dynamic>
+    WHERE USER_ID = #userId#
+  </update>
+  
+  <!-- ANSI -->
+   <update id="updateDiscussionCount" parameterClass="String" >
+	    UPDATE 					/* [FrUserActivities_SqlMap.xml] FrUserActivities.updateDiscussionCount */
+	    	IKEP4_FR_USER_ACTIVITIES			
+	     SET DISCUSSION_COUNT = (SELECT COUNT(DISCUSSION_ID) from IKEP4_FR_DISCUSSION WHERE REGISTER_ID = #userId#)
+	    WHERE USER_ID = #userId#
+  </update>
+  
+  <!-- ANSI -->
+  <update id="updateItemCount" parameterClass="String" >
+	    UPDATE 					/* [FrUserActivities_SqlMap.xml] FrUserActivities.updateItemCount */
+	    	IKEP4_FR_USER_ACTIVITIES			
+	     SET ITEM_COUNT = (SELECT COUNT(ITEM_ID) from IKEP4_FR_ITEM WHERE REGISTER_ID = #userId#)
+	    WHERE USER_ID = #userId#
+  </update>
+  
+  <!-- ANSI -->
+   <update id="updateLinereplyCount" parameterClass="String" >
+	    UPDATE 					/* [FrUserActivities_SqlMap.xml] FrUserActivities.updateLinereplyCount */
+	    	IKEP4_FR_USER_ACTIVITIES			
+	     SET LINEREPLY_COUNT = (SELECT COUNT(LINEREPLY_ID) from IKEP4_FR_LINEREPLY WHERE REGISTER_ID = #userId#)
+	    WHERE USER_ID = #userId#
+  </update>
+
+	<!-- MSSQL -->
+  <update id="updateFavoriteCount" parameterClass="String" >
+	    UPDATE 					/* [FrUserActivities_SqlMap.xml] FrUserActivities.updateLinereplyCount */
+	    	IKEP4_FR_USER_ACTIVITIES			
+	     SET FAVORITE_COUNT = (SELECT ISNULL(SUM(FAVORITE_COUNT),0) from IKEP4_FR_ITEM WHERE REGISTER_ID = #userId#)
+	    WHERE USER_ID = #userId#
+  </update>
+  
+  <!-- MSSQL -->
+  <update id="updateAgreementCount" parameterClass="String" >
+	    UPDATE 					/* [FrUserActivities_SqlMap.xml] FrUserActivities.updateLinereplyCount */
+	    	IKEP4_FR_USER_ACTIVITIES			
+	     SET AGREEMENT_COUNT = (SELECT ISNULL(SUM(AGREEMENT_COUNT),0) from IKEP4_FR_ITEM WHERE REGISTER_ID = #userId#)
+	    WHERE USER_ID = #userId#
+  </update>
+  
+  <!-- MSSQL -->
+  <update id="updateOppositionCount" parameterClass="String" >
+	    UPDATE 					/* [FrUserActivities_SqlMap.xml] FrUserActivities.updateLinereplyCount */
+	    	IKEP4_FR_USER_ACTIVITIES			
+	     SET OPPOSITION_COUNT = (SELECT ISNULL(SUM(OPPOSITION_COUNT),0) from IKEP4_FR_ITEM WHERE REGISTER_ID = #userId#)
+	    WHERE USER_ID = #userId#
+  </update>
+  
+  <!-- MSSQL -->
+  <update id="updateRecommendCount" parameterClass="String" >
+	    UPDATE 					/* [FrUserActivities_SqlMap.xml] FrUserActivities.updateLinereplyCount */
+	    	IKEP4_FR_USER_ACTIVITIES			
+	     SET RECOMMEND_COUNT = (SELECT ISNULL(SUM(RECOMMEND_COUNT),0) from IKEP4_FR_LINEREPLY WHERE REGISTER_ID = #userId#)
+	    WHERE USER_ID = #userId#
+  </update>
+  
+  
+  <!-- ANSI -->
+   <update id="updateIncrease" parameterClass="FrUserActivities" >
+	    UPDATE IKEP4_FR_USER_ACTIVITIES			/* [FrUserActivities_SqlMap.xml] FrUserActivities.updateIncrease */
+	    <dynamic prepend="set">
+		    <isNotEqual compareValue="0"  property="discussionCount" prepend="," >
+		     	DISCUSSION_COUNT = DISCUSSION_COUNT + #discussionCount#
+		    </isNotEqual>
+		    <isNotEqual compareValue="0"  property="itemCount" prepend="," >
+		     	ITEM_COUNT = ITEM_COUNT + #itemCount#
+		    </isNotEqual>
+		    <isNotEqual compareValue="0"  property="linereplyCount" prepend="," >
+		     	LINEREPLY_COUNT = LINEREPLY_COUNT + #linereplyCount#
+		    </isNotEqual>
+		    <isNotEqual compareValue="0"  property="bestItemCount" prepend="," >
+		     	BEST_ITEM_COUNT = BEST_ITEM_COUNT + #bestItemCount#
+		    </isNotEqual>
+		    <isNotEqual compareValue="0"  property="bestLinereplyCount" prepend="," >
+		     	BEST_LINEREPLY_COUNT = BEST_LINEREPLY_COUNT + #bestLinereplyCount#
+		    </isNotEqual>
+		    <isNotEqual compareValue="0"  property="favoriteCount" prepend="," >
+		     	FAVORITE_COUNT = FAVORITE_COUNT + #favoriteCount#
+		    </isNotEqual>
+		    <isNotEqual compareValue="0"  property="agreementCount" prepend="," >
+		     	AGREEMENT_COUNT = AGREEMENT_COUNT + #agreementCount#
+		    </isNotEqual>
+		    <isNotEqual compareValue="0"  property="oppositionCount" prepend="," >
+		     	OPPOSITION_COUNT = OPPOSITION_COUNT + #oppositionCount#
+		    </isNotEqual>
+		    <isNotEqual compareValue="0"  property="recommendCount" prepend="," >
+		     	RECOMMEND_COUNT = RECOMMEND_COUNT + #recommendCount#
+		    </isNotEqual>
+	    </dynamic>
+	     WHERE USER_ID = #userId#
+  </update>
+  
+  <!-- ANSI -->
+   <delete id="remove" parameterClass="String" >
+    DELETE 					/* [FrUserActivities_SqlMap.xml] FrUserActivities.remove */
+    FROM IKEP4_FR_USER_ACTIVITIES
+    WHERE USER_ID = #userId#
+  </delete>
+  
+</sqlMap>

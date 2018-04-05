@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="collpack.fourm.dao.FrFeedback" >
+
+<typeAlias alias = "FrFeedback" type="com.lgcns.ikep4.collpack.forum.model.FrFeedback"/>
+
+  <resultMap id="FrFeedbackResult" class="com.lgcns.ikep4.collpack.forum.model.FrFeedback" >
+    <result column="FEEDBACK_TYPE" 	property="feedbackType"  />
+    <result column="ITEM_ID" 		property="itemId"  />
+    <result column="REGISTER_ID" 	property="registerId" />
+    <result column="REGIST_DATE" 	property="registDate" />
+  </resultMap>
+
+<!-- ANSI -->
+ <insert id="create" parameterClass="FrFeedback" >
+    INSERT INTO IKEP4_FR_FEEDBACK (			/* [FrFeedback_SqlMap.xml] FrFeedback.create */
+    	FEEDBACK_TYPE
+	    , ITEM_ID
+	    , REGISTER_ID
+	    , REGIST_DATE
+   ) values (
+	    #feedbackType#
+	    , #itemId#
+	    , #registerId#
+	    , CURRENT_TIMESTAMP 
+    )
+  </insert>
+ 
+ <!-- ANSI -->
+ <select id="get" resultMap="FrFeedbackResult" parameterClass="FrFeedback" >
+    SELECT 					/* [FrFeedback_SqlMap.xml] FrFeedback.get */
+   	 FEEDBACK_TYPE
+	    , ITEM_ID
+	    , REGISTER_ID
+	    , REGIST_DATE
+    FROM IKEP4_FR_FEEDBACK
+    WHERE FEEDBACK_TYPE = #feedbackType#
+      AND ITEM_ID = #itemId#
+      AND REGISTER_ID = #registerId#
+  </select>
+  
+  <!-- ANSI -->
+  <select id="listUserId" resultClass="String" parameterClass="String" >
+    SELECT 					/* [FrFeedback_SqlMap.xml] FrFeedback.getUserId */
+	    DISTINCT(REGISTER_ID)
+    FROM IKEP4_FR_FEEDBACK
+    WHERE ITEM_ID = #itemId#
+  </select>
+  
+  <!-- ANSI -->
+   <select id="listUserIdByDiscussionId" resultClass="String" parameterClass="String" >
+	    SELECT 					/* [FrFeedback_SqlMap.xml] FrFeedback.listUserIdByDiscussionId */
+	    	DISTINCT(REGISTER_ID)
+	    FROM IKEP4_FR_FEEDBACK
+	    WHERE 
+	    	ITEM_ID IN (
+				    	SELECT  ITEM_ID					
+					    FROM IKEP4_FR_ITEM		
+					    WHERE DISCUSSION_ID = #discussionId#
+					   )
+   </select>
+  
+  <!-- ANSI -->
+   <select id="getCountByUserIdAsType" resultClass="int" parameterClass="FrFeedback" >
+	    SELECT 					/* [FrFeedback_SqlMap.xml] FrFeedback.getCountByUserIdAsType */
+		      COUNT(ITEM_ID)
+	    FROM IKEP4_FR_FEEDBACK
+	    WHERE REGISTER_ID = #registerId#
+	    AND FEEDBACK_TYPE = #feedbackType#
+  </select>
+  
+  <!-- ANSI -->
+   <select id="exists" resultClass="int" parameterClass="FrFeedback" >
+    SELECT 					/* [FrFeedback_SqlMap.xml] FrFeedback.exists */
+	    COUNT(ITEM_ID)
+    FROM IKEP4_FR_FEEDBACK
+    WHERE FEEDBACK_TYPE = #feedbackType#
+      AND ITEM_ID = #itemId#
+      AND REGISTER_ID = #registerId#
+  </select>
+
+<!-- ANSI -->
+  <select id="list" resultMap="FrFeedbackResult" parameterClass="String" >
+    SELECT					/* [FrFeedback_SqlMap.xml] FrFeedback.list */
+	    FEEDBACK_TYPE
+	    , ITEM_ID
+	    , REGISTER_ID
+	    , REGIST_DATE
+    FROM IKEP4_FR_FEEDBACK
+    WHERE ITEM_ID = #itemId#
+  </select>
+ 
+ <!-- ANSI --> 
+  <delete id="remove" parameterClass="FrFeedback" >
+    DELETE 				/* [FrFeedback_SqlMap.xml] FrFeedback.remove */
+    FROM IKEP4_FR_FEEDBACK
+    WHERE ITEM_ID = #itemId#
+      AND  FEEDBACK_TYPE = #feedbackType#
+      AND REGISTER_ID = #registerId#
+  </delete>
+  
+  <!-- ANSI -->
+  <delete id="removeByItemId" parameterClass="String" >
+    DELETE 				/* [FrFeedback_SqlMap.xml] FrFeedback.removeByItemId */
+    FROM IKEP4_FR_FEEDBACK
+    WHERE ITEM_ID = #itemId#
+  </delete>
+  
+  <!-- ANSI -->
+  <delete id="removeByDiscussionId" parameterClass="String" >
+	    DELETE 					/* [FrFeedback_SqlMap.xml] FrFeedback.removeByDiscussionId */
+	    FROM IKEP4_FR_FEEDBACK
+	    WHERE 
+	    	ITEM_ID IN (
+				    	SELECT  ITEM_ID					
+					    FROM IKEP4_FR_ITEM		
+					    WHERE DISCUSSION_ID = #discussionId#
+					   )
+   </delete>
+ 
+</sqlMap>

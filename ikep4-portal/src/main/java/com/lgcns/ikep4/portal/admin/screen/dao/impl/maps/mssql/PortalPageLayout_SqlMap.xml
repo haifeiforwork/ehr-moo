@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="portal.admin.screen.portalPageLayout" >
+	<typeAlias alias = "PortalPageLayout" type="com.lgcns.ikep4.portal.admin.screen.model.PortalPageLayout"/>
+
+	<!-- MS SQL -->
+	<select id="listPageLayout" parameterClass="java.util.HashMap" resultClass="PortalPageLayout">
+	  <![CDATA[
+	  		/* [PortalPageLayout_SqlMap.xml] portal.admin.screen.portalPageLayout.listPageLayout */
+		    select     
+			    a.PAGE_LAYOUT_ID  pageLayoutId, 
+			    a.PAGE_ID  pageId, 
+			    a.LAYOUT_ID  layoutId, 
+			    a.OWNER_ID  ownerId, 
+			    a.COL_INDEX  colIndex, 
+			    a.WIDTH  width, 
+			    a.REGISTER_ID  registerId, 
+			    a.REGISTER_NAME  registerName, 
+			    CONVERT(NVARCHAR, a.REGIST_DATE, 20) AS registDate,
+			    a.UPDATER_ID  updaterId, 
+			    a.UPDATER_NAME  updaterName,
+			    CONVERT(NVARCHAR, a.UPDATE_DATE, 20) AS updateDate,
+			    b.common
+			  from IKEP4_PO_PAGE_LAYOUT a inner join
+			       IKEP4_PO_LAYOUT b on a.LAYOUT_ID = b.layout_id
+			 where a.page_id = #pageId#
+   			   and b.common = 1
+			 order by a.layout_id desc, a.col_index
+		]]>
+	</select>
+	
+	<!-- MS SQL -->
+	<select id="listOwnerPageLayout" parameterClass="java.util.HashMap" resultClass="PortalPageLayout">
+	  <![CDATA[
+	  		/* [PortalPageLayout_SqlMap.xml] portal.admin.screen.portalPageLayout.listOwnerPageLayout */
+		    select    
+			    a.PAGE_LAYOUT_ID  pageLayoutId, 
+			    a.PAGE_ID  pageId, 
+			    a.LAYOUT_ID  layoutId, 
+			    a.OWNER_ID  ownerId, 
+			    a.COL_INDEX  colIndex, 
+			    a.WIDTH  width, 
+			    a.REGISTER_ID  registerId, 
+			    a.REGISTER_NAME  registerName,
+			    CONVERT(NVARCHAR, a.REGIST_DATE, 20) AS registDate,
+			    a.UPDATER_ID  updaterId, 
+			    a.UPDATER_NAME  updaterName, 
+			    CONVERT(NVARCHAR, a.UPDATE_DATE, 20) AS updateDate,
+			    b.common
+			  from IKEP4_PO_PAGE_LAYOUT a inner join
+			       IKEP4_PO_LAYOUT b on a.LAYOUT_ID = b.layout_id
+			 where a.owner_id = #ownerId#
+   			   and a.page_id = #pageId#
+   			   and b.common = 0
+			 order by a.layout_id desc, a.col_index
+		]]>
+	</select>
+	
+	<!-- ANSI -->
+	<select id="countOwnerPageLayout" parameterClass="java.util.HashMap" resultClass="int">
+		<![CDATA[
+	  		/* [PortalPageLayout_SqlMap.xml] portal.admin.screen.portalPageLayout.countOwnerPageLayout */
+		    select    
+			    count(*)
+			  from IKEP4_PO_PAGE_LAYOUT a inner join
+			       IKEP4_PO_LAYOUT b on a.LAYOUT_ID = b.layout_id
+			 where a.owner_id = #ownerId#
+   			   and a.page_id = #pageId#
+   			   and b.common = 0
+		]]>
+	</select>
+	
+	<!-- ANSI -->
+	<insert id="createPageLayout" parameterClass="PortalPageLayout"> 
+      <![CDATA[
+      	   /* [PortalPageLayout_SqlMap.xml] portal.admin.screen.portalPageLayout.createPageLayout */ 
+           INSERT INTO IKEP4_PO_PAGE_LAYOUT (PAGE_LAYOUT_ID, PAGE_ID, LAYOUT_ID, OWNER_ID, COL_INDEX, WIDTH, REGISTER_ID, REGISTER_NAME, REGIST_DATE, UPDATER_ID, UPDATER_NAME, UPDATE_DATE)  
+           VALUES (#pageLayoutId#, #pageId#, #layoutId#, #ownerId#, #colIndex#, #width#, #registerId#, #registerName#, CURRENT_TIMESTAMP, #updaterId#, #updaterName#, CURRENT_TIMESTAMP)
+       ]]>
+   </insert>
+   
+   <!-- ANSI -->
+   <delete id="removePageLayout" parameterClass="java.lang.String">
+      <![CDATA[
+      	   /* [PortalPageLayout_SqlMap.xml] portal.admin.screen.portalPageLayout.removePageLayout */
+	       DELETE FROM IKEP4_PO_PAGE_LAYOUT 
+	        WHERE PAGE_LAYOUT_ID = #pageLayoutId#
+	   ]]>
+	</delete>
+	
+	<!-- ANSI -->
+	<delete id="removePageLayoutAll" parameterClass="java.util.HashMap">
+      <![CDATA[
+      	   /* [PortalPageLayout_SqlMap.xml] portal.admin.screen.portalPageLayout.removePageLayoutAll */
+	       DELETE FROM IKEP4_PO_PAGE_LAYOUT 
+	        WHERE PAGE_LAYOUT_ID in 
+	   ]]>
+	   	    <iterate property="pageLayoutList" open="(" close=")" conjunction=",">
+				#pageLayoutList[].pageLayoutId#
+			</iterate>
+	</delete>
+	
+	<update id="updatePageLayout" parameterClass="PortalPageLayout">
+	  <![CDATA[
+	  	   /* [PortalPageLayout_SqlMap.xml] portal.admin.screen.portalPageLayout.updatePageLayout */   
+		   UPDATE IKEP4_PO_PAGE_LAYOUT
+		      SET Layout_Id = #layoutId#,
+		          width = #width#
+		    WHERE page_layout_id = #pageLayoutId#
+	   ]]>
+	</update>
+</sqlMap>

@@ -1,0 +1,348 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ko">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Home</title>
+<link rel="stylesheet" type="text/css" href="../../css/guide.css" />
+<link rel="stylesheet" type="text/css" href="../../css/theme01/jquery_ui_custom.css" />
+<link rel="stylesheet" type="text/css" href="../../css/common.css" />
+<link rel="stylesheet" type="text/css" href="../../css/theme01/theme.css" />
+<script type="text/javascript" src="../../js/jquery/jquery-1.6.2.min.js"></script>
+<script type="text/javascript" src="../../js/jquery/jquery-ui-1.8.13.min.without.datepicker.js"></script>
+<script type="text/javascript" src="../../js/jquery/jquery.jstree.pack.js"></script>
+<script type="text/javascript">var contextRoot = "/ikep4-webapp";</script>
+<script type="text/javascript" src="../../js/langResource/ko.js"></script>
+<script type="text/javascript" src="../../js/common.pack.js"></script>
+<script type="text/javascript" src="../../js/etc.plugins.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$(document).ready(function() {
+		$("#divTree1").jstree({
+			plugins:["themes", "ui", "dnd", "crrm", "json_data"],
+			crrm : {
+				move : {
+					always_copy : true,
+					check_move : function(rslt) {
+						return false;	// 현재 트리에서는 옮겨지지 않도록 한다.
+					}
+				}
+			},
+			json_data:{data:[
+				{data:{title:"item 1", icon:"dept"}, attr:{id:"item1", code:"00001"}, children:[
+   					{data:{title:"sub item 1", icon:"person"}},
+   					{data:{title:"sub item 2", icon:"person"}},
+   					{data:{title:"sub item 3", icon:"person"}}
+   				]},
+   				"item 2",
+   				"item 3",
+   				{data:{title:"item 4", icon:"person"}},
+   				"item 5"
+   			]}
+		});
+		
+		var elTree = $("#divTree2").jstree({
+			plugins : [
+				"themes",		// design theme
+				"ui",			// select, deselect, hover UI
+				"json_data",	// tree item with json data format
+				"crrm",			// interactive UI : create, rename, remove, move
+				"dnd",			// drag and drop
+				"contextmenu"	// mouse right click context-menu
+			],
+			crrm : {
+				move : {
+					always_copy : true,	// 아이템 이동시 해당 아이템이 복사되서 옮겨지도록.
+					check_move : function(rslt) {
+						//iKEP.debug($.jstree._reference("#divTree2")._get_children(rslt.o));
+						iKEP.debug($("#divTree2").jstree("correct_state", rslt.o));
+						$("#divTree2").jstree("get_path", rslt.r).length > 3 ? false : true;
+						// 아이템이 속해있던 트리와 옮겨진 트리가 같으면(트리내에서는) 옮겨지지 않고, 다른 트리에서 옮겨 졌을때만 허용한다.
+						if(rslt.ot == rslt.rt) return false;
+						else return true;
+					}
+				}
+			},
+			ui : {initially_select:["treeItem1"]},
+			core : {"initially_open":["treeItem1"]},
+			json_data : {
+				data : [
+				    {data : "item 1"},
+				    {data : "item 2", attr:{id:"treeItem1"}, children:[
+						"subitem 2-1", "subitem 2-2", "subitem 2-3"
+					]},
+				    {data : "item 3", state:"closed", attr:{"code":"item3"}},
+				    {data : "item 4"},
+				    {data : "item 5"},
+				    "item 6"
+				],
+				ajax : {
+					url : "./ajax_result/tree_items.json",
+					data : function ($el) {	//$el : current item 
+						return { 
+							"operation" : "subitem", 
+							"parent_code" : $el.attr("code") 
+						}; 
+					},
+					success : function(data) {
+						return data.items;
+					}
+				}
+			}
+		})
+		.bind("create.jstree", function(event, data){
+			iKEP.debug(data.rslt);
+			//name, obj, parent, position
+		})
+		.bind("remove.jstree", function(event, data){
+			//iKEP.debug(data.rslt);	// unload이벤트 발생시 해당 이벤트 발생? --> 이유를 알수가 없네...
+		})
+		.bind("rename.jstree", function(event, data){
+			if(data.rslt.new_name != data.rslt.old_name) {
+				iKEP.debug(data.rslt);
+				alert("rename : " + data.rslt.new_name);
+			} 
+		})
+		.bind("move_node.jstree", function(event, data){
+			var msg = "";
+			for(key in data.rslt) {
+				msg += key + "\t" + data.rslt[key] + "\n";
+			}
+			iKEP.debug(msg);
+			iKEP.debug(data.rslt);
+			//.o - the node being moved : 옮겨진 아이템
+			//.r - the reference node in the move
+			//.ot - the origin tree instance : 아이템이 속해 있던 jstree 객체
+			//.rt - the reference tree instance	: 아이템이 옮겨진 jstree객체
+			//.p - the position to move to (may be a string - "last", "first", etc)
+			//.cp - the calculated position to move to (always a number)
+			//.np - the new parent : 옮겨진 아이템의 상위 엘리먼트
+		});
+		
+		// 트리 스타일 설정 : 각 아이템 아이콘, 연결선, 스킨
+		elTree.jstree("hide_icons");
+		elTree.jstree("hide_dots");
+		elTree.jstree("set_theme", "apple");
+		
+		// 외부 인터페이스를 통한 트리 컨트롤 : 아이템 생성, 삭제, 수정 
+		elTree.parent().find("a[class|=jstree]")
+			.css({color:"blue", cursor:"pointer"})	
+			.bind("click", function() {
+				switch(true) {
+					case $(this).hasClass("jstree-create1") :	// 선택된 아이템의 하위, 선택된 아이템 없으면 최상위 레벨의 최하위
+						elTree.jstree("create");
+						break;
+					case $(this).hasClass("jstree-create2") :
+						elTree.jstree("create", -1, false, "new Item", null, true);
+						break;
+					case $(this).hasClass("jstree-create3") :
+						elTree.jstree("create",
+							elTree.children("ul").children("li")[1],	// item element : node
+							"last",	//position : index or before, after, inside, first, last
+							{data:"new Item", state:""/*empty/open/closed*/, attr:{"code":"newItem"}},	// item object : data string or object *object = {attr:{}, state:"", data:""}
+							null,	// created callback function
+							false	// skip rename : true/false
+						);
+						break;
+					
+					case $(this).hasClass("jstree-remove1") :
+						elTree.jstree("remove");
+						break;
+					case $(this).hasClass("jstree-remove2") :
+						elTree.jstree("remove", "#treeItem1");
+						break;
+						
+					case $(this).hasClass("jstree-rename1") :
+						elTree.jstree("rename");
+						break;
+					case $(this).hasClass("jstree-rename2") :
+						elTree.jstree("rename", elTree.children("ul").children("li")[0]);
+						break;
+				}
+			})
+			.bind("mouseover mouseout", function(event) {
+				switch(event.type) {
+					case "mouseover" : $(this).css({color:"#99f", textDecoration:"underline"}); break;
+					case "mouseout" : $(this).css({color:"blue", textDecoration:"none"}); break;
+				}
+			});
+	
+		
+		
+		
+		
+		// contentmenu with tree source code ------------------------------------------------
+		$("#treeMenu").jstree({
+			plugins:["themes", "ui", "dnd", "crrm", "json_data", "contextmenu"],
+			crrm : {
+				move : {
+					always_copy : true,
+					check_move : function(rslt) {
+						//return false;	// 현재 트리에서는 옮겨지지 않도록 한다.
+					}
+				}
+			},
+			json_data:{data:[
+				{data:{title:"item 1", icon:"dept"}, attr:{id:"item1", code:"00001"}, children:[
+   					{data:{title:"사용자 1", icon:"person"}, attr:{data:'{"name":"사용자 1", "userId":"user1", "empNo":"EN001", "email":"aaa@a.com"}'}},
+   					{data:{title:"사용자 2", icon:"person"}, attr:{data:'{"name":"사용자 2", "userId":"user2", "empNo":"EN002", "email":"bbb@b.com"}'}},
+   					{data:{title:"사용자 3", icon:"person"}, attr:{data:'{"name":"사용자 3", "userId":"user3", "empNo":"EN003", "email":"ccc@c.com"}'}}
+   				]},
+   				"item 2",
+   				"item 3",
+   				{data:{title:"item 4", icon:"person"}},
+   				"item 5"
+   			]},
+   			contextmenu : {
+   				items : {
+   					create : { label : "추가", action : function(item) {
+   						showTreeItemDialog(item, "add");
+   					}},
+   					rename : { label : "수정", action : function(item) {
+   						showTreeItemDialog(item, "modify");
+   					}},
+					remove : { label : "삭제", action : function(item) {
+						// ajax
+						
+						// ajax success callback process
+						$("#treeMenu").jstree("delete_node", item);
+					}},
+					ccp : { _class:"context_hide"}/*, submenu:{
+						cut : {label:"잘라내기"},
+						copy : {label:"복사"},
+						paste : {label:"붙혀넣기", action:function() {iKEP.debug(arguments);}}
+					}},
+					up : { label:"위" },
+					down : { label:"아래" }*/
+					
+   				}
+   			}
+		});
+		
+		$("#btnSave").click(function() {
+			var name = $("input[name=name]", "#divTreeItemControll").val();
+			var email = $("input[name=email]", "#divTreeItemControll").val();
+
+			switch(treeItemAction) {
+				case "add" :
+					//ajax : save
+					
+					// ajax success callback process
+					$("#treeMenu").jstree("create_node",
+						$currItem,
+						"last",
+						{data:name, attr:{data:'{"name":"'+name+'", "userId":"", "empNo":"", "email":"'+email+'"}'}},
+						function() {
+							$("#treeMenu").jstree("open_node", $currItem);
+						}
+					);
+					break;
+				case "modify" :
+					//ajax : save
+					
+					// ajax success callback process
+					$("#treeMenu").jstree("rename_node", $currItem, name);
+					var itemData = $.parseJSON($currItem.attr("data"));
+					itemData.name = name;
+					itemData.email = email;
+					$currItem.attr("data", JSON.stringify(itemData));
+					break;
+			}
+			
+			$("#divTreeItemControll").dialog("close");
+		});
+		
+		$("#btnCancel").click(function() {
+			dialog.dialog("close");
+		});
+	});
+	
+	var $currItem = null;
+	var dialog = null;
+	var treeItemAction = "";
+	function showTreeItemDialog(item, flag) {
+		$currItem = item;
+		treeItemAction = flag;
+		var dialogTitle = treeItemAction == "add" ? "아이템 추가" : "아이템 수정";
+		
+		if(dialog == null) {
+			dialog = $("#divTreeItemControll").dialog({
+				title : dialogTitle,
+				//modal : true,
+				width : 300,
+				height : 160,
+				open : function() {
+					switch(treeItemAction) {
+						case "add" :
+							$("input[name=name]", this).val("");
+							$("input[name=email]", this).val("");
+							break;
+						case "modify" :
+							var itemData = $.extend({}, $.parseJSON($currItem.attr("data")));
+							$("input[name=name]", this).val(itemData.name);
+							$("input[name=email]", this).val(itemData.email);
+							break;
+					}
+				}
+			});
+		} else {
+			if(dialog.dialog("isOpen")) dialog.dialog("close");
+			
+			dialog.dialog("option", "title", dialogTitle)
+				.dialog("open");
+			
+		}
+		
+	}
+})(jQuery);
+</script>
+<style type="text/css">
+	#divTreeItemControll p { line-height:28px; }
+	#divTreeItemControll label { display:inline-block; width:60px; }
+	#divTreeItemControll input[type=text] { width:200px; }
+	#divTreeItemControll div.blockButton { margin-top:10px; }
+</style>
+</head>
+
+<body class="popup">
+	<div id="divTree1"></div>
+	<br/><br/><br/>
+	<div id="divTree2"></div>
+	
+	<br/><br/><br/>
+	
+	<div id="treeMenu"></div>
+	
+	<div id="divTreeItemControll" style="display:none;">
+		<form>
+			<p>
+				<label>이름</label>
+				<input type="text" name="name"/>
+			</p>
+			<p>
+				<label>이메일</label>
+				<input type="text" name="email"/>
+			</p>
+			<div class="blockButton"> 
+				<ul>
+					<li><a id="btnSave" class="button" href="#a"><span>저장</span></a></li>
+					<li><a id="btnCancel" class="button" href="#a"><span>취소</span></a></li>
+				</ul>
+			</div>
+		</form>
+	</div>
+	
+	
+	
+	<br/>
+	<br/>
+	<br/>
+	<br/>
+	<br/>
+	<br/>
+	<br/>
+	<br/>
+	<br/>
+	<br/>
+	
+</body>
+</html>

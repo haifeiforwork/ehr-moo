@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="approval.admin.dao.ApprDefLineInfo" >
+
+	<typeAlias alias = "ApprDefLineInfo" type="com.lgcns.ikep4.approval.admin.model.ApprDefLineInfo"/>
+
+	
+	<sql id="sqlColumnInfoList">
+		INFO_ID			AS	infoId,
+		DEF_LINE_ID		AS	defLineId,
+		APPR_TYPE		AS	apprType,
+		APPROVER_WAY	AS	approverWay,
+		APPROVER_TYPE	AS	approverType,
+		APPROVER_ID		AS	approverId,
+		APPR_ORDER		AS	apprOrder,
+		JOB_TYPE		AS	jobType,
+		APPROVER_JOB_TITLE	AS	approverJobTitle,
+		LINE_MODIFY_AUTH	AS	lineModifyAuth,
+		DOC_MODIFY_AUTH		AS	docModifyAuth,
+		READ_MODIFY_AUTH	AS	readModifyAuth
+	</sql>
+
+	<!-- insert -->
+	
+	<insert id="create" parameterClass="ApprDefLineInfo">
+	/* [ApprDefLineInfo_SqlMap.xml] approval.admin.dao.ApprDefLineInfo.create */
+	<![CDATA[ 
+		INSERT INTO IKEP4_APPR_DEF_LINE_INFO
+		(
+			INFO_ID,
+			DEF_LINE_ID,
+			APPR_TYPE,
+			APPROVER_WAY,
+			APPROVER_TYPE,
+			APPROVER_ID,
+			APPR_ORDER,
+			JOB_TYPE,
+			APPROVER_JOB_TITLE,
+			LINE_MODIFY_AUTH,
+			DOC_MODIFY_AUTH,
+			READ_MODIFY_AUTH
+		)
+		VALUES
+		(
+			#infoId#, 
+			#defLineId#,
+			#apprType#,
+			#approverWay#,
+			#approverType#,
+			#approverId#,
+			#apprOrder#,
+			#jobType#,
+			#approverJobTitle#,
+			#lineModifyAuth#,
+			#docModifyAuth#,
+			#readModifyAuth#
+		)
+	]]>
+	</insert>
+
+ 	<select id="getDefLineInfoList" parameterClass="java.lang.String" resultClass="ApprDefLineInfo"> 
+	/* [ApprDefLineInfo_SqlMap.xml] approval.admin.dao.ApprDefLineInfo.getDefLineInfoList */
+	SELECT * FROM 
+	(
+		/** 사용자/부서/Role **/
+		SELECT 
+			A.INFO_ID				AS	infoId,
+			A.DEF_LINE_ID			AS	defLineId,
+			A.APPR_TYPE				AS	apprType,
+			A.APPROVER_WAY			AS	approverWay,
+			A.APPROVER_TYPE			AS	approverType,
+			A.APPROVER_ID			AS	approverId,
+			A.APPR_ORDER			AS	apprOrder,
+			A.JOB_TYPE				AS	jobType,
+			A.APPROVER_JOB_TITLE	AS	approverJobTitle,
+			CASE WHEN A.JOB_TYPE = 0 THEN UT.JOB_TITLE_NAME	
+			ELSE JD.JOB_DUTY_NAME
+			END	approverJobTitleName,
+			CASE WHEN A.JOB_TYPE = 0 THEN UT.JOB_TITLE_ENGLISH_NAME	
+			ELSE JD.JOB_DUTY_ENGLISH_NAME
+			END	approverJobTitleEnglishName,		
+			A.LINE_MODIFY_AUTH		AS	lineModifyAuth,
+			A.DOC_MODIFY_AUTH		AS	docModifyAuth,
+			A.READ_MODIFY_AUTH		AS	readModifyAuth,
+			U.USER_NAME				AS	userName,
+			U.USER_ENGLISH_NAME		AS	userEnglishName,
+			U.TEAM_NAME				AS	teamName,
+			U.TEAM_ENGLISH_NAME		AS	teamEnglishName,		
+			U.JOB_TITLE_CODE		AS	jobTitleCode,
+			UT.JOB_TITLE_NAME		AS	jobTitleName,
+			G.GROUP_NAME			AS	groupName,
+			G.GROUP_ENGLISH_NAME	AS	groupEnglishName,		
+			U.JOB_DUTY_CODE			AS	jobDutyCode,
+			D.JOB_DUTY_NAME			AS	jobDutyName,
+			D.JOB_DUTY_ENGLISH_NAME	AS	jobDutyEnglishName		
+		FROM   
+			IKEP4_APPR_DEF_LINE_INFO A
+			LEFT OUTER JOIN IKEP4_EV_USER U ON (A.APPROVER_ID=U.USER_ID)
+			LEFT OUTER JOIN IKEP4_EV_GROUP G ON (A.APPROVER_ID=G.GROUP_ID)
+			LEFT OUTER JOIN IKEP4_EV_JOB_DUTY D ON (A.APPROVER_ID=D.JOB_DUTY_CODE)
+			LEFT OUTER JOIN IKEP4_EV_JOB_DUTY JD ON (A.APPROVER_JOB_TITLE=JD.JOB_DUTY_CODE)		
+			LEFT OUTER JOIN IKEP4_EV_JOB_TITLE UT ON (A.APPROVER_JOB_TITLE=UT.JOB_TITLE_CODE)
+		WHERE
+	    	A.DEF_LINE_ID = #defLineId#
+	    	AND A.APPROVER_TYPE IN (0,1,2)
+    	
+    UNION	
+    	
+		/** 리더 **/
+		SELECT 
+			A.INFO_ID				AS	infoId,
+			A.DEF_LINE_ID			AS	defLineId,
+			A.APPR_TYPE				AS	apprType,
+			A.APPROVER_WAY			AS	approverWay,
+			A.APPROVER_TYPE			AS	approverType,
+			A.APPROVER_ID			AS	approverId,
+			A.APPR_ORDER			AS	apprOrder,
+			A.JOB_TYPE				AS	jobType,
+			A.APPROVER_JOB_TITLE	AS	approverJobTitle,
+			UT.JOB_TITLE_NAME		AS	approverJobTitleName,
+			UT.JOB_TITLE_ENGLISH_NAME	AS	approverJobTitleEnglishName,		
+			A.LINE_MODIFY_AUTH		AS	lineModifyAuth,
+			A.DOC_MODIFY_AUTH		AS	docModifyAuth,
+			A.READ_MODIFY_AUTH		AS	readModifyAuth,
+			U.USER_NAME				AS	userName,
+			U.USER_ENGLISH_NAME		AS	userEnglishName,
+			''			AS	teamName,
+			''			AS	teamEnglishName,		
+			U.JOB_TITLE_CODE		AS	jobTitleCode,
+			UT.JOB_TITLE_NAME		AS	jobTitleName,
+			G.GROUP_NAME			AS	groupName,
+			G.GROUP_ENGLISH_NAME	AS	groupEnglishName,		
+			U.JOB_DUTY_CODE			AS	jobDutyCode,
+			D.JOB_DUTY_NAME			AS	jobDutyName,
+			D.JOB_DUTY_ENGLISH_NAME	AS	jobDutyEnglishName		
+		FROM   
+			IKEP4_APPR_DEF_LINE_INFO A		
+			LEFT OUTER JOIN IKEP4_EV_GROUP G ON (A.APPROVER_ID=G.GROUP_ID)
+			LEFT OUTER JOIN IKEP4_EV_USER U ON (G.LEADER_ID=U.USER_ID)
+			LEFT OUTER JOIN IKEP4_EV_JOB_DUTY D ON (U.JOB_DUTY_CODE=D.JOB_DUTY_CODE)
+			LEFT OUTER JOIN IKEP4_EV_JOB_TITLE UT ON (U.JOB_TITLE_CODE=UT.JOB_TITLE_CODE)
+		WHERE
+			A.DEF_LINE_ID = #defLineId#
+			AND A.APPROVER_TYPE=3
+    	
+    )	A
+    ORDER BY 
+    	apprOrder ASC,
+    	infoId ASC
+ 	</select>
+	
+
+	
+	<delete id="delete" parameterClass="java.lang.String"> 
+	<![CDATA[
+		/* [ApprDefLineInfo_SqlMap.xml] approval.admin.dao.ApprDefLineInfo.delete */
+		DELETE 
+		FROM 
+			IKEP4_APPR_DEF_LINE_INFO
+		WHERE
+			DEF_LINE_ID		=	#defLineId# 
+    	]]>
+	</delete>	
+	
+	
+	
+</sqlMap>

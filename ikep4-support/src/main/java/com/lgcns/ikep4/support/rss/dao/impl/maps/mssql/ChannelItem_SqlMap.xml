@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="EUC-KR"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="support.rss.channelItem">
+
+	<typeAlias alias="channelItem" type="com.lgcns.ikep4.support.rss.model.ChannelItem" />
+	<typeAlias alias="channelSearchCondition" type="com.lgcns.ikep4.support.rss.model.ChannelSearchCondition"/>
+
+	<resultMap id="channelItemResult" class="channelItem">
+		<result property="channelId" column="channel_id" />
+		<result property="itemId" column="item_id" />
+		<result property="itemUrl" column="item_url" />
+		<result property="itemTitle" column="item_title" />
+		<result property="itemDescription" column="item_description" />
+		<result property="itemRegister" column="item_register" />
+		<result property="itemPublishDate" column="item_publish_date" />
+	</resultMap>
+
+	<!-- ANSI -->
+	<insert id="insert" parameterClass="channelItem">
+		INSERT INTO IKEP4_RS_CHANNEL_ITEM (
+			CHANNEL_ID, ITEM_ID, ITEM_URL,
+			ITEM_TITLE, ITEM_DESCRIPTION, 
+			ITEM_REGISTER, ITEM_PUBLISH_DATE)
+		values(#channelId#, #itemId#, #itemUrl#,
+			#itemTitle#, #itemDescription#, 
+			#itemRegister#, #itemPublishDate#)
+	</insert>
+	
+	<!-- ANSI -->
+	<delete id="delete" parameterClass="String">
+		DELETE FROM IKEP4_RS_CHANNEL_ITEM
+		WHERE ITEM_ID = #itemId#
+    </delete>
+    
+    <!-- ANSI -->
+    <delete id="deleteByCategoryId" parameterClass="String">
+        DELETE IKEP4_RS_CHANNEL_ITEM
+        WHERE  CHANNEL_ID IN (SELECT CHANNEL_ID FROM IKEP4_RS_CHANNEL WHERE CATEGORY_ID = #categoryId# )
+    </delete>
+    
+    <!-- ANSI -->
+    <delete id="cleanup" parameterClass="channelSearchCondition">
+      <![CDATA[    DELETE IKEP4_RS_CHANNEL_ITEM
+        WHERE ITEM_ID IN (
+            SELECT TOP $startRowIndex$ I.item_id
+            FROM IKEP4_RS_CHANNEL C
+            INNER JOIN IKEP4_RS_CHANNEL_ITEM I ON C.channel_id = I.channel_id
+            WHERE C.owner_id = #ownerId# ORDER BY item_id ASC
+        ) 
+        ]]> 
+        /* DECLARE @CATEGORYID nvarchar(27)
+
+        DECLARE CUR_RSSNEWS CURSOR FOR
+        SELECT CATEGORY_ID FROM IKEP4_RS_CATEGORY WHERE OWNER_ID = 'cnscjy'
+
+        OPEN CUR_RSSNEWS
+
+        FETCH NEXT FROM CUR_RSSNEWS
+        INTO @CATEGORYID
+        WHILE @@FETCH_STATUS = 0
+            BEGIN
+     
+         DELETE IKEP4_RS_CHANNEL_ITEM
+        WHERE item_id IN(     
+         SELECT I.ITEM_ID FROM IKEP4_RS_CHANNEL C
+         INNER JOIN IKEP4_RS_CHANNEL_ITEM I ON C.channel_id = I.channel_id
+         WHERE C.owner_id = 'cnscjy' AND C.category_id =  @CATEGORYID
+         AND I.item_id NOT IN (     
+            SELECT TOP 20 I.item_id
+            FROM IKEP4_RS_CHANNEL C
+            INNER JOIN IKEP4_RS_CHANNEL_ITEM I ON C.channel_id = I.channel_id
+            WHERE C.owner_id = 'cnscjy' AND C.category_id =  @CATEGORYID ORDER BY item_id DESC
+         )
+       )
+
+        FETCH NEXT FROM CUR_RSSNEWS 
+        INTO @CATEGORYID
+        END
+        
+        CLOSE CUR_RSSNEWS*/
+    </delete>
+
+	<!-- ANSI -->
+	<select id="select" parameterClass="String" resultMap="channelItemResult">
+		SELECT
+			CHANNEL_ID, ITEM_ID, ITEM_URL,
+			ITEM_TITLE, ITEM_DESCRIPTION, 
+			ITEM_REGISTER, ITEM_PUBLISH_DATE
+		FROM IKEP4_RS_CHANNEL_ITEM
+		WHERE ITEM_ID = #itemId#
+    </select>
+    
+    <!-- MS SQL -->
+    <select id="exists" parameterClass="java.util.Map" resultMap="channelItemResult">
+		SELECT TOP 1 
+			CHANNEL_ID, ITEM_ID, ITEM_URL,
+			ITEM_TITLE, ITEM_DESCRIPTION, 
+			ITEM_REGISTER, ITEM_PUBLISH_DATE
+		FROM IKEP4_RS_CHANNEL_ITEM
+		WHERE ITEM_URL = #itemUrl#
+		AND CHANNEL_ID = #channelId#
+    </select>
+
+	<!-- MS SQL -->
+	<select id="selectAll" parameterClass="channelSearchCondition" resultMap="channelItemResult">
+		SELECT /* [ChannelItem_SqlMap.xml] selectAll */ 
+		       *
+		FROM ( 
+		     SELECT A.* FROM ( 
+		         /* START========================================= */
+		        SELECT	Row_number() OVER (	<isNotEmpty property="sortColumn" >
+										    	<isEqual property="sortColumn" compareValue="ITEM_TITLE">
+										    		<isEqual property="sortType" compareValue="ASC">
+										    			ORDER BY ITEM_TITLE ASC
+										    		</isEqual>
+										    		<isEqual property="sortType" compareValue="DESC">
+										    			ORDER BY ITEM_TITLE DESC
+										    		</isEqual>
+										    	</isEqual>
+										    	<isEqual property="sortColumn" compareValue="ITEM_REGISTER">
+										    		<isEqual property="sortType" compareValue="ASC">
+										    			ORDER BY ITEM_REGISTER ASC
+										    		</isEqual>
+										    		<isEqual property="sortType" compareValue="DESC">
+										    			ORDER BY ITEM_REGISTER DESC
+										    		</isEqual>
+										    	</isEqual>
+										    	<isEqual property="sortColumn" compareValue="ITEM_PUBLISH_DATE">
+										    		<isEqual property="sortType" compareValue="ASC">
+										    			ORDER BY ITEM_PUBLISH_DATE ASC
+										    		</isEqual>
+										    		<isEqual property="sortType" compareValue="DESC">
+										    			ORDER BY ITEM_PUBLISH_DATE DESC
+										    		</isEqual>
+										    	</isEqual>
+										    </isNotEmpty>	
+										    <isEmpty property="sortColumn" >
+										    	ORDER BY ITEM_PUBLISH_DATE DESC
+										    </isEmpty>	) AS RNUM, 
+						A.CHANNEL_ID, A.ITEM_ID, A.ITEM_URL,
+						A.ITEM_TITLE, A.ITEM_DESCRIPTION, 
+						A.ITEM_REGISTER, A.ITEM_PUBLISH_DATE
+					FROM IKEP4_RS_CHANNEL_ITEM A INNER JOIN IKEP4_RS_CHANNEL B
+												ON (A.CHANNEL_ID = B.CHANNEL_ID)
+					WHERE B.OWNER_ID = #ownerId#
+					<isNotEmpty prepend="AND" property="channelId">
+						A.CHANNEL_ID = #channelId#
+					</isNotEmpty>
+					<isNotEmpty prepend="AND" property="categoryId">
+                        CATEGORY_ID = #categoryId#
+                    </isNotEmpty>
+					<isNotEmpty property="searchWord">
+						<isEqual property="searchColumn" compareValue="title">
+							AND	A.ITEM_TITLE LIKE '%' + #searchWord# + '%'
+						</isEqual>
+						<isEqual property="searchColumn" compareValue="registerName">
+							AND	A.ITEM_REGISTER LIKE '%' + #searchWord# + '%'
+						</isEqual>
+					</isNotEmpty>
+				 /* ===========================================END  */ 
+		<![CDATA[  
+		
+		    ) A WHERE RNUM <=  #endRowIndex# /* 종료  */
+		) TBL WHERE RNUM >  #startRowIndex# /* 시작 */
+		]]> 
+	</select>
+	
+	<!-- MS SQL -->
+	<select id="countBySearchCondition" parameterClass="channelSearchCondition" resultClass="int">  
+		SELECT /* [ChannelItem_SqlMap.xml] countBySearchCondition */ 
+	           COUNT(*)
+		FROM IKEP4_RS_CHANNEL_ITEM A INNER JOIN IKEP4_RS_CHANNEL B
+											ON (A.CHANNEL_ID = B.CHANNEL_ID)
+		WHERE B.OWNER_ID = #ownerId#
+					<isNotEmpty prepend="AND" property="channelId">
+						A.CHANNEL_ID = #channelId#
+					</isNotEmpty>
+					<isNotEmpty prepend="AND" property="categoryId">
+                        CATEGORY_ID = #categoryId#
+                    </isNotEmpty>
+					<isNotEmpty property="searchWord">
+						<isEqual property="searchColumn" compareValue="title">
+							AND	A.ITEM_TITLE LIKE '%' + #searchWord# + '%'
+						</isEqual>
+						<isEqual property="searchColumn" compareValue="registerName">
+							AND	A.ITEM_REGISTER LIKE '%' + #searchWord# + '%'
+						</isEqual>
+					</isNotEmpty>
+	</select> 
+    
+
+</sqlMap>
+

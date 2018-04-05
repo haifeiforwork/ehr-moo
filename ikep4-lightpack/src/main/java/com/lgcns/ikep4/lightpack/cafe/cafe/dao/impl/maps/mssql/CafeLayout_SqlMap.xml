@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="lightpack.cafe.cafe.dao.CafeLayout">
+
+	<typeAlias alias="CafeLayout" type="com.lgcns.ikep4.lightpack.cafe.cafe.model.CafeLayout"/>
+  
+	<!-- IKEP4_AD_ADDRGROUP 테이블 조회 결과 -->
+	<resultMap id="resultCafeLayout" class="CafeLayout" groupBy="layoutId">
+		<result property="layoutId" column="LAYOUT_ID" columnIndex="1"/>
+		<result property="layoutName" column="LAYOUT_NAME" columnIndex="2"/>
+		<result property="colCount" column="COL_COUNT" columnIndex="3"/>
+		<result property="imageUrl" column="IMAGE_URL" columnIndex="4"/>
+		<result property="isDefault" column="IS_DEFAULT" columnIndex="5"/>
+		<result property="cafeLayoutColumnList" column="LAYOUT_ID" select="lightpack.cafe.cafe.dao.CafeLayoutColumn.listByLayoutId" />
+
+	</resultMap>
+
+	<sql id="sqlColumnList"> 
+	    LAYOUT_ID, 
+	    LAYOUT_NAME, 
+	    COL_COUNT,
+	    IMAGE_URL,
+	    IS_DEFAULT
+	</sql>  
+    
+    <!-- ANSI -->
+	<select id="get" parameterClass="java.lang.String" resultMap="resultCafeLayout"> 
+		SELECT 
+			/* [CafeLayout_SqlMap.xml] lightpack.cafe.cafe.dao.CafeLayout.get */
+			<include refid="lightpack.cafe.cafe.dao.CafeLayout.sqlColumnList" /> 
+		FROM  IKEP4_CF_LAYOUT
+    	WHERE LAYOUT_ID = #layoutId# 
+	</select>
+ 
+ 	<!-- ANSI --> 
+	<select id="exists" parameterClass="java.lang.String" resultClass="int"> 
+		SELECT /* [CafeLayout_SqlMap.xml] lightpack.cafe.cafe.dao.CafeLayout.exists */
+			COUNT(*)
+		FROM  IKEP4_CF_LAYOUT
+		WHERE LAYOUT_ID = #layoutId#
+	</select> 
+
+	<!-- ANSI -->  
+	<select id="listCafeLayout" parameterClass="java.lang.String" resultMap="resultCafeLayout">  
+		SELECT 
+			/* [CafeLayout_SqlMap.xml] lightpack.cafe.cafe.dao.CafeLayout.listCafeLayout */ 
+			<include refid="lightpack.cafe.cafe.dao.CafeLayout.sqlColumnList" /> 
+		FROM   IKEP4_CF_LAYOUT 
+		ORDER BY LAYOUT_ID
+	</select>   
+
+	<!-- ANSI -->
+	<select id="countCafeLayout" parameterClass="java.lang.String" resultClass="int">  
+		SELECT /* [CafeLayout_SqlMap.xml] lightpack.cafe.cafe.dao.CafeLayout.countCafeLayout */ 
+           COUNT(*)
+		FROM   IKEP4_CF_LAYOUT 
+		ORDER BY LAYOUT_ID
+  	</select>
+  	
+  	<!-- ANSI -->
+  	<select id="getDefaultLayout" parameterClass="java.lang.String" resultMap="resultCafeLayout"> 
+		SELECT
+			/* [CafeLayout_SqlMap.xml] lightpack.cafe.cafe.dao.CafeLayout.getDefaultLayout */ 
+			<include refid="lightpack.cafe.cafe.dao.CafeLayout.sqlColumnList" /> 
+		FROM IKEP4_CF_LAYOUT 
+		WHERE  IS_DEFAULT = '1' 
+	</select>
+	
+	<!-- ANSI -->
+  	<select id="isDefaultLayout" parameterClass="java.lang.String" resultClass="int"> 
+		SELECT
+			/* [CafeLayout_SqlMap.xml] lightpack.cafe.cafe.dao.CafeLayout.isDefaultLayout */ 
+			COUNT(*)
+		FROM IKEP4_CF_LAYOUT 
+		WHERE  IS_DEFAULT = #isDefault# 
+	</select>
+ 	
+ 	<!-- ANSI -->
+	<insert id="create" parameterClass="CafeLayout"> 
+		INSERT INTO IKEP4_CF_LAYOUT ( 
+			/* [CafeLayout_SqlMap.xml] lightpack.cafe.cafe.dao.CafeLayout.create */
+			<include refid="lightpack.cafe.cafe.dao.CafeLayout.sqlColumnList" />
+		) VALUES (
+			#layoutId#, 
+			#layoutName#, 
+			#colCount#, 
+			#imageUrl#,
+			#isDefault#
+    	) 
+	</insert>
+	
+	<!-- ANSI -->
+	<update id="update" parameterClass="CafeLayout"> 
+		UPDATE IKEP4_CF_LAYOUT 
+			/* [CafeLayout_SqlMap.xml] lightpack.cafe.cafe.dao.CafeLayout.update */
+    	SET LAYOUT_NAME     = #layoutName#,
+    		COL_COUNT     	= #colCount#,
+    		IMAGE_URL     	= #imageUrl#,
+          	IS_DEFAULT    	= #isDefault#
+		WHERE LAYOUT_ID = #layoutId#
+	</update>
+ 
+ 	<!-- ANSI -->
+	<delete id="physicalDelete" parameterClass="java.lang.String"> 
+		DELETE FROM IKEP4_CF_LAYOUT 
+			/* [CafeLayout_SqlMap.xml] lightpack.cafe.cafe.dao.CafeLayout.physicalDelete */
+		WHERE LAYOUT_ID = #layoutId# 
+	</delete>  
+
+</sqlMap> 

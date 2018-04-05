@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="support.abusereporting.dao.arModule" >
+	<typeAlias alias = "ArModule" 	type="com.lgcns.ikep4.support.abusereporting.model.ArModule"/>
+	
+	<!-- IKEP4_AR_MODULE 테이블 조회 결과 -->
+	<resultMap id="result" class="ArModule">
+		<result property="moduleCode" 		column="MODULE_CODE" 		/>
+		<result property="moduleName" 		column="MODULE_NAME" 		/>
+		<result property="registerId" 		column="REGISTER_ID" 		/>
+		<result property="registerName" 	column="REGISTER_NAME" 		/>
+		<result property="registDate" 		column="REGIST_DATE" 		/>
+		<result property="updaterId" 		column="UPDATER_ID" 		/>
+		<result property="updaterName" 		column="UPDATER_NAME" 		/>
+		<result property="updateDate" 		column="UPDATE_DATE" 		/>
+		<result property="isExternal" 		column="IS_EXTERNAL" 		/>
+	</resultMap>
+  	
+	<!-- insert -->
+	<insert id="insert" parameterClass="ArModule"> 
+      <![CDATA[ 
+           INSERT INTO IKEP4_AR_MODULE ( /* [ArModule_SqlMap.xml] arModule.insert */
+           MODULE_CODE, MODULE_NAME, REGISTER_ID, REGISTER_NAME, REGIST_DATE, UPDATER_ID, UPDATER_NAME, UPDATE_DATE, IS_EXTERNAL)  
+           VALUES (#moduleCode#, #moduleName#, #registerId#, #registerName#, NOW(), #updaterId#, #updaterName#, NOW(), #isExternal#)
+       ]]>
+   </insert>
+   
+   <!-- select -->
+	<select id="select" parameterClass="java.lang.String" resultMap="result">
+	  <![CDATA[
+		   SELECT /* [ArModule_SqlMap.xml] arModule.select */ 
+		    * FROM IKEP4_AR_MODULE 
+		   WHERE MODULE_CODE = #moduleCode#
+	   ]]>
+	</select>
+	  	   
+   <!-- delete -->
+   <delete id="delete" parameterClass="java.lang.String">
+      <![CDATA[
+	       DELETE FROM IKEP4_AR_MODULE   /* [ArModule_SqlMap.xml] arModule.delete */ 
+	       WHERE MODULE_CODE = #moduleCode#
+	   ]]>
+	</delete>
+	
+  <select id="list" resultMap="result">    
+      <![CDATA[
+		SELECT   /* [ArModule_SqlMap.xml] arModule.list */  
+	    	*
+		FROM  IKEP4_AR_MODULE 
+		ORDER BY MODULE_NAME ASC
+	   ]]>
+  </select> 
+  
+
+
+</sqlMap>

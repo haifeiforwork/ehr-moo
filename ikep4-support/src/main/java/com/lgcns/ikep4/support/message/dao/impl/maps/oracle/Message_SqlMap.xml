@@ -1,0 +1,674 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="support.message.message">
+
+	<typeAlias alias="Message" type="com.lgcns.ikep4.support.message.model.Message" />
+	<typeAlias alias="MessageSearchCondition" type="com.lgcns.ikep4.support.message.search.MessageSearchCondition"/>
+	
+	<resultMap class="com.lgcns.ikep4.support.message.model.Message" id="result">
+		<result column="MESSAGE_ID"            property="messageId"           jdbcType="VARCHAR" /> 
+		<result column="CATEGORY_ID"           property="categoryId"          jdbcType="VARCHAR" /> 
+		<result column="CATEGORY_NAME"         property="categoryName"        jdbcType="VARCHAR" /> 
+		<result column="CATEGORY_ENGLISH_NAME" property="categoryEnglishName" jdbcType="VARCHAR" /> 
+		<result column="CONTENTS"              property="contents"            jdbcType="VARCHAR" /> 
+		<result column="ATTACH_COUNT"          property="attachCount"         jdbcType="DECIMAL" /> 
+		<result column="ATTACH_SIZE"           property="attachSize"          jdbcType="DECIMAL" /> 
+		<result column="RECEIVER_COUNT"        property="receiverCount"       jdbcType="DECIMAL" /> 
+		<result column="RECEIVER_LIST"         property="receiverList"        jdbcType="VARCHAR" /> 
+		<result column="IS_URGENT"             property="isUrgent"            jdbcType="DECIMAL" /> 
+		<result column="IS_STORED"             property="isStored"            jdbcType="DECIMAL" /> 
+		<result column="SENDER_ID"             property="senderId"            jdbcType="VARCHAR" /> 
+		<result column="SENDER_NAME"           property="senderName"          jdbcType="VARCHAR" /> 
+		<result column="SENDER_ENGLISH_NAME"   property="senderEnglishName"   jdbcType="VARCHAR" /> 
+		<result column="SEND_DATE"             property="sendDate"            jdbcType="TIMESTAMP" /> 
+		<result column="USER_ID"               property="userId"              jdbcType="VARCHAR" /> 
+		<result column="RECEIVE_DATE"          property="receiveDate"         jdbcType="TIMESTAMP" /> 
+		<result column="IS_READ"               property="isRead"              jdbcType="DECIMAL" /> 
+		<result column='READ_DATE'             property='readDate'            jdbcType='TIMESTAMP' /> 
+		<result column="MESSAGE_CLASS"         property="messageClass"        jdbcType="VARCHAR" /> 
+		<result column="RECEIVER_CHECK"        property="receiverCheck"       jdbcType="VARCHAR" />
+		<result column="RECEIVE_TYPE"          property="receiveType"         jdbcType="VARCHAR" />
+		<result column="GROUP_NAME"            property="groupName"           jdbcType="VARCHAR" />
+		<result column="GROUP_ENGLISH_NAME"    property="groupEnglishName"    jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<resultMap id="extendResult" class="Message" extends="result">
+		<result column="PICTURE_PATH"    		property="picturePath"    jdbcType="VARCHAR" />
+		<result column="PROFILE_PICTURE_PATH"    property="profilePicturePath"    jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<sql id="sqlColumnList">
+		 CONTENTS
+		, ATTACH_COUNT
+		, ATTACH_SIZE
+		, RECEIVER_COUNT
+		, RECEIVER_LIST
+		, IS_URGENT
+		, IS_STORED
+		, SENDER_ID
+		, SENDER_NAME
+		, (SELECT USER_ENGLISH_NAME FROM IKEP4_EV_USER sa WHERE sa.USER_ID = main.SENDER_ID) AS SENDER_ENGLISH_NAME
+		, SEND_DATE
+	</sql>
+	
+	<select id="get" parameterClass="String" resultMap="extendResult">
+		SELECT /* [Message_SqlMap.xml] message.get */
+	    	<include refid="sqlColumnList" />
+	    	, main.MESSAGE_ID
+	    	, main.CATEGORY_ID
+	    	, cate.CATEGORY_NAME    
+	    	, cate.CATEGORY_ENGLISH_NAME 	
+	    	, null as USER_ID
+			, null as RECEIVE_DATE
+			, null as IS_READ	
+			, null as READ_DATE
+			, null as MESSAGE_CLASS
+			, (SELECT DECODE(SUM(NVL2(sb.READ_DATE,1,0)),0,'N',COUNT(*),'C','I')
+	                    FROM IKEP4_ME_RECEIVEBOX sa
+	                    LEFT OUTER JOIN    IKEP4_ME_MESSAGE_READ sb
+	                    ON  (sa.USER_ID = sb.USER_ID AND sa.MESSAGE_ID = sb.MESSAGE_ID)
+	                    WHERE sa.MESSAGE_ID = main.MESSAGE_ID) as RECEIVER_CHECK
+	        , null as RECEIVE_TYPE
+	        , null as GROUP_NAME
+	        , null as GROUP_ENGLISH_NAME
+	        , usr.PICTURE_PATH
+	        , usr.PROFILE_PICTURE_PATH
+		FROM IKEP4_ME_MESSAGE main, IKEP4_ME_CATEGORY cate, IKEP4_EV_USER usr
+		WHERE main.CATEGORY_ID = cate.CATEGORY_ID
+		AND main.SENDER_ID = usr.USER_ID
+		AND main.MESSAGE_ID = #messageId#
+    </select>
+    
+    <select id="readCheck" parameterClass="MessageSearchCondition" resultClass="int">  
+    	SELECT COUNT(*) /* [Message_SqlMap.xml] message.readCheck */
+    	FROM IKEP4_ME_MESSAGE
+    	WHERE MESSAGE_ID IN ( SELECT MESSAGE_ID 
+                                FROM IKEP4_ME_SENDBOX 
+                               WHERE MESSAGE_ID = #messageId#
+                                 AND USER_ID = #userId# 
+                               UNION ALL 
+                              SELECT MESSAGE_ID 
+                                FROM IKEP4_ME_STOREBOX 
+                               WHERE MESSAGE_ID = #messageId#
+                                 AND USER_ID = #userId# 
+                               UNION ALL 
+                              SELECT MESSAGE_ID 
+                                FROM IKEP4_ME_RECEIVEBOX
+                               WHERE MESSAGE_ID = #messageId#
+                                 AND USER_ID IN (SELECT group_id
+				                                 FROM IKEP4_EV_GROUP 
+				                                    START WITH GROUP_ID IN (
+				                                          SELECT A.GROUP_ID 
+				                                          FROM IKEP4_EV_GROUP A, IKEP4_EV_USER_GROUP B 
+				                                          WHERE A.GROUP_ID = B.GROUP_ID
+				                                          AND A.GROUP_TYPE_ID = 'G0001'
+				                                          AND B.USER_ID = #userId#
+				                                    )CONNECT BY PRIOR PARENT_GROUP_ID = GROUP_ID
+				                                 UNION 
+				                                 SELECT #userId# FROM DUAL) )
+    </select>
+    
+    <select id="getSendMessageList" parameterClass="MessageSearchCondition" resultMap="result">
+    	SELECT /* [Message_SqlMap.xml] message.getSendMessageList */
+	       	*
+		FROM ( 
+		     SELECT ROWNUM AS RNUM, A.* FROM ( 
+		         /* START========================================= */
+		        SELECT   
+		    	<include refid="sqlColumnList" />  
+		    	, main.MESSAGE_ID
+		    	, main.CATEGORY_ID
+		    	, cate.CATEGORY_NAME   
+		    	, cate.CATEGORY_ENGLISH_NAME  
+		    	, null as USER_ID
+				, null as RECEIVE_DATE
+				, null as IS_READ
+				, null as READ_DATE
+				, null as MESSAGE_CLASS
+				, (SELECT DECODE(SUM(NVL2(sb.READ_DATE,1,0)),0,'N',COUNT(*),'C','I')||'('||SUM(NVL2(sb.READ_DATE,1,0))||'/'||COUNT(*)||')' 
+                    FROM IKEP4_ME_RECEIVEBOX sa
+                    LEFT OUTER JOIN    IKEP4_ME_MESSAGE_READ sb
+                    ON  (sa.USER_ID = sb.USER_ID AND sa.MESSAGE_ID = sb.MESSAGE_ID)
+                    WHERE sa.MESSAGE_ID = main.MESSAGE_ID) as RECEIVER_CHECK
+                , null as RECEIVE_TYPE
+                , null as GROUP_NAME
+                , null as GROUP_ENGLISH_NAME
+		    	FROM IKEP4_ME_MESSAGE main, IKEP4_ME_SENDBOX send, IKEP4_ME_CATEGORY cate
+		        WHERE main.MESSAGE_ID = send.MESSAGE_ID
+		        AND main.CATEGORY_ID = cate.CATEGORY_ID
+		        AND main.IS_COMPLETE = 1
+		        AND send.USER_ID = #userId#
+		        <isNotEmpty property="searchWord">
+					<isEqual property="searchColumn" compareValue="receiverName">
+						AND main.MESSAGE_ID IN (SELECT ja.MESSAGE_ID 
+						                FROM IKEP4_ME_RECEIVEBOX ja, IKEP4_EV_USER jb
+						                WHERE ja.USER_ID = jb.USER_ID
+						                AND (UPPER(jb.USER_NAME) LIKE '%' || UPPER(#searchWord#) || '%' OR UPPER(jb.USER_ENGLISH_NAME) LIKE '%' || UPPER(#searchWord#) || '%') )
+					</isEqual>
+					<isEqual property="searchColumn" compareValue="contents">
+						AND	main.CONTENTS LIKE '%' || #searchWord# || '%'
+					</isEqual>
+				</isNotEmpty>
+				<isNotEmpty property="categoryId">
+					AND main.CATEGORY_ID = #categoryId#
+				</isNotEmpty>
+				ORDER BY main.MESSAGE_ID DESC
+			 	/* ===========================================END  */ 
+			<![CDATA[  
+			    ) A WHERE ROWNUM <=  #endRowIndex# /* 종료  */
+			) WHERE RNUM >  #startRowIndex# /* 시작 */
+			]]> 	
+    </select>
+    <select id="countSendMessageList" parameterClass="MessageSearchCondition" resultClass="int">  
+    	SELECT /* [Message_SqlMap.xml] message.countSendMessageList */ 
+    		COUNT(*)
+    	FROM IKEP4_ME_MESSAGE main, IKEP4_ME_SENDBOX send, IKEP4_ME_CATEGORY cate
+        WHERE main.MESSAGE_ID = send.MESSAGE_ID
+        AND main.CATEGORY_ID = cate.CATEGORY_ID
+        AND main.IS_COMPLETE = 1
+        AND send.USER_ID = #userId#
+        <isNotEmpty property="searchWord">
+			<isEqual property="searchColumn" compareValue="receiverName">
+				AND main.MESSAGE_ID IN (SELECT ja.MESSAGE_ID 
+						                FROM IKEP4_ME_RECEIVEBOX ja, IKEP4_EV_USER jb
+						                WHERE ja.USER_ID = jb.USER_ID
+						                AND (UPPER(jb.USER_NAME) LIKE '%' || UPPER(#searchWord#) || '%' OR UPPER(jb.USER_ENGLISH_NAME) LIKE '%' || UPPER(#searchWord#) || '%') )
+			</isEqual>
+			<isEqual property="searchColumn" compareValue="contents">
+				AND	main.CONTENTS LIKE '%' || #searchWord# || '%'
+			</isEqual>
+		</isNotEmpty>
+		<isNotEmpty property="categoryId">
+			AND main.CATEGORY_ID = #categoryId#
+		</isNotEmpty>
+    </select>
+    
+    <select id="getReceiveMessageList" parameterClass="MessageSearchCondition" resultMap="result">
+    	SELECT /* [Message_SqlMap.xml] message.getReceiveMessageList */
+	       	*
+		FROM ( 
+		     SELECT ROWNUM AS RNUM, A.* FROM ( 
+		         /* START========================================= */
+		        SELECT  /*+ INDEX(rece IDX_ME_RECEIVEBOX_PK) INDEX(main IDX_ME_MESSAGE_PK) */   	
+		    	<include refid="sqlColumnList" /> 
+		    	, main.MESSAGE_ID
+		    	, main.CATEGORY_ID
+		    	, cate.CATEGORY_NAME  
+		    	, cate.CATEGORY_ENGLISH_NAME  
+		    	, rece.USER_ID
+				, RECEIVE_DATE
+				, NVL2(sb.READ_DATE,1,0) AS IS_READ
+				, sb.READ_DATE AS READ_DATE
+				, null as MESSAGE_CLASS
+				, null as RECEIVER_CHECK
+				, DECODE(rece.USER_ID,#userId#,'P','T' )as RECEIVE_TYPE
+				, DECODE(rece.USER_ID,#userId#,null
+                    ,(SELECT GROUP_NAME 
+                        FROM IKEP4_EV_GROUP sa 
+                        WHERE sa.GROUP_ID = rece.USER_ID)) as GROUP_NAME
+                , DECODE(rece.USER_ID,#userId#,null
+                    ,(SELECT GROUP_ENGLISH_NAME 
+                        FROM IKEP4_EV_GROUP sa 
+                        WHERE sa.GROUP_ID = rece.USER_ID)) as GROUP_ENGLISH_NAME
+		    	FROM IKEP4_ME_MESSAGE main, 
+                    IKEP4_ME_RECEIVEBOX rece
+                    LEFT OUTER JOIN    IKEP4_ME_MESSAGE_READ sb
+                    ON  (sb.USER_ID = #userId# AND rece.MESSAGE_ID = sb.MESSAGE_ID), IKEP4_ME_CATEGORY cate
+		        WHERE main.MESSAGE_ID = rece.MESSAGE_ID
+		        AND main.CATEGORY_ID = cate.CATEGORY_ID
+		        AND main.IS_COMPLETE = 1
+		        AND NVL(sb.IS_DELETE,0) = 0
+		        AND rece.USER_ID IN (SELECT group_id
+                                 FROM IKEP4_EV_GROUP 
+                                    START WITH GROUP_ID IN (
+                                          SELECT A.GROUP_ID 
+                                          FROM IKEP4_EV_GROUP A, IKEP4_EV_USER_GROUP B 
+                                          WHERE A.GROUP_ID = B.GROUP_ID
+                                          AND A.GROUP_TYPE_ID='G0001'
+                                          AND B.USER_ID=#userId#
+                                    )CONNECT BY PRIOR PARENT_GROUP_ID = GROUP_ID
+                                 UNION 
+                                 SELECT #userId# FROM DUAL)
+		        <isNotEmpty property="searchWord">
+					<isEqual property="searchColumn" compareValue="senderName">
+						AND main.SENDER_ID IN (SELECT USER_ID FROM IKEP4_EV_USER 
+                								WHERE UPPER(USER_NAME) LIKE '%' || UPPER(#searchWord#) || '%' OR UPPER(USER_ENGLISH_NAME) LIKE '%' || UPPER(#searchWord#) || '%')
+					</isEqual>
+					<isEqual property="searchColumn" compareValue="contents">
+						AND	main.CONTENTS LIKE '%' || #searchWord# || '%'
+					</isEqual>
+				</isNotEmpty>
+				<isNotEmpty property="categoryId">
+					AND main.CATEGORY_ID = #categoryId#
+				</isNotEmpty>
+				<isNotEmpty property="isUrgent">
+					AND main.IS_URGENT = #isUrgent#
+				</isNotEmpty>
+				<isNotEmpty property="isRead">
+					AND NVL2(sb.READ_DATE,1,0) = #isRead#
+				</isNotEmpty>
+				ORDER BY main.MESSAGE_ID DESC
+			 	/* ===========================================END  */ 
+			<![CDATA[  
+			    ) A WHERE ROWNUM <=  #endRowIndex# /* 종료  */
+			) WHERE RNUM >  #startRowIndex# /* 시작 */
+			]]> 		        
+    </select>
+    <select id="countReceiveMessageList" parameterClass="MessageSearchCondition" resultClass="int">  
+    	SELECT /* [Message_SqlMap.xml] message.countReceiveMessageList */ 
+    		COUNT(*)
+    	FROM IKEP4_ME_MESSAGE main, 
+                    IKEP4_ME_RECEIVEBOX rece
+                    LEFT OUTER JOIN    IKEP4_ME_MESSAGE_READ sb
+                    ON  (sb.USER_ID = #userId# AND rece.MESSAGE_ID = sb.MESSAGE_ID), IKEP4_ME_CATEGORY cate
+        WHERE main.MESSAGE_ID = rece.MESSAGE_ID
+        AND main.CATEGORY_ID = cate.CATEGORY_ID
+        AND main.IS_COMPLETE = 1
+        AND NVL(sb.IS_DELETE,0) = 0
+        AND rece.USER_ID IN (SELECT group_id
+                                 FROM IKEP4_EV_GROUP 
+                                    START WITH GROUP_ID IN (
+                                          SELECT A.GROUP_ID 
+                                          FROM IKEP4_EV_GROUP A, IKEP4_EV_USER_GROUP B 
+                                          WHERE A.GROUP_ID = B.GROUP_ID
+                                          AND A.GROUP_TYPE_ID='G0001'
+                                          AND B.USER_ID=#userId#
+                                    )CONNECT BY PRIOR PARENT_GROUP_ID = GROUP_ID
+                                 UNION 
+                                 SELECT #userId# FROM DUAL)
+        <isNotEmpty property="searchWord">
+			<isEqual property="searchColumn" compareValue="senderName">
+				AND main.SENDER_ID IN (SELECT USER_ID FROM IKEP4_EV_USER 
+                								WHERE UPPER(USER_NAME) LIKE '%' || UPPER(#searchWord#) || '%' OR UPPER(USER_ENGLISH_NAME) LIKE '%' || UPPER(#searchWord#) || '%')
+			</isEqual>
+			<isEqual property="searchColumn" compareValue="contents">
+				AND	main.CONTENTS LIKE '%' || #searchWord# || '%'
+			</isEqual>
+		</isNotEmpty>
+		<isNotEmpty property="categoryId">
+			AND main.CATEGORY_ID = #categoryId#
+		</isNotEmpty>
+		<isNotEmpty property="isUrgent">
+			AND main.IS_URGENT = #isUrgent#
+		</isNotEmpty>
+		<isNotEmpty property="isRead">
+			AND NVL2(sb.READ_DATE,1,0) = #isRead#
+		</isNotEmpty>
+    </select>
+    
+    <select id="getStoreMessageList" parameterClass="MessageSearchCondition" resultMap="result">
+    	SELECT /* [Message_SqlMap.xml] message.getStoreMessageList */
+	       	*
+		FROM ( 
+		     SELECT ROWNUM AS RNUM, A.* FROM ( 
+		         /* START========================================= */
+		        SELECT   
+		    	<include refid="sqlColumnList" />  
+		    	, main.MESSAGE_ID
+		    	, main.CATEGORY_ID
+		    	, cate.CATEGORY_NAME    
+		    	, cate.CATEGORY_ENGLISH_NAME 
+		    	, null as USER_ID
+				, null as RECEIVE_DATE
+				, null as IS_READ
+				, null as READ_DATE
+				, DECODE(main.SENDER_ID,stor.USER_ID,'S','R') MESSAGE_CLASS
+				, null as RECEIVER_CHECK
+				, null as RECEIVE_TYPE
+				, null as GROUP_NAME
+				, null as GROUP_ENGLISH_NAME
+		    	FROM IKEP4_ME_MESSAGE main, IKEP4_ME_STOREBOX stor, IKEP4_ME_CATEGORY cate
+		        WHERE main.MESSAGE_ID = stor.MESSAGE_ID
+		        AND main.CATEGORY_ID = cate.CATEGORY_ID
+		        AND stor.USER_ID = #userId#
+		        <isNotEmpty property="searchWord">
+					<isEqual property="searchColumn" compareValue="sendReceiverName">
+						AND	(main.MESSAGE_ID IN (SELECT ja.MESSAGE_ID 
+						                FROM IKEP4_ME_RECEIVEBOX ja, IKEP4_EV_USER jb
+						                WHERE ja.USER_ID = jb.USER_ID
+						                AND (UPPER(jb.USER_NAME) LIKE '%' || UPPER(#searchWord#) || '%' OR UPPER(jb.USER_ENGLISH_NAME) LIKE '%' || UPPER(#searchWord#) || '%') )
+							  OR main.SENDER_ID IN (SELECT USER_ID FROM IKEP4_EV_USER 
+                								WHERE UPPER(USER_NAME) LIKE '%' || UPPER(#searchWord#) || '%' OR UPPER(USER_ENGLISH_NAME) LIKE '%' || UPPER(#searchWord#) || '%') )
+					</isEqual>
+					<isEqual property="searchColumn" compareValue="contents">
+						AND	main.CONTENTS LIKE '%' || #searchWord# || '%'
+					</isEqual>
+				</isNotEmpty>
+				<isNotEmpty property="categoryId">
+					AND main.CATEGORY_ID = #categoryId#
+				</isNotEmpty>
+				ORDER BY main.MESSAGE_ID DESC
+			 	/* ===========================================END  */ 
+			<![CDATA[  
+			    ) A WHERE ROWNUM <=  #endRowIndex# /* 종료  */
+			) WHERE RNUM >  #startRowIndex# /* 시작 */
+			]]> 	
+    </select>
+    <select id="countStoreMessageList" parameterClass="MessageSearchCondition" resultClass="int">  
+    	SELECT /* [Message_SqlMap.xml] message.countStoreMessageList */ 
+    		COUNT(*)
+    	FROM IKEP4_ME_MESSAGE main, IKEP4_ME_STOREBOX stor, IKEP4_ME_CATEGORY cate
+        WHERE main.MESSAGE_ID = stor.MESSAGE_ID
+        AND main.CATEGORY_ID = cate.CATEGORY_ID
+        AND stor.USER_ID = #userId#
+        <isNotEmpty property="searchWord">
+			<isEqual property="searchColumn" compareValue="sendReceiverName">
+				AND	(main.MESSAGE_ID IN (SELECT ja.MESSAGE_ID 
+						                FROM IKEP4_ME_RECEIVEBOX ja, IKEP4_EV_USER jb
+						                WHERE ja.USER_ID = jb.USER_ID
+						                AND (UPPER(jb.USER_NAME) LIKE '%' || UPPER(#searchWord#) || '%' OR UPPER(jb.USER_ENGLISH_NAME) LIKE '%' || UPPER(#searchWord#) || '%') )
+					  OR main.SENDER_ID IN (SELECT USER_ID FROM IKEP4_EV_USER 
+                								WHERE UPPER(USER_NAME) LIKE '%' || UPPER(#searchWord#) || '%' OR UPPER(USER_ENGLISH_NAME) LIKE '%' || UPPER(#searchWord#) || '%') )
+			</isEqual>
+			<isEqual property="searchColumn" compareValue="contents">
+				AND	main.CONTENTS LIKE '%' || #searchWord# || '%'
+			</isEqual>
+		</isNotEmpty>
+		<isNotEmpty property="categoryId">
+			AND main.CATEGORY_ID = #categoryId#
+		</isNotEmpty>
+    </select>
+    
+    <select id="getGroupMessageList" parameterClass="MessageSearchCondition" resultMap="result">
+    	SELECT /* [Message_SqlMap.xml] message.getGroupMessageList */
+	       	*
+		FROM ( 
+		     SELECT ROWNUM AS RNUM, A.* FROM ( 
+		         /* START========================================= */
+		        SELECT     	
+		    	<include refid="sqlColumnList" /> 
+		    	, main.MESSAGE_ID
+                , main.CATEGORY_ID
+                , cate.CATEGORY_NAME  
+                , cate.CATEGORY_ENGLISH_NAME  
+                , rece.USER_ID
+                , RECEIVE_DATE
+                , null AS IS_READ
+                , null AS READ_DATE
+                , null AS MESSAGE_CLASS
+                , null AS RECEIVER_CHECK
+                , rece.RECEIVE_TYPE
+                , (SELECT GROUP_NAME 
+                        FROM IKEP4_EV_GROUP sa 
+                        WHERE sa.GROUP_ID = rece.USER_ID) as GROUP_NAME
+                , (SELECT GROUP_ENGLISH_NAME 
+                        FROM IKEP4_EV_GROUP sa 
+                        WHERE sa.GROUP_ID = rece.USER_ID) as GROUP_ENGLISH_NAME
+                FROM IKEP4_ME_MESSAGE main, 
+                    IKEP4_ME_RECEIVEBOX rece,
+                    IKEP4_ME_CATEGORY cate
+                WHERE main.MESSAGE_ID = rece.MESSAGE_ID
+                AND main.CATEGORY_ID = cate.CATEGORY_ID
+                AND main.IS_COMPLETE = 1
+                AND rece.RECEIVE_TYPE = 'T'                
+                AND rece.USER_ID = #groupId#
+		        <isNotEmpty property="searchWord">
+					<isEqual property="searchColumn" compareValue="senderName">
+						AND main.SENDER_ID IN (SELECT USER_ID FROM IKEP4_EV_USER 
+                								WHERE UPPER(USER_NAME) LIKE '%' || UPPER(#searchWord#) || '%' OR UPPER(USER_ENGLISH_NAME) LIKE '%' || UPPER(#searchWord#) || '%')
+					</isEqual>
+					<isEqual property="searchColumn" compareValue="contents">
+						AND	main.CONTENTS LIKE '%' || #searchWord# || '%'
+					</isEqual>
+				</isNotEmpty>
+				<isNotEmpty property="categoryId">
+					AND main.CATEGORY_ID = #categoryId#
+				</isNotEmpty>
+				<isNotEmpty property="isUrgent">
+					AND main.IS_URGENT = #isUrgent#
+				</isNotEmpty>
+				ORDER BY main.MESSAGE_ID DESC
+			 	/* ===========================================END  */ 
+			<![CDATA[  
+			    ) A WHERE ROWNUM <=  #endRowIndex# /* 종료  */
+			) WHERE RNUM >  #startRowIndex# /* 시작 */
+			]]> 		        
+    </select>
+    <select id="countGroupMessageList" parameterClass="MessageSearchCondition" resultClass="int">  
+    	SELECT /* [Message_SqlMap.xml] message.countGroupMessageList */ 
+    		COUNT(*)
+    	FROM IKEP4_ME_MESSAGE main, 
+                    IKEP4_ME_RECEIVEBOX rece
+                    LEFT OUTER JOIN    IKEP4_ME_MESSAGE_READ sb
+                    ON  (sb.USER_ID = #userId# AND rece.MESSAGE_ID = sb.MESSAGE_ID), IKEP4_ME_CATEGORY cate
+        WHERE main.MESSAGE_ID = rece.MESSAGE_ID
+        AND main.CATEGORY_ID = cate.CATEGORY_ID
+        AND main.IS_COMPLETE = 1
+        AND rece.RECEIVE_TYPE = 'T'                
+        AND rece.USER_ID = #groupId#
+        <isNotEmpty property="searchWord">
+			<isEqual property="searchColumn" compareValue="senderName">
+				AND main.SENDER_ID IN (SELECT USER_ID FROM IKEP4_EV_USER 
+                								WHERE UPPER(USER_NAME) LIKE '%' || UPPER(#searchWord#) || '%' OR UPPER(USER_ENGLISH_NAME) LIKE '%' || UPPER(#searchWord#) || '%')
+			</isEqual>
+			<isEqual property="searchColumn" compareValue="contents">
+				AND	main.CONTENTS LIKE '%' || #searchWord# || '%'
+			</isEqual>
+		</isNotEmpty>
+		<isNotEmpty property="categoryId">
+			AND main.CATEGORY_ID = #categoryId#
+		</isNotEmpty>
+		<isNotEmpty property="isUrgent">
+			AND main.IS_URGENT = #isUrgent#
+		</isNotEmpty>
+    </select>
+    
+    <insert id="create" parameterClass="Message">
+	    INSERT INTO IKEP4_ME_MESSAGE ( /* [Message_SqlMap.xml] message.create */ 
+	    	MESSAGE_ID
+		    , CATEGORY_ID
+		    , CONTENTS
+			, ATTACH_COUNT
+			, ATTACH_SIZE
+			, RECEIVER_COUNT
+			, RECEIVER_LIST
+			, IS_URGENT
+			, IS_STORED
+			, IS_COMPLETE
+			, SENDER_ID
+			, SENDER_NAME
+			, SEND_DATE
+		    ) VALUES (
+		    #messageId#,
+			#categoryId#,
+			#contents#,
+			#attachCount#,
+			#attachSize#,
+			#receiverCount#,
+			#receiverList#,
+			#isUrgent#,
+			#isStored#,
+			#isComplete#,
+			#senderId#,
+			#senderName#,
+			SYSDATE
+			)
+	</insert>
+	
+	<insert id="createSend" parameterClass="Message">
+		INSERT INTO IKEP4_ME_SENDBOX ( /* [Message_SqlMap.xml] message.createSend */
+			USER_ID, MESSAGE_ID
+			) VALUES (
+			#userId#, #messageId#
+			)
+	</insert>
+	
+	<insert id="createReceive" parameterClass="Message">
+		INSERT INTO IKEP4_ME_RECEIVEBOX ( /* [Message_SqlMap.xml] message.createReceive */
+			USER_ID, MESSAGE_ID, RECEIVE_DATE, IS_ALARMED, RECEIVE_TYPE
+			) VALUES (
+			#userId#, #messageId#, SYSDATE, 0, #receiveType#
+			)
+	</insert>
+	
+	<insert id="createStore" parameterClass="Message">
+		INSERT INTO IKEP4_ME_STOREBOX ( /* [Message_SqlMap.xml] message.createStore */
+			USER_ID, MESSAGE_ID, STORED_DATE
+			) VALUES (
+			#userId#, #messageId#, SYSDATE
+			)
+	</insert>
+	
+	<update id="updateIsComplete" parameterClass="string">
+	    UPDATE IKEP4_ME_MESSAGE /* [Message_SqlMap.xml] message.updateIsComplete */
+	    SET IS_COMPLETE = 1
+	    WHERE MESSAGE_ID = #messageId#
+	</update>
+	
+	<select id="existsIsRead" parameterClass="Message" resultClass="int">
+    	SELECT /* [Message_Admin_SqlMap.xml] messageAdmin.exists */
+	    	  COUNT(*)
+	    FROM IKEP4_ME_MESSAGE_READ
+	    WHERE USER_ID = #userId#
+	    AND MESSAGE_ID = #messageId#
+	</select> 
+	
+	<update id="insertIsRead" parameterClass="Message">
+	    INSERT INTO IKEP4_ME_MESSAGE_READ ( /* [Message_SqlMap.xml] message.insertIsRead */
+		    USER_ID, MESSAGE_ID, READ_DATE, IS_DELETE
+		    ) VALUES (
+			#userId#, #messageId#, SYSDATE, #isDelete#
+			)
+	</update>
+	
+	<delete id="physicalDelete" parameterClass="string">
+		DELETE FROM IKEP4_ME_MESSAGE /* [Message_SqlMap.xml] message.physicalDelete */
+		WHERE MESSAGE_ID = #messageId#
+	</delete>  
+	
+	<delete id="physicalDeleteSend" parameterClass="Message">
+		DELETE FROM IKEP4_ME_SENDBOX /* [Message_SqlMap.xml] message.physicalDeleteSend */
+		WHERE 1=1 
+		<isNotEmpty property="userId">
+		AND USER_ID = #userId#
+		</isNotEmpty>
+		AND MESSAGE_ID = #messageId#
+	</delete>  
+	
+	<delete id="physicalDeleteReceive" parameterClass="Message">
+		DELETE FROM IKEP4_ME_RECEIVEBOX /* [Message_SqlMap.xml] message.physicalDeleteReceive */
+		WHERE 1=1 
+		<isNotEmpty property="userId">
+		AND USER_ID = #userId#
+		</isNotEmpty>
+		AND MESSAGE_ID = #messageId#
+	</delete> 
+	
+	<update id="logicalDeleteReceive" parameterClass="Message">
+	    UPDATE IKEP4_ME_MESSAGE_READ /* [Message_SqlMap.xml] message.logicalDeleteReceive */
+	    SET IS_DELETE = 1
+	    WHERE 1=1 
+		<isNotEmpty property="userId">
+		AND USER_ID = #userId#
+		</isNotEmpty>
+		AND MESSAGE_ID = #messageId#
+	</update>
+	
+	<delete id="physicalDeleteStore" parameterClass="Message">
+		DELETE FROM IKEP4_ME_STOREBOX /* [Message_SqlMap.xml] message.physicalDeleteStore */
+		WHERE 1=1 
+		<isNotEmpty property="userId">
+		AND USER_ID = #userId#
+		</isNotEmpty>
+		AND MESSAGE_ID = #messageId#
+	</delete>	
+	
+	<select id="countReadMessage" parameterClass="string" resultClass="int">  
+    	SELECT /* [Message_SqlMap.xml] message.countReadMessage */ 
+    		COUNT(*)
+    	FROM IKEP4_ME_MESSAGE_READ 
+        WHERE MESSAGE_ID = #messageId#
+    </select>
+    
+    <select id="countNewMessage" parameterClass="string" resultClass="int">  
+    	SELECT /* [Message_SqlMap.xml] message.countNewMessage */ 
+    		COUNT(*)
+    	FROM IKEP4_ME_RECEIVEBOX main
+        LEFT OUTER JOIN    IKEP4_ME_MESSAGE_READ sub
+        ON  (sub.USER_ID = #userId# AND main.MESSAGE_ID = sub.MESSAGE_ID)
+        WHERE NVL(sub.IS_DELETE,0) = 0
+        AND sub.READ_DATE IS NULL
+        AND main.USER_ID IN (SELECT group_id
+                                 FROM IKEP4_EV_GROUP 
+                                    START WITH GROUP_ID IN (
+                                          SELECT A.GROUP_ID 
+                                          FROM IKEP4_EV_GROUP A, IKEP4_EV_USER_GROUP B 
+                                          WHERE A.GROUP_ID = B.GROUP_ID
+                                          AND A.GROUP_TYPE_ID = 'G0001'
+                                          AND B.USER_ID = #userId#
+                                    )CONNECT BY PRIOR PARENT_GROUP_ID = GROUP_ID
+                                 UNION 
+                                 SELECT #userId# FROM DUAL)
+    </select>
+    
+    <typeAlias alias="MessageReceiveList" type="com.lgcns.ikep4.support.message.model.MessageReceive" />
+    <resultMap class="com.lgcns.ikep4.support.message.model.MessageReceive" id="resultReceive">		
+		<result column="RNUM"              property="rnum"            jdbcType="DECIMAL" /> 
+		<result column="USER_ID"           property="userId"          jdbcType="VARCHAR" />
+		<result column="USER_NAME"         property="userName"        jdbcType="VARCHAR" /> 
+		<result column="USER_ENGLISH_NAME" property="userEnglishName" jdbcType="VARCHAR" /> 
+		<result column="READ_DATE"         property="readDate"        jdbcType="TIMESTAMP" /> 
+		<result column="RECODE_COUNT"      property="recodeCount"     jdbcType="DECIMAL" /> 
+	</resultMap>
+	<select id="messageReceiveList" parameterClass="java.util.Map" resultMap="resultReceive">
+		<![CDATA[
+		SELECT /* [Message_SqlMap.xml] message.messageReceiveList */ ROWNUM as RNUM
+			, USER_ID, USER_NAME, USER_ENGLISH_NAME
+			, (SELECT READ_DATE FROM IKEP4_ME_MESSAGE_READ ina WHERE A.MESSAGE_ID = ina.MESSAGE_ID AND A.USER_ID = ina.USER_ID) as READ_DATE
+			, RECODE_COUNT
+		FROM (
+			SELECT 
+				 main.USER_ID, main.MESSAGE_ID  
+				, sub.GROUP_NAME AS USER_NAME
+				, sub.GROUP_ENGLISH_NAME AS USER_ENGLISH_NAME
+				, (SELECT COUNT(*) FROM IKEP4_ME_RECEIVEBOX ins WHERE main.MESSAGE_ID = ins.MESSAGE_ID) as RECODE_COUNT 
+			FROM IKEP4_ME_RECEIVEBOX main, IKEP4_EV_GROUP sub
+			WHERE main.USER_ID = sub.GROUP_ID
+			AND main.RECEIVE_TYPE = 'T'
+			AND main.MESSAGE_ID = #messageId#
+			UNION ALL
+			SELECT
+				 main.USER_ID, main.MESSAGE_ID 
+				, sub.USER_NAME 
+				, sub.USER_ENGLISH_NAME
+				, (SELECT COUNT(*) FROM IKEP4_ME_RECEIVEBOX ins WHERE main.MESSAGE_ID = ins.MESSAGE_ID) as RECODE_COUNT 
+			FROM IKEP4_ME_RECEIVEBOX main, IKEP4_EV_USER sub 
+			WHERE main.USER_ID = sub.USER_ID 
+			AND main.RECEIVE_TYPE = 'P'
+			AND main.MESSAGE_ID = #messageId#
+		) A
+		WHERE ROWNUM <= #rowNum# 
+		]]>
+	</select>	
+	
+    <typeAlias alias="MessageAlarm" type="com.lgcns.ikep4.support.message.model.MessageAlarm" />
+    <resultMap class="com.lgcns.ikep4.support.message.model.MessageAlarm" id="resultAlarm">		
+		<result column="NEW_COUNT"   property="newCount"     jdbcType="DECIMAL" /> 
+		<result column="MESSAGE_ID"  property="messageId"    jdbcType="VARCHAR" />
+	</resultMap>
+	<select id="getNewMessageArrived" parameterClass="string" resultMap="resultAlarm">  
+    	SELECT /* [Message_SqlMap.xml] message.getNewMessageArrived */ 
+    		COUNT(*) AS NEW_COUNT, max(main.MESSAGE_ID) as MESSAGE_ID
+    	FROM IKEP4_ME_RECEIVEBOX main
+        LEFT OUTER JOIN    IKEP4_ME_MESSAGE_READ sub
+        ON  (sub.USER_ID = #userId# AND main.MESSAGE_ID = sub.MESSAGE_ID)
+        WHERE main.IS_ALARMED = 0 
+        AND NVL(sub.IS_DELETE,0) = 0
+        AND sub.READ_DATE IS NULL
+        AND main.USER_ID = #userId# 
+    </select>	
+	<update id="updateMessageAlarm" parameterClass="MessageAlarm">
+	    <![CDATA[
+	    UPDATE IKEP4_ME_RECEIVEBOX SET IS_ALARMED = 1 /* [Message_SqlMap.xml] message.updateMessageAlarm */ 
+		WHERE MESSAGE_ID IN (SELECT main.MESSAGE_ID
+					    	FROM IKEP4_ME_RECEIVEBOX main
+					        LEFT OUTER JOIN    IKEP4_ME_MESSAGE_READ sub
+					        ON  (sub.USER_ID = #userId# AND main.MESSAGE_ID = sub.MESSAGE_ID)
+					        WHERE main.IS_ALARMED = 0 
+        					AND NVL(sub.IS_DELETE,0) = 0 AND main.MESSAGE_ID <= #messageId#
+					        AND sub.READ_DATE IS NULL
+					        AND main.USER_ID = #userId# )
+		]]>
+	</update>
+</sqlMap>

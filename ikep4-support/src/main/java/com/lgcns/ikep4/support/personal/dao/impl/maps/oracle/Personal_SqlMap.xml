@@ -1,0 +1,373 @@
+<?xml version="1.0" encoding="EUC-KR"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="support.personal">
+	
+	<typeAlias alias="personal" type="com.lgcns.ikep4.support.personal.model.Personal" />
+	<typeAlias alias="personalSearchCondition" type="com.lgcns.ikep4.support.personal.model.PersonalSearchCondition"/>
+	
+	<resultMap id="personalDocumentResult" class="personal">
+		<result property="targetId" column="target_id" />
+		<result property="subId" column="sub_id" />
+		<result property="registerId" column="register_id" />
+		<result property="registerName" column="register_name" />
+		<result property="registerEnglishName" column="register_english_name" />
+		<result property="registDate" column="regist_date" />
+		<result property="module" column="module" />
+		<result property="type" column="type" />
+		<result property="title" column="title" />
+		<result property="hitCount" column="hit_count" />
+		<result property="recommendCount" column="recommend_count" />
+		<result property="linereplyCount" column="linereply_count" />
+	</resultMap>
+	
+	<resultMap id="personalFileResult" class="personal">
+		<result property="targetId" column="target_id" />
+		<result property="registerId" column="register_id" />
+		<result property="registerName" column="register_name" />
+		<result property="registerEnglishName" column="register_english_name" />
+		<result property="registDate" column="regist_date" />
+		<result property="module" column="module" />
+		<result property="type" column="type" />
+		<result property="title" column="title" />
+		<result property="hitCount" column="hit_count" />
+		<result property="recommendCount" column="recommend_count" />
+		<result property="linereplyCount" column="linereply_count" />
+		<result property="linereplyCount" column="linereply_count" />
+		<result property="linereplyCount" column="linereply_count" />
+		<result property="fileId" column="file_id" />
+		<result property="filePath" column="file_path" />
+		<result property="fileName" column="file_name" />
+		<result property="fileRealName" column="file_real_name" />
+		<result property="fileContentsType" column="file_contents_type" />
+		<result property="fileExtension" column="file_extension" />
+		<result property="fileSize" column="file_size" />
+	</resultMap>
+	
+	<resultMap id="personalCommentResult" class="personal">
+		<result property="targetId" column="target_id" />
+		<result property="subId" column="sub_id" />
+		<result property="registerId" column="register_id" />
+		<result property="registerName" column="register_name" />
+		<result property="registerEnglishName" column="register_english_name" />
+		<result property="registDate" column="regist_date" />
+		<result property="module" column="module" />
+		<result property="type" column="type" />
+		<result property="title" column="title" />
+		<result property="hitCount" column="hit_count" />
+		<result property="recommendCount" column="recommend_count" />
+		<result property="linereplyId" column="linereply_id" />
+		<result property="contents" column="contents" />
+		<result property="linereplyRegisterId" column="linereply_register_id" />
+		<result property="linereplyRegisterName" column="linereply_register_name" />
+		<result property="linereplyRegisterEnglishName" column="linereply_english_name" />
+		<result property="linereplyRegistDate" column="linereply_regist_date" />
+	</resultMap>
+	
+	
+  	
+  	<select id="listBySearchConditionForDocument" parameterClass="personalSearchCondition" resultMap="personalDocumentResult">  
+  		<![CDATA[
+		SELECT			/* [Personal_SqlMap.xml] listBySearchConditionForDocument */
+						*
+		FROM 			(
+	     				SELECT			 
+	     					ROWNUM AS RNUM, AA.* 
+	     				FROM 			(
+					         			SELECT			B.ITEM_ID TARGET_ID,
+					         							B.SUB_ID, 
+					         							B.MODULE,
+					         							B.TYPE,
+														B.TITLE,
+														B.HIT_COUNT,
+														B.RECOMMEND_COUNT,
+														B.LINEREPLY_COUNT,
+														B.REGISTER_ID, 
+														B.REGISTER_NAME, 
+														C.USER_ENGLISH_NAME REGISTER_ENGLISH_NAME, 
+														B.REGIST_DATE 
+										FROM   			IKEP4_VW_DOCUMENT B
+											INNER JOIN		IKEP4_EV_USER C
+					         					ON				B.REGISTER_ID = C.USER_ID
+							 			WHERE  			B.REGISTER_ID  = #registerId#
+		]]>
+										<isNotEmpty property="searchWord">
+											<isEqual property="searchColumn" compareValue="title">
+												AND	UPPER(B.TITLE) LIKE UPPER('%' || #searchWord# || '%')
+											</isEqual>
+										</isNotEmpty>
+										<isNotEmpty property="moduleCodeList">
+								 			<iterate property="moduleCodeList" prepend="AND B.MODULE IN" open="(" close=")" conjunction="," >  
+												#moduleCodeList[]#   
+											</iterate>  
+										</isNotEmpty>
+										ORDER BY B.REGIST_DATE DESC
+		<![CDATA[
+	    								) AA
+	    				WHERE 			ROWNUM <= #endRowIndex#		 
+						)
+		WHERE 			RNUM > #startRowIndex#
+		]]>
+  	</select>   
+  	
+  	
+  	<select id="countBySearchConditionForDocument" parameterClass="personalSearchCondition" resultClass="int">  
+  		<![CDATA[
+		SELECT 			/* [Personal_SqlMap.xml] countBySearchConditionForDocument */ 
+           				COUNT(*)
+										FROM   			IKEP4_VW_DOCUMENT B
+											INNER JOIN		IKEP4_EV_USER C
+					         					ON				B.REGISTER_ID = C.USER_ID
+							 			WHERE  			B.REGISTER_ID  = #registerId#
+		]]>
+										<isNotEmpty property="searchWord">
+											<isEqual property="searchColumn" compareValue="title">
+												AND	UPPER(B.TITLE) LIKE UPPER('%' || #searchWord# || '%')
+											</isEqual>
+										</isNotEmpty>
+										<isNotEmpty property="moduleCodeList">
+											<iterate property="moduleCodeList" prepend="AND B.MODULE IN" open="(" close=")" conjunction="," >  
+												#moduleCodeList[]#   
+											</iterate>
+										</isNotEmpty>
+  	</select> 
+  	
+  	<select id="listBySearchConditionForFile" parameterClass="personalSearchCondition" resultMap="personalFileResult">  
+  		<![CDATA[
+		SELECT			/* [Personal_SqlMap.xml] listBySearchConditionForFile */
+						*
+		FROM 			(
+	     				SELECT			 
+	     					ROWNUM AS RNUM, AA.* 
+	     				FROM 			(
+					         			SELECT			B.ITEM_ID TARGET_ID,
+					         							B.MODULE,
+					         							B.TYPE,
+														B.TITLE,
+														B.HIT_COUNT,
+														B.RECOMMEND_COUNT,
+														B.LINEREPLY_COUNT,
+														B.REGISTER_ID, 
+														B.REGISTER_NAME, 
+														D.USER_ENGLISH_NAME REGISTER_ENGLISH_NAME, 
+														B.REGIST_DATE,
+														A.FILE_ID, 
+														A.FILE_PATH,
+														A.FILE_NAME,
+														A.FILE_REAL_NAME, 
+														A.FILE_CONTENTS_TYPE, 
+														UPPER(A.FILE_EXTENSION) FILE_EXTENSION, 
+														A.FILE_SIZE 
+										FROM   			IKEP4_VW_DOCUMENT B
+					         				INNER JOIN		IKEP4_DM_FILE_LINK C 
+					         					ON				B.ITEM_ID = C.ITEM_ID
+					         				INNER JOIN		IKEP4_DM_FILE A
+					         					ON				A.FILE_ID = C.FILE_ID
+					         				INNER JOIN		IKEP4_EV_USER D
+					         					ON				B.REGISTER_ID = D.USER_ID
+					         			WHERE  			A.REGISTER_ID  = #registerId#
+		]]>
+										<isNotEmpty property="searchWord">
+											<isEqual property="searchColumn" compareValue="title">
+												AND	UPPER(B.TITLE) LIKE UPPER('%' || #searchWord# || '%')
+											</isEqual>
+										</isNotEmpty>
+										<isNotEmpty property="moduleCodeList">
+								 			<iterate property="moduleCodeList" prepend="AND B.MODULE IN" open="(" close=")" conjunction="," >  
+												#moduleCodeList[]#   
+											</iterate>  
+										</isNotEmpty>
+										<isNotEmpty property="fileType">
+							    			<isEqual property="fileType" compareValue="image">
+							    				AND UPPER(A.FILE_EXTENSION) IN ('JPG','GIF','PNG','JPEG','BMP')
+							    			</isEqual>
+							    			<isEqual property="fileType" compareValue="video">
+							    				AND UPPER(A.FILE_EXTENSION) IN ('AVI','MOV','MPEG','WMV','ASF','MP4','MP3')
+							    			</isEqual>
+							    			<isEqual property="fileType" compareValue="file">
+							    				AND UPPER(A.FILE_EXTENSION) NOT IN ('JPG','GIF','PNG','JPEG','BMP','AVI','MOV','MPEG','WMV','ASF','MP4','MP3')
+							    			</isEqual>
+							    		</isNotEmpty>
+										ORDER BY B.REGIST_DATE DESC
+		<![CDATA[
+	    								) AA
+	    				WHERE 			ROWNUM <= #endRowIndex#		 
+						)
+		WHERE 			RNUM > #startRowIndex#
+		]]>
+  	</select>   
+  	
+  	
+  	<select id="countBySearchConditionForFile" parameterClass="personalSearchCondition" resultClass="int">  
+  		<![CDATA[
+		SELECT 			/* [Personal_SqlMap.xml] countBySearchConditionForFile */ 
+           				COUNT(*)
+										FROM   			IKEP4_VW_DOCUMENT B
+					         				INNER JOIN		IKEP4_DM_FILE_LINK C 
+					         					ON				B.ITEM_ID = C.ITEM_ID
+					         				INNER JOIN		IKEP4_DM_FILE A
+					         					ON				A.FILE_ID = C.FILE_ID
+					         				INNER JOIN		IKEP4_EV_USER D
+					         					ON				B.REGISTER_ID = D.USER_ID
+					         			WHERE  			A.REGISTER_ID  = #registerId#
+		]]>
+										<isNotEmpty property="searchWord">
+											<isEqual property="searchColumn" compareValue="title">
+												AND	UPPER(B.TITLE) LIKE UPPER('%' || #searchWord# || '%')
+											</isEqual>
+										</isNotEmpty>
+										<isNotEmpty property="moduleCodeList">
+								 			<iterate property="moduleCodeList" prepend="AND B.MODULE IN" open="(" close=")" conjunction="," >  
+												#moduleCodeList[]#   
+											</iterate>  
+										</isNotEmpty>
+										<isNotEmpty property="fileType">
+							    			<isEqual property="fileType" compareValue="image">
+							    				AND UPPER(A.FILE_EXTENSION) IN ('JPG','GIF','PNG','JPEG','BMP')
+							    			</isEqual>
+							    			<isEqual property="fileType" compareValue="video">
+							    				AND UPPER(A.FILE_EXTENSION) IN ('AVI','MOV','MPEG','WMV','ASF','MP4','MP3')
+							    			</isEqual>
+							    			<isEqual property="fileType" compareValue="file">
+							    				AND UPPER(A.FILE_EXTENSION) NOT IN ('JPG','GIF','PNG','JPEG','BMP','AVI','MOV','MPEG','WMV','ASF','MP4','MP3')
+							    			</isEqual>
+							    		</isNotEmpty>
+  	</select> 
+  	
+  	<select id="listBySearchConditionForMyGallery" parameterClass="personalSearchCondition" resultMap="personalFileResult">  
+  		<![CDATA[
+			SELECT			/* [Personal_SqlMap.xml] listBySearchConditionForMyGallery */
+				*
+			FROM 			(
+   				SELECT			 
+   					ROWNUM AS RNUM, AA.* 
+   					FROM 	(
+								SELECT				
+									B.ITEM_ID TARGET_ID,
+				     			'' MODULE,
+				     			C.ITEM_TYPE_CODE TYPE,
+									B.TITLE,
+									B.HIT_COUNT,
+									0 RECOMMEND_COUNT,
+									B.LINEREPLY_COUNT,
+									B.REGISTER_ID, 
+									B.REGISTER_NAME, 
+									D.USER_ENGLISH_NAME REGISTER_ENGLISH_NAME, 
+									B.REGIST_DATE,
+									A.FILE_ID, 
+									A.FILE_PATH,
+									A.FILE_NAME,
+									A.FILE_REAL_NAME, 
+									A.FILE_CONTENTS_TYPE, 
+									UPPER(A.FILE_EXTENSION) FILE_EXTENSION, 
+									A.FILE_SIZE 			
+								FROM  
+									IKEP4_PF_BD_ITEM B
+									INNER JOIN IKEP4_DM_FILE_LINK C ON B.ITEM_ID = C.ITEM_ID
+									INNER JOIN IKEP4_DM_FILE A ON ( A.FILE_ID = C.FILE_ID AND A.EDITOR_ATTACH=0
+					    				AND UPPER(A.FILE_EXTENSION) IN ('JPG','GIF','PNG','JPEG','BMP') )
+									INNER JOIN IKEP4_EV_USER D ON B.REGISTER_ID = D.USER_ID
+								WHERE
+									B.REGISTER_ID  = #registerId#
+									AND B.ITEM_DELETE=0
+		]]>
+				<isNotEmpty property="searchWord">
+					<isEqual property="searchColumn" compareValue="title">
+						AND	UPPER(B.TITLE) LIKE UPPER('%' || #searchWord# || '%')
+					</isEqual>
+				</isNotEmpty>
+						ORDER BY B.REGIST_DATE DESC
+		<![CDATA[
+	    				) AA
+	    			WHERE 			ROWNUM <= #endRowIndex#		 
+					)
+				WHERE 			RNUM > #startRowIndex#
+		]]>
+  	</select>   
+  	
+  	<!-- ANSI -->
+  	<select id="countBySearchConditionForMyGallery" parameterClass="personalSearchCondition" resultClass="int">  
+  		<![CDATA[
+			SELECT 			/* [Personal_SqlMap.xml] countBySearchConditionForMyGallery */ 
+	        	COUNT(*)
+			FROM
+				IKEP4_PF_BD_ITEM B
+	      		INNER JOIN IKEP4_DM_FILE_LINK C ON B.ITEM_ID = C.ITEM_ID
+	      		INNER JOIN IKEP4_DM_FILE A ON A.FILE_ID = C.FILE_ID AND A.EDITOR_ATTACH=0
+	      		INNER JOIN IKEP4_EV_USER D ON B.REGISTER_ID = D.USER_ID
+			WHERE 
+				B.REGISTER_ID  = #registerId#
+				AND B.ITEM_DELETE=0
+			]]>
+			<isNotEmpty property="searchWord">
+				<isEqual property="searchColumn" compareValue="title">
+					AND	UPPER(B.TITLE) LIKE UPPER('%' || #searchWord# || '%')
+				</isEqual>
+			</isNotEmpty>
+			<isNotEmpty property="fileType">
+	   			<isEqual property="fileType" compareValue="image">
+	   				AND UPPER(A.FILE_EXTENSION) IN ('JPG','GIF','PNG','JPEG','BMP')
+	   			</isEqual>
+	   		</isNotEmpty>
+	  	</select>
+  	
+  	<select id="listBySearchConditionForComment" parameterClass="personalSearchCondition" resultMap="personalCommentResult">  
+		SELECT			/* [Personal_SqlMap.xml] listBySearchConditionForComment */
+						*
+		FROM 			(
+	     				SELECT			 
+	     					ROWNUM AS RNUM, AA.* 
+	     				FROM 			(
+					         			SELECT			B.ITEM_ID TARGET_ID,
+					         							B.SUB_ID, 
+					         							B.MODULE,
+					         							B.TYPE,
+														B.TITLE,
+														B.HIT_COUNT,
+														B.RECOMMEND_COUNT,
+														B.LINEREPLY_COUNT,
+														B.REGISTER_ID, 
+														B.REGISTER_NAME, 
+														C.USER_ENGLISH_NAME REGISTER_ENGLISH_NAME, 
+														B.REGIST_DATE, 
+														B.LINEREPLY_ID,
+													    B.CONTENTS,
+													    B.LINEREPLY_REGISTER_ID,
+													    B.LINEREPLY_REGISTER_NAME,
+													    D.USER_ENGLISH_NAME LINEREPLY_ENGLISH_NAME, 
+													    B.LINEREPLY_REGIST_DATE
+										FROM IKEP4_VW_COMMENT B
+											INNER JOIN		IKEP4_EV_USER C
+					         					ON				B.REGISTER_ID = C.USER_ID
+					         				INNER JOIN		IKEP4_EV_USER D
+					         					ON				B.LINEREPLY_REGISTER_ID = D.USER_ID
+							 			WHERE 1 = 1
+							 			<isNotEmpty property="commentType">
+							    			<isEqual property="commentType" compareValue="comment">
+							    				AND B.LINEREPLY_REGISTER_ID  = #registerId#
+							    			</isEqual>
+							    			<isEqual property="commentType" compareValue="feedback">
+							    				AND B.REGISTER_ID  = #registerId#
+							    			</isEqual>
+							    		</isNotEmpty>
+										<isNotEmpty property="searchWord">
+											<isEqual property="searchColumn" compareValue="title">
+												AND	UPPER(B.CONTENTS) LIKE UPPER('%' || #searchWord# || '%')
+											</isEqual>
+										</isNotEmpty>
+										<isNotEmpty property="moduleCodeList">
+								 			<iterate property="moduleCodeList" prepend="AND B.MODULE IN" open="(" close=")" conjunction="," >  
+												#moduleCodeList[]#   
+											</iterate>  
+										</isNotEmpty>
+										ORDER BY B.LINEREPLY_REGIST_DATE DESC
+		<![CDATA[
+	    								) AA
+	    				WHERE 			ROWNUM <= #endRowIndex#		 
+						)
+		WHERE 			RNUM > #startRowIndex#
+		]]>
+  	</select>   
+
+</sqlMap>
+

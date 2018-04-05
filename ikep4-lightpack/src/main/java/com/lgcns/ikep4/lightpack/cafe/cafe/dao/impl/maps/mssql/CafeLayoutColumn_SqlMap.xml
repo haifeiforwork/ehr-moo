@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="lightpack.cafe.cafe.dao.CafeLayoutColumn">
+
+	<typeAlias alias="CafeLayoutColumn" type="com.lgcns.ikep4.lightpack.cafe.cafe.model.CafeLayoutColumn"/>
+  
+	<!-- IKEP4_AD_ADDRGROUP 테이블 조회 결과 -->
+	<resultMap id="resultCafeLayoutColumn" class="CafeLayoutColumn">
+		<result property="layoutId" column="LAYOUT_ID" columnIndex="1"/>
+		<result property="colIndex" column="COL_INDEX" columnIndex="2"/>
+		<result property="width" column="WIDTH" columnIndex="3"/>
+		<result property="isFixed" column="IS_FIXED" columnIndex="4"/>
+	</resultMap>
+
+	<sql id="sqlColumnList"> 
+	    LAYOUT_ID, 
+	    COL_INDEX, 
+	    WIDTH,
+	    IS_FIXED
+	</sql>  
+    
+    <!-- ANSI -->
+	<select id="get" parameterClass="CafeLayoutColumn" resultMap="resultCafeLayoutColumn"> 
+		SELECT 
+			/* [CafeLayoutColumn_SqlMap.xml] lightpack.cafe.cafe.dao.CafeLayoutColumn.get */
+			<include refid="lightpack.cafe.cafe.dao.CafeLayoutColumn.sqlColumnList" /> 
+		FROM  IKEP4_CF_LAYOUT_COLUMN
+    	WHERE LAYOUT_ID = #layoutId# 
+    	AND   COL_INDEX = #colIndex# 
+	</select>
+  	
+  	<!-- ANSI -->
+	<select id="exists" parameterClass="CafeLayoutColumn" resultClass="int"> 
+		SELECT /* [CafeLayoutColumn_SqlMap.xml] lightpack.cafe.cafe.dao.CafeLayoutColumn.exists */
+			COUNT(*)
+		FROM  IKEP4_CF_LAYOUT_COLUMN
+		WHERE LAYOUT_ID = #layoutId# 
+    	AND   COL_INDEX = #colIndex#  
+	</select> 
+  	
+  	<!-- ANSI -->
+	<select id="listByLayoutId" parameterClass="java.lang.String" resultMap="resultCafeLayoutColumn">  
+		SELECT 
+			/* [CafeLayoutColumn_SqlMap.xml] lightpack.cafe.cafe.dao.CafeLayoutColumn.listByBlogId */ 
+			<include refid="lightpack.cafe.cafe.dao.CafeLayoutColumn.sqlColumnList" /> 
+		FROM   IKEP4_CF_LAYOUT_COLUMN 
+		WHERE  LAYOUT_ID = #layoutId# 
+		ORDER BY COL_INDEX
+	</select>   
+	
+	<!-- ANSI -->
+	<select id="countByLayoutId" parameterClass="java.lang.String" resultClass="int">  
+		SELECT /* [CafeLayoutColumn_SqlMap.xml] lightpack.cafe.cafe.dao.CafeLayoutColumn.countBlogId */ 
+           COUNT(*)
+		FROM   IKEP4_CF_LAYOUT_COLUMN 
+		WHERE  LAYOUT_ID = #layoutId# 
+		ORDER BY COL_INDEX
+  	</select>
+  	
+  	<!-- ANSI -->
+  	<select id="getFixedLayoutColumn" parameterClass="java.lang.String" resultClass="int"> 
+		SELECT
+			/* [CafeLayoutColumn_SqlMap.xml] lightpack.cafe.cafe.dao.CafeLayoutColumn.getMaxSortOrder */ 
+			COL_INDEX
+		FROM IKEP4_CF_LAYOUT_COLUMN 
+		WHERE  LAYOUT_ID = #layoutId# 
+		AND IS_FIXED = '1'
+	</select>
+ 	
+ 	<!-- ANSI -->
+	<insert id="create" parameterClass="CafeLayoutColumn"> 
+		INSERT INTO IKEP4_CF_LAYOUT_COLUMN ( 
+			/* [CafeLayoutColumn_SqlMap.xml] lightpack.cafe.cafe.dao.CafeLayoutColumn.create */
+			<include refid="lightpack.cafe.cafe.dao.CafeLayoutColumn.sqlColumnList" />
+		) VALUES (
+			#layoutId#, 
+			#colIndex#, 
+			#width#, 
+			#isFixed#
+    	) 
+	</insert>
+	
+	<!-- ANSI -->
+	<update id="update" parameterClass="CafeLayoutColumn"> 
+		UPDATE IKEP4_CF_LAYOUT_COLUMN 
+			/* [CafeLayoutColumn_SqlMap.xml] lightpack.cafe.cafe.dao.CafeLayoutColumn.update */
+    	SET WIDTH     	= #width#,
+          	IS_FIXED  	= #isFixed#
+		WHERE LAYOUT_ID = #layoutId#
+		AND   COL_INDEX = #colIndex#
+	</update>
+ 	
+ 	<!-- ANSI -->
+	<delete id="physicalDelete" parameterClass="CafeLayoutColumn"> 
+		DELETE FROM IKEP4_CF_LAYOUT_COLUMN 
+			/* [CafeLayoutColumn_SqlMap.xml] lightpack.cafe.cafe.dao.CafeLayoutColumn.physicalDelete */
+		WHERE LAYOUT_ID = #layoutId#
+		AND   COL_INDEX = #colIndex#
+	</delete>  
+	  
+</sqlMap> 

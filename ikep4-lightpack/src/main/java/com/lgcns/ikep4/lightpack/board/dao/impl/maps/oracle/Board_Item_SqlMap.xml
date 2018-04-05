@@ -1,0 +1,492 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="lightpack.board.dao.boardItem">
+  <typeAlias alias="BoardItem"                type="com.lgcns.ikep4.lightpack.board.model.BoardItem"/>
+  <typeAlias alias="BoardItemSearchCondition" type="com.lgcns.ikep4.lightpack.board.search.BoardItemSearchCondition"/>
+   
+  <resultMap id="boardItemMinResult" class="com.lgcns.ikep4.lightpack.board.model.BoardItem" >
+    <result column="ITEM_ID"           property="itemId"               jdbcType="VARCHAR" />
+    <result column="BOARD_ID"          property="boardId"              jdbcType="VARCHAR" />
+    <result column="TITLE"             property="title"                jdbcType="VARCHAR" /> 
+    <result column="START_DATE"        property="startDate"            jdbcType="TIMESTAMP" />
+    <result column="END_DATE"          property="endDate"              jdbcType="TIMESTAMP" />
+    <result column="ITEM_DELETE"       property="itemDelete"           jdbcType="DECIMAL" /> 
+  </resultMap>  
+  <resultMap id="boardItemResult" class="com.lgcns.ikep4.lightpack.board.model.BoardItem" >
+    <result column="ITEM_ID"           property="itemId"               jdbcType="VARCHAR" />
+    <result column="BOARD_ID"          property="boardId"              jdbcType="VARCHAR" />
+    <result column="ITEM_PARENT_ID"    property="itemParentId"         jdbcType="VARCHAR" />
+    <result column="ITEM_GROUP_ID"     property="itemGroupId"          jdbcType="VARCHAR" />
+    <result column="STEP"              property="step"                 jdbcType="DECIMAL" />
+    <result column="INDENTATION"       property="indentation"          jdbcType="DECIMAL" />
+    <result column="ITEM_SEQ_ID"       property="itemSeqId"            jdbcType="VARCHAR" /> 
+    <result column="ITEM_DISPLAY"      property="itemDisplay"          jdbcType="DECIMAL" />
+    <result column="TITLE"             property="title"                jdbcType="VARCHAR" />
+    <result column="HIT_COUNT"         property="hitCount"             jdbcType="DECIMAL" />
+    <result column="RECOMMEND_COUNT"   property="recommendCount"       jdbcType="DECIMAL" />
+    <result column="REPLY_COUNT"       property="replyCount"           jdbcType="DECIMAL" />
+    <result column="LINEREPLY_COUNT"   property="linereplyCount"       jdbcType="DECIMAL" />
+    <result column="ATTACH_FILE_COUNT" property="attachFileCount"      jdbcType="DECIMAL" />
+    <result column="START_DATE"        property="startDate"            jdbcType="TIMESTAMP" />
+    <result column="END_DATE"          property="endDate"              jdbcType="TIMESTAMP" />
+    <result column="ITEM_DELETE"       property="itemDelete"           jdbcType="DECIMAL" />
+    <result column="IMAGE_FILE_ID"     property="imageFileId"          jdbcType="VARCHAR" />
+    <result column="CONTENTS"          property="contents"             jdbcType="CLOB" />
+    <result column="REGISTER_ID"       property="registerId"           jdbcType="VARCHAR" />
+    <result column="REGISTER_NAME"     property="registerName"         jdbcType="VARCHAR" />
+    <result column="REGIST_DATE"       property="registDate"           jdbcType="TIMESTAMP" />
+    <result column="UPDATER_ID"        property="updaterId"            jdbcType="VARCHAR" />
+    <result column="UPDATER_NAME"      property="updaterName"          jdbcType="VARCHAR" />
+    <result column="UPDATE_DATE"       property="updateDate"           jdbcType="TIMESTAMP" />  
+  </resultMap> 
+  <resultMap id="boardItemResultExtend" extends="boardItemResult"  class="com.lgcns.ikep4.lightpack.board.model.BoardItem" > 
+    <result column="JOB_RANK_NAME"          property="user.jobRankName"         jdbcType="VARCHAR" />
+    <result column="TEAM_NAME"              property="user.teamName"            jdbcType="VARCHAR" />
+    <result column="JOB_DUTY_NAME"          property="user.jobDutyName"         jdbcType="VARCHAR" />
+    <result column="JOB_POSITION_NAME"      property="user.jobPositionName"     jdbcType="VARCHAR" />
+    <result column="JOB_TITLE_NAME"         property="user.jobTitleName"        jdbcType="VARCHAR" />  
+    <result column="PICTURE_ID"             property="user.pictureId"           jdbcType="VARCHAR" />   
+    <result column="PROFILE_PICTURE_ID"     property="user.profilePictureId"    jdbcType="VARCHAR" />  
+	<result column="USER_NAME"              property="user.userName"            jdbcType="VARCHAR" />
+	<result column="USER_ENGLISH_NAME"      property="user.userEnglishName"     jdbcType="VARCHAR" />
+	<result column="JOB_TITLE_ENGLISH_NAME" property="user.jobTitleEnglishName" jdbcType="VARCHAR" />
+	<result column="TEAM_ENGLISH_NAME"      property="user.teamEnglishName"     jdbcType="VARCHAR" /> 
+  </resultMap> 
+  <sql id="sqlMinColumnList"> 
+    ITEM_ID, 
+    BOARD_ID, 
+    TITLE,
+    START_DATE, 
+    END_DATE, 
+    ITEM_DELETE,
+    IMAGE_FILE_ID
+  </sql>  
+  <sql id="sqlColumnList"> 
+    ITEM_ID, 
+    BOARD_ID, 
+    ITEM_PARENT_ID, 
+    ITEM_GROUP_ID, 
+    STEP, 
+    INDENTATION, 
+    ITEM_SEQ_ID,  
+    ITEM_DISPLAY, 
+    TITLE,
+    HIT_COUNT, 
+    RECOMMEND_COUNT, 
+    REPLY_COUNT, 
+    LINEREPLY_COUNT, 
+    ATTACH_FILE_COUNT, 
+    START_DATE, 
+    END_DATE, 
+    ITEM_DELETE,
+    IMAGE_FILE_ID, 
+    CONTENTS,
+    REGISTER_ID, 
+    REGISTER_NAME, 
+    REGIST_DATE, 
+    UPDATER_ID, 
+    UPDATER_NAME, 
+    UPDATE_DATE 
+  </sql>  
+  <sql id="sqlExtendColumnList"> 
+    item.ITEM_ID           AS ITEM_ID,           
+    item.BOARD_ID          AS BOARD_ID,          
+    item.ITEM_PARENT_ID    AS ITEM_PARENT_ID,    
+    item.ITEM_GROUP_ID     AS ITEM_GROUP_ID,     
+    item.STEP              AS STEP,              
+    item.INDENTATION       AS INDENTATION,       
+    item.ITEM_SEQ_ID       AS ITEM_SEQ_ID,       
+    item.ITEM_DISPLAY      AS ITEM_DISPLAY,      
+    item.TITLE             AS TITLE,             
+    item.HIT_COUNT         AS HIT_COUNT,         
+    item.RECOMMEND_COUNT   AS RECOMMEND_COUNT,   
+    item.REPLY_COUNT       AS REPLY_COUNT,       
+    item.LINEREPLY_COUNT   AS LINEREPLY_COUNT,   
+    item.ATTACH_FILE_COUNT AS ATTACH_FILE_COUNT, 
+    item.START_DATE        AS START_DATE,        
+    item.END_DATE          AS END_DATE,          
+    item.ITEM_DELETE       AS ITEM_DELETE,
+    item.IMAGE_FILE_ID     AS IMAGE_FILE_ID,          
+    item.CONTENTS          AS CONTENTS,          
+    item.REGISTER_ID       AS REGISTER_ID,       
+    item.REGISTER_NAME     AS REGISTER_NAME,     
+    item.REGIST_DATE       AS REGIST_DATE,       
+    item.UPDATER_ID        AS UPDATER_ID,        
+    item.UPDATER_NAME      AS UPDATER_NAME,      
+    item.UPDATE_DATE       AS UPDATE_DATE,  
+    usr.TEAM_NAME          AS TEAM_NAME,  
+    usr.PICTURE_ID         AS PICTURE_ID, 
+    usr.PROFILE_PICTURE_ID AS PROFILE_PICTURE_ID,     
+	(SELECT JOB_RANK_NAME FROM IKEP4_EV_JOB_RANK WHERE IKEP4_EV_JOB_RANK.JOB_RANK_CODE = usr.JOB_RANK_CODE) AS JOB_RANK_NAME,
+	(SELECT JOB_DUTY_NAME FROM IKEP4_EV_JOB_DUTY WHERE IKEP4_EV_JOB_DUTY.JOB_DUTY_CODE = usr.JOB_DUTY_CODE) AS JOB_DUTY_NAME,
+	(SELECT JOB_POSITION_NAME FROM IKEP4_EV_JOB_POSITION WHERE IKEP4_EV_JOB_POSITION.JOB_POSITION_CODE = usr.JOB_POSITION_CODE) AS JOB_POSITION_NAME,
+	(SELECT JOB_TITLE_NAME FROM IKEP4_EV_JOB_TITLE WHERE IKEP4_EV_JOB_TITLE.JOB_TITLE_CODE = usr.JOB_TITLE_CODE) AS JOB_TITLE_NAME, 
+    usr.USER_NAME  AS USER_NAME,
+    usr.USER_ENGLISH_NAME  AS USER_ENGLISH_NAME,
+    usr.TEAM_ENGLISH_NAME  AS TEAM_ENGLISH_NAME,  
+    (SELECT JOB_TITLE_ENGLISH_NAME FROM IKEP4_EV_JOB_TITLE WHERE IKEP4_EV_JOB_TITLE.JOB_TITLE_CODE = usr.JOB_TITLE_CODE) AS JOB_TITLE_ENGLISH_NAME   
+  </sql>  
+  
+  
+  <select id="listRecentAllBoardItem" parameterClass="map" resultMap="boardItemResultExtend">
+    SELECT  /* [BoardItem_SqlMap.xml] boardItem.listRecentAllBoardItem */ *
+    FROM (
+     SELECT
+     	   <include refid="lightpack.board.dao.boardItem.sqlExtendColumnList" /> 
+	 FROM  IKEP4_BD_ITEM item INNER JOIN IKEP4_EV_USER usr
+	 ON    item.REGISTER_ID = usr.USER_ID  
+     <![CDATA[   
+     WHERE item.ITEM_DELETE = 0
+     AND SYSDATE BETWEEN item.START_DATE AND item.END_DATE  
+     ORDER BY item.START_DATE DESC, item.REGIST_DATE DESC
+    ) 
+    WHERE ROWNUM <= #count# 
+    ]]> 
+  </select>  
+  <select id="listRecentBoardItem" parameterClass="map" resultMap="boardItemResultExtend">
+    SELECT  /* [BoardItem_SqlMap.xml] boardItem.listRecentBoardItem */ *
+    FROM (
+     SELECT
+     	/*+ USE_NL(item usr) INDEX(usr IDX_EV_USER_PK)  */		
+     	   <include refid="lightpack.board.dao.boardItem.sqlExtendColumnList" /> 
+	 FROM  IKEP4_BD_ITEM item INNER JOIN IKEP4_EV_USER usr
+	 ON    item.REGISTER_ID = usr.USER_ID  
+     <![CDATA[  
+     WHERE  item.BOARD_ID = #boardId#
+     AND    item.ITEM_DELETE = 0
+     AND     SYSDATE BETWEEN item.START_DATE AND item.END_DATE     
+     ORDER BY item.START_DATE DESC, item.REGIST_DATE DESC
+    )
+    WHERE ROWNUM <= #count#
+    ]]> 
+  </select>  
+  <select id="listBatchDeletePassedBoardItem" parameterClass="int" resultMap="boardItemMinResult">
+    SELECT /* [BoardItem_SqlMap.xml] boardItem.batchRemoveItemList */
+    	   <include refid="lightpack.board.dao.boardItem.sqlMinColumnList" /> 
+    FROM   IKEP4_BD_ITEM 
+    <![CDATA[  
+    WHERE  ITEM_ID = ITEM_GROUP_ID
+    AND    END_DATE < SYSDATE + 1
+    AND    ROWNUM <= #getCount#  
+    ]]> 
+  </select>  
+  <select id="listBatchDeleteStatusBoardItem" parameterClass="int" resultMap="boardItemMinResult">
+    SELECT /* [BoardItem_SqlMap.xml] boardItem.batchRemoveItemList */
+    	   <include refid="lightpack.board.dao.boardItem.sqlMinColumnList" /> 
+    FROM   IKEP4_BD_ITEM 
+    <![CDATA[  
+    WHERE  ITEM_DELETE = 2 
+    ]]> 
+  </select>  
+  <select id="get" parameterClass="string" resultMap="boardItemResultExtend"> 
+    SELECT /* [BoardItem_SqlMap.xml] boardItem.get */
+          <include refid="lightpack.board.dao.boardItem.sqlExtendColumnList" /> 
+	FROM  IKEP4_BD_ITEM item INNER JOIN IKEP4_EV_USER usr
+	ON    item.REGISTER_ID = usr.USER_ID
+    WHERE item.ITEM_ID = #itemId# 
+  </select>
+  
+  <select id="listByItemIdArray" parameterClass="list" resultMap="boardItemResultExtend"> 
+    SELECT /* [BoardItem_SqlMap.xml] boardItem.get */
+          <include refid="lightpack.board.dao.boardItem.sqlExtendColumnList" /> 
+	FROM  IKEP4_BD_ITEM item INNER JOIN IKEP4_EV_USER usr
+	ON    item.REGISTER_ID = usr.USER_ID    
+    WHERE item.ITEM_ID IN (<iterate conjunction=","> #boardItemIdArray[]# </iterate>) 
+  </select>
+  
+  <select id="exists" parameterClass="string" resultClass="int"> 
+    SELECT /* [BoardItem_SqlMap.xml] boardItem.exists */
+    	  COUNT(*)
+    FROM  IKEP4_BD_ITEM item INNER JOIN IKEP4_EV_USER usr
+    ON    item.REGISTER_ID = usr.USER_ID   
+    WHERE item.ITEM_ID = #itemId# 
+  </select> 
+  
+  <select id="listReplayItemThreadByItemId" parameterClass="String" resultMap="boardItemResultExtend">    
+	SELECT   /* [BoardItem_SqlMap.xml] boardItem.listThreadByItemId */  
+	 <include refid="lightpack.board.dao.boardItem.sqlExtendColumnList" /> 
+	FROM ( 
+		SELECT * 
+		FROM IKEP4_BD_ITEM
+		WHERE ITEM_GROUP_ID = #itemId#
+		AND   ITEM_DELETE &lt; 2
+		)  item  INNER JOIN IKEP4_EV_USER usr
+	ON    item.REGISTER_ID = usr.USER_ID		
+    ORDER BY ITEM_GROUP_ID DESC, STEP ASC
+  </select> 
+  
+  <select id="listLowerItemThread" parameterClass="String" resultMap="boardItemResult">   
+	SELECT /* [BoardItem_SqlMap.xml] boardItem.listLowerItemThread */ 
+	       <include refid="lightpack.board.dao.boardItem.sqlColumnList" /> 
+	FROM  IKEP4_BD_ITEM
+ 	START WITH ITEM_ID = #itemId#
+	CONNECT BY PRIOR ITEM_ID = ITEM_PARENT_ID 
+  </select> 
+  
+  <select id="listByBoardItemOfDeletedBoard" parameterClass="map" resultMap="boardItemResult">   
+	SELECT /* [BoardItem_SqlMap.xml] boardItem.listByBoardItemOfDeletedBoard */ 
+	       <include refid="lightpack.board.dao.boardItem.sqlColumnList" /> 
+	FROM  IKEP4_BD_ITEM
+	WHERE BOARD_ID = #boardId#
+	AND   INDENTATION = 0  
+	<![CDATA[  
+    AND   ROWNUM  <= #getCount# 
+    ]]>  
+  </select> 
+  
+  <select id="listBySearchCondition" parameterClass="BoardItemSearchCondition" resultMap="boardItemResultExtend">  
+  SELECT /* [BoardItem_SqlMap.xml] boardItem.listBySearchCondition */ 
+        *
+  FROM (
+		     SELECT ROWNUM AS RNUM, A.* FROM ( 
+		         /* START========================================= */
+		         SELECT <include refid="lightpack.board.dao.boardItem.sqlExtendColumnList" /> 
+		         FROM   IKEP4_BD_ITEM item INNER JOIN IKEP4_EV_USER usr
+	             ON     item.REGISTER_ID = usr.USER_ID 
+				 WHERE  item.BOARD_ID = #boardId# 
+     			 AND    item.ITEM_DELETE &lt; 2
+				<isNotEmpty property="searchColumn">
+					<isNotEmpty property="searchWord">
+						<isEqual property="searchColumn" compareValue="title">
+							AND	item.TITLE LIKE '%' || #searchWord# || '%'
+						</isEqual>
+						<isEqual property="searchColumn" compareValue="registerName">
+							AND (usr.USER_NAME LIKE '%' || #searchWord# || '%' OR usr.USER_ENGLISH_NAME LIKE '%' || #searchWord# || '%') 
+						</isEqual>
+					</isNotEmpty>
+				</isNotEmpty>  
+				<isEqual property="admin" compareValue="false">
+					<![CDATA[   
+					AND (SYSDATE BETWEEN item.START_DATE AND item.END_DATE   OR   item.REGISTER_ID = #userId# ) 
+					]]> 
+				</isEqual>				
+				ORDER BY
+				<isNotEmpty property="sortColumn">
+					<isEqual property="sortColumn" compareValue="ITEM_SEQ_ID">
+						<isEqual property="sortType" compareValue="DESC">
+							item.ITEM_SEQ_ID DESC,
+						</isEqual>
+						<isEqual property="sortType" compareValue="ASC">
+							item.ITEM_SEQ_ID ASC,
+						</isEqual>
+					</isEqual> 
+					<isEqual property="sortColumn" compareValue="ATTACH_FILE_COUNT">
+						<isEqual property="sortType" compareValue="DESC">
+							item.ATTACH_FILE_COUNT DESC,
+						</isEqual>
+						<isEqual property="sortType" compareValue="ASC">
+							item.ATTACH_FILE_COUNT ASC,
+						</isEqual>
+					</isEqual> 
+					<isEqual property="sortColumn" compareValue="TITLE">
+						<isEqual property="sortType" compareValue="DESC">
+							item.TITLE DESC,
+						</isEqual>
+						<isEqual property="sortType" compareValue="ASC">
+							item.TITLE ASC,
+						</isEqual>
+					</isEqual> 
+					<isEqual property="sortColumn" compareValue="REGISTER_NAME">
+						<isEqual property="sortType" compareValue="DESC">
+							item.REGISTER_NAME DESC,
+						</isEqual>
+						<isEqual property="sortType" compareValue="ASC">
+							item.REGISTER_NAME ASC,
+						</isEqual>
+					</isEqual> 
+					<isEqual property="sortColumn" compareValue="START_DATE">
+						<isEqual property="sortType" compareValue="DESC">
+							item.START_DATE DESC,
+						</isEqual>
+						<isEqual property="sortType" compareValue="ASC">
+							item.START_DATE ASC,
+						</isEqual>
+					</isEqual> 
+					<isEqual property="sortColumn" compareValue="HIT_COUNT">
+						<isEqual property="sortType" compareValue="DESC">
+							item.HIT_COUNT DESC,
+						</isEqual>
+						<isEqual property="sortType" compareValue="ASC">
+							item.HIT_COUNT ASC,
+						</isEqual>
+					</isEqual> 
+					<isEqual property="sortColumn" compareValue="RECOMMEND_COUNT">
+						<isEqual property="sortType" compareValue="DESC">
+							item.RECOMMEND_COUNT DESC,
+						</isEqual>
+						<isEqual property="sortType" compareValue="ASC">
+							item.RECOMMEND_COUNT ASC,
+						</isEqual>
+					</isEqual> 
+				</isNotEmpty>  
+			    item.ITEM_DISPLAY DESC, item.ITEM_GROUP_ID DESC, item.STEP ASC
+				 /* ===========================================END  */  
+		<![CDATA[   
+		    ) A WHERE ROWNUM <=  #endRowIndex# /* 종료  */
+		) WHERE RNUM >  #startRowIndex# /* 시작 */ 
+	]]> 
+  </select>   
+   
+  <select id="countBySearchCondition" parameterClass="BoardItemSearchCondition" resultClass="int">  
+	SELECT /* [Board_SqlMap.xml] boardItem.countBySearchCondition */ 
+           COUNT(*)
+	FROM   IKEP4_BD_ITEM  item INNER JOIN IKEP4_EV_USER usr
+	ON     item.REGISTER_ID = usr.USER_ID   
+ 	WHERE  item.BOARD_ID = #boardId#  
+ 	AND    item.ITEM_DELETE &lt; 2
+	<isNotEmpty property="searchColumn">
+		<isNotEmpty property="searchWord">
+			<isEqual property="searchColumn" compareValue="title">
+				AND item.TITLE LIKE '%' || #searchWord# || '%'
+			</isEqual>
+			<isEqual property="searchColumn" compareValue="registerName"> 
+				AND (usr.USER_NAME LIKE '%' || #searchWord# || '%' OR usr.USER_ENGLISH_NAME LIKE '%' || #searchWord# || '%') 
+			</isEqual>  
+		</isNotEmpty>
+	</isNotEmpty> 
+	<isEqual property="admin" compareValue="false">
+				<![CDATA[   
+				AND (SYSDATE BETWEEN item.START_DATE AND item.END_DATE   OR   item.REGISTER_ID = #userId# )  
+				]]> 
+	</isEqual>
+  </select>   
+	
+  <select id="countChildren" parameterClass="String" resultClass="int">  
+	SELECT /* [Board_SqlMap.xml] boardItem.countChildren */ 
+           COUNT(*)
+	FROM   IKEP4_BD_ITEM
+    WHERE  ITEM_PARENT_ID = #itemId#  
+    AND    ITEM_DELETE &lt; 2
+  </select> 
+  
+  <insert id="create" parameterClass="BoardItem"> 
+    INSERT INTO IKEP4_BD_ITEM ( /* [boardItem_SqlMap.xml] BoardItem.insert */
+     <include refid="lightpack.board.dao.boardItem.sqlColumnList" />
+     ) VALUES (
+      #itemId#, 
+      #boardId#, 
+      #itemParentId#, 
+      #itemGroupId#, 
+      #step#, 
+      #indentation#, 
+      #itemSeqId#,  
+      #itemDisplay#, 
+      #title#, 
+      #hitCount#, 
+      #recommendCount#, 
+      #replyCount#, 
+      #linereplyCount#, 
+      #attachFileCount#,
+      #startDate#, 
+      #endDate#, 
+      #itemDelete#, 
+      #imageFileId#,
+      #contents#,
+      #registerId#, 
+      #registerName#, 
+      SYSDATE, 
+      #updaterId#, 
+      #updaterName#, 
+      SYSDATE
+    ) 
+     <selectKey resultClass="string" keyProperty="itemSeqId" type="pre">  
+       	SELECT SEQ_IKEP4_BD_ITEM.NEXTVAL FROM DUAL 
+     </selectKey>
+  </insert>
+  <update id="update" parameterClass="BoardItem"> 
+    UPDATE IKEP4_BD_ITEM /* [BoardItem_SqlMap.xml] boardItem.update */
+    SET   <isNotEmpty property="boardId"         >BOARD_ID          = #boardId#,        </isNotEmpty>
+          <isNotEmpty property="itemParentId"    >ITEM_PARENT_ID    = #itemParentId#,   </isNotEmpty>
+          <isNotEmpty property="itemGroupId"     >ITEM_GROUP_ID     = #itemGroupId#,    </isNotEmpty>
+          <isNotEmpty property="step"            >STEP              = #step#,           </isNotEmpty>
+          <isNotEmpty property="indentation"     >INDENTATION       = #indentation#,    </isNotEmpty>
+          <isNotEmpty property="itemSeqId"       >ITEM_SEQ_ID       = #itemSeqId#,      </isNotEmpty>
+          <isNotEmpty property="itemDisplay"     >ITEM_DISPLAY      = #itemDisplay#,    </isNotEmpty>
+          <isNotEmpty property="title"           >TITLE             = #title#,          </isNotEmpty>
+          <isNotEmpty property="hitCount"        >HIT_COUNT         = #hitCount#,       </isNotEmpty>
+          <isNotEmpty property="recommendCount"  >RECOMMEND_COUNT   = #recommendCount#, </isNotEmpty>
+          <isNotEmpty property="replyCount"      >REPLY_COUNT       = #replyCount#,     </isNotEmpty>
+          <isNotEmpty property="linereplyCount"  >LINEREPLY_COUNT   = #linereplyCount#, </isNotEmpty>
+          <isNotEmpty property="attachFileCount" >ATTACH_FILE_COUNT = #attachFileCount#,</isNotEmpty>
+          <isNotEmpty property="startDate"       >START_DATE        = #startDate#,      </isNotEmpty>
+          <isNotEmpty property="endDate"         >END_DATE          = #endDate#,        </isNotEmpty>
+          <isNotEmpty property="itemDelete"      >ITEM_DELETE       = #itemDelete#,     </isNotEmpty>
+          <isNotEmpty property="imageFileId"     >IMAGE_FILE_ID     = #imageFileId#,    </isNotEmpty>
+          <isNotEmpty property="contents"        >CONTENTS          = #contents#,       </isNotEmpty>
+          UPDATER_ID        = #updaterId#,
+          UPDATER_NAME      = #updaterName#,
+          UPDATE_DATE       = SYSDATE
+    WHERE ITEM_ID = #itemId# 
+  </update>
+  <update id="logicalDelete" parameterClass="BoardItem"> 
+    UPDATE IKEP4_BD_ITEM /* [BoardItem_SqlMap.xml] boardItem.logicalDelete */
+    SET    ITEM_DELETE = 1,
+           UPDATER_ID          = #updaterId#,
+           UPDATER_NAME        = #updaterName#,
+           UPDATE_DATE         = SYSDATE   
+    WHERE ITEM_ID = #itemId# 
+  </update>
+  
+  <update id="updateStep" parameterClass="BoardItem"> 
+    UPDATE IKEP4_BD_ITEM /* [BoardItem_SqlMap.xml] boardItem.updateStep */
+    SET   STEP = STEP + 1 
+    WHERE ITEM_GROUP_ID = #itemGroupId# 
+    AND   STEP >= #step#  
+  </update>
+ 
+  <update id="updateRecommendCount" parameterClass="string">
+    UPDATE IKEP4_BD_ITEM /* [BoardItem_SqlMap.xml] boardItem.updateRecommendCount */
+    SET    RECOMMEND_COUNT = RECOMMEND_COUNT + 1
+    WHERE ITEM_ID = #itemId# 
+  </update> 
+  
+  <update id="updateItemDeleteField" parameterClass="map">
+    UPDATE IKEP4_BD_ITEM /* [BoardItem_SqlMap.xml] boardItem.updateItemDeleteField */
+    SET    ITEM_DELETE = #status#
+    WHERE  ITEM_ID = #itemId# 
+  </update> 
+  
+  <update id="updateLinereplyCount" parameterClass="string">
+    UPDATE IKEP4_BD_ITEM /* [BoardItem_SqlMap.xml] boardItem.updateLinereplyCount */
+    SET    LINEREPLY_COUNT = (SELECT COUNT(*) FROM IKEP4_BD_LINEREPLY WHERE ITEM_ID = #itemId#)
+    WHERE ITEM_ID = #itemId# 
+  </update> 
+   
+  <update id="updateReplyCount" parameterClass="string">
+    UPDATE IKEP4_BD_ITEM /* [BoardItem_SqlMap.xml] boardItem.updateReplyCount */
+    SET    REPLY_COUNT = (SELECT COUNT(*) FROM IKEP4_BD_ITEM WHERE ITEM_PARENT_ID = #itemId# AND ITEM_DELETE &lt; 2) 
+    WHERE  ITEM_ID = #itemId# 
+    
+  </update>
+  
+  <update id="updateHitCount" parameterClass="String"> 
+    UPDATE IKEP4_BD_ITEM /* [BoardItem_SqlMap.xml] boardItem.updateHitCount */
+    SET    HIT_COUNT = HIT_COUNT + 1
+    WHERE ITEM_ID = #itemId# 
+  </update> 
+  <delete id="physicalDelete" parameterClass="string"> 
+    DELETE FROM IKEP4_BD_ITEM /* [BoardItem_SqlMap.xml] boardItem.physicalDelete */
+    WHERE ITEM_ID = #itemId# 
+  </delete>    
+  <delete id="physicalDeleteThread" parameterClass="string">  
+ 	DELETE FROM  IKEP4_BD_ITEM /* [BoardItem_SqlMap.xml] boardItem.physicalDeleteThread */
+ 	WHERE  ITEM_ID IN ( 
+	      	SELECT ITEM_ID 
+		    FROM IKEP4_BD_ITEM
+            START WITH ITEM_ID =  #itemId# 
+            CONNECT BY PRIOR ITEM_ID = ITEM_PARENT_ID 
+	)   
+  </delete>  
+  
+    <update id="updateMailCount" parameterClass="string">
+	   UPDATE IKEP4_BD_ITEM 		/* [BoardItem_SqlMap.xml] boardItem.updateMailCount */
+	   SET MAIL_COUNT = MAIL_COUNT + 1
+	   WHERE ITEM_ID = #itemId#
+	</update>
+	
+	<update id="updateMblogCount" parameterClass="string">
+	   UPDATE IKEP4_BD_ITEM 		/* [BoardItem_SqlMap.xml] boardItem.updateMblogCount */
+	   SET MBLOG_COUNT = MBLOG_COUNT + 1
+	   WHERE  ITEM_ID = #itemId#
+	</update>
+</sqlMap> 

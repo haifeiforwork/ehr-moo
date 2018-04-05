@@ -1,0 +1,772 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="collpack.kms.qna.dao.qnaItem">
+	<typeAlias alias="kmsQnaItem"                type="com.lgcns.ikep4.collpack.kms.qna.model.QnaItem"/>
+	<typeAlias alias="kmsQnaItemSearchCondition" type="com.lgcns.ikep4.collpack.kms.qna.search.QnaItemSearchCondition"/>
+	<typeAlias alias="QnaConfig"                type="com.lgcns.ikep4.collpack.kms.qna.model.QnaConfig"/>
+	<typeAlias alias="QnaRecommendPK"   type="com.lgcns.ikep4.collpack.kms.qna.model.QnaRecommendPK"/>
+
+	<resultMap id="qnaItemResult" class="com.lgcns.ikep4.collpack.kms.qna.model.QnaItem" >
+		<result column="ITEM_ID"           	property="itemId"			jdbcType="VARCHAR" />
+		<result column="ITEM_SEQ_ID"     	property="itemSeqId"        jdbcType="VARCHAR" />
+		<result column="ITEM_DISPLAY"       property="itemDisplay"      jdbcType="VARCHAR" />
+		<result column="TITLE"       		property="title"          	jdbcType="VARCHAR" />
+		<result column="CONTENTS"       	property="contents"         jdbcType="VARCHAR" />
+		<result column="HIT_COUNT"       	property="hitCount"         jdbcType="DECIMAL" />
+		<result column="CHOOSE_CNT"       	property="chooseCnt"         jdbcType="DECIMAL" />
+		<result column="RECOMMEND_COUNT"       	property="recommendCount"         jdbcType="DECIMAL" />
+		<result column="ATTACH_FILE_COUNT"  property="attachFileCount"  jdbcType="DECIMAL" />
+		<result column="ITEM_DELETE"       	property="itemDelete"       jdbcType="DECIMAL" /> 
+		<result column="REGISTER_ID"      	property="registerId"       jdbcType="VARCHAR" />
+		<result column="REGISTER_NAME"     	property="registerName"     jdbcType="VARCHAR" />
+		<result column="ITEM_GROUP_ID"    	property="itemGroupId"      jdbcType="VARCHAR" />
+		<result column="STEP"     			property="step"        		jdbcType="DECIMAL" />
+		<result column="REGISTER_ENGLISH_NAME"     	property="registerEnglishName"     jdbcType="VARCHAR" />		
+		<result column="REGIST_DATE"       	property="registDate"       jdbcType="DATE" />
+		<result column="UPDATER_ID"        	property="updaterId"        jdbcType="VARCHAR" />
+		<result column="UPDATER_NAME"      	property="updaterName"      jdbcType="VARCHAR" />
+		<result column="UPDATE_DATE"       	property="updateDate"       jdbcType="DATE" />
+		<result column="INDENTATION"       property="indentation"          jdbcType="DECIMAL" />
+		<!-- <result column="SHARE_COUNT"    	property="shareCount"       jdbcType="DECIMAL" /-->
+		<!-- result column="WORKSPACE_NAME"     property="workspaceName"    jdbcType="VARCHAR" /-->
+		<result column="JOB_TITLE_NAME"     property="jobTitleName"    jdbcType="VARCHAR" />
+		<result column="JOB_TITLE_ENGLISH_NAME"     property="jobTitleEnglishName"    jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<resultMap id="targetUser" class="com.lgcns.ikep4.collpack.kms.qna.model.QnaItem" >
+		<result column="targetUserId"           property="targetUserId"               jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<resultMap id="qnaItemResultExtend" extends="qnaItemResult"  class="com.lgcns.ikep4.collpack.kms.qna.model.QnaItem" > 
+	<!--
+		<result column="WORKSPACE_ID"       property="workspaceId"      jdbcType="VARCHAR" />
+		<result column="IS_OWNER"    		property="isOwner"         	jdbcType="VARCHAR" />
+	-->
+	</resultMap> 
+	
+	<!-- sql id="sqlColumnList"> 
+		ITEM_ID,
+		ITEM_SEQ_ID,
+		ITEM_DISPLAY,
+		TITLE,
+		CONTENTS,
+		HIT_COUNT,
+		ATTACH_FILE_COUNT,
+		ITEM_DELETE,
+		REGISTER_ID,
+		REGISTER_NAME,
+		REGIST_DATE,
+		UPDATER_ID,
+		UPDATER_NAME,
+		UPDATE_DATE
+	</sql-->
+
+	<sql id="sqlExtendColumnList"> 
+		A.ITEM_ID 			AS ITEM_ID,
+<!-- 	
+		B.WORKSPACE_ID		AS WORKSPACE_ID,
+		C.WORKSPACE_NAME	AS WORKSPACE_NAME,
+		B.IS_OWNER 			AS IS_OWNER,
+ -->		
+  		A.INDENTATION       AS INDENTATION,       
+		A.ITEM_SEQ_ID 		AS ITEM_SEQ_ID,
+		A.ITEM_DISPLAY 		AS ITEM_DISPLAY,
+		A.ITEM_GROUP_ID			AS ITEM_GROUP_ID,
+        A.STEP					AS STEP,
+		A.TITLE 			AS TITLE,
+		A.CONTENTS 			AS CONTENTS,
+		A.HIT_COUNT 		AS HIT_COUNT,
+		(select count(*) from IKEP4_KMS_BD_QNA_RECOMMEND where item_id in (select B.item_id from IKEP4_KMS_BD_QNA B where B.item_group_id = A.item_group_id) ) AS CHOOSE_CNT,
+		A.ATTACH_FILE_COUNT AS ATTACH_FILE_COUNT,
+		A.RECOMMEND_COUNT AS RECOMMEND_COUNT,
+		A.ITEM_DELETE 		AS ITEM_DELETE,
+		A.REGISTER_ID 		AS REGISTER_ID,
+		U.USER_NAME 		AS REGISTER_NAME,
+		U.USER_ENGLISH_NAME AS REGISTER_ENGLISH_NAME,
+		A.REGIST_DATE 		AS REGIST_DATE,
+		A.UPDATER_ID 		AS UPDATER_ID,
+		A.UPDATER_NAME 		AS UPDATER_NAME,
+		A.UPDATE_DATE 		AS UPDATE_DATE,
+		J.JOB_TITLE_NAME 			AS JOB_TITLE_NAME,
+		J.JOB_TITLE_ENGLISH_NAME 	AS JOB_TITLE_ENGLISH_NAME
+<!-- 		
+		,
+		(SELECT COUNT(ITEM_ID) FROM IKEP4_KMS_BD_QNA_WORKSPACE WHERE ITEM_ID=A.ITEM_ID AND IS_OWNER=0)	AS SHARE_COUNT
+ -->	
+	</sql>
+
+	<sql id="sqlLinkColumnList"> 
+		ITEM_ID,
+		<!-- 
+		WORKSPACE_ID,
+		 -->
+		IS_OWNER
+	</sql>
+
+	<!-- ANSI -->
+	<select id="getQna" parameterClass="java.util.Map" resultMap="qnaItemResultExtend">
+		SELECT 
+			/* [QnaItem_SqlMap.xml] QnaItem.get */
+			<include refid="collpack.kms.qna.dao.qnaItem.sqlExtendColumnList" />
+		FROM 
+			IKEP4_KMS_BD_QNA A
+			<!--
+			INNER JOIN IKEP4_KMS_BD_QNA_WORKSPACE B ON A.ITEM_ID = B.ITEM_ID 
+			<isNotEmpty property="workspaceId" >
+				AND B.WORKSPACE_ID = #workspaceId#	
+			</isNotEmpty>
+			<isEmpty property="workspaceId" >
+				AND IS_OWNER = '1'
+			</isEmpty>
+			INNER JOIN IKEP4_WS_WORKSPACE C ON B.WORKSPACE_ID = C.WORKSPACE_ID
+			-->
+			INNER JOIN IKEP4_EV_USER U ON A.REGISTER_ID = U.USER_ID
+			INNER JOIN IKEP4_EV_JOB_TITLE J ON U.JOB_TITLE_CODE = J.JOB_TITLE_CODE
+		WHERE  
+			A.ITEM_ID = #itemId#
+	</select>
+	
+	<update id="updateStep" parameterClass="kmsQnaItem"> 
+		UPDATE IKEP4_KMS_BD_QNA 
+		SET  
+			STEP = STEP + 1 
+		WHERE
+			ITEM_GROUP_ID = #itemGroupId# 
+			AND   STEP >= #step#  
+	</update>
+	
+	<update id="updateRecommendCount" parameterClass="string">
+    UPDATE IKEP4_KMS_BD_QNA 
+    SET    RECOMMEND_COUNT = RECOMMEND_COUNT + 1
+    WHERE ITEM_ID = #itemId# 
+  	</update> 
+	
+	<update id="updateReplyCount" parameterClass="string">
+		UPDATE IKEP4_KMS_BD_QNA 
+		SET  
+			REPLY_COUNT = (SELECT COUNT(*) FROM IKEP4_KMS_BD_QNA WHERE ITEM_PARENT_ID = #itemId#) 
+		WHERE
+			ITEM_ID = #itemId# 
+	</update>
+	
+	<insert id="createRecommend" parameterClass="QnaRecommendPK"> 
+    INSERT INTO IKEP4_KMS_BD_QNA_RECOMMEND
+           (ITEM_ID, REGISTER_ID, REGIST_DATE)
+    VALUES (#itemId#, #registerId#,  CURRENT_TIMESTAMP)
+  	</insert>
+	
+	<select id="existsRecommend" parameterClass="QnaRecommendPK" resultClass="int">
+	    select count(*) from IKEP4_KMS_BD_QNA A
+		where A.item_group_id in (select B.item_group_id from IKEP4_KMS_BD_QNA B where B.item_id = #itemId#)
+		and A.recommend_count > 0
+	  </select> 
+
+	<!-- MS SQL -->
+	<!-- qna List Query -->
+	<select id="listBySearchCondition" parameterClass="kmsQnaItemSearchCondition" resultMap="qnaItemResultExtend">  
+		SELECT  /* [QnaItem_SqlMap.xml] QnaItem.listBySearchCondition */ 
+			ITEM_ID,
+			<!--  
+			WORKSPACE_ID,
+			WORKSPACE_NAME,
+			IS_OWNER,
+			-->
+			ITEM_SEQ_ID,
+			ITEM_DISPLAY,
+			ITEM_GROUP_ID,
+			INDENTATION,          
+			STEP,    
+			TITLE,
+			CONTENTS,
+			HIT_COUNT,
+			CHOOSE_CNT,
+			RECOMMEND_COUNT,
+			ATTACH_FILE_COUNT,
+			ITEM_DELETE,
+			REGISTER_ID,
+			REGISTER_NAME,
+			REGISTER_ENGLISH_NAME,
+			REGIST_DATE,
+			UPDATER_ID,
+			UPDATER_NAME,
+			UPDATE_DATE,
+			JOB_TITLE_NAME,
+			JOB_TITLE_ENGLISH_NAME
+			<!-- 
+			,
+			SHARE_COUNT
+			 -->
+		FROM 
+		( 
+			SELECT 
+				D.* 
+			FROM 
+			( 
+				/* START========================================= */
+				SELECT Row_number() OVER (	ORDER BY  ITEM_DISPLAY DESC, 
+											<isNotEmpty property="sortColumn" >
+												<isEqual property="sortColumn" compareValue="ITEM_SEQ_ID">
+													ITEM_SEQ_ID
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="ATTACH_FILE_COUNT">
+													ATTACH_FILE_COUNT
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="SHARE_COUNT">
+												SHARE_COUNT
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="TITLE">
+												TITLE
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="REGISTER_NAME">
+												U.USER_NAME
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="REGIST_DATE">
+												A.REGIST_DATE
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="HIT_COUNT">
+												HIT_COUNT
+												</isEqual>
+											</isNotEmpty>
+						
+											<isNotEmpty property="sortType" >
+											<isEqual property="sortType" compareValue="DESC">
+											DESC ,
+											</isEqual>
+											<isEqual property="sortType" compareValue="ASC">
+											ASC ,
+											</isEqual>
+											</isNotEmpty>
+											ITEM_GROUP_ID DESC, STEP ASC,
+											ITEM_SEQ_ID DESC ) AS RNUM,
+					<include refid="collpack.kms.qna.dao.qnaItem.sqlExtendColumnList" /> 
+				FROM   
+					IKEP4_KMS_BD_QNA A 
+					<!-- 
+					INNER JOIN IKEP4_KMS_BD_QNA_WORKSPACE B ON A.ITEM_ID = B.ITEM_ID
+					INNER JOIN IKEP4_WS_WORKSPACE C ON B.WORKSPACE_ID = C.WORKSPACE_ID 
+					 -->
+					INNER JOIN IKEP4_EV_USER U ON A.REGISTER_ID = U.USER_ID
+					INNER JOIN IKEP4_EV_JOB_TITLE J ON U.JOB_TITLE_CODE = J.JOB_TITLE_CODE
+				WHERE
+					1=1
+					<!-- 
+					B.WORKSPACE_ID = #workspaceId# 
+					 -->
+					<isNotEmpty property="searchColumn">
+						<isEqual property="searchColumn" compareValue="title">
+							AND	A.TITLE LIKE '%' + #searchWord# + '%'
+						</isEqual>
+						<isEqual property="searchColumn" compareValue="registerName">
+							AND	A.REGISTER_NAME LIKE '%' + #searchWord# + '%'
+						</isEqual>
+					</isNotEmpty>
+					/* ===========================================END  */  
+		<![CDATA[   
+			) D
+			WHERE 
+				RNUM <=  #endRowIndex# /* 종료  */
+		) TBL
+		WHERE 
+			RNUM >  #startRowIndex# /* 시작 */
+		]]> 
+	</select>
+	
+	<select id="listQnaSubItem" parameterClass="kmsQnaItemSearchCondition" resultMap="qnaItemResultExtend">  
+		SELECT  /* [QnaItem_SqlMap.xml] QnaItem.listBySearchCondition */ 
+			ITEM_ID,
+			<!--  
+			WORKSPACE_ID,
+			WORKSPACE_NAME,
+			IS_OWNER,
+			-->
+			ITEM_SEQ_ID,
+			ITEM_DISPLAY,
+			ITEM_GROUP_ID,
+			INDENTATION,          
+			STEP,    
+			TITLE,
+			CONTENTS,
+			HIT_COUNT,
+			CHOOSE_CNT,
+			RECOMMEND_COUNT,
+			ATTACH_FILE_COUNT,
+			ITEM_DELETE,
+			REGISTER_ID,
+			REGISTER_NAME,
+			REGISTER_ENGLISH_NAME,
+			REGIST_DATE,
+			UPDATER_ID,
+			UPDATER_NAME,
+			UPDATE_DATE,
+			JOB_TITLE_NAME,
+			JOB_TITLE_ENGLISH_NAME
+			<!-- 
+			,
+			SHARE_COUNT
+			 -->
+		FROM 
+		( 
+			SELECT 
+				D.* 
+			FROM 
+			( 
+				/* START========================================= */
+				SELECT Row_number() OVER (	ORDER BY  ITEM_DISPLAY DESC, 
+											<isNotEmpty property="sortColumn" >
+												<isEqual property="sortColumn" compareValue="ITEM_SEQ_ID">
+													ITEM_SEQ_ID
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="ATTACH_FILE_COUNT">
+													ATTACH_FILE_COUNT
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="SHARE_COUNT">
+												SHARE_COUNT
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="TITLE">
+												TITLE
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="REGISTER_NAME">
+												U.USER_NAME
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="REGIST_DATE">
+												A.REGIST_DATE
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="HIT_COUNT">
+												HIT_COUNT
+												</isEqual>
+											</isNotEmpty>
+						
+											<isNotEmpty property="sortType" >
+											<isEqual property="sortType" compareValue="DESC">
+											DESC ,
+											</isEqual>
+											<isEqual property="sortType" compareValue="ASC">
+											ASC ,
+											</isEqual>
+											</isNotEmpty>
+											ITEM_GROUP_ID DESC, STEP ASC,
+											ITEM_SEQ_ID DESC ) AS RNUM,
+					<include refid="collpack.kms.qna.dao.qnaItem.sqlExtendColumnList" /> 
+				FROM   
+					IKEP4_KMS_BD_QNA A 
+					<!-- 
+					INNER JOIN IKEP4_KMS_BD_QNA_WORKSPACE B ON A.ITEM_ID = B.ITEM_ID
+					INNER JOIN IKEP4_WS_WORKSPACE C ON B.WORKSPACE_ID = C.WORKSPACE_ID 
+					 -->
+					INNER JOIN IKEP4_EV_USER U ON A.REGISTER_ID = U.USER_ID
+					INNER JOIN IKEP4_EV_JOB_TITLE J ON U.JOB_TITLE_CODE = J.JOB_TITLE_CODE
+				WHERE
+					1=1
+					AND	A.ITEM_GROUP_ID = #itemId# 
+					AND A.INDENTATION != '0'
+			) D
+		) TBL
+	</select>
+
+	<!-- ASNI -->
+	<!-- Qna 기본 카운트 --> 
+	<select id="countBySearchCondition" parameterClass="kmsQnaItemSearchCondition" resultClass="int">  
+	SELECT /* [QnaItem_SqlMap.xml] QnaItem.countBySearchCondition */ 
+		COUNT(ITEM_ID)
+	FROM  
+		IKEP4_KMS_BD_QNA A
+	WHERE  
+		1=1 
+		<isNotEmpty property="searchColumn">
+			<isEqual property="searchColumn" compareValue="title">
+				AND	A.TITLE LIKE '%' + #searchWord# + '%'
+			</isEqual>
+			<isEqual property="searchColumn" compareValue="registerName">
+				AND	A.REGISTER_NAME LIKE '%' + #searchWord# + '%'
+			</isEqual>
+		</isNotEmpty>
+	</select>
+	
+	<select id="countQnaSubItem" parameterClass="kmsQnaItemSearchCondition" resultClass="int">  
+	SELECT 
+		COUNT(ITEM_ID)
+	FROM  
+		IKEP4_KMS_BD_QNA A
+	WHERE  
+		1=1 
+		AND	A.ITEM_GROUP_ID = #itemId# 
+		AND A.INDENTATION != '0'
+	</select>
+
+	<!-- MS SQL -->
+	<select id="countChildrenWorkspace" parameterClass="kmsQnaItemSearchCondition" resultClass="int">  
+		WITH CTE AS (
+			SELECT	1 LEV, *, CONVERT(NVARCHAR(2000), GROUP_ID) AS PATH_ORDER
+			FROM	IKEP4_EV_GROUP 
+			WHERE	PARENT_GROUP_ID = #teamId#
+			UNION ALL
+			SELECT	LEV + 1, G.*, CONVERT(NVARCHAR(2000), CTE.PATH_ORDER + '/' + G.GROUP_ID) AS PATH_ORDER
+			FROM	IKEP4_EV_GROUP G, CTE
+			WHERE	CTE.GROUP_ID = G.PARENT_GROUP_ID
+		)
+		SELECT	COUNT(WORKSPACE_ID) 
+		FROM	(	SELECT	Row_number() OVER (ORDER BY PATH_ORDER) AS RNUM, 
+							LEV,
+							GROUP_ID,
+							GROUP_NAME,
+							FULL_PATH
+					FROM CTE	) X LEFT OUTER JOIN IKEP4_WS_WORKSPACE A
+									ON (X.GROUP_ID = A.TEAM_ID)
+		WHERE A.WORKSPACE_STATUS IN ('O','WC')
+	</select>
+	
+	<!-- MS SQL -->
+	<select id="listChildWorkspaceBySearchCondition" parameterClass="kmsQnaItemSearchCondition" resultClass="kmsQnaItem">
+		WITH CTE AS (
+			SELECT	1 LEV, *, CONVERT(NVARCHAR(2000), GROUP_ID) AS PATH_ORDER
+			FROM	IKEP4_EV_GROUP 
+			WHERE	PARENT_GROUP_ID = #teamId#
+			UNION ALL
+			SELECT	LEV + 1, G.*, CONVERT(NVARCHAR(2000), CTE.PATH_ORDER + '/' + G.GROUP_ID) AS PATH_ORDER
+			FROM	IKEP4_EV_GROUP G, CTE
+			WHERE	CTE.GROUP_ID = G.PARENT_GROUP_ID
+		)
+		SELECT 
+			WORKSPACE_ID as workspaceId, 
+  			WORKSPACE_NAME as workspaceName, 
+  			X.lev as groupLevel,
+  			X.group_id as groupId,
+  			X.group_name groupName,
+  			CASE WHEN A.TEAM_ID IS NOT NULL THEN 1 ELSE 0 END hasWorkspace ,
+  			(SELECT COUNT(WORKSPACE_ID) FROM IKEP4_KMS_BD_QNA_WORKSPACE   WHERE WORKSPACE_ID = A.WORKSPACE_ID AND ITEM_ID = #itemId# ) as shareFlagCount,
+    		REPLACE(SUBSTRING(X.FULL_PATH,2,LEN(X.FULL_PATH)),'|','>') as fullPath 
+		FROM
+		(	SELECT	Row_number() OVER (ORDER BY PATH_ORDER) AS RNUM, 
+							LEV,
+							GROUP_ID,
+							GROUP_NAME,
+							FULL_PATH
+					FROM CTE	) X LEFT OUTER JOIN IKEP4_WS_WORKSPACE A  ON (X.GROUP_ID = A.TEAM_ID)
+		WHERE  A.WORKSPACE_STATUS IN ('O','WC')
+		ORDER BY rnum,lev
+	</select>
+
+	<!-- ANSI -->
+	<select id="countQnaReference" parameterClass="java.util.Map" resultClass="Integer">
+		SELECT 
+			COUNT(REGISTER_ID) 
+		FROM
+			IKEP4_KMS_BD_QNA_REFERENCE 
+		WHERE 
+			ITEM_ID = #itemId# 
+			AND REGISTER_ID = #userId#
+	</select>
+
+	<!-- ANSI -->
+	<insert id="create" parameterClass="kmsQnaItem"> 
+		INSERT INTO	IKEP4_KMS_BD_QNA
+		( 
+			/* [QnaItem_SqlMap.xml] QnaItem.insert */
+			ITEM_ID,
+			ITEM_SEQ_ID,
+			ITEM_DISPLAY,
+			TITLE,
+			CONTENTS,
+			HIT_COUNT,
+			ATTACH_FILE_COUNT,
+			RECOMMEND_COUNT,
+			ITEM_DELETE,
+			REGISTER_ID,
+			REGISTER_NAME,
+			ITEM_GROUP_ID, 
+			STEP, 
+			INDENTATION,
+			REGIST_DATE,
+			UPDATER_ID,
+			UPDATER_NAME,
+			UPDATE_DATE
+		) 
+		VALUES 
+		(
+			#itemId#, 
+			#itemSeqId#,  
+			#itemDisplay#, 
+			#title#, 
+			#contents#,
+			#hitCount#, 
+			#attachFileCount#,
+			'0',
+			#itemDelete#,
+			#registerId#, 
+			#registerName#, 
+			#itemGroupId#, 
+			#step#, 
+			#indentation#, 
+			<isNotEmpty property="registDate">
+				#registDate#,
+			</isNotEmpty>
+			<isEmpty property="registDate">
+				CURRENT_TIMESTAMP,
+			</isEmpty>
+			#updaterId#, 
+			#updaterName#,
+			<isNotEmpty property="updateDate">
+				#updateDate#
+			</isNotEmpty>
+			<isEmpty property="updateDate">
+				CURRENT_TIMESTAMP
+			</isEmpty>
+		)
+		<selectKey resultClass="string" keyProperty="itemSeqId" type="pre">  
+			declare @seq numeric(38)
+			exec dbo.GET_SEQUENCE_FROM_SEQ_IKEP4_KMS_ANNOUNCE 2, @seq OUTPUT
+			
+			SELECT @seq
+		</selectKey>
+	</insert>
+	
+	<select id="readQnaconfig" resultClass="QnaConfig">
+	  <![CDATA[
+	  	   SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
+		   SELECT
+			  PORTLET_CONFIG_ID  portletConfigId,
+			  IMAGE_FILE_ID		imageFileId, 
+			  BOARD_ID          boardId,
+			  ITEM_ID           itemId,
+			  TARGET			target,
+			  REGISTER_ID		registerId, 
+			  REGISTER_NAME		registerName, 
+			  REGIST_DATE		registDate, 
+			  UPDATER_ID		updaterId, 
+			  UPDATER_NAME  	updaterName, 
+			  UPDATE_DATE   	updateDate,
+			  SUMMARY           summary,
+			  LOCATION			location,
+			  IMG_WIDTH			imgWidth,
+			  IMG_HEIGHT		imgHeight,
+			  SUBJECT           subject
+			FROM IKEP4_KMS_BD_QNA_CONFIG
+	   ]]>
+	</select>
+	
+	<insert id="createQnaConfig" parameterClass="QnaConfig"> 
+      <![CDATA[
+           INSERT INTO IKEP4_KMS_BD_QNA_CONFIG (PORTLET_CONFIG_ID, IMAGE_FILE_ID, BOARD_ID, ITEM_ID, TARGET, REGISTER_ID, REGISTER_NAME, REGIST_DATE, UPDATER_ID, UPDATER_NAME, UPDATE_DATE,SUMMARY,LOCATION,IMG_WIDTH,IMG_HEIGHT,SUBJECT)  
+           VALUES (#portletConfigId#, #imageFileId#, #boardId#, #itemId#, #target#, #registerId#, #registerName#, CURRENT_TIMESTAMP, #updaterId#, #updaterName#, CURRENT_TIMESTAMP ,#summary#,#location#,#imgWidth#,#imgHeight#,#subject#)
+       ]]>
+   </insert>
+
+   <update id="updateQnaConfig" parameterClass="QnaConfig">
+	  <![CDATA[
+		   UPDATE IKEP4_KMS_BD_QNA_CONFIG
+			  SET IMAGE_FILE_ID = #imageFileId#,
+			  	  BOARD_ID = #boardId#,
+                  ITEM_ID = #itemId#,
+			  	  TARGET = #target#, 
+			      UPDATER_ID = #updaterId#,
+			      UPDATER_NAME = #updaterName#,
+			      UPDATE_DATE = CURRENT_TIMESTAMP,
+					SUMMARY			= #summary#,
+					LOCATION		= #location#,
+					IMG_WIDTH		= #imgWidth#,
+					IMG_HEIGHT		= #imgHeight#,
+					SUBJECT			= #subject#
+	   ]]>
+	</update>
+
+	<!-- ANSI -->
+	<insert id="createQnaReference" parameterClass="java.util.Map"> 
+		INSERT INTO IKEP4_KMS_BD_QNA_REFERENCE 
+		(
+			/* [QnaItem_SqlMap.xml] QnaItem.createReference*/
+			REGISTER_ID,
+			ITEM_ID,
+			REGIST_DATE
+		) 
+		VALUES
+		(
+			#userId#, 
+			#itemId#,
+			CURRENT_TIMESTAMP
+		)
+	</insert>
+
+	<!-- ANSI -->
+	<update id="update" parameterClass="kmsQnaItem"> 
+		UPDATE 	
+			IKEP4_KMS_BD_QNA /* [QnaItem_SqlMap.xml] QnaItem.update */
+		SET	
+			ITEM_SEQ_ID       = #itemSeqId#, 
+			ITEM_DISPLAY      = #itemDisplay#,
+			TITLE             = #title#,
+			CONTENTS          = #contents#,
+			HIT_COUNT         = #hitCount#,
+			ATTACH_FILE_COUNT = #attachFileCount#,
+			ITEM_DELETE       = #itemDelete#,
+			UPDATER_ID        = #updaterId#,
+			UPDATER_NAME      = #updaterName#,
+			ITEM_GROUP_ID     = #itemGroupId#, 
+			STEP              = #step#,         
+			UPDATE_DATE       = CURRENT_TIMESTAMP
+		WHERE 	
+			ITEM_ID = #itemId# 
+	</update>
+
+	<!-- ANSI -->
+	<update id="updateQnaHitCount" parameterClass="String"> 
+		UPDATE 
+			IKEP4_KMS_BD_QNA /* [QnaItem_SqlMap.xml] QnaItem.updateHitCount */
+		SET 
+			HIT_COUNT = HIT_COUNT + 1
+		WHERE
+			ITEM_ID = #itemId# 
+	</update>
+
+	<!-- ANSI -->
+	<delete id="removeQnaShareLink" parameterClass="string"> 
+	DELETE
+		/* [QnaItem_SqlMap.xml] QnaItem.removeQnaShareLink */
+	FROM
+		IKEP4_KMS_BD_QNA_WORKSPACE 
+	WHERE
+		ITEM_ID = #qnaItemId#
+		AND IS_OWNER = '0' 
+	</delete>
+
+	<!-- ANSI -->
+	<delete id="removeQnaLink" parameterClass="java.util.Map"> 
+		DELETE
+			/* [QnaItem_SqlMap.xml] QnaItem.removeQnaLink */
+		FROM
+			IKEP4_KMS_BD_QNA_WORKSPACE 
+		WHERE
+			ITEM_ID = #itemId#
+			<!-- 
+			<isNotEmpty property="workspaceId">
+				AND WORKSPACE_ID = #workspaceId#
+			</isNotEmpty>
+			 -->
+	</delete>
+	
+	<!-- ANSI -->
+	<delete id="removeQnaItem" parameterClass="string"> 
+		DELETE
+			/* [QnaItem_SqlMap.xml] QnaItem.removeQnaItem */
+		FROM 
+			IKEP4_KMS_BD_QNA 
+		WHERE
+			ITEM_ID = #itemId# 
+	</delete> 
+	
+	<!-- ANSI -->
+	<delete id="removeQnaReference" parameterClass="string"> 
+		DELETE
+			/* [QnaItem_SqlMap.xml] QnaItem.removeQnaReference */
+		FROM
+			IKEP4_KMS_BD_QNA_REFERENCE 
+		WHERE
+			ITEM_ID = #itemId# 
+	</delete>
+
+	<!-- ANSI -->
+	<!-- portlet -->
+	<select id="listQnaItemByPortlet" parameterClass="Map" resultClass="kmsQnaItem">  
+		SELECT
+			/* [QnaItem_SqlMap.xml] collpack.kms.qna.dao.qnaItem.listQnaItemByPortlet */ 
+			D.*  
+		FROM 
+		( 
+
+			SELECT
+				Row_number() OVER (ORDER BY B.ITEM_DISPLAY DESC, B.ITEM_SEQ_ID DESC) AS RNUM,
+				B.ITEM_ID 			AS itemId,				
+				B.ITEM_DISPLAY 		AS itemDisplay,
+				B.TITLE 			AS title,
+				B.HIT_COUNT 		AS hitCount,
+				B.REGISTER_ID 		AS registerId,
+				B.REGIST_DATE		as registDate,
+				B.UPDATE_DATE	    as updateDate,
+				U.USER_NAME			as registerName,
+				U.USER_ENGLISH_NAME as registerEnglishName
+			FROM   
+				IKEP4_KMS_BD_QNA A
+				INNER JOIN IKEP4_KMS_BD_QNA B ON A.ITEM_ID = B.ITEM_ID
+				INNER JOIN IKEP4_EV_USER U ON B.REGISTER_ID = U.USER_ID
+			WHERE
+				1=1  	
+				
+		<![CDATA[   
+		) D
+			WHERE 
+				RNUM <=  #limitSize#
+		]]> 
+	</select>  
+	
+	<!-- ANSI -->
+	<!-- delete qna Attach List Query -->
+	<select id="listDeleteQnaByWorkspace" parameterClass="String" resultClass="kmsQnaItem">  
+	<![CDATA[  
+		SELECT  /* [QnaItem_SqlMap.xml] collpack.kms.qna.dao.qnaItem.listDeleteQnaByWorkspace */ 
+			A.ITEM_ID	AS itemId,
+			A.TITLE AS title,
+			A.ATTACH_FILE_COUNT AS attachFileCount
+		FROM   
+			IKEP4_KMS_BD_QNA A 
+			INNER JOIN IKEP4_KMS_BD_QNA_WORKSPACE B ON A.ITEM_ID = B.ITEM_ID AND B.IS_OWNER=1
+		WHERE
+			B.WORKSPACE_ID = #workspaceId#
+			AND A.ATTACH_FILE_COUNT>0
+	]]>			
+	</select>
+	
+	<select id="getTopQnaItem"  resultClass="kmsQnaItem">  
+	<![CDATA[  
+		SELECT  TOP 1 /* [QnaItem_SqlMap.xml] collpack.kms.qna.dao.qnaItem.getTopQnaItem */ 
+			ITEM_ID	AS itemId,
+			TITLE   AS title			
+		FROM   
+			IKEP4_KMS_BD_QNA			
+		WHERE			
+			ITEM_DISPLAY = 1
+		ORDER BY REGIST_DATE DESC
+	]]>			
+	</select>	
+	<insert id="insertTargetGroup" parameterClass="kmsQnaItem"> 
+		INSERT INTO ikep4_kms_qna_target ( 
+			ITEM_ID, 
+			TARGET_ID, 
+			REGISTER_ID, 
+			REGISTER_NAME, 
+			REGIST_DATE, 
+			UPDATER_ID, 
+			UPDATER_NAME, 
+			UPDATE_DATE,
+			IS_GROUP
+		) VALUES (
+			#itemId#, 
+			#targetGroupId#, 
+			#registerId#, 
+			#registerName#, 
+			<isNotEmpty property="registDate">#registDate#,</isNotEmpty>
+			<isEmpty property="registDate">CURRENT_TIMESTAMP,</isEmpty>
+			#updaterId#, 
+			#updaterName#, 
+			<isNotEmpty property="registDate">#registDate#,</isNotEmpty>
+			<isEmpty property="registDate">CURRENT_TIMESTAMP,</isEmpty>
+			#isGroup#
+		) 
+	</insert>	
+	<select id="selectTargetUserList" parameterClass="String" resultMap="targetUser">  
+		WITH CTE AS 
+		(
+			SELECT GROUP_ID, PARENT_GROUP_ID
+			FROM IKEP4_EV_GROUP
+			WHERE GROUP_ID = #id#
+			UNION ALL
+			SELECT TBL.GROUP_ID, TBL.PARENT_GROUP_ID
+			FROM IKEP4_EV_GROUP TBL, CTE
+			WHERE TBL.PARENT_GROUP_ID = CTE.GROUP_ID		
+		)
+		SELECT 		
+		  c.user_id as targetUserId
+		FROM 
+			CTE a inner join ikep4_ev_user_group b on a.GROUP_ID = b.group_id inner join IKEP4_EV_USER c on c.user_id = b.user_id
+			where c.user_status = 'C'
+			group by c.user_id
+	</select>
+</sqlMap> 

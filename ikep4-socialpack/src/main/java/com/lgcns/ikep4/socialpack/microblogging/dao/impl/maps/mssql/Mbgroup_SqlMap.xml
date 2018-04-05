@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="socialpack.microblogging.dao.mbgroup" >
+	<typeAlias alias = "Mbgroup" type="com.lgcns.ikep4.socialpack.microblogging.model.Mbgroup"/>
+	
+	<!-- IKEP4_MB_MBGROUP 테이블 조회 결과 -->
+	<resultMap id="result" class="Mbgroup">
+		<result property="mbgroupId" 			column="MBGROUP_ID" 			/>
+		<result property="mbgroupName" 			column="MBGROUP_NAME" 			/>
+		<result property="mbgroupIntroduction" 	column="MBGROUP_INTRODUCTION" 	/>
+		<result property="imagefileId" 			column="IMAGEFILE_ID" 			/>
+		<result property="registerId" 			column="REGISTER_ID" 			/>
+		<result property="registerName" 		column="REGISTER_NAME" 			/>
+		<result property="registerEnglishName" 	column="REGISTER_ENGLISH_NAME" 	/>
+		<result property="registDate" 			column="REGIST_DATE" 			/>
+		<result property="updaterId" 			column="UPDATER_ID" 			/>
+		<result property="updaterName" 			column="UPDATER_NAME" 			/>
+		<result property="updaterEnglishName" 	column="UPDATER_ENGLISH_NAME" 	/>
+		<result property="updateDate" 			column="UPDATE_DATE" 			/>
+		<result property="isDelete" 			column="IS_DELETE" 				/>
+		<result property="memberCount" 			column="MEMBERCOUNT" 			/>
+	</resultMap>
+
+	<!-- ANSI -->		
+	<!-- insert -->
+	<insert id="insert" parameterClass="Mbgroup"> 
+      <![CDATA[ 
+           INSERT INTO IKEP4_MB_MBGROUP ( /* [Mbgroup_SqlMap.xml] mbgroup.insert */
+           MBGROUP_ID, MBGROUP_NAME, MBGROUP_INTRODUCTION, IMAGEFILE_ID, REGISTER_ID, REGISTER_NAME, REGIST_DATE, UPDATER_ID, UPDATER_NAME, UPDATE_DATE, IS_DELETE)  
+           VALUES (#mbgroupId#, #mbgroupName#, #mbgroupIntroduction#, #imagefileId#, #registerId#, #registerName#, CURRENT_TIMESTAMP, #updaterId#, #updaterName#, CURRENT_TIMESTAMP, '0')
+       ]]>
+   </insert>
+   
+   <!-- ANSI -->
+   <!-- select -->
+	<select id="select" parameterClass="java.lang.String" resultMap="result">
+	  <![CDATA[
+		   SELECT /* [Mbgroup_SqlMap.xml] mbgroup.select */ 
+				    mbgroup.MBGROUP_ID,
+					mbgroup.MBGROUP_NAME,
+					mbgroup.MBGROUP_INTRODUCTION,
+					mbgroup.IMAGEFILE_ID,
+					mbgroup.REGISTER_ID,
+					mbgroup.REGIST_DATE,
+					mbgroup.UPDATER_ID,
+					mbgroup.UPDATE_DATE,
+					mbgroup.IS_DELETE,
+					evUser1.USER_NAME 			AS REGISTER_NAME,
+					evUser1.USER_ENGLISH_NAME 	AS REGISTER_ENGLISH_NAME,
+					evUser2.USER_NAME 			AS UPDATER_NAME,
+					evUser2.USER_ENGLISH_NAME 	AS UPDATER_ENGLISH_NAME,
+					(SELECT COUNT(*) FROM IKEP4_MB_MBGROUP_MEMBER mbmember WHERE mbmember.MBGROUP_ID = mbgroup.MBGROUP_ID) AS MEMBERCOUNT
+		   FROM IKEP4_MB_MBGROUP mbgroup
+				INNER JOIN IKEP4_EV_USER evUser1
+					ON mbgroup.REGISTER_ID = evUser1.USER_ID 
+				INNER JOIN IKEP4_EV_USER evUser2
+					ON mbgroup.UPDATER_ID = evUser2.USER_ID 
+		   WHERE mbgroup.MBGROUP_ID = #id#
+	   ]]>
+	</select>
+
+	<!-- ANSI -->	   
+	<!-- update -->
+	<update id="update" parameterClass="Mbgroup">
+		   UPDATE IKEP4_MB_MBGROUP  /* [Mbgroup_SqlMap.xml] mbgroup.update */ 
+		   SET MBGROUP_NAME			= #mbgroupName#, 
+		   	   MBGROUP_INTRODUCTION	= #mbgroupIntroduction#, 
+				<isNotEmpty property="imagefileId">
+	   	   			IMAGEFILE_ID			= #imagefileId#, 
+				</isNotEmpty>
+		   	   UPDATER_ID			= #updaterId#, 
+		   	   UPDATER_NAME			= #updaterName#, 
+		   	   UPDATE_DATE			= CURRENT_TIMESTAMP
+		   WHERE MBGROUP_ID 		= #mbgroupId#  
+	</update>
+	
+	<!-- ANSI -->
+   <!-- delete -->
+   <delete id="delete" parameterClass="java.lang.String">
+      <![CDATA[
+		   UPDATE IKEP4_MB_MBGROUP  /* [Mbgroup_SqlMap.xml] mbgroup.delete */ 
+		   SET IS_DELETE			= 1
+		   WHERE MBGROUP_ID 		= #id#  
+	   ]]>
+	</delete>
+	
+	<!-- ANSI -->
+	<select id="selectMyGroupList" parameterClass="java.lang.String" resultMap="result">  
+		SELECT /* [Mbgroup_SqlMap.xml] mbgroup.selectMyGroupList */ 
+				mbgroup.MBGROUP_ID,
+				mbgroup.MBGROUP_NAME,
+				mbgroup.MBGROUP_INTRODUCTION,
+				mbgroup.IMAGEFILE_ID,
+				mbgroup.REGISTER_ID,
+				mbgroup.REGIST_DATE,
+				mbgroup.UPDATER_ID,
+				mbgroup.UPDATE_DATE,
+				mbgroup.IS_DELETE,
+				evUser1.USER_NAME 			AS REGISTER_NAME,
+				evUser1.USER_ENGLISH_NAME 	AS REGISTER_ENGLISH_NAME,
+				evUser2.USER_NAME 			AS UPDATER_NAME,
+				evUser2.USER_ENGLISH_NAME 	AS UPDATER_ENGLISH_NAME, 
+				(SELECT COUNT(*) FROM IKEP4_MB_MBGROUP_MEMBER mbmember WHERE mbmember.MBGROUP_ID = mbgroup.MBGROUP_ID) AS MEMBERCOUNT
+		FROM IKEP4_MB_MBGROUP mbgroup
+			 INNER JOIN IKEP4_MB_MBGROUP_MEMBER mbmember
+			 	ON mbgroup.MBGROUP_ID = mbmember.MBGROUP_ID
+			 INNER JOIN IKEP4_EV_USER evUser1
+			 	ON mbgroup.REGISTER_ID = evUser1.USER_ID 
+			 INNER JOIN IKEP4_EV_USER evUser2
+			 	ON mbgroup.UPDATER_ID = evUser2.USER_ID 
+		WHERE mbmember.MEMBER_ID 	= #id#
+		  AND mbgroup.IS_DELETE	 	= 0
+		  AND mbmember.STATUS	 	= '1'
+	</select>   
+	
+	<!-- ANSI -->
+	<!-- selectBothGroup -->
+	<select id="selectBothGroup" parameterClass="java.util.Map" resultMap="result">
+			SELECT /* [Mbgroup_SqlMap.xml] mbgroup.selectBothGroup */ 
+			 mbgroup.MBGROUP_ID,
+				mbgroup.MBGROUP_NAME,
+				mbgroup.MBGROUP_INTRODUCTION,
+				mbgroup.IMAGEFILE_ID,
+				mbgroup.REGISTER_ID,
+				mbgroup.REGIST_DATE,
+				mbgroup.UPDATER_ID,
+				mbgroup.UPDATE_DATE,
+				mbgroup.IS_DELETE,
+				evUser1.USER_NAME 			AS REGISTER_NAME,
+				evUser1.USER_ENGLISH_NAME 	AS REGISTER_ENGLISH_NAME,
+				evUser2.USER_NAME 			AS UPDATER_NAME,
+				evUser2.USER_ENGLISH_NAME 	AS UPDATER_ENGLISH_NAME, 
+				(SELECT COUNT(*) FROM IKEP4_MB_MBGROUP_MEMBER mbmember WHERE mbmember.MBGROUP_ID = mbgroup.MBGROUP_ID) AS MEMBERCOUNT
+			FROM IKEP4_MB_MBGROUP mbgroup
+				 INNER JOIN IKEP4_MB_MBGROUP_MEMBER A
+				 	ON mbgroup.MBGROUP_ID = A.MBGROUP_ID
+				 INNER JOIN IKEP4_MB_MBGROUP_MEMBER B
+				 	ON mbgroup.MBGROUP_ID = B.MBGROUP_ID
+				 INNER JOIN IKEP4_EV_USER evUser1
+				 	ON mbgroup.REGISTER_ID = evUser1.USER_ID 
+				 INNER JOIN IKEP4_EV_USER evUser2
+				 	ON mbgroup.UPDATER_ID = evUser2.USER_ID 
+			WHERE mbgroup.IS_DELETE	 = 0
+			  AND A.MEMBER_ID = #userId#
+			  AND B.MEMBER_ID = #ownerId#
+			  AND A.STATUS	 = '1'
+			  AND B.STATUS	 = '1'
+	</select>
+	
+	<!-- ANSI -->
+	<!-- selectCount -->
+	<select id="selectCount" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+	  <![CDATA[
+			SELECT /* [Mbgroup_SqlMap.xml] mbgroup.selectCount */ 
+			 COUNT(*) 
+			FROM IKEP4_MB_MBGROUP 
+			WHERE MBGROUP_ID = #id# 
+	   ]]>
+	</select>
+	
+</sqlMap>

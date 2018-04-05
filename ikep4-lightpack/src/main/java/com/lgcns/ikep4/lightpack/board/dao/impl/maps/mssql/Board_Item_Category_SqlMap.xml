@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="lightpack.board.dao.boardItemCategory">
+  <typeAlias alias="BoardItemCategory"                type="com.lgcns.ikep4.lightpack.board.model.BoardItemCategory"/>
+   
+  <resultMap id="result" class="BoardItemCategory" > 
+    <result column="CATEGORY_ID"          property="categoryId"         jdbcType="VARCHAR" />
+    <result column="CATEGORY_NAME"        property="categoryName"       jdbcType="VARCHAR" />
+    <result column="CATEGORY_SEQ_ID"      property="categorySeqId"      jdbcType="VARCHAR" />
+    <result column="CATEGORY_TYPE"        property="categoryType"       jdbcType="VARCHAR" />
+    <result column="COLOR"                property="color"              jdbcType="VARCHAR" />
+    <result column="DESCRIPTION"          property="description"        jdbcType="VARCHAR" />
+    <result column="PORTAL_ID"            property="portalId"           jdbcType="VARCHAR" />
+    <result column="REGISTER_ID"          property="registerId"         jdbcType="VARCHAR" />
+    <result column="REGISTER_NAME"        property="registerName"       jdbcType="VARCHAR" />
+    <result column="REGIST_DATE"          property="registDate"         jdbcType="DATE" />
+  </resultMap> 
+  
+  <select id="listCategoryBoardItem" resultMap="result">   
+	SELECT /* [BoardItemCategory_SqlMap.xml] boardItemCategory.listCategoryBoardItem */
+	         CATEGORY_ID
+			,CATEGORY_NAME
+			,CATEGORY_SEQ_ID
+			,CATEGORY_TYPE
+			,COLOR
+			,DESCRIPTION
+			,PORTAL_ID
+			,REGISTER_ID
+			,REGISTER_NAME
+			,REGIST_DATE
+			,DELETE_YN
+			,BOARD_ID
+	FROM  IKEP4_BD_CATEGORY
+	WHERE DELETE_YN = 'Y'
+	  AND BOARD_ID  = #boardId#
+	 ORDER BY CATEGORY_SEQ_ID, CATEGORY_ID
+  </select> 
+  
+  <insert id="createCategoryNm" parameterClass="BoardItemCategory">
+		INSERT INTO IKEP4_BD_CATEGORY ( /* [BOARD_ITEM_CATEGORY_SqlMap.xml] BoardItemCategory.createCategoryNm */
+		 BOARD_ID,CATEGORY_ID,CATEGORY_NAME,REGISTER_ID,REGISTER_NAME, REGIST_DATE,DELETE_YN
+		) VALUES (
+		 #boardId#,#categoryId#,#addNameList#,#registerId#,#registerName#, CURRENT_TIMESTAMP,'Y'
+		)
+  </insert>
+	
+  <update id="deleteCategoryNm" parameterClass="BoardItemCategory">
+	    UPDATE IKEP4_BD_CATEGORY /* [BOARD_ITEM_CATEGORY_SqlMap.xml] BoardItemCategory.updateCategoryNm */
+	    SET DELETE_YN = 'N'
+	    WHERE CATEGORY_ID = #delIdList#
+	     AND BOARD_ID     = #boardId#
+  </update>
+  
+  <update id="updateCategoryNm" parameterClass="BoardItemCategory">
+	    UPDATE IKEP4_BD_CATEGORY /* [BOARD_ITEM_CATEGORY_SqlMap.xml] BoardItemCategory.updateCategoryNm */
+	      SET CATEGORY_NAME = #updateNameList#, CATEGORY_SEQ_ID=#alignList#
+	     WHERE CATEGORY_ID  = #updateIdList#
+	      AND BOARD_ID      = #boardId#
+  </update>
+  
+  <update id="updateCategoryAlign" parameterClass="BoardItemCategory">
+	    UPDATE IKEP4_BD_CATEGORY /* [BOARD_ITEM_CATEGORY_SqlMap.xml] BoardItemCategory.updateCategoryAlign */
+	      SET  CATEGORY_SEQ_ID=#categorySeqId#
+	     WHERE CATEGORY_NAME = #alignList#
+	      AND BOARD_ID      = #boardId#
+  </update>
+</sqlMap> 

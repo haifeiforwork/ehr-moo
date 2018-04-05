@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="collpack.expertnetwork.dao.ExpertNetworkCategory">
+	<typeAlias alias="ExpertNetworkCategoryPK" type="com.lgcns.ikep4.collpack.expertnetwork.model.ExpertNetworkCategoryPK"/>
+	<typeAlias alias="ExpertNetworkCategory" type="com.lgcns.ikep4.collpack.expertnetwork.model.ExpertNetworkCategory"/>
+	<typeAlias alias="CategorySortOrderMap" type="com.lgcns.ikep4.support.base.model.CategorySortOrderMap"/>
+
+	<resultMap class="ExpertNetworkCategory" id="result">
+		<result column="CATEGORY_ID" property="categoryId" jdbcType="VARCHAR" javaType="String"/>
+		<result column="CATEGORY_PARENT_ID" property="categoryParentId" jdbcType="VARCHAR" javaType="String"/>
+		<result column="CATEGORY_NAME" property="categoryName" jdbcType="VARCHAR" javaType="String"/>
+		<result column="SORT_ORDER" property="sortOrder" jdbcType="NUMBER" javaType="Integer"/>
+		<result column="PORTAL_ID" property="portalId" jdbcType="VARCHAR" javaType="String"/>
+	</resultMap>
+
+	<resultMap class="ExpertNetworkCategory" extends="result" id="categoryAndChildCountResult">
+		<result column="CHILD_COUNT" property="childCount" jdbcType="NUMBER" javaType="Integer"/>
+	</resultMap>
+
+	<sql id="ExpertNetworkCategoryColumnList">
+	       CATEGORY_ID
+	     , CATEGORY_PARENT_ID
+	     , CATEGORY_NAME
+	     , SORT_ORDER
+	     , PORTAL_ID
+	</sql>
+
+<!-- Category 입력 -->
+	<insert id="create" parameterClass="ExpertNetworkCategory">
+		INSERT /* [ExpertNetworkCategory_SqlMap.xml] collpack.expertnetwork.dao.ExpertNetworkCategory.create */
+		       INTO IKEP4_EX_CATEGORY (
+		     <include refid="ExpertNetworkCategoryColumnList"/>
+		     , REGISTER_ID
+		     , REGISTER_NAME
+		     , REGIST_DATE
+		       )
+	<![CDATA[
+		VALUES (
+		       #categoryId#
+		     , #categoryParentId#
+		     , #categoryName#
+		     , #sortOrder#
+		     , #portalId#
+		     , #registerId#
+		     , #registerName#
+		     , SYSDATE
+		       )
+	]]>
+	</insert>
+
+<!-- Category 수정 -->
+	<update id="update" parameterClass="ExpertNetworkCategory">
+	<![CDATA[
+		UPDATE /* [ExpertNetworkCategory_SqlMap.xml] collpack.expertnetwork.dao.ExpertNetworkCategory.update */
+		       IKEP4_EX_CATEGORY
+		   SET CATEGORY_PARENT_ID = #categoryParentId#
+		     , CATEGORY_NAME = #categoryName#
+		     , SORT_ORDER = #sortOrder#
+		     , REGISTER_ID = #registerId#
+		     , REGISTER_NAME = #registerName#
+		     , REGIST_DATE = SYSDATE
+		 WHERE CATEGORY_ID = #categoryId#
+	]]>
+	</update>
+
+<!-- Category 삭제 -->
+	<delete id="remove" parameterClass="ExpertNetworkCategoryPK">
+	<![CDATA[
+		DELETE /* [ExpertNetworkCategory_SqlMap.xml] collpack.expertnetwork.dao.ExpertNetworkCategory.remove */
+		       IKEP4_EX_CATEGORY
+		 WHERE CATEGORY_ID = #categoryId#
+	]]>
+	</delete>
+
+<!-- Category 조회 -->
+	<select id="get" parameterClass="ExpertNetworkCategoryPK" resultMap="result">
+		SELECT /* [ExpertNetworkCategory_SqlMap.xml] collpack.expertnetwork.dao.ExpertNetworkCategory.get */
+		     <include refid="ExpertNetworkCategoryColumnList"/>
+	<![CDATA[
+		  FROM IKEP4_EX_CATEGORY
+		 WHERE CATEGORY_ID = #categoryId#
+	]]>
+	</select>
+
+<!-- Category 조회 -->
+	<select id="list" resultMap="result">
+		SELECT /* [ExpertNetworkCategory_SqlMap.xml] collpack.expertnetwork.dao.ExpertNetworkCategory.list */
+		     <include refid="ExpertNetworkCategoryColumnList"/>
+		  FROM IKEP4_EX_CATEGORY
+		 ORDER BY SORT_ORDER
+	<![CDATA[
+	]]>
+	</select>
+
+<!-- Category 조회 -->
+	<select id="countByCategoryName" parameterClass="ExpertNetworkCategory" resultClass="Integer">
+		SELECT /* [ExpertNetworkCategory_SqlMap.xml] collpack.expertnetwork.dao.ExpertNetworkCategory.countByCategoryName */
+		       COUNT(CATEGORY_ID) CATEGORY_COUNT
+		  FROM IKEP4_EX_CATEGORY
+		 WHERE PORTAL_ID = #portalId#
+		   AND CATEGORY_NAME = #categoryName#
+	<![CDATA[
+	]]>
+	</select>
+
+<!-- Root Category 조회 -->
+	<select id="getRootCategory" parameterClass="String" resultMap="result">
+		SELECT /* [ExpertNetworkCategory_SqlMap.xml] collpack.expertnetwork.dao.ExpertNetworkCategory.getRootCategory */
+		     <include refid="ExpertNetworkCategoryColumnList"/>
+		  FROM IKEP4_EX_CATEGORY
+	<![CDATA[
+		 WHERE PORTAL_ID = #portalId#
+		   AND CATEGORY_ID = CATEGORY_PARENT_ID
+	]]>
+	</select>
+
+<!-- CategoryParentId 에 해당하는 Category 전체조회 -->
+	<select id="listByCategoryParentId" parameterClass="String" resultMap="result">
+		SELECT /* [ExpertNetworkCategory_SqlMap.xml] collpack.expertnetwork.dao.ExpertNetworkCategory.listByCategoryParentId */
+		     <include refid="ExpertNetworkCategoryColumnList"/>
+		  FROM IKEP4_EX_CATEGORY A
+	<![CDATA[
+		 WHERE CATEGORY_PARENT_ID = #CategoryParentId#
+		   AND CATEGORY_PARENT_ID != CATEGORY_ID
+		 ORDER BY SORT_ORDER
+ 	]]>
+	</select>
+
+<!-- CategoryParentId 에 해당하는 Category 전체조회 -->
+	<select id="listAndChildCountByCategoryParentId" parameterClass="String" resultMap="categoryAndChildCountResult">
+		SELECT /* [ExpertNetworkCategory_SqlMap.xml] collpack.expertnetwork.dao.ExpertNetworkCategory.listAndChildCountByCategoryParentId */
+		     <include refid="ExpertNetworkCategoryColumnList"/>
+		     , (SELECT COUNT(CATEGORY_ID) FROM IKEP4_EX_CATEGORY B WHERE B.CATEGORY_PARENT_ID = A.CATEGORY_ID) CHILD_COUNT
+		  FROM IKEP4_EX_CATEGORY A
+	<![CDATA[
+		 WHERE CATEGORY_PARENT_ID = #CategoryParentId#
+		   AND CATEGORY_PARENT_ID != CATEGORY_ID
+		 ORDER BY SORT_ORDER
+	]]>
+	</select>
+
+<!-- 같은 부모 category 중 sortOrder 최대값 -->
+	<select id="getLastSortOrder" parameterClass="String" resultClass="Integer">
+	<![CDATA[
+		SELECT /* [ExpertNetworkCategory_SqlMap.xml] collpack.expertnetwork.dao.ExpertNetworkCategory.getLastSortOrder */
+		       NVL(MAX(SORT_ORDER), 0)
+		  FROM IKEP4_EX_CATEGORY
+		 WHERE CATEGORY_PARENT_ID = #categoryParentId#
+	]]>
+	</select>
+
+<!-- Category 삭제  -->
+	<delete id="removeByCategoryIdHierarchy" parameterClass="String">
+	<![CDATA[
+		DELETE /* [ExpertNetworkCategory_SqlMap.xml] collpack.expertnetwork.dao.ExpertNetworkCategory.removeByCategoryIdHierarchy */
+		       IKEP4_EX_CATEGORY
+		 WHERE CATEGORY_ID IN (
+		                       SELECT CATEGORY_ID
+		                         FROM IKEP4_EX_CATEGORY
+		                        START WITH CATEGORY_ID = #categoryId#
+		                        CONNECT BY PRIOR CATEGORY_ID = CATEGORY_PARENT_ID
+		                      )
+	]]>
+	</delete>
+
+<!-- Category 정렬순서 수정 -->
+	<update id="updateSortOrder" parameterClass="CategorySortOrderMap">
+	<![CDATA[
+		UPDATE /* [ExpertNetworkCategory_SqlMap.xml] collpack.expertnetwork.dao.ExpertNetworkCategory.updateSortOrder */
+		       IKEP4_EX_CATEGORY
+		   SET SORT_ORDER = #sortOrder#
+		 WHERE CATEGORY_ID = #categoryId#
+	]]>
+	</update>
+
+<!-- Category 정렬순서 수정 (일괄 감소) -->
+	<update id="updateSortOrderMinus" parameterClass="CategorySortOrderMap">
+		UPDATE /* [ExpertNetworkCategory_SqlMap.xml] collpack.expertnetwork.dao.ExpertNetworkCategory.updateSortOrderMinus */
+		       IKEP4_EX_CATEGORY
+		   SET SORT_ORDER = SORT_ORDER - 1
+		 WHERE CATEGORY_PARENT_ID = #categoryParentId#
+		 <isNotEqual property="sortOrderFrom" compareValue="0" prepend="AND "><![CDATA[SORT_ORDER >= #sortOrderFrom#]]></isNotEqual>
+		 <isNotEqual property="sortOrderTo" compareValue="0" prepend="AND "><![CDATA[SORT_ORDER <= #sortOrderTo#]]></isNotEqual>
+	<![CDATA[
+	]]>
+	</update>
+
+<!-- Category 정렬순서 수정 (일괄 증가) -->
+	<update id="updateSortOrderPlus" parameterClass="CategorySortOrderMap">
+		UPDATE /* [ExpertNetworkCategory_SqlMap.xml] collpack.expertnetwork.dao.ExpertNetworkCategory.updateSortOrderPlus */
+		       IKEP4_EX_CATEGORY
+		   SET SORT_ORDER = SORT_ORDER + 1
+		 WHERE CATEGORY_PARENT_ID = #categoryParentId#
+		 <isNotEqual property="sortOrderFrom" compareValue="0" prepend="AND "><![CDATA[SORT_ORDER >= #sortOrderFrom#]]></isNotEqual>
+		 <isNotEqual property="sortOrderTo" compareValue="0" prepend="AND "><![CDATA[SORT_ORDER <= #sortOrderTo#]]></isNotEqual>
+	<![CDATA[
+	]]>
+	</update>
+
+<!-- Category 수정 (이동시) -->
+	<update id="updateSortOrderCategoryParentId" parameterClass="CategorySortOrderMap">
+	<![CDATA[
+		UPDATE /* [ExpertNetworkCategory_SqlMap.xml] collpack.expertnetwork.dao.ExpertNetworkCategory.updateMove */
+		       IKEP4_EX_CATEGORY
+		   SET CATEGORY_PARENT_ID = #categoryParentId#
+		     , SORT_ORDER = #sortOrder#
+		 WHERE CATEGORY_ID = #categoryId#
+	]]>
+	</update>
+
+<!-- Category 조회-->
+	<select id="listRandomCategoryByCount" parameterClass="Map" resultMap="result">
+	    SELECT *
+	      FROM (
+		        SELECT /* [ExpertNetworkCategory_SqlMap.xml] collpack.expertnetwork.dao.ExpertNetworkCategory.listRandomCategoryByCount */
+		             <include refid="ExpertNetworkCategoryColumnList"/>
+		          FROM IKEP4_EX_CATEGORY
+		         WHERE PORTAL_ID = #portalId#
+		           AND CATEGORY_ID != CATEGORY_PARENT_ID
+		         ORDER BY DBMS_RANDOM.VALUE
+		       )
+	<![CDATA[
+		 WHERE ROWNUM <= #categoryCount#
+	]]>
+	</select>
+
+</sqlMap>

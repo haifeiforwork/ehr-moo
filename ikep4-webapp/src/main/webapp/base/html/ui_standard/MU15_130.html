@@ -1,0 +1,378 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ko">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>iKEP 4.00</title>
+<link rel="stylesheet" type="text/css" href="../../css/theme01/jquery_ui_custom.css" />
+<link rel="stylesheet" type="text/css" href="../../css/common.css" />
+<link rel="stylesheet" type="text/css" href="../../css/theme01/theme.css" />
+<script type="text/javascript" src="../../js/jquery/jquery-1.6.2.min.js"></script>
+<script type="text/javascript" src="../../js/jquery/jquery-ui-1.8.13.min.without.datepicker.js"></script>
+<script type="text/javascript" src="../../js/jquery/jquery.jstree.pack.js"></script>
+<script type="text/javascript" src="../../js/langResource/ko.js"></script>
+<script type="text/javascript" src="../../js/common.pack.js"></script>
+<script type="text/javascript">
+<!--
+var unselect;
+(function($){
+	
+	$(document).ready(function() {
+
+		// left menu setting
+		 iKEP.setLeftMenu();
+		
+		$("#categorys").sortable({			
+			start: function(e,ui){
+				clearSelect();
+            },
+			stop: function(e,ui){
+				sortArray();
+            },
+            placeholder: "ui-state-highlight",
+			revert:true
+		});
+		
+		$("#categorys > li").live({
+		    "click" : function(event){
+		    	selectItem(event.target);
+		    }
+		});
+		
+		$( "#categorys" ).disableSelection();
+		
+		$("#btnAdd").click(function() {
+			clearSelect();
+			addCatetory();
+		});
+		
+		$("#btnModify").click(function() {
+			modifyCatetory();
+		});
+		
+		$("#btnDelete").click(function() {
+			deleteCatetory();
+		});
+		
+		$("#btnCancel").click(function() {
+			clearSelect();
+			dialog.dialog("close");
+		});
+		
+		$.template("tmplCategoryOrder", '<li class="ui-state-default">${id}</li>');
+		$.template("tmplCategoryItem", '<li class="ui-state-default" id="${id}"><span class="ui-icon ui-icon-arrowthick-2-n-s" name="${name}"></span>${name}</li>');
+		$.template("tmplCategoryName", '<span class="ui-icon ui-icon-arrowthick-2-n-s" name="${name}"></span>${name}');
+		
+		$("#btnSave").click(function() {
+			var categoryName = $("input[name=name]", "#divCategoryItemControll").val();
+			var lastCnt = $(".orderBox li:last-child").text();
+			lastCnt++;
+			switch(categoryItemAction) {
+				case "add" :
+					//ajax : save
+					
+					// ajax success callback process					
+					var data = {id:lastCnt, name:categoryName};
+					$(".orderBox").append($.tmpl("tmplCategoryOrder",data));
+					$("#categorys").append($.tmpl("tmplCategoryItem",data));					
+					break;
+				case "modify" :
+					//ajax : save
+					var data = {name:categoryName};
+					$("#"+currCategoryId).empty();
+					$("#"+currCategoryId).append($.tmpl("tmplCategoryName",data));
+					clearSelect();
+					break;
+			}
+			
+			$("#divCategoryItemControll").dialog("close");
+		});
+		
+	});
+		
+	sortArray = function(){		
+		$("#categorys").sortable("refresh");
+		iKEP.debug($("#categorys").sortable("serialize"));
+		var result = $("#categorys").sortable("toArray");
+		alert("drop or delete 종료 후 " + result);
+	}
+	
+	selectItem = function(item) {
+		unselect();
+		if(isToggle(item)){
+			clearSelect();
+		}else{
+			$(item).addClass("ui-selected");
+			currCategoryId = $(item).attr("id");
+			showBtn();
+		}
+	}
+	
+	isToggle = function(item){		
+		if(currCategoryId == null){
+			return false;			
+		}else{
+			if(currCategoryId == $(item).attr("id")){
+				return true;
+			}else{
+				return false;
+			}
+		}
+	}
+	
+	showBtn = function(){
+		$("#modifyLi").show();
+		$("#deleteLi").show();
+	}
+	
+	hideBtn = function(){
+		$("#modifyLi").hide();
+		$("#deleteLi").hide();
+	}
+	
+	unselect = function() {		
+		$("#categorys > li").removeClass("ui-selected");
+	}
+	
+	addCatetory = function(){
+		showCategoryItemDialog("add");
+	}
+	
+	modifyCatetory = function(){
+		showCategoryItemDialog("modify");
+	}
+	
+	deleteCatetory = function(){
+		$("#"+currCategoryId).remove();
+		$(".orderBox li:last-child").remove();
+		alert("id = " + currCategoryId + " 삭제");
+		sortArray();
+	}
+	
+	clearSelect = function(){
+		currCategoryId = null;
+		unselect();
+		hideBtn();
+	}
+	
+	var currCategoryId = null;
+	var dialog = null;
+	var categoryItemAction = "";
+	function showCategoryItemDialog(flag) {
+		categoryItemAction = flag;
+		var dialogTitle = categoryItemAction == "add" ? "Category 등록" : "Category 수정";
+		
+		if(dialog == null) {
+			dialog = $("#divCategoryItemControll").dialog({
+				title : dialogTitle,
+				modal : true,
+				resizable : false,
+				width : 400,
+				height : 130,
+				open : function() {
+					switch(categoryItemAction) {
+						case "add" :
+							$("input[name=name]", this).val("");
+							break;
+						case "modify" :
+							var categoryName = $("#"+currCategoryId+" span:first-child").attr("name");
+							$("input[name=name]", this).val(categoryName);
+							break;
+					}
+				}
+			});
+		} else {
+			if(dialog.dialog("isOpen")) dialog.dialog("close");
+			
+			dialog.dialog("option", "title", dialogTitle)
+				.dialog("open");
+			
+		}
+		
+	}
+	
+})(jQuery);
+-->
+</script>
+</head>
+
+<body>
+
+<!--skipNavigation Start-->
+<div id="skipNavigation">
+	<p><a href="#topInfo">헤더정보영역 바로가기</a></p>
+	<p><a href="#topMenu">탑메뉴 바로가기</a></p>	
+	<p><a href="#blockHeaderSub">퀵메뉴 바로가기</a></p>
+	<p><a href="#leftMenu">레프트메뉴 바로가기</a></p>	
+	<p><a href="#mainContents">컨텐츠영역 바로가기</a></p>	
+</div>
+<!--//skipNavigation End-->
+
+<!--wrapper Start-->
+<div id="wrapper">
+
+	<!--blockContainer Start-->
+	<div id="blockContainer">
+
+		<!--blockHeader Start-->
+		<div id="blockHeader">	
+		
+			<!--topInfo Start-->	
+			<div id="topInfo">
+				<h1 class="none">헤더정보영역</h1>
+				<div id="topLogo">
+					<a href="#a"><img src="../../images/common/logo.png" alt="iKEP Logo" /></a>
+				</div>
+			</div>
+			<!--//topInfo End-->
+						
+			<!--topMenu Start-->
+			<div id="topMenu">
+				<h1 class="none">탑메뉴</h1>			
+			</div>
+			<!--//topMenu End-->		
+
+			<!--blockHeaderSub Start-->
+			<div id="blockHeaderSub">
+				<h1 class="none">퀵메뉴</h1>		
+			</div>
+			<!--//blockHeaderSub End-->
+										
+		</div>
+		<!--//blockHeader End-->
+		
+		<!--blockMain Start-->
+		<div id="blockMain">
+
+			<!--leftMenu Start-->
+			<div id="leftMenu">
+				<h1 class="none">레프트메뉴</h1>	
+				<h2>Forum</h2>
+
+				<div class="blockButton_2 mb10"> 
+					<a class="button_2" href="#a"><span><img src="../../images/icon/ic_forum.png" alt="" /> 토론 등록</span></a>				
+				</div>
+									
+				<div class="left_fixed">	
+					<div class="boxList_2">
+						<div class="subTitle_2">
+							나의 토론 활동
+							<div class="btn_more"><a href="#a"><img src="../../images/common/btn_more.gif" alt="more" /></a></div>
+						</div>
+						<ul>
+							<li><a href="#a">Forum Ranking : <span class="colorPointS">145</span></a></li>
+							<li><a href="#a">토론주제 : <strong>5</strong>건</a></li>
+							<li><a href="#a">토론글 : <strong>17</strong>건</a></li>
+							<li><a href="#a">토론의견 : <strong>36</strong>건</a></li>
+						</ul>
+					</div>
+					<ul>		
+						<li class="liFirst opened"><a href="#a">토론 수행</a>
+							<ul>
+								<li class="no_child"><a href="#a">인기 토론</a></li>
+								<li class="no_child"><a href="#a">우수 토론</a></li>
+								<li class="no_child liLast"><a href="#a">논쟁중인 토론</a></li>
+							</ul>
+						</li>					
+						<li class="opened"><a href="#a">토론 카테고리</a>
+							<ul>
+								<li class="no_child"><a href="#a">Web2.0</a></li>
+								<li class="no_child"><a href="#a">신성장동력</a></li>
+								<li class="no_child"><a href="#a">협업문화</a></li>
+								<li class="no_child"><a href="#a">모바일</a></li>
+								<li class="no_child liLast"><a href="#a">Smart Work</a></li>
+							</ul>
+						</li>		
+						<li class="opened"><a href="#a">토론 분석</a>
+							<ul>
+								<li class="no_child liLast"><a href="#a">Key Issues</a></li>
+							</ul>
+						</li>
+						<li class="opened"><a href="#a">Administration</a>
+							<ul>
+								<li class="no_child"><a href="#a">토론 카테고리 관리</a></li>
+								<li class="no_child"><a href="#a">토론활동점수 정책관리</a></li>
+								<li class="no_child"><a href="#a">우수토론 정책관리</a></li>
+								<li class="no_child liLast"><a href="#a">토론분석 정책관리</a></li>
+							</ul>
+						</li>												
+					</ul>
+				</div>						
+			</div>	
+			<!--//leftMenu End-->
+				
+			<!--mainContents Start-->
+			<div id="mainContents" >
+				<h1 class="none">컨텐츠영역</h1>
+
+				<!--pageTitle Start-->
+				<div id="pageTitle">
+					<h2>토론 카테고리 관리</h2>
+				</div>
+				<!--//pageTitle End-->
+								
+				<div class="corner_RoundBox01 mb10">
+					토론 카테고리 목록은 Drag &amp; Drop으로 이동할 수 있습니다.
+					<div class="l_t_corner"></div>
+					<div class="r_t_corner"></div>
+					<div class="l_b_corner"></div>
+					<div class="r_b_corner"></div>					
+				</div>
+				<!--blockDetail Start-->			
+				<div class="blockDetail clear">
+					<table summary="토론 카테고리 관리 테이블">
+						<caption></caption>
+						<tbody>
+							<tr>
+								<th scope="col" width="18%" class="textCenter">순번</th>
+								<th scope="col" width="*" class="textCenter">Category명</th>
+							</tr>
+						</tbody>						
+					</table>
+					<div style="min-width:700px;width:100%;">
+						<div style="float:left;width:18%;">
+							<ul class="orderBox">
+								<li class="ui-state-default">1</li>
+								<li class="ui-state-default">2</li>
+								<li class="ui-state-default">3</li>
+								<li class="ui-state-default">4</li>
+								<li class="ui-state-default">5</li>
+							</ul>
+						</div>
+						<div style="float:left;width:82%;">
+							<ul class="list-selectable" id="categorys">
+								<li class="ui-state-default" id="categoryId_1"><span class="ui-icon ui-icon-arrowthick-2-n-s" name="Web2.0"></span>Web2.0</li>
+								<li class="ui-state-default" id="categoryId_2"><span class="ui-icon ui-icon-arrowthick-2-n-s" name="신성장동력"></span>신성장동력</li>
+								<li class="ui-state-default" id="categoryId_3"><span class="ui-icon ui-icon-arrowthick-2-n-s" name="협업문화"></span>협업문화</li>
+								<li class="ui-state-default" id="categoryId_4"><span class="ui-icon ui-icon-arrowthick-2-n-s" name="모바일"></span>모바일</li>
+								<li class="ui-state-default" id="categoryId_5"><span class="ui-icon ui-icon-arrowthick-2-n-s" name="스마트 워크"></span>스마트 워크</li>
+							</ul>
+						</div>
+						<div class="clear"></div>
+					</div>
+				</div>
+				<!--//blockDetail End-->	
+														
+				<!--blockButton Start-->
+				<div class="blockButton"> 
+					<ul>
+						<li><a id="btnAdd" class="button" href="#a"><span>등록</span></a></li>
+						<li id="modifyLi" style="display:none;"><a id="btnModify" class="button" href="#a"><span>수정</span></a></li>
+						<li id="deleteLi" style="display:none;"><a id="btnDelete" class="button" href="#a"><span>삭제</span></a></li>							
+					</ul>
+				</div>
+				<!--//blockButton End-->
+													
+			</div>
+			<!--//mainContents End-->
+			<div class="clear"></div>
+		</div>
+		<!--//blockMain End-->
+		
+	</div>
+	<!--//blockContainer End-->
+	
+		
+</div>
+<!--//wrapper End-->
+</body>
+</html>

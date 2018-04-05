@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="collpack.qna.dao.QnaCategory">
+  
+   <typeAlias alias = "QnaCategory" type="com.lgcns.ikep4.collpack.qna.model.QnaCategory"/>
+ 
+  <resultMap class="QnaCategory" id="QnaCategoryResult">
+    <result column="CATEGORY_ID" 	 	property="categoryId" />
+    <result column="CATEGORY_NAME"  	property="categoryName" />
+    <result column="CATEGORY_ORDER"  	property="categoryOrder" />
+    <result column="REGISTER_ID"  		property="registerId" />
+    <result column="REGISTER_NAME"  	property="registerName" />
+    <result column="REGIST_DATE"  		property="registDate" />
+    <result column="PORTAL_ID"  		property="portalId" />
+  </resultMap>
+  
+  <!-- ANSI -->
+  <select id="select" parameterClass="String" resultMap="QnaCategoryResult">
+    SELECT 					/* [QnaCategory_SqlMap.xml] qnaCategory.select */  
+	    CATEGORY_ID, 
+	    CATEGORY_NAME, 
+	    CATEGORY_ORDER,
+	    REGISTER_ID, 
+	    REGISTER_NAME, 
+	    REGIST_DATE,
+	    PORTAL_ID
+    FROM IKEP4_QA_CATEGORY
+    WHERE 
+    	CATEGORY_ID = #categoryId#
+  </select>
+  
+   <!-- ANSI -->
+   <select id="selectAll" parameterClass="String" resultMap="QnaCategoryResult">
+    SELECT 						/* [QnaCategory_SqlMap.xml] qnaCategory.selectAll */  
+	    CATEGORY_ID, 
+	    CATEGORY_NAME, 
+	    CATEGORY_ORDER,
+	    REGISTER_ID, 
+	    REGISTER_NAME, 
+	    REGIST_DATE,
+	    PORTAL_ID
+    FROM IKEP4_QA_CATEGORY
+    WHERE PORTAL_ID = #portalId#
+    ORDER BY CATEGORY_ORDER ASC
+  </select>
+  
+   	<!-- ANSI -->
+    <select id="selectCategoryIdByCategoryName" parameterClass="QnaCategory" resultClass="String">
+    SELECT 						/* [QnaCategory_SqlMap.xml] qnaCategory.selectCategoryIdByCategoryName */ 
+	    CATEGORY_ID
+    FROM IKEP4_QA_CATEGORY
+    WHERE 
+    	CATEGORY_NAME = #categoryName#
+    	AND PORTAL_ID = #portalId#
+  </select>
+  
+  
+  <!-- MS SQL -->
+  <insert id="insert" parameterClass="QnaCategory">
+    INSERT INTO IKEP4_QA_CATEGORY (			/* [QnaCategory_SqlMap.xml] qnaCategory.insert */ 
+    	CATEGORY_ID, 
+    	CATEGORY_NAME, 
+    	CATEGORY_ORDER,
+    	REGISTER_ID, 
+        REGISTER_NAME, 
+        REGIST_DATE, 
+        PORTAL_ID
+    ) VALUES (
+    	#categoryId#, 
+    	#categoryName#, 
+    	(SELECT ISNULL(MAX(CATEGORY_ORDER),0) FROM IKEP4_QA_CATEGORY WHERE PORTAL_ID = #portalId#)+1,
+    	#registerId#, 
+        #registerName#, 
+        CURRENT_TIMESTAMP,
+        #portalId#
+    )
+  </insert>
+  
+  <!-- ANSI -->
+  <update id="update" parameterClass="QnaCategory">
+    UPDATE IKEP4_QA_CATEGORY			/* [QnaCategory_SqlMap.xml] qnaCategory.update */ 
+    SET CATEGORY_NAME = #categoryName#
+    WHERE CATEGORY_ID = #categoryId#
+  </update>
+   
+   <!-- ANSI -->
+   <update id="updateCategoryOrder" parameterClass="QnaCategory">
+    UPDATE IKEP4_QA_CATEGORY					/* [QnaCategory_SqlMap.xml] qnaCategory.updateCategoryOrder */ 
+    SET CATEGORY_ORDER = #categoryOrder#
+    WHERE CATEGORY_ID = #categoryId#
+  </update>
+  
+  <!-- ANSI -->
+  <update id="updateOrder" parameterClass="QnaCategory">
+    UPDATE IKEP4_QA_CATEGORY					/* [QnaCategory_SqlMap.xml] qnaCategory.updateOrder */ 
+    SET CATEGORY_ORDER = CATEGORY_ORDER + #categoryOrder#
+    WHERE CATEGORY_ID = #categoryId#
+  </update>
+  
+   <!-- ANSI -->
+   <delete id="delete" parameterClass="String">
+    DELETE 				/* [QnaCategory_SqlMap.xml] qnaCategory.delete */ 
+    FROM IKEP4_QA_CATEGORY					
+    WHERE CATEGORY_ID = #categoryId#
+  </delete>
+  
+</sqlMap>

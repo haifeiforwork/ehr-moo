@@ -1,0 +1,905 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="lightpack.meeting.dao.reserve" >
+	
+	<typeAlias alias="MeetingRoom" type="com.lgcns.ikep4.lightpack.meetingroom.model.MeetingRoom"/>
+	<typeAlias alias="Schedule" type="com.lgcns.ikep4.lightpack.planner.model.Schedule"/>
+	<typeAlias alias="MeetingRoomSearchCondition" type="com.lgcns.ikep4.lightpack.meetingroom.model.MeetingRoomSearchCondition"/>
+	
+	<resultMap id="resultMapBase" class="java.util.HashMap">
+		<result property="num" column="num" />
+		<result property="reserveType" column="reserveType" />
+		<result property="startDate" column="startDate" />
+		<result property="endDate" column="endDate" />
+		<result property="title" column="title" />
+		<result property="scheduleId" column="scheduleId" />
+		<result property="repeatType" column="repeatType" />
+		<result property="repeatPeriod" column="repeatPeriod" />
+		<result property="repeatPeriodOption" column="repeatPeriodOption" />
+		<result property="repeatStartDate" column="repeatStartDate" />
+		<result property="repeatEndDate" column="repeatEndDate" />
+		<result property="categoryId" column="categoryId" />
+		<result property="place" column="place" />
+		<result property="wholeday" column="wholeday" />
+		<result property="schedulePublic" column="schedulePublic" />
+		<result property="attendanceRequest" column="attendanceRequest" />
+		<result property="registerId" column="registerId" />
+		<result property="registerName" column="registerName" />
+		<result property="categoryName" column="categoryName" />
+		<result property="color" column="color" />
+		<result property="participantId" column="participantId" />
+		<result property="approveStatus" column="approveStatus" />
+		<result property="approveRegistDate" column="approveRegistDate" />
+	</resultMap>
+	
+	<resultMap id="scheduleResultMap" class="java.util.HashMap">
+		<result property="scheduleId" column="scheduleId" />
+		<result property="title" column="title" />
+		<result property="meetingRoomId" column="meetingRoomId" />
+	</resultMap>
+	
+	<resultMap id="resultMapBase2" class="java.util.HashMap" extends="resultMapBase"> 
+		<result property="contents" column="contents"/>
+		<result property="rejectReason" column="rejectReason"/>
+	</resultMap>
+	
+	
+	<select id="selectAll" parameterClass="MeetingRoomSearchCondition" resultMap="resultMapBase">
+		/* [Reserve_SqlMap.xml] lightpack.meeting.dao.reserve.selectAll */
+		SELECT				*
+		FROM				(
+							SELECT				InnerTBL.*, 
+												CATEGORY_NAME AS categoryName, 
+												COLOR AS color, 
+												CASE WHEN schedulePublic =  1 THEN dbo.IKEP4_SD_GET_PARTICIPANT_LIST(scheduleId) ELSE '' END AS participantId
+							FROM 				(
+								SELECT	Row_number() OVER (ORDER BY 
+											<isNotNull property="sortColumn">
+												<isEqual property="sortColumn" compareValue="PLACE">
+													<isEqual property="sortType" compareValue="ASC">p.place ASC</isEqual>
+													<isEqual property="sortType" compareValue="DESC">p.place DESC</isEqual>
+												</isEqual>
+											
+												<isEqual property="sortColumn" compareValue="TITLE">
+													<isEqual property="sortType" compareValue="ASC">p.title ASC</isEqual>
+													<isEqual property="sortType" compareValue="DESC">p.title DESC</isEqual>
+												</isEqual>
+												
+												<isEqual property="sortColumn" compareValue="SORT_ORDER">
+													p.scheduleId DESC
+												</isEqual>
+											</isNotNull>
+											<isNull property="sortColumn">p.scheduleId DESC</isNull>
+										) as NUM,
+										p.*
+								FROM (
+												<isEqual property="searchType" compareValue="ALL">
+												SELECT				'PERS' AS reserveType,
+																	RIGHT(CONVERT(VARCHAR(16), a.START_DATE, 120),16) AS startDate,
+																	RIGHT(CONVERT(VARCHAR(16), a.END_DATE, 120),16) AS endDate, 
+																	a.TITLE AS title, 
+																	a.SCHEDULE_ID AS scheduleId, 
+																	NULL AS repeatType,
+																	NULL AS repeatPeriod, 
+																	NULL AS repeatPeriodOption, 
+																	NULL AS repeatStartDate,
+																	NULL AS repeatEndDate, 
+																	a.CATEGORY_ID AS categoryId, 
+																	a.WORKSPACE_ID AS workspaceId, 
+																	m.MEETING_ROOM_NAME AS place, 
+																	a.WHOLEDAY AS wholeday, 
+																	a.SCHEDULE_PUBLIC AS schedulePublic, 
+																	a.ATTENDANCE_REQUEST AS attendanceRequest, 
+																	a.REGISTER_ID AS registerId,
+																	a.REGISTER_NAME AS registerName,
+																	app.APPROVE_STATUS AS approveStatus,
+																	RIGHT(CONVERT(VARCHAR(10), app.REGIST_DATE, 120),10) AS approveRegistDate
+												FROM 				IKEP4_SD_SCHEDULE a 
+												INNER JOIN 			IKEP4_MR_MEETING_ROOM m
+												ON 					a.MEETING_ROOM_ID = m.MEETING_ROOM_ID
+												INNER JOIN			IKEP4_MR_APPROVE app
+												ON					a.SCHEDULE_ID = app.SCHEDULE_ID
+												AND					a.MEETING_ROOM_ID = app.MEETING_ROOM_ID
+												WHERE 				a.REGISTER_ID = #userId# 
+												AND 				a.REPEAT = 0 
+												AND 				a.MEETING_ROOM_ID IS NOT NULL
+												<![CDATA[
+												AND 				app.REGIST_DATE < DATEADD(DD, 1, #endDate#)
+												AND 				app.REGIST_DATE >= #startDate# 
+												]]>
+												
+												UNION ALL 
+					
+												SELECT				'PART' AS reserveType,
+																	RIGHT(CONVERT(VARCHAR(16), a.START_DATE, 120),16) AS startDate,
+																	RIGHT(CONVERT(VARCHAR(16), a.END_DATE, 120),16) AS endDate, 
+																	a.TITLE AS title, 
+																	a.SCHEDULE_ID AS scheduleId, 
+																	NULL AS repeatType,
+																	NULL AS repeatPeriod, 
+																	NULL AS repeatPeriodOption, 
+																	NULL AS repeatStartDate,
+																	NULL AS repeatEndDate, 
+																	a.CATEGORY_ID AS categoryId, 
+																	a.WORKSPACE_ID AS workspaceId, 
+																	a.PLACE AS place, 
+																	a.WHOLEDAY AS wholeday, 
+																	a.SCHEDULE_PUBLIC AS schedulePublic, 
+																	a.ATTENDANCE_REQUEST AS attendanceRequest, 
+																	a.REGISTER_ID AS registerId,
+																	a.REGISTER_NAME AS registerName,
+																	app.APPROVE_STATUS AS approveStatus,
+																	RIGHT(CONVERT(VARCHAR(10), app.REGIST_DATE, 120),10) AS approveRegistDate
+												FROM 				IKEP4_SD_SCHEDULE a 
+												INNER JOIN 			IKEP4_SD_PARTICIPANT c 
+												ON 					a.SCHEDULE_ID = c.SCHEDULE_ID 
+												INNER JOIN 			IKEP4_MR_MEETING_ROOM m 
+												ON 					a.MEETING_ROOM_ID = m.MEETING_ROOM_ID
+												INNER JOIN			IKEP4_MR_APPROVE app
+												ON					a.SCHEDULE_ID = app.SCHEDULE_ID
+												AND					a.MEETING_ROOM_ID = app.MEETING_ROOM_ID
+												WHERE 				c.TARGET_USER_ID = #userId# 
+												AND 				a.REPEAT = 0  
+												AND 				a.MEETING_ROOM_ID IS NOT NULL
+												<![CDATA[
+												AND 				app.REGIST_DATE < DATEADD(DD, 1, #endDate#)
+												AND 				app.REGIST_DATE >= #startDate# 
+												]]>
+					
+												UNION ALL 
+					
+												SELECT				'PERS' AS reserveType,
+																	RIGHT(CONVERT(VARCHAR(16), a.START_DATE, 120),16) AS startDate,
+																	RIGHT(CONVERT(VARCHAR(16), a.END_DATE, 120),16) AS endDate, 
+																	a.TITLE AS title, 
+																	a.SCHEDULE_ID AS scheduleId, 
+																	b.REPEAT_TYPE AS repeatType,
+																	b.REPEAT_PERIOD AS repeatPeriod, 
+																	b.REPEAT_PERIOD_OPTION AS repeatPeriodOption, 
+																	b.REPEAT_START_DATE AS repeatStartDate,
+																	b.REPEAT_END_DATE AS repeatEndDate, 
+																	a.CATEGORY_ID AS categoryId, 
+																	a.WORKSPACE_ID AS workspaceId, 
+																	a.PLACE AS place, 
+																	a.WHOLEDAY AS wholeday, 
+																	a.SCHEDULE_PUBLIC AS schedulePublic, 
+																	a.ATTENDANCE_REQUEST AS attendanceRequest, 
+																	a.REGISTER_ID AS registerId,
+																	a.REGISTER_NAME AS registerName,
+																	app.APPROVE_STATUS AS approveStatus,
+																	RIGHT(CONVERT(VARCHAR(10), app.REGIST_DATE, 120),10) AS approveRegistDate
+												FROM 				IKEP4_SD_SCHEDULE a 
+												INNER JOIN 			IKEP4_SD_REPEAT b 
+												ON 					b.SCHEDULE_ID = a.SCHEDULE_ID 
+												INNER JOIN 			IKEP4_MR_MEETING_ROOM m 
+												ON 					a.MEETING_ROOM_ID = m.MEETING_ROOM_ID
+												INNER JOIN			IKEP4_MR_APPROVE app
+												ON					a.SCHEDULE_ID = app.SCHEDULE_ID
+												AND					a.MEETING_ROOM_ID = app.MEETING_ROOM_ID
+												WHERE 				a.REGISTER_ID = #userId# 
+												AND 				a.REPEAT = 1  
+												<![CDATA[
+												AND 				a.MEETING_ROOM_ID IS NOT NULL
+												AND 				app.REGIST_DATE < DATEADD(DD, 1, #endDate#)
+												AND 				app.REGIST_DATE >= #startDate#
+												]]> 
+					
+												UNION ALL 
+					
+												SELECT				'PART' AS reserveType,
+																	RIGHT(CONVERT(VARCHAR(16), a.START_DATE, 120),16) AS startDate,
+																	RIGHT(CONVERT(VARCHAR(16), a.END_DATE, 120),16) AS endDate, 
+																	a.TITLE AS title, 
+																	a.SCHEDULE_ID AS scheduleId, 
+																	b.REPEAT_TYPE AS repeatType,
+																	b.REPEAT_PERIOD AS repeatPeriod, 
+																	b.REPEAT_PERIOD_OPTION AS repeatPeriodOption, 
+																	b.REPEAT_START_DATE AS repeatStartDate,
+																	b.REPEAT_END_DATE AS repeatEndDate, 
+																	a.CATEGORY_ID AS categoryId, 
+																	a.WORKSPACE_ID AS workspaceId, 
+																	a.PLACE AS place, 
+																	a.WHOLEDAY AS wholeday, 
+																	a.SCHEDULE_PUBLIC AS schedulePublic, 
+																	a.ATTENDANCE_REQUEST AS attendanceRequest, 
+																	a.REGISTER_ID AS registerId,
+																	a.REGISTER_NAME AS registerName,
+																	app.APPROVE_STATUS AS approveStatus,
+																	RIGHT(CONVERT(VARCHAR(10), app.REGIST_DATE, 120),10) AS approveRegistDate
+												FROM 				IKEP4_SD_SCHEDULE a 
+												INNER JOIN 			IKEP4_SD_REPEAT b 
+												ON 					b.SCHEDULE_ID = a.SCHEDULE_ID
+												INNER JOIN 			IKEP4_SD_PARTICIPANT d 
+												ON  				d.SCHEDULE_ID = a.SCHEDULE_ID 
+												INNER JOIN 			IKEP4_MR_MEETING_ROOM m 
+												ON 					a.MEETING_ROOM_ID = m.MEETING_ROOM_ID
+												INNER JOIN			IKEP4_MR_APPROVE app
+												ON					a.SCHEDULE_ID = app.SCHEDULE_ID
+												AND					a.MEETING_ROOM_ID = app.MEETING_ROOM_ID
+												WHERE 				d.TARGET_USER_ID = #userId# 
+												AND 				a.REPEAT = 1  
+												AND 				a.MEETING_ROOM_ID IS NOT NULL
+												<![CDATA[
+												AND 				app.REGIST_DATE < DATEADD(DD, 1, #endDate#)
+												AND 				app.REGIST_DATE >= #startDate# 
+												]]>
+												</isEqual>
+												<isEqual property="searchType" compareValue="PERS">
+												SELECT				'PERS' AS reserveType,
+																	RIGHT(CONVERT(VARCHAR(16), a.START_DATE, 120),16) AS startDate,
+																	RIGHT(CONVERT(VARCHAR(16), a.END_DATE, 120),16) AS endDate, 
+																	a.TITLE AS title, 
+																	a.SCHEDULE_ID AS scheduleId, 
+																	NULL AS repeatType,
+																	NULL AS repeatPeriod, 
+																	NULL AS repeatPeriodOption, 
+																	NULL AS repeatStartDate,
+																	NULL AS repeatEndDate, 
+																	a.CATEGORY_ID AS categoryId, 
+																	a.WORKSPACE_ID AS workspaceId, 
+																	a.PLACE AS place, 
+																	a.WHOLEDAY AS wholeday, 
+																	a.SCHEDULE_PUBLIC AS schedulePublic, 
+																	a.ATTENDANCE_REQUEST AS attendanceRequest, 
+																	a.REGISTER_ID AS registerId,
+																	a.REGISTER_NAME AS registerName,
+																	app.APPROVE_STATUS AS approveStatus,
+																	RIGHT(CONVERT(VARCHAR(10), app.REGIST_DATE, 120),10) AS approveRegistDate
+												FROM 				IKEP4_SD_SCHEDULE a 
+												INNER JOIN 			IKEP4_MR_MEETING_ROOM m
+												ON 					a.MEETING_ROOM_ID = m.MEETING_ROOM_ID
+												INNER JOIN			IKEP4_MR_APPROVE app
+												ON					a.SCHEDULE_ID = app.SCHEDULE_ID
+												AND					a.MEETING_ROOM_ID = app.MEETING_ROOM_ID
+												WHERE 				a.REGISTER_ID = #userId# 
+												AND 				a.REPEAT = 0 
+												AND 				a.MEETING_ROOM_ID IS NOT NULL
+												<![CDATA[
+												AND 				app.REGIST_DATE < DATEADD(DD, 1, #endDate#)
+												AND 				app.REGIST_DATE >= #startDate# 
+												]]>
+					
+												UNION ALL 
+					
+												SELECT				'PERS' AS reserveType,
+																	RIGHT(CONVERT(VARCHAR(16), a.START_DATE, 120),16) AS startDate,
+																	RIGHT(CONVERT(VARCHAR(16), a.END_DATE, 120),16) AS endDate, 
+																	a.TITLE AS title, 
+																	a.SCHEDULE_ID AS scheduleId, 
+																	b.REPEAT_TYPE AS repeatType,
+																	b.REPEAT_PERIOD AS repeatPeriod, 
+																	b.REPEAT_PERIOD_OPTION AS repeatPeriodOption, 
+																	b.REPEAT_START_DATE AS repeatStartDate,
+																	b.REPEAT_END_DATE AS repeatEndDate, 
+																	a.CATEGORY_ID AS categoryId, 
+																	a.WORKSPACE_ID AS workspaceId, 
+																	a.PLACE AS place, 
+																	a.WHOLEDAY AS wholeday, 
+																	a.SCHEDULE_PUBLIC AS schedulePublic, 
+																	a.ATTENDANCE_REQUEST AS attendanceRequest, 
+																	a.REGISTER_ID AS registerId,
+																	a.REGISTER_NAME AS registerName,
+																	app.APPROVE_STATUS AS approveStatus,
+																	RIGHT(CONVERT(VARCHAR(10), app.REGIST_DATE, 120),10) AS approveRegistDate
+												FROM 				IKEP4_SD_SCHEDULE a 
+												INNER JOIN 			IKEP4_SD_REPEAT b 
+												ON 					b.SCHEDULE_ID = a.SCHEDULE_ID 
+												INNER JOIN 			IKEP4_MR_MEETING_ROOM m 
+												ON 					a.MEETING_ROOM_ID = m.MEETING_ROOM_ID
+												INNER JOIN			IKEP4_MR_APPROVE app
+												ON					a.SCHEDULE_ID = app.SCHEDULE_ID
+												AND					a.MEETING_ROOM_ID = app.MEETING_ROOM_ID
+												WHERE 				a.REGISTER_ID = #userId# 
+												AND 				a.REPEAT = 1  
+												AND 				a.MEETING_ROOM_ID IS NOT NULL
+												<![CDATA[
+												AND 				app.REGIST_DATE < DATEADD(DD, 1, #endDate#)
+												AND 				app.REGIST_DATE >= #startDate# 
+												]]>
+												</isEqual>
+												<isEqual property="searchType" compareValue="PART">
+												SELECT				'PART' AS reserveType,
+																	RIGHT(CONVERT(VARCHAR(16), a.START_DATE, 120),16) AS startDate,
+																	RIGHT(CONVERT(VARCHAR(16), a.END_DATE, 120),16) AS endDate, 
+																	a.TITLE AS title, 
+																	a.SCHEDULE_ID AS scheduleId, 
+																	NULL AS repeatType,
+																	NULL AS repeatPeriod, 
+																	NULL AS repeatPeriodOption, 
+																	NULL AS repeatStartDate,
+																	NULL AS repeatEndDate, 
+																	a.CATEGORY_ID AS categoryId, 
+																	a.WORKSPACE_ID AS workspaceId, 
+																	a.PLACE AS place, 
+																	a.WHOLEDAY AS wholeday, 
+																	a.SCHEDULE_PUBLIC AS schedulePublic, 
+																	a.ATTENDANCE_REQUEST AS attendanceRequest, 
+																	a.REGISTER_ID AS registerId,
+																	a.REGISTER_NAME AS registerName,
+																	app.APPROVE_STATUS AS approveStatus,
+																	RIGHT(CONVERT(VARCHAR(10), app.REGIST_DATE, 120),10) AS approveRegistDate
+												FROM 				IKEP4_SD_SCHEDULE a 
+												INNER JOIN 			IKEP4_SD_PARTICIPANT c 
+												ON 					a.SCHEDULE_ID = c.SCHEDULE_ID 
+												INNER JOIN 			IKEP4_MR_MEETING_ROOM m 
+												ON 					a.MEETING_ROOM_ID = m.MEETING_ROOM_ID
+												INNER JOIN			IKEP4_MR_APPROVE app
+												ON					a.SCHEDULE_ID = app.SCHEDULE_ID
+												AND					a.MEETING_ROOM_ID = app.MEETING_ROOM_ID
+												WHERE 				c.TARGET_USER_ID = #userId# 
+												AND 				a.REPEAT = 0  
+												AND 				a.MEETING_ROOM_ID IS NOT NULL
+												<![CDATA[
+												AND 				app.REGIST_DATE < DATEADD(DD, 1, #endDate#)
+												AND 				app.REGIST_DATE >= #startDate# 
+												]]>
+					
+												UNION ALL 
+					
+												SELECT				'PART' AS reserveType,
+																	RIGHT(CONVERT(VARCHAR(16), a.START_DATE, 120),16) AS startDate,
+																	RIGHT(CONVERT(VARCHAR(16), a.END_DATE, 120),16) AS endDate, 
+																	a.TITLE AS title, 
+																	a.SCHEDULE_ID AS scheduleId, 
+																	b.REPEAT_TYPE AS repeatType,
+																	b.REPEAT_PERIOD AS repeatPeriod, 
+																	b.REPEAT_PERIOD_OPTION AS repeatPeriodOption, 
+																	b.REPEAT_START_DATE AS repeatStartDate,
+																	b.REPEAT_END_DATE AS repeatEndDate, 
+																	a.CATEGORY_ID AS categoryId, 
+																	a.WORKSPACE_ID AS workspaceId, 
+																	a.PLACE AS place, 
+																	a.WHOLEDAY AS wholeday, 
+																	a.SCHEDULE_PUBLIC AS schedulePublic, 
+																	a.ATTENDANCE_REQUEST AS attendanceRequest, 
+																	a.REGISTER_ID AS registerId,
+																	a.REGISTER_NAME AS registerName,
+																	app.APPROVE_STATUS AS approveStatus,
+																	RIGHT(CONVERT(VARCHAR(10), app.REGIST_DATE, 120),10) AS approveRegistDate
+												FROM 				IKEP4_SD_SCHEDULE a 
+												INNER JOIN 			IKEP4_SD_REPEAT b 
+												ON 					b.SCHEDULE_ID = a.SCHEDULE_ID
+												INNER JOIN 			IKEP4_SD_PARTICIPANT d 
+												ON  				d.SCHEDULE_ID = a.SCHEDULE_ID 
+												INNER JOIN 			IKEP4_MR_MEETING_ROOM m 
+												ON 					a.MEETING_ROOM_ID = m.MEETING_ROOM_ID
+												INNER JOIN			IKEP4_MR_APPROVE app
+												ON					a.SCHEDULE_ID = app.SCHEDULE_ID
+												AND					a.MEETING_ROOM_ID = app.MEETING_ROOM_ID
+												WHERE 				d.TARGET_USER_ID = #userId# 
+												AND 				a.REPEAT = 1  
+												AND 				a.MEETING_ROOM_ID IS NOT NULL
+												<![CDATA[
+												AND 				app.REGIST_DATE < DATEADD(DD, 1, #endDate#)
+												AND 				app.REGIST_DATE >= #startDate# 
+												]]> 
+												</isEqual>
+												) p
+							) InnerTBL
+							INNER JOIN			IKEP4_SD_CATEGORY q 
+							ON	 				InnerTBL.categoryId = q.CATEGORY_ID
+							<![CDATA[
+							WHERE				NUM <= #endRowIndex#
+							) TBL
+		WHERE				NUM > #startRowIndex#
+		]]>
+	</select>
+	
+	<select id="selectAllCar" parameterClass="MeetingRoomSearchCondition" resultMap="resultMapBase2">
+		/* [Reserve_SqlMap.xml] lightpack.meeting.dao.reserve.selectAllCar */
+		SELECT				*
+		FROM				(
+							SELECT				InnerTBL.*, '' as categoryName,
+												'' AS color, 
+												 ''  AS participantId
+							FROM 				(
+								SELECT	Row_number() OVER (ORDER BY 
+											<isNotNull property="sortColumn">
+												<isEqual property="sortColumn" compareValue="PLACE">
+													<isEqual property="sortType" compareValue="ASC">p.place ASC</isEqual>
+													<isEqual property="sortType" compareValue="DESC">p.place DESC</isEqual>
+												</isEqual>
+											
+												<isEqual property="sortColumn" compareValue="TITLE">
+													<isEqual property="sortType" compareValue="ASC">p.title ASC</isEqual>
+													<isEqual property="sortType" compareValue="DESC">p.title DESC</isEqual>
+												</isEqual>
+												
+												<isEqual property="sortColumn" compareValue="SORT_ORDER">
+													p.scheduleId DESC
+												</isEqual>
+											</isNotNull>
+											<isNull property="sortColumn">p.scheduleId DESC</isNull>
+										) as NUM,
+										p.*
+								FROM (
+											
+												SELECT				'PERS' AS reserveType,
+																	RIGHT(CONVERT(VARCHAR(16), a.START_DATE, 120),16) AS startDate,
+																	RIGHT(CONVERT(VARCHAR(16), a.END_DATE, 120),16) AS endDate, 
+																	a.TITLE AS title, 
+																	a.SCHEDULE_ID AS scheduleId, 
+																	NULL AS repeatType,
+																	NULL AS repeatPeriod, 
+																	NULL AS repeatPeriodOption, 
+																	NULL AS repeatStartDate,
+																	NULL AS repeatEndDate, 
+																	a.CATEGORY_ID AS categoryId, 
+																	a.WORKSPACE_ID AS workspaceId, 
+																	m.CARTOOLETC_NAME AS place, 
+																	a.WHOLEDAY AS wholeday, 
+																	a.SCHEDULE_PUBLIC AS schedulePublic, 
+																	a.ATTENDANCE_REQUEST AS attendanceRequest, 
+																	a.REGISTER_ID AS registerId,
+																	a.REGISTER_NAME AS registerName,
+																	app.APPROVE_STATUS AS approveStatus,
+																	RIGHT(CONVERT(VARCHAR(10), app.REGIST_DATE, 120),10) AS approveRegistDate,
+																	a.contents,
+																	app.reject_reason AS rejectReason
+												FROM 				IKEP4_SD_SCHEDULE a 
+												INNER JOIN 			IKEP4_MR_CARTOOLETC m
+												ON 					a.CARTOOLETC_ID = m.CARTOOLETC_ID
+												INNER JOIN			IKEP4_MR_APPROVE app
+												ON					a.SCHEDULE_ID = app.SCHEDULE_ID
+												AND					a.CARTOOLETC_ID = app.MEETING_ROOM_ID
+												WHERE 				a.REGISTER_ID = #userId# 
+												AND 				a.REPEAT = 0 
+												AND 				a.CARTOOLETC_ID IS NOT NULL
+												<![CDATA[
+												AND 				app.REGIST_DATE < DATEADD(DD, 1, #endDate#)
+												AND 				app.REGIST_DATE >= #startDate# 
+												]]>
+												
+											
+												UNION ALL 
+					
+												SELECT				'PERS' AS reserveType,
+																	RIGHT(CONVERT(VARCHAR(16), a.START_DATE, 120),16) AS startDate,
+																	RIGHT(CONVERT(VARCHAR(16), a.END_DATE, 120),16) AS endDate, 
+																	a.TITLE AS title, 
+																	a.SCHEDULE_ID AS scheduleId, 
+																	b.REPEAT_TYPE AS repeatType,
+																	b.REPEAT_PERIOD AS repeatPeriod, 
+																	b.REPEAT_PERIOD_OPTION AS repeatPeriodOption, 
+																	b.REPEAT_START_DATE AS repeatStartDate,
+																	b.REPEAT_END_DATE AS repeatEndDate, 
+																	a.CATEGORY_ID AS categoryId, 
+																	a.WORKSPACE_ID AS workspaceId, 
+																	a.PLACE AS place, 
+																	a.WHOLEDAY AS wholeday, 
+																	a.SCHEDULE_PUBLIC AS schedulePublic, 
+																	a.ATTENDANCE_REQUEST AS attendanceRequest, 
+																	a.REGISTER_ID AS registerId,
+																	a.REGISTER_NAME AS registerName,
+																	app.APPROVE_STATUS AS approveStatus,
+																	RIGHT(CONVERT(VARCHAR(10), app.REGIST_DATE, 120),10) AS approveRegistDate,
+																	a.contents,
+																	app.reject_reason AS rejectReason
+												FROM 				IKEP4_SD_SCHEDULE a 
+												INNER JOIN 			IKEP4_SD_REPEAT b 
+												ON 					b.SCHEDULE_ID = a.SCHEDULE_ID 
+												INNER JOIN 			IKEP4_MR_CARTOOLETC m 
+												ON 					a.CARTOOLETC_ID = m.CARTOOLETC_ID
+												INNER JOIN			IKEP4_MR_APPROVE app
+												ON					a.SCHEDULE_ID = app.SCHEDULE_ID
+												AND					a.CARTOOLETC_ID = app.MEETING_ROOM_ID
+												WHERE 				a.REGISTER_ID = #userId# 
+												AND 				a.REPEAT = 1  
+												<![CDATA[
+												AND 				a.CARTOOLETC_ID IS NOT NULL
+												AND 				app.REGIST_DATE < DATEADD(DD, 1, #endDate#)
+												AND 				app.REGIST_DATE >= #startDate#
+												]]> 
+					
+								
+											
+												) p
+							) InnerTBL
+
+							<![CDATA[
+							WHERE				NUM <= #endRowIndex#
+							) TBL
+		WHERE				NUM > #startRowIndex#
+		]]>
+	</select>
+	
+		<select id="selectCarCount" parameterClass="MeetingRoomSearchCondition" resultClass="int">
+		/* [Reserve_SqlMap.xml] lightpack.meeting.dao.reserve.selectCount */
+		SELECT 				COUNT(*) 
+		FROM 				( 
+										SELECT				'PERS' AS reserveType,
+																	RIGHT(CONVERT(VARCHAR(16), a.START_DATE, 120),16) AS startDate,
+																	RIGHT(CONVERT(VARCHAR(16), a.END_DATE, 120),16) AS endDate, 
+																	a.TITLE AS title, 
+																	a.SCHEDULE_ID AS scheduleId, 
+																	NULL AS repeatType,
+																	NULL AS repeatPeriod, 
+																	NULL AS repeatPeriodOption, 
+																	NULL AS repeatStartDate,
+																	NULL AS repeatEndDate, 
+																	a.CATEGORY_ID AS categoryId, 
+																	a.WORKSPACE_ID AS workspaceId, 
+																	a.PLACE AS place, 
+																	a.WHOLEDAY AS wholeday, 
+																	a.SCHEDULE_PUBLIC AS schedulePublic, 
+																	a.ATTENDANCE_REQUEST AS attendanceRequest, 
+																	a.REGISTER_ID AS registerId,
+																	app.APPROVE_STATUS AS approveStatus,
+																	RIGHT(CONVERT(VARCHAR(10), app.REGIST_DATE, 120),10) AS approveRegistDate
+												FROM 				IKEP4_SD_SCHEDULE a 
+												INNER JOIN 			IKEP4_MR_CARTOOLETC m
+												ON 					a.CARTOOLETC_ID = m.CARTOOLETC_ID
+												INNER JOIN			IKEP4_MR_APPROVE app
+												ON					a.SCHEDULE_ID = app.SCHEDULE_ID
+												AND					a.CARTOOLETC_ID = app.MEETING_ROOM_ID
+												WHERE 				a.REGISTER_ID = #userId# 
+												AND 				a.REPEAT = 0 
+												AND 				a.CARTOOLETC_ID IS NOT NULL
+												<![CDATA[
+												AND 				app.REGIST_DATE < DATEADD(DD, 1, #endDate#)
+												AND 				app.REGIST_DATE >= #startDate# 
+												]]>
+												
+											
+												UNION ALL 
+					
+												SELECT				'PERS' AS reserveType,
+																	RIGHT(CONVERT(VARCHAR(16), a.START_DATE, 120),16) AS startDate,
+																	RIGHT(CONVERT(VARCHAR(16), a.END_DATE, 120),16) AS endDate, 
+																	a.TITLE AS title, 
+																	a.SCHEDULE_ID AS scheduleId, 
+																	b.REPEAT_TYPE AS repeatType,
+																	b.REPEAT_PERIOD AS repeatPeriod, 
+																	b.REPEAT_PERIOD_OPTION AS repeatPeriodOption, 
+																	b.REPEAT_START_DATE AS repeatStartDate,
+																	b.REPEAT_END_DATE AS repeatEndDate, 
+																	a.CATEGORY_ID AS categoryId, 
+																	a.WORKSPACE_ID AS workspaceId, 
+																	a.PLACE AS place, 
+																	a.WHOLEDAY AS wholeday, 
+																	a.SCHEDULE_PUBLIC AS schedulePublic, 
+																	a.ATTENDANCE_REQUEST AS attendanceRequest, 
+																	a.REGISTER_ID AS registerId,
+																	app.APPROVE_STATUS AS approveStatus,
+																	RIGHT(CONVERT(VARCHAR(10), app.REGIST_DATE, 120),10) AS approveRegistDate
+												FROM 				IKEP4_SD_SCHEDULE a 
+												INNER JOIN 			IKEP4_SD_REPEAT b 
+												ON 					b.SCHEDULE_ID = a.SCHEDULE_ID 
+												INNER JOIN 			IKEP4_MR_CARTOOLETC m 
+												ON 					a.CARTOOLETC_ID = m.CARTOOLETC_ID
+												INNER JOIN			IKEP4_MR_APPROVE app
+												ON					a.SCHEDULE_ID = app.SCHEDULE_ID
+												AND					a.CARTOOLETC_ID = app.MEETING_ROOM_ID
+												WHERE 				a.REGISTER_ID = #userId# 
+												AND 				a.REPEAT = 1  
+												<![CDATA[
+												AND 				a.CARTOOLETC_ID IS NOT NULL
+												AND 				app.REGIST_DATE < DATEADD(DD, 1, #endDate#)
+												AND 				app.REGIST_DATE >= #startDate#
+												]]> 
+				
+							
+							) p
+	</select>
+	
+	<select id="selectCount" parameterClass="MeetingRoomSearchCondition" resultClass="int">
+		/* [Reserve_SqlMap.xml] lightpack.meeting.dao.reserve.selectCount */
+		SELECT 				COUNT(*) 
+		FROM 				( 
+							<isEqual property="searchType" compareValue="ALL">
+							SELECT				RIGHT(CONVERT(VARCHAR(16), a.START_DATE, 120),16) AS startDate,
+												RIGHT(CONVERT(VARCHAR(16), a.END_DATE, 120),16) AS endDate, 
+												a.TITLE AS title, 
+												a.SCHEDULE_ID AS scheduleId, 
+												NULL AS repeatType,
+												NULL AS repeatPeriod, 
+												NULL AS repeatPeriodOption, 
+												NULL AS repeatStartDate,
+												NULL AS repeatEndDate, 
+												a.CATEGORY_ID AS categoryId, 
+												a.WORKSPACE_ID AS workspaceId, 
+												a.PLACE AS place, 
+												a.WHOLEDAY AS wholeday, 
+												a.SCHEDULE_PUBLIC AS schedulePublic, 
+												a.ATTENDANCE_REQUEST AS attendanceRequest, 
+												a.REGISTER_ID AS registerId 
+							FROM 				IKEP4_SD_SCHEDULE a 
+							INNER JOIN 			IKEP4_MR_MEETING_ROOM m
+							ON 					a.MEETING_ROOM_ID = m.MEETING_ROOM_ID
+							INNER JOIN			IKEP4_MR_APPROVE app
+							ON					a.SCHEDULE_ID = app.SCHEDULE_ID
+							WHERE 				a.REGISTER_ID = #userId# 
+							AND 				a.REPEAT = 0 
+							AND 				a.MEETING_ROOM_ID IS NOT NULL
+							<![CDATA[
+							AND 				app.REGIST_DATE < DATEADD(DD, 1, #endDate#)
+							AND 				app.REGIST_DATE >= #startDate# 
+							]]>
+							
+							UNION ALL 
+
+							SELECT				RIGHT(CONVERT(VARCHAR(16), a.START_DATE, 120),16) AS startDate,
+												RIGHT(CONVERT(VARCHAR(16), a.END_DATE, 120),16) AS endDate, 
+												a.TITLE AS title, 
+												a.SCHEDULE_ID AS scheduleId, 
+												NULL AS repeatType,
+												NULL AS repeatPeriod, 
+												NULL AS repeatPeriodOption, 
+												NULL AS repeatStartDate,
+												NULL AS repeatEndDate, 
+												a.CATEGORY_ID AS categoryId, 
+												a.WORKSPACE_ID AS workspaceId, 
+												a.PLACE AS place, 
+												a.WHOLEDAY AS wholeday, 
+												a.SCHEDULE_PUBLIC AS schedulePublic, 
+												a.ATTENDANCE_REQUEST AS attendanceRequest, 
+												a.REGISTER_ID AS registerId
+							FROM 				IKEP4_SD_SCHEDULE a 
+							INNER JOIN 			IKEP4_SD_PARTICIPANT c 
+							ON 					a.SCHEDULE_ID = c.SCHEDULE_ID 
+							INNER JOIN 			IKEP4_MR_MEETING_ROOM m 
+							ON 					a.MEETING_ROOM_ID = m.MEETING_ROOM_ID
+							INNER JOIN			IKEP4_MR_APPROVE app
+							ON					a.SCHEDULE_ID = app.SCHEDULE_ID
+							WHERE 				c.TARGET_USER_ID = #userId# 
+							AND 				a.REPEAT = 0  
+							AND 				a.MEETING_ROOM_ID IS NOT NULL
+							<![CDATA[
+							AND 				app.REGIST_DATE < DATEADD(DD, 1, #endDate#)
+							AND 				app.REGIST_DATE >= #startDate# 
+							]]>
+
+							UNION ALL 
+
+							SELECT				RIGHT(CONVERT(VARCHAR(16), a.START_DATE, 120),16) AS startDate,
+												RIGHT(CONVERT(VARCHAR(16), a.END_DATE, 120),16) AS endDate, 
+												a.TITLE AS title, 
+												a.SCHEDULE_ID AS scheduleId, 
+												b.REPEAT_TYPE AS repeatType,
+												b.REPEAT_PERIOD AS repeatPeriod, 
+												b.REPEAT_PERIOD_OPTION AS repeatPeriodOption, 
+												b.REPEAT_START_DATE AS repeatStartDate,
+												b.REPEAT_END_DATE AS repeatEndDate, 
+												a.CATEGORY_ID AS categoryId, 
+												a.WORKSPACE_ID AS workspaceId, 
+												a.PLACE AS place, 
+												a.WHOLEDAY AS wholeday, 
+												a.SCHEDULE_PUBLIC AS schedulePublic, 
+												a.ATTENDANCE_REQUEST AS attendanceRequest, 
+												a.REGISTER_ID AS registerId
+							FROM 				IKEP4_SD_SCHEDULE a 
+							INNER JOIN 			IKEP4_SD_REPEAT b 
+							ON 					b.SCHEDULE_ID = a.SCHEDULE_ID 
+							INNER JOIN 			IKEP4_MR_MEETING_ROOM m 
+							ON 					a.MEETING_ROOM_ID = m.MEETING_ROOM_ID
+							INNER JOIN			IKEP4_MR_APPROVE app
+							ON					a.SCHEDULE_ID = app.SCHEDULE_ID
+							WHERE 				a.REGISTER_ID = #userId# 
+							AND 				a.REPEAT = 1  
+							<![CDATA[
+							AND 				a.MEETING_ROOM_ID IS NOT NULL
+							AND 				app.REGIST_DATE < DATEADD(DD, 1, #endDate#)
+							AND 				app.REGIST_DATE >= #startDate#
+							]]> 
+
+							UNION ALL 
+
+							SELECT				RIGHT(CONVERT(VARCHAR(16), a.START_DATE, 120),16) AS startDate,
+												RIGHT(CONVERT(VARCHAR(16), a.END_DATE, 120),16) AS endDate, 
+												a.TITLE AS title, 
+												a.SCHEDULE_ID AS scheduleId, 
+												b.REPEAT_TYPE AS repeatType,
+												b.REPEAT_PERIOD AS repeatPeriod, 
+												b.REPEAT_PERIOD_OPTION AS repeatPeriodOption, 
+												b.REPEAT_START_DATE AS repeatStartDate,
+												b.REPEAT_END_DATE AS repeatEndDate, 
+												a.CATEGORY_ID AS categoryId, 
+												a.WORKSPACE_ID AS workspaceId, 
+												a.PLACE AS place, 
+												a.WHOLEDAY AS wholeday, 
+												a.SCHEDULE_PUBLIC AS schedulePublic, 
+												a.ATTENDANCE_REQUEST AS attendanceRequest, 
+												a.REGISTER_ID AS registerId
+							FROM 				IKEP4_SD_SCHEDULE a 
+							INNER JOIN 			IKEP4_SD_REPEAT b 
+							ON 					b.SCHEDULE_ID = a.SCHEDULE_ID
+							INNER JOIN 			IKEP4_SD_PARTICIPANT d 
+							ON  				d.SCHEDULE_ID = a.SCHEDULE_ID 
+							INNER JOIN 			IKEP4_MR_MEETING_ROOM m 
+							ON 					a.MEETING_ROOM_ID = m.MEETING_ROOM_ID
+							INNER JOIN			IKEP4_MR_APPROVE app
+							ON					a.SCHEDULE_ID = app.SCHEDULE_ID
+							WHERE 				d.TARGET_USER_ID = #userId# 
+							AND 				a.REPEAT = 1  
+							AND 				a.MEETING_ROOM_ID IS NOT NULL
+							<![CDATA[
+							AND 				app.REGIST_DATE < DATEADD(DD, 1, #endDate#)
+							AND 				app.REGIST_DATE >= #startDate# 
+							]]>
+							</isEqual>
+							<isEqual property="searchType" compareValue="PERS">
+							SELECT				RIGHT(CONVERT(VARCHAR(16), a.START_DATE, 120),16) AS startDate,
+												RIGHT(CONVERT(VARCHAR(16), a.END_DATE, 120),16) AS endDate, 
+												a.TITLE AS title, 
+												a.SCHEDULE_ID AS scheduleId, 
+												NULL AS repeatType,
+												NULL AS repeatPeriod, 
+												NULL AS repeatPeriodOption, 
+												NULL AS repeatStartDate,
+												NULL AS repeatEndDate, 
+												a.CATEGORY_ID AS categoryId, 
+												a.WORKSPACE_ID AS workspaceId, 
+												a.PLACE AS place, 
+												a.WHOLEDAY AS wholeday, 
+												a.SCHEDULE_PUBLIC AS schedulePublic, 
+												a.ATTENDANCE_REQUEST AS attendanceRequest, 
+												a.REGISTER_ID AS registerId 
+							FROM 				IKEP4_SD_SCHEDULE a 
+							INNER JOIN 			IKEP4_MR_MEETING_ROOM m
+							ON 					a.MEETING_ROOM_ID = m.MEETING_ROOM_ID
+							INNER JOIN			IKEP4_MR_APPROVE app
+							ON					a.SCHEDULE_ID = app.SCHEDULE_ID
+							WHERE 				a.REGISTER_ID = #userId# 
+							AND 				a.REPEAT = 0 
+							AND 				a.MEETING_ROOM_ID IS NOT NULL
+							<![CDATA[
+							AND 				app.REGIST_DATE < DATEADD(DD, 1, #endDate#)
+							AND 				app.REGIST_DATE >= #startDate# 
+							]]>
+
+							UNION ALL 
+
+							SELECT				RIGHT(CONVERT(VARCHAR(16), a.START_DATE, 120),16) AS startDate,
+												RIGHT(CONVERT(VARCHAR(16), a.END_DATE, 120),16) AS endDate, 
+												a.TITLE AS title, 
+												a.SCHEDULE_ID AS scheduleId, 
+												b.REPEAT_TYPE AS repeatType,
+												b.REPEAT_PERIOD AS repeatPeriod, 
+												b.REPEAT_PERIOD_OPTION AS repeatPeriodOption, 
+												b.REPEAT_START_DATE AS repeatStartDate,
+												b.REPEAT_END_DATE AS repeatEndDate, 
+												a.CATEGORY_ID AS categoryId, 
+												a.WORKSPACE_ID AS workspaceId, 
+												a.PLACE AS place, 
+												a.WHOLEDAY AS wholeday, 
+												a.SCHEDULE_PUBLIC AS schedulePublic, 
+												a.ATTENDANCE_REQUEST AS attendanceRequest, 
+												a.REGISTER_ID AS registerId
+							FROM 				IKEP4_SD_SCHEDULE a 
+							INNER JOIN 			IKEP4_SD_REPEAT b 
+							ON 					b.SCHEDULE_ID = a.SCHEDULE_ID 
+							INNER JOIN 			IKEP4_MR_MEETING_ROOM m 
+							ON 					a.MEETING_ROOM_ID = m.MEETING_ROOM_ID
+							INNER JOIN			IKEP4_MR_APPROVE app
+							ON					a.SCHEDULE_ID = app.SCHEDULE_ID
+							WHERE 				a.REGISTER_ID = #userId# 
+							AND 				a.REPEAT = 1  
+							AND 				a.MEETING_ROOM_ID IS NOT NULL
+							<![CDATA[
+							AND 				app.REGIST_DATE < DATEADD(DD, 1, #endDate#)
+							AND 				app.REGIST_DATE >= #startDate# 
+							]]>
+							</isEqual>
+							<isEqual property="searchType" compareValue="PART">
+							SELECT				RIGHT(CONVERT(VARCHAR(16), a.START_DATE, 120),16) AS startDate,
+												RIGHT(CONVERT(VARCHAR(16), a.END_DATE, 120),16) AS endDate, 
+												a.TITLE AS title, 
+												a.SCHEDULE_ID AS scheduleId, 
+												NULL AS repeatType,
+												NULL AS repeatPeriod, 
+												NULL AS repeatPeriodOption, 
+												NULL AS repeatStartDate,
+												NULL AS repeatEndDate, 
+												a.CATEGORY_ID AS categoryId, 
+												a.WORKSPACE_ID AS workspaceId, 
+												a.PLACE AS place, 
+												a.WHOLEDAY AS wholeday, 
+												a.SCHEDULE_PUBLIC AS schedulePublic, 
+												a.ATTENDANCE_REQUEST AS attendanceRequest, 
+												a.REGISTER_ID AS registerId
+							FROM 				IKEP4_SD_SCHEDULE a 
+							INNER JOIN 			IKEP4_SD_PARTICIPANT c 
+							ON 					a.SCHEDULE_ID = c.SCHEDULE_ID 
+							INNER JOIN 			IKEP4_MR_MEETING_ROOM m 
+							ON 					a.MEETING_ROOM_ID = m.MEETING_ROOM_ID
+							INNER JOIN			IKEP4_MR_APPROVE app
+							ON					a.SCHEDULE_ID = app.SCHEDULE_ID
+							WHERE 				c.TARGET_USER_ID = #userId# 
+							AND 				a.REPEAT = 0  
+							AND 				a.MEETING_ROOM_ID IS NOT NULL
+							<![CDATA[
+							AND 				app.REGIST_DATE < DATEADD(DD, 1, #endDate#)
+							AND 				app.REGIST_DATE >= #startDate# 
+							]]>
+
+							UNION ALL 
+
+							SELECT				RIGHT(CONVERT(VARCHAR(16), a.START_DATE, 120),16) AS startDate,
+												RIGHT(CONVERT(VARCHAR(16), a.END_DATE, 120),16) AS endDate, 
+												a.TITLE AS title, 
+												a.SCHEDULE_ID AS scheduleId, 
+												b.REPEAT_TYPE AS repeatType,
+												b.REPEAT_PERIOD AS repeatPeriod, 
+												b.REPEAT_PERIOD_OPTION AS repeatPeriodOption, 
+												b.REPEAT_START_DATE AS repeatStartDate,
+												b.REPEAT_END_DATE AS repeatEndDate, 
+												a.CATEGORY_ID AS categoryId, 
+												a.WORKSPACE_ID AS workspaceId, 
+												a.PLACE AS place, 
+												a.WHOLEDAY AS wholeday, 
+												a.SCHEDULE_PUBLIC AS schedulePublic, 
+												a.ATTENDANCE_REQUEST AS attendanceRequest, 
+												a.REGISTER_ID AS registerId
+							FROM 				IKEP4_SD_SCHEDULE a 
+							INNER JOIN 			IKEP4_SD_REPEAT b 
+							ON 					b.SCHEDULE_ID = a.SCHEDULE_ID
+							INNER JOIN 			IKEP4_SD_PARTICIPANT d 
+							ON  				d.SCHEDULE_ID = a.SCHEDULE_ID 
+							INNER JOIN 			IKEP4_MR_MEETING_ROOM m 
+							ON 					a.MEETING_ROOM_ID = m.MEETING_ROOM_ID
+							INNER JOIN			IKEP4_MR_APPROVE app
+							ON					a.SCHEDULE_ID = app.SCHEDULE_ID
+							WHERE 				d.TARGET_USER_ID = #userId# 
+							AND 				a.REPEAT = 1  
+							AND 				a.MEETING_ROOM_ID IS NOT NULL
+							<![CDATA[
+							AND 				app.REGIST_DATE < DATEADD(DD, 1, #endDate#)
+							AND 				app.REGIST_DATE >= #startDate# 
+							]]> 
+							</isEqual>
+							) p
+	</select>
+	
+	<select id="selectExists" parameterClass="Schedule" resultMap="scheduleResultMap">
+		<![CDATA[
+		/* [Reserve_SqlMap.xml] lightpack.meeting.dao.reserve.selectAll */
+		SELECT				tbl.SCHEDULE_ID AS scheduleId,
+							tbl.TITLE AS title,
+							tbl.MEETING_ROOM_ID AS meetingRoomId
+		FROM				(
+							SELECT				a.SCHEDULE_ID,
+												a.TITLE,
+												a.MEETING_ROOM_ID
+							FROM				IKEP4_SD_SCHEDULE a
+							INNER JOIN			IKEP4_MR_APPROVE b
+							ON					a.SCHEDULE_ID = b.SCHEDULE_ID
+							AND					a.MEETING_ROOM_ID = b.MEETING_ROOM_ID
+							WHERE				a.REPEAT = 0
+							AND					b.APPROVE_STATUS IN ('A', 'W')
+							AND					a.START_DATE <= #endDate#
+							AND 				a.END_DATE >= #startDate# 
+		]]>							
+							<isNotNull property="scheduleId">
+							AND					a.SCHEDULE_ID != #scheduleId#
+							</isNotNull>
+							<isNotNull property="meetingRoomId">
+							AND					a.MEETING_ROOM_ID = #meetingRoomId#
+							</isNotNull>
+		<![CDATA[ 
+							
+							UNION ALL
+							
+							SELECT				a.SCHEDULE_ID,
+												a.TITLE,
+												a.MEETING_ROOM_ID
+							FROM				IKEP4_SD_SCHEDULE a
+							INNER JOIN			IKEP4_SD_REPEAT b
+							ON					a.SCHEDULE_ID = b.SCHEDULE_ID
+							INNER JOIN			IKEP4_MR_APPROVE c
+							ON					a.SCHEDULE_ID = c.SCHEDULE_ID
+							AND					a.MEETING_ROOM_ID = c.MEETING_ROOM_ID
+							WHERE				a.REPEAT = 1
+							AND					c.APPROVE_STATUS IN ('A', 'W')
+							AND 				b.REPEAT_START_DATE <= #endDate#
+							AND 				b.REPEAT_END_DATE >= #startDate#  
+		]]>							
+							<isNotNull property="scheduleId">
+							AND					a.SCHEDULE_ID != #scheduleId#
+							</isNotNull>
+							<isNotNull property="meetingRoomId">
+							AND					a.MEETING_ROOM_ID = #meetingRoomId#
+							</isNotNull>
+							) tbl
+	</select>
+</sqlMap>

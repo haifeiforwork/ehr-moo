@@ -1,0 +1,387 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ko">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>IKEP Workflow</title>
+<link rel="stylesheet" type="text/css" href="../../css/theme01/jquery_ui_custom.css" />
+<link rel="stylesheet" type="text/css" href="../../css/common.css" />
+<link rel="stylesheet" type="text/css" href="../../css/workflow/style.css" />
+
+<script type="text/javascript" src="../../js/jquery/jquery-1.6.2.min.js"></script>
+<script type="text/javascript" src="../../js/jquery/jquery-ui-1.8.13.min.without.datepicker.js"></script>
+<script type="text/javascript" src="../../js/langResource/ko.js"></script>
+<script type="text/javascript" src="../../js/common.pack.js"></script>
+<script type="text/javascript" src="../../js/jquery/jquery.layout-latest.js"></script>
+<script type="text/javascript">
+(function($) {
+	var workflowLayout, centerLayout;
+	$(document).ready(function () { 
+		
+		$("#divTab_work1").tabs();
+		$("#divTab_work2").tabs();
+		
+		workflowLayout = $('#wrap').layout({ 
+			center__paneSelector:	".ui-layout-center" 
+			,	west__paneSelector:		".ui-layout-west" 
+			,	north__paneSelector:	".ui-layout-north"
+			,	south__paneSelector:	".ui-layout-south"
+			,	resizerClass:			"splitbarV"
+			,	togglerClass:			"toggler"
+			,   west__onresize:			resizeWestPaneScroll  // west resize 시 호출
+			,	west__size:				225
+			,	west__spacing_open:		6
+			,   west__spacing_closed:	6
+			,	west__resizable:		true
+			,	west__slidable:			true
+			,	spacing_open:			0 // ALL panes
+			,	south__size:			20
+			, 	south__spacing_open:	0
+			,	south__closable:		false
+			,	south__slidable:		false
+			,	south__resizable:		false
+			,	north__size:			28
+			, 	north__spacing_open:	0
+			,	north__closable:		false
+			,	north__slidable:		false
+			,	north__resizable:		false
+			,	east__initClosed:       true
+		});
+		
+		
+		centerLayout = $('div.ui-layout-center').layout({
+				resizerClass:			"splitbarH"
+			,	togglerClass:			"toggler"
+			,	center__minSize:		100	// top panes
+			,	center__paneSelector:	".center-center"
+			,   south__onresize:		resizeSouthPaneScroll  // south resize 시 호출
+			,	south__paneSelector:	".center-south"
+			,	north__paneSelector:	".center-north"
+			,	north__size:			78
+			,	north__spacing_open:	0
+			,   north__spacing_closed:	0
+			,	north__closable:		false
+			,	north__slidable:		false
+			,	north__resizable:		false
+			,	south__size:			"30%"
+			,	south__spacing_open:	6
+			,   south__spacing_closed:	6
+		});		
+	
+		// 메뉴영역 높이 조절 초기
+		resizeWestPaneScroll();	
+		
+		// 테이블 영역 높이 조절
+		resizeSouthPaneScroll();	
+		
+	});
+	
+	/* 메뉴영역 높이 조절 */
+	resizeWestPaneScroll = function(){
+		var westPaneHeight = $(".ui-layout-west").height();
+		var menuHeight = $(".l_tree").height();		
+		$(".l_tree").height(westPaneHeight-18);
+	}
+	
+	/* table영역 높이 조절 */
+	resizeSouthPaneScroll = function(){
+		var detailHeight = $(".p_box_info_con").height()-27;
+		$(".box_ty1").height(detailHeight);
+	}
+	
+	show_layer = function(){
+		$("#layer_p").dialog({width: 400, height:280, modal:true, resizable: false});
+		$("#layer_p").dialog("widget").addClass("ui-dialog1").addClass("ui-widget-content1");
+		$fdialog = $("#layer_p").dialog("widget").children(":first").addClass("ui-widget-workflow-header");
+	}	
+	
+})(jQuery);
+</script>
+</head>
+
+<body>
+
+<div id="wrap">
+
+	<!--header start-->
+	<div id="header_l" class="ui-layout-north">
+		<h1>IKEP4.0 WORKFLOW</h1>
+		<div class="btn t_close">
+			<a href="#a" title="t_close"><span>t_close</span></a>
+		</div>		
+	<div id="header_r"></div>	
+	</div>
+	<!--//header end-->
+		
+	<div class="content_leftbox ui-layout-west">			
+		<!--lnb start-->
+		<div class="lnb">
+			<h1 class="none">레프트메뉴</h1>
+			<h2>Process Tree</h2>			
+			<div class="l_tree">
+				<div class="partition"><a class="button" href="#a" onclick="show_layer();"><span><img src="../../images/workflow/ic_plus.gif" alt="" />Partition</span></a></div>
+				<div class="l_tree_wrap"><img src="../../images/workflow/img_tree_sample.gif" alt="트리샘플" /></div>
+			</div>
+		</div>
+		<!--//lnb end-->
+	</div>			
+	
+	<div class="content_rightbox ui-layout-center">				
+
+		<h1 class="none">컨텐츠영역</h1>
+		
+			<!--t_box start-->
+			<div class="t_box center-north">
+			
+				<div class="t_box center-north">
+					<!--tab Start-->		
+					<div id="divTab_work1" class="iKEP_tab_work1">
+						<ul>
+							<li><a href="#tabs-1">Process A1</a></li>
+							<li><a href="#tabs-2">Process A2</a></li>
+							<li><a href="#tabs-3">Process A3</a></li>
+						</ul>
+					</div>		
+					<!--//tab End-->			
+				</div>
+				
+				<div class="t_box_conbox_l">			
+					<div class="t_box_btn textRight">
+						<ul>
+							<li>				
+								<div class="btn add">
+									<a class="button" href="#a"><span><img src="../../images/workflow/ic_add.gif" alt="" />추가</span></a>
+								</div>		
+							</li>
+							<li>				
+								<div class="btn add">
+									<a class="button" href="#a"><span><img src="../../images/workflow/ic_save.gif" alt="" />저장</span></a>
+								</div>		
+							</li>
+							<li>				
+								<div class="btn add">
+									<a class="button" href="#a"><span><img src="../../images/workflow/ic_arrange.gif" alt="" />배치</span></a>
+								</div>		
+							</li>
+							<li>				
+								<div class="btn add">
+									<a class="button" href="#a"><span><img src="../../images/workflow/ic_arrange_cancel.gif" alt="" />배치해제</span></a>
+								</div>		
+							</li>
+						</ul>
+					</div>
+					
+					<div class="t_box_con">	
+						<span class="ty1">상태 <img src="../../images/workflow/img_blue.gif" alt="활성"> <img src="../../images/workflow/img_red.gif" alt="비활성"></span>
+						<img src="../../images/workflow/line_tab_box.gif" alt="라인">
+						<span class="ty1"><strong>버전1.0</strong> (기본)</span>				
+						<img src="../../images/workflow/line_tab_box.gif" alt="라인">		
+						<span class="ty1"><strong>최종저장일시</strong> 2011.03.22 00:00:00</span>				
+						<img src="../../images/workflow/line_tab_box.gif" alt="라인">	
+						<span class="ty1">배치여부</span>																
+					</div>	
+				<div class="t_box_conbox_r"></div>				
+				</div>
+				
+			</div>
+			<!--//t_box end-->
+			
+			<!--p_box_con start-->
+			<div class="p_box_con center-center">
+				<table style="height:100%;width:100%">
+					<tr>
+						<td style="text-align:center;">						
+							프로세스가 선택되지 않았습니다.<br>
+							프로세스 트리에서 프로세스를 선택하거나 신규 프로세스를 <a href="#" class="bold"><strong>추가</strong></a> 하세요.				
+						</td>
+					</tr>
+				</table>			
+			</div>
+			<!--//p_box_con end-->
+			
+			<!--p_box_info start-->
+			<div class="p_box_info_con center-south">
+				<h1 class="none">프로세스 정보영역</h1>
+				<h2>Process</h2>			
+				<div class="box_ty1">
+
+					<!--tab Start-->		
+					<div id="divTab_work2" class="iKEP_tab_work2">
+						<ul>
+							<li><a href="#tabs-1">Tab A1</a></li>
+							<li><a href="#tabs-2">Tab A2</a></li>
+							<li><a href="#tabs-3">Tab A3</a><img src="../../images/workflow/line_tab1.gif" alt="" /></li>
+							
+						</ul>
+					</div>		
+					<!--//tab End-->	
+					
+					<!--blockDetail Start-->					
+					<div class="blockDetail">
+						<table summary="리스트">
+							<caption></caption>
+							<thead>
+								<tr>
+									<th scope="col" width="20%" class="textCenter first">id</th>
+									<th scope="col" width="20%" class="textCenter">variable</th>
+									<th scope="col" width="20%" class="textCenter">arrangement</th>
+									<th scope="col" width="20%" class="textCenter">유형</th>
+									<th scope="col" width="10%" class="textCenter">in</th>
+									<th scope="col" width="10%" class="textCenter last">out</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td class="textCenter first">Variable1</td>
+									<td class="textCenter">변수 1</td>
+									<td class="textCenter">
+										<select title="검색조건" name="tablesch_01">
+											<option value="">FALSE</option>
+										</select>
+									</td>
+									<td class="textCenter">
+										<select title="검색조건" name="tablesch_01">
+											<option value="">STRING</option>
+										</select>
+									</td>
+									<td class="textCenter"><input name="input" type="checkbox" class="checkbox" title="checkbox" value="" checked="checked" /></td>
+									<td class="textCenter last"><input name="input4" class="checkbox" title="checkbox" type="checkbox" value="" /></td>
+								</tr>
+								<tr>
+									<td class="textCenter first">Variable1</td>
+									<td class="textCenter">변수 1</td>
+									<td class="textCenter">
+										<select title="검색조건" name="tablesch_01">
+											<option value="">FALSE</option>
+										</select>									
+									</td>
+									<td class="textCenter">
+										<select title="검색조건" name="tablesch_01">
+											<option value="">STRING</option>
+										</select>
+									</td>
+									<td class="textCenter"><input name="input2" class="checkbox" title="checkbox" type="checkbox" value="" /></td>
+									<td class="textCenter last"><input name="input3" class="checkbox" title="checkbox" type="checkbox" value="" /></td>
+								</tr>
+								<tr>
+									<td class="textCenter first">Variable1</td>
+									<td class="textCenter">변수 1</td>
+									<td class="textCenter">
+										<select title="검색조건" name="tablesch_01">
+											<option value="">FALSE</option>
+										</select>									
+									</td>
+									<td class="textCenter">
+										<select title="검색조건" name="tablesch_01">
+											<option value="">STRING</option>
+										</select>
+									</td>
+									<td class="textCenter"><input name="input2" class="checkbox" title="checkbox" type="checkbox" value="" /></td>
+									<td class="textCenter last"><input name="input3" class="checkbox" title="checkbox" type="checkbox" value="" /></td>
+								</tr>	
+								<tr>
+									<td class="textCenter first">Variable1</td>
+									<td class="textCenter">변수 1</td>
+									<td class="textCenter">
+										<select title="검색조건" name="tablesch_01">
+											<option value="">FALSE</option>
+										</select>									
+									</td>
+									<td class="textCenter">
+										<select title="검색조건" name="tablesch_01">
+											<option value="">STRING</option>
+										</select>
+									</td>
+									<td class="textCenter"><input name="input2" class="checkbox" title="checkbox" type="checkbox" value="" /></td>
+									<td class="textCenter last"><input name="input3" class="checkbox" title="checkbox" type="checkbox" value="" /></td>
+								</tr>	
+								<tr>
+									<td class="textCenter first">Variable1</td>
+									<td class="textCenter">변수 1</td>
+									<td class="textCenter">
+										<select title="검색조건" name="tablesch_01">
+											<option value="">FALSE</option>
+										</select>									
+									</td>
+									<td class="textCenter">
+										<select title="검색조건" name="tablesch_01">
+											<option value="">STRING</option>
+										</select>
+									</td>
+									<td class="textCenter"><input name="input2" class="checkbox" title="checkbox" type="checkbox" value="" /></td>
+									<td class="textCenter last"><input name="input3" class="checkbox" title="checkbox" type="checkbox" value="" /></td>
+								</tr>																						
+							</tbody>
+						</table>
+					</div>
+					<!--//blockDetail End-->		
+
+				</div>
+			</div>
+
+	</div>
+		
+	<div class="clear"></div>
+	<!-- //container -->	
+	
+	<!-- footer -->
+	<div id="footer_l" class="ui-layout-south">
+		<h1 class="none">푸터영역</h1>
+	<div id="footer_r"></div>
+	</div>
+	<!-- //footer End-->
+	
+</div>
+
+
+<!-- Modal window Start -->
+<div class="none ui-dialog1" id="layer_p" title="경고">
+	<!--blockDetail Start-->
+	<div class="blockDetail_2">
+		<table summary="일반게시판">
+			<caption></caption>
+			<tbody>
+				<tr>
+					<td colspan="2">	
+						Process A1 (1.0) 정보를 저장 하시겠습니까?						
+					</td>
+				</tr>
+				<tr>
+					<th scope="row" class="textLeft">버전</th>
+					<td>
+						<span class="textCenter">
+							<input name="input7" type="text" class="inputbox w100" title="" value="2.0" />
+						</span>
+					</td>
+				</tr>		
+			</tbody>
+		</table>
+		
+		<!--directive Start-->
+		<div class="directive"> 
+			<ul>
+				<li>
+					<span>
+						<strong>Process 저장</strong> <br />
+						서버에 배치는 되지 않으며, 임시 저장만 됩니다.
+					</span>
+				</li>	
+			</ul>
+		</div>
+		<!--//directive End-->
+	</div>
+	<!--//blockDetail End-->
+	
+	<!--blockButton Start-->
+	<div class="blockButton"> 
+		<ul>
+			<li><a class="button" href="#a"><span>확인</span></a></li>
+			<li><a class="button" href="#a"><span>취소</span></a></li>
+		</ul>
+	</div>
+	<!--//blockButton End-->	
+	<div><img class="valign_baseline" src="../../images/workflow/bg_pop_bottom.png" alt="" /></div>
+</div>	
+<!-- //Modal window End -->
+
+</body>
+</html>

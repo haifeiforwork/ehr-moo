@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="collpack.ideation.dao.IdPolicy" >
+  
+  <typeAlias alias="IdPolicy" type="com.lgcns.ikep4.collpack.ideation.model.IdPolicy"/>
+  
+  <resultMap id="IdPolicyResult" class="IdPolicy" >
+	    <result column="POLICY_ID" 				property="policyId" />
+	    <result column="POLICY_TYPE" 			property="policyType" />
+	    <result column="RECOMMEND_COUNT" 		property="recommendCount"  jdbcType="NUMBER" javaType="Integer" nullValue="0"/>
+	    <result column="SUGGESTION_WEIGHT" 		property="suggestionWeight"  jdbcType="NUMBER" javaType="Integer" nullValue="0"/>
+	    <result column="RECOMMEND_WEIGHT" 		property="recommendWeight"   jdbcType="NUMBER" javaType="Integer" nullValue="0"/>
+	    <result column="ADOPT_WEIGHT" 			property="adoptWeight"  jdbcType="NUMBER" javaType="Integer" nullValue="0" />
+	    <result column="BEST_WEIGHT" 			property="bestWeight"  jdbcType="NUMBER" javaType="Integer" nullValue="0" />
+	    <result column="BUSINESS_WEIGHT" 		property="businessWeight"   jdbcType="NUMBER" javaType="Integer" nullValue="0" />
+	    <result column="FAVORITE_WEIGHT" 		property="favoriteWeight"   jdbcType="NUMBER" javaType="Integer" nullValue="0"/>
+	    <result column="LINEREPLY_WEIGHT" 		property="linereplyWeight"   jdbcType="NUMBER" javaType="Integer" nullValue="0"/>
+	    <result column="PORTAL_ID" 				property="portalId" />
+	    <result column="REGISTER_ID" 			property="registerId" />
+	    <result column="REGISTER_NAME" 			property="registerName"  />
+	    <result column="REGIST_DATE" 			property="registDate" />
+  </resultMap>
+  
+  	<!-- ANSI -->
+   <insert id="create" parameterClass="IdPolicy" >
+    INSERT INTO IKEP4_ID_POLICY (				/* [IdPolicy_SqlMap.xml] collpack.ideation.dao.IdPolicy.create */
+	    POLICY_ID
+	    , POLICY_TYPE
+	    , RECOMMEND_COUNT
+	    , SUGGESTION_WEIGHT
+	    , RECOMMEND_WEIGHT
+	    , ADOPT_WEIGHT
+	    , BEST_WEIGHT
+	    , BUSINESS_WEIGHT
+	    , FAVORITE_WEIGHT
+	    , LINEREPLY_WEIGHT 
+	    , PORTAL_ID
+	    , REGISTER_ID
+	    , REGISTER_NAME
+	    , REGIST_DATE
+      )VALUES (
+	      #policyId#
+	      , #policyType#
+	      , #recommendCount#
+	      , #suggestionWeight#
+	      , #recommendWeight#
+	      , #adoptWeight#
+	      , #bestWeight#
+	      , #businessWeight#
+	      , #favoriteWeight#
+	      , #linereplyWeight#
+	      , #portalId#
+	      , #registerId#
+	      , #registerName#
+	      , CURRENT_TIMESTAMP
+	  )
+  </insert>
+  
+  <!-- ANSI -->
+  <select id="get" resultMap="IdPolicyResult" parameterClass="IdPolicy" >
+    SELECT 						/* [IdPolicy_SqlMap.xml] collpack.ideation.dao.IdPolicy.get */
+    	 POLICY_ID
+	    , POLICY_TYPE
+	    , RECOMMEND_COUNT
+	    , SUGGESTION_WEIGHT
+	    , RECOMMEND_WEIGHT
+	    , ADOPT_WEIGHT
+	    , BEST_WEIGHT
+	    , BUSINESS_WEIGHT
+	    , FAVORITE_WEIGHT
+	    , LINEREPLY_WEIGHT   
+	    , PORTAL_ID
+	    , REGISTER_ID
+	    , REGISTER_NAME
+	    , REGIST_DATE
+    FROM IKEP4_ID_POLICY
+    WHERE POLICY_TYPE = #policyType#
+    AND PORTAL_ID = #portalId#
+  </select>
+  
+  <!-- ANSI -->
+  <select id="list" resultMap="IdPolicyResult" parameterClass="String" >
+    SELECT 						/* [IdPolicy_SqlMap.xml] collpack.ideation.dao.IdPolicy.list */
+    	 POLICY_ID
+	    , POLICY_TYPE
+	    , RECOMMEND_COUNT
+	    , SUGGESTION_WEIGHT
+	    , RECOMMEND_WEIGHT
+	    , ADOPT_WEIGHT
+	    , BEST_WEIGHT
+	    , BUSINESS_WEIGHT
+	    , FAVORITE_WEIGHT
+	    , LINEREPLY_WEIGHT 	    
+	    , PORTAL_ID
+	    , REGISTER_ID
+	    , REGISTER_NAME
+	    , REGIST_DATE
+    FROM IKEP4_ID_POLICY
+    WHERE POLICY_TYPE = #policyType#
+  </select>
+  
+  <!-- ANSI -->
+  <update id="update" parameterClass="IdPolicy" >
+    UPDATE IKEP4_ID_POLICY				/* [IdPolicy_SqlMap.xml] collpack.ideation.dao.IdPolicy.update */
+    SET POLICY_TYPE = #policyType#,
+      RECOMMEND_COUNT = #recommendCount#,
+      SUGGESTION_WEIGHT = #suggestionWeight#,
+      RECOMMEND_WEIGHT = #recommendWeight#,
+      ADOPT_WEIGHT = #adoptWeight#,
+      BEST_WEIGHT = #bestWeight#,
+      BUSINESS_WEIGHT = #businessWeight#,
+      FAVORITE_WEIGHT = #favoriteWeight#,
+      LINEREPLY_WEIGHT = #linereplyWeight#,
+      PORTAL_ID = #portalId#,
+      REGISTER_ID = #registerId#,
+      REGISTER_NAME = #registerName#
+    WHERE POLICY_ID = #policyId#
+  </update>
+  
+  	<!-- ANSI -->
+   <delete id="remove" parameterClass="String" >
+    DELETE 					/* [IdPolicy_SqlMap.xml] collpack.ideation.dao.IdPolicy.remove */
+    FROM IKEP4_ID_POLICY
+    WHERE POLICY_ID = #policyId#
+  </delete>
+  
+  
+</sqlMap>

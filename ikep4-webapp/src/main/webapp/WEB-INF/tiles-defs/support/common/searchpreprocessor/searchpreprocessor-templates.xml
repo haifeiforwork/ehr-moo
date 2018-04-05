@@ -1,0 +1,28 @@
+<!DOCTYPE tiles-definitions PUBLIC
+    "-//Apache Software Foundation//DTD Tiles Configuration 2.1//EN"
+    "http://tiles.apache.org/dtds/tiles-config_2_1.dtd">
+
+<tiles-definitions>
+	<definition name=".searchpreprocessor" template="/WEB-INF/templates/sub/subMain.jsp">
+		<put-attribute name="title" value="ui.support.searchpreprocessor.window.title" type="string" />
+		<put-attribute name="menu" value="/WEB-INF/view/support/searchpreprocessor/left/leftMenu.jsp" />
+		<put-attribute name="body" value="/WEB-INF/templates/sub/body.jsp" />
+	</definition>
+	
+	<definition name="/support/searchpreprocessor/searchhistory/*" extends=".searchpreprocessor">
+		<put-attribute name="body" value="/WEB-INF/view/support/searchpreprocessor/searchhistory/{1}.jsp" />
+	</definition>	
+	
+	<definition name="/support/searchpreprocessor/searchhistory/related/init" extends=".searchpreprocessor">
+		<put-attribute name="body" value="/WEB-INF/view/support/searchpreprocessor/searchhistory/related.jsp" />
+	</definition>	
+	
+	<definition name="/support/searchpreprocessor/report/reportHistory" extends=".searchpreprocessor">
+		<put-attribute name="body" value="/WEB-INF/view/support/searchpreprocessor/report/reportHistory.jsp" />
+	</definition>	
+	
+	<definition name="/support/searchpreprocessor/batchlog/history" extends=".searchpreprocessor">
+		<put-attribute name="body" value="/WEB-INF/view/support/searchpreprocessor/batchlog/history.jsp" />
+	</definition>	
+	
+</tiles-definitions>

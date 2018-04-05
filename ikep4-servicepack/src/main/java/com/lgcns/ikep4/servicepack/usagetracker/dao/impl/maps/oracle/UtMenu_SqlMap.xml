@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="com.lgcns.ikep4.servicepack.usagetracker.utMenu" >
+
+  <typeAlias alias="utMenu"                type="com.lgcns.ikep4.servicepack.usagetracker.model.UtMenu"/>
+  <typeAlias alias="utMenuKey"             type="java.lang.String"/>
+  <typeAlias alias="utSearchCondition"             type="com.lgcns.ikep4.servicepack.usagetracker.search.UtSearchCondition"/>
+  
+  <resultMap id="result" class="utMenu" >
+    <result column="MENU_ID" jdbcType="VARCHAR" property="menuId" />
+    <result column="PORTAL_ID" jdbcType="VARCHAR" property="portalId" />
+    <result column="MENU_NAME" jdbcType="VARCHAR" property="menuName" />
+    <result column="MENU_URL" jdbcType="VARCHAR" property="menuUrl" />
+    <result column="REQUEST_PARAMETER" jdbcType="VARCHAR" property="requestParameter" />
+    <result column="USAGE" jdbcType="DECIMAL" property="usage" />
+    <result column="REGISTER_ID" jdbcType="VARCHAR" property="registerId" />
+    <result column="REGISTER_NAME" jdbcType="VARCHAR" property="registerName" />
+    <result column="REGIST_DATE" jdbcType="TIMESTAMP" property="registDate" />
+  </resultMap>
+  
+
+
+  <sql id="whereClause">
+    <iterate conjunction="or" prepend="where" property="oredCriteria" removeFirstPrepend="iterate">
+      <isEqual compareValue="true" property="oredCriteria[].valid">
+        (
+        <iterate conjunction="and" prepend="and" property="oredCriteria[].criteriaWithoutValue">
+          $oredCriteria[].criteriaWithoutValue[]$
+        </iterate>
+        <iterate conjunction="and" prepend="and" property="oredCriteria[].criteriaWithSingleValue">
+          $oredCriteria[].criteriaWithSingleValue[].condition$
+            #oredCriteria[].criteriaWithSingleValue[].value#
+        </iterate>
+        <iterate conjunction="and" prepend="and" property="oredCriteria[].criteriaWithListValue">
+          $oredCriteria[].criteriaWithListValue[].condition$
+          <iterate close=")" conjunction="," open="(" property="oredCriteria[].criteriaWithListValue[].values">
+            #oredCriteria[].criteriaWithListValue[].values[]#
+          </iterate>
+        </iterate>
+        <iterate conjunction="and" prepend="and" property="oredCriteria[].criteriaWithBetweenValue">
+          $oredCriteria[].criteriaWithBetweenValue[].condition$
+          #oredCriteria[].criteriaWithBetweenValue[].values[0]# and
+          #oredCriteria[].criteriaWithBetweenValue[].values[1]#
+        </iterate>
+        )
+      </isEqual>
+    </iterate>
+  </sql>
+        
+  <sql id="sqlColumnList"> 
+	  MENU_ID, 
+	  PORTAL_ID, 
+	  MENU_NAME, 
+	  MENU_URL, 
+	  REQUEST_PARAMETER, 
+	  USAGE, 
+	  REGISTER_ID,
+      REGISTER_NAME, 
+      REGIST_DATE
+  </sql> 
+  
+
+  
+ <select id="get" parameterClass="utMenuKey" resultMap="result"> 
+     /* [utMenu_SqlMap.xml] utMenu.get */
+     select menu_id,
+            portal_id,
+            menu_name,
+            menu_url,
+            request_parameter,
+            usage,
+            register_id,
+            register_name,
+            regist_date           
+     from ikep4_ut_menu
+     where menu_id=#menuId#
+  </select>
+  
+
+  
+  <select id="exists" parameterClass="utMenuKey" resultClass="int"> 
+    SELECT COUNT(*) /* [utMenu_SqlMap.xml] utMenu.exists */
+     from IKEP4_UT_MENU
+    where MENU_ID = #menuId#
+  </select> 
+  
+  <insert id="create" parameterClass="utMenu"> 
+    insert into IKEP4_UT_MENU (MENU_ID, PORTAL_ID, MENU_NAME, MENU_URL, REQUEST_PARAMETER, USAGE, /* [utMenu_SqlMap.xml] utMenu.create */
+      REGISTER_ID, REGISTER_NAME, REGIST_DATE)
+    values (#menuId#, #portalId#, #menuName#, #menuUrl#,
+      #requestParameter#, #usage#, #registerId#, #registerName#,
+      #registDate#)
+  </insert>
+  <update id="update" parameterClass="utMenu"> 
+   update IKEP4_UT_MENU /* [utMenu_SqlMap.xml] utMenu.update */
+    set PORTAL_ID = #portalId#,
+      MENU_NAME = #menuName#,
+      MENU_URL = #menuUrl#,
+      REQUEST_PARAMETER = #requestParameter#,
+      USAGE = #usage#
+    where MENU_ID = #menuId#
+  </update>
+  
+  <delete id="remove" parameterClass="utMenuKey"> 
+    delete  /* [utMenu_SqlMap.xml] utMenu.remove */
+    from IKEP4_UT_MENU
+    where MENU_ID = #menuId#
+  </delete>  
+  
+  
+  <select id="comboList" parameterClass="utMenu" resultMap="result">  
+        SELECT  /* [utMenu_SqlMap.xml] utMenu.comboList */
+        <include refid="com.lgcns.ikep4.servicepack.usagetracker.utMenu.sqlColumnList" />
+        FROM   IKEP4_UT_MENU
+ 		WHERE  PORTAL_ID = #portalId#
+ 			 and USAGE = #usage#
+	    order by MENU_NAME desc
+  </select>  
+  
+  <select id="listBySearchCondition" parameterClass="utSearchCondition" resultMap="result">  
+	SELECT * /* [utMenu_SqlMap.xml] utMenu.listBySearchCondition */
+	FROM ( 
+	     SELECT  ROWNUM AS RNUM, A.*
+	     FROM ( 
+		         SELECT 
+		         <include refid="com.lgcns.ikep4.servicepack.usagetracker.utMenu.sqlColumnList" />
+		         FROM   IKEP4_UT_MENU
+    			 WHERE  PORTAL_ID = #portalId#
+				order by REGIST_DATE desc
+	  
+	    	) A WHERE ROWNUM <![CDATA[<=]]>   #endRowIndex# /* 종료  */
+	) WHERE RNUM <![CDATA[>]]>   #startRowIndex# /* 시작 */
+  </select>   
+  
+  <select id="countBySearchCondition" parameterClass="utSearchCondition" resultClass="int">  
+	SELECT COUNT(*) /* [utMenu_SqlMap.xml] utMenu.countBySearchCondition */
+	FROM   IKEP4_UT_MENU
+    WHERE   PORTAL_ID = #portalId#
+  </select> 
+  
+   <select id="getMenu" parameterClass="utMenu" resultMap="result"> 
+    SELECT /* [utMenu_SqlMap.xml] utMenu.getMenu */
+    	<include refid="com.lgcns.ikep4.servicepack.usagetracker.utMenu.sqlColumnList" />
+     from IKEP4_UT_MENU
+    where MENU_URL = #menuUrl#
+    	  and PORTAL_ID = #portalId#
+    	  and rownum <![CDATA[<=]]> 1
+  </select>
+  
+  
+  <select id="existsURL" parameterClass="utMenuKey" resultClass="int"> 
+    SELECT COUNT(*) /* [utMenu_SqlMap.xml] utMenu.existsURL */
+     from IKEP4_UT_MENU
+    where MENU_URL = #menuUrl#
+  </select> 
+  
+</sqlMap>

@@ -1,0 +1,395 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="lightpack.usb.dao.usb" >
+	
+	<typeAlias alias="Usb" type="com.lgcns.ikep4.lightpack.usb.model.Usb"/>
+	<typeAlias alias="UsbSearchCondition" type="com.lgcns.ikep4.lightpack.usb.model.UsbSearchCondition"/>
+	
+	<resultMap id="resultMyRequest" class="java.util.HashMap">
+		<result property="usbId" column="usbId" />
+		<result property="approveUserId" column="approveUserId" />
+		<result property="approveStatus" column="approveStatus" />
+		<result property="startDate" column="startDate" />
+		<result property="registerId" column="registerId" />
+		<result property="registerName" column="registerName" />
+		<result property="registDate" column="registDate" />
+		<result property="updaterId" column="updaterId" />
+		<result property="updaterName" column="updaterName" />
+		<result property="updateDate" column="updateDate" />
+		<result property="endDate" column="endDate" />
+		<result property="requestReason" column="requestReason" />
+		<result property="approveDate" column="approveDate"/>
+		<result property="fileName" column="fileName"/>
+		<result property="ecmFileYn" column="ecmFileYn"/>
+		<result property="reqType" column="reqType"/>
+		<result property="foreverYn" column="foreverYn"/>
+		<result property="groupName" column="groupName"/>
+		<result property="jobTitleName" column="jobTitleName"/>
+		<result property="jobDutyName" column="jobDutyName"/>
+	</resultMap>
+	
+	<resultMap id="resultUsbAdmin" class="com.lgcns.ikep4.lightpack.usb.model.Usb">
+		<result property="managerId" column="managerId" />
+	</resultMap>
+	
+  	<insert id="usbUseRequest" parameterClass="Usb"> 
+		<![CDATA[
+		/* [Usb_SqlMap.xml] lightpack.usb.dao.usb.usbUseRequest */
+		INSERT INTO			IKEP4_USB
+							(
+							usb_id,
+							approve_user_id,
+							approve_status,
+							start_date,
+							end_date,
+							approve_date,
+							request_reason,
+							register_id,
+							register_name,
+							regist_date,
+							updater_id,
+							updater_name,
+							update_date,
+							file_name,
+							ecm_file_yn,
+							req_type,
+							forever_yn
+							) 
+		VALUES 				( 
+							#usbId#,
+							#approveUserId#,
+							#approveStatus#,
+							#startDate#,
+							#endDate#,
+							#approveDate#,
+							#requestReason#,
+							#registerId#,
+							#registerName#,
+							GETDATE(),
+							#updaterId#,
+							#updaterName#,
+							GETDATE(),
+							#fileName#,
+							#ecmFileYn#,
+							#reqType#,
+							#foreverYn#
+							)
+		]]>
+   	</insert>	
+   	<select id="getTeamLeader" parameterClass="String" resultClass="String">
+		<![CDATA[
+		select top 1 user_id as userId
+		from ikep4_ev_user
+		where user_id in (select user_id from IKEP4_EV_USER
+		where user_id in(
+		select user_id from IKEP4_EV_USER_GROUP
+		where group_id = (
+		select group_id from IKEP4_EV_USER_GROUP
+		where user_id = #userId#
+		and group_id in (select group_id from IKEP4_EV_GROUP
+		where  group_type_id = 'G0001'
+		and view_option = '1')))
+		and user_status = 'C'
+		and leader = '1'
+		and job_duty_code in ('18','68','19')
+		)
+		]]>
+	</select>
+	
+	<select id="selectMyRequestCount" parameterClass="UsbSearchCondition" resultClass="int">
+		select count(*) from ikep4_usb
+		where register_id = #userId#
+		and is_delete = '0'
+		<isNotNull property="endDate">
+		<![CDATA[
+		AND start_date < DATEADD(DD, 1, #endDate#)
+		]]>	
+		</isNotNull>
+		<isNotNull property="startDate">
+		<![CDATA[
+		AND end_date >= #startDate# 
+		]]>	
+		</isNotNull>
+	</select>
+	
+	<select id="selectMyRequestAll" parameterClass="UsbSearchCondition" resultMap="resultMyRequest">
+		SELECT
+			        A.*
+			    FROM 
+			    ( 
+					SELECT ROW_NUMBER() OVER(order by ub.regist_date desc ) AS NUM,
+			ub.usb_id as usbId,
+			ub.approve_user_id as approveUserId,
+			ub.approve_status as approveStatus,
+			convert(varchar,ub.start_date,102) as startDate,
+			ub.register_id as registerId,
+			ub.register_name as registerName,
+			ub.regist_date as registDate,
+			ub.updater_id as updaterId,
+			ub.updater_name as updaterName,
+			ub.update_date as updateDate,
+			convert(varchar,ub.end_date,102) as endDate,
+			ub.approve_date as approveDate,
+			ub.request_reason as requestReason,
+			ub.file_name as fileName,
+			ub.ecm_file_yn as ecmFileYn,
+			ub.req_type as reqType,
+			ub.forever_yn as foreverYn,
+			C.group_name as groupName,
+			D.job_title_name as jobTitleName,
+			G.job_duty_name as jobDutyName
+		from ikep4_usb ub
+		LEFT OUTER JOIN IKEP4_EV_USER A
+		ON A.USER_ID = ub.register_id
+		LEFT OUTER JOIN IKEP4_EV_USER_GROUP B
+			ON A.USER_ID = B.USER_ID
+		INNER JOIN IKEP4_EV_GROUP C
+			ON B.GROUP_ID = C.GROUP_ID
+			AND C.GROUP_TYPE_ID = 'G0001'
+		LEFT OUTER JOIN IKEP4_EV_JOB_TITLE D
+			ON A.JOB_TITLE_CODE = D.JOB_TITLE_CODE	
+		LEFT OUTER JOIN IKEP4_EV_JOB_DUTY G
+			ON A.JOB_DUTY_CODE = G.JOB_DUTY_CODE	
+		where A.USER_STATUS = 'C'
+		and ub.register_id = #userId#
+		and ub.is_delete = '0'
+		<isNotNull property="endDate">
+		<![CDATA[
+		AND ub.start_date < DATEADD(DD, 1, #endDate#)
+		]]>	
+		</isNotNull>
+		<isNotNull property="startDate">
+		<![CDATA[
+		AND ub.end_date >= #startDate# 
+		]]>	
+		</isNotNull>
+		<![CDATA[	
+				) A
+				WHERE A.NUM <=  #endRowIndex# AND A.NUM >  #startRowIndex# /* 시작 */
+		]]>	
+	</select>
+	
+	<select id="selectRequestCount" parameterClass="UsbSearchCondition" resultClass="int">
+		select count(*) from ikep4_usb
+		where approve_user_id = #userId#
+		and is_delete = '0'
+		<isNotNull property="endDate">
+		<![CDATA[
+		AND start_date < DATEADD(DD, 1, #endDate#)
+		]]>	
+		</isNotNull>
+		<isNotNull property="startDate">
+		<![CDATA[
+		AND end_date >= #startDate# 
+		]]>	
+		</isNotNull>
+	</select>
+	
+	<select id="selectRequestAllCount" parameterClass="UsbSearchCondition" resultClass="int">
+		select count(*) from ikep4_usb
+		where is_delete = '0'
+		<isNotNull property="endDate">
+		<![CDATA[
+		AND start_date < DATEADD(DD, 1, #endDate#)
+		]]>	
+		</isNotNull>
+		<isNotNull property="startDate">
+		<![CDATA[
+		AND end_date >= #startDate# 
+		]]>	
+		</isNotNull>
+	</select>
+	
+	<select id="selectRequest" parameterClass="UsbSearchCondition" resultMap="resultMyRequest">
+		SELECT
+			        A.*
+			    FROM 
+			    ( 
+					SELECT ROW_NUMBER() OVER(order by ub.regist_date desc ) AS NUM,
+			ub.usb_id as usbId,
+			ub.approve_user_id as approveUserId,
+			ub.approve_status as approveStatus,
+			convert(varchar,ub.start_date,102) as startDate,
+			ub.register_id as registerId,
+			ub.register_name as registerName,
+			ub.regist_date as registDate,
+			ub.updater_id as updaterId,
+			ub.updater_name as updaterName,
+			ub.update_date as updateDate,
+			convert(varchar,ub.end_date,102) as endDate,
+			ub.approve_date as approveDate,
+			ub.request_reason as requestReason,
+			ub.file_name as fileName,
+			ub.ecm_file_yn as ecmFileYn,
+			ub.req_type as reqType,
+			ub.forever_yn as foreverYn,
+			C.group_name as groupName,
+			D.job_title_name as jobTitleName,
+			G.job_duty_name as jobDutyName
+		from ikep4_usb ub
+		LEFT OUTER JOIN IKEP4_EV_USER A
+		ON A.USER_ID = ub.register_id
+		LEFT OUTER JOIN IKEP4_EV_USER_GROUP B
+			ON A.USER_ID = B.USER_ID
+		INNER JOIN IKEP4_EV_GROUP C
+			ON B.GROUP_ID = C.GROUP_ID
+			AND C.GROUP_TYPE_ID = 'G0001'
+		LEFT OUTER JOIN IKEP4_EV_JOB_TITLE D
+			ON A.JOB_TITLE_CODE = D.JOB_TITLE_CODE	
+		LEFT OUTER JOIN IKEP4_EV_JOB_DUTY G
+			ON A.JOB_DUTY_CODE = G.JOB_DUTY_CODE	
+		where A.USER_STATUS = 'C'
+		and ub.approve_user_id = #userId#
+		and ub.is_delete = '0'
+		<isNotNull property="endDate">
+		<![CDATA[
+		AND ub.start_date < DATEADD(DD, 1, #endDate#)
+		]]>	
+		</isNotNull>
+		<isNotNull property="startDate">
+		<![CDATA[
+		AND ub.end_date >= #startDate# 
+		]]>	
+		</isNotNull>
+		<![CDATA[	
+				) A
+				WHERE A.NUM <=  #endRowIndex# AND A.NUM >  #startRowIndex# /* 시작 */
+		]]>	
+	</select>
+	
+	<select id="selectRequestAll" parameterClass="UsbSearchCondition" resultMap="resultMyRequest">
+		SELECT
+			        A.*
+			    FROM 
+			    ( 
+					SELECT ROW_NUMBER() OVER(order by ub.regist_date desc ) AS NUM,
+			ub.usb_id as usbId,
+			ub.approve_user_id as approveUserId,
+			ub.approve_status as approveStatus,
+			convert(varchar,ub.start_date,102) as startDate,
+			ub.register_id as registerId,
+			ub.register_name as registerName,
+			ub.regist_date as registDate,
+			ub.updater_id as updaterId,
+			ub.updater_name as updaterName,
+			ub.update_date as updateDate,
+			convert(varchar,ub.end_date,102) as endDate,
+			ub.approve_date as approveDate,
+			ub.request_reason as requestReason,
+			ub.file_name as fileName,
+			ub.ecm_file_yn as ecmFileYn,
+			ub.req_type as reqType,
+			ub.forever_yn as foreverYn,
+			C.group_name as groupName,
+			D.job_title_name as jobTitleName,
+			G.job_duty_name as jobDutyName
+		from ikep4_usb ub
+		LEFT OUTER JOIN IKEP4_EV_USER A
+		ON A.USER_ID = ub.register_id
+		LEFT OUTER JOIN IKEP4_EV_USER_GROUP B
+			ON A.USER_ID = B.USER_ID
+		INNER JOIN IKEP4_EV_GROUP C
+			ON B.GROUP_ID = C.GROUP_ID
+			AND C.GROUP_TYPE_ID = 'G0001'
+		LEFT OUTER JOIN IKEP4_EV_JOB_TITLE D
+			ON A.JOB_TITLE_CODE = D.JOB_TITLE_CODE	
+		LEFT OUTER JOIN IKEP4_EV_JOB_DUTY G
+			ON A.JOB_DUTY_CODE = G.JOB_DUTY_CODE	
+		where A.USER_STATUS = 'C'
+		and ub.is_delete = '0'
+		<isNotNull property="endDate">
+		<![CDATA[
+		AND ub.start_date < DATEADD(DD, 1, #endDate#)
+		]]>	
+		</isNotNull>
+		<isNotNull property="startDate">
+		<![CDATA[
+		AND ub.end_date >= #startDate# 
+		]]>	
+		</isNotNull>
+		<![CDATA[	
+				) A
+				WHERE A.NUM <=  #endRowIndex# AND A.NUM >  #startRowIndex# /* 시작 */
+		]]>	
+	</select>
+	
+	<select id="getUseRequestView" parameterClass="String" resultClass="Usb">
+		<![CDATA[
+		select 
+			usb_id as usbId,
+			approve_user_id as approveUserId,
+			(select user_name from ikep4_ev_user where user_id = approve_user_id) as approveUserName,
+			approve_status as approveStatus,
+			convert(varchar,start_date,102) as startDate,
+			register_id as registerId,
+			register_name as registerName,
+			regist_date as registDate,
+			updater_id as updaterId,
+			updater_name as updaterName,
+			update_date as updateDate,
+			convert(varchar,end_date,102) as endDate,
+			approve_date as approveDate,
+			request_reason as requestReason,
+			reject_reason as rejectReason,
+			file_name as fileName,
+			ecm_file_yn as ecmFileYn,
+			req_type as reqType,
+			forever_yn as foreverYn
+		from ikep4_usb
+		where usb_id = #usbId#
+		and is_delete = '0'
+		]]>
+	</select>
+	
+	<update id="usbApproveUse" parameterClass="Usb">
+   		<![CDATA[
+   		UPDATE				ikep4_usb
+   		SET					APPROVE_STATUS = #approveStatus#,
+   							approve_user_id = #approveUserId#,
+   							approve_date = GETDATE(),
+   							reject_reason = #rejectReason#
+   		WHERE				USB_ID = #usbId#
+   		]]>
+   	</update>
+   	
+   	<update id="usbUseRequestUpdate" parameterClass="Usb">
+   		<![CDATA[
+   		UPDATE				ikep4_usb
+   		SET					
+   							start_date = #startDate#,
+   							end_date = #endDate#,
+   							update_date = GETDATE(),
+   							request_reason = #requestReason#,
+   							file_name = #fileName#,
+   							req_type = #reqType#
+   		WHERE				USB_ID = #usbId#
+   		]]>
+   	</update>
+   	
+   	<update id="usbUseRequestDelete" parameterClass="Usb">
+   		<![CDATA[
+   		UPDATE				ikep4_usb
+   		SET					IS_DELETE = #isDelete#,
+   							update_date = GETDATE()
+   		WHERE				USB_ID = #usbId#
+   		]]>
+   	</update>
+   	
+   	<select id="selectUsbManager" parameterClass="String" resultMap="resultUsbAdmin">
+		select user_id as managerId from IKEP4_EV_USER_ROLE
+		where role_id = (
+		select role_id from IKEP4_EV_ROLE
+		where role_name = #usbadm#)
+		and user_id in (select user_id from IKEP4_EV_USER where user_status = 'C')
+		union 
+		select user_id as managerId from IKEP4_EV_USER_GROUP
+		where group_id in(
+		select group_id from IKEP4_EV_GROUP_ROLE
+		where role_id = (
+		select role_id from IKEP4_EV_ROLE
+		where role_name = #usbadm#))
+		and user_id in (select user_id from IKEP4_EV_USER where user_status = 'C')
+	</select>
+   
+</sqlMap>

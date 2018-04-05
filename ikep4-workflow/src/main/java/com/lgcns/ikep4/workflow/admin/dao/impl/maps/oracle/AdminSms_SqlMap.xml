@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="workflow.admin.dao.AdminSms">
+	<typeAlias alias="AdminSms" type="com.lgcns.ikep4.workflow.admin.model.AdminSms"/>
+	<typeAlias alias="AdminSmsSearchCondition" type="com.lgcns.ikep4.workflow.admin.model.AdminSmsSearchCondition"/>
+	
+	<!-- 워크플로우 - SMS관리 - 발신이력 리스트 -->
+	<select id="listSmsHistoryList" parameterClass="AdminSmsSearchCondition" resultClass="AdminSms">
+		/*[AdminSms_SqlMap.xml] workflow.admin.dao.AdminSmsDao.listSmsHistoryList */
+		SELECT *
+		FROM (
+			SELECT ROWNUM AS RNUM, A.* FROM ( 
+		        /* START========================================= */
+			   	SELECT 	SS.REGISTER_ID AS registerId
+						, SS.REGISTER_NAME AS registerName
+				        , CONTENTS
+				        , EU.USER_NAME AS receiverName
+				        , RECEIVER_PHONENO AS receiverPhoneno
+				        , TO_CHAR(SS.REGIST_DATE, 'YYYY.MM.DD HH24:MI') AS registDate
+				        , RESULT_CODE AS resultCode
+				FROM 	IKEP4_SM_SMS SS
+                		, IKEP4_EV_USER EU
+				WHERE	SS.REGISTER_ID = 'user1'
+						AND SS.SMS_ID > 0
+                        AND USER_ID = SS.RECEIVER_ID
+                        AND SS.RECEIVER_PHONENO = EU.MOBILE
+				<isNotNull property="startPeriod"><isNotEmpty property="startPeriod" prepend="AND">
+					SS.REGIST_DATE >= TO_DATE(REPLACE(#startPeriod#,'-','')||'000000', 'YYYYMMDDHH24MISS')
+		        </isNotEmpty></isNotNull>
+				<isNotNull property="endPeriod"><isNotEmpty property="endPeriod" prepend="AND">
+					TO_DATE(REPLACE(#endPeriod#,'-','')||'235959', 'YYYYMMDDHH24MISS') >= SS.REGIST_DATE
+		        </isNotEmpty></isNotNull>
+				<isNotNull property="searchkeyword"><isNotEmpty property="searchkeyword">
+					<isEqual prepend="AND" property="searchcondition" compareValue="CONTENT">
+			            SS.CONTENTS LIKE '%' || #searchkeyword# || '%'
+			        </isEqual>
+			        <isEqual prepend="AND" property="searchcondition" compareValue="RECEIVER">
+			            EU.USER_NAME LIKE '%' || #searchkeyword# || '%'
+			        </isEqual>
+			        <isEqual prepend="AND" property="searchcondition" compareValue="PHONENO">
+			            SS.RECEIVER_PHONENO LIKE '%' || #searchkeyword# || '%'
+			        </isEqual>
+		        </isNotEmpty></isNotNull>
+        
+        		ORDER BY SS.REGIST_DATE DESC
+        <![CDATA[  
+			) A WHERE ROWNUM <=  #endRowIndex# /* 종료  */
+		) WHERE RNUM >  #startRowIndex# /* 시작 */
+		]]>
+    </select>
+    
+    <!-- 워크플로우 - SMS관리 - 발신이력 리스트 -->
+	<select id="countSmsHistoryList" parameterClass="AdminSmsSearchCondition" resultClass="int">
+		<![CDATA[  
+		/*[AdminSms_SqlMap.xml] workflow.admin.dao.AdminSmsDao.countSmsHistoryList */
+	   	SELECT 	COUNT(*)
+		FROM 	IKEP4_SM_SMS SS
+              	, IKEP4_EV_USER EU
+		WHERE	SS.REGISTER_ID = 'user1'
+				AND SS.SMS_ID > 0
+                AND USER_ID = SS.RECEIVER_ID
+                AND SS.RECEIVER_PHONENO = EU.MOBILE
+		]]> 
+		<isNotNull property="startPeriod"><isNotEmpty property="startPeriod" prepend="AND">
+			SS.REGIST_DATE >= TO_DATE(REPLACE(#startPeriod#,'-','')||'000000', 'YYYYMMDDHH24MISS')
+        </isNotEmpty></isNotNull>
+		<isNotNull property="endPeriod"><isNotEmpty property="endPeriod" prepend="AND">
+			TO_DATE(REPLACE(#endPeriod#,'-','')||'235959', 'YYYYMMDDHH24MISS') >= SS.REGIST_DATE
+        </isNotEmpty></isNotNull>
+		<isNotNull property="searchkeyword"><isNotEmpty property="searchkeyword">
+			<isEqual prepend="AND" property="searchcondition" compareValue="CONTENT">
+	            SS.CONTENTS LIKE '%' || #searchkeyword# || '%'
+	        </isEqual>
+	        <isEqual prepend="AND" property="searchcondition" compareValue="RECEIVER">
+	            EU.USER_NAME LIKE '%' || #searchkeyword# || '%'
+	        </isEqual>
+	        <isEqual prepend="AND" property="searchcondition" compareValue="PHONENO">
+	            SS.RECEIVER_PHONENO LIKE '%' || #searchkeyword# || '%'
+	        </isEqual>
+        </isNotEmpty></isNotNull>
+    </select>  
+    
+</sqlMap>

@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="collpack.workmanual.dao.writeUser">
+	<typeAlias alias = "WriteUser" type="com.lgcns.ikep4.collpack.workmanual.model.WriteUser"/>
+	
+	<!-- 테이블 조회 결과 -->
+	<resultMap id="writeUserResult" class="WriteUser">
+		<result property="categoryId"                    column="CATEGORY_ID"                />
+		<result property="writeUserId"                   column="WRITE_USER_ID"              />
+		<result property="writeUserName"                 column="WRITE_USER_NAME"            />
+		<result property="writeUserTeamName"             column="WRITE_USER_TEAM_NAME"       />
+		<result property="writeUserJobTitleName"         column="WRITE_USER_JOB_TITLE_NAME"  />
+		<result property="writeUserEnglishName"          column="WRITE_USER_ENGLISH_NAME"    />
+		<result property="writeUserTeamEnglishName"      column="TEAM_ENGLISH_NAME"          />
+		<result property="writeUserJobTitleEnglishName"  column="JOB_TITLE_ENGLISH_NAME"     />
+	</resultMap>
+	
+	<!-- ANSI -->
+	<insert id="create" parameterClass="WriteUser"> 
+      <![CDATA[ 
+           INSERT INTO IKEP4_WM_WRITE_USER (/* [WriteUser_SqlMap.xml] WriteUser.create */
+           		WRITE_USER_ID, CATEGORY_ID)  
+           VALUES (#writeUserId#, #categoryId#)
+       ]]>
+   </insert>
+   
+   	<!-- ANSI -->
+	<select id="get" parameterClass="WriteUser" resultMap="writeUserResult">
+	  <![CDATA[
+		   SELECT /* [WriteUser_SqlMap.xml] WriteUser.get */
+				  WRITE_USER_ID,
+				  CATEGORY_ID,
+				  '' AS WRITE_USER_NAME,           
+				  '' AS WRITE_USER_TEAM_NAME,      
+				  '' AS WRITE_USER_JOB_TITLE_NAME, 
+				  '' AS WRITE_USER_ENGLISH_NAME,   
+				  '' AS TEAM_ENGLISH_NAME,         
+				  '' AS JOB_TITLE_ENGLISH_NAME
+		     FROM IKEP4_WM_WRITE_USER
+		    WHERE WRITE_USER_ID = #writeUserId#
+		      AND CATEGORY_ID = #categoryId#
+	   ]]>
+	</select>
+	
+	<!-- ANSI -->
+	<update id="update" parameterClass="WriteUser">
+	  <![CDATA[
+		   UPDATE IKEP4_WM_WRITE_USER /* [WriteUser_SqlMap.xml] WriteUser.update */ 
+		      SET WRITE_USER_ID = #writeUserId#
+		    WHERE WRITE_USER_ID = #writeUserId#
+		      AND CATEGORY_ID = #categoryId#
+	   ]]>
+	</update>
+   
+   <!-- ANSI -->
+   <delete id="remove" parameterClass="WriteUser">
+      <![CDATA[
+	       DELETE FROM IKEP4_WM_WRITE_USER /* [WriteUser_SqlMap.xml] WriteUser.remove */ 
+	        WHERE WRITE_USER_ID = #writeUserId#
+		      AND CATEGORY_ID = #categoryId#
+	   ]]>
+	</delete>
+	
+	<!-- ANSI -->
+	<select id="count" parameterClass="WriteUser" resultClass="java.lang.Integer">
+	  <![CDATA[
+		   SELECT /* [WriteUser_SqlMap.xml] WriteUser.count */ 
+		   		  COUNT(1) 
+		     FROM IKEP4_WM_WRITE_USER 
+		    WHERE WRITE_USER_ID = #writeUserId#
+		      AND CATEGORY_ID = #categoryId#
+	   ]]>
+	</select>
+   
+   	<!-- ANSI -->
+	<!-- //문서 담당자 정보 -->
+	<select id="listWriteUser" parameterClass="java.lang.String" resultMap="writeUserResult">
+	  <![CDATA[
+		   SELECT /* [WriteUser_SqlMap.xml] WriteUser.listWriteUser */
+				  A.CATEGORY_ID,
+				  A.WRITE_USER_ID,         
+		          B.USER_NAME AS WRITE_USER_NAME,       
+		          B.TEAM_NAME AS WRITE_USER_TEAM_NAME,  
+		          C.JOB_TITLE_NAME AS WRITE_USER_JOB_TITLE_NAME,         
+		          B.USER_ENGLISH_NAME AS WRITE_USER_ENGLISH_NAME,       
+		          B.TEAM_ENGLISH_NAME AS TEAM_ENGLISH_NAME,  
+		          C.JOB_TITLE_ENGLISH_NAME AS JOB_TITLE_ENGLISH_NAME
+		     FROM IKEP4_WM_WRITE_USER A
+				  INNER JOIN IKEP4_EV_USER B
+				  	 ON A.WRITE_USER_ID = B.USER_ID
+                  INNER JOIN IKEP4_EV_JOB_TITLE C 
+                  	 ON B.JOB_TITLE_CODE = C.JOB_TITLE_CODE
+		      		AND B.PORTAL_ID = C.PORTAL_ID
+		    WHERE A.CATEGORY_ID = #categoryId#
+	   ]]>
+	</select>
+	
+	<!-- ANSI -->
+	<!-- //문서 담당자 여부 -->
+	<select id="writeUserYn" parameterClass="java.lang.String" resultClass="java.lang.String">
+	  <![CDATA[
+		   SELECT /* [WriteUser_SqlMap.xml] WriteUser.writeUserYn */ 
+		   		  CASE WHEN COUNT(1) = 0 THEN 'N' ELSE 'Y' END 
+		     FROM IKEP4_WM_WRITE_USER 
+		    WHERE WRITE_USER_ID = #writeUserId#
+	   ]]>
+	</select>
+   
+   <!-- ANSI -->
+   <!-- //카테고리 아이디로 삭제 -->
+   <delete id="removeByCategoryId" parameterClass="java.lang.String">
+      <![CDATA[
+	       DELETE FROM IKEP4_WM_WRITE_USER /* [WriteUser_SqlMap.xml] WriteUser.removeByCategoryId */ 
+	        WHERE CATEGORY_ID = #categoryId#
+	   ]]>
+	</delete>
+</sqlMap>

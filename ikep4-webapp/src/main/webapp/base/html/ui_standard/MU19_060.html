@@ -1,0 +1,294 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ko">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>iKEP 4.00</title>
+<link rel="stylesheet" type="text/css" href="../../css/theme01/jquery_ui_custom.css" />
+<link rel="stylesheet" type="text/css" href="../../css/common.css" />
+<link rel="stylesheet" type="text/css" href="../../css/theme01/theme.css" />
+<script type="text/javascript" src="../../js/jquery/jquery-1.6.2.min.js"></script>
+<script type="text/javascript" src="../../js/jquery/jquery-ui-1.8.13.min.without.datepicker.js"></script>
+<script type="text/javascript" src="../../js/langResource/ko.js"></script>
+<script type="text/javascript" src="../../js/common.pack.js"></script>
+<script type="text/javascript">
+<!--
+(function($) {
+	var remainingDay = 20;
+	var voteDay = 11;
+	var allday = 31;
+	var persent = 0;
+	$(document).ready(function() {
+		
+		// left menu setting
+		 iKEP.setLeftMenu();
+		
+		$("#divTab1").tabs({
+			selected : 1
+		});
+		$("#date1").datepicker().next().eq(0).click(function() { $(this).prev().eq(0).datepicker("show"); });
+		$("#date2").datepicker().next().eq(0).click(function() { $(this).prev().eq(0).datepicker("show"); });
+		
+		persent = voteDay/allday*100;
+		$("#voteRange").progressbar({ 
+  			value: persent 
+ 		});
+		$( "#days" ).text( remainingDay + "일");
+		
+		$("#voteRange1").progressbar({ 
+  			value: persent 
+ 		});
+		$( "#days1" ).text( remainingDay + "일");		
+		
+	});
+	
+})(jQuery);
+-->
+</script>
+</head>
+
+<body>
+
+<!--skipNavigation Start-->
+<div id="skipNavigation">
+	<p><a href="#topInfo">헤더정보영역 바로가기</a></p>
+	<p><a href="#topMenu">탑메뉴 바로가기</a></p>	
+	<p><a href="#blockHeaderSub">퀵메뉴 바로가기</a></p>
+	<p><a href="#leftMenu">레프트메뉴 바로가기</a></p>	
+	<p><a href="#mainContents">컨텐츠영역 바로가기</a></p>	
+</div>
+<!--//skipNavigation End-->
+
+<!--wrapper Start-->
+<div id="wrapper">
+
+	<!--blockContainer Start-->
+	<div id="blockContainer">
+
+		<!--blockHeader Start-->
+		<div id="blockHeader">	
+		
+			<!--topInfo Start-->	
+			<div id="topInfo">
+				<h1 class="none">헤더정보영역</h1>
+				<div id="topLogo">
+					<a href="#a"><img src="../../images/common/logo.png" alt="iKEP Logo" /></a>
+				</div>
+			</div>
+			<!--//topInfo End-->
+						
+			<!--topMenu Start-->
+			<div id="topMenu">
+				<h1 class="none">탑메뉴</h1>			
+			</div>
+			<!--//topMenu End-->		
+
+			<!--blockHeaderSub Start-->
+			<div id="blockHeaderSub">
+				<h1 class="none">퀵메뉴</h1>		
+			</div>
+			<!--//blockHeaderSub End-->
+										
+		</div>
+		<!--//blockHeader End-->
+		
+		<!--blockMain Start-->
+		<div id="blockMain">
+
+			<!--leftMenu Start-->
+			<div id="leftMenu">
+				<h1 class="none">레프트메뉴</h1>	
+				<h2>Online Poll</h2>	
+				
+				<!--blockButton_2 Start-->
+				<div class="blockButton_2 mb10"> 				
+					<a class="button_2" href="#a"><span><img src="../../images/icon/ic_poll.gif" alt=""/> 투표등록</span></a>				
+				</div>
+				<!--//blockButton_2 End-->					
+				<div class="left_fixed">
+					<ul>			
+						<li class="liFirst no_child"><a href="#a">투표참여</a></li>
+						<li class="no_child"><a href="#a">My Online Poll</a></li>		
+						<li class="opened"><a href="#a">Administration</a>
+							<ul>
+								<li class="no_child liLast"><a href="#a">투표관리</a></li>
+							</ul>		
+						</li>							
+					</ul>
+				</div>
+			</div>	
+			<!--//leftMenu End-->
+				
+			<!--mainContents Start-->
+			<div id="mainContents" >
+				<h1 class="none">컨텐츠영역</h1>
+
+				<!--pageTitle Start-->
+				<div id="pageTitle">
+					<h2>투표등록</h2>
+				</div>
+				<!--//pageTitle End-->					
+
+				<!--blockDetail Start-->
+				<div class="blockDetail">
+					<table summary="new group">
+						<caption></caption>
+						<tbody>
+							<tr>
+								<th scope="row" width="18%">질문</th>
+								<td width="82%"><input name="input" type="text" class="inputbox w100" title="" /></td>
+							</tr>
+							<tr>
+								<th scope="row">투표기간</th>
+								<td>
+									<input type="text" class="inputbox" id="date1" name="sdate" title="날짜시작" value="" size="9" /> <img class="dateicon" src="../../images/icon/ic_cal.gif" alt="달력" /> ~
+									<input type="text" class="inputbox" id="date2" name="edate" title="날짜끝" value="" size="9" /> <img class="dateicon" src="../../images/icon/ic_cal.gif" alt="달력" />								
+								</td>
+							</tr>
+							<tr>
+								<th scope="row">그룹소개</th>
+								<td>
+									<input name="" title="담당자" class="inputbox" type="text" size="20" />
+									<a class="button_ic" href="#a"><span><img src="../../images/icon/ic_btn_download.gif" alt="" />Add</span></a>
+									<div style="padding-top:4px;">
+										<select size="5" multiple="multiple" class="multi w80" title="사용자명" >
+											<option>홍길동 부장 (UC1팀, hong@lgcns.com)</option>
+											<option>홍길동 부장 (UC1팀, hong@lgcns.com)</option>
+											<option>홍길동 부장 (UC1팀, hong@lgcns.com)</option>
+											<option>홍길동 부장 (UC1팀, hong@lgcns.com)</option>
+											<option>홍길동 부장 (UC1팀, hong@lgcns.com)</option>
+										</select>										
+										<a class="button_ic valign_bottom" href="#a"><span><img src="../../images/icon/ic_btn_delete.gif" alt="" />Delete</span></a>
+									</div>											
+								</td>
+							</tr>
+							<tr>
+								<th scope="row">참여자</th>
+								<td>
+									<div class="mb5">
+										<strong>공개설정</strong>
+										<label><input type="radio" class="radio" title="공개" checked="checked" name="sel2" value=""  />공개</label>&nbsp;
+										<label><input type="radio" class="radio" title="비공개" name="sel3" value=""  />비공개</label>
+									</div>
+								
+									<!--blockDetail Start-->
+									<div class="blockDetail border_t1">
+										<table summary="작업등록">
+											<caption></caption>
+											<tbody>
+												<tr>
+													<th width="5%" scope="row">참여자</th>
+													<td>
+														<input name="" title="담당자" class="inputbox" type="text" size="20" />
+														<a class="button_ic" href="#a"><span><img src="../../images/icon/ic_btn_search.gif" alt="" />Search</span></a>
+														<a class="button_ic" href="#a"><span><img src="../../images/icon/ic_btn_address.gif" alt="" />Address</span></a>
+														<div style="padding-top:4px;"> 
+															<select size="5" multiple="multiple" class="multi w80" title="사용자명" >
+																<option>홍길동 부장 (UC1팀, hong@lgcns.com)</option>
+																<option>홍길동 부장 (UC1팀, hong@lgcns.com)</option>
+																<option>홍길동 부장 (UC1팀, hong@lgcns.com)</option>
+																<option>홍길동 부장 (UC1팀, hong@lgcns.com)</option>
+																<option>홍길동 부장 (UC1팀, hong@lgcns.com)</option>
+															</select>										
+															<a class="button_ic valign_bottom" href="#a"><span><img src="../../images/icon/ic_btn_delete.gif" alt="" />Delete</span></a>
+															<span class="totalNum_s">총 0명</span>
+														</div>								
+													</td>
+												</tr>
+												<tr>
+													<th scope="row">그룹</th>
+													<td>
+														<input name="" title="담당자" class="inputbox" type="text" size="20" />
+														<a class="button_ic" href="#a"><span><img src="../../images/icon/ic_btn_search.gif" alt="" />Search</span></a>
+														<a class="button_ic" href="#a"><span><img src="../../images/icon/ic_btn_address.gif" alt="" />Address</span></a>
+														<div style="padding-top:4px;">
+															<select size="5" multiple="multiple" class="multi w80" title="사용자명" >
+																<option>홍길동 부장 (UC1팀, hong@lgcns.com)</option>
+																<option>홍길동 부장 (UC1팀, hong@lgcns.com)</option>
+																<option>홍길동 부장 (UC1팀, hong@lgcns.com)</option>
+																<option>홍길동 부장 (UC1팀, hong@lgcns.com)</option>
+																<option>홍길동 부장 (UC1팀, hong@lgcns.com)</option>
+																</select>	
+															<a class="button_ic valign_bottom" href="#a"><span><img src="../../images/icon/ic_btn_delete.gif" alt="" />Delete</span></a>
+															<span class="totalNum_s">총 0그룹</span>
+															</div>								
+														</td>
+												</tr>	
+												</tbody>
+										</table>
+									</div>
+									<!--//blockDetail End-->
+								
+								</td>
+							</tr>
+							<tr>
+								<th scope="row">투표전달</th>
+								<td>
+									<input name="input2" class="checkbox" title="checkbox" type="checkbox" value="" /> 메일 &nbsp;&nbsp;
+									<input name="input2" class="checkbox" title="checkbox" type="checkbox" value="" /> 
+									쪽지 &nbsp;&nbsp;									
+								</td>
+							</tr>
+							<tr>
+								<th scope="row">투표결과차트</th>
+								<td>
+									<input type="radio" class="radio" title="바 차트" name="sel3" value=""  /> 바 차트&nbsp;&nbsp;
+									<input type="radio" class="radio" title="파이 차트" name="sel3" value=""  /> 파이 차트&nbsp;&nbsp;
+									<input type="radio" class="radio" title="찬성/반대 차트" name="sel3" value=""  /> 찬성/반대 차트&nbsp;&nbsp;																		
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<!--//blockDetail End-->
+				
+				<!--blockButton Start-->
+				<div class="blockButton"> 
+					<ul>
+						<li><a class="button" href="#a"><span>미리보기</span></a></li>
+						<li><a class="button" href="#a"><span>저장</span></a></li>
+						<li><a class="button" href="#a"><span>목록</span></a></li>												
+					</ul>
+				</div>
+				<!--//blockButton End-->	
+				
+				<!--online_poll Start-->
+				<div class="blockTableRead online_poll">
+					<h3 class="none">Question</h3>
+					<div class="qnaimg"><img src="../../images/icon/ic_vote.gif" alt="" /></div>				
+					<div class="blockTableRead_t">			
+						<p>[질문] 투표 테스트</p>
+						<div class="summaryViewInfo">
+							<span class="ty1">공개투표</span>
+							<span class="summaryViewInfo_name">진행자 : <a href="#a">홍길동 과장</a></span>
+							<span>투표기간 : <strong>2011.03.12~2011.03.15</strong></span>
+						</div>
+					</div>
+					
+					<div class="online_poll_list">						
+						<ul>
+							<li>(1) 해설있는 클래식 CD 62장 셑</li>
+							<li>(2) 음악/영어뉴스 위성라디오</li>
+							<li>(3) 유명 오케스트라 내한 공연</li>
+							<li>(4) 대중가수의 콘서트</li>																					
+						</ul>
+					</div>
+					
+				</div>
+				<!--//online_poll End-->									
+							
+													
+			</div>
+			<!--//mainContents End-->
+			<div class="clear"></div>
+		</div>
+		<!--//blockMain End-->
+		
+	</div>
+	<!--//blockContainer End-->
+	
+		
+</div>
+<!--//wrapper End-->
+
+</body>
+</html>

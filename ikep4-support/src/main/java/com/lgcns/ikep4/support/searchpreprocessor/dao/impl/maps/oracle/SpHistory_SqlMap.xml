@@ -1,0 +1,357 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="com.lgcns.ikep4.support.searchpreprocessor.history">
+  
+  <typeAlias alias="spHistory"                type="com.lgcns.ikep4.support.searchpreprocessor.model.History"/>
+  <typeAlias alias="spReport"                type="com.lgcns.ikep4.support.searchpreprocessor.model.Report"/>
+ <typeAlias alias="searchUtil"                type="com.lgcns.ikep4.support.searchpreprocessor.util.SearchUtil"/>
+  
+  <resultMap class="spHistory" id="baseResultMap">
+    <result column="SEARCH_HISTORY_ID" jdbcType="VARCHAR" property="searchHistoryId" />
+    <result column="SEARCH_KEYWORD_ID" jdbcType="VARCHAR" property="searchKeywordId" />
+    <result column="SEARCH_KEYWORD" jdbcType="VARCHAR" property="searchKeyword" />
+    <result column="PORTAL_ID" jdbcType="VARCHAR" property="portalId" />
+    <result column="REGISTER_ID" jdbcType="VARCHAR" property="registerId" />
+    <result column="REGISTER_NAME" jdbcType="VARCHAR" property="registerName" />
+    <result column="REGIST_DATE" jdbcType="TIMESTAMP" property="registDate" />
+  </resultMap>
+  
+   <resultMap class="spHistory" id="baseCntResultMap">
+    <result column="SEARCH_KEYWORD_ID" jdbcType="VARCHAR" property="searchKeywordId" />
+    <result column="SEARCH_KEYWORD" jdbcType="VARCHAR" property="searchKeyword" />
+    <result column="FREQUENCY_COUNT" jdbcType="DECIMAL" property="frequencyCount" />
+  </resultMap>
+  
+  <resultMap class="spHistory" id="baseInitCntResultMap">
+    <result column="SEARCH_KEYWORD_ID" jdbcType="VARCHAR" property="searchKeywordId" />
+    <result column="SEARCH_KEYWORD" jdbcType="VARCHAR" property="searchKeyword" />
+    <result column="FREQUENCY_COUNT" jdbcType="DECIMAL" property="frequencyCount" />
+    <result column="SEARCH_RANK" jdbcType="DECIMAL" property="initFrequencyCount" />
+    <result column="PREV_FREQUENCY_COUNT" jdbcType="DECIMAL" property="prevFrequencyCount" />
+  </resultMap>
+  
+  <resultMap class="spReport" id="baseReportResultMap">
+    <result column="REGIST_DATE" jdbcType="DATE" property="resultDt" />
+    <result column="TOTAL_COUNT" jdbcType="DECIMAL" property="totalCount" />
+  </resultMap>
+  
+  <sql id="whereClause">
+    <iterate conjunction="or" prepend="where" property="oredCriteria" removeFirstPrepend="iterate">
+      <isEqual compareValue="true" property="oredCriteria[].valid">
+        (
+        <iterate conjunction="and" prepend="and" property="oredCriteria[].criteriaWithoutValue">
+          $oredCriteria[].criteriaWithoutValue[]$
+        </iterate>
+        <iterate conjunction="and" prepend="and" property="oredCriteria[].criteriaWithSingleValue">
+          $oredCriteria[].criteriaWithSingleValue[].condition$
+            #oredCriteria[].criteriaWithSingleValue[].value#
+        </iterate>
+        <iterate conjunction="and" prepend="and" property="oredCriteria[].criteriaWithListValue">
+          $oredCriteria[].criteriaWithListValue[].condition$
+          <isEmpty property="oredCriteria[].criteriaWithListValue[].values">
+          	('')
+          </isEmpty>
+          <isNotEmpty property="oredCriteria[].criteriaWithListValue[].values">
+          <iterate close=")" conjunction="," open="(" property="oredCriteria[].criteriaWithListValue[].values">
+            #oredCriteria[].criteriaWithListValue[].values[]#
+          </iterate>
+          </isNotEmpty>
+        </iterate>
+        <iterate conjunction="and" prepend="and" property="oredCriteria[].criteriaWithBetweenValue">
+          $oredCriteria[].criteriaWithBetweenValue[].condition$
+          #oredCriteria[].criteriaWithBetweenValue[].values[0]# and
+          #oredCriteria[].criteriaWithBetweenValue[].values[1]#
+        </iterate>
+        )
+      </isEqual>
+    </iterate>
+  </sql>
+
+   <sql id="sqlColumnList"> 
+	   SEARCH_HISTORY_ID, 
+	   SEARCH_KEYWORD_ID, 
+	   SEARCH_KEYWORD, 
+	   PORTAL_ID, 
+	   REGISTER_ID,
+       REGISTER_NAME, 
+       REGIST_DATE
+  </sql> 
+  
+  
+  <select id="get" parameterClass="string" resultMap="baseResultMap">
+    select  
+    	<include refid="com.lgcns.ikep4.support.searchpreprocessor.history.sqlColumnList" />
+    from IKEP4_SP_HISTORY
+    where SEARCH_HISTORY_ID = #searchHistoryId#
+  </select>
+  
+  <select id="exists"  parameterClass="string" resultClass="int">
+    select count(*) 
+    from IKEP4_SP_HISTORY
+    where SEARCH_HISTORY_ID = #searchHistoryId#
+  </select>
+  
+  <delete id="remove" parameterClass="string">
+    delete 
+    from IKEP4_SP_HISTORY
+    where SEARCH_HISTORY_ID = #searchHistoryId#
+  </delete>
+  
+  <delete id="removeAll" parameterClass="date">
+    delete 
+    from IKEP4_SP_HISTORY
+    where REGIST_DATE <![CDATA[<=]]> #registDate#
+  </delete>
+  
+  <delete id="removeAllByRegister" parameterClass="java.lang.String">
+    delete 
+    from IKEP4_SP_HISTORY
+    where REGISTER_ID = #registerId#
+  </delete>
+  
+  
+  <insert id="create" parameterClass="spHistory">
+    insert into IKEP4_SP_HISTORY (
+    	<include refid="com.lgcns.ikep4.support.searchpreprocessor.history.sqlColumnList" />
+    )
+    values (
+    	#searchHistoryId#, 
+    	#searchKeywordId#, 
+    	#searchKeyword#,
+        #portalId#, 
+        #registerId#, 
+        #registerName#, 
+        #registDate#
+      )
+  </insert>
+  
+  <update id="update" parameterClass="spHistory">
+    update IKEP4_SP_HISTORY
+    set SEARCH_KEYWORD_ID = #searchKeywordId#,
+      SEARCH_KEYWORD = #searchKeyword#,
+      PORTAL_ID = #portalId#,
+      REGISTER_ID = #registerId#,
+      REGISTER_NAME = #registerName#,
+      REGIST_DATE = #registDate#
+    where SEARCH_HISTORY_ID = #searchHistoryId#
+  </update>
+  
+  <!-- Search History  -->
+    <select id="historySearchList" parameterClass="searchUtil" resultMap="baseResultMap"> 
+    SELECT 
+    	<include refid="com.lgcns.ikep4.support.searchpreprocessor.history.sqlColumnList" />
+    FROM  IKEP4_SP_HISTORY h
+    <isParameterPresent>
+      <include refid="com.lgcns.ikep4.support.searchpreprocessor.history.whereClause" />
+      order by h.REGIST_DATE desc
+    </isParameterPresent>
+  </select>
+  
+  <select id="historySearchCount" parameterClass="searchUtil" resultClass="int"> 
+    SELECT count(*)
+    FROM  IKEP4_SP_HISTORY h
+    <isParameterPresent>
+      <include refid="com.lgcns.ikep4.support.searchpreprocessor.history.whereClause" />
+    </isParameterPresent>
+  </select>
+  
+  <!-- 동료검색어 -->
+  <select id="colleagueSearchList" parameterClass="searchUtil" resultMap="baseCntResultMap"> 
+    SELECT SEARCH_KEYWORD_ID, 
+           SEARCH_KEYWORD, 
+           count(*) FREQUENCY_COUNT,
+           max(REGIST_DATE) REGIST_DATE
+    FROM  IKEP4_SP_HISTORY h
+    <isParameterPresent>
+      <include refid="com.lgcns.ikep4.support.searchpreprocessor.history.whereClause" />
+      group by  SEARCH_KEYWORD_ID, SEARCH_KEYWORD
+      order by FREQUENCY_COUNT desc, REGIST_DATE desc
+    </isParameterPresent>
+  </select>
+  
+  <select id="colleagueSearchCount" parameterClass="searchUtil" resultClass="int">
+    SELECT  count(distinct SEARCH_KEYWORD_ID)
+    FROM  IKEP4_SP_HISTORY h
+    <isParameterPresent>
+      <include refid="com.lgcns.ikep4.support.searchpreprocessor.history.whereClause" />
+    </isParameterPresent>
+  </select>
+  
+  <!-- 추천검색어 -->
+  <select id="recommendSearchList" parameterClass="searchUtil" resultMap="baseCntResultMap"> 
+    select d.SEARCH_KEYWORD_ID,d.SEARCH_KEYWORD,
+           d.FREQUENCY_COUNT
+    from IKEP4_SP_RELATION r,IKEP4_SP_HISTORY h,IKEP4_SP_DICTIONARY d,
+         (
+            select SEARCH_KEYWORD_ID
+            from(
+                SELECT SEARCH_KEYWORD_ID, 
+			           count(*) FREQUENCY_COUNT
+			    FROM  IKEP4_SP_HISTORY h
+			    <isParameterPresent>
+			      <include refid="com.lgcns.ikep4.support.searchpreprocessor.history.whereClause" />
+			      group by  SEARCH_KEYWORD_ID
+			      order by FREQUENCY_COUNT desc
+			    </isParameterPresent>
+            )where rownum <![CDATA[<=]]>  10    
+         )c
+    <isParameterPresent>
+	  <include refid="com.lgcns.ikep4.support.searchpreprocessor.history.whereClause" /> 
+	</isParameterPresent>	    
+    	  and R.RELATION_KEYWORD_ID = H.SEARCH_KEYWORD_ID
+          and R.SEARCH_KEYWORD_ID =c.search_keyword_id
+          and d.SEARCH_KEYWORD_ID =h.search_keyword_id
+    group by  d.SEARCH_KEYWORD_ID ,d.SEARCH_KEYWORD,d.FREQUENCY_COUNT
+    union 
+    SELECT d.SEARCH_KEYWORD_ID,d.SEARCH_KEYWORD, d.FREQUENCY_COUNT
+    FROM  IKEP4_SP_HISTORY h,IKEP4_SP_DICTIONARY d
+    <isParameterPresent>
+      <include refid="com.lgcns.ikep4.support.searchpreprocessor.history.whereClause" />
+      and d.SEARCH_KEYWORD_ID =h.search_keyword_id
+      group by d.SEARCH_KEYWORD_ID,d.SEARCH_KEYWORD,d.FREQUENCY_COUNT
+      order by FREQUENCY_COUNT desc
+    </isParameterPresent>
+  </select>
+  
+  <select id="recommendSearchCount" parameterClass="searchUtil" resultClass="int"> 
+  select count(*)
+  from
+  (
+    select h.SEARCH_KEYWORD_ID
+    from IKEP4_SP_RELATION r,IKEP4_SP_HISTORY h,
+         (
+            select SEARCH_KEYWORD_ID
+            from(
+                SELECT SEARCH_KEYWORD_ID, 
+			           count(*) FREQUENCY_COUNT
+			    FROM  IKEP4_SP_HISTORY h
+			    <isParameterPresent>
+			      <include refid="com.lgcns.ikep4.support.searchpreprocessor.history.whereClause" />
+			      group by  SEARCH_KEYWORD_ID
+			      order by FREQUENCY_COUNT desc
+			    </isParameterPresent>
+            )where rownum <![CDATA[<=]]>  10    
+         )c
+    <isParameterPresent>
+	  <include refid="com.lgcns.ikep4.support.searchpreprocessor.history.whereClause" /> 
+	</isParameterPresent>	    
+    	  and R.RELATION_KEYWORD_ID = H.SEARCH_KEYWORD_ID
+          and R.SEARCH_KEYWORD_ID =c.search_keyword_id
+    group by  h.SEARCH_KEYWORD_ID
+    union 
+    SELECT SEARCH_KEYWORD_ID
+    FROM  IKEP4_SP_HISTORY h
+    <isParameterPresent>
+      <include refid="com.lgcns.ikep4.support.searchpreprocessor.history.whereClause" />
+      group by  SEARCH_KEYWORD_ID
+    </isParameterPresent>
+  )  
+  </select>
+  
+  <!-- 인기검색 년월일 -->
+  <select id="popularSearchList" parameterClass="searchUtil" resultMap="baseCntResultMap"> 
+    SELECT SEARCH_KEYWORD_ID, 
+           SEARCH_KEYWORD, 
+           count(*) FREQUENCY_COUNT
+    FROM  IKEP4_SP_HISTORY h
+    <isParameterPresent>
+      <include refid="com.lgcns.ikep4.support.searchpreprocessor.history.whereClause" />
+      group by  SEARCH_KEYWORD_ID, SEARCH_KEYWORD
+      order by  FREQUENCY_COUNT desc
+    </isParameterPresent>
+  </select>
+  
+  <select id="popularSearchCount" parameterClass="searchUtil" resultClass="int">
+    SELECT  count(distinct SEARCH_KEYWORD_ID)
+    FROM  IKEP4_SP_HISTORY h
+    <isParameterPresent>
+      <include refid="com.lgcns.ikep4.support.searchpreprocessor.history.whereClause" />
+    </isParameterPresent>
+  </select>
+  
+  <!-- 인기검색 실시간 -->
+  <select id="popularRealSearchList" parameterClass="searchUtil" resultMap="baseInitCntResultMap"> 
+    SELECT h.SEARCH_KEYWORD_ID,
+	       h.SEARCH_KEYWORD,
+	       h.FREQUENCY_COUNT,
+	       h.PREV_FREQUENCY_COUNT,
+	       h.REGIST_DATE,
+	       NVL (r.SEARCH_RANK, 0) SEARCH_RANK
+	FROM          
+	(          
+	    SELECT SEARCH_KEYWORD_ID,
+	           SEARCH_KEYWORD,
+	           FREQUENCY_COUNT,
+	           REGIST_DATE,
+	           ROWNUM PREV_FREQUENCY_COUNT
+	    FROM
+	    (          
+	        SELECT * 
+	        FROM IKEP4_SP_DICTIONARY h
+	        <isParameterPresent>
+		      <include refid="com.lgcns.ikep4.support.searchpreprocessor.history.whereClause" />
+		    </isParameterPresent>
+	        ORDER BY FREQUENCY_COUNT DESC,REGIST_DATE desc
+	    )
+	    WHERE ROWNUM <![CDATA[<=]]> 100
+	)h
+	LEFT OUTER JOIN
+	    IKEP4_SP_RANK r
+	ON (h.SEARCH_KEYWORD_ID = r.SEARCH_KEYWORD_ID)    
+	ORDER BY   H.FREQUENCY_COUNT desc,h.REGIST_DATE desc
+  </select>
+  
+  <select id="popularRealSearchCount" parameterClass="searchUtil" resultClass="int">
+	    SELECT count(*)
+	    FROM
+	    (          
+	        SELECT * 
+	        FROM IKEP4_SP_DICTIONARY h
+	        <isParameterPresent>
+		      <include refid="com.lgcns.ikep4.support.searchpreprocessor.history.whereClause" />
+		    </isParameterPresent>
+	        ORDER BY FREQUENCY_COUNT DESC,REGIST_DATE desc
+	    )
+	    WHERE ROWNUM <![CDATA[<=]]> 100
+  </select>
+  
+  
+  <!-- 연관검색어 -->
+    <select id="relatedSearchList" parameterClass="searchUtil" resultMap="baseCntResultMap"> 
+    SELECT r.RELATION_KEYWORD_ID SEARCH_KEYWORD_ID, r.RELATION_KEYWORD SEARCH_KEYWORD, r.FREQUENCY_COUNT FREQUENCY_COUNT
+    FROM   (select *
+    		from IKEP4_SP_DICTIONARY h
+    		<isParameterPresent>
+		      <include refid="com.lgcns.ikep4.support.searchpreprocessor.history.whereClause" />
+		     </isParameterPresent>
+    		) h , IKEP4_SP_RELATION r
+    WHERE  h.SEARCH_KEYWORD_ID = r.SEARCH_KEYWORD_ID
+    order by r.FREQUENCY_COUNT desc,r.REGIST_DATE desc
+  </select>
+  
+  <select id="reportDayHistory" parameterClass="searchUtil" resultMap="baseReportResultMap"> 
+    select *
+	from
+	(
+	    select trunc(REGIST_DATE) REGIST_DATE,count(*) TOTAL_COUNT
+	    from IKEP4_SP_HISTORY
+	    <isParameterPresent>
+	      <include refid="com.lgcns.ikep4.support.searchpreprocessor.history.whereClause" />
+	    </isParameterPresent>
+	    group by trunc(REGIST_DATE) 
+	)order by REGIST_DATE asc 
+  </select>	
+  
+    <select id="reportMonthHistory" parameterClass="searchUtil" resultMap="baseReportResultMap"> 
+    select *
+	from
+	(
+	    select trunc(REGIST_DATE,'MM') REGIST_DATE,count(*) TOTAL_COUNT
+	    from IKEP4_SP_HISTORY
+	    <isParameterPresent>
+	      <include refid="com.lgcns.ikep4.support.searchpreprocessor.history.whereClause" />
+	    </isParameterPresent>
+	    group by trunc(REGIST_DATE,'MM') 
+	)order by REGIST_DATE asc 
+  </select>	
+</sqlMap>

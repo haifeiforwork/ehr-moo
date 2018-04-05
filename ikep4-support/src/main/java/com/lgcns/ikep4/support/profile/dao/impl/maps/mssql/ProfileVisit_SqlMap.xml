@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="support.profile.dao.ProfileVisit">
+
+	<typeAlias alias="ProfileVisit"                	type="com.lgcns.ikep4.support.profile.model.ProfileVisit"/>
+
+	<!-- IKEP4_PF_PROFILE_VISIT 테이블 조회 결과 -->
+	<resultMap id="resultProfileVisit" class="ProfileVisit" >
+		<result property="ownerId" column="OWNER_ID" columnIndex="1"/>
+		<result property="visitorId" column="VISITOR_ID" columnIndex="2"/>
+		<result property="visitDate" column="VISIT_DATE" columnIndex="3"/>
+	</resultMap>
+	
+	<sql id="sqlColumnList"> 
+		OWNER_ID,
+		VISITOR_ID,
+		VISIT_DATE
+	</sql>  
+   
+   	<!-- MS SQL -->
+   	<select id="get" parameterClass="ProfileVisit" resultMap="resultProfileVisit"> 
+    	SELECT  
+    		/* [ProfileVisit_SqlMap.xml] support.profile.dao.ProfileVisit.get */
+    		<include refid="support.profile.dao.ProfileVisit.sqlColumnList" /> 
+    	FROM IKEP4_PF_PROFILE_VISIT
+    	WHERE OWNER_ID = #ownerId# 
+    	AND VISITOR_ID = #visitorId#
+    	<dynamic>
+			<isNotEmpty property="visitFlag">
+				<isEqual property="visitFlag" compareValue="TODAY" prepend="AND">
+			          (VISIT_DATE &gt;= CONVERT(VARCHAR(10), CURRENT_TIMESTAMP, 120)
+					   AND VISIT_DATE &lt; CONVERT(VARCHAR(10), DATEADD(DD, 1, CURRENT_TIMESTAMP), 120)) 
+				</isEqual>
+				<isEqual property="visitFlag" compareValue="WEEK" prepend="AND">
+					  DATEPART(WK, VISIT_DATE) = DATEPART(WK, CURRENT_TIMESTAMP)
+				</isEqual>
+				<isEqual property="visitFlag" compareValue="MONTH" prepend="AND">
+			          CONVERT(CHAR(6), VISIT_DATE, 112) = CONVERT(CHAR(6), CURRENT_TIMESTAMP, 112)
+				</isEqual>
+				<isEqual property="visitFlag" compareValue="YEAR" prepend="AND">
+			          CONVERT(CHAR(4), VISIT_DATE, 112) = CONVERT(CHAR(4), CURRENT_TIMESTAMP, 112)
+				</isEqual>
+			</isNotEmpty>
+		</dynamic>
+	</select> 
+   
+   	<!-- MS SQL -->
+	<select id="selectAllByOwnerId" parameterClass="ProfileVisit" resultMap="resultProfileVisit"> 
+		SELECT /* [ProfileVisit_SqlMap.xml] support.profile.dao.ProfileVisit.selectAllByOwnerId */
+			<include refid="support.profile.dao.ProfileVisit.sqlColumnList" /> 
+		FROM  IKEP4_PF_PROFILE_VISIT
+		WHERE OWNER_ID = #ownerId# 
+		<dynamic>
+			<isNotEmpty property="visitFlag">
+				<isEqual property="visitFlag" compareValue="TODAY" prepend="AND">
+					 (VISIT_DATE &gt;= CONVERT(VARCHAR(10), CURRENT_TIMESTAMP, 120)
+					   AND VISIT_DATE &lt; CONVERT(VARCHAR(10), DATEADD(DD, 1, CURRENT_TIMESTAMP), 120))
+				</isEqual>
+				<isEqual property="visitFlag" compareValue="WEEK" prepend="AND">
+			          DATENAME(WW, VISIT_DATE) = DATEPART(WW, CURRENT_TIMESTAMP)
+				</isEqual>
+				<isEqual property="visitFlag" compareValue="MONTH" prepend="AND">
+			          DATENAME(YYYY, VISIT_DATE) + DATENAME(MM, VISIT_DATE) = DATENAME(YYYY, CURRENT_TIMESTAMP) + DATENAME(MM, CURRENT_TIMESTAMP)
+				</isEqual>
+				<isEqual property="visitFlag" compareValue="YEAR" prepend="AND">
+					  DATENAME(YYYY, VISIT_DATE) = DATENAME(YYYY, CURRENT_TIMESTAMP)
+				</isEqual>
+			</isNotEmpty>
+		</dynamic>
+		ORDER BY VISIT_DATE DESC
+	</select>
+  
+ 	<!-- MS SQL -->
+	<select id="selectAllCountByOwnerId" parameterClass="ProfileVisit" resultClass="int"> 
+		SELECT /* [ProfileVisit_SqlMap.xml] support.profile.dao.ProfileVisit.selectAllCountByOwnerId */
+			COUNT(*)
+		FROM  IKEP4_PF_PROFILE_VISIT
+		WHERE OWNER_ID = #ownerId#  
+		
+		<dynamic>
+			<isNotEmpty property="visitFlag">
+				<isEqual property="visitFlag" compareValue="TODAY" prepend="AND">
+			          (VISIT_DATE &gt;= CONVERT(VARCHAR(10), CURRENT_TIMESTAMP, 120)
+					   AND VISIT_DATE &lt; CONVERT(VARCHAR(10), DATEADD(DD, 1, CURRENT_TIMESTAMP), 120))
+				</isEqual>
+				<isEqual property="visitFlag" compareValue="WEEK" prepend="AND">
+					  DATENAME(WW, VISIT_DATE) = DATEPART(WW, CURRENT_TIMESTAMP)
+				</isEqual>
+				<isEqual property="visitFlag" compareValue="MONTH" prepend="AND">
+					  DATENAME(YYYY, VISIT_DATE) + DATENAME(MM, VISIT_DATE) = DATENAME(YYYY, CURRENT_TIMESTAMP) + DATENAME(MM, CURRENT_TIMESTAMP)
+				</isEqual>
+				<isEqual property="visitFlag" compareValue="YEAR" prepend="AND">
+					  DATENAME(YYYY, VISIT_DATE) = DATENAME(YYYY, CURRENT_TIMESTAMP)
+				</isEqual>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+  
+  	<!-- ANSI -->
+	<insert id="create" parameterClass="ProfileVisit"> 
+    	INSERT INTO IKEP4_PF_PROFILE_VISIT ( 
+    		/* [ProfileVisit_SqlMap.xml] support.profile.dao.ProfileVisit.create */
+     		<include refid="support.profile.dao.ProfileVisit.sqlColumnList" />
+     	) VALUES (
+      		#ownerId#, 
+      		#visitorId#, 
+      		CURRENT_TIMESTAMP
+    	) 
+  	</insert>
+
+	<!-- ANSI -->
+	<delete id="physicalDelete" parameterClass="ProfileVisit"> 
+    	DELETE FROM IKEP4_PF_PROFILE_VISIT 
+    		/* [ProfileVisit_SqlMap.xml] support.profile.dao.ProfileVisit.physicalDelete */
+    	WHERE OWNER_ID = #ownerId# 
+    	AND VISITOR_ID = #visitorId#
+	</delete>   
+  
+	<!-- ANSI -->
+	<delete id="physicalDeleteThreadByOwnerId" parameterClass="ProfileVisit"> 
+		DELETE FROM IKEP4_PF_PROFILE_VISIT 
+    		/* [ProfileVisit_SqlMap.xml] support.profile.dao.ProfileVisit.physicalDeleteThreadByOwnerId */
+		WHERE OWNER_ID = #ownerId# 
+	</delete>   
+  
+</sqlMap> 

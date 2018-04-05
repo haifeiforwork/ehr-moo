@@ -1,0 +1,531 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="support.note.noteShare">
+  <typeAlias alias="NoteShare" type="com.lgcns.ikep4.support.note.model.NoteShare"/>
+  <typeAlias alias="wsBoardVersion" type="com.lgcns.ikep4.support.note.model.BoardItemVersion"/>  
+	<resultMap id="boardResult" class="com.lgcns.ikep4.support.note.model.NoteShare"> 
+    <result column="BOARD_ID"           jdbcType="VARCHAR" property="boardId" />
+    <result column="BOARD_NAME"         jdbcType="VARCHAR" property="boardName" />
+    <result column="BOARD_DESCRIPTION"  jdbcType="VARCHAR" property="boardDescription" />
+    <result column="BOARD_TYPE"         jdbcType="VARCHAR" property="boardType" />
+    <result column="BOARD_ENGLISH_NAME"         jdbcType="VARCHAR" property="boardEnglishName" />
+    <result column="BOARD_ENGLISH_DESCRIPTION"  jdbcType="VARCHAR" property="boardEnglishDescription" />
+  </resultMap>                          
+  <resultMap id="boardIndentationResult" extends="boardResult" class="com.lgcns.ikep4.support.note.model.NoteShare"> 
+    <result column="INDENTATION" jdbcType="VARCHAR" property="indentation" /> 
+    <result column="HAS_CHILDREN" jdbcType="DECIMAL" property="hasChildren" />
+  </resultMap>                         
+  <resultMap id="boardResultWS" extends="boardResult" class="com.lgcns.ikep4.support.note.model.NoteShare"> 
+    <result column="VERSION_MANAGE" jdbcType="VARCHAR" property="versionManage" /> 
+  </resultMap> 
+  
+  
+  <sql id="sqlColumnList">
+    BOARD_NAME, 
+    BOARD_DESCRIPTION, 
+    BOARD_TYPE, 
+    BOARD_ENGLISH_NAME,
+    BOARD_ENGLISH_DESCRIPTION
+  </sql> 
+
+  <sql id="insertSqlColumnList"> 
+    ITEM_ID, 
+    BOARD_ID, 
+    ITEM_PARENT_ID, 
+    ITEM_GROUP_ID, 
+    STEP, 
+    INDENTATION, 
+    ITEM_SEQ_ID,  
+    ITEM_DISPLAY, 
+    TITLE,
+    HIT_COUNT, 
+    RECOMMEND_COUNT, 
+    REPLY_COUNT, 
+    LINEREPLY_COUNT, 
+    ATTACH_FILE_COUNT, 
+    START_DATE, 
+    END_DATE, 
+    ITEM_DELETE,
+    IMAGE_FILE_ID, 
+    CONTENTS,
+    TEXT_CONTENTS,
+    REGISTER_ID, 
+    REGISTER_NAME, 
+    REGIST_DATE,    
+    UPDATER_ID, 
+    UPDATER_NAME, 
+    UPDATE_DATE 
+  </sql>  
+  
+  <select id="listByBBSBoardRootId" parameterClass="map" resultMap="boardIndentationResult"> 
+ /* [NoteShare_SqlMap.xml] support.note.noteShare.listByBoardRootIdPer */ 
+  	WITH CTE AS (
+  		SELECT 	CONVERT(NVARCHAR, '/' + CONVERT(VARCHAR, SORT_ORDER+1000)) PATH_ORDER,
+  				1 INDENTATION,
+		       	A1.*
+       	FROM 	IKEP4_BD_BOARD  A1
+		WHERE	BOARD_ROOT_ID = #boardRootId# 
+			AND PORTAL_Id = #portalId#
+			AND	BOARD_DELETE = 0
+	    	AND	BOARD_PARENT_ID = 'root'
+	    UNION ALL
+	    SELECT	CONVERT(NVARCHAR, CTE.PATH_ORDER + '/' + CONVERT(VARCHAR, A2.SORT_ORDER+1000)) PATH_ORDER,
+	    		INDENTATION + 1,
+		       	A2.*
+		FROM	IKEP4_BD_BOARD A2, CTE
+		WHERE	A2.BOARD_ROOT_ID = #boardRootId# 
+			AND	A2.BOARD_DELETE = 0
+			AND	CTE.BOARD_ID = A2.BOARD_PARENT_ID 
+  	)
+	SELECT INDENTATION,
+	       (SELECT	COUNT(*) FROM IKEP4_BD_BOARD B WHERE CTE.BOARD_ID = B.BOARD_PARENT_ID AND B.BOARD_DELETE = 0) AS HAS_CHILDREN,
+	       BOARD_ID,
+	       <include refid="support.note.noteShare.sqlColumnList"/> 
+	FROM CTE
+	ORDER BY PATH_ORDER 
+      </select>
+  
+  <select id="listByBBSBoardRootIdPer" parameterClass="map" resultMap="boardIndentationResult"> 
+		/* [NoteShare_SqlMap.xml] support.note.noteShare.listByBoardRootIdPer */
+		WITH CTE AS 
+		       (SELECT CONVERT(NVARCHAR, '/' + CONVERT(VARCHAR, SORT_ORDER+1000)) PATH_ORDER, 
+		              1 INDENTATION, 
+		              A1.* 
+		         FROM IKEP4_BD_BOARD A1 
+		        WHERE BOARD_ROOT_ID = #boardRootId# 
+		              AND PORTAL_Id = #portalId# 
+		              AND BOARD_DELETE = 0 
+		              AND BOARD_PARENT_ID = 'root' 
+		           UNION ALL 
+		       SELECT CONVERT(NVARCHAR, CTE.PATH_ORDER + '/' + CONVERT(VARCHAR, A2.SORT_ORDER+1000)) PATH_ORDER, 
+		              INDENTATION + 1, 
+		              A2.* 
+		         FROM IKEP4_BD_BOARD A2, 
+		              CTE 
+		        WHERE A2.BOARD_ROOT_ID = #boardRootId# 
+		              AND A2.BOARD_DELETE = 0 
+		              AND CTE.BOARD_ID = A2.BOARD_PARENT_ID 
+		       ) 
+		SELECT 
+		       B.* 
+		  FROM IKEP4_VW_PERMIT_SYS_RESOURCE A 
+		   INNER JOIN 
+		       (SELECT INDENTATION, 
+		              (SELECT COUNT(*) 
+		                FROM IKEP4_BD_BOARD B 
+		               WHERE CTE.BOARD_ID = B.BOARD_PARENT_ID 
+		                     AND B.BOARD_DELETE = 0 
+		              ) AS HAS_CHILDREN, 
+		              BOARD_ID,
+					  <include refid="support.note.noteShare.sqlColumnList"/>, 
+		              SORT_ORDER 
+		         FROM CTE 
+		       ) B 
+		       ON A.RESOURCE_NAME = B.BOARD_ID 
+		 WHERE B.BOARD_TYPE = '0' 
+		       AND A.OPERATION_NAME = #operationName#
+               AND A.CLASS_NAME = #className# 
+               AND A.USER_ID IN (#userId#, 'OPEN')
+		 ORDER BY b.SORT_ORDER
+
+  	</select>
+  		
+	<select id="listMyCollaboration" parameterClass="Map"  resultClass="NoteShare">
+	<![CDATA[
+		SELECT /* [NoteShare_SqlMap.xml] support.note.noteShare.listMyCollaboration */
+			A.WORKSPACE_ID		AS workspaceId,
+			A.WORKSPACE_NAME	AS workspaceName,
+			A.TYPE_ID			AS typeId, 
+			B.TYPE_NAME			AS typeName,
+			B.TYPE_ENGLISH_NAME AS typeEnglishName,
+			CASE WHEN D.IS_DEFAULT is NULL THEN 0 ELSE	D.IS_DEFAULT END isDefault
+		FROM
+			IKEP4_WS_WORKSPACE A
+			INNER JOIN IKEP4_WS_TYPE B ON (A.TYPE_ID = B.TYPE_ID AND (B.PORTAL_ID =	#portalId# OR B.IS_ORGANIZATION=1))
+			INNER JOIN IKEP4_WS_MEMBER D ON (A.WORKSPACE_ID	= D.WORKSPACE_ID AND D.MEMBER_LEVEL 	IN	('1','2','3','4'))
+		WHERE 
+			A.WORKSPACE_STATUS	IN	('O','WC')			
+			AND D.MEMBER_ID		=	#memberId#
+		ORDER BY
+			D.IS_DEFAULT DESC,B.IS_ORGANIZATION DESC, B.SORT_ORDER, A.WORKSPACE_NAME
+	]]>
+	</select>
+	
+  <select id="getBoardbyWS" parameterClass="map" resultMap="boardResultWS"> 
+    SELECT  /* [NoteShare_SqlMap.xml] support.note.noteShare.getBoardbyWS */  * 
+    FROM (
+    		SELECT 	A.BOARD_ID,
+					A.BOARD_NAME, 
+					A.DESCRIPTION as BOARD_DESCRIPTION, 
+					A.BOARD_TYPE, 
+					A.VERSION_MANAGE,
+					ISNULL(A.BOARD_ENGLISH_NAME, A.BOARD_NAME) AS BOARD_ENGLISH_NAME,
+					ISNULL(A.BOARD_ENGLISH_DESCRIPTION, A.DESCRIPTION) AS BOARD_ENGLISH_DESCRIPTION
+			FROM  	IKEP4_WS_BD_BOARD A
+			WHERE  	PORTAL_Id = #portalId#  
+			AND 	WORKSPACE_ID = #workspaceId# 
+			AND		BOARD_ID = #boardId# 
+			AND 	IS_DELETE = 0 
+			AND 	BOARD_TYPE = '0' 
+	)   A   
+  </select>
+  
+  <select id="listByWSBoardRootId" parameterClass="map" resultMap="boardResult"> 
+	  SELECT /* [NoteShare_SqlMap.xml] support.note.noteShare.listByWSBoardRootId */
+				BOARD_ID,
+				BOARD_NAME,
+				DESCRIPTION as BOARD_DESCRIPTION, 
+				BOARD_TYPE, 
+				ISNULL(BOARD_ENGLISH_NAME, BOARD_NAME) AS BOARD_ENGLISH_NAME,
+				ISNULL(BOARD_ENGLISH_DESCRIPTION, DESCRIPTION) AS BOARD_ENGLISH_DESCRIPTION
+			FROM
+				IKEP4_WS_BD_BOARD
+			WHERE  
+				WORKSPACE_ID = #workspaceId#
+				AND BOARD_ROOT_ID = #boardRootId# 
+				AND PORTAL_Id = #portalId#  
+				AND IS_DELETE=0
+			ORDER BY 
+				SORT_ORDER ASC
+  </select>
+  
+  <select id="listByWSBoardRootIdPer" parameterClass="map" resultMap="boardResult"> 
+	SELECT 
+	       /* [NoteShare_SqlMap.xml] support.note.noteShare.listByWSBoardRootIdPer */ 
+	       B.* 
+	  FROM IKEP4_VW_PERMIT_SYS_RESOURCE A 
+	   INNER JOIN 
+	       (SELECT * 
+	         FROM 
+	              (SELECT A.BOARD_ID, 
+	                     A.BOARD_NAME, 
+	                     A.DESCRIPTION as BOARD_DESCRIPTION, 
+	                     A.BOARD_TYPE,
+						 A.SORT_ORDER,					  
+	                     ISNULL(A.BOARD_ENGLISH_NAME, A.BOARD_NAME) AS BOARD_ENGLISH_NAME, 
+	                     ISNULL(A.BOARD_ENGLISH_DESCRIPTION, A.DESCRIPTION) AS BOARD_ENGLISH_DESCRIPTION 
+	                FROM IKEP4_WS_BD_BOARD A 
+	               WHERE WORKSPACE_ID = #workspaceId# 
+	                     AND BOARD_ROOT_ID = #boardRootId# 
+	                     AND PORTAL_Id = #portalId# 
+	                     AND IS_DELETE = 0 
+	              ) A 
+	       ) B 
+	       ON A.RESOURCE_NAME = B.BOARD_ID 
+	 WHERE B.BOARD_TYPE = '0' 
+	       AND A.OPERATION_NAME = #operationName# 
+	       AND A.CLASS_NAME = #className# 
+	       AND A.USER_ID IN (#userId#, 'OPEN')
+	ORDER BY SORT_ORDER ASC
+  	</select>
+  		
+  <select id="listByCKBoardRootId" parameterClass="map" resultMap="boardResult"> 
+	/* [NoteShare_SqlMap.xml] support.note.noteShare.listByCKBoardRootId */ 
+	WITH CTE AS 
+	       (SELECT CONVERT(NVARCHAR, '/' + CONVERT(VARCHAR, SORT_ORDER+1000)) PATH_ORDER, 
+	              1 INDENTATION, 
+	              A1.* 
+	         FROM IKEP4_CK_CATEGORY A1 
+	        WHERE PORTAL_Id = #portalId# 
+	              AND CATEGORY_DELETE = 0 
+	              AND CATEGORY_PARENT_ID = 'root' 
+	           UNION ALL 
+	       SELECT CONVERT(NVARCHAR, CTE.PATH_ORDER + '/' + CONVERT(VARCHAR, A2.SORT_ORDER+1000)) PATH_ORDER, 
+	              INDENTATION + 1, 
+	              A2.* 
+	         FROM IKEP4_CK_CATEGORY A2, 
+	              CTE 
+	        WHERE A2.CATEGORY_DELETE = 0 
+	              AND CTE.CATEGORY_ID = A2.CATEGORY_PARENT_ID 
+	       ) 
+	SELECT CATEGORY_ID AS BOARD_ID, 
+	       CATEGORY_NAME AS BOARD_NAME, 
+	       CATEGORY_DESCRIPTION AS BOARD_DESCRIPTION, 
+	       CATEGORY_TYPE AS BOARD_TYPE, 
+	       ISNULL(CATEGORY_ENGLISH_NAME, CATEGORY_NAME) AS BOARD_ENGLISH_NAME, 
+	       CATEGORY_DESCRIPTION AS BOARD_ENGLISH_DESCRIPTION 
+	  FROM CTE 
+	ORDER BY PATH_ORDER 
+  </select>
+  
+  <select id="listByCKBoardRootIdPer" parameterClass="map" resultMap="boardResult"> 
+	/* [NoteShare_SqlMap.xml] support.note.noteShare.listByCKBoardRootIdPer */ 
+	WITH CTE AS 
+	       (SELECT CONVERT(NVARCHAR, '/' + CONVERT(VARCHAR, SORT_ORDER+1000)) PATH_ORDER, 
+	              1 INDENTATION, 
+	              A1.* 
+	         FROM IKEP4_CK_CATEGORY A1 
+	        WHERE PORTAL_Id = #portalId# 
+	              AND CATEGORY_DELETE = 0 
+	              AND CATEGORY_PARENT_ID = 'root' 
+	           UNION ALL 
+	       SELECT CONVERT(NVARCHAR, CTE.PATH_ORDER + '/' + CONVERT(VARCHAR, A2.SORT_ORDER+1000)) PATH_ORDER, 
+	              INDENTATION + 1, 
+	              A2.* 
+	         FROM IKEP4_CK_CATEGORY A2, 
+	              CTE 
+	        WHERE A2.CATEGORY_DELETE = 0 
+	              AND CTE.CATEGORY_ID = A2.CATEGORY_PARENT_ID 
+	       )  
+	SELECT 
+	       /* [NoteShare_SqlMap.xml] support.note.noteShare.listByWSBoardRootIdPer */ 
+	       B.* 
+	  FROM IKEP4_VW_PERMIT_SYS_RESOURCE A 
+	   INNER JOIN 
+	       (SELECT * 
+	         FROM 
+	              (SELECT CATEGORY_ID AS BOARD_ID, 
+	                     CATEGORY_NAME AS BOARD_NAME, 
+	                     CATEGORY_DESCRIPTION AS BOARD_DESCRIPTION, 
+	                     CATEGORY_TYPE AS BOARD_TYPE, 
+	                     ISNULL(CATEGORY_ENGLISH_NAME, CATEGORY_NAME) AS BOARD_ENGLISH_NAME, 
+	                     CATEGORY_DESCRIPTION AS BOARD_ENGLISH_DESCRIPTION, 
+	                     SORT_ORDER 
+	                FROM CTE 
+	              ) A 
+	       ) B 
+	       ON A.RESOURCE_NAME = B.BOARD_ID 
+	 WHERE B.BOARD_TYPE = '0' 
+	       AND A.OPERATION_NAME = #operationName# 
+	       AND A.CLASS_NAME = #className# 
+	       AND A.USER_ID IN (#userId#, 'OPEN') 
+	ORDER BY SORT_ORDER ASC      
+	 
+
+  	</select>
+  		  
+  	<insert id="createBBS" parameterClass="NoteShare"> 
+    INSERT INTO IKEP4_BD_ITEM (/* [NoteShare_SqlMap.xml] support.note.noteShare.createBBS */
+     <include refid="support.note.noteShare.insertSqlColumnList" />
+     ) VALUES (
+      #itemId#, 
+      #boardId#, 
+      #itemParentId#, 
+      #itemGroupId#, 
+      #step#, 
+      #indentation#, 
+      #itemSeqId#,  
+      #itemDisplay#, 
+      #title#, 
+      #hitCount#, 
+      #recommendCount#, 
+      #replyCount#, 
+      #linereplyCount#, 
+      #attachFileCount#,
+      #startDate#, 
+      #endDate#, 
+      #itemDelete#, 
+      #imageFileId#,
+      #contents#,
+      #textContents#,
+      #registerId#, 
+      #registerName#, 
+      CURRENT_TIMESTAMP, 
+      #updaterId#, 
+      #updaterName#, 
+      CURRENT_TIMESTAMP
+    ) 
+     <selectKey resultClass="string" keyProperty="itemSeqId" type="pre">  
+       	<!-- SELECT SEQ_IKEP4_BD_ITEM.NEXTVAL FROM DUAL -->
+       	select fncGetSeqBoardItem() 
+     </selectKey>
+  	</insert>
+  	
+  	<update id="updateBBS" parameterClass="NoteShare"> 
+	    UPDATE IKEP4_BD_ITEM /* [NoteShare_SqlMap.xml] support.note.noteShare.updateBBS */
+	    SET   <isNotEmpty property="contents"       >CONTENTS          = #contents#,       	</isNotEmpty>
+	          <isNotEmpty property="textContents"   >TEXT_CONTENTS     = #textContents#,    </isNotEmpty>
+	          <isNotEmpty property="imageFileId"    >IMAGE_FILE_ID     = #imageFileId#,     </isNotEmpty>
+	          UPDATER_ID        = #updaterId#,
+	          UPDATER_NAME      = #updaterName#,
+	          UPDATE_DATE       = CURRENT_TIMESTAMP
+	    WHERE ITEM_ID = #itemId# 
+ 	 </update>
+  
+	<insert id="createWS" parameterClass="NoteShare"> 
+		INSERT INTO IKEP4_WS_BD_ITEM ( /* [NoteShare_SqlMap.xml] support.note.noteShare.createWS */
+			ITEM_ID, 
+			BOARD_ID, 
+			ITEM_PARENT_ID, 
+			ITEM_GROUP_ID, 
+			STEP, 
+			INDENTATION, 
+			ITEM_SEQ_ID,  
+			ITEM_DISPLAY, 
+			ITEM_TYPE,
+			TITLE,
+			HIT_COUNT, 
+			RECOMMEND_COUNT, 
+			REPLY_COUNT, 
+			LINEREPLY_COUNT, 
+			ATTACH_FILE_COUNT, 
+			START_DATE, 
+			END_DATE, 
+			ITEM_DELETE,
+			FOLLOW_BOARD_PERMISSION,
+			READ_PERMISSION,
+			IMAGE_FILE_ID, 
+			CONTENTS,
+			TEXT_CONTENTS,
+			REGISTER_ID, 
+			REGISTER_NAME, 
+			REGIST_DATE, 
+			UPDATER_ID, 
+			UPDATER_NAME, 
+			UPDATE_DATE
+		) VALUES (
+			#itemId#, 
+			#boardId#, 
+			#itemParentId#, 
+			#itemGroupId#, 
+			#step#, 
+			#indentation#, 
+			#itemSeqId#,  
+			#itemDisplay#, 
+			#itemType#, 
+			#title#, 
+			#hitCount#, 
+			#recommendCount#, 
+			#replyCount#, 
+			#linereplyCount#, 
+			#attachFileCount#,
+			CURRENT_TIMESTAMP, 
+			CURRENT_TIMESTAMP, 
+			#itemDelete#,
+			#followBoardPermission#,
+			#readPermission#,      
+			#imageFileId#,
+			#contents#,
+      		#textContents#,
+			#registerId#, 
+			#registerName#, 
+			CURRENT_TIMESTAMP, 
+			#updaterId#, 
+			#updaterName#, 
+			CURRENT_TIMESTAMP
+		) 
+		<selectKey resultClass="string" keyProperty="itemSeqId" type="pre">  
+		declare @seq numeric(38)
+		exec dbo.GET_SEQUENCE_FROM_SEQ_IKEP4_WS_BD_ITEM 2, @seq OUTPUT
+		
+		SELECT @seq
+		</selectKey>
+	</insert>
+  	
+	<insert id="createItemVersion" parameterClass="wsBoardVersion"> 
+	INSERT INTO /* [NoteShare_SqlMap.xml] support.note.noteShare.createItemVersion */
+	IKEP4_WS_BD_ITEM_VERSION 
+	( 
+		VERSION_ID,
+		VERSION,
+		ITEM_ID,
+		ITEM_TYPE,
+		ITEM_DISPLAY,
+		TITLE,
+		CONTENTS,
+		ATTACH_FILE_COUNT,
+		START_DATE,
+		END_DATE,
+		REGISTER_ID,
+		REGISTER_NAME,
+		REGIST_DATE
+	) VALUES (
+		#versionId#,
+		(SELECT ISNULL(MAX(VERSION+0.1), 1.0) FROM ( SELECT * FROM IKEP4_WS_BD_ITEM_VERSION ) AS c1  WHERE c1.ITEM_ID = #itemId#),
+		#itemId#,
+		#itemType#,
+		#itemDisplay#,
+		#title#,
+		#contents#,
+		#attachFileCount#,
+		CURRENT_TIMESTAMP,
+		DATEADD(DD, 10000, CURRENT_TIMESTAMP),
+		#registerId#,
+		#registerName#,
+		CURRENT_TIMESTAMP
+	) 
+	</insert>
+   
+	<update id="updateWS" parameterClass="NoteShare"> 
+		UPDATE IKEP4_WS_BD_ITEM /* [NoteShare_SqlMap.xml] support.note.noteShare.createWS */
+		SET <isNotEmpty property="contents"        >CONTENTS          = #contents#,       </isNotEmpty>
+	        <isNotEmpty property="textContents"    >TEXT_CONTENTS     = #textContents#,   </isNotEmpty>
+			<isNotEmpty property="imageFileId"     >IMAGE_FILE_ID     = #imageFileId#,    </isNotEmpty>     
+			UPDATER_ID        = #updaterId#,
+			UPDATER_NAME      = #updaterName#,
+			UPDATE_DATE       = CURRENT_TIMESTAMP
+		WHERE
+			ITEM_ID = #itemId# 
+	</update>
+   
+  	<insert id="createCK" parameterClass="NoteShare"> 
+    INSERT INTO IKEP4_CK_KNOWLEDGE ( /* [NoteShare_SqlMap.xml] support.note.noteShare.createCK */     
+	    ITEM_ID, 
+	    CATEGORY_ID,
+	    ITEM_PARENT_ID, 
+	    ITEM_GROUP_ID, 
+	    STEP, 
+	    INDENTATION, 
+	    TITLE,
+	    CONTENTS,
+	    HIT_COUNT, 
+	    RECOMMEND_COUNT, 
+	    REPLY_COUNT, 
+	    LINEREPLY_COUNT, 
+	    ATTACH_FILE_COUNT, 
+	    ITEM_DELETE,
+	    REGISTER_ID, 
+	    REGISTER_NAME, 
+	    REGIST_DATE,    
+	    UPDATER_ID, 
+	    UPDATER_NAME, 
+	    UPDATE_DATE,
+	    ITEM_SEQ_ID,
+	    IMAGE_FILE_ID
+     ) VALUES (
+      #itemId#, 
+      #boardId#, 
+      #itemParentId#, 
+      #itemGroupId#, 
+      #step#, 
+      #indentation#, 
+      #title#, 
+      #contents#,
+      #hitCount#, 
+      #recommendCount#, 
+      #replyCount#, 
+      #linereplyCount#, 
+      #attachFileCount#,
+      #itemDelete#, 
+      #registerId#, 
+      #registerName#, 
+      CURRENT_TIMESTAMP, 
+      #updaterId#, 
+      #updaterName#, 
+      CURRENT_TIMESTAMP,
+      #itemSeqId#,
+      #imageFileId#
+    ) 
+     <selectKey resultClass="string" keyProperty="itemSeqId" type="pre">  
+       	<!-- SELECT SEQ_IKEP4_CK_KNOWLEDGE.NEXTVAL FROM DUAL -->
+       	
+       	declare @seq numeric(38)
+		exec dbo.GET_SEQUENCE_FROM_SEQ_IKEP4_CK_KNOWLEDGE 2, @seq OUTPUT
+		
+		SELECT @seq
+       	
+       	
+     </selectKey>
+  	</insert>
+  	
+  	<update id="updateCK" parameterClass="NoteShare"> 
+	    UPDATE IKEP4_CK_KNOWLEDGE  /* [NoteShare_SqlMap.xml] support.note.noteShare.updateCK */
+	    SET   <isNotEmpty property="contents"        >CONTENTS          = #contents#,       </isNotEmpty>
+	          <isNotEmpty property="textContents"    >TEXT_CONTENTS     = #textContents#,   </isNotEmpty>
+	          <isNotEmpty property="imageFileId"     >IMAGE_FILE_ID     = #imageFileId#,    </isNotEmpty>
+	          UPDATER_ID        = #updaterId#,
+	          UPDATER_NAME      = #updaterName#,
+	          UPDATE_DATE       = CURRENT_TIMESTAMP
+	    WHERE ITEM_ID = #itemId# 
+	  </update>
+</sqlMap>

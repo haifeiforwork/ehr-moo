@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="EUC-KR"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="support.activityCode">
+
+	<typeAlias alias="activityCode" type="com.lgcns.ikep4.support.activitystream.model.ActivityCode" />
+
+	<resultMap id="activityCodeResult" class="activityCode">
+		<result property="subscriptionActivityCode" column="subscription_activity_code" />
+		<result property="activityCode" column="activity_code" />
+		<result property="activityName" column="activity_name" />
+		<result property="activityDescription" column="activity_description" />
+		<result property="activityEnglishDescription" column="activity_english_description" />
+		<result property="type" column="type" />
+		<result property="userId" column="user_id" />
+	</resultMap>
+	
+	<resultMap id="activityConfigResult" class="activityCode">
+		<result property="userId" column="user_id" />
+		<result property="maxSaveValue" column="max_save_value" />
+	</resultMap>
+	
+
+	<!-- ANSI -->
+	<insert id="insert" parameterClass="activityCode">
+		INSERT INTO IKEP4_AS_USER_ACTIVITY_CODE (
+		   		SUBSCRIPTION_ACTIVITY_CODE, USER_ID, ACTIVITY_CODE, 
+			   	REGISTER_ID, REGISTER_NAME, REGIST_DATE, 
+			   	UPDATER_ID, UPDATER_NAME, UPDATE_DATE)
+		values(#subscriptionActivityCode#, #userId#, #activityCode#,
+				#registerId#, #registerName#, CURRENT_TIMESTAMP,
+				#updaterId#, #updaterName#, CURRENT_TIMESTAMP)
+	</insert>
+	
+	<!-- ANSI -->
+	<select id="select" parameterClass="String" resultMap="activityCodeResult">
+		SELECT 
+				A.SUBSCRIPTION_ACTIVITY_CODE, A.USER_ID, 
+				B.ACTIVITY_CODE, B.ACTIVITY_NAME, B.ACTIVITY_DESCRIPTION, 
+				B.TYPE, B.ACTIVITY_ENGLISH_DESCRIPTION
+			FROM IKEP4_AS_USER_ACTIVITY_CODE A RIGHT JOIN IKEP4_AS_ACTIVITY_CODE B
+					ON A.ACTIVITY_CODE = B.ACTIVITY_CODE
+					AND A.USER_ID = #userId#
+			ORDER BY B.ACTIVITY_NAME
+	</select>
+	
+	<!-- ANSI -->
+	<delete id="delete" parameterClass="String" >
+		DELETE 
+			FROM IKEP4_AS_USER_ACTIVITY_CODE
+			WHERE USER_ID = #userId#
+	</delete>
+	
+	<!-- ANSI -->
+	<insert id="insertConfig" parameterClass="activityCode">
+		INSERT INTO IKEP4_AS_ACTIVITY_CONFIG (
+		   		USER_ID, MAX_SAVE_VALUE, 
+		   		REGISTER_ID, REGISTER_NAME, REGIST_DATE, 
+		   		UPDATER_ID, UPDATER_NAME, UPDATE_DATE)
+		values(#userId#, #maxSaveValue#, 
+				#registerId#, #registerName#, CURRENT_TIMESTAMP,
+				#updaterId#, #updaterName#, CURRENT_TIMESTAMP)
+	</insert>
+	
+	<!-- ANSI -->
+	<select id="selectConfig" parameterClass="activityCode" resultMap="activityConfigResult">
+		SELECT 
+				USER_ID, MAX_SAVE_VALUE
+			FROM IKEP4_AS_ACTIVITY_CONFIG 
+			WHERE USER_ID = #userId#
+	</select>
+	
+	<!-- ANSI -->
+	<delete id="deleteConfig" parameterClass="activityCode" >
+		DELETE 
+			FROM IKEP4_AS_ACTIVITY_CONFIG
+			WHERE USER_ID = #userId#
+	</delete>
+	
+	<!-- ANSI -->
+	<select id="selectConfigList" parameterClass="activityCode" resultMap="activityConfigResult">
+		SELECT 
+				B.USER_ID, B.MAX_SAVE_VALUE
+			FROM IKEP4_EV_USER A LEFT OUTER JOIN IKEP4_AS_ACTIVITY_CONFIG B
+									ON A.USER_ID = B.USER_ID 
+										AND A.USER_STATUS = 'C'
+	</select>
+	
+    
+</sqlMap>
+

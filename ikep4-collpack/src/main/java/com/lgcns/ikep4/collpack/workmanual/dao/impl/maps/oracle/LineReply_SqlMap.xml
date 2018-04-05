@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="collpack.workmanual.dao.lineReply">
+	<typeAlias alias = "LineReply" type="com.lgcns.ikep4.collpack.workmanual.model.LineReply"/>
+	<typeAlias alias = "ManualSearchCondition" type="com.lgcns.ikep4.collpack.workmanual.search.ManualSearchCondition"/>
+	
+	<!-- 테이블 조회 결과 -->
+	<resultMap id="lineReplyResult" class="LineReply">
+		<result property="linereplyId"           column="LINEREPLY_ID"            />
+		<result property="manualId"              column="MANUAL_ID"               />
+		<result property="linereplyGroupId"      column="LINEREPLY_GROUP_ID"      />
+		<result property="linereplyParentId"     column="LINEREPLY_PARENT_ID"     />
+		<result property="step"                  column="STEP"                    />
+		<result property="indentation"           column="INDENTATION"             />
+		<result property="linereplyContents"     column="LINEREPLY_CONTENTS"      />
+		<result property="isDelete"              column="IS_DELETE"               />
+		<result property="registerId"            column="REGISTER_ID"             />
+		<result property="registerName"          column="REGISTER_NAME"           />
+		<result property="registDate"            column="REGIST_DATE"             />
+		<result property="updaterId"             column="UPDATER_ID"              />
+		<result property="updaterName"           column="UPDATER_NAME"            />
+		<result property="updateDate"            column="UPDATE_DATE"             />
+		<result property="teamName"              column="TEAM_NAME"               />
+		<result property="jobTitleName"          column="JOB_TITLE_NAME"          />
+		<result property="registerEnglishName"   column="REGISTER_ENGLISH_NAME"   />
+		<result property="teamEnglishName"       column="TEAM_ENGLISH_NAME"       />
+		<result property="jobTitleEnglishName"   column="JOB_TITLE_ENGLISH_NAME"  />
+		<result property="picturePath"  	 	 column="PICTURE_PATH"            />   
+    	<result property="profilePicturePath" 	 column="PROFILE_PICTURE_PATH"    /> 
+	</resultMap>
+	
+	<insert id="create" parameterClass="LineReply"> 
+      <![CDATA[ 
+           INSERT INTO IKEP4_WM_LINEREPLY (/* [LineReply_SqlMap.xml] LineReply.create */
+           		LINEREPLY_ID, MANUAL_ID, LINEREPLY_GROUP_ID, LINEREPLY_PARENT_ID, STEP, 
+				INDENTATION, LINEREPLY_CONTENTS, IS_DELETE, REGISTER_ID, REGISTER_NAME, 
+				REGIST_DATE, UPDATER_ID, UPDATER_NAME, UPDATE_DATE)  
+           VALUES (#linereplyId#, #manualId#, #linereplyGroupId#, #linereplyParentId#, #step#,
+				#indentation#, #linereplyContents#, #isDelete#, #registerId#, #registerName#,
+				SYSDATE, #updaterId#, #updaterName#, SYSDATE)
+       ]]>
+   </insert>
+   
+	<select id="get" parameterClass="java.lang.String" resultMap="lineReplyResult">
+	  <![CDATA[
+		   SELECT /* [LineReply_SqlMap.xml] LineReply.get */
+				  A.*,
+				  '' AS TEAM_NAME,
+				  '' AS JOB_TITLE_NAME,
+				  '' AS REGISTER_ENGLISH_NAME,
+				  '' AS TEAM_ENGLISH_NAME,
+				  '' AS JOB_TITLE_ENGLISH_NAME
+		     FROM IKEP4_WM_LINEREPLY A
+		    WHERE LINEREPLY_ID = #linereplyId#
+	   ]]>
+	</select>
+	
+	<update id="update" parameterClass="LineReply">
+	  <![CDATA[
+		   UPDATE IKEP4_WM_LINEREPLY /* [LineReply_SqlMap.xml] LineReply.update */ 
+		      SET MANUAL_ID           = #manualId#,                    
+			      LINEREPLY_GROUP_ID  = #linereplyGroupId#, 
+			      LINEREPLY_PARENT_ID = #linereplyParentId#,
+			      STEP                = #step#,             
+			      INDENTATION         = #indentation#,      
+			      LINEREPLY_CONTENTS  = #linereplyContents#,
+			      IS_DELETE           = #isDelete#,   
+			      UPDATER_ID          = #updaterId#,        
+			      UPDATER_NAME        = #updaterName#,      
+			      UPDATE_DATE         = SYSDATE
+		    WHERE LINEREPLY_ID = #linereplyId#
+	   ]]>
+	</update>
+   
+   <delete id="remove" parameterClass="java.lang.String">
+      <![CDATA[
+	       DELETE FROM IKEP4_WM_LINEREPLY /* [LineReply_SqlMap.xml] LineReply.remove */ 
+	        WHERE LINEREPLY_ID = #linereplyId#
+	   ]]>
+	</delete>
+	
+	<select id="count" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+	  <![CDATA[
+		   SELECT /* [LineReply_SqlMap.xml] LineReply.count */ 
+		   		  COUNT(1) 
+		     FROM IKEP4_WM_LINEREPLY 
+		    WHERE LINEREPLY_ID = #linereplyId#
+	   ]]>
+	</select>
+	
+	<!-- //댓글 정보 조회수 -->
+	<select id="countLineReply" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+	  <![CDATA[
+		   SELECT /* [LineReply_SqlMap.xml] LineReply.countLineReply */ 
+		   		  COUNT(1) 
+		     FROM IKEP4_WM_LINEREPLY A,
+		          IKEP4_EV_USER B, 
+		          IKEP4_EV_JOB_TITLE C
+		    WHERE A.MANUAL_ID = #manualId#
+		      AND A.REGISTER_ID = B.USER_ID
+		      AND B.JOB_TITLE_CODE = C.JOB_TITLE_CODE
+		      AND B.PORTAL_ID = C.PORTAL_ID
+	   ]]>
+	</select>
+	
+	<!-- //댓글 정보 조회 -->
+	<select id="listLineReply" parameterClass="ManualSearchCondition" resultMap="lineReplyResult">
+	  <![CDATA[
+		   SELECT /* [LineReply_SqlMap.xml] LineReply.listLineReply */
+		   		  A.*
+			 FROM (SELECT A.*,
+			 			  ROWNUM AS RNUM
+			 		 FROM (SELECT A.*,
+						          B.TEAM_NAME,  
+						          C.JOB_TITLE_NAME,
+								  B.USER_ENGLISH_NAME AS REGISTER_ENGLISH_NAME,
+								  B.TEAM_ENGLISH_NAME AS TEAM_ENGLISH_NAME,
+								  C.JOB_TITLE_ENGLISH_NAME AS JOB_TITLE_ENGLISH_NAME,
+								  B.PICTURE_PATH,
+								  B.PROFILE_PICTURE_PATH
+						     FROM IKEP4_WM_LINEREPLY A,
+						          IKEP4_EV_USER B, 
+				                  IKEP4_EV_JOB_TITLE C
+						    WHERE A.MANUAL_ID = #manualId#
+						      AND A.REGISTER_ID = B.USER_ID
+						      AND B.JOB_TITLE_CODE = C.JOB_TITLE_CODE
+						      AND B.PORTAL_ID = C.PORTAL_ID
+						    ORDER BY A.LINEREPLY_GROUP_ID DESC, A.STEP ASC
+						  ) A
+					WHERE ROWNUM <=  #endRowIndex#
+				  ) A
+			WHERE RNUM > #startRowIndex#
+	   ]]>
+	</select>
+	
+	<!-- //스텝 증가 -->
+	<update id="updateStep" parameterClass="LineReply">
+	  <![CDATA[
+		   UPDATE IKEP4_WM_LINEREPLY /* [LineReply_SqlMap.xml] LineReply.updateStep */ 
+		      SET STEP = STEP + 1
+		    WHERE LINEREPLY_GROUP_ID = #linereplyId# 
+    		  AND STEP >= #step#  
+	   ]]>
+	</update>
+	
+	<!-- //하위 글 조회수 -->
+	<select id="countChildren" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+	  <![CDATA[
+		   SELECT /* [LineReply_SqlMap.xml] LineReply.countChildren */ 
+		   		  COUNT(1) 
+		     FROM IKEP4_WM_LINEREPLY 
+		    WHERE LINEREPLY_PARENT_ID = #linereplyId#  
+	   ]]>
+	</select>
+   
+   <!-- //관련글 모두 삭제 -->
+   <delete id="removeAll" parameterClass="java.lang.String">
+      <![CDATA[
+	       DELETE FROM IKEP4_WM_LINEREPLY /* [LineReply_SqlMap.xml] LineReply.removeAll */ 
+	        WHERE LINEREPLY_ID IN (SELECT LINEREPLY_ID 
+								     FROM IKEP4_WM_LINEREPLY
+						            START WITH LINEREPLY_ID = #linereplyId# 
+						          CONNECT BY PRIOR LINEREPLY_ID = LINEREPLY_PARENT_ID  
+						          )    
+	   ]]>
+	</delete>
+   
+   <!-- //매뉴얼 관련글 모두 삭제 -->
+   <delete id="removeByManualId" parameterClass="java.lang.String">
+      <![CDATA[
+	       DELETE FROM IKEP4_WM_LINEREPLY /* [LineReply_SqlMap.xml] LineReply.removeByManualId*/ 
+	        WHERE MANUAL_ID = #manualId#
+	   ]]>
+	</delete>
+</sqlMap>

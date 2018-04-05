@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="workflow.workplace.dao.ProcStatistics" >
+	<typeAlias alias="workplaceItemSearchCondition" type="com.lgcns.ikep4.workflow.workplace.search.WorkplaceSearchCondition"/>
+	<typeAlias alias="processBean" type="com.lgcns.ikep4.workflow.engine.model.ProcessBean"/>
+	
+	<select id="procStatisticsDetail" parameterClass="workplaceItemSearchCondition" resultClass="processBean">  
+		/* [ProcStatistics_SqlMap.xml] workflow.workplace.dao.ProcStatistics.procStatisticsDetail */
+		<![CDATA[
+		SELECT PROC.PROCESS_ID AS processId , 
+		       PROCESS_NAME AS processName , 
+		       (SELECT USER_NAME 
+		         FROM IKEP4_EV_USER 
+		        WHERE USER_ID = AUTHOR 
+		       ) AS authorName , 
+		       DESCRIPTION AS description , 
+		       PROC.PROCESS_VER AS processVer, 
+		       SER.APPLY_START_DATE AS applyStartDate, 
+		       SER.APPLY_END_DATE AS applyEndDate 
+		  FROM IKEP4_WF_PROCESS PROC 
+		   LEFT OUTER JOIN IKEP4_WF_SERVICE SER 
+		       ON PROC.PROCESS_ID = SER.PROCESS_ID 
+		 WHERE 1=1
+		]]>
+		<isNotNull property="processId"><isNotEmpty property="processId" prepend="AND">
+			PROC.PROCESS_ID = #processId#
+        </isNotEmpty></isNotNull>
+        <isNotNull property="processVer"><isNotEmpty property="processVer" prepend="AND">
+			PROC.PROCESS_VER = #processVer#
+        </isNotEmpty></isNotNull>
+        <isNull property="processId"><isEmpty property="processId" prepend="AND">
+			PROC.PROCESS_ID||PROC.PROCESS_VER = (	SELECT PROCESS_ID||PROCESS_VER 
+                                                      FROM 
+                                                           (SELECT 
+                                                                  /*+INDEX(PROC XPKBPM_PROCESS)*/ 
+                                                                  ROW_NUMBER() OVER (ORDER BY PROCESS_NAME, PROCESS_VER ASC) AS RNUM , 
+                                                                  PROCESS_ID , 
+                                                                  PROCESS_VER
+                                                             FROM IKEP4_WF_PROCESS PROC 
+                                                           ) 
+                                                     WHERE RNUM=1)
+        </isEmpty></isNull>
+	</select>
+	
+</sqlMap>

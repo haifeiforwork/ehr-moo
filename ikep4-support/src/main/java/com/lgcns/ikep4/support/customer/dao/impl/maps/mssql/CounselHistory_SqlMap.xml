@@ -1,0 +1,316 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="support.customer.dao.counselHistory">
+
+
+<typeAlias alias="CounselHistory" type="com.lgcns.ikep4.support.customer.model.CounselHistory" />
+<typeAlias alias="CounselHistorySearchCondition" type="com.lgcns.ikep4.support.customer.search.CounselHistorySearchCondition" />
+
+
+
+<resultMap id="CounselHistoryResult" class="com.lgcns.ikep4.support.customer.model.CounselHistory">
+		<result column="ROWNUM" 		    property="rowNum" 			jdbcType="VARCHAR" />
+		<result column="SEQNUM" 		    property="seqNum" 			jdbcType="DECIMAL" />
+		<result column="ID" 			    property="customerId" 		jdbcType="VARCHAR" />
+		<result column="CUSTOMER" 			property="customer" 		jdbcType="VARCHAR" />
+		<result column="COUNSEL_DATE" 		property="counselDate" 		jdbcType="VARCHAR" />
+		<result column="COUNSELOR" 			property="counselor" 		jdbcType="VARCHAR" />
+		<result column="COUNSEL_DEPT" 		property="counselDept" 		jdbcType="VARCHAR" />		
+		<result column="CLIENT" 			property="client" 			jdbcType="VARCHAR" />
+		<result column="CLIENT_DEPT" 		property="clientDept" 	    jdbcType="VARCHAR" />		
+		<result column="SUBJECT" 			property="subject"			jdbcType="VARCHAR" />
+		<result column="CONTENT" 			property="content" 			jdbcType="VARCHAR" />
+		<result column="LINEREPLY_COUNT" 	property="linereplyCount" 	jdbcType="DECIMAL" />
+		<result column="REGISTER_ID" 	    property="registerId"   	jdbcType="VARCHAR" />
+		<result column="REGISTER_NAME"  	property="registerName" 	jdbcType="VARCHAR" />		
+		<result column="REGIST_DATE"   		property="registDate" 		jdbcType="VARCHAR" />		
+	</resultMap>
+	<resultMap  id="CounselHistoryExtendsResult" extends="CounselHistoryResult" class="com.lgcns.ikep4.support.customer.model.CounselHistory">
+		<result column="JOB_RANK_NAME"          property="user.jobRankName"         jdbcType="VARCHAR" />
+	    <result column="TEAM_NAME"              property="user.teamName"            jdbcType="VARCHAR" />
+	    <result column="JOB_DUTY_NAME"          property="user.jobDutyName"         jdbcType="VARCHAR" />
+	    <result column="JOB_POSITION_NAME"      property="user.jobPositionName"     jdbcType="VARCHAR" />
+	    <result column="JOB_TITLE_NAME"         property="user.jobTitleName"        jdbcType="VARCHAR" />  
+	    <result column="PICTURE_ID"             property="user.pictureId"           jdbcType="VARCHAR" />   
+	    <result column="PROFILE_PICTURE_ID"     property="user.profilePictureId"    jdbcType="VARCHAR" />  
+		<result column="USER_NAME"              property="user.userName"            jdbcType="VARCHAR" />
+		<result column="USER_ENGLISH_NAME"      property="user.userEnglishName"     jdbcType="VARCHAR" />
+		<result column="JOB_TITLE_ENGLISH_NAME" property="user.jobTitleEnglishName" jdbcType="VARCHAR" />
+		<result column="TEAM_ENGLISH_NAME"      property="user.teamEnglishName"     jdbcType="VARCHAR" /> 
+		<result column="HIT_COUNT"      property="hitCount"     jdbcType="VARCHAR" /> 
+	</resultMap>
+	
+<sql id="sqlColumnList">
+	 ID
+	,NAME
+	,COUNSEL_DATE
+	,COUNSELOR
+	,COUNSEL_DEPT
+	,CLIENT
+	,CLIENT_DEPT
+	,SUBJECT
+	,CONTENT
+	,DELETE_FLAG
+	,LINEREPLY_COUNT
+	,UPDATER_ID
+	,UPDATER_NAME
+	,UPDATE_DATE
+	,REGISTER_ID
+	,REGISTER_NAME
+	,REGIST_DATE
+</sql>	
+	
+
+<select id="counselHistoryListBySearchCondition" parameterClass="CounselHistorySearchCondition" resultMap="CounselHistoryExtendsResult">
+SELECT /* [CounselHistory_SqlMap.xml] CounselHistory.counselHistoryListBySearchCondition */
+		*
+		FROM (
+		SELECT A.* FROM (
+		/* START========================================= */
+		SELECT ROW_NUMBER()
+		OVER(ORDER BY 
+		
+				 <isNotEmpty property="sortColumn">
+				   	<isEqual property="sortColumn" compareValue="NAME">
+					<isEqual property="sortType" compareValue="DESC">
+						item.NAME DESC , item.COUNSEL_DATE DESC,
+					</isEqual>
+					<isEqual property="sortType" compareValue="ASC">
+						item.NAME ASC , item.COUNSEL_DATE DESC,
+					</isEqual>
+				</isEqual>
+				<isEqual property="sortColumn" compareValue="SUBJECT">
+					<isEqual property="sortType" compareValue="DESC">
+						 item.SUBJECT DESC, item.COUNSEL_DATE DESC,
+					</isEqual>
+					<isEqual property="sortType" compareValue="ASC">
+						 item.SUBJECT ASC,  item.COUNSEL_DATE DESC,
+					</isEqual>
+				</isEqual>
+				<isEqual property="sortColumn" compareValue="COUNSELOR">
+					<isEqual property="sortType" compareValue="DESC">
+						 item.COUNSELOR DESC, item.COUNSEL_DATE DESC,
+					</isEqual>
+					<isEqual property="sortType" compareValue="ASC">
+						 item.COUNSELOR ASC,  item.COUNSEL_DATE DESC,
+					</isEqual>
+				</isEqual>
+				<isEqual property="sortColumn" compareValue="CLIENT">
+					<isEqual property="sortType" compareValue="DESC">
+						 item.CLIENT DESC, item.COUNSEL_DATE DESC,
+					</isEqual>
+					<isEqual property="sortType" compareValue="ASC">
+						 item.CLIENT ASC,  item.COUNSEL_DATE DESC,
+					</isEqual>
+				</isEqual>
+				<isEqual property="sortColumn" compareValue="COUNSEL_DATE">
+					<isEqual property="sortType" compareValue="DESC">
+						item.COUNSEL_DATE DESC,
+					</isEqual>
+					<isEqual property="sortType" compareValue="ASC">
+						item.COUNSEL_DATE ASC,
+					</isEqual>
+				</isEqual>
+				<isEqual property="sortColumn" compareValue="REGISTER_NAME">
+					<isEqual property="sortType" compareValue="DESC">
+						item.REGISTER_NAME DESC, item.COUNSEL_DATE DESC,
+					</isEqual>
+					<isEqual property="sortType" compareValue="ASC">
+						item.REGISTER_NAME ASC, item.COUNSEL_DATE DESC,
+					</isEqual>
+				</isEqual> 
+				   </isNotEmpty>
+				 <isEmpty property="sortColumn">  
+					 item.COUNSEL_DATE DESC,
+				 </isEmpty> item.regist_date desc ) AS ROWNUM
+			,item.SEQNUM
+			,item.ID  
+			,item.NAME AS CUSTOMER
+			,item.COUNSEL_DATE
+			,item.COUNSELOR
+			,item.COUNSEL_DEPT			
+			,item.CLIENT
+			,item.CLIENT_DEPT
+			,item.SUBJECT
+			,item.CONTENT
+			,item.LINEREPLY_COUNT
+			,item.REGISTER_ID
+			,item.REGISTER_NAME
+			,item.REGIST_DATE
+			,item.HIT_COUNT
+			,usr.TEAM_NAME          AS TEAM_NAME,  
+		     usr.PICTURE_ID         AS PICTURE_ID, 
+		     usr.PROFILE_PICTURE_ID AS PROFILE_PICTURE_ID,     
+		    (SELECT JOB_RANK_NAME FROM IKEP4_EV_JOB_RANK WITH (NOLOCK) WHERE IKEP4_EV_JOB_RANK.JOB_RANK_CODE = usr.JOB_RANK_CODE) AS JOB_RANK_NAME,
+			(SELECT JOB_DUTY_NAME FROM IKEP4_EV_JOB_DUTY WITH (NOLOCK) WHERE IKEP4_EV_JOB_DUTY.JOB_DUTY_CODE = usr.JOB_DUTY_CODE) AS JOB_DUTY_NAME,
+			(SELECT JOB_POSITION_NAME FROM IKEP4_EV_JOB_POSITION WITH (NOLOCK) WHERE IKEP4_EV_JOB_POSITION.JOB_POSITION_CODE = usr.JOB_POSITION_CODE) AS JOB_POSITION_NAME,
+			(SELECT JOB_TITLE_NAME FROM IKEP4_EV_JOB_TITLE WITH (NOLOCK) WHERE IKEP4_EV_JOB_TITLE.JOB_TITLE_CODE = usr.JOB_TITLE_CODE) AS JOB_TITLE_NAME, 
+		     usr.USER_NAME  AS USER_NAME,
+		     usr.USER_ENGLISH_NAME  AS USER_ENGLISH_NAME,
+		     usr.TEAM_ENGLISH_NAME  AS TEAM_ENGLISH_NAME,  
+		    (SELECT JOB_TITLE_ENGLISH_NAME FROM IKEP4_EV_JOB_TITLE WITH (NOLOCK) WHERE IKEP4_EV_JOB_TITLE.JOB_TITLE_CODE = usr.JOB_TITLE_CODE) AS JOB_TITLE_ENGLISH_NAME
+		FROM COUNSEL_HISTORY item WITH (NOLOCK) INNER JOIN IKEP4_EV_USER usr WITH (NOLOCK)
+	    ON item.REGISTER_ID = usr.USER_ID 
+		WHERE DELETE_FLAG = 'N'
+		<isNotEmpty property="searchColumn">
+			<isNotEmpty property="searchWord">
+				<isEqual property="searchColumn" compareValue="customer">
+					AND 
+					item.NAME LIKE '%' + #searchWord# + '%'
+						</isEqual>
+				<isEqual property="searchColumn" compareValue="subject">
+					AND item.SUBJECT
+					LIKE '%' + #searchWord# + '%'
+						</isEqual>
+				<isEqual property="searchColumn" compareValue="counselor">
+					AND item.COUNSELOR
+					LIKE '%' + #searchWord# + '%'
+						</isEqual>
+				<isEqual property="searchColumn" compareValue="client">
+					AND item.CLIENT
+					LIKE '%' + #searchWord# + '%'
+						</isEqual>
+				<isEqual property="searchColumn" compareValue="customerId">
+					AND item.ID
+					LIKE '%' + #searchWord# + '%'
+				</isEqual>			
+			</isNotEmpty>
+		</isNotEmpty>
+		/* ===========================================END */  
+		<![CDATA[   
+		    ) A WHERE ROWNUM <=  #endRowIndex# /* 종료  */
+		) TBL WHERE ROWNUM >  #startRowIndex# /* 시작 */ 
+	    ]]> ;
+		
+</select>
+
+<select id="countBySearchCondition" parameterClass="CounselHistorySearchCondition" resultClass="int">
+	SELECT /* [CounselHistory_SqlMap.xml] CounselHistory.countBySearchCondition */
+	COUNT(*)
+	FROM COUNSEL_HISTORY item WITH (NOLOCK) INNER JOIN IKEP4_EV_USER usr WITH (NOLOCK)
+	  ON item.REGISTER_ID = usr.USER_ID 
+	WHERE DELETE_FLAG = 'N'
+	<isNotEmpty property="searchColumn">
+		<isNotEmpty property="searchWord">
+			<isEqual property="searchColumn" compareValue="customer">
+				AND
+				item.NAME LIKE '%' + #searchWord# + '%'
+					</isEqual>
+			<isEqual property="searchColumn" compareValue="subject">
+				AND item.SUBJECT
+				LIKE '%' + #searchWord# + '%'
+					</isEqual>
+			<isEqual property="searchColumn" compareValue="counselor">
+				AND item.COUNSELOR
+				LIKE '%' + #searchWord# + '%'
+					</isEqual>
+			<isEqual property="searchColumn" compareValue="client">
+				AND item.CLIENT
+				LIKE '%' + #searchWord# + '%'
+					</isEqual>
+			<isEqual property="searchColumn" compareValue="customerId">
+					AND item.ID
+					LIKE '%' + #searchWord# + '%'
+			</isEqual>		
+		</isNotEmpty>
+	</isNotEmpty>
+</select>
+
+<select id="getCounselHistory" parameterClass="int" resultMap="CounselHistoryResult">
+		SELECT /* [CounselHistory_SqlMap.xml] CounselHistory.getCounselHistory */
+		ROW_NUMBER() OVER(ORDER BY COUNSEL_DATE DESC) AS ROWNUM
+			,item.SEQNUM
+			,item.ID
+			,item.NAME AS CUSTOMER
+			,item.COUNSEL_DATE
+			,item.COUNSELOR
+			,item.COUNSEL_DEPT			
+			,item.CLIENT
+			,item.CLIENT_DEPT
+			,item.SUBJECT
+			,item.CONTENT
+			,item.LINEREPLY_COUNT
+			,item.REGISTER_ID
+			,item.REGISTER_NAME
+			,item.REGIST_DATE
+		FROM COUNSEL_HISTORY item WITH (NOLOCK) 
+		WHERE DELETE_FLAG = 'N'
+	   	AND item.SEQNUM=#itemId#
+  </select>
+  
+  <insert id="createCounselHistory" parameterClass="CounselHistory">
+  
+  INSERT INTO COUNSEL_HISTORY (/* [CounselHistory_SqlMap.xml] CounselHistory.createCounselHistory */
+  <include refid="support.customer.dao.counselHistory.sqlColumnList" />
+  )
+  VALUES(
+  #customerId#,
+  #customer#,
+  #counselDate#,
+  #counselor#,
+  #counselDept#,
+  #client#,
+  #clientDept#,
+  #subject#,
+  #content#,
+  #deleteFlag#,
+  #linereplyCount#,
+  #updaterId#,
+  #updaterName#,
+  CURRENT_TIMESTAMP,
+  #registerId#,
+  #registerName#,
+  CURRENT_TIMESTAMP
+  )
+  
+  	<selectKey resultClass="int" keyProperty="seqNum"> 
+           SELECT @@IDENTITY AS seqNum
+    </selectKey>	
+
+  
+  </insert>
+  
+  <update id="updateCounselHistory" parameterClass="CounselHistory">
+  UPDATE COUNSEL_HISTORY /* [CounselHistory_SqlMap.xml] CounselHistory.updateCounselHistory */
+  SET
+  ID = #customerId#,
+  NAME = #customer#,
+  COUNSEL_DATE = #counselDate#,
+  COUNSELOR = #counselor#,
+  COUNSEL_DEPT = #counselDept#,
+  CLIENT = #client#,
+  CLIENT_DEPT = #clientDept#,
+  SUBJECT = #subject#,
+  CONTENT = #content#,
+  UPDATER_ID = #updaterId#,
+  UPDATER_NAME = #updaterName#,
+  UPDATE_DATE = CURRENT_TIMESTAMP 
+  WHERE SEQNUM = #seqNum#
+  </update>
+  
+ <update id="deleteCounselHistory" parameterClass="CounselHistory">
+ UPDATE COUNSEL_HISTORY /* [CounselHistory_SqlMap.xml] CounselHistory.deleteCounselHistory */
+ SET DELETE_FLAG = 'Y'
+     ,UPDATER_ID = #updaterId#
+     ,UPDATER_NAME = #updaterName#
+     ,UPDATE_DATE = CURRENT_TIMESTAMP
+ WHERE SEQNUM = #seqNum#
+ </update>
+ 
+ 
+   <!-- ANSI -->
+  <update id="updateLinereplyCount" parameterClass="string">
+    UPDATE COUNSEL_HISTORY /* [QualityClaim_SqlMap.xml] QualityClaimItem.updateLinereplyCount */
+    SET    LINEREPLY_COUNT = (SELECT COUNT(*) FROM CUSTOMER_LINEREPLY WHERE ITEM_ID = #itemId# AND ITEM_TYPE = 'CH')
+    WHERE SEQNUM = #itemId# 
+  </update>
+  
+  
+  <update id="syncCustomerName" parameterClass="CounselHistory">
+  UPDATE COUNSEL_HISTORY
+  SET NAME = #customer#
+  WHERE ID = #customerId#
+  </update>
+
+
+</sqlMap>

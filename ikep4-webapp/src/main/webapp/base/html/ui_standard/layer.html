@@ -1,0 +1,148 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ko">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Layer</title>
+<link rel="stylesheet" type="text/css" href="../../css/guide.css" />
+<link rel="stylesheet" type="text/css" href="../../css/theme01/jquery_ui_custom.css" />
+<link rel="stylesheet" type="text/css" href="../../css/common.css" />
+<link rel="stylesheet" type="text/css" href="../../css/theme01/theme.css" />
+
+<script type="text/javascript" src="../../js/jquery/jquery-1.6.2.min.js"></script>
+<script type="text/javascript" src="../../js/jquery/jquery-ui-1.8.13.min.without.datepicker.js"></script>
+<script type="text/javascript" src="../../js/langResource/ko.js"></script>
+<script type="text/javascript" src="../../js/common.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$(document).ready(function() {
+		$("#btnUser1").click(function(event) {
+			iKEP.showUserContextMenu(this, "user1");
+		});
+		
+		$("#btnUser2").click(function(event) {
+			iKEP.showUserContextMenu(this, "user1", "left");
+		});
+		
+		$("#btnUser3").click(function(event) {
+			iKEP.showUserContextMenu(this, "user1", "right");
+		});
+		
+		$("#btnUser4").click(function(event) {
+			iKEP.showUserContextMenu(this, "user2", "top");
+		});
+		
+		$("#imgThumbnail").hover(function(event) {
+			iKEP.showUserSimpleInfo(1, event.target, {name:"박길동", rank:"과장", team:"UC 컨설팅팀"});
+			},
+			function(event) {
+				iKEP.showUserSimpleInfo(0);
+			}
+		);
+	});
+})(jQuery);
+</script>
+</head>
+
+<body>
+<!--guideWrapper Start-->
+<div id="guideConFrame">
+
+	<div class="guideConTitle"><h2>Layer</h2></div>
+	
+	<div>
+		<div class="microblog_me">UC컨설팅1팀 <a id="btnUser1" href="#a"><strong>홍길동</strong>@gildong</a></div>
+		<div class="microblog_me">UC컨설팅1팀 <a id="btnUser2" href="#a" title="contextmenu : left"><strong>홍길동</strong>@gildong</a></div>
+		<div class="microblog_me">UC컨설팅1팀 <a id="btnUser3" href="#a" title="contextmenu : right"><strong>홍길동</strong>@gildong</a></div>
+		<div class="microblog_img">
+			<a id="imgThumbnail" href="#a"><img src="../../images/common/temp_img_50x50_2.gif" alt="image" /></a>
+		</div>
+		<div class="microblog_me">UC컨설팅1팀 <a id="btnUser4" href="#a" title="contextmenu : top"><strong>홍길동</strong>@gildong</a></div>
+	</div>
+	
+	<!--layer start-->
+	<div class="process_layer" style="top:180px; left:15px; z-index:99;">
+		<div class="process_layer_t">
+			메시지 전달
+			<a href="#a"><img src="../../images/icon/ic_close_layer.gif" alt="닫기" /></a>
+		</div>
+		<div>
+			<table summary="메시지 전달">
+				<caption></caption>
+				<tbody>
+					<tr>
+						<td colspan="2" scope="row">
+						전문가에게 질문을 전달할 채널을 선택하여 주십시오.<br />
+						<span class="colorPoint">*채널을 선택하여 주십시오</span>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<input name="" class="checkbox" title="checkbox" type="checkbox" value="" /> 메일&nbsp;&nbsp;
+							<input name="" class="checkbox" title="checkbox" type="checkbox" value="" /> SMS&nbsp;&nbsp;
+							<input name="" class="checkbox" title="checkbox" type="checkbox" value="" /> 쪽지&nbsp;&nbsp;
+							<input name="" class="checkbox" title="checkbox" type="checkbox" value="" /> 마이크로블로깅&nbsp;&nbsp;																										
+						</td>
+					</tr>		
+				</tbody>
+			</table>	
+		</div>
+		<div class="textRight mb10 mr10"><a class="button_s" href="#a"><span>확인</span></a> <a class="button_s" href="#a"><span>취소</span></a></div>
+	</div>		
+	<!--layer end-->
+
+
+	<!--layer start-->
+	<div class="layer_01" style="top:350px; left:15px;">
+		<a class="layer_close" href="#a"><span>close</span></a>
+		<div>
+			<div class="microblog_img">
+				<a href="#a"><img src="../../images/common/temp_img_50x50_2.gif" alt="image" /></a>
+			</div>
+			<div class="microblog_con">
+				<div class="microblog_me">UC컨설팅1팀 <strong>홍길동</strong>@gildong</div>
+				<div class="more"><img src="../../images/icon/ic_plus_s.gif" alt="" /> <a href="#a">View full Profile</a></div>
+			</div>
+			<div class="clear"></div>
+		</div>		
+	</div>	
+	<!--layer end-->
+	
+	<!--layer start-->
+	<div class="layer_01" style="top:460px; left:15px;">
+		<a class="layer_close" href="#a"><span>close</span></a>
+		<div class="smsvs_layer">
+			<span class="smsvs_layer_icon"><img src="../../images/icon/ic_note_c.png" alt="note" /></span> <span class="smsvs_layer_title">New Message Arrived! <span class="colorPoint">(5)</span></span>
+			<div class="smsvs_layer_more"><a href="#a"><img src="../../images/common/btn_more.gif" alt="more" /></a></div>
+		</div>
+		<div class="smsvs_layer_con_t" style="width:236px;">
+			<div class="smsvs_layer_con_tl">
+				<span><a href="#a">소셜 마케팅은 사실 다양한 의도로 됩니다.</a></span>
+			</div>
+		</div>
+		<div class="smsvs_layer_con_info">
+			<div class="smsvs_layer_con_name"><a href="#a">김태희 대리</a></div>
+			<div class="smsvs_layer_con_date">2011.04.13 12:20:11</div>
+		</div>		
+	</div>	
+	<!--layer end-->			
+	
+	<!--layer start-->
+	<div class="layer_loading" style="top:600px; left:15px;">
+		<div class="cont">
+			<!-- Layer Content -->
+			<div class="body">
+				<p class="dsc_loading">메일 동기화 중입니다...</p>				
+				<img src="../../images/common/loading_b.gif" alt="로딩중">
+			</div>
+			<div class="footer">
+				<a class="button_s" href="#a"><span>취소</span></a>
+			</div>
+			<!-- //Layer Content -->
+		</div>
+		<span class="shadow shadow2"></span><span class="shadow shadow3"></span><span class="shadow shadow4"></span>
+	</div>
+	<!--layer end-->	
+</div>
+<!--//guideWrapper End-->
+</body>
+</html>

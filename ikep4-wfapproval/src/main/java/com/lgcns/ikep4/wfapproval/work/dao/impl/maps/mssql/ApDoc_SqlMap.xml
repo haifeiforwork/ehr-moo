@@ -1,0 +1,409 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="com.lgcns.ikep4.wfapproval.work.dao.ApDoc" >
+	<typeAlias alias = "ApDoc" type="com.lgcns.ikep4.wfapproval.work.model.ApDoc"/>
+	<typeAlias alias = "ApReceive" type="com.lgcns.ikep4.wfapproval.work.model.ApReceive"/>
+	<typeAlias alias="fileLink" type="com.lgcns.ikep4.support.fileupload.model.FileLink" />
+	<!-- BORD 테이블 조회 결과 -->
+	<!--<resultMap id="result" class="Role" groupBy="roleId">
+		<result property="roleId" column="ROLE_ID" columnIndex="1"/>
+		<result property="roleName" column="ROLE_NAME" columnIndex="2"/>
+		<result property="createDate" column="CREATE_DATE" columnIndex="3"/>
+		<result property="updateDate" column="UPDATE_DATE" columnIndex="4"/>
+	</resultMap>
+	-->
+	<resultMap id="ApDocResult" class="ApDoc" >
+		<result property="apprId" 			column="APPR_ID" 			jdbcType="VARCHAR"/>
+		<result property="formId" 			column="FORM_ID" 			jdbcType="VARCHAR"/>
+		<result property="processId" 		column="PROCESS_ID" 		jdbcType="VARCHAR"/>
+		<result property="instanceId" 		column="INSTANCE_ID" 		jdbcType="VARCHAR"/>
+		<result property="apprDocNo" 		column="APPR_DOC_NO" 		jdbcType="VARCHAR"/>
+		<result property="apprTitle" 		column="APPR_TITLE" 		jdbcType="VARCHAR"/>
+		<result property="apprReqDate"		column="APPR_REQ_DATE" 		jdbcType="DATE"/>
+		<result property="apprSecurityCd" 	column="APPR_SECURITY_CD" 	jdbcType="VARCHAR"/>
+		<result property="apprPeriodCd" 	column="APPR_PERIOD_CD" 	jdbcType="VARCHAR"/>
+		<result property="apprTypeCd" 		column="APPR_TYPE_CD" 		jdbcType="VARCHAR"/>		
+		<result property="apprDocState" 	column="APPR_DOC_STATE" 	jdbcType="VARCHAR"/>
+		<result property="apprEndDate" 		column="APPR_END_DATE" 		jdbcType="DATE"/>
+		<result property="isApprReceive" 	column="IS_APPR_RECEIVE" 	jdbcType="VARCHAR"/>
+		<result property="apprLineType" 	column="APPR_LINE_TYPE" 	jdbcType="VARCHAR"/>
+		<result property="registUserId" 	column="REGIST_USER_ID" 	jdbcType="VARCHAR"/>
+		<result property="registDate" 		column="REGIST_DATE" 		jdbcType="DATE"/>
+		<result property="modifyUserId" 	column="MODIFY_USER_ID" 	jdbcType="VARCHAR"/>
+		<result property="modifyDate" 		column="MODIFY_DATE" 		jdbcType="DATE"/>
+		<result property="apprDocData" 		column="APPR_DOC_DATA" 		jdbcType="VARCHAR"/>
+	</resultMap>
+	<resultMap id="ApDocApUserResult" class="ApDoc" >
+		<result property="processId" 		column="PROCESS_ID" 		jdbcType="VARCHAR"/>
+		<result property="processName" 		column="PROCESS_NAME" 		jdbcType="VARCHAR"/>
+	</resultMap>
+	<resultMap id="ApDocApUserStateResult" class="ApDoc" >
+		<result property="apprType" 		column="APPR_TYPE" 			jdbcType="VARCHAR"/>
+		<result property="apprOrder" 		column="APPR_ORDER" 		jdbcType="VARCHAR"/>
+		<result property="apprState" 		column="APPR_STATE" 		jdbcType="VARCHAR"/>
+	</resultMap>
+	<resultMap id="ApDocApUserListResult" class="ApDoc" >
+		<result property="processId" 		column="PROCESS_ID" 		jdbcType="VARCHAR"/>
+		<result property="apprUserId" 		column="APPR_USER_ID" 		jdbcType="VARCHAR"/>
+		<result property="apprType" 		column="APPR_TYPE" 			jdbcType="VARCHAR"/>
+		<result property="apprOrder" 		column="APPR_ORDER"			jdbcType="VARCHAR"/>
+		<result property="userName" 		column="USER_NAME" 			jdbcType="VARCHAR"/>
+		<result property="mail"		 		column="MAIL" 				jdbcType="VARCHAR"/>
+		<result property="teamName" 		column="TEAM_NAME" 			jdbcType="VARCHAR"/>
+		<result property="jobPositionName" 	column="JOB_POSITION_NAME" 	jdbcType="VARCHAR"/>
+	</resultMap>
+	<resultMap id="ApDocApProcessResult" class="ApDoc" >
+		<result property="apprId" 			column="APPR_ID" 			jdbcType="VARCHAR"/>
+		<result property="apprUserId" 		column="APPR_USER_ID" 		jdbcType="VARCHAR"/>
+		<result property="apprType" 		column="APPR_TYPE" 			jdbcType="VARCHAR"/>
+		<result property="apprOrder" 		column="APPR_ORDER"			jdbcType="VARCHAR"/>
+		<result property="apprState" 		column="APPR_STATE" 		jdbcType="VARCHAR"/>
+		<result property="apprMessage" 		column="APPR_MESSAGE" 		jdbcType="VARCHAR"/>
+		<result property="userName" 		column="USER_NAME" 			jdbcType="VARCHAR"/>
+		<result property="mail"		 		column="MAIL" 				jdbcType="VARCHAR"/>
+		<result property="teamName" 		column="TEAM_NAME" 			jdbcType="VARCHAR"/>
+		<result property="jobPositionName" 	column="JOB_POSITION_NAME" 	jdbcType="VARCHAR"/>
+		<result property="apprDate" 		column="APPR_DATE" 			jdbcType="DATE"/>
+	</resultMap>
+	<resultMap id="ApDocApReceiveResult" class="ApDoc" >
+		<result property="apprId" 			column="APPR_ID" 			jdbcType="VARCHAR"/>
+		<result property="receiveId" 		column="RECEIVE_ID" 		jdbcType="VARCHAR"/>
+		<result property="userName" 		column="USER_NAME" 			jdbcType="VARCHAR"/>
+		<result property="mail"		 		column="MAIL" 				jdbcType="VARCHAR"/>
+		<result property="teamName" 		column="TEAM_NAME" 			jdbcType="VARCHAR"/>
+		<result property="jobPositionName" 	column="JOB_POSITION_NAME" 	jdbcType="VARCHAR"/>
+	</resultMap>
+	<resultMap id="ApDocApAuthUserResult" class="ApDoc" >
+		<result property="apprId" 			column="APPR_ID" 			jdbcType="VARCHAR"/>
+		<result property="authUserId" 		column="AUTH_USER_ID" 		jdbcType="VARCHAR"/>
+		<result property="userName" 		column="USER_NAME" 			jdbcType="VARCHAR"/>
+		<result property="mail"		 		column="MAIL" 				jdbcType="VARCHAR"/>
+		<result property="teamName" 		column="TEAM_NAME" 			jdbcType="VARCHAR"/>
+		<result property="jobPositionName" 	column="JOB_POSITION_NAME" 	jdbcType="VARCHAR"/>
+	</resultMap>
+	<resultMap id="ApDocApRelationsResult" class="ApDoc" >
+		<result property="apprRefId" 		column="APPR_REF_ID" 		jdbcType="VARCHAR"/>
+		<result property="apprTitle" 		column="APPR_TITLE" 		jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	<sql id="sqlColumnList"> 
+		APPR_ID 		as apprId	
+		, FORM_ID 		as formId	
+		, PROCESS_ID	as processId 	
+		, INSTANCE_ID 	as 	instanceId
+		, APPR_DOC_NO 	as apprDocNo	
+		, APPR_TITLE	as apprTitle	
+		, APPR_REQ_DATE as apprReqDate		
+		, APPR_SECURITY_CD  as apprSecurityCd 
+		, APPR_PERIOD_CD 	as apprPeriodCd
+		, APPR_TYPE_CD 		as apprTypeCd
+		, APPR_DOC_STATE 	as apprDocState
+		, APPR_END_DATE		as apprEndDate
+		, IS_APPR_RECEIVE   as isApprReceive
+		, APPR_LINE_TYPE    as apprLineType
+		, REGIST_USER_ID    as registUserId
+		, REGIST_DATE       as registDate
+		, MODIFY_USER_ID    as modifyUserId
+		, MODIFY_DATE       as modifyDate
+		, APPR_DOC_DATA     as apprDocData
+	</sql>
+	
+	
+	
+	<!-- ANSI -->
+	<!-- insert -->
+	<insert id="insert" parameterClass="ApDoc">
+	  /* [ApDoc_SqlMap.xml] insert */
+      <![CDATA[ 
+           INSERT INTO IKEP4_AP_DOC
+           		  (APPR_ID, FORM_ID,PROCESS_ID,INSTANCE_ID,APPR_DOC_NO,APPR_TITLE,
+           		  APPR_SECURITY_CD, APPR_PERIOD_CD, APPR_TYPE_CD,APPR_DOC_STATE,IS_APPR_RECEIVE,APPR_LINE_TYPE,
+           		  REGIST_USER_ID,MODIFY_USER_ID,APPR_DOC_DATA)
+           VALUES (#apprId#, #formId#,#processId#,#instanceId#,#apprDocNo#, #apprTitle#,#apprSecurityCd#,#apprPeriodCd#,#apprTypeCd#,#apprDocState#,#isApprReceive#,#apprLineType#,#registUserId#,#registUserId#,#apprDocData# )
+       ]]>
+   </insert>
+   
+   <!-- ANSI -->
+   <insert id="insertReceive" parameterClass="ApReceive">
+   	  /* [ApDoc_SqlMap.xml] insertReceive */
+      <![CDATA[ 
+           INSERT INTO IKEP4_AP_RECEIVE
+           		  (APPR_ID, RECEIVE_ID,IS_SEND,SEND_DATE)
+           VALUES (#apprId#, #receiveId#,'N', CURRENT_TIMESTAMP )
+       ]]>
+   </insert>
+   
+   <!-- ANSI -->
+   <insert id="insertAuthUser" parameterClass="ApReceive">
+   	  /* [ApDoc_SqlMap.xml] insertAuthUser */
+      <![CDATA[ 
+           INSERT INTO IKEP4_AP_AUTH_USER
+           		  (APPR_ID, AUTH_USER_ID)
+           VALUES (#apprId#, #receiveId# )
+       ]]>
+   </insert>
+   
+   <!-- ANSI -->
+   <insert id="insertRelations" parameterClass="ApReceive">
+   	  /* [ApDoc_SqlMap.xml] insertRelations */
+      <![CDATA[ 
+           INSERT INTO IKEP4_AP_RELATIONS
+           		  (APPR_ID, APPR_REF_ID)
+           VALUES (#apprId#, #apprRefId# )
+       ]]>
+   </insert>
+   <!-- ANSI -->
+   <insert id="insertFile" parameterClass="fileLink">
+      /* [ApDoc_SqlMap.xml] insertFile */ 
+      <![CDATA[ 
+           INSERT INTO IKEP4_AP_ATTACH
+           SELECT 	#fileId#, #itemId#,FILE_NAME,FILE_PATH, FILE_EXTENSION, FILE_SIZE ,REGIST_DATE
+           FROM  IKEP4_DM_FILE WHERE FILE_ID = 	#fileId#  
+       ]]>
+   </insert>
+    <!-- ANSI -->
+   <insert id="insertApUser" parameterClass="ApDoc">
+   	  /* [ApDoc_SqlMap.xml] insertApUser */ 
+      <![CDATA[ 
+           INSERT INTO IKEP4_AP_USER_PROCESS
+           (PROCESS_ID, PROCESS_NAME, USER_ID, REGIST_DATE, MODIFY_DATE)
+           VALUES (#processId#, #apprTitle# ,#registUserId#, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP )
+       ]]>
+   </insert>
+    <!-- ANSI -->
+   <insert id="insertApUserActivity" parameterClass="ApDoc">
+      /* [ApDoc_SqlMap.xml] insertApUserActivity */ 
+      <![CDATA[ 
+           INSERT INTO IKEP4_AP_USER_ACTIVITY
+           (PROCESS_ID, APPR_USER_ID, APPR_TYPE, APPR_ORDER)
+           VALUES (#processId#, #apprUserId# ,#apprType#, #apprOrder# )
+       ]]>
+   </insert>
+    <!-- ANSI -->
+   <insert id="insertApProcess" parameterClass="ApDoc">
+      /* [ApDoc_SqlMap.xml] insertApProcess */ 
+      <![CDATA[ 
+           INSERT INTO IKEP4_AP_PROCESS
+           (APPR_ID, APPR_USER_ID, APPR_TYPE, APPR_ORDER, APPR_STATE, APPR_MESSAGE)
+           VALUES (#apprId#, #apprUserId# ,#apprType#, #apprOrder#, #apprState#, #apprMessage# )
+       ]]>
+   </insert>
+    <!-- ANSI -->
+   <!-- select -->
+   	<select id="selectApDoc" parameterClass="ApDoc" resultClass="ApDoc">
+   	  /* [ApDoc_SqlMap.xml] selectApDoc */	  
+		   	SELECT <include refid="sqlColumnList" /> FROM IKEP4_AP_DOC WHERE 1=1
+		   	<isNotEmpty property="apprId">
+		   	AND APPR_ID = #apprId#
+		   	</isNotEmpty>
+	</select>
+	
+	
+	
+	 <!-- ANSI -->
+	<!-- update -->
+	<update id="update" parameterClass="ApDoc">
+	  /* [ApDoc_SqlMap.xml] update */
+	  <![CDATA[
+		   	UPDATE 	IKEP4_AP_DOC
+		   	SET 	APPR_DOC_NO 		= #apprDocNo#, 
+        			APPR_TITLE 			= #apprTitle#,
+        			APPR_REQ_DATE		= CURRENT_TIMESTAMP, 
+        			APPR_SECURITY_CD 	= #apprSecurityCd#,
+        			APPR_PERIOD_CD      = #apprPeriodCd#,
+        			APPR_TYPE_CD		= #apprTypeCd#,
+        			APPR_DOC_STATE      = #apprDocState#,
+        			APPR_LINE_TYPE      = #apprLineType#,
+        			IS_APPR_RECEIVE      = #isApprReceive#,
+        			MODIFY_DATE			= CURRENT_TIMESTAMP,
+        			MODIFY_USER_ID		= #registUserId#,  
+        			APPR_DOC_DATA		= #apprDocData#
+		   	WHERE 	APPR_ID 		= #apprId#
+	   ]]>
+	</update>
+
+	 <!-- ANSI -->
+	<!-- update -->
+	<update id="updateApProcess" parameterClass="ApDoc">
+	  /* [ApDoc_SqlMap.xml] updateApProcess */
+	  <![CDATA[
+		   	UPDATE 	IKEP4_AP_PROCESS
+		   	SET 	APPR_STATE 			= #apprState#,
+		   			APPR_MESSAGE        = #apprMessage#,
+		   	        APPR_DATE           = CURRENT_TIMESTAMP
+		   	WHERE 	APPR_ID 		    = #apprId#
+		   	  AND   APPR_USER_ID        = #apprUserId#
+		   	  AND   APPR_ORDER          = #apprOrder#
+	   ]]>
+	</update>
+
+    <!-- ANSI -->
+    <!-- delete -->
+	<delete id="deleteApReceive" parameterClass="java.lang.String">
+	  /* [ApDoc_SqlMap.xml] deleteApReceive */
+      <![CDATA[
+	       	DELETE FROM IKEP4_AP_RECEIVE WHERE APPR_ID = #apprId#
+	   ]]>
+	</delete>
+	
+	 <!-- ANSI -->
+	<delete id="deleteApAuthUser" parameterClass="java.lang.String">
+	  /* [ApDoc_SqlMap.xml] deleteApAuthUser */
+      <![CDATA[
+	       	DELETE FROM IKEP4_AP_AUTH_USER WHERE APPR_ID = #apprId#
+	   ]]>
+	</delete>    
+	
+	 <!-- ANSI -->
+	<delete id="deleteApProcess" parameterClass="java.lang.String">
+	  /* [ApDoc_SqlMap.xml] deleteApProcess */
+      <![CDATA[
+	       	DELETE FROM IKEP4_AP_PROCESS WHERE APPR_ID = #apprId#
+	   ]]>
+	</delete>  
+	
+	<!-- MS SQL -->
+	<!-- selectAll -->
+	<select id="selectAll" parameterClass="ApDoc" resultMap="ApDocResult">
+	  /* [ApDoc_SqlMap.xml] selectAll */
+	  <![CDATA[
+		SELECT	*
+		FROM	(	SELECT	Row_number() OVER ( order by appr_id ) AS RNUM,
+							* 
+					FROM	IKEP4_AP_DOC  
+				) F
+		WHERE   RNUM >= #baseNo# AND RNUM <= #endNo#
+	   ]]>
+	</select>
+	
+	<!-- ANSI -->
+	<select id="selectAllApUser" parameterClass="ApDoc" resultMap="ApDocApUserResult">
+	  /* [ApDoc_SqlMap.xml] selectAllApUser */
+	  <![CDATA[
+	  SELECT  PROCESS_ID, PROCESS_NAME
+	      FROM    IKEP4_AP_USER_PROCESS
+	      WHERE   USER_ID = #registUserId#
+	   ]]>
+	</select>
+	
+	<!-- ANSI -->
+	<select id="selectApProcessUserId" parameterClass="ApDoc" resultMap="ApDocApUserStateResult">
+	  /* [ApDoc_SqlMap.xml] selectApProcessUserId */
+	  <![CDATA[
+	    SELECT  APPR_TYPE,APPR_ORDER,APPR_STATE
+	      FROM  IKEP4_AP_PROCESS
+	     WHERE  APPR_ID = #apprId#  
+	       AND  APPR_USER_ID = #registUserId#
+	       AND  APPR_STATE NOT IN ('COMPLETE','SELECT')
+	   ]]>
+	</select>
+	
+	<!-- ANSI -->
+	<select id="selectAllApUserList" parameterClass="ApDoc" resultMap="ApDocApUserListResult">
+	  /* [ApDoc_SqlMap.xml] selectAllApUserList */
+	  <![CDATA[
+	 	SELECT DISTINCT A.PROCESS_ID,
+                A.APPR_USER_ID,
+                A.APPR_TYPE,
+                A.APPR_ORDER,
+                B.USER_NAME,
+                B.MAIL,
+                B.TEAM_NAME,
+                (SELECT JOB_POSITION_NAME
+                 FROM   IKEP4_EV_JOB_POSITION
+                 WHERE  IKEP4_EV_JOB_POSITION.JOB_POSITION_CODE = B.JOB_POSITION_CODE) AS JOB_POSITION_NAME
+		FROM   IKEP4_AP_USER_ACTIVITY A
+		       inner join IKEP4_EV_USER_GROUP C
+		         ON A.APPR_USER_ID = C.USER_ID
+		       inner join IKEP4_EV_USER B
+		         ON A.APPR_USER_ID = B.USER_ID
+		WHERE  A.PROCESS_ID = #processId#
+		ORDER  BY A.APPR_ORDER 
+	   ]]>
+	</select>
+	
+	<!-- ANSI -->
+	<select id="selectAllApProcess" parameterClass="ApDoc" resultClass="ApDoc">
+	  /* [ApDoc_SqlMap.xml] selectAllApProcess */
+		SELECT A.APPR_USER_ID	AS apprUserId,
+		       A.APPR_ID 		AS apprId,
+		       A.APPR_TYPE		AS apprType,
+		       A.APPR_ORDER 	AS apprOrder,
+		       A.APPR_STATE		AS apprState,
+		       A.APPR_MESSAGE	AS apprMessage,
+		       A.APPR_DATE		AS apprDate,
+		       B.USER_NAME		AS userName,
+		       B.MAIL 			AS mail,
+		       B.TEAM_NAME		AS teamName,
+		       (SELECT JOB_POSITION_NAME
+		        FROM   IKEP4_EV_JOB_POSITION
+		        WHERE  IKEP4_EV_JOB_POSITION.JOB_POSITION_CODE = B.JOB_POSITION_CODE) AS jobPositionName
+		FROM   IKEP4_AP_PROCESS A
+		       inner join IKEP4_EV_USER B
+		         ON A.APPR_USER_ID = B.USER_ID
+		WHERE  APPR_ID = #apprId#
+		ORDER  BY APPR_ORDER 
+	</select>
+	
+	<!-- ANSI -->
+	<select id="selectApReceive" parameterClass="ApDoc" resultMap="ApDocApReceiveResult">
+	  /* [ApDoc_SqlMap.xml] selectApReceive */
+	  <![CDATA[
+		SELECT A.APPR_ID,
+		       A.RECEIVE_ID,
+		       B.USER_NAME,
+		       B.MAIL,
+		       B.TEAM_NAME,
+		       (SELECT JOB_POSITION_NAME
+		        FROM   IKEP4_EV_JOB_POSITION
+		        WHERE  IKEP4_EV_JOB_POSITION.JOB_POSITION_CODE = B.JOB_POSITION_CODE) AS JOB_POSITION_NAME
+		FROM   IKEP4_AP_RECEIVE A
+		       inner join IKEP4_EV_USER B
+		         ON A.RECEIVE_ID = B.USER_ID
+		WHERE  A.APPR_ID = #apprId#
+	   ]]>
+	</select>
+	
+	<!-- ANSI -->
+	<select id="selectApAuthUser" parameterClass="ApDoc" resultMap="ApDocApAuthUserResult">
+	  /* [ApDoc_SqlMap.xml] selectApAuthUser */
+	  <![CDATA[
+	  	SELECT A.APPR_ID,
+		       A.AUTH_USER_ID,
+		       B.USER_NAME,
+		       B.MAIL,
+		       B.TEAM_NAME,
+		       (SELECT JOB_POSITION_NAME
+		        FROM   IKEP4_EV_JOB_POSITION
+		        WHERE  IKEP4_EV_JOB_POSITION.JOB_POSITION_CODE = B.JOB_POSITION_CODE) AS JOB_POSITION_NAME
+		FROM   IKEP4_AP_AUTH_USER A
+		       inner join IKEP4_EV_USER B
+		         ON A.AUTH_USER_ID = B.USER_ID
+		WHERE  A.APPR_ID = #apprId#
+	   ]]>
+	</select>
+
+	<!-- ANSI -->
+	<select id="selectApRelations" parameterClass="ApDoc" resultMap="ApDocApRelationsResult">
+	  /* [ApDoc_SqlMap.xml] selectApRelations */
+	  <![CDATA[
+		SELECT A.APPR_REF_ID,
+		       B.APPR_TITLE
+		FROM   IKEP4_AP_RELATIONS A
+		       inner join IKEP4_AP_DOC B
+		         ON A.APPR_REF_ID = B.APPR_ID
+		WHERE  A.APPR_ID = #apprId# 
+	   ]]>
+	</select>
+
+	<!-- ANSI -->	
+	<!-- selectCount -->
+	<select id="selectCount" parameterClass="ApDoc" resultClass="int">
+		   /* [ApDoc_SqlMap.xml] selectCount */
+		   SELECT COUNT(A.appr_id) 
+		   FROM IKEP4_AP_DOC A
+		   
+	</select>
+	
+</sqlMap>

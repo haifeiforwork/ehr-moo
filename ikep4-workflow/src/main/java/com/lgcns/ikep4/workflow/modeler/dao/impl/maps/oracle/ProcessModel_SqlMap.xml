@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="workflow.modeler.dao.ProcessModel" >
+	<typeAlias alias = "ProcessModel" type="com.lgcns.ikep4.workflow.modeler.model.ProcessModel"/>
+	
+	<!-- Partition 테이블 조회 결과 -->
+	<resultMap id="ProcessModelResult" class="ProcessModel">
+		<result property="vendor" column="VENDOR" columnIndex="1"/>
+		<result property="modelScript" column="MODEL_SCRIPT" columnIndex="2"/>
+		<result property="processId" column="PROCESS_ID" columnIndex="3"/>
+		<result property="processVer" column="PROCESS_VER" columnIndex="4"/>
+		<result property="createDate" column="CREATE_DATE" columnIndex="5"/>
+		<result property="viewScript" column="VIEW_SCRIPT" columnIndex="6"/>
+		<result property="author" column="AUTHOR" columnIndex="7"/>
+		<result property="updateDate" column="UPDATE_DATE" columnIndex="8"/>
+		<result property="state" column="STATE" columnIndex="9"/>
+		<result property="processName" column="PROCESS_NAME" columnIndex="10"/>
+		<result property="saveDate" column="SAVE_DATE" columnIndex="11"/>
+		<result property="deployDate" column="DEPLOY_DATE" columnIndex="12"/>
+		<result property="description" column="DESCRIPTION" columnIndex="13"/>
+		<result property="processState" column="PROCESS_STATE" columnIndex="14"/>
+		<result property="partitionId" column="PARTITION_ID" columnIndex="15"/>
+		<result property="partitionName" column="PARTITION_NAME" columnIndex="16"/>
+	</resultMap>
+	
+   <!-- insert -->
+   <insert id="insert" parameterClass="ProcessModel">
+      <![CDATA[ 
+           INSERT INTO IKEP4_WF_PROCESS_MODEL (VENDOR, MODEL_SCRIPT, PROCESS_ID, PROCESS_VER, CREATE_DATE, VIEW_SCRIPT, AUTHOR, UPDATE_DATE, STATE, PROCESS_NAME, SAVE_DATE, DEPLOY_DATE, DESCRIPTION)  
+           VALUES (#vendor#, #modelScript#, #processId#, #processVer#, sysdate, #viewScript#, #author#, sysdate, #state#, #processName#, sysdate, sysdate, #description#)
+       ]]>
+       <selectKey resultClass="String" keyProperty="processId" type="pre"> 
+         <![CDATA[ 
+               SELECT #processId# AS PROCESS_ID FROM DUAL 
+            ]]>
+      </selectKey>
+   </insert>
+   
+    <!-- select -->
+	<select id="select" parameterClass="java.lang.String" resultMap="ProcessModelResult">
+	  <![CDATA[
+		   SELECT PM.*, P.PROCESS_STATE , PT.PARTITION_ID, PT.PARTITION_NAME  
+		     FROM IKEP4_WF_PROCESS_MODEL PM, IKEP4_WF_PROCESS P, IKEP4_WF_PARTITION_PROCESS PP, IKEP4_WF_PARTITION PT
+		    WHERE PM.PROCESS_ID = #processId# 
+			  AND PM.PROCESS_ID = P.PROCESS_ID(+)
+		      AND PM.PROCESS_VER = P.PROCESS_VER(+)
+			  AND PM.PROCESS_ID = PP.PROCESS_ID(+)
+			  AND PM.PROCESS_VER = PP.PROCESS_VER(+)
+			  AND PP.PARTITION_ID = PT.PARTITION_ID(+)
+	   ]]>
+	</select>
+	
+	<!-- update -->
+	<update id="update" parameterClass="ProcessModel">
+	   <![CDATA[ 
+           UPDATE IKEP4_WF_PROCESS_MODEL 
+		      SET VENDOR =		 #vendor#
+			    , MODEL_SCRIPT = #modelScript#
+				, VIEW_SCRIPT =  #viewScript#
+				, AUTHOR = 		 #author#
+				, UPDATE_DATE =  sysdate
+				, STATE = 		 #state#
+				, PROCESS_NAME = #processName#
+				, SAVE_DATE = 	 sysdate
+				, DEPLOY_DATE =  sysdate
+				, DESCRIPTION =  #description#
+		    WHERE PROCESS_ID =   #processId#
+			  AND PROCESS_VER =  #processVer#
+       ]]>
+	</update>
+   
+   <!-- delete -->
+   <delete id="delete" parameterClass="java.lang.String">
+      <![CDATA[
+	  		DELETE IKEP4_WF_PROCESS_MODEL
+			 WHERE PROCESS_ID =   #processId#
+	   ]]>
+	</delete>
+	
+	<!-- selectAll -->
+	<select id="selectAll" resultMap="ProcessModelResult">
+	  <![CDATA[
+		   SELECT PM.*, P.PROCESS_STATE , PT.PARTITION_ID, PT.PARTITION_NAME  
+		     FROM IKEP4_WF_PROCESS_MODEL PM, IKEP4_WF_PROCESS P, IKEP4_WF_PARTITION_PROCESS PP, IKEP4_WF_PARTITION PT
+		    WHERE PM.PROCESS_ID = P.PROCESS_ID(+)
+		      AND PM.PROCESS_VER = P.PROCESS_VER(+)
+			  AND PM.PROCESS_ID = PP.PROCESS_ID(+)
+			  AND PM.PROCESS_VER = PP.PROCESS_VER(+)
+			  AND PP.PARTITION_ID = PT.PARTITION_ID(+)
+		    ORDER BY PM.PROCESS_NAME DESC, PM.PROCESS_VER DESC
+	   ]]>
+	</select>
+	
+	<!-- select -->
+	<select id="selectProcessModel" parameterClass="ProcessModel" resultMap="ProcessModelResult">
+	  <![CDATA[
+		   SELECT PM.*, P.PROCESS_STATE, PT.PARTITION_ID, PT.PARTITION_NAME  
+		     FROM IKEP4_WF_PROCESS_MODEL PM, IKEP4_WF_PROCESS P, IKEP4_WF_PARTITION_PROCESS PP, IKEP4_WF_PARTITION PT
+		    WHERE PM.PROCESS_ID = #processId# 
+			  AND PM.PROCESS_VER = #processVer#   
+			  AND PM.PROCESS_ID = P.PROCESS_ID(+)
+		      AND PM.PROCESS_VER = P.PROCESS_VER(+)
+			  AND PM.PROCESS_ID = PP.PROCESS_ID(+)
+			  AND PM.PROCESS_VER = PP.PROCESS_VER(+)
+			  AND PP.PARTITION_ID = PT.PARTITION_ID(+)
+	   ]]>
+	</select>
+	
+	<!-- selectCount -->
+	<select id="selectCount" parameterClass="String" resultClass="String">
+	  <![CDATA[
+		   SELECT COUNT(PM.PROCESS_ID) 
+		     FROM IKEP4_WF_PROCESS_MODEL PM, IKEP4_WF_PROCESS P, IKEP4_WF_PARTITION_PROCESS PP, IKEP4_WF_PARTITION PT 
+			WHERE PM.PROCESS_ID = #processId#
+			  AND PM.PROCESS_ID = P.PROCESS_ID(+)
+		      AND PM.PROCESS_VER = P.PROCESS_VER(+)
+			  AND PM.PROCESS_ID = PP.PROCESS_ID(+)
+			  AND PM.PROCESS_VER = PP.PROCESS_VER(+)
+			  AND PP.PARTITION_ID = PT.PARTITION_ID(+)
+	   ]]>
+	</select>
+	
+	<!-- delete -->
+   <delete id="deleteProcess" parameterClass="ProcessModel">
+      <![CDATA[
+	  		DELETE IKEP4_WF_PROCESS_MODEL
+			 WHERE PROCESS_ID  =   #processId#
+			   AND PROCESS_VER =   #processVer#
+	   ]]>
+	</delete>
+	
+</sqlMap>

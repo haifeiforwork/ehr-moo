@@ -1,0 +1,45 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="stylesheet" type="text/css" href="../css/html.css">
+<script type="text/javascript" src="/ikep4-webapp/base/js/jquery/jquery-1.6.2.min.js"></script>
+<script type="text/javascript">
+	function checkValue(){
+		var v1 = $("#url").val();
+		if(!isUrl(v1)){
+			alert("invalid url")
+			return; 
+		}
+		
+		var v2 = parent.WCEditor.getSelectedText();
+		if(v2=="") v2 = v1;
+		var v3 = $("#new").attr("checked")?" target=\"_blank\"":"";
+		parent.WCEditor.setHtml("<a href=\"" + v1 + "\"" + v3 + ">" + v2 + "</a>", "link");
+		
+	}
+	
+	function isUrl(s){
+  		return (/^(http|https|ftp|mailto):(?:\/\/)?((\w|-)+(?:[\.:@](\w|-))+)(?:\/|@)?([^"\?]*?)(?:\?([^\?"]*?))?$/).test(s);
+    }
+    
+    function init(){
+        $("#url").val("http://");
+        $("#url")[0].select();
+    }
+    
+</script>
+</head>
+<body>
+<div id="ifrmMainDiv">
+	<div id="ifrmLayoutDiv" style="padding:5px;">
+        <form name="f1">
+    		<input type="checkbox" id="new" name="new">새창
+    		<input type="text" id="url" name="url" class="txt-default" size="25" />
+    		<input type="button" class="btn-default" value="적용" onclick="checkValue();" />
+        </form>
+    </div>
+</div>	
+</body>
+</html>
+

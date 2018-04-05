@@ -1,0 +1,844 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="lightpack.cafe.board.dao.boardItem">
+	<typeAlias alias="cfBoardItem"                type="com.lgcns.ikep4.lightpack.cafe.board.model.BoardItem"/>
+	<typeAlias alias="cfBoardItemSearchCondition" type="com.lgcns.ikep4.lightpack.cafe.board.search.BoardItemSearchCondition"/>
+
+	<resultMap id="boardItemMinResult" class="com.lgcns.ikep4.lightpack.cafe.board.model.BoardItem" >
+		<result column="ITEM_ID"           property="itemId"               jdbcType="VARCHAR" />
+		<result column="BOARD_ID"          property="boardId"              jdbcType="VARCHAR" />
+		<result column="TITLE"             property="title"                jdbcType="VARCHAR" /> 
+		<result column="START_DATE"        property="startDate"            jdbcType="TIMESTAMP" />
+		<result column="END_DATE"          property="endDate"              jdbcType="TIMESTAMP" />
+		<result column="ITEM_DELETE"       property="itemDelete"           jdbcType="DECIMAL" /> 
+	</resultMap>
+
+	<resultMap id="boardItemResult" class="com.lgcns.ikep4.lightpack.cafe.board.model.BoardItem" >
+		<result column="ITEM_ID"           property="itemId"               jdbcType="VARCHAR" />
+		<result column="BOARD_ID"          property="boardId"              jdbcType="VARCHAR" />
+		<result column="ITEM_PARENT_ID"    property="itemParentId"         jdbcType="VARCHAR" />
+		<result column="ITEM_GROUP_ID"     property="itemGroupId"          jdbcType="VARCHAR" />
+		<result column="STEP"              property="step"                 jdbcType="DECIMAL" />
+		<result column="INDENTATION"       property="indentation"          jdbcType="DECIMAL" />
+		<result column="ITEM_SEQ_ID"       property="itemSeqId"            jdbcType="VARCHAR" /> 
+		<result column="ITEM_DISPLAY"      property="itemDisplay"          jdbcType="DECIMAL" />
+		<result column="TITLE"             property="title"                jdbcType="VARCHAR" />
+		<result column="HIT_COUNT"         property="hitCount"             jdbcType="DECIMAL" />
+		<result column="RECOMMEND_COUNT"   property="recommendCount"       jdbcType="DECIMAL" />
+		<result column="REPLY_COUNT"       property="replyCount"           jdbcType="DECIMAL" />
+		<result column="LINEREPLY_COUNT"   property="linereplyCount"       jdbcType="DECIMAL" />
+		<result column="ATTACH_FILE_COUNT" property="attachFileCount"      jdbcType="DECIMAL" />
+		<result column="START_DATE"        property="startDate"            jdbcType="TIMESTAMP" />
+		<result column="END_DATE"          property="endDate"              jdbcType="TIMESTAMP" />
+		<result column="ITEM_DELETE"       property="itemDelete"           jdbcType="DECIMAL" />
+		
+		        
+		<result column="IMAGE_FILE_ID"     property="imageFileId"          jdbcType="VARCHAR" />
+		<result column="CONTENTS"          property="contents"             jdbcType="VARCHAR" />
+		<result column="REGISTER_ID"       property="registerId"           jdbcType="VARCHAR" />
+		<result column="REGISTER_NAME"     property="registerName"         jdbcType="VARCHAR" />
+		<result column="REGIST_DATE"       property="registDate"           jdbcType="TIMESTAMP" />
+		<result column="UPDATER_ID"        property="updaterId"            jdbcType="VARCHAR" />
+		<result column="UPDATER_NAME"      property="updaterName"          jdbcType="VARCHAR" />
+		<result column="UPDATE_DATE"       property="updateDate"           jdbcType="TIMESTAMP" />  
+	</resultMap>
+
+	<resultMap id="boardItemResultExtend" extends="boardItemResult"  class="com.lgcns.ikep4.lightpack.cafe.board.model.BoardItem" > 
+		<result column="TEAM_NAME"              property="user.teamName"            jdbcType="VARCHAR" />
+		<result column="JOB_TITLE_NAME"         property="user.jobTitleName"        jdbcType="VARCHAR" />  
+		<result column="PICTURE_ID"             property="user.pictureId"           jdbcType="VARCHAR" />   
+		<result column="PROFILE_PICTURE_ID"     property="user.profilePictureId"    jdbcType="VARCHAR" />  
+		<result column="USER_NAME"              property="user.userName"            jdbcType="VARCHAR" />
+		<result column="USER_ENGLISH_NAME"      property="user.userEnglishName"     jdbcType="VARCHAR" />
+		<result column="JOB_TITLE_ENGLISH_NAME" property="user.jobTitleEnglishName" jdbcType="VARCHAR" />
+		<result column="TEAM_ENGLISH_NAME"      property="user.teamEnglishName"     jdbcType="VARCHAR" /> 
+	</resultMap> 
+
+
+	<sql id="sqlMinColumnList"> 
+		ITEM_ID, 
+		BOARD_ID, 
+		TITLE,
+		START_DATE, 
+		END_DATE, 
+		ITEM_DELETE,
+		IMAGE_FILE_ID
+	</sql> 
+
+	<sql id="sqlColumnList"> 
+		ITEM_ID, 
+		BOARD_ID, 
+		ITEM_PARENT_ID, 
+		ITEM_GROUP_ID, 
+		STEP, 
+		INDENTATION, 
+		ITEM_SEQ_ID,  
+		ITEM_DISPLAY, 
+		TITLE,
+		HIT_COUNT, 
+		RECOMMEND_COUNT, 
+		REPLY_COUNT, 
+		LINEREPLY_COUNT, 
+		ATTACH_FILE_COUNT, 
+		START_DATE, 
+		END_DATE, 
+		ITEM_DELETE,   
+		IMAGE_FILE_ID, 
+		CONTENTS,
+		REGISTER_ID, 
+		REGISTER_NAME, 
+		REGIST_DATE, 
+		UPDATER_ID, 
+		UPDATER_NAME, 
+		UPDATE_DATE 
+	</sql>  
+
+	<sql id="sqlExtendColumnList"> 
+		item.ITEM_ID           AS ITEM_ID,           
+		item.BOARD_ID          AS BOARD_ID,          
+		item.ITEM_PARENT_ID    AS ITEM_PARENT_ID,    
+		item.ITEM_GROUP_ID     AS ITEM_GROUP_ID,     
+		item.STEP              AS STEP,              
+		item.INDENTATION       AS INDENTATION,       
+		item.ITEM_SEQ_ID       AS ITEM_SEQ_ID,       
+		item.ITEM_DISPLAY      AS ITEM_DISPLAY,      
+		item.TITLE             AS TITLE,             
+		item.HIT_COUNT         AS HIT_COUNT,         
+		item.RECOMMEND_COUNT   AS RECOMMEND_COUNT,   
+		item.REPLY_COUNT       AS REPLY_COUNT,       
+		item.LINEREPLY_COUNT   AS LINEREPLY_COUNT,   
+		item.ATTACH_FILE_COUNT AS ATTACH_FILE_COUNT, 
+		item.START_DATE        AS START_DATE,        
+		item.END_DATE          AS END_DATE,          
+		item.ITEM_DELETE       AS ITEM_DELETE,   
+		item.IMAGE_FILE_ID     AS IMAGE_FILE_ID,          
+		replace(item.CONTENTS,'HY태고딕','맑은 고딕')          AS CONTENTS,          
+		item.REGISTER_ID       AS REGISTER_ID,       
+		item.REGISTER_NAME     AS REGISTER_NAME,     
+		item.REGIST_DATE       AS REGIST_DATE,       
+		item.UPDATER_ID        AS UPDATER_ID,        
+		item.UPDATER_NAME      AS UPDATER_NAME,      
+		item.UPDATE_DATE       AS UPDATE_DATE,  
+		usr.TEAM_NAME          AS TEAM_NAME,  
+		usr.PICTURE_ID         AS PICTURE_ID, 
+		usr.PROFILE_PICTURE_ID AS PROFILE_PICTURE_ID,     
+		job.JOB_TITLE_NAME AS JOB_TITLE_NAME, 
+		job.JOB_TITLE_ENGLISH_NAME AS JOB_TITLE_ENGLISH_NAME ,
+		usr.USER_NAME  AS USER_NAME,
+		usr.USER_ENGLISH_NAME  AS USER_ENGLISH_NAME,
+		usr.TEAM_ENGLISH_NAME  AS TEAM_ENGLISH_NAME 
+	</sql>  
+	
+	<sql id="sqlExtendColumnList2"> 
+		item.ITEM_ID           AS ITEM_ID,           
+		item.BOARD_ID          AS BOARD_ID,          
+		item.ITEM_PARENT_ID    AS ITEM_PARENT_ID,    
+		item.ITEM_GROUP_ID     AS ITEM_GROUP_ID,     
+		item.STEP              AS STEP,              
+		item.INDENTATION       AS INDENTATION,       
+		item.ITEM_SEQ_ID       AS ITEM_SEQ_ID,       
+		item.ITEM_DISPLAY      AS ITEM_DISPLAY,      
+		item.TITLE             AS TITLE,             
+		item.HIT_COUNT         AS HIT_COUNT,         
+		item.RECOMMEND_COUNT   AS RECOMMEND_COUNT,   
+		item.REPLY_COUNT       AS REPLY_COUNT,       
+		item.LINEREPLY_COUNT   AS LINEREPLY_COUNT,   
+		item.ATTACH_FILE_COUNT AS ATTACH_FILE_COUNT, 
+		item.START_DATE        AS START_DATE,        
+		item.END_DATE          AS END_DATE,          
+		item.ITEM_DELETE       AS ITEM_DELETE,   
+		item.IMAGE_FILE_ID     AS IMAGE_FILE_ID,          
+		replace(item.CONTENTS,'HY태고딕','맑은 고딕')          AS CONTENTS,          
+		item.REGISTER_ID       AS REGISTER_ID,       
+		item.REGISTER_NAME     AS REGISTER_NAME,     
+		item.REGIST_DATE       AS REGIST_DATE,       
+		item.UPDATER_ID        AS UPDATER_ID,        
+		item.UPDATER_NAME      AS UPDATER_NAME,      
+		item.UPDATE_DATE       AS UPDATE_DATE,  
+		usr.TEAM_NAME          AS TEAM_NAME,  
+		usr.PICTURE_ID         AS PICTURE_ID, 
+		usr.PROFILE_PICTURE_ID AS PROFILE_PICTURE_ID,     
+		'' AS JOB_TITLE_NAME, 
+		'' AS JOB_TITLE_ENGLISH_NAME ,
+		usr.USER_NAME  AS USER_NAME,
+		usr.USER_ENGLISH_NAME  AS USER_ENGLISH_NAME,
+		usr.TEAM_ENGLISH_NAME  AS TEAM_ENGLISH_NAME 
+	</sql>  
+
+	<!-- MS SQL -->
+	<select id="listRecentAllBoardItem" parameterClass="map" resultMap="boardItemResultExtend">
+		SELECT  /* [BoardItem_SqlMap.xml] lightpack.cafe.board.dao.boardItem.listRecentAllBoardItem */ *
+		FROM 
+		(
+			SELECT
+				Row_number() OVER (ORDER BY item.START_DATE DESC, item.REGIST_DATE DESC) AS RNUM,
+				<include refid="lightpack.cafe.board.dao.boardItem.sqlExtendColumnList" /> 
+			FROM  
+				IKEP4_CF_BD_ITEM item 
+				INNER JOIN IKEP4_EV_USER usr ON item.REGISTER_ID = usr.USER_ID
+				INNER JOIN IKEP4_EV_JOB_TITLE job ON job.JOB_TITLE_CODE=usr.JOB_TITLE_CODE
+		<![CDATA[   
+			WHERE 
+				item.ITEM_DELETE = 0
+		) TBL
+		WHERE 
+			RNUM <= #count#
+		]]> 
+	</select>
+	
+	<!-- MS SQL -->
+	<select id="listRecentBoardItem" parameterClass="map" resultMap="boardItemResultExtend">
+		SELECT  /* [BoardItem_SqlMap.xml] lightpack.cafe.board.dao.boardItem.listRecentBoardItem */ *
+		FROM 
+		(
+		SELECT
+			Row_number() OVER (ORDER BY item.START_DATE DESC, item.REGIST_DATE DESC) AS RNUM,
+			<include refid="lightpack.cafe.board.dao.boardItem.sqlExtendColumnList" /> 
+		FROM  
+			IKEP4_CF_BD_ITEM item 
+			INNER JOIN IKEP4_EV_USER usr ON item.REGISTER_ID = usr.USER_ID  
+			INNER JOIN IKEP4_EV_JOB_TITLE job ON job.JOB_TITLE_CODE=usr.JOB_TITLE_CODE
+		<![CDATA[  
+		WHERE  
+			item.BOARD_ID = #boardId#
+		) TBL
+		WHERE
+			RNUM <= #count#
+		]]> 
+	</select>
+	
+	<!-- MS SQL -->
+	<select id="listRecentBoardItemForCafe" parameterClass="cfBoardItemSearchCondition" resultMap="boardItemResultExtend">
+		SELECT			/* [BoardItem_SqlMap.xml] listRecentBoardItemForCafe */
+						*
+		FROM 			(
+	     				SELECT			 
+	     					AA.* 
+	     				FROM 			(
+											SELECT /*+ LEADING(board item usr) USE_NL(board item usr) INDEX(item IDX_CF_BD_ITEM_IE4) */
+												Row_number() OVER (ORDER BY item.START_DATE DESC, item.REGIST_DATE DESC) AS RNUM,
+												<include refid="lightpack.cafe.board.dao.boardItem.sqlExtendColumnList2" /> 
+											FROM  
+												IKEP4_CF_BD_ITEM item 
+												INNER JOIN IKEP4_EV_USER usr 
+													ON item.REGISTER_ID = usr.USER_ID  
+												INNER JOIN IKEP4_CF_BD_BOARD board
+													ON item.BOARD_ID = board.BOARD_ID AND board.CAFE_ID = #cafeId#
+		<![CDATA[
+	    								) AA
+	    				WHERE 			RNUM <= #endRowIndex#		 
+						) TBL
+		WHERE 			RNUM > #startRowIndex#
+		]]>
+	</select>
+
+	<!-- MS SQL -->
+	<select id="listBatchDeleteBoardItem" parameterClass="int" resultMap="boardItemMinResult">
+		SELECT /* [BoardItem_SqlMap.xml] lightpack.cafe.board.dao.boardItem.batchRemoveItemList */
+			TOP $getCount$ 
+			<include refid="lightpack.cafe.board.dao.boardItem.sqlMinColumnList" /> 
+		FROM  
+			IKEP4_CF_BD_ITEM 
+		<![CDATA[  
+		WHERE  
+			ITEM_ID = ITEM_GROUP_ID
+			AND    END_DATE < DATEADD(DD, -1, CURRENT_TIMESTAMP)
+		]]> 
+	</select>
+
+	<!-- ANSI -->
+	<select id="get" parameterClass="string" resultMap="boardItemResultExtend"> 
+		SELECT /* [BoardItem_SqlMap.xml] lightpack.cafe.board.dao.boardItem.get */
+			<include refid="lightpack.cafe.board.dao.boardItem.sqlExtendColumnList" /> 
+		FROM  
+			IKEP4_CF_BD_ITEM item 
+			INNER JOIN IKEP4_EV_USER usr ON item.REGISTER_ID = usr.USER_ID
+			INNER JOIN IKEP4_EV_JOB_TITLE job ON job.JOB_TITLE_CODE=usr.JOB_TITLE_CODE
+		WHERE item.ITEM_ID = #itemId# 
+			AND item.ITEM_DELETE = 0
+	</select>
+
+	<!-- ANSI -->
+	<select id="listByItemIdArray" parameterClass="map" resultMap="boardItemResultExtend"> 
+	SELECT /* [BoardItem_SqlMap.xml] lightpack.cafe.board.dao.boardItem.get */
+		<include refid="lightpack.cafe.board.dao.boardItem.sqlExtendColumnList" /> 
+	FROM  
+		IKEP4_CF_BD_ITEM item
+		INNER JOIN IKEP4_CF_BD_BOARD board on board.board_id = item.board_id
+		INNER JOIN IKEP4_CF_CAFE cafe on cafe.cafe_id = board.cafe_id
+		INNER JOIN IKEP4_CF_MEMBER member on cafe.cafe_id = member.cafe_id and member.member_id = #userId# and member.member_level in ('1','2','3') 
+		INNER JOIN IKEP4_EV_USER usr ON item.REGISTER_ID = usr.USER_ID
+		INNER JOIN IKEP4_EV_JOB_TITLE job ON job.JOB_TITLE_CODE=usr.JOB_TITLE_CODE   
+	WHERE 
+		item.ITEM_ID IN (<iterate property="itemIds" conjunction=","> #itemIds[]# </iterate>) 
+	</select>
+
+	<!-- ANSI -->
+	<select id="exists" parameterClass="string" resultClass="int"> 
+		SELECT /* [BoardItem_SqlMap.xml] lightpack.cafe.board.dao.boardItem.exists */
+			COUNT(*)
+		FROM  
+			IKEP4_CF_BD_ITEM item 
+			INNER JOIN IKEP4_EV_USER usr ON item.REGISTER_ID = usr.USER_ID   
+		WHERE 
+			item.ITEM_ID = #itemId# 
+	</select> 
+
+	<!-- ANSI -->
+	<select id="listReplayItemThreadByItemId" parameterClass="String" resultMap="boardItemResultExtend">    
+		SELECT   /* [BoardItem_SqlMap.xml] lightpack.cafe.board.dao.boardItem.listThreadByItemId */  
+			<include refid="lightpack.cafe.board.dao.boardItem.sqlExtendColumnList" /> 
+		FROM 
+			IKEP4_CF_BD_ITEM item
+			INNER JOIN IKEP4_EV_USER usr ON item.REGISTER_ID = usr.USER_ID
+			INNER JOIN IKEP4_EV_JOB_TITLE job ON job.JOB_TITLE_CODE=usr.JOB_TITLE_CODE
+		WHERE 
+			item.ITEM_GROUP_ID = #itemId#
+			ORDER BY ITEM_GROUP_ID DESC, STEP ASC
+	</select> 
+
+	<!-- MS SQL -->
+	<select id="listLowerItemThread" parameterClass="String" resultMap="boardItemResult">   
+		WITH CTE AS (
+			SELECT	*
+			FROM	IKEP4_CF_BD_ITEM
+			WHERE	ITEM_ID = #itemId#
+			UNION ALL
+			SELECT	I.*
+			FROM	IKEP4_CF_BD_ITEM I, CTE
+			WHERE	CTE.ITEM_ID = I.ITEM_PARENT_ID 
+		)
+		SELECT /* [BoardItem_SqlMap.xml] lightpack.cafe.board.dao.boardItem.listLowerItemThread */ 
+			<include refid="lightpack.cafe.board.dao.boardItem.sqlColumnList" /> 
+		FROM CTE
+	</select>
+
+	<!-- ANSI -->
+	<select id="listByBoardIdForBoardDelete" parameterClass="String" resultMap="boardItemResult">   
+		SELECT /* [BoardItem_SqlMap.xml] lightpack.cafe.board.dao.boardItem.listByBoardId */ 
+			<include refid="lightpack.cafe.board.dao.boardItem.sqlColumnList" /> 
+		FROM  
+			IKEP4_CF_BD_ITEM
+		WHERE
+			BOARD_ID = #boardId#
+		ORDER BY
+			INDENTATION DESC, STEP DESC
+	</select> 
+
+	<!-- MS SQL -->
+	<select id="listBySearchCondition" parameterClass="cfBoardItemSearchCondition" resultMap="boardItemResultExtend">  
+		SELECT /* [BoardItem_SqlMap.xml] lightpack.cafe.board.dao.boardItem.listBySearchCondition */ 
+			*
+		FROM 
+		(
+			SELECT 
+				A.* 
+			FROM
+			( 
+				/* START========================================= */
+				SELECT
+					Row_number() OVER (
+											ORDER BY
+											<isNotEmpty property="sortColumn">
+											<isEqual property="sortColumn" compareValue="ITEM_SEQ_ID">
+											<isEqual property="sortType" compareValue="DESC">
+											item.ITEM_SEQ_ID DESC,
+											</isEqual>
+											<isEqual property="sortType" compareValue="ASC">
+											item.ITEM_SEQ_ID ASC,
+											</isEqual>
+											</isEqual> 
+						
+											<isEqual property="sortColumn" compareValue="ATTACH_FILE_COUNT">
+											<isEqual property="sortType" compareValue="DESC">
+											item.ATTACH_FILE_COUNT DESC,
+											</isEqual>
+											<isEqual property="sortType" compareValue="ASC">
+											item.ATTACH_FILE_COUNT ASC,
+											</isEqual>
+											</isEqual> 
+						
+											<isEqual property="sortColumn" compareValue="TITLE">
+											<isEqual property="sortType" compareValue="DESC">
+											item.TITLE DESC,
+											</isEqual>
+											<isEqual property="sortType" compareValue="ASC">
+											item.TITLE ASC,
+											</isEqual>
+											</isEqual> 
+						
+											<isEqual property="sortColumn" compareValue="REGISTER_NAME">
+											<isEqual property="sortType" compareValue="DESC">
+											item.REGISTER_NAME DESC,
+											</isEqual>
+											<isEqual property="sortType" compareValue="ASC">
+											item.REGISTER_NAME ASC,
+											</isEqual>
+											</isEqual> 
+						
+											<isEqual property="sortColumn" compareValue="REGIST_DATE">
+											<isEqual property="sortType" compareValue="DESC">
+											item.REGIST_DATE DESC,
+											</isEqual>
+											<isEqual property="sortType" compareValue="ASC">
+											item.REGIST_DATE ASC,
+											</isEqual>
+											</isEqual> 
+						
+											<isEqual property="sortColumn" compareValue="HIT_COUNT">
+											<isEqual property="sortType" compareValue="DESC">
+											item.HIT_COUNT DESC,
+											</isEqual>
+											<isEqual property="sortType" compareValue="ASC">
+											item.HIT_COUNT ASC,
+											</isEqual>
+											</isEqual> 
+						
+											<isEqual property="sortColumn" compareValue="RECOMMEND_COUNT">
+											<isEqual property="sortType" compareValue="DESC">
+											item.RECOMMEND_COUNT DESC,
+											</isEqual>
+											<isEqual property="sortType" compareValue="ASC">
+											item.RECOMMEND_COUNT ASC,
+											</isEqual>
+											</isEqual> 
+						
+											</isNotEmpty>  
+											
+											ITEM_DISPLAY DESC, ITEM_GROUP_ID DESC, STEP ASC
+									  ) AS RNUM,
+					<include refid="lightpack.cafe.board.dao.boardItem.sqlExtendColumnList" /> 
+				FROM   
+					IKEP4_CF_BD_ITEM item
+					INNER JOIN IKEP4_EV_USER usr ON item.REGISTER_ID = usr.USER_ID
+					INNER JOIN IKEP4_EV_JOB_TITLE job ON job.JOB_TITLE_CODE=usr.JOB_TITLE_CODE
+					<isNotEmpty property="isAll"> 
+						INNER JOIN IKEP4_CF_BD_BOARD board
+		          			ON item.BOARD_ID = board.BOARD_ID AND board.CAFE_ID = #cafeId#
+					</isNotEmpty> 
+				WHERE 1=1
+					<isEmpty property="isAll"> 
+						AND item.BOARD_ID = #boardId# 
+					</isEmpty> 
+					<isNotEmpty property="searchColumn">
+					<isEqual property="searchColumn" compareValue="title">
+					AND	item.TITLE LIKE '%' + #searchWord# + '%'
+					</isEqual>
+					<isEqual property="searchColumn" compareValue="registerName">
+					AND	item.REGISTER_NAME LIKE '%' + #searchWord# + '%'
+					</isEqual>
+					</isNotEmpty>  
+			/* ===========================================END  */  
+			<![CDATA[   
+			) A
+			WHERE
+				RNUM <=  #endRowIndex# /* 종료  */
+		) TBL
+		WHERE 
+			RNUM >  #startRowIndex# /* 시작 */ 
+		]]> 
+	</select>   
+
+	<!-- MS SQL -->
+	<select id="countBySearchCondition" parameterClass="cfBoardItemSearchCondition" resultClass="int">  
+		SELECT /* [Board_SqlMap.xml] lightpack.cafe.board.dao.boardItem.countBySearchCondition */ 
+			COUNT(*)
+		FROM  
+			IKEP4_CF_BD_ITEM  item 
+			INNER JOIN IKEP4_EV_USER usr ON item.REGISTER_ID = usr.USER_ID   
+				<isNotEmpty property="isAll"> 
+					INNER JOIN IKEP4_CF_BD_BOARD board
+	          			ON item.BOARD_ID = board.BOARD_ID AND board.CAFE_ID = #cafeId#
+				</isNotEmpty> 
+			WHERE 1=1
+				<isEmpty property="isAll"> 
+					AND item.BOARD_ID = #boardId# 
+				</isEmpty> 
+		<isNotEmpty property="searchColumn">
+		<isEqual property="searchColumn" compareValue="title">
+		AND item.TITLE LIKE '%' + #searchWord# + '%'
+		</isEqual>
+		<isEqual property="searchColumn" compareValue="registerName">
+		AND item.REGISTER_NAME LIKE '%' + #searchWord# + '%'
+		</isEqual>
+		</isNotEmpty> 
+	</select>  
+
+	<!-- ANSI -->
+	<select id="countChildren" parameterClass="String" resultClass="int">  
+		SELECT /* [Board_SqlMap.xml] lightpack.cafe.board.dao.boardItem.countChildren */ 
+			COUNT(*)
+		FROM  
+			IKEP4_CF_BD_ITEM
+		WHERE
+			ITEM_PARENT_ID = #itemId#  
+	</select> 
+	
+	<!-- MS SQL -->
+	<insert id="create" parameterClass="cfBoardItem"> 
+		INSERT INTO IKEP4_CF_BD_ITEM ( /* [boardItem_SqlMap.xml] lightpack.cafe.board.dao.boardItem.insert */
+			ITEM_ID, 
+			BOARD_ID, 
+			ITEM_PARENT_ID, 
+			ITEM_GROUP_ID, 
+			STEP, 
+			INDENTATION, 
+			ITEM_SEQ_ID,  
+			ITEM_DISPLAY, 
+			TITLE,
+			HIT_COUNT, 
+			RECOMMEND_COUNT, 
+			REPLY_COUNT, 
+			LINEREPLY_COUNT, 
+			ATTACH_FILE_COUNT, 
+			START_DATE, 
+			END_DATE, 
+			ITEM_DELETE,
+			IMAGE_FILE_ID, 
+			CONTENTS,
+			REGISTER_ID, 
+			REGISTER_NAME, 
+			REGIST_DATE, 
+			UPDATER_ID, 
+			UPDATER_NAME, 
+			UPDATE_DATE
+		) VALUES (
+			#itemId#, 
+			#boardId#, 
+			#itemParentId#, 
+			#itemGroupId#, 
+			#step#, 
+			#indentation#, 
+			#itemSeqId#,  
+			#itemDisplay#, 
+			#title#, 
+			#hitCount#, 
+			#recommendCount#, 
+			#replyCount#, 
+			#linereplyCount#, 
+			#attachFileCount#,
+			CURRENT_TIMESTAMP, 
+			CURRENT_TIMESTAMP, 
+			#itemDelete#,
+			#imageFileId#,
+			#contents#,
+			#registerId#, 
+			#registerName#, 
+			CURRENT_TIMESTAMP, 
+			#updaterId#, 
+			#updaterName#, 
+			CURRENT_TIMESTAMP
+		) 
+		<selectKey resultClass="string" keyProperty="itemSeqId" type="pre">  
+		<![CDATA[
+			declare @seq numeric(38)
+			exec dbo.GET_SEQUENCE_FROM_SEQ_IKEP4_CF_BD_ITEM 2, @seq OUTPUT
+			
+			SELECT @seq
+		]]>
+		</selectKey>
+	</insert>
+	
+	<!-- ANSI -->
+	<update id="update" parameterClass="cfBoardItem"> 
+		UPDATE IKEP4_CF_BD_ITEM /* [BoardItem_SqlMap.xml] lightpack.cafe.board.dao.boardItem.update */
+		SET   
+			<isNotEmpty property="boardId"         >BOARD_ID          = #boardId#,        </isNotEmpty>
+			<isNotEmpty property="itemParentId"    >ITEM_PARENT_ID    = #itemParentId#,   </isNotEmpty>
+			<isNotEmpty property="itemGroupId"     >ITEM_GROUP_ID     = #itemGroupId#,    </isNotEmpty>
+			<isNotEmpty property="step"            >STEP              = #step#,           </isNotEmpty>
+			<isNotEmpty property="indentation"     >INDENTATION       = #indentation#,    </isNotEmpty>
+			<isNotEmpty property="itemSeqId"       >ITEM_SEQ_ID       = #itemSeqId#,      </isNotEmpty>
+			<isNotEmpty property="itemDisplay"     >ITEM_DISPLAY      = #itemDisplay#,    </isNotEmpty>
+			<isNotEmpty property="title"           >TITLE             = #title#,          </isNotEmpty>
+			<isNotEmpty property="hitCount"        >HIT_COUNT         = #hitCount#,       </isNotEmpty>
+			<isNotEmpty property="recommendCount"  >RECOMMEND_COUNT   = #recommendCount#, </isNotEmpty>
+			<isNotEmpty property="replyCount"      >REPLY_COUNT       = #replyCount#,     </isNotEmpty>
+			<isNotEmpty property="linereplyCount"  >LINEREPLY_COUNT   = #linereplyCount#, </isNotEmpty>
+			<isNotEmpty property="attachFileCount" >ATTACH_FILE_COUNT = #attachFileCount#,</isNotEmpty>
+			<isNotEmpty property="startDate"       >START_DATE        = #startDate#,      </isNotEmpty>
+			<isNotEmpty property="endDate"         >END_DATE          = #endDate#,        </isNotEmpty>
+			<isNotEmpty property="itemDelete"      >ITEM_DELETE       = #itemDelete#,     </isNotEmpty>
+			<isNotEmpty property="imageFileId"     >IMAGE_FILE_ID     = #imageFileId#,    </isNotEmpty>
+			<isNotEmpty property="contents"        >CONTENTS          = #contents#,       </isNotEmpty>
+			
+			          
+			UPDATER_ID        = #updaterId#,
+			UPDATER_NAME      = #updaterName#,
+			UPDATE_DATE       = CURRENT_TIMESTAMP
+		WHERE
+			ITEM_ID = #itemId# 
+	</update>
+
+	<!-- ANSI -->
+	<update id="logicalDelete" parameterClass="cfBoardItem"> 
+		UPDATE IKEP4_CF_BD_ITEM /* [BoardItem_SqlMap.xml] lightpack.cafe.board.dao.boardItem.logicalDelete */
+		SET 
+			ITEM_DELETE = 1,
+			UPDATER_ID          = #updaterId#,
+			UPDATER_NAME        = #updaterName#,
+			UPDATE_DATE         = CURRENT_TIMESTAMP   
+		WHERE
+			ITEM_ID = #itemId# 
+	</update>
+	
+	<!-- ANSI -->
+	<update id="updateStep" parameterClass="cfBoardItem"> 
+		UPDATE IKEP4_CF_BD_ITEM /* [BoardItem_SqlMap.xml] lightpack.cafe.board.dao.boardItem.updateStep */
+		SET  
+			STEP = STEP + 1 
+		WHERE
+			ITEM_GROUP_ID = #itemGroupId# 
+			AND   STEP >= #step#  
+	</update>
+
+	<!-- ANSI -->
+	<update id="updateRecommendCount" parameterClass="string">
+		UPDATE IKEP4_CF_BD_ITEM /* [BoardItem_SqlMap.xml] lightpack.cafe.board.dao.boardItem.updateRecommendCount */
+		SET    
+			RECOMMEND_COUNT = RECOMMEND_COUNT + 1
+		WHERE
+			ITEM_ID = #itemId# 
+	</update> 
+
+	<!-- ANSI -->
+	<update id="updateLinereplyCount" parameterClass="string">
+		UPDATE IKEP4_CF_BD_ITEM /* [BoardItem_SqlMap.xml] lightpack.cafe.board.dao.boardItem.updateLinereplyCount */
+		SET  
+			LINEREPLY_COUNT = (SELECT COUNT(*) FROM IKEP4_CF_BD_LINEREPLY WHERE ITEM_ID = #itemId#) 
+		WHERE
+			ITEM_ID = #itemId# 
+	</update> 
+
+	<!-- ANSI -->
+	<update id="updateReplyCount" parameterClass="string">
+		UPDATE IKEP4_CF_BD_ITEM /* [BoardItem_SqlMap.xml] lightpack.cafe.board.dao.boardItem.updateReplyCount */
+		SET  
+			REPLY_COUNT = (SELECT COUNT(*) FROM IKEP4_CF_BD_ITEM WHERE ITEM_PARENT_ID = #itemId#) 
+		WHERE
+			ITEM_ID = #itemId# 
+	</update>
+
+	<!-- ANSI -->
+	<update id="updateHitCount" parameterClass="String"> 
+		UPDATE IKEP4_CF_BD_ITEM /* [BoardItem_SqlMap.xml] lightpack.cafe.board.dao.boardItem.updateHitCount */
+		SET  
+			HIT_COUNT = HIT_COUNT + 1
+		WHERE
+			ITEM_ID = #itemId# 
+	</update> 
+	
+	<!-- ANSI -->
+	<delete id="physicalDelete" parameterClass="string"> 
+		DELETE FROM IKEP4_CF_BD_ITEM /* [BoardItem_SqlMap.xml] lightpack.cafe.board.dao.boardItem.physicalDelete */
+		WHERE 
+			ITEM_ID = #itemId# 
+	</delete>    
+	
+	<!-- MS SQL -->
+	<delete id="physicalDeleteThread" parameterClass="string">
+	WITH CTE AS (
+		SELECT	*
+		FROM	IKEP4_CF_BD_ITEM
+		WHERE	ITEM_ID =  #itemId# 
+		UNION ALL
+		SELECT	I.*
+		FROM	IKEP4_CF_BD_ITEM I, CTE
+		WHERE	CTE.ITEM_ID = I.ITEM_PARENT_ID 
+	)
+	DELETE FROM  
+		IKEP4_CF_BD_ITEM /* [BoardItem_SqlMap.xml] lightpack.cafe.board.dao.boardItem.physicalDeleteThread */
+	WHERE
+		ITEM_ID IN 
+		( 
+			SELECT ITEM_ID FROM CTE
+		)   
+	</delete>  
+
+	<!-- ANSI -->
+	<!--  5/17 WS 추가 부분  -->
+	<update id="updateItem" parameterClass="cfBoardItem"> 
+		UPDATE IKEP4_CF_BD_ITEM /* [BoardItem_SqlMap.xml] lightpack.cafe.dao.boardItem.updateItem */
+		SET 
+			ITEM_DISPLAY      = #itemDisplay#,
+			TITLE             = #title#,
+			CONTENTS          = #contents#,           
+			ATTACH_FILE_COUNT = #attachFileCount#,
+			START_DATE        = #startDate#,
+			END_DATE          = #endDate#,
+			UPDATER_ID        = #updaterId#,
+			UPDATER_NAME      = #updaterName#,
+			UPDATE_DATE       = CURRENT_TIMESTAMP
+		WHERE
+			ITEM_ID = #itemId# 
+	</update>  
+	
+	<!-- MS SQL --> 
+	<select id="listBoardItemByPortlet" parameterClass="Map" resultClass="cfBoardItem">  
+		SELECT /* [BoardItem_SqlMap.xml] lightpack.cafe.dao.boardItem.listBoardItemByPortlet */ 
+			A.* 
+		FROM 
+		( 
+			/* START========================================= */
+			SELECT   
+				Row_number() OVER (ORDER BY B.ITEM_DISPLAY DESC, B.ITEM_GROUP_ID DESC, B.STEP DESC) AS RNUM,
+				A.CAFE_ID    		as cafeId,
+				B.ITEM_ID           as itemId,           
+				B.BOARD_ID          as boardId,
+				B.TITLE             AS title,    
+				B.REGISTER_ID       as registerId,
+				B.REGIST_DATE		as registDate,
+				B.UPDATE_DATE	    as updateDate,
+				U.USER_NAME			as registerName,
+				U.USER_ENGLISH_NAME	as registerEnglishName
+			FROM
+				IKEP4_CF_BD_BOARD A 
+				INNER JOIN IKEP4_CF_BD_ITEM B ON  ( A.BOARD_ID = B.BOARD_ID AND B.ITEM_DELETE = 0 )
+				INNER JOIN IKEP4_EV_USER U ON  B.REGISTER_ID = U.USER_ID 
+			WHERE
+				A.CAFE_ID	=	#cafeId#
+				AND A.IS_DELETE=0
+				<isNotEmpty property="boardId">
+				AND A.BOARD_ID		=	#boardId#
+				</isNotEmpty>
+			/* ===========================================END  */
+		<![CDATA[   
+		) A 
+		WHERE 
+			RNUM <=  #limitSize#
+		]]> 
+	</select>  
+	
+	<!-- MS SQL -->
+	<select id="listMyCollBySearchCondition" parameterClass="cfBoardItemSearchCondition" resultClass="cfBoardItem">  
+		SELECT /* [BoardItem_SqlMap.xml] lightpack.cafe.board.dao.boardItem.listMyCollBySearchCondition */ 
+		*
+		FROM 
+		( 
+			SELECT
+				A.* 
+			FROM 
+			( 
+				/* START========================================= */
+				SELECT 
+					Row_number() OVER (ORDER BY X.UPDATE_DATE DESC) AS RNUM,
+					X.CAFE_ID as cafeId,
+					X.CAFE_NAME as cafeName,
+					G.TYPE_NAME as typeName, 
+					G.TYPE_ENGLISH_NAME as typeEnglishName, 
+					X.ITEM_ID as itemId,
+					X.BOARD_ID as boardId, 
+					X.STEP as step, 
+					X.INDENTATION as indentation, 
+					X.TITLE AS TITLE, 
+					X.CONTENTS as contents, 
+					X.HIT_COUNT as hitCount,
+					X.RECOMMEND_COUNT as recommendCount, 
+					X.REPLY_COUNT as replyCount, 
+					X.LINEREPLY_COUNT as linereplyCount,
+					X.ATTACH_FILE_COUNT as attachFileCount,
+					X.REGISTER_ID as registerId, 
+					E.USER_NAME as registerName,
+					E.USER_ENGLISH_NAME as registerEnglishName, 
+					X.REGIST_DATE as registDate,
+					X.UPDATE_DATE as updateDate,
+					E.TEAM_NAME as teamName, 
+					F.JOB_TITLE_NAME as jobTitleName,
+					F.JOB_TITLE_ENGLISH_NAME as jobTitleEnglishName
+				FROM 
+				(
+					SELECT /*+ FIRST_ROWS */
+						D.CAFE_ID,
+						D.CAFE_NAME,
+						A.ITEM_ID,
+						A.BOARD_ID, 
+						A.STEP, 
+						A.INDENTATION, 
+						A.TITLE, 
+						A.CONTENTS, 
+						A.HIT_COUNT,
+						A.RECOMMEND_COUNT, 
+						A.REPLY_COUNT, 
+						A.LINEREPLY_COUNT,
+						A.ATTACH_FILE_COUNT,
+						A.REGISTER_ID, 
+						A.REGIST_DATE,
+						A.UPDATE_DATE,
+						D.TYPE_ID
+					FROM
+						( 
+							SELECT 
+								X.CAFE_ID, 
+								Y.CAFE_NAME,
+								Y.TYPE_ID 
+							FROM 
+								IKEP4_CF_MEMBER X 
+								INNER JOIN IKEP4_CF_CAFE Y ON ( X.CAFE_ID=Y.CAFE_ID AND Y.CAFE_STATUS IN ('O','WC')  )
+							WHERE 
+								X.MEMBER_ID = #userId# 
+								AND RTRIM(X.MEMBER_LEVEL) IN ('1','2','3','4') 
+						)D 
+						INNER JOIN IKEP4_CF_BD_BOARD B ON ( B.CAFE_ID= D.CAFE_ID AND B.IS_DELETE=0 ) 
+						INNER JOIN IKEP4_CF_MEMBER M ON ( M.CAFE_ID=D.CAFE_ID)
+						INNER JOIN IKEP4_CF_BD_ITEM A ON ( A.BOARD_ID = B.BOARD_ID AND A.ITEM_DELETE=0 AND A.REGISTER_ID = M.MEMBER_ID AND A.UPDATE_DATE &gt;= DATEADD(DD, -30, CURRENT_TIMESTAMP))
+				) X
+				INNER JOIN IKEP4_EV_USER E ON ( X.REGISTER_ID = E.USER_ID )
+				INNER JOIN IKEP4_EV_JOB_TITLE F ON ( E.JOB_TITLE_CODE = F.JOB_TITLE_CODE ) 
+				INNER JOIN IKEP4_CF_TYPE G ON ( X.TYPE_ID = G.TYPE_ID )
+
+				/* ===========================================END  */  
+			<![CDATA[   
+			) A 
+			WHERE 
+				RNUM <=  #endRowIndex# /* 종료  */
+		) TBL
+		WHERE
+			RNUM >  #startRowIndex# /* 시작 */
+		]]> 
+
+	</select>  
+
+	<!-- ANSI -->
+	<update id="updateBoardItemMove" parameterClass="Map"> 
+		UPDATE IKEP4_CF_BD_ITEM /* [BoardItem_SqlMap.xml] lightpack.cafe.board.dao.boardItem.updateBoardItemMove */
+		SET   
+			BOARD_ID		=	#targetBoardId#,
+			UPDATER_ID		=	#updaterId#,
+			UPDATER_NAME	=	#updaterName#,
+			UPDATE_DATE		=	CURRENT_TIMESTAMP
+		WHERE 
+			ITEM_ID = #itemId# 
+			AND BOARD_ID=#orgBoardId#
+	</update>   
+
+	<!-- ANSI -->
+	<select id="listDeleteBoardItem" parameterClass="String" resultClass="cfBoardItem"> 
+		<![CDATA[
+		SELECT /* [BoardItem_SqlMap.xml] lightpack.cafe.board.dao.boardItem.listDeleteBoardItem */ 
+			ITEM_ID,
+			BOARD_ID,
+			TITLE,
+			ATTACH_FILE_COUNT
+		FROM
+			IKEP4_CF_BD_ITEM
+		WHERE  
+			BOARD_ID = #boardId#
+			AND ATTACH_FILE_COUNT>0
+		]]>		
+	</select>   
+	
+	<!-- ANSI -->
+	<update id="updateMailCount" parameterClass="string">
+	   UPDATE IKEP4_CF_BD_ITEM 		/* [BoardItem_SqlMap.xml] boardItem.updateMailCount */
+	   SET MAIL_COUNT = MAIL_COUNT + 1
+	   WHERE ITEM_ID = #itemId#
+	</update>
+	
+	<!-- ANSI -->
+	<update id="updateMblogCount" parameterClass="string">
+	   UPDATE IKEP4_CF_BD_ITEM 		/* [BoardItem_SqlMap.xml] boardItem.updateMblogCount */
+	   SET MBLOG_COUNT = MBLOG_COUNT + 1
+	   WHERE  ITEM_ID = #itemId#
+	</update>
+
+</sqlMap> 

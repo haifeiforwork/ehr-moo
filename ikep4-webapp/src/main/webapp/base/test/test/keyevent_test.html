@@ -1,0 +1,198 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Insert title here</title>
+<link rel="stylesheet" type="text/css" href="../../css/theme01/jquery_ui_custom.css" />
+<link rel="stylesheet" type="text/css" href="../../css/common.css" />
+<link rel="stylesheet" type="text/css" href="../../css/theme01/theme.css" />
+<script type="text/javascript" src="../../js/jquery/jquery-1.4.4.min.js"></script>
+<script type="text/javascript" src="../../js/jquery/jquery-ui-1.8.7.custom.min.js"></script>
+<script type="text/javascript" src="../../js/jquery/plugins.pack.js"></script>
+<script type="text/javascript">var contextRoot = "/ikep4-webapp";</script>
+<script type="text/javascript" src="../../js/common.pack.js"></script>
+<script type="text/javascript">
+(function($){
+    $(document).ready(function () {
+    	var atPosition = -1;
+    	var $suggest = $("#divSuggest");
+    	
+    	var evtAtCheck = function(event) {
+    		if(event.which == 64) {
+    			$textarea = $(this);
+    			atPosition = event.target.selectionStart;
+				
+    			var offset = $textarea.unbind("keypress", evtAtCheck)
+				    			.bind("keydown", evtArrowKeyCheck)				
+				    			.bind("keypress", evtSeachAndSpaceCheck)	//focusout
+    							.offset();
+    			$suggest.css({top:offset.top+$textarea.outerHeight()+"px", left:offset.left+"px"})
+    				.bind("click", function(event) {
+    					if(event.target.tagName.toLowerCase() == "a") {
+    						$anchor = $(event.target);
+    						
+    						var str = $textarea.val();
+    						var replacePosition = str.indexOf(" ", atPosition);
+    						if(replacePosition == -1) replacePosition = str.indexOf("\n", atPosition);
+    						if(replacePosition == -1) replacePosition = str.indexOf("\t", atPosition);
+    						
+		    				var beforeString = str.substring(0, atPosition+1);
+		    				var afterString = "";
+		    				if(replacePosition > -1) afterString = str.substring(replacePosition, str.length);
+		    				
+		    				var replaceString = $anchor.html();
+		    				$textarea.val(beforeString + replaceString + afterString);
+		    				
+		    				setSuggestEvent($textarea);
+		    				$textarea.focus();
+    					}
+    				})
+    				//.bind("keydown", evtArrowCheck)
+    				.show();
+    			
+    			$.ajax({
+					url : "/ikep4-webapp/loginForm.do",
+					//data : {keyword : cutString},
+					type : "get",
+					beforeSend : function(xhr) { xmlHttpRequest = xhr; },
+					success : function(result) {
+						// 목록 갱신
+	    				
+						$suggest.find("li.selected").removeClass("selected");
+					},
+					complete : function(xhr) { xmlHttpRequest = null; },
+					error : {}
+				});
+				//$suggest.find("li:first").addClass("selected");
+				
+    		}
+    	};
+    	
+    	var evtSeachAndSpaceCheck = function(event) {
+    		$textarea = $(this);
+    		switch(event.which) {
+    			case 13 :	// enter	
+    			case 32 :	// space
+    			case 9 :	// tab
+    			case undefined :
+    				setSuggestEvent($textarea, event.which);
+    				break;
+    			case 0 : break;
+    			default :
+    				var xmlHttpRequest = null;
+    				setTimeout(function(){
+    					var cutString = $textarea.val().substring(atPosition+1, event.target.selectionStart);
+    					if(atPosition > event.target.selectionStart ||  cutString.indexOf(" ") > -1 || cutString.indexOf("\n") > -1) {
+    						setSuggestEvent($textarea);
+    						return false;
+    					}
+    					
+    					if(xmlHttpRequest != null) xmlHttpRequest.abort();
+
+    					$.ajax({
+    						url : "/ikep4-webapp/loginForm.do",
+    						data : {keyword : cutString},
+    						type : "post",
+    						beforeSend : function(xhr) { xmlHttpRequest = xhr; },
+    						success : function(result) {
+    							// 목록 갱신
+    		    				
+    							$suggest.find("li.selected").removeClass("selected");
+    							$suggest.find("li:first").addClass("selected");
+        					},
+    						complete : function(xhr) { xmlHttpRequest = null; },
+    						error : {}
+    					});
+    				}, 100);
+    		}
+    	};
+    	
+    	var evtArrowKeyCheck = function(event) {
+    		switch(event.which) {
+    			case 37 :	// left	
+    			case 38 : //top
+    				var items = $suggest.find("li");
+    				var selectedItem = items.filter(".selected");
+    				if(selectedItem.length > 0) {
+    					selectedItem.removeClass("selected");
+    					var prevItem = selectedItem.prev("li");
+    					if(prevItem.length > 0) prevItem.addClass("selected");
+    					else items.eq(items.length-1).addClass("selected");
+    				} else {
+    					items.eq(items.length-1).addClass("selected");
+    				}
+    				event.preventDefault();
+    				break;
+    			case 39 :	// right
+    			case 40 : //bottom
+    				var items = $suggest.find("li");
+    				var selectedItem = items.filter(".selected");
+    				if(selectedItem.length > 0) {
+    					selectedItem.removeClass("selected");
+    					var nextItem = selectedItem.next("li");
+    					if(nextItem.length > 0) nextItem.addClass("selected");
+    					else items.eq(0).addClass("selected");
+    				} else {
+    					items.eq(0).addClass("selected");
+    				}
+    				event.preventDefault();
+    				break;
+    		}
+		};
+    	
+    	var evtArrowCheck = function(event) {
+    		switch(event.which) {
+    			//case 37 :	// left	
+    			case 38 :	// top
+    				$(event.target).parent().prev("li").children("a").focus();
+    				//event.preventDefault();
+    				break;
+    			//case 39 :	// right
+    			case 40 :	// bottom
+    				$(event.target).parent().next("li").children("a").focus();
+    				//event.preventDefault();
+    				break;
+    		}
+    	};
+    	
+    	var setSuggestEvent = function(el, keycode) {
+    		if(keycode == 13) {
+    			var selectedItem = $suggest.find("li.selected");
+    			if(selectedItem.length > 0) {
+    			    selectedItem.children("a").focus().trigger("click");
+    			    return false;
+    			}
+    		}
+    		
+    		$(el).unbind("keypress", evtSeachAndSpaceCheck)	//focusout
+    			.unbind("keydown", evtArrowKeyCheck)
+    			.bind("keypress", evtAtCheck);
+    		$suggest.unbind("click")
+    			//.unbind("keydown", evtArrowCheck)
+    			.hide();
+    	};
+    	
+    	setSuggestEvent("#txtContent");
+    });
+})(jQuery);
+</script>
+<style type="text/css">
+#divSuggest li {}
+#divSuggest li.selected { background-color:orange; }
+#divSuggest li.selected > a { text-decoration:underline; }
+</style>
+</head>
+<body style="padding:10px;">
+<h4>key event test</h4>
+<textarea id="txtContent" cols="100" rows="4"></textarea>
+
+<div id="divSuggest" class="none" style="position:absolute; width:300px; height:200px; border:1px solid #999;">
+	<ul>
+		<li><a href="#a">item 1</a></li>
+		<li><a href="#a">item 2</a></li>
+		<li><a href="#a">item 3</a></li>
+		<li><a href="#a">item 4</a></li>
+	</ul>
+</div>
+</body>
+</html>

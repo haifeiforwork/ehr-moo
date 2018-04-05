@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="com.lgcns.ikep4.approval.admin.dao.ApprReadAll" >
+
+	<typeAlias alias="apprAdminConfig" type="com.lgcns.ikep4.approval.admin.model.ApprAdminConfig"/>
+	<typeAlias alias="user" type="com.lgcns.ikep4.support.user.member.model.User"/>
+	
+	<insert id="readAllCreate" parameterClass="apprAdminConfig"> 
+      <![CDATA[ 
+           INSERT INTO IKEP4_APPR_READ_ALL
+           		  (PORTAL_ID, USER_ID, REGISTER_ID, REGISTER_NAME, REGIST_DATE
+           	       )
+           VALUES (#portalId#, #userId#, #registerId#, #registerName#, GETDATE()
+           		   )
+       ]]>
+  	</insert>
+  	
+  	<delete id="readAllDelete" parameterClass="java.lang.String" >
+	  <![CDATA[
+		   	DELETE  
+		   	FROM 	IKEP4_APPR_READ_ALL
+			WHERE 	PORTAL_ID 				= #portalId#
+	   ]]>
+	</delete>
+  	
+  	<select id="readAllList" parameterClass="java.lang.String" resultClass="user">
+	  <![CDATA[
+		   	  SELECT   A.USER_ID userId,
+                         A.EMP_NO empNo,
+                         A.MAIL mail,
+                         A.USER_NAME userName,
+                         A.USER_ENGLISH_NAME userEnglishName,
+                         A.MOBILE mobile,
+                         A.LEADER leader,
+                         A.OFFICE_PHONE_NO officePhoneNo,
+                         D.JOB_TITLE_NAME jobTitleName,
+                         D.JOB_TITLE_ENGLISH_NAME jobTitleEnglishName,
+                         C.GROUP_ID groupId,
+                         C.GROUP_NAME teamName,
+                         C.GROUP_ENGLISH_NAME teamEnglishName
+                    FROM IKEP4_EV_USER A
+                         LEFT OUTER JOIN (SELECT F.user_id,
+                                                 B.GROUP_ID,
+                                                 B.group_name,
+                                                 B.group_english_name
+                                            FROM    IKEP4_EV_USER_GROUP F
+                                                 INNER JOIN
+                                                    IKEP4_EV_GROUP B
+                                                 ON F.GROUP_ID = B.GROUP_ID
+                                           WHERE F.GROUP_ID = B.GROUP_ID
+                                                 AND B.group_type_id = 'G0001'
+                                                 AND REPRESENT_GROUP = '1') C
+                            ON A.user_id = C.user_id
+                         LEFT OUTER JOIN IKEP4_EV_JOB_TITLE D
+                            ON A.JOB_TITLE_CODE = D.JOB_TITLE_CODE
+                         JOIN IKEP4_APPR_READ_ALL Z
+                         	ON A.USER_ID = Z.USER_ID
+                   WHERE     1 = 1
+                         AND A.PORTAL_ID = #portalId#
+                         AND A.USER_STATUS = 'C'
+                ORDER BY A.USER_NAME ASC, A.LEADER DESC, D.SORT_ORDER ASC 
+	   ]]>
+	</select>
+	
+	<select id="existReadAllAuth" parameterClass="String" resultClass="int"> 
+		SELECT  
+			COUNT(*)
+		FROM IKEP4_APPR_READ_ALL
+	   WHERE USER_ID = #userId#
+	</select>
+	
+</sqlMap>

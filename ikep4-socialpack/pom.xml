@@ -1,0 +1,92 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.lgcns.ikep4</groupId>
+		<artifactId>ikep4-parent</artifactId>
+		<version>0.0.1</version>
+		<relativePath>../ikep4-parent/pom.xml</relativePath>
+	</parent>
+	<groupId>com.lgcns.ikep4</groupId>
+	<artifactId>ikep4-socialpack</artifactId>
+	<version>0.0.1</version>
+	<packaging>jar</packaging>
+	<name>[iKEP4-BIZ] Socialpack</name>
+	<description>iKEP4 Social Network Service PRODUCT</description>
+
+	<dependencies>
+		<!-- ikep4 inner dependency -->
+		<dependency>
+			<groupId>com.lgcns.ikep4</groupId>
+			<artifactId>ikep4-portal</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		
+		<!-- JAXB -->
+       	<dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-impl</artifactId>
+       	</dependency>
+       	<dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+       	</dependency>
+       	<!-- Twitter & Facebook api library -->
+   		<dependency>
+			<groupId>com.google.code.facebookapi</groupId>
+			<artifactId>facebook-java-api</artifactId>
+   		</dependency>
+    	<dependency>
+            <groupId>org.twitter4j</groupId>
+            <artifactId>twitter4j-core</artifactId>
+       </dependency>
+       <dependency>
+			<groupId>com.dyuproject</groupId>
+			<artifactId>dyuproject-openid-oauth</artifactId>
+	   </dependency>
+       <dependency>
+			<groupId>javax.xml.stream</groupId>
+			<artifactId>stax-api</artifactId>
+	   </dependency>	
+	   <dependency>
+			<groupId>org.jvnet</groupId>
+			<artifactId>runtime</artifactId>
+	   </dependency>
+	   <dependency>
+		    <groupId>org.json</groupId>
+		    <artifactId>json</artifactId>
+	   </dependency>
+	</dependencies>
+
+	<build>
+		<finalName>${project.artifactId}-${project.version}</finalName>
+		<resources>
+			<resource>
+				<directory>${basedir}/src/main/java</directory>
+				<includes>
+					<include>**/*.xml</include>
+					<include>**/*.properties</include>
+				</includes>
+			</resource>
+			<resource>
+				<directory>${basedir}/src/main/resources</directory>
+				<includes>
+					<include>**/*.xml</include>
+					<include>**/*.properties</include>
+				</includes>
+			</resource>
+		</resources>
+	</build>
+
+</project>

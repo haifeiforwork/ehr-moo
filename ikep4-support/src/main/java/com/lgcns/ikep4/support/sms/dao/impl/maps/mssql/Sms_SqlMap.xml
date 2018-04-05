@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="sms" >
+	<typeAlias alias = "Sms" type="com.lgcns.ikep4.support.sms.model.Sms"/>
+	<typeAlias alias = "SmsReceiverSearchCondition" type="com.lgcns.ikep4.support.sms.search.SmsReceiverSearchCondition"/>
+	
+	<!-- SMS 테이블 조회 결과 -->
+	<resultMap id="result" class="Sms" >
+		<result property="smsId" 			column="SMS_ID" />
+		<result property="receiverId" 		column="RECEIVER_ID" />
+		<result property="receiverPhoneno" 	column="RECEIVER_PHONENO" />
+		<result property="contents" 		column="CONTENTS" />
+		<result property="resultCode" 		column="RESULT_CODE" />
+		<result property="registerId" 		column="REGISTER_ID" />
+		<result property="registerName" 	column="REGISTER_NAME" />		
+		<result property="registDate" 		column="REGIST_DATE" />
+		<result property="receiverName" 	column="RECEIVER_NAME" />
+		<result property="receiverEnglishName" 	column="RECEIVER_ENGLISH_NAME" />
+		<result property="receiverTeamName" column="RECEIVER_TEAM_NAME" />
+		<result property="receiverTeamEnglishName" column="RECEIVER_TEAM_ENGLISH_NAME" />
+	</resultMap>
+	
+	<!-- ANSI -->
+	<!-- insert -->
+	<insert id="insert" parameterClass="Sms"> 
+      <![CDATA[ 
+			INSERT INTO IKEP4_SM_SMS ( 
+				SMS_ID,
+				RECEIVER_ID,
+				RECEIVER_PHONENO,
+				CONTENTS,
+				RESULT_CODE,
+				REGISTER_ID,
+				REGISTER_NAME,
+				REGIST_DATE,
+				SMS_FLAG
+			) VALUES ( 
+				#smsId#, 
+				#receiverId#, 
+				#receiverPhoneno#, 
+				#contents#, 
+				'0',
+				#registerId#,
+				#registerName#,
+				CURRENT_TIMESTAMP,
+				#smsFlag#
+			)      
+       ]]>
+   </insert>   
+   <insert id="insertSms" parameterClass="Sms" >      
+     <![CDATA[    
+            DECLARE @IDENTITY varchar(20)  
+            DECLARE @RNDNUM INT
+            SET @RNDNUM = cast(RAND() * 1000 as int)
+            SET @IDENTITY = dbo.IKEP_FN_SMSFormatDate(CURRENT_TIMESTAMP, @RNDNUM)             
+            insert into arreo_sms (cmp_msg_id, cmp_usr_id, odr_fg, sms_gb, used_cd, msg_gb, wrt_dttm, snd_dttm, rcv_phn_id, subject, snd_msg, callback, sms_st, expire_val, nat_cd, RSRVD_WD)
+            values( @IDENTITY, #serviceCode#,'2', '1','00', #messageType#,SUBSTRING(@IDENTITY,0,15), SUBSTRING(@IDENTITY,0,15), #receiverPhoneno#, #subject#, #contents#, #senderPhoneno#, '0','0', '82', #registerId#);
+      ]]>
+     <selectKey resultClass="String" keyProperty="smsId"> 
+               SELECT max(cmp_msg_id) from arreo_sms
+     </selectKey>   
+   </insert>    
+	<!-- MS SQL -->
+   <!-- select -->
+	<select id="select" parameterClass="java.lang.String" resultMap="result">
+	  <![CDATA[
+       SELECT A.SMS_ID,
+              A.RECEIVER_ID,
+	          A.RECEIVER_PHONENO,
+	          B.USER_NAME RECEIVER_NAME,
+	          B.USER_ENGLISH_NAME RECEIVER_ENGLISH_NAME,
+	          B.TEAM_NAME RECEIVER_TEAM_NAME,
+	          B.TEAM_ENGLISH_NAME RECEIVER_TEAM_ENGLISH_NAME,
+	          A.CONTENTS,
+	          A.RESULT_CODE,
+	          A.REGISTER_ID,
+	          A.REGISTER_NAME,
+	          CONVERT(NVARCHAR, A.REGIST_DATE, 20) AS REGIST_DATE 
+        FROM IKEP4_SM_SMS A LEFT JOIN    
+        	 IKEP4_EV_USER B ON A.RECEIVER_ID = B.USER_ID
+	 	WHERE SMS_ID = #smsId#
+	   ]]>
+	</select>
+	
+	<!-- ANSI -->
+	<!-- update -->
+	<update id="update" parameterClass="Sms">
+	  <![CDATA[
+		   UPDATE IKEP4_SM_SMS 
+		   SET CONTENTS = #contents#
+		   WHERE SMS_ID = #smsId#
+	   ]]>
+	</update>
+   
+   <!-- ANSI -->
+   <!-- delete -->
+   <delete id="delete" parameterClass="java.lang.String">
+      <![CDATA[
+	       DELETE FROM IKEP4_SM_SMS WHERE SMS_ID = #smsId#
+	   ]]>
+	</delete>
+	
+	<!-- MS SQL -->
+   <!-- delete -->
+   <delete id="deleteRecentSms">
+		DELETE FROM IKEP4_SM_SMS 
+		WHERE SMS_ID IN (
+		  SELECT  A.SMS_ID
+		  FROM (
+		       SELECT Row_number() OVER (ORDER BY REGIST_DATE DESC) AS NUM, SMS_ID 
+		       FROM IKEP4_SM_SMS
+		       WHERE REGIST_DATE &lt; DATEADD(MONTH, -3, CURRENT_TIMESTAMP)
+		      ) A WHERE NUM &gt; 100 )
+	</delete>
+	
+	<!-- MS SQL -->
+	<!-- selectRecentBottom -->
+	<select id="selectRecentBottom" parameterClass="SmsReceiverSearchCondition" resultMap="result">	
+	    SELECT TOP 4 
+	    	   SMS_ID,
+	           RECEIVER_ID, 
+	           RECEIVER_PHONENO,
+	           CONTENTS,
+	           RESULT_CODE,
+	           REGISTER_ID,
+	           REGISTER_NAME,  
+	           REGIST_DATE,
+	           RECEIVER_NAME,
+	           RECEIVER_ENGLISH_NAME,
+	           RECEIVER_TEAM_NAME,
+	           RECEIVER_TEAM_ENGLISH_NAME 
+	      FROM (
+		        SELECT  A.SMS_ID,
+			            A.RECEIVER_ID, 
+			            A.RECEIVER_PHONENO,
+				        A.CONTENTS,
+				        A.RESULT_CODE,
+				        A.REGISTER_ID,
+				        A.REGISTER_NAME,  
+				        A.REGIST_DATE,
+				        B.USER_NAME RECEIVER_NAME,
+				        B.USER_ENGLISH_NAME RECEIVER_ENGLISH_NAME,
+				        B.TEAM_NAME RECEIVER_TEAM_NAME,
+				        B.TEAM_ENGLISH_NAME RECEIVER_TEAM_ENGLISH_NAME          
+		        FROM IKEP4_SM_SMS A LEFT JOIN    
+		        	 IKEP4_EV_USER B ON A.RECEIVER_ID = B.USER_ID        
+		        WHERE SMS_ID IN (		        
+		               SELECT  top 4
+                            MAX(S.SMS_ID) SMS_ID
+                        FROM IKEP4_SM_SMS S
+                        INNER JOIN ARREO_SMS A on S.SMS_ID = A.cmp_msg_id  
+                       WHERE S.REGISTER_ID = #registerId#
+                          AND A.RSLT_VAL = -100
+                       GROUP BY RECEIVER_PHONENO 
+                       order by SMS_ID desc 
+		               )
+	    ) A	ORDER BY REGIST_DATE DESC					    
+	</select>
+	
+	<!-- MS SQL -->
+	<!-- selectAll -->	
+	<select id="selectAll" parameterClass="SmsReceiverSearchCondition" resultMap="result">	
+      SELECT  
+          SMS_ID, 
+          RECEIVER_ID,
+          RECEIVER_PHONENO,
+          CONTENTS,
+		  RESULT_CODE,
+		  REGISTER_ID,
+		  REGISTER_NAME,	
+		  REGIST_DATE,
+          RECEIVER_NAME,
+          RECEIVER_ENGLISH_NAME,
+          RECEIVER_TEAM_NAME,
+          RECEIVER_TEAM_ENGLISH_NAME 
+	  FROM    (
+				   SELECT	Row_number() OVER (ORDER BY A.SMS_ID DESC) AS RNUM,
+				   			A.SMS_ID,
+				   			A.RECEIVER_ID,
+							A.RECEIVER_PHONENO,
+					        B.USER_NAME RECEIVER_NAME,
+					        B.USER_ENGLISH_NAME RECEIVER_ENGLISH_NAME,
+					        B.TEAM_NAME RECEIVER_TEAM_NAME,
+					        B.TEAM_ENGLISH_NAME RECEIVER_TEAM_ENGLISH_NAME, 
+							A.CONTENTS,
+							C.RSLT_VAL AS RESULT_CODE,
+							A.REGISTER_ID,
+							A.REGISTER_NAME,
+							A.REGIST_DATE AS REGIST_DATE
+				     FROM IKEP4_SM_SMS A
+                          INNER JOIN ARREO_SMS C on A.SMS_ID = C.cmp_msg_id  
+                          LEFT JOIN IKEP4_EV_USER B ON A.RECEIVER_ID = B.USER_ID            							    
+				    WHERE A.REGISTER_ID = #registerId#
+				      AND C.SMS_ST = 1
+                ) F
+	      WHERE   RNUM &gt; #startRowIndex#	AND RNUM &lt;= #endRowIndex#					    
+	</select>
+	
+	<!-- ANSI -->
+	<select id="countSmsReceiverBySearchCondition" parameterClass="SmsReceiverSearchCondition" resultClass="int">  
+		SELECT /* [Sms_SqlMap.xml] sms.countBySearchCondition */ 
+	           COUNT(*)
+		FROM   ARREO_SMS   
+		WHERE  RSRVD_WD = #registerId# 		       
+		       AND RSLT_VAL = -100
+  </select> 
+	
+	<!-- ANSI -->
+	<!-- selectCount -->
+	<select id="selectCount" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+	  <![CDATA[
+		   SELECT COUNT(SMS_ID) FROM IKEP4_SM_SMS WHERE SMS_ID = #smsId#
+	   ]]>
+	</select>
+	
+	<!-- MS SQL -->
+	<!-- selectRecentBottomCount -->
+	<select id="selectRecentBottomCount" parameterClass="SmsReceiverSearchCondition" resultClass="int">
+	  <![CDATA[
+          SELECT /* [Sms_SqlMap.xml] sms.countBySearchCondition */ 
+               COUNT(*)
+          FROM   ARREO_SMS   
+          WHERE  RSRVD_WD = #registerId# 
+                 AND CONVERT(CHAR(6), WRT_DTTM, 112) = CONVERT(CHAR(6), CURRENT_TIMESTAMP, 112) 
+                 AND RSLT_VAL = -100
+	   ]]>
+	</select>	
+</sqlMap>

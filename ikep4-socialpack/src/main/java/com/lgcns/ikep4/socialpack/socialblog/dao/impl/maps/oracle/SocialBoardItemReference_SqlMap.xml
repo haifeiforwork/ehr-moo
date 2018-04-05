@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="socialpack.socialblog.dao.SocialBoardItemReference">
+
+	<typeAlias alias="SocialBoardItemReference" type="com.lgcns.ikep4.socialpack.socialblog.model.SocialBoardItemReference"/>
+
+	<!-- IKEP4_AD_ADDRGROUP 테이블 조회 결과 -->
+	<resultMap id="resultSocialBoardItemReference" class="SocialBoardItemReference">
+		<result property="registerId" column="REGISTER_ID" columnIndex="1"/>
+		<result property="itemId" column="ITEM_ID" columnIndex="2"/>
+		<result property="registDate" column="REGIST_DATE" columnIndex="3"/>
+	</resultMap>
+	
+	<sql id="sqlColumnList"> 
+	    REGISTER_ID, 
+	    ITEM_ID, 
+	    REGIST_DATE
+	</sql>  
+
+	<select id="get" parameterClass="SocialBoardItemReference" resultMap="resultSocialBoardItemReference"> 
+		SELECT 
+			/* [SocialBoardItemRecommend_SqlMap.xml] socialpack.socialblog.dao.SocialBoardItemRecommend.get */
+			<include refid="socialpack.socialblog.dao.SocialBoardItemReference.sqlColumnList" />
+		FROM  IKEP4_SB_BD_REFERENCE
+		WHERE REGISTER_ID = #registerId#
+		AND ITEM_ID= #itemId#
+	</select> 
+	
+	<select id="exists" parameterClass="SocialBoardItemReference" resultClass="int"> 
+		SELECT 
+			/* [SocialBoardItemRecommend_SqlMap.xml] socialpack.socialblog.dao.SocialBoardItemRecommend.exists */
+			COUNT(*)
+		FROM  IKEP4_SB_BD_REFERENCE
+		WHERE REGISTER_ID = #registerId#
+		AND ITEM_ID= #itemId#
+	</select> 
+
+	<insert id="create" parameterClass="SocialBoardItemReference"> 
+		INSERT INTO IKEP4_SB_BD_REFERENCE ( 
+			/* [SocialBoardItemRecommend_SqlMap.xml] socialpack.socialblog.dao.SocialBoardItemRecommend.insert */
+			<include refid="socialpack.socialblog.dao.SocialBoardItemReference.sqlColumnList" />
+		) VALUES (
+			#registerId#, 
+			#itemId#,
+      		SYSDATE
+		) 
+	</insert>
+
+	<delete id="physicalDelete" parameterClass="SocialBoardItemReference"> 
+		DELETE FROM IKEP4_SB_BD_REFERENCE 
+		/* [SocialBoardItemRecommend_SqlMap.xml] socialpack.socialblog.dao.SocialBoardItemRecommend.physicalDelete */
+		WHERE ITEM_ID= #itemId#
+	</delete>    
+
+</sqlMap> 

@@ -1,0 +1,53 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Insert title here</title>
+<link rel="stylesheet" type="text/css" href="../../css/theme01/jquery_ui_custom.css" />
+<link rel="stylesheet" type="text/css" href="../../css/common.css" />
+<link rel="stylesheet" type="text/css" href="../../css/theme01/theme.css" />
+<script type="text/javascript" src="../../js/jquery/jquery-1.5.1.min.js"></script>
+<script type="text/javascript" src="../../js/jquery/jquery-ui-1.8.7.custom.min.js"></script>
+<script type="text/javascript" src="../../js/jquery/jquery.ui.datepicker.customize.pack.js"></script>
+<script type="text/javascript" src="../../js/jquery/plugins.pack.js"></script>
+<script type="text/javascript" src="../../js/common.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	createCalendar = function () {
+		$("#datepicker").datepicker({
+			inline: true,
+			defaultDate : new Date(2001, 9, 3),
+			alarmDays : ["2001-10-12", "2001-10-21", "2001-11-07"],
+			onSelect: function(date) { iKEP.debug("onSelect"); }
+		});
+		
+		//iKEP.debug($("#datepicker").find("tbody td"));
+	}
+	
+    $(document).ready(function () {
+    	//createCalendar();
+    	
+    	$("#text1").datepicker({
+    		showOtherMonths : true,
+			selectOtherMonths: true,
+			hoverWeek : true/*,
+			hoverStart : 1,
+			hoverRange:-7,
+			onSelect : function() {
+				iKEP.debug("onSelect");
+			}*/
+    	});
+    });
+})(jQuery);
+</script>
+<style type="text/css">
+	.ui-datepicker td > a.alarm { background-image:none; background-color:blue; color:white !important; }
+</style>
+
+</head>
+<body>
+<div><a onclick="createCalendar()" href="#a">calendar</a></div>
+<div id="datepicker"></div>
+<div><input type="text" id="text1"/></div>
+</body>
+</html>

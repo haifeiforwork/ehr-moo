@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE log4j:configuration PUBLIC "-//LOGGER" "log4j.dtd">
+
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+
+	<!-- Appenders -->
+	<appender name="console" class="org.apache.log4j.ConsoleAppender">
+		<param name="Target" value="System.out" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="[%d{HH:mm:ss.SSS}] %-5p %C{1}.%M(%F:%L) - %m%n" />
+		</layout>
+	</appender>
+	<!-- Appenders -->
+	<appender name="log4jdbcConsole" class="org.apache.log4j.ConsoleAppender">
+		<param name="Target" value="System.out" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="[%d{HH:mm:ss.SSS}] SQL-LOG : %m%n" />
+		</layout>
+	</appender>
+	<appender name="file" class="org.apache.log4j.RollingFileAppender">
+		<!-- Log 파일 생성 위치 -->
+		<param name="File" value="/logs/main/ikep4.log" />
+		<param name="Append" value="true" />
+		<param name="MaxFileSize" value="1024KB" />
+		<param name="MaxBackupIndex" value="10" />
+		<param name="ImmediateFlush" value="true" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="[%d{HH:mm:ss.SSS}] %-5p %C{1}.%M(%F:%L) - %m%n" />
+		</layout>
+	</appender>
+
+	<!-- 3rdparty Loggers -->
+	<category name="java.sql.Connection">
+		<priority value="debug" />
+	</category>
+	<category name="java.sql.Statment">
+		<priority value="debug" />
+	</category>
+	<category name="java.sql.PreparedStatment">
+		<priority value="debug" />
+	</category>
+	<category name="java.sql.ResultSet">
+		<priority value="debug" />
+	</category>
+	
+	<category name="com.ibatis">
+		<priority value="debug" />
+	</category>
+	<category name="com.ibatis.common.jdbc.SimpleDataSource">
+		<priority value="debug" />
+	</category>
+	<category name="com.ibatis.common.jdbc.ScriptRunner">
+		<priority value="debug" />
+	</category>
+	<category name="com.ibatis.sqlmap.engine.impl.SqlMapClientDelegate">
+		<priority value="debug" />
+	</category>
+
+	<logger name="org.springframework.core">
+		<level value="info" />
+	</logger>
+
+	<logger name="org.springframework.beans">
+		<level value="info" />
+	</logger>
+
+	<logger name="org.springframework.context">
+		<level value="info" />
+	</logger>
+
+	<logger name="org.springframework.web">
+		<level value="info" />
+	</logger>
+
+	<logger name="com.lgcns.ikep4.framework">
+		<level value="debug" />
+	</logger>
+
+	<logger name="com.lgcns.ikep4.collpack">
+		<level value="debug" />
+	</logger>
+
+	<logger name="jdbc.sqlonly" additivity="false">
+		<level value="debug" />
+		<appender-ref ref="log4jdbcConsole" />
+	</logger>
+
+	<!-- log SQL with timing information, post execution -->
+	<logger name="jdbc.sqltiming" additivity="false">
+		<level value="fatal" />
+		<appender-ref ref="log4jdbcConsole" />
+	</logger>
+
+	<!-- only use the two logs below to trace ALL JDBC information, NOTE: This 
+		can be very voluminous! -->
+
+	<!-- log all jdbc calls except ResultSet calls -->
+	<logger name="jdbc.audit" additivity="false">
+		<level value="fatal" />
+		<appender-ref ref="log4jdbcConsole" />
+	</logger>
+
+	<!-- log the jdbc ResultSet calls -->
+	<logger name="jdbc.resultset" additivity="false">
+		<level value="fatal" />
+		<appender-ref ref="log4jdbcConsole" />
+	</logger>
+
+	<!-- log connection open/close events and dump of all open connection numbers -->
+	<logger name="jdbc.connection" additivity="false">
+		<level value="fatal" />
+		<appender-ref ref="log4jdbcConsole" />
+	</logger>
+
+	<!-- this log is for internal debugging of log4jdbc, itself -->
+	<!-- debug logging for log4jdbc itself -->
+	<logger name="log4jdbc.debug" additivity="false">
+		<level value="fatal" />
+		<appender-ref ref="log4jdbcConsole" />
+	</logger>
+	<!-- Root Logger -->
+	<root>
+		<priority value="debug" />
+		<appender-ref ref="console" />
+		<!-- <appender-ref ref="file"/> -->
+	</root>
+
+</log4j:configuration>

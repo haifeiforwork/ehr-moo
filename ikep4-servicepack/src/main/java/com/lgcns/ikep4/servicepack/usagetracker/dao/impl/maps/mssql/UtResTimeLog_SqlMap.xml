@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="com.lgcns.ikep4.servicepack.usagetracker.utResTimeLog" >
+	
+	<typeAlias alias="UtResTimeLog" type="com.lgcns.ikep4.servicepack.usagetracker.model.UtResTimeLog"/>
+	<typeAlias alias="UtSearchCondition" type="com.lgcns.ikep4.servicepack.usagetracker.search.UtSearchCondition"/>
+	
+	<insert id="create" parameterClass="UtResTimeLog">
+		/* [UtResTimeLog_SqlMap.xml] com.lgcns.ikep4.servicepack.usagetracker.utResTimeLog.create */ 
+	    insert into IKEP4_UT_RES_TIME_LOG (RES_TIME_ACCESS_ID, RES_TIME_URL_ID, PORTAL_ID, USER_ID, ACCESS_DATE, RES_TIME) 
+	    values (#resTimeAccessId#, #resTimeUrlId#, #portalId#, #userId#, CURRENT_TIMESTAMP, #resTime#)
+	 </insert>
+	 
+	 <select id="countBySearchCondition" parameterClass="UtSearchCondition" resultClass="int">
+	 	/* [UtResTimeLog_SqlMap.xml] com.lgcns.ikep4.servicepack.usagetracker.utResTimeLog.countBySearchCondition */  
+		SELECT COUNT(*) 
+		  FROM IKEP4_UT_RES_TIME_LOG A INNER JOIN
+		       IKEP4_UT_RES_TIME_URL B ON A.RES_TIME_URL_ID = B.RES_TIME_URL_ID INNER JOIN
+		       IKEP4_EV_USER C ON A.user_id = C.user_id
+		 WHERE B.PORTAL_ID = #portalId#
+		 <isNotEmpty property="resTimeUrlId">
+		 	AND A.RES_TIME_URL_ID = #resTimeUrlId#
+		 </isNotEmpty>
+	 </select>
+	
+	 <select id="listBySearchCondition" parameterClass="UtSearchCondition" resultClass="UtResTimeLog">
+	 	/* [UtResTimeLog_SqlMap.xml] com.lgcns.ikep4.servicepack.usagetracker.utResTimeLog.listBySearchCondition */  
+		SELECT * 
+		  FROM ( 
+			     SELECT  A.*
+			     FROM ( 
+				         SELECT Row_number() OVER (order by A.ACCESS_DATE desc) AS RNUM,
+					         	B.RES_TIME_URL_NAME  resTimeUrlName, 
+					         	C.USER_NAME  userName, 
+					         	A.ACCESS_DATE  accessDate, 
+					         	A.RES_TIME  resTime  
+				           FROM  IKEP4_UT_RES_TIME_LOG A INNER JOIN
+		       					 IKEP4_UT_RES_TIME_URL B ON A.RES_TIME_URL_ID = B.RES_TIME_URL_ID INNER JOIN
+		       					 IKEP4_EV_USER C ON A.user_id = C.user_id
+		    			  WHERE  B.PORTAL_ID = #portalId#
+		    			  <isNotEmpty property="resTimeUrlId">
+						 	AND A.RES_TIME_URL_ID = #resTimeUrlId#
+						 </isNotEmpty>
+		    	) A WHERE RNUM <![CDATA[<=]]>   #endRowIndex# /* 종료  */
+		) A WHERE RNUM <![CDATA[>]]>   #startRowIndex# /* 시작 */
+	</select>
+	
+	<select id="countBySearchCondition1" parameterClass="UtSearchCondition" resultClass="int">
+	 	/* [UtResTimeLog_SqlMap.xml] com.lgcns.ikep4.servicepack.usagetracker.utResTimeLog.countBySearchCondition1 */  
+		SELECT COUNT(*) 
+		  FROM (
+		    SELECT B.RES_TIME_URL_NAME 
+			  FROM IKEP4_UT_RES_TIME_LOG A INNER JOIN
+			       IKEP4_UT_RES_TIME_URL B ON A.RES_TIME_URL_ID = B.RES_TIME_URL_ID INNER JOIN
+			       IKEP4_EV_USER C ON A.user_id = C.user_id
+			 WHERE B.PORTAL_ID = #portalId#
+			 <isNotEmpty property="resTimeUrlId">
+			 	AND A.RES_TIME_URL_ID = #resTimeUrlId#
+			 </isNotEmpty>
+			 GROUP BY B.RES_TIME_URL_NAME, CONVERT(CHAR(8),A.ACCESS_DATE,112)
+		  ) A
+	 </select>
+	
+	 <select id="listBySearchCondition1" parameterClass="UtSearchCondition" resultClass="UtResTimeLog">
+	 	/* [UtResTimeLog_SqlMap.xml] com.lgcns.ikep4.servicepack.usagetracker.utResTimeLog.listBySearchCondition1 */  
+		SELECT * 
+		  FROM ( 
+			     SELECT  A.*
+			     FROM ( 
+				         SELECT Row_number() OVER (order by CONVERT(CHAR(8),A.ACCESS_DATE,112) desc) AS RNUM,
+					         	B.RES_TIME_URL_NAME  resTimeUrlName, 
+								CONVERT(DATE, CONVERT(CHAR(8),A.ACCESS_DATE,112)) accessDate,
+					         	AVG(A.RES_TIME) resTime
+				           FROM IKEP4_UT_RES_TIME_LOG A INNER JOIN
+		       					IKEP4_UT_RES_TIME_URL B ON A.RES_TIME_URL_ID = B.RES_TIME_URL_ID INNER JOIN
+		       					IKEP4_EV_USER C ON A.user_id = C.user_id
+		    			  WHERE B.PORTAL_ID = #portalId#
+		    			  <isNotEmpty property="resTimeUrlId">
+						 	AND A.RES_TIME_URL_ID = #resTimeUrlId#
+						 </isNotEmpty>
+						  GROUP BY B.RES_TIME_URL_NAME, CONVERT(CHAR(8),A.ACCESS_DATE,112)
+		    	) A WHERE RNUM <![CDATA[<=]]>   #endRowIndex# /* 종료  */
+		) A WHERE RNUM <![CDATA[>]]>   #startRowIndex# /* 시작 */
+	</select>
+	
+	<select id="countBySearchCondition2" parameterClass="UtSearchCondition" resultClass="int">
+	 	/* [UtResTimeLog_SqlMap.xml] com.lgcns.ikep4.servicepack.usagetracker.utResTimeLog.countBySearchCondition2 */  
+		SELECT COUNT(*) 
+		  FROM (
+		    SELECT B.RES_TIME_URL_NAME 
+			  FROM IKEP4_UT_RES_TIME_LOG A INNER JOIN
+			       IKEP4_UT_RES_TIME_URL B ON A.RES_TIME_URL_ID = B.RES_TIME_URL_ID INNER JOIN
+			       IKEP4_EV_USER C ON A.user_id = C.user_id
+			 WHERE B.PORTAL_ID = #portalId#
+			 <isNotEmpty property="resTimeUrlId">
+			 	AND A.RES_TIME_URL_ID = #resTimeUrlId#
+			 </isNotEmpty>
+			 GROUP BY B.RES_TIME_URL_NAME, CONVERT(CHAR(6),A.ACCESS_DATE,112)
+		  ) A
+	 </select>
+	
+	 <select id="listBySearchCondition2" parameterClass="UtSearchCondition" resultClass="UtResTimeLog">
+	 	/* [UtResTimeLog_SqlMap.xml] com.lgcns.ikep4.servicepack.usagetracker.utResTimeLog.listBySearchCondition2 */  
+		SELECT * 
+		  FROM ( 
+			     SELECT  A.*
+			     FROM ( 
+				         SELECT Row_number() OVER (order by CONVERT(CHAR(6),A.ACCESS_DATE,112) desc) AS RNUM,
+					         	B.RES_TIME_URL_NAME  resTimeUrlName, 
+								CONVERT(DATE, CONVERT(CHAR(6),A.ACCESS_DATE,112)+'01') accessDate,
+					         	AVG(A.RES_TIME) resTime
+				           FROM IKEP4_UT_RES_TIME_LOG A INNER JOIN
+		       					IKEP4_UT_RES_TIME_URL B ON A.RES_TIME_URL_ID = B.RES_TIME_URL_ID INNER JOIN
+		       					IKEP4_EV_USER C ON A.user_id = C.user_id
+		    			  WHERE B.PORTAL_ID = #portalId#
+		    			  <isNotEmpty property="resTimeUrlId">
+						 	AND A.RES_TIME_URL_ID = #resTimeUrlId#
+						 </isNotEmpty>
+						  GROUP BY B.RES_TIME_URL_NAME, CONVERT(CHAR(6),A.ACCESS_DATE,112)
+		    	) A WHERE RNUM <![CDATA[<=]]>   #endRowIndex# /* 종료  */
+		) A WHERE RNUM <![CDATA[>]]>   #startRowIndex# /* 시작 */
+	</select>
+	
+</sqlMap>

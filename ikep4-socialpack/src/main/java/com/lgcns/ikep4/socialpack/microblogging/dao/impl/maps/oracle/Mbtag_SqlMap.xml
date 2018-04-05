@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="socialpack.microblogging.dao.mbtag" >
+	<typeAlias alias = "Mbtag" type="com.lgcns.ikep4.socialpack.microblogging.model.Mbtag"/>
+	
+	<!-- IKEP4_MB_MBTAG 테이블 조회 결과 -->
+	<resultMap id="result" class="Mbtag">
+		<result property="mbtagId" 				column="MBTAG_ID" 				/>
+		<result property="mbtagType" 			column="MBTAG_TYPE" 			/>
+		<result property="mbtagName" 			column="MBTAG_NAME" 			/>
+		<result property="mbtagFullName" 		column="MBTAG_FULL_NAME" 		/>
+		<result property="portalId" 			column="PORTAL_ID" 				/>
+	</resultMap>
+	
+	<!-- insert -->
+	<insert id="insert" parameterClass="Mbtag"> 
+      <![CDATA[ 
+           INSERT INTO IKEP4_MB_MBTAG ( /* [Mbtag_SqlMap.xml] mbtag.insert */
+           MBTAG_ID, MBTAG_TYPE, MBTAG_NAME, MBTAG_FULL_NAME, PORTAL_ID)  
+           VALUES (#mbtagId#, #mbtagType#, #mbtagName#, #mbtagFullName#, #portalId#)
+       ]]>
+   </insert>
+   
+   <!-- select -->
+	<select id="select" parameterClass="Mbtag" resultMap="result">
+	  <![CDATA[
+		   SELECT /* [Mbtag_SqlMap.xml] mbtag.select */ 
+		    * 
+		   FROM IKEP4_MB_MBTAG 
+		   WHERE MBTAG_ID	= #mbtagId#
+		     AND PORTAL_ID 	= #portalId#
+	   ]]>
+	</select>
+	   
+   <!-- select TagId By Type N Name -->
+	<select id="selectTagIdByTagFullName" parameterClass="Mbtag" resultClass="java.lang.String">
+	  <![CDATA[
+		   SELECT /* [Mbtag_SqlMap.xml] mbtag.selectTagIdByTagFullName */ 
+		    max(MBTAG_ID) 
+		   FROM IKEP4_MB_MBTAG 
+		   WHERE MBTAG_FULL_NAME 	= #mbtagFullName# 
+		     AND PORTAL_ID 			= #portalId#
+	   ]]>
+	</select>
+	   
+   <!-- delete -->
+   <delete id="delete" parameterClass="Mbtag">
+      <![CDATA[
+	       DELETE FROM IKEP4_MB_MBTAG   /* [Mbtag_SqlMap.xml] mbtag.delete */ 
+	       WHERE MBTAG_ID 	= #mbtagId#
+		     AND PORTAL_ID	= #portalId#
+	   ]]>
+	</delete>
+		
+</sqlMap>

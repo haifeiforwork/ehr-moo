@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="com.lgcns.ikep4.support.searchpreprocessor.spsnrelation">
+  
+  <typeAlias alias="spUser"       type="com.lgcns.ikep4.support.user.member.model.User"/>
+  <typeAlias alias="searchUtil"                type="com.lgcns.ikep4.support.searchpreprocessor.util.SearchUtil"/>
+  
+  <resultMap class="spUser" id="baseResultMap">
+    <result column="TARGET_USER_ID" jdbcType="VARCHAR" property="userId" />
+  </resultMap>
+
+  <resultMap class="spUser" id="baseResultDetailMap">
+    <result column="TARGET_USER_ID" jdbcType="VARCHAR" property="userId" />
+    <result column="USER_NAME" jdbcType="VARCHAR" property="userName" />
+    <result column="JOB_TITLE_NAME" jdbcType="VARCHAR" property="jobTitleName" />
+    <result column="TEAM_NAME" jdbcType="VARCHAR" property="teamName" />
+	<result property="jobTitleEnglishName" column="JOB_TITLE_ENGLISH_NAME"/>
+	<result property="userEnglishName" column="USER_ENGLISH_NAME"/>
+	<result property="teamEnglishName" column="TEAM_ENGLISH_NAME"/>
+  </resultMap>
+  
+  <!-- 전문가 목록 가져오는 쿼리 -->
+  <select id="getSnRelationList" parameterClass="searchUtil" resultMap="baseResultMap">
+    select target_user_id 
+	from IKEP4_SN_RELATION
+	where source_user_id=#user.userId#
+		  and index_expertise &gt; 0
+		  and rownum <![CDATA[<=]]> #endIndex#
+	order by index_expertise
+  </select>
+  
+  <select id="getSnRelationDetailList" parameterClass="searchUtil" resultMap="baseResultDetailMap">
+  	select sr.target_user_id,
+	       eu.USER_NAME, 
+	       eu.USER_ENGLISH_NAME, 
+	       eu.TEAM_NAME, 
+	       eu.TEAM_ENGLISH_NAME,
+	       ejt.JOB_TITLE_NAME, 
+	       ejt.JOB_TITLE_ENGLISH_NAME     
+	from IKEP4_SN_RELATION sr,IKEP4_EV_USER eu,IKEP4_EV_JOB_TITLE ejt 
+	where  sr.target_user_id = eu.user_id
+	       and eu.job_title_code =ejt.job_title_code
+	       and sr.source_user_id =#user.userId#
+	order by sr.index_expertise
+  </select>
+
+	<select id="countSnRelationDetailList" parameterClass="searchUtil" resultClass="int">
+  	select count(*)    
+	from IKEP4_SN_RELATION sr,IKEP4_EV_USER eu,IKEP4_EV_JOB_TITLE ejt 
+	where  sr.target_user_id = eu.user_id
+	       and eu.job_title_code =ejt.job_title_code
+	       and sr.source_user_id =#user.userId#
+	order by sr.index_expertise
+  </select>
+</sqlMap>

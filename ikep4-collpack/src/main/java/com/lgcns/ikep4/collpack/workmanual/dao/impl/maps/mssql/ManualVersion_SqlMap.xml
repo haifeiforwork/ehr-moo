@@ -1,0 +1,315 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="collpack.workmanual.dao.manualVersion">
+	<typeAlias alias = "ManualVersion" type="com.lgcns.ikep4.collpack.workmanual.model.ManualVersion"/>
+	<typeAlias alias = "ManualVersionPk" type="com.lgcns.ikep4.collpack.workmanual.model.ManualVersionPk"/>
+	<typeAlias alias = "ManualPk" type="com.lgcns.ikep4.collpack.workmanual.model.ManualPk"/>
+	<typeAlias alias = "ManualSearchCondition" type="com.lgcns.ikep4.collpack.workmanual.search.ManualSearchCondition"/>
+	
+	<!-- 테이블 조회 결과 -->
+	<resultMap id="manualVersionResult" class="ManualVersion">
+		<result property="versionId"              column="VERSION_ID"             />
+		<result property="manualId"               column="MANUAL_ID"              />
+		<result property="version"                column="VERSION"                />
+		<result property="versionTitle"           column="VERSION_TITLE"          />
+		<result property="versionContents"        column="VERSION_CONTENTS"       />
+		<result property="versionAttachCount"     column="VERSION_ATTACH_COUNT"   />
+		<result property="isPublic"               column="IS_PUBLIC"              />
+		<result property="updateReason"           column="UPDATE_REASON"          />
+		<result property="approvalStatus"         column="APPROVAL_STATUS"        />
+		<result property="portalId"               column="PORTAL_ID"              />
+		<result property="registerId"             column="REGISTER_ID"            />
+		<result property="registerName"           column="REGISTER_NAME"          />
+		<result property="registDate"             column="REGIST_DATE"            /> 
+		<result property="isAbolition"            column="IS_ABOLITION"           /> 
+		<result property="tag"                    column="TAG"                    /> 
+		<result property="manualType"             column="MANUAL_TYPE"            />
+		<result property="indexRowNum"            column="INDEX_ROWNUM"           />
+		<result property="registerEnglishName"    column="REGISTER_ENGLISH_NAME"  />
+	</resultMap>
+	
+	<!-- ANSI -->
+	<insert id="create" parameterClass="ManualVersion"> 
+      <![CDATA[ 
+           INSERT INTO IKEP4_WM_MANUAL_VERSION (/* [ManualVersion_SqlMap.xml] ManualVersion.create */
+           		VERSION_ID, MANUAL_ID, VERSION, VERSION_TITLE, VERSION_CONTENTS, 
+				VERSION_ATTACH_COUNT, IS_PUBLIC, UPDATE_REASON, APPROVAL_STATUS, PORTAL_ID, 
+				REGISTER_ID, REGISTER_NAME, REGIST_DATE, IS_ABOLITION, TAG)  
+           VALUES (#versionId#, #manualId#, #version#, #versionTitle#, #versionContents#,
+				#versionAttachCount#, #isPublic#, #updateReason#, #approvalStatus#, #portalId#,
+				#registerId#, #registerName#, CURRENT_TIMESTAMP, #isAbolition#, #tag#)
+       ]]>
+   </insert>
+   
+   	<!-- ANSI -->
+	<select id="get" parameterClass="java.lang.String" resultMap="manualVersionResult">
+	  <![CDATA[
+		   SELECT /* [ManualVersion_SqlMap.xml] ManualVersion.get */
+				  A.*,
+				  '' AS MANUAL_TYPE,
+				  0 AS INDEX_ROWNUM,
+				  '' AS REGISTER_ENGLISH_NAME
+		     FROM IKEP4_WM_MANUAL_VERSION A
+		    WHERE A.VERSION_ID = #versionId#
+	   ]]>
+	</select>
+	
+	<!-- ANSI -->
+	<update id="update" parameterClass="ManualVersion">
+	  <![CDATA[
+		   UPDATE IKEP4_WM_MANUAL_VERSION /* [ManualVersion_SqlMap.xml] ManualVersion.update */ 
+		      SET MANUAL_ID            = #manualId#,          
+				  VERSION              = #version#,           
+				  VERSION_TITLE        = #versionTitle#,      
+				  VERSION_CONTENTS     = #versionContents#,   
+				  VERSION_ATTACH_COUNT = #versionAttachCount#,
+				  IS_PUBLIC            = #isPublic#,          
+				  UPDATE_REASON        = #updateReason#,      
+				  APPROVAL_STATUS      = #approvalStatus#,    
+				  PORTAL_ID            = #portalId#,
+				  IS_ABOLITION         = #isAbolition#,
+				  TAG                  = #tag#
+		    WHERE VERSION_ID = #versionId#
+	   ]]>
+	</update>
+   
+   <!-- ANSI -->
+   <delete id="remove" parameterClass="java.lang.String">
+      <![CDATA[
+	       DELETE FROM IKEP4_WM_MANUAL_VERSION /* [ManualVersion_SqlMap.xml] ManualVersion.remove */ 
+	        WHERE VERSION_ID = #versionId#
+	   ]]>
+	</delete>
+	
+	<!-- ANSI -->
+	<select id="count" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+	  <![CDATA[
+		   SELECT /* [ManualVersion_SqlMap.xml] ManualVersion.count */ 
+		   		  COUNT(1) 
+		     FROM IKEP4_WM_MANUAL_VERSION 
+		    WHERE VERSION_ID = #versionId#
+	   ]]>
+	</select>
+	
+	<!-- MS SQL -->
+	<!-- //개인 업무 매뉴얼 버젼 조회 개수 -->
+	<select id="countMyManualVersion" parameterClass="ManualSearchCondition" resultClass="java.lang.Integer">
+	  <![CDATA[
+		   SELECT /* [ManualVersion_SqlMap.xml] ManualVersion.countMyManualVersion */ 
+		   		  COUNT(1) 
+		     FROM IKEP4_WM_MANUAL_VERSION A
+		     	  INNER JOIN IKEP4_WM_MANUAL B
+		     	  	 ON A.MANUAL_ID = B.MANUAL_ID 
+		     		AND A.PORTAL_ID = B.PORTAL_ID
+			WHERE A.PORTAL_ID = #portalId#
+			  AND A.REGISTER_ID = #registerId#
+	  ]]>
+	      <isNotEmpty property="searchText"> 
+			  <isEqual property="searchType" compareValue="A">
+			  <![CDATA[ 
+		 		  AND A.VERSION_TITLE LIKE '%'+ #searchText# + '%'
+		 	  ]]>
+			  </isEqual>
+			  <isEqual property="searchType" compareValue="B">
+			  <![CDATA[ 
+		 		  AND A.REGISTER_NAME LIKE '%'+ #searchText# + '%' 
+			  ]]>
+			  </isEqual> 
+		   </isNotEmpty>
+	</select>
+	
+	<!-- MS SQL -->
+	<!-- //개인 업무 매뉴얼 버젼  조회 -->
+	<select id="listMyManualVersion" parameterClass="ManualSearchCondition" resultMap="manualVersionResult">
+	  <![CDATA[
+	  	   SELECT /* [ManualVersion_SqlMap.xml] ManualVersion.listMyManualVersion */ 
+	  	   		  A.*
+	  	     FROM (SELECT A.*
+	  	     		 FROM (SELECT Row_number() OVER (ORDER BY A.REGIST_DATE DESC) AS INDEX_ROWNUM,
+	  	     		 			  A.*,
+	  	     		 			  B.MANUAL_TYPE,
+	  	     		 			  C.USER_ENGLISH_NAME AS REGISTER_ENGLISH_NAME
+						     FROM IKEP4_WM_MANUAL_VERSION A
+								  INNER JOIN IKEP4_WM_MANUAL B
+								  	 ON A.MANUAL_ID = B.MANUAL_ID 
+						      		AND A.PORTAL_ID = B.PORTAL_ID
+								  INNER JOIN IKEP4_EV_USER C
+								  	 ON C.USER_ID = A.REGISTER_ID
+						     		AND C.PORTAL_ID = A.PORTAL_ID
+						    WHERE A.PORTAL_ID = #portalId#
+							  AND A.REGISTER_ID = #registerId#
+	   ]]>
+	                <isNotEmpty property="searchText"> 
+						  <isEqual property="searchType" compareValue="A">
+		   					<![CDATA[ 
+			   			  	  AND A.VERSION_TITLE LIKE '%'+ #searchText# + '%'
+		    				]]>
+						  </isEqual>
+						  <isEqual property="searchType" compareValue="B">
+		   					<![CDATA[ 
+			   			  	  AND A.REGISTER_NAME LIKE '%'+ #searchText# + '%' 
+		    				]]>
+						  </isEqual> 
+					</isNotEmpty>	  
+	   <![CDATA[				      
+		    			  ) A
+		    		WHERE INDEX_ROWNUM <= #endRowIndex# 
+		    	  ) A
+		    WHERE INDEX_ROWNUM > #startRowIndex#
+	   ]]>
+	</select>
+	
+	<!-- ANSI -->
+	<!-- //업무 매뉴얼 버젼  조회 개수 -->
+	<select id="countManualVersion" parameterClass="ManualSearchCondition" resultClass="java.lang.Integer">
+	  <![CDATA[
+		   SELECT /* [ManualVersion_SqlMap.xml] ManualVersion.countManualVersion */ 
+		   		  COUNT(1) 
+		     FROM IKEP4_WM_MANUAL A
+			      INNER JOIN IKEP4_WM_MANUAL_VERSION B
+			      	 ON B.MANUAL_ID = A.MANUAL_ID
+				  	AND B.PORTAL_ID = A.PORTAL_ID
+				  	AND B.VERSION < A.VERSION
+			WHERE A.MANUAL_ID = #manualId#
+			  AND A.PORTAL_ID = #portalId#
+			  AND B.VERSION >= 1
+			  AND B.IS_PUBLIC = 1 
+	  ]]>
+	</select>
+   
+   	<!-- MS SQL -->
+	<!-- //업무 매뉴얼 버젼  조회 -->
+	<select id="listManualVersion" parameterClass="ManualSearchCondition" resultMap="manualVersionResult">
+	  <![CDATA[
+		   SELECT /* [ManualVersion_SqlMap.xml] ManualVersion.listManualVersion */
+		   		  A.*,
+		     	  '' AS MANUAL_TYPE
+		     FROM (SELECT A.*
+		     		 FROM (SELECT Row_number() OVER (ORDER BY B.VERSION DESC) AS INDEX_ROWNUM,
+		     		 			  B.*,
+		     		 			  C.USER_ENGLISH_NAME AS REGISTER_ENGLISH_NAME
+							 FROM IKEP4_WM_MANUAL A
+							      INNER JOIN IKEP4_WM_MANUAL_VERSION B
+							      	 ON B.MANUAL_ID = A.MANUAL_ID
+							  		AND B.PORTAL_ID = A.PORTAL_ID
+							  		AND B.VERSION < A.VERSION
+							      INNER JOIN IKEP4_EV_USER C
+							      	 ON C.USER_ID = B.REGISTER_ID
+						      		AND C.PORTAL_ID = B.PORTAL_ID
+							WHERE A.MANUAL_ID = #manualId#
+							  AND A.PORTAL_ID = #portalId#
+							  AND B.VERSION >= 1
+							  AND B.IS_PUBLIC = 1
+						  ) A
+					WHERE INDEX_ROWNUM <= #endRowIndex#
+				  )	A					  
+			WHERE A.INDEX_ROWNUM > #startRowIndex#	  
+	   ]]>
+	</select>
+   	
+   	<!-- MS SQL -->
+	<!-- //최상위 매뉴얼 버젼 조회 -->
+	<select id="getTopManualVersion" parameterClass="ManualPk" resultMap="manualVersionResult">
+	  <![CDATA[
+		   SELECT /* [ManualVersion_SqlMap.xml] ManualVersion.getTopManualVersion */
+		   		  TOP 1 
+				  A.*,
+				  '' AS MANUAL_TYPE,
+				  0 AS INDEX_ROWNUM
+			 FROM (SELECT A.*,
+			 			  B.USER_ENGLISH_NAME AS REGISTER_ENGLISH_NAME
+				     FROM IKEP4_WM_MANUAL_VERSION A
+				     	  INNER JOIN IKEP4_EV_USER B
+				     	  	 ON B.USER_ID = A.REGISTER_ID
+				      		AND B.PORTAL_ID = A.PORTAL_ID
+				    WHERE A.MANUAL_ID = #manualId#
+				      AND A.PORTAL_ID = #portalId#
+				  ) A
+			ORDER BY A.VERSION DESC
+	   ]]>
+	</select>
+   	
+   	<!-- ANSI -->
+	<!-- //업무 매뉴얼 버젼 삭제 -->
+	<delete id="removeManualVersion" parameterClass="ManualVersionPk">
+      <![CDATA[
+	       DELETE FROM IKEP4_WM_MANUAL_VERSION /* [ManualVersion_SqlMap.xml] ManualVersion.removeManualVersion */ 
+	        WHERE VERSION_ID = #versionId#
+		      AND PORTAL_ID = #portalId#
+	   ]]>
+	</delete>
+   
+   	<!-- ANSI -->
+	<!-- //업무 매뉴얼 버젼 조회 -->
+	<select id="getManualVersion" parameterClass="ManualVersionPk" resultMap="manualVersionResult">
+	  <![CDATA[
+		   SELECT /* [ManualVersion_SqlMap.xml] ManualVersion.getManualVersion */
+				  A.*,
+				  '' AS MANUAL_TYPE,
+				  0 AS INDEX_ROWNUM,
+				  B.USER_ENGLISH_NAME AS REGISTER_ENGLISH_NAME
+		     FROM IKEP4_WM_MANUAL_VERSION A
+		     	  INNER JOIN IKEP4_EV_USER B
+		     	  	 ON B.USER_ID = A.REGISTER_ID
+		      		AND B.PORTAL_ID = A.PORTAL_ID
+		    WHERE A.VERSION_ID = #versionId#
+		      AND A.PORTAL_ID = #portalId#
+	   ]]>
+	</select>	
+	
+	<!-- ANSI -->
+	<!-- //업무 매뉴얼 버젼 수정 -->
+	<update id="updateManualVersion" parameterClass="ManualVersion">
+	  <![CDATA[
+		   UPDATE IKEP4_WM_MANUAL_VERSION /* [ManualVersion_SqlMap.xml] ManualVersion.updateManualVersion */ 
+		      SET MANUAL_ID            = #manualId#,          
+				  VERSION              = #version#,           
+				  VERSION_TITLE        = #versionTitle#,      
+				  VERSION_CONTENTS     = #versionContents#,   
+				  VERSION_ATTACH_COUNT = #versionAttachCount#,
+				  IS_PUBLIC            = #isPublic#,          
+				  UPDATE_REASON        = #updateReason#,      
+				  APPROVAL_STATUS      = #approvalStatus#,
+				  IS_ABOLITION         = #isAbolition#,
+				  TAG                  = #tag#
+		    WHERE VERSION_ID = #versionId#
+		      AND PORTAL_ID = #portalId#
+	   ]]>
+	</update>
+	
+	<!-- ANSI -->
+	<!-- //상신중인 매뉴얼 버젼 갯수 -->
+	<select id="countSubmittingManualVersion" parameterClass="ManualPk" resultClass="java.lang.Integer">
+	  <![CDATA[
+		   SELECT /* [ManualVersion_SqlMap.xml] ManualVersion.countSubmittingManualVersion */ 
+		   		  COUNT(1) 
+		     FROM IKEP4_WM_MANUAL_VERSION
+		    WHERE MANUAL_ID = #manualId#
+		      AND PORTAL_ID = #portalId#
+		      AND APPROVAL_STATUS = 'B'
+	  ]]>
+	</select>
+   	
+   	<!-- ANSI -->
+	<!-- //매뉴얼 테이블에 존재하는 매뉴얼 버젼 정보 조회 -->
+	<select id="getManualVersionBymanualId" parameterClass="ManualPk" resultMap="manualVersionResult">
+	  <![CDATA[
+		   SELECT /* [ManualVersion_SqlMap.xml] ManualVersion.getManualVersionBymanualId */
+				  B.*,
+				  '' AS MANUAL_TYPE,
+				  0 AS INDEX_ROWNUM,
+				  C.USER_ENGLISH_NAME AS REGISTER_ENGLISH_NAME
+		     FROM IKEP4_WM_MANUAL A
+		          INNER JOIN IKEP4_WM_MANUAL_VERSION B
+		          	 ON B.MANUAL_ID = A.MANUAL_ID
+		      		AND B.VERSION = A.VERSION
+		          INNER JOIN IKEP4_EV_USER C
+		          	 ON C.USER_ID = B.REGISTER_ID
+		      		AND C.PORTAL_ID = B.PORTAL_ID
+		    WHERE A.MANUAL_ID = #manualId#
+		      AND A.PORTAL_ID = #portalId#
+	   ]]>
+	</select>	
+	
+</sqlMap>

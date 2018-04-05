@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="support.tagging.dao.TagLink">
+
+	<typeAlias alias ="Tag" type="com.lgcns.ikep4.support.tagging.model.Tag"/>
+	
+  <resultMap class="Tag" id="TagResult">
+    <result column="TAG_ID"  		property="tagId" />
+    <result column="TAG_ITEM_ID"  	property="tagItemId" />
+    <result column="TAG_ITEM_TYPE"  property="tagItemType" />
+    <result column="REGISTER_ID"  	property="registerId" />
+    <result column="REGISTER_NAME"  property="registerName" />
+    <result column="REGIST_DATE"  	property="registDate" />
+  </resultMap>
+  
+  <!-- ANSI -->
+  <select id="select" parameterClass="Tag" resultMap="TagResult">
+    SELECT 				/* [TagLink_SqlMap.xml] TagLink.select */
+    	TAG_ID
+    	, TAG_ITEM_ID
+    	, TAG_ITEM_TYPE
+    	, REGISTER_ID
+    	, REGISTER_NAME
+    	, REGIST_DATE
+    FROM IKEP4_TG_LINK
+    WHERE TAG_ID = #tagId#
+      AND TAG_ITEM_ID = #tagItemId#
+      AND TAG_ITEM_TYPE = #tagItemType#
+  </select>
+  
+  <!-- ANSI -->
+  <insert id="insert" parameterClass="Tag">
+    INSERT INTO IKEP4_TG_LINK (		/* [TagLink_SqlMap.xml] TagLink.insert */
+    	TAG_ID
+    	, TAG_ITEM_ID
+    	, TAG_ITEM_TYPE
+    	, REGISTER_ID
+    	, REGISTER_NAME
+    	, REGIST_DATE
+    	, TAG_ITEM_SUB_TYPE
+    	, SORT_ORDER
+    	, PORTAL_ID
+    )VALUES (
+    	#tagId#
+    	, #tagItemId#
+    	, #tagItemType#
+    	, #registerId#
+    	, #registerName#
+    	, CURRENT_TIMESTAMP
+    	, #tagItemSubType#
+    	, #sortOrder#
+    	, #portalId#
+    )
+  </insert>
+	
+	<!-- ANSI -->
+   <delete id="delete" parameterClass="Tag">
+    DELETE from IKEP4_TG_LINK			/* [TagLink_SqlMap.xml] TagLink.delete */
+    WHERE TAG_ID = #tagId#
+      AND TAG_ITEM_ID = #tagItemId#
+      AND TAG_ITEM_TYPE = #tagItemType#
+  </delete>
+  
+  	<!-- ANSI -->
+   <delete id="deleteByItem" parameterClass="Tag">
+    DELETE from IKEP4_TG_LINK				/* [TagLink_SqlMap.xml] TagLink.deleteByItem */
+    WHERE TAG_ITEM_ID = #tagItemId#
+      AND TAG_ITEM_TYPE = #tagItemType#
+  </delete>
+  
+</sqlMap>

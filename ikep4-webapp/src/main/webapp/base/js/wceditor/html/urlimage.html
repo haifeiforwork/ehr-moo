@@ -1,0 +1,33 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="stylesheet" type="text/css" href="../css/html.css">
+<script type="text/javascript" src="/ikep4-webapp/base/js/jquery/jquery-1.6.2.min.js"></script>
+<script type="text/javascript">
+	function checkValue(){		
+		if($.trim($("#urlImage").val())===""){
+			alert("이미지를 선택해주세요");
+			$("#urlImage")[0].focus();
+			return;
+		}
+		if(!parent.WCEditorLib.existExt($("#urlImage").val(), "IMAGE")){
+			alert("이미지를 선택해주세요");
+			return;
+		}
+		
+		parent.WCEditor.setHtml("<img src=\"" + $("#urlImage").val() + "\" border=\"0\"/>", "urlimage");
+	}
+	
+</script>
+</head>
+<body>
+<div id="ifrmMainDiv">
+	<div id="ifrmLayoutDiv" style="padding:5px;">
+		<div style="margin-bottom:10px;"><input class="txt-default" type="text" id="urlImage" name="urlImage" size="30" />
+			 <input type="button" class="btn-default" value="적용" onclick="checkValue();" />
+		</div>
+    </div>
+</div>	
+</body>
+</html>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="lightpack.cafe.board.dao.boardRecommend">
+  <typeAlias alias="cfBoardRecommend"   type="com.lgcns.ikep4.lightpack.cafe.board.model.BoardRecommend"/>
+  <typeAlias alias="cfBoardRecommendPK" type="com.lgcns.ikep4.lightpack.cafe.board.model.BoardRecommendPK"/>
+  
+  <resultMap class="com.lgcns.ikep4.lightpack.cafe.board.model.BoardRecommend" id="boardRecommendResult"> 
+    <result column="ITEM_ID"     jdbcType="VARCHAR" property="itemId" />
+    <result column="REGISTER_ID" jdbcType="VARCHAR" property="registerId" />
+    <result column="REGIST_DATE" jdbcType="DATE"    property="registDate" />
+  </resultMap> 
+   
+  <insert id="create" parameterClass="cfBoardRecommend"> 
+    INSERT INTO IKEP4_CF_BD_RECOMMEND /* [Board_Recommend_SqlMap.xml] lightpack.cafe.board.dao.boardRecommend.insert */ 
+           (ITEM_ID, REGISTER_ID, REGIST_DATE)
+    VALUES (#itemId#, #registerId#,  SYSDATE)
+  </insert>
+   
+  <select id="exists" parameterClass="cfBoardRecommendPK" resultClass="int">
+    SELECT /* [Board_Recommend_SqlMap.xml] lightpack.cafe.board.dao.boardRecommend.exists */
+           COUNT(*)
+    FROM   IKEP4_CF_BD_RECOMMEND
+    WHERE  ITEM_ID = #itemId#
+    AND    REGISTER_ID = #registerId#
+  </select> 
+  
+  <update id="update" parameterClass="cfBoardRecommend"> 
+    UPDATE IKEP4_CF_BD_RECOMMEND /* [Board_Recommend_SqlMap.xml] lightpack.cafe.board.dao.boardRecommend.update */
+    SET REGIST_DATE = SYSDATE
+    WHERE ITEM_ID = #itemId#
+    AND REGISTER_ID = #registerId#
+  </update>
+  <delete id="removeByItemId" parameterClass="string"> 
+    DELETE FROM IKEP4_CF_BD_RECOMMEND /* [Board_Recommend_SqlMap.xml] lightpack.cafe.board.dao.boardRecommend.removeByItemId */
+    WHERE ITEM_ID = #itemId#
+  </delete>   
+</sqlMap>

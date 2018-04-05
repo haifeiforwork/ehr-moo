@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="collpack.fourm.dao.FrItemScore" >
+ 
+ <typeAlias alias = "FrItemScore" type="com.lgcns.ikep4.collpack.forum.model.FrItemScore"/>
+ 
+  <resultMap id="FrItemScoreResult" class="com.lgcns.ikep4.collpack.forum.model.FrItemScore" >
+    <result column="ITEM_ID" 	property="itemId" />
+    <result column="ITEM_SCORE" property="itemScore" />
+  </resultMap>
+  
+  <!-- ANSI -->
+   <insert id="create" parameterClass="FrItemScore" >
+    INSERT 							/* [FrItemScore_SqlMap.xml] FrItemScore.create */
+    INTO IKEP4_FR_ITEM_SCORE (
+    	ITEM_ID
+    	,ITEM_SCORE
+    ) VALUES (
+	    #itemId#
+	    ,#itemScore#
+    )
+  </insert>
+  
+  <!-- ANSI -->
+   <delete id="remove" parameterClass="String" >
+    DELETE 					/* [FrItemScore_SqlMap.xml] FrItemScore.remove */
+    FROM IKEP4_FR_ITEM_SCORE
+    WHERE ITEM_ID = #itemId#
+  </delete>
+  
+    <!-- ANSI -->
+   <delete id="removeByDiscussionId" parameterClass="String" >
+    DELETE 					/* [FrItemScore_SqlMap.xml] FrItemScore.removeByDiscussionId */
+    FROM IKEP4_FR_ITEM_SCORE
+    WHERE ITEM_ID IN (
+				    	SELECT  ITEM_ID					
+					    FROM IKEP4_FR_ITEM		
+					    WHERE DISCUSSION_ID = #discussionId#
+					   )
+  </delete>
+  
+    <!-- ANSI -->
+   <delete id="removeAll" parameterClass="String" >
+    DELETE 					/* [FrItemScore_SqlMap.xml] FrItemScore.removeAll */
+    FROM IKEP4_FR_ITEM_SCORE
+  </delete>
+  
+   <!-- MSSQL -->
+  <delete id="removeCount" parameterClass="int" >
+    DELETE 					/* [FrItemScore_SqlMap.xml] FrItemScore.removeCount */
+    FROM IKEP4_FR_ITEM_SCORE
+    WHERE ITEM_ID IN ( SELECT TOP $count$ 
+    						ITEM_ID
+                        FROM  IKEP4_FR_ITEM_SCORE 
+                        ORDER BY ITEM_SCORE DESC
+    				  )
+   
+  </delete>
+  
+</sqlMap>

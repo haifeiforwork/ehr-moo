@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="socialpack.socialanalyzer.dao.socialityPolicy" >
+	<typeAlias alias = "SocialityPolicy" type="com.lgcns.ikep4.socialpack.socialanalyzer.model.SocialityPolicy"/>
+	
+	<!-- 테이블 조회 결과 -->
+	<resultMap id="socialityPolicyResult" class="SocialityPolicy">
+		<result property="portalId"             column="PORTAL_ID"               />
+		<result property="iFollowerWeight"      column="I_FOLLOWER_WEIGHT"       />
+		<result property="iRetweetWeight"       column="I_RETWEET_WEIGHT"        />
+		<result property="iTweetWeight"         column="I_TWEET_WEIGHT"          />
+		<result property="iBlogVisitWeight"     column="I_BLOG_VISIT_WEIGHT"     />
+		<result property="iMaxValue"            column="I_MAX_VALUE"             />
+		<result property="fFollowerWeight"      column="F_FOLLOWER_WEIGHT"       />
+		<result property="fFollowingWeight"     column="F_FOLLOWING_WEIGHT"      />
+		<result property="fBothFollowingWeight" column="F_BOTH_FOLLOWING_WEIGHT" />
+		<result property="fMblogGroupWeight"    column="F_MBLOG_GROUP_WEIGHT"    />
+		<result property="fGuestbookWeight"     column="F_GUESTBOOK_WEIGHT"      />
+		<result property="fMaxValue"            column="F_MAX_VALUE"             />
+		<result property="registerId"           column="REGISTER_ID"             />
+		<result property="registerName"         column="REGISTER_NAME"           />
+		<result property="registDate"           column="REGIST_DATE"             />
+		<result property="updaterId"            column="UPDATER_ID"              />
+		<result property="updaterName"          column="UPDATER_NAME"            />
+		<result property="updateDate"           column="UPDATE_DATE"             />
+		<result property="iProfileVisitWeight"  column="I_PROFILE_VISIT_WEIGHT"  />
+	</resultMap>
+	
+	<insert id="create" parameterClass="SocialityPolicy"> 
+      <![CDATA[ 
+           INSERT INTO IKEP4_SN_SOCIALITY_POLICY (/* [SocialityPolicy_SqlMap.xml] SocialityPolicy.create */
+           		PORTAL_ID, I_FOLLOWER_WEIGHT, I_RETWEET_WEIGHT, I_TWEET_WEIGHT, I_BLOG_VISIT_WEIGHT, 
+				I_MAX_VALUE, F_FOLLOWER_WEIGHT, F_FOLLOWING_WEIGHT, F_BOTH_FOLLOWING_WEIGHT, F_MBLOG_GROUP_WEIGHT, 
+				F_GUESTBOOK_WEIGHT, F_MAX_VALUE, REGISTER_ID, REGISTER_NAME, REGIST_DATE, 
+				UPDATER_ID, UPDATER_NAME, UPDATE_DATE, I_PROFILE_VISIT_WEIGHT)  
+           VALUES (#portalId#, #iFollowerWeight#, #iRetweetWeight#, #iTweetWeight#, #iBlogVisitWeight#, 
+				#iMaxValue#, #fFollowerWeight#, #fFollowingWeight#, #fBothFollowingWeight#, #fMblogGroupWeight#, 
+				#fGuestbookWeight#, #fMaxValue#, #registerId#, #registerName#, SYSDATE, 
+				#updaterId#, #updaterName#, SYSDATE, #iProfileVisitWeight#)
+       ]]>
+   </insert>
+   
+	<select id="get" parameterClass="java.lang.String" resultMap="socialityPolicyResult">
+	  <![CDATA[
+		   SELECT /* [SocialityPolicy_SqlMap.xml] SocialityPolicy.get */
+				  A.*
+		     FROM IKEP4_SN_SOCIALITY_POLICY A
+		    WHERE PORTAL_ID = #portalId#
+	   ]]>
+	</select>
+	
+	<update id="update" parameterClass="SocialityPolicy">
+	  <![CDATA[
+		   UPDATE IKEP4_SN_SOCIALITY_POLICY /* [SocialityPolicy_SqlMap.xml] SocialityPolicy.update */ 
+		      SET I_FOLLOWER_WEIGHT       = #iFollowerWeight#,      
+				  I_RETWEET_WEIGHT        = #iRetweetWeight#,      
+				  I_TWEET_WEIGHT          = #iTweetWeight#,        
+				  I_BLOG_VISIT_WEIGHT     = #iBlogVisitWeight#,    
+				  I_MAX_VALUE             = #iMaxValue#,           
+				  F_FOLLOWER_WEIGHT       = #fFollowerWeight#,     
+				  F_FOLLOWING_WEIGHT      = #fFollowingWeight#,    
+				  F_BOTH_FOLLOWING_WEIGHT = #fBothFollowingWeight#,
+				  F_MBLOG_GROUP_WEIGHT    = #fMblogGroupWeight#,   
+				  F_GUESTBOOK_WEIGHT      = #fGuestbookWeight#,    
+				  F_MAX_VALUE             = #fMaxValue#,           
+				  UPDATER_ID              = #updaterId#,           
+				  UPDATER_NAME            = #updaterName#,         
+				  UPDATE_DATE             = SYSDATE,
+				  I_PROFILE_VISIT_WEIGHT  = #iProfileVisitWeight#
+		    WHERE PORTAL_ID = #portalId#
+	   ]]>
+	</update>
+   
+   <delete id="remove" parameterClass="java.lang.String">
+      <![CDATA[
+	       DELETE FROM IKEP4_SN_SOCIALITY_POLICY /* [SocialityPolicy_SqlMap.xml] SocialityPolicy.remove */ 
+	        WHERE PORTAL_ID = #portalId#
+	   ]]>
+	</delete>
+	
+	<select id="count" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+	  <![CDATA[
+		   SELECT /* [SocialityPolicy_SqlMap.xml] SocialityPolicy.count */ 
+		   		  COUNT(1) 
+		     FROM IKEP4_SN_SOCIALITY_POLICY 
+		    WHERE PORTAL_ID = #portalId#
+	   ]]>
+	</select>
+</sqlMap>

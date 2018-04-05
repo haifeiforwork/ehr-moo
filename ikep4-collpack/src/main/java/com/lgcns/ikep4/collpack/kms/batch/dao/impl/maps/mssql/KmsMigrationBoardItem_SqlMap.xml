@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="collpack.kms.batch.dao.KmsMigrationBoardItemDao"> 
+  
+	<!-- ANSI --> 
+	<select id="listInformationView" resultClass="java.util.HashMap">  
+		SELECT 
+		       DATE,
+		       SLIPNO,
+		       EMPNAME,
+		       LOGINID,
+		       EMPLOYEEID,
+		       USERID,
+		       SUBJECT,
+		       SOURCE,
+		       INFORMATION,
+		       INFORMATIONTEXT,
+		       OPINION,
+		       GROUPINGID1,
+		       GROUPINGNAME1,
+		       GROUPINGID2,
+		       GROUPINGNAME2,
+		       GROUPINGID3,
+		       GROUPINGNAME3,
+		       CLASS,
+		       MARK,
+		       EMPLOYEETAG,
+		       APPROVAL,
+		       DECISION,
+		       FINDNO,
+		       PRACTICALTAG,
+		       WIDEDIS1,
+		       WIDEDIS2,
+		       WIDEDIS3,
+		       OKDATE,
+		       ATTACHFILE1,
+		       ATTACHFILE2,
+		       ATTACHFILE3,
+		       ATTACHFILE4,
+		       ATTACHFILE5,
+		       VALUE1,
+		       VALUE2,
+		       VALUE3,
+		       VALUE4,
+		       VALUE5,
+		       VALUE6,
+		       VALUE7,
+		       VALUE8,
+		       VALUE9,
+		       VALUE10,
+		       VALUE11,
+		       KIND,
+		       SPACEID,
+		       SPACENAME,
+		       SYSTEMID,
+		       SYSTEMNAME,
+		       MEMOCOUNT 
+		  FROM VIEWEP_INFORMATION
+		 where date between '2012-07-01 00:00:00.000' and '2012-09-30 00:00:00.000'		  
+		 ORDER BY DATE DESC, SLIPNO		
+	</select>
+	
+	<select id="getInformation" resultClass="java.util.HashMap">  
+		SELECT DATE,
+		       SLIPNO,
+		       FINDNO,
+		       MARK,
+		       USERID,
+		       SOURCE,
+		       ATTACHFILE1,
+		       ATTACHFILE2,
+		       ATTACHFILE3,
+		       ATTACHFILE4,
+		       ATTACHFILE5,
+		       SUM(FILECOUNT1 + FILECOUNT2 + FILECOUNT3 + FILECOUNT4 + FILECOUNT5) AS FILECOUNT 
+		FROM 
+		(
+		SELECT 
+		   DATE,
+		       SLIPNO,
+		       FINDNO,
+		       MARK,
+		       USERID,
+		       SOURCE,
+		       ATTACHFILE1,
+		       ATTACHFILE2,
+		       ATTACHFILE3,
+		       ATTACHFILE4,
+		       ATTACHFILE5,
+		       CASE WHEN ATTACHFILE1 != '' THEN 1
+		       ELSE 0 END AS FILECOUNT1,
+		       CASE WHEN ATTACHFILE2 != '' THEN 1
+		       ELSE 0 END AS FILECOUNT2,
+		       CASE WHEN ATTACHFILE3 != '' THEN 1
+		       ELSE 0 END AS FILECOUNT3,
+		       CASE WHEN ATTACHFILE4 != '' THEN 1
+		       ELSE 0 END AS FILECOUNT4,
+		       CASE WHEN ATTACHFILE5 != '' THEN 1
+		       ELSE 0 END AS FILECOUNT5		 
+		  FROM INFORMATION 
+		  WHERE DATE = #DATE#
+		    AND SLIPNO = #SLIPNO#
+		 ) A
+		 GROUP BY DATE,
+		       SLIPNO,
+		       FINDNO,
+		       MARK,
+		       USERID,
+		       SOURCE,
+		       ATTACHFILE1,
+		       ATTACHFILE2,
+		       ATTACHFILE3,
+		       ATTACHFILE4,
+		       ATTACHFILE5	
+	</select>
+  	<select id="listInformationMemoView" resultClass="java.util.HashMap">  
+		SELECT 
+			   SYSNAME,
+		       EMPNAME,
+		       EMPLOYEEID,
+		       CONTENTS,
+		       CREATEDATE,
+		       DATE,
+		       SLIPNO,
+		       SEQ 
+		  FROM VIEWEP_INFORMATIONMEMO
+		 WHERE DATE = #DATE#
+		   AND SLIPNO = #SLIPNO#		
+	</select>
+	<select id="listInformationPracinfo" resultClass="java.util.HashMap">  
+		SELECT 
+		       SEQ,
+		       DATE,
+		       SLIPNO,
+		       PRACTICALDATE,
+		       PRACTICALSLIPNO,
+		       CREATEDATE 
+		  FROM INFORMATION_PRACINFO
+		  ORDER BY DATE DESC, SLIPNO	
+	</select>
+</sqlMap>

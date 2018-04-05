@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="sms" >
+	<typeAlias alias = "Sms" type="import com.lgcns.ikep4.util.idgen.service.IdgenService;model.Sms"/>
+	<typeAlias alias = "SmsReceiverSearchCondition" type="import com.lgcns.ikep4.util.idgen.service.IdgenService;search.SmsReceiverSearchCondition"/>
+	
+	<!-- SMS 테이블 조회 결과 -->
+	<resultMap id="result" class="Sms" >
+		<result property="smsId" 			column="SMS_ID" />
+		<result property="receiverId" 		column="RECEIVER_ID" />
+		<result property="receiverPhoneno" 	column="RECEIVER_PHONENO" />
+		<result property="contents" 		column="CONTENTS" />
+		<result property="resultCode" 		column="RESULT_CODE" />
+		<result property="registerId" 		column="REGISTER_ID" />
+		<result property="registerName" 	column="REGISTER_NAME" />		
+		<result property="registDate" 		column="REGIST_DATE" />
+		<result property="receiverName" 	column="RECEIVER_NAME" />
+		<result property="receiverEnglishName" 	column="RECEIVER_ENGLISH_NAME" />
+		<result property="receiverTeamName" column="RECEIVER_TEAM_NAME" />
+		<result property="receiverTeamEnglishName" column="RECEIVER_TEAM_ENGLISH_NAME" />
+	</resultMap>
+	
+	<!-- insert -->
+	<insert id="insert" parameterClass="Sms"> 
+      <![CDATA[ 
+			INSERT INTO IKEP4_SM_SMS ( 
+				SMS_ID,
+				RECEIVER_ID,
+				RECEIVER_PHONENO,
+				CONTENTS,
+				RESULT_CODE,
+				REGISTER_ID,
+				REGISTER_NAME,
+				REGIST_DATE
+			) VALUES ( 
+				#smsId#, 
+				#receiverId#, 
+				#receiverPhoneno#, 
+				#contents#, 
+				'0',
+				#registerId#,
+				#registerName#,
+				SYSDATE)      
+       ]]>
+   </insert>
+	
+   <!-- select -->
+	<select id="select" parameterClass="java.lang.String" resultMap="result">
+	  <![CDATA[
+       SELECT A.SMS_ID,
+              A.RECEIVER_ID,
+	          A.RECEIVER_PHONENO,
+	          B.USER_NAME RECEIVER_NAME,
+	          B.USER_ENGLISH_NAME RECEIVER_ENGLISH_NAME,
+	          B.TEAM_NAME RECEIVER_TEAM_NAME,
+	          B.TEAM_ENGLISH_NAME RECEIVER_TEAM_ENGLISH_NAME,
+	          A.CONTENTS,
+	          A.RESULT_CODE,
+	          A.REGISTER_ID,
+	          A.REGISTER_NAME,
+	          TO_CHAR(A.REGIST_DATE, 'YYYY-MM-DD HH:MM:SS') AS REGIST_DATE 
+        FROM IKEP4_SM_SMS A
+    		LEFT JOIN    IKEP4_EV_USER B
+    		ON      A.RECEIVER_ID = B.USER_ID
+	 	WHERE SMS_ID = #smsId#
+	   ]]>
+	</select>
+	
+	<!-- update -->
+	<update id="update" parameterClass="Sms">
+	  <![CDATA[
+		   UPDATE IKEP4_SM_SMS 
+		   SET CONTENTS = #contents#
+		   WHERE SMS_ID = #smsId#
+	   ]]>
+	</update>
+   
+   <!-- delete -->
+   <delete id="delete" parameterClass="java.lang.String">
+      <![CDATA[
+	       DELETE FROM IKEP4_SM_SMS WHERE SMS_ID = #smsId#
+	   ]]>
+	</delete>
+	
+    <!-- ANSI -->
+    <!-- delete -->
+    <delete id="deleteRecentSms">
+		DELETE FROM IKEP4_SM_SMS 
+		WHERE SMS_ID IN (
+		  SELECT  A.SMS_ID
+		  FROM (
+		       SELECT Row_number() OVER (ORDER BY REGIST_DATE DESC) AS NUM,SMS_ID
+		       FROM IKEP4_SM_SMS
+		       WHERE REGIST_DATE &lt; ADD_MONTHS(SYSDATE,-3)
+		      ) A WHERE NUM &gt; 100 )
+	</delete>
+	
+	<!-- ANSI -->	
+	<!-- selectRecentBottom -->
+	<select id="selectRecentBottom" resultMap="result">	
+	    SELECT SMS_ID,
+	           RECEIVER_ID, 
+	           RECEIVER_PHONENO,
+	           CONTENTS,
+	           RESULT_CODE,
+	           REGISTER_ID,
+	           REGISTER_NAME,  
+	           REGIST_DATE,
+	           RECEIVER_NAME,
+	           RECEIVER_ENGLISH_NAME,
+	           RECEIVER_TEAM_NAME,
+	           RECEIVER_TEAM_ENGLISH_NAME 
+	      FROM (
+		        SELECT  Row_number() OVER (ORDER BY A.REGIST_DATE DESC) AS NUM,
+		        		A.SMS_ID,
+			            A.RECEIVER_ID, 
+			            A.RECEIVER_PHONENO,
+				        A.CONTENTS,
+				        A.RESULT_CODE,
+				        A.REGISTER_ID,
+				        A.REGISTER_NAME,  
+				        A.REGIST_DATE,
+				        B.USER_NAME RECEIVER_NAME,
+				        B.USER_ENGLISH_NAME RECEIVER_ENGLISH_NAME,
+				        B.TEAM_NAME RECEIVER_TEAM_NAME,
+				        B.TEAM_ENGLISH_NAME RECEIVER_TEAM_ENGLISH_NAME          
+		        FROM IKEP4_SM_SMS A
+		        LEFT JOIN    IKEP4_EV_USER B
+		        ON        A.RECEIVER_ID = B.USER_ID        
+		        WHERE SMS_ID IN (
+		              SELECT  MAX(SMS_ID) SMS_ID
+		              FROM IKEP4_SM_SMS 
+		              WHERE REGISTER_ID = #registerId#
+		              GROUP BY RECEIVER_PHONENO
+		        ) 
+	    ) A
+		WHERE NUM &lt;= 4						    
+	</select>
+	
+	<!-- ANSI -->
+	<!-- selectAll -->
+	<select id="selectAll" resultMap="result">	
+      SELECT  
+          SMS_ID, 
+          RECEIVER_ID,
+          RECEIVER_PHONENO,
+          CONTENTS,
+		  RESULT_CODE,
+		  REGISTER_ID,
+		  REGISTER_NAME,	
+		  REGIST_DATE,
+          RECEIVER_NAME,
+          RECEIVER_ENGLISH_NAME,
+          RECEIVER_TEAM_NAME,
+          RECEIVER_TEAM_ENGLISH_NAME 
+	  FROM    (  
+			   SELECT	Row_number() OVER (ORDER BY A.SMS_ID DESC) AS RNUM,
+			   			A.SMS_ID,
+			   			A.RECEIVER_ID,
+						A.RECEIVER_PHONENO,
+				        B.USER_NAME RECEIVER_NAME,
+				        B.USER_ENGLISH_NAME RECEIVER_ENGLISH_NAME,
+				        B.TEAM_NAME RECEIVER_TEAM_NAME,
+				        B.TEAM_ENGLISH_NAME RECEIVER_TEAM_ENGLISH_NAME, 
+						A.CONTENTS,
+						A.RESULT_CODE,
+						A.REGISTER_ID,
+						A.REGISTER_NAME,
+						A.REGIST_DATE AS REGIST_DATE 
+			    FROM IKEP4_SM_SMS A
+	    		LEFT JOIN    IKEP4_EV_USER B
+	    		ON      A.RECEIVER_ID = B.USER_ID							    
+			    WHERE A.REGISTER_ID = #registerId#
+	  ) F
+	  WHERE   RNUM &gt; #startRowIndex#	AND RNUM &lt;= #endRowIndex# 						    
+	</select>
+	
+	<select id="countSmsReceiverBySearchCondition" parameterClass="SmsReceiverSearchCondition" resultClass="int">  
+		SELECT /* [Sms_SqlMap.xml] sms.countBySearchCondition */ 
+	           COUNT(*)
+		FROM   IKEP4_SM_SMS
+		WHERE  1 = 1 
+		AND    REGISTER_ID = #registerId#
+  </select> 
+	
+	<!-- selectCount -->
+	<select id="selectCount" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+	  <![CDATA[
+		   SELECT COUNT(SMS_ID) FROM IKEP4_SM_SMS WHERE SMS_ID = #smsId#
+	   ]]>
+	</select>
+	
+	<!-- selectRecentBottomCount -->
+	<select id="selectRecentBottomCount" parameterClass="Sms" resultClass="int">
+	  <![CDATA[
+           SELECT COUNT(*) FROM IKEP4_SM_SMS WHERE REGISTER_ID = #registerId#
+           AND TO_CHAR(REGIST_DATE,'YYYYMM') = TO_CHAR(SYSDATE,'YYYYMM')
+	   ]]>
+	</select>	
+	
+</sqlMap>

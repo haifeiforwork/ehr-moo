@@ -1,0 +1,304 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ko">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>IKEP Workflow</title>
+<link rel="stylesheet" type="text/css" href="../../css/theme01/jquery_ui_custom.css" />
+<link rel="stylesheet" type="text/css" href="../../css/common.css" />
+<link rel="stylesheet" type="text/css" href="../../css/workflow/style.css" />
+
+<script type="text/javascript" src="../../js/jquery/jquery-1.6.2.min.js"></script>
+<script type="text/javascript" src="../../js/jquery/jquery-ui-1.8.13.min.without.datepicker.js"></script>
+<script type="text/javascript" src="../../js/langResource/ko.js"></script>
+<script type="text/javascript" src="../../js/common.pack.js"></script>
+<script type="text/javascript">
+(function($) {
+	$(document).ready(function() {
+		$("#divTab_work1").tabs();
+		$("#divTab_work2").tabs();
+	});
+})(jQuery);
+
+function show_layer(){
+	$jq("#layer_p").dialog({width: 720, height:400, modal:true, resizable: false});
+	$jq("#layer_p").dialog("widget").addClass("ui-dialog1").addClass("ui-widget-content1");
+	$fdialog = $jq("#layer_p").dialog("widget").children(":first").addClass("ui-widget-workflow-header");
+	//$fdialog.firstchild
+	iKEP.debug($jq("#layer_p").dialog("widget").children(":first"));
+}
+</script>
+</head>
+
+<body>
+
+<div id="wrap">
+
+	<!--header start-->
+	<div id="header_l">	
+		<h1>IKEP4.0 WORKFLOW</h1>
+		<div class="btn t_close">
+			<a href="#a" title="t_close"><span>t_close</span></a>
+		</div>
+	<div id="header_r"></div>		
+	</div>
+	<!--//header end-->
+	
+	<!--container start-->
+	<div id="container">
+	
+		<div class="content_leftbox">
+			<!--lnb start-->
+			<div class="lnb">
+				<h1 class="none">레프트메뉴</h1>
+				<h2>Process Tree</h2>			
+				<div class="l_tree">
+					<div class="partition"><a class="button" href="#a"><span><img src="../../images/workflow/ic_plus.gif" alt="" />Partition</span></a></div>
+					<div class="l_tree_wrap"><img src="../../images/workflow/img_tree_sample.gif" alt="트리샘플" width="166" height="197" /></div>
+				</div>
+			</div>
+			<!--//lnb end-->	
+		</div>		
+		
+		<div class="content_rightbox">
+		<!--content start-->
+		<div id="content">
+		<h1 class="none">컨텐츠영역</h1>
+		
+			<!--t_box start-->
+			<div class="t_box">
+			
+				<div class="t_box_tab">		
+					<!--tab Start-->		
+					<div id="divTab_work1" class="iKEP_tab_work1">
+						<ul>
+							<li><a href="#tabs-1">Process A1</a></li>
+							<li><a href="#tabs-2">Process A2</a></li>
+							<li><a href="#tabs-3">Process A3</a></li>
+						</ul>
+					</div>		
+					<!--//tab End-->			
+				</div>
+				
+				<div class="t_box_conbox_l">									
+					<div class="t_box_btn textRight">
+						<ul>
+							<li>				
+								<div class="btn add">
+									<a class="button" href="#a"><span><img src="../../images/workflow/ic_add.gif" alt="" />추가</span></a>
+								</div>		
+							</li>
+							<li>				
+								<div class="btn add">
+									<a class="button" href="#a"><span><img src="../../images/workflow/ic_save.gif" alt="" />저장</span></a>
+								</div>		
+							</li>
+							<li>				
+								<div class="btn add">
+									<a class="button" href="#a"><span><img src="../../images/workflow/ic_arrange.gif" alt="" />배치</span></a>
+								</div>		
+							</li>
+							<li>				
+								<div class="btn add">
+									<a class="button" href="#a"><span><img src="../../images/workflow/ic_arrange_cancel.gif" alt="" />배치해제</span></a>
+								</div>		
+							</li>
+						</ul>
+					</div>
+					
+					<div class="t_box_con">	
+						<span class="ty1">상태 <img src="../../images/workflow/img_blue.gif" width="12" height="13" alt="활성" /> <img src="../../images/workflow/img_red.gif" width="12" height="13" alt="비활성" /></span>
+						<img src="../../images/workflow/line_tab_box.gif" width="2" height="11" alt="라인" />
+						<span class="ty1"><strong>버전1.0</strong> (기본)</span>				
+						<img src="../../images/workflow/line_tab_box.gif" width="2" height="11" alt="라인" />		
+						<span class="ty1"><strong>최종저장일시</strong> 2011.03.22 00:00:00</span>				
+						<img src="../../images/workflow/line_tab_box.gif" width="2" height="11" alt="라인" />	
+						<span class="ty1">배치여부</span>																
+					</div>					
+				<div class="t_box_conbox_r"></div>
+				</div>
+				
+			</div>
+			<!--//t_box end-->
+			
+			<!--p_box_con start-->
+			<div class="p_box_con">
+				<p>
+					프로세스가 선택되지 않았습니다.<br />
+					프로세스 트리에서 프로세스를 선택하거나 신규 프로세스를 <a href="#" class="bold">추가</a> 하세요. 
+				</p>
+			</div>
+			<!--//p_box_con end-->
+			
+			<!--p_box_info start-->
+			<div class="p_box_info_con">
+				<h1 class="none">프로세스 정보영역</h1>
+				<h2>Process</h2>			
+				<div class="box_ty1">
+
+					<!--tab Start-->		
+					<div id="divTab_work2" class="iKEP_tab_work2">
+						<div class="p_box_search">
+							<select title="검색조건" name="" class="select">
+								<option value="">EMAIL</option>
+								<option value="">SMS</option>								
+							</select>		
+							<a class="button_s" href="#a"><span>search</span></a>
+							<a class="button_s" href="#a" onclick="show_layer();"><span>add</span></a>																			
+						</div>					
+						<ul>
+							<li><a href="#tabs-1">기본정보</a></li>
+							<li><a href="#tabs-2">변수</a></li>
+							<li><a href="#tabs-3">고급</a></li>
+							<li><a href="#tabs-3">참여자</a></li>
+							<li><a href="#tabs-3">알림</a><img src="../../images/workflow/line_tab1.gif" width="1" height="19" alt="" /></li>														
+						</ul>
+					</div>		
+					<!--//tab End-->	
+					
+					<!--leftbox Start-->
+					<div class="leftbox">
+						<!--blockDetail Start-->					
+						<div class="blockDetail">
+							<table summary="리스트">
+								<caption></caption>
+								<thead>
+									<tr>
+										<th scope="col" width="25%" class="textCenter first">상태</th>
+										<th scope="col" width="25%" class="textCenter">수신자</th>
+										<th scope="col" width="25%" class="textCenter">알림</th>
+										<th scope="col" width="25%" class="textCenter last">메시지</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td class="textCenter first">ASSIGN</td>
+										<td class="textCenter"><span class="textCenter first">ASSIGN</span></td>
+										<td class="textCenter">5일 5시이후</td>
+										<td class="textCenter last"><span class="textCenter first">ASSIGN</span></td>
+									</tr>
+									<tr>
+										<td class="textCenter first">FINISH</td>
+										<td class="textCenter"><span class="textCenter first">ASSIGN</span></td>
+										<td class="textCenter">5일 5시이후</td>
+										<td class="textCenter last"><span class="textCenter first">ASSIGN</span></td>
+									</tr>	
+									<tr>
+										<td class="textCenter first">ASSIGN</td>
+										<td class="textCenter"><span class="textCenter first">ASSIGN</span></td>
+										<td class="textCenter">5일 5시이후</td>
+										<td class="textCenter last"><span class="textCenter first">ASSIGN</span></td>
+									</tr>
+									<tr>
+										<td class="textCenter first">FINISH</td>
+										<td class="textCenter"><span class="textCenter first">ASSIGN</span></td>
+										<td class="textCenter">5일 5시이후</td>
+										<td class="textCenter last"><span class="textCenter first">ASSIGN</span></td>
+									</tr>	
+									<tr>
+										<td class="textCenter first">ASSIGN</td>
+										<td class="textCenter"><span class="textCenter first">ASSIGN</span></td>
+										<td class="textCenter">5일 5시이후</td>
+										<td class="textCenter last"><span class="textCenter first">ASSIGN</span></td>
+									</tr>
+									<tr>
+										<td class="textCenter first">FINISH</td>
+										<td class="textCenter"><span class="textCenter first">ASSIGN</span></td>
+										<td class="textCenter">5일 5시이후</td>
+										<td class="textCenter last"><span class="textCenter first">ASSIGN</span></td>
+									</tr>																																								
+								</tbody>
+							</table>
+						</div>
+						<!--//blockDetail End-->	
+					</div>	
+					<!--leftbox End-->
+					
+					<!--centerbox Start-->
+					<div class="centerbox">
+						<span>	
+							<a class="button" href="#a"><span><img src="../../images/workflow/arrow2.png" alt="" /></span></a>
+							<div class="clear pt5"></div>
+							<a class="button" href="#a"><span><img src="../../images/workflow/arrow1.png" alt="" /></span></a>	
+						</span>					
+					</div>
+					<!--centerbox End-->
+					
+					<!--rightbox Start-->
+					<div class="rightbox">
+						<!--blockDetail Start-->					
+						<div class="blockDetail">
+							<table summary="리스트">
+								<caption></caption>
+								<thead>
+									<tr>
+										<th scope="col" width="25%" class="textCenter first">상태</th>
+										<th scope="col" width="25%" class="textCenter">수신자</th>
+										<th scope="col" width="25%" class="textCenter">알림</th>
+										<th scope="col" width="25%" class="textCenter last">메시지</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td class="textCenter first">ASSIGN</td>
+										<td class="textCenter"><span class="textCenter first">ASSIGN</span></td>
+										<td class="textCenter">5일 5시이후</td>
+										<td class="textCenter last"><span class="textCenter first">ASSIGN</span></td>
+									</tr>
+									<tr>
+										<td class="textCenter first">FINISH</td>
+										<td class="textCenter"><span class="textCenter first">ASSIGN</span></td>
+										<td class="textCenter">5일 5시이후</td>
+										<td class="textCenter last"><span class="textCenter first">ASSIGN</span></td>
+									</tr>	
+									<tr>
+										<td class="textCenter first">FINISH</td>
+										<td class="textCenter"><span class="textCenter first">ASSIGN</span></td>
+										<td class="textCenter">5일 5시이후</td>
+										<td class="textCenter last"><span class="textCenter first">ASSIGN</span></td>
+									</tr>	
+									<tr>
+										<td class="textCenter first">FINISH</td>
+										<td class="textCenter"><span class="textCenter first">ASSIGN</span></td>
+										<td class="textCenter">5일 5시이후</td>
+										<td class="textCenter last"><span class="textCenter first">ASSIGN</span></td>
+									</tr>		
+									<tr>
+										<td class="textCenter first">FINISH</td>
+										<td class="textCenter"><span class="textCenter first">ASSIGN</span></td>
+										<td class="textCenter">5일 5시이후</td>
+										<td class="textCenter last"><span class="textCenter first">ASSIGN</span></td>
+									</tr>	
+									<tr>
+										<td class="textCenter first">FINISH</td>
+										<td class="textCenter"><span class="textCenter first">ASSIGN</span></td>
+										<td class="textCenter">5일 5시이후</td>
+										<td class="textCenter last"><span class="textCenter first">ASSIGN</span></td>
+									</tr>																																		
+								</tbody>
+							</table>
+						</div>
+						<!--//blockDetail End-->	
+					</div>	
+					<!--rightbox End-->					
+
+				</div>
+			</div>
+		</div>
+		<!-- //content End-->
+		</div>
+		
+	</div>
+	<div class="clear"></div>
+	<!-- //container End-->	
+	
+	<!-- footer -->
+	<div id="footer_l">
+		<h1 class="none">푸터영역</h1>
+	<div id="footer_r"></div>
+	</div>
+	<!-- //footer End-->
+	
+</div>
+ 
+</body>
+</html>

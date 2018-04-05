@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="servicepack.seamlessmessage.seamlessmessageUserSeting">
+	
+	<typeAlias alias="SeamlessmessageUserSeting" type="com.lgcns.ikep4.servicepack.seamless.model.SeamlessmessageUserSeting" />
+	
+    <resultMap class="com.lgcns.ikep4.servicepack.seamless.model.SeamlessmessageUserSeting" id="result">		
+		<result column="REGISTER_ID"         property="registerId"        jdbcType="VARCHAR" />
+	    <result column="IS_SOURCE_DELETE"    property="isSourceDelete"    jdbcType="DECIMAL" />
+	    <result column="AUTO_CONNECT"        property="autoConnect"       jdbcType="DECIMAL" />
+	    <result column="REGIST_DATE"         property="registDate"        jdbcType="TIMESTAMP" />
+	    <result column="UPDATER_ID"          property="updaterId"         jdbcType="VARCHAR" />
+	    <result column="UPDATE_DATE"         property="updateDate"        jdbcType="TIMESTAMP" />
+	    <result column="INBOX_SYNC_COMPLETE" property="inboxSyncComplete" jdbcType="DECIMAL" />
+	    <result column="INBOX_SYNC_DATE"     property="inboxSyncDate"     jdbcType="TIMESTAMP" />
+	    <result column="SENT_SYNC_COMPLETE"  property="sentSyncComplete"  jdbcType="DECIMAL" />
+	    <result column="SENT_SYNC_DATE"      property="sentSyncDate"      jdbcType="TIMESTAMP" />
+	</resultMap>
+	 
+	<select id="get" parameterClass="String" resultMap="result">
+    	<![CDATA[
+    	/* [SeamlessMessage_UserSeting_SqlMap.xml] SeamlessmessageUserSeting.get */
+    	SELECT				REGISTER_ID, 
+    						IS_SOURCE_DELETE, 
+    						AUTO_CONNECT, 
+    						REGIST_DATE, 
+    						UPDATER_ID, 
+    						UPDATE_DATE, 
+    						CASE WHEN DATEDIFF(NOW(), - IFNULL(INBOX_SYNC_DATE, DATE_SUB(NOW(), INTERVAL 1 DAY))) * 24 > 1 THEN 0 ELSE INBOX_SYNC_COMPLETE END AS INBOX_SYNC_COMPLETE, 
+    						INBOX_SYNC_DATE, 
+    						CASE WHEN DATEDIFF(NOW(), - IFNULL(SENT_SYNC_DATE, DATE_SUB(NOW(), INTERVAL 1 DAY))) * 24 > 1 THEN 0 ELSE SENT_SYNC_COMPLETE END AS SENT_SYNC_COMPLETE, 
+    						SENT_SYNC_DATE
+		FROM 				IKEP4_UM_USER_SETTING
+    	WHERE 				REGISTER_ID = #registerId#
+    	]]>
+    </select>
+    
+    <select id="exists" parameterClass="string" resultClass="int">
+    	/* [SeamlessMessage_UserSeting_SqlMap.xml] SeamlessmessageUserSeting.exists */
+    	SELECT				COUNT(*)
+	    FROM 				IKEP4_UM_USER_SETTING
+    	WHERE 				REGISTER_ID = #registerId#
+	</select> 
+	
+	<insert id="create" parameterClass="SeamlessmessageUserSeting">
+		/* [SeamlessMessage_UserSeting_SqlMap.xml] SeamlessmessageUserSeting.create */
+	    INSERT INTO 		IKEP4_UM_USER_SETTING 
+	    					(  
+	    					REGISTER_ID, 
+	    					IS_SOURCE_DELETE, 
+	    					AUTO_CONNECT, 
+	    					REGIST_DATE, 
+	    					UPDATER_ID, 
+	    					UPDATE_DATE
+	    					) 
+		VALUES 				(
+							#registerId#, 
+							#isSourceDelete#, 
+							#autoConnect#, 
+							NOW(), 
+							#updaterId#, 
+							NOW()
+							)
+	</insert>
+	
+	<update id="update" parameterClass="SeamlessmessageUserSeting">
+		/* [SeamlessMessage_UserSeting_SqlMap.xml] SeamlessmessageUserSeting.update */
+		UPDATE 				IKEP4_UM_USER_SETTING 
+	    SET 				IS_SOURCE_DELETE = #isSourceDelete#, 
+	    					AUTO_CONNECT = #autoConnect#, 
+	    					UPDATER_ID = #updaterId#, 
+	    					UPDATE_DATE = NOW()
+	    WHERE 				REGISTER_ID = #registerId#
+	</update>
+	
+	<update id="updateInboxSyncStart" parameterClass="string">
+		/* [SeamlessMessage_UserSeting_SqlMap.xml] SeamlessmessageUserSeting.updateInboxSyncStart */
+		UPDATE 				IKEP4_UM_USER_SETTING 
+	    SET 				INBOX_SYNC_COMPLETE = 1, 
+	    					INBOX_SYNC_DATE = NOW()
+	    WHERE 				REGISTER_ID = #registerId#
+	</update>
+	
+	<update id="updateInboxSyncEnd" parameterClass="string">
+		/* [SeamlessMessage_UserSeting_SqlMap.xml] SeamlessmessageUserSeting.updateInboxSyncEnd */
+		UPDATE 				IKEP4_UM_USER_SETTING 
+	    SET 				INBOX_SYNC_COMPLETE = 0
+	    WHERE 				REGISTER_ID = #registerId#
+	</update>
+	
+	<update id="updateSentSyncStart" parameterClass="string">
+		/* [SeamlessMessage_UserSeting_SqlMap.xml] SeamlessmessageUserSeting.updateSentSyncStart */
+		UPDATE 				IKEP4_UM_USER_SETTING 
+	    SET 				SENT_SYNC_COMPLETE = 1, 
+	    					SENT_SYNC_DATE = NOW()
+	    WHERE 				REGISTER_ID = #registerId#
+	</update>
+	
+	<update id="updateSentSyncEnd" parameterClass="string">
+		/* [SeamlessMessage_UserSeting_SqlMap.xml] SeamlessmessageUserSeting.updateSentSyncEnd */
+		UPDATE 				IKEP4_UM_USER_SETTING 
+	    SET 				SENT_SYNC_COMPLETE = 0
+	    WHERE 				REGISTER_ID = #registerId#
+	</update>
+	
+	<delete id="remove" parameterClass="string">
+		/* [SeamlessMessage_UserSeting_SqlMap.xml] SeamlessmessageUserSeting.remove */
+		DELETE 
+		FROM 				IKEP4_UM_USER_SETTING 
+    	WHERE 				REGISTER_ID = #registerId#
+	</delete> 
+
+</sqlMap>

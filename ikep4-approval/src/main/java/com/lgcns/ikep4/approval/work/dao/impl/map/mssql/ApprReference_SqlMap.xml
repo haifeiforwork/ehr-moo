@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="com.lgcns.ikep4.approval.work.dao.ApprReference" >
+	<typeAlias alias="apprReference" type="com.lgcns.ikep4.approval.work.model.ApprReference"/>
+
+	<!-- 참조의견 목록정보 -->
+	<select id="list" parameterClass="java.lang.String" resultClass="apprReference"> 
+	SELECT
+		/* [apprReference_SqlMap.xml] com.lgcns.ikep4.approval.work.dao.ApprReference.list */
+		A.APPR_ID				AS	apprId,
+		A.USER_ID				AS	userId,
+		B.USER_NAME				AS	userName,
+		B.USER_ENGLISH_NAME		AS	userEnglishName,
+		C.JOB_TITLE_NAME		AS	jobTitleName,
+		C.JOB_TITLE_ENGLISH_NAME AS	jobTitleEnglishName,
+		A.GROUP_ID				AS	groupId,
+		B.TEAM_NAME				AS	groupName,
+		B.TEAM_ENGLISH_NAME		AS	groupEnglishName,
+		A.RECEIVE_MESSAGE		AS	receiveMessage,
+		A.VIEW_DATE				AS	viewDate,
+		A.UPDATE_DATE			AS	updateDate
+	FROM   
+		IKEP4_APPR_REFERENCE A
+		LEFT OUTER JOIN IKEP4_EV_USER B ON (A.USER_ID=B.USER_ID)
+		LEFT OUTER JOIN IKEP4_EV_JOB_TITLE C ON (B.JOB_TITLE_CODE=C.JOB_TITLE_CODE)
+	WHERE
+		A.APPR_ID		=	#apprId#
+		AND A.UPDATE_DATE IS NOT NULL
+		AND A.RECEIVE_MESSAGE IS NOT NULL		
+	ORDER BY 
+		A.UPDATE_DATE	ASC
+	</select>
+	
+	<select id="get" parameterClass="java.util.Map" resultClass="apprReference"> 
+	SELECT
+		/* [apprReference_SqlMap.xml] com.lgcns.ikep4.approval.work.dao.ApprReference.get */
+		A.APPR_ID				AS	apprId,
+		A.USER_ID				AS	userId,
+		B.USER_NAME				AS	userName,
+		B.USER_ENGLISH_NAME		AS	userEnglishName,
+		A.GROUP_ID				AS	groupId,
+		B.TEAM_NAME				AS	groupName,
+		B.TEAM_ENGLISH_NAME		AS	groupEnglishName,
+		A.RECEIVE_MESSAGE		AS	receiveMessage,
+		A.VIEW_DATE				AS	viewDate,
+		A.UPDATE_DATE			AS	updateDate
+	FROM   
+		IKEP4_APPR_REFERENCE A
+		LEFT OUTER JOIN IKEP4_EV_USER B ON (A.USER_ID=B.USER_ID)
+	WHERE
+		A.APPR_ID		=	#apprId#
+		AND A.USER_ID	=	#userId#		
+	</select>
+		
+	<!-- 참조자 존재유무 -->
+ 	<select id="exists" parameterClass="java.util.Map" resultClass="java.lang.Integer"> 
+	/* [apprReference_SqlMap.xml] com.lgcns.ikep4.approval.work.dao.ApprReference.exists */
+	SELECT 
+		count(APPR_ID)
+	FROM   
+		IKEP4_APPR_REFERENCE
+	WHERE
+    	APPR_ID 	=	#apprId#
+		AND	USER_ID	=	#userId#
+    	<isNotEmpty property="isMessage">
+		AND UPDATE_DATE IS NULL
+		AND RECEIVE_MESSAGE IS NULL
+		</isNotEmpty>		
+ 	</select>	
+	<insert id="update" parameterClass="apprReference"> 
+	/* [apprReference_SqlMap.xml] com.lgcns.ikep4.approval.work.dao.ApprReference.update */
+	<![CDATA[ 
+		UPDATE IKEP4_APPR_REFERENCE 
+		SET
+			RECEIVE_MESSAGE	=	#receiveMessage#,
+			UPDATE_DATE		=	CURRENT_TIMESTAMP
+		WHERE 
+			APPR_ID		=	#apprId#
+			AND	USER_ID	=	#userId#
+       ]]>
+  	</insert>
+	<insert id="updateRead" parameterClass="java.util.Map"> 
+	/* [apprReference_SqlMap.xml] com.lgcns.ikep4.approval.work.dao.ApprReference.updateRead */
+	<![CDATA[ 
+		UPDATE IKEP4_APPR_REFERENCE 
+		SET
+			VIEW_DATE		=	CURRENT_TIMESTAMP
+		WHERE 
+			APPR_ID		=	#apprId#
+			AND	USER_ID	=	#userId#
+       ]]>
+  	</insert>
+	<delete id="delete" parameterClass="java.util.Map"> 
+	/* [apprReference_SqlMap.xml] com.lgcns.ikep4.approval.work.dao.ApprReference.delete */
+	DELETE FROM 
+		IKEP4_APPR_REFERENCE
+	WHERE
+		APPR_ID		=	#apprId#
+		AND	USER_ID	=	#userId#
+	</delete>
+	
+</sqlMap>

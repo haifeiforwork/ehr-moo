@@ -1,0 +1,167 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ko">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Home</title>
+<link rel="stylesheet" type="text/css" href="../../css/guide.css" />
+<link rel="stylesheet" type="text/css" href="../../css/theme01/jquery_ui_custom.css" />
+<link rel="stylesheet" type="text/css" href="../../css/common.css" />
+<link rel="stylesheet" type="text/css" href="../../css/theme01/theme.css" />
+<link type="text/css" rel="stylesheet" href="../../css/syntaxhighlighter_3.0.83/shCoreDefault.css"/>
+<script type="text/javascript" src="../../js/jquery/jquery-1.6.2.min.js"></script>
+<script type="text/javascript" src="../../js/jquery/jquery-ui-1.8.13.min.without.datepicker.js"></script>
+<script type="text/javascript" src="../../js/jquery/jquery.ui.datepicker.customize.pack.js"></script>
+<!-- <script type="text/javascript" src="../../js/source/jquery/ui/jquery.ui.datepicker.customize.js"></script> -->
+<script type="text/javascript" src="../../js/syntaxhighlighter_3.0.83/shCore.js"></script>
+<script type="text/javascript" src="../../js/syntaxhighlighter_3.0.83/shBrushJScript.js"></script>
+<script type="text/javascript" src="../../js/langResource/ko.js"></script>
+<script type="text/javascript" src="../../js/common.pack.js"></script>
+
+<script type="text/javascript">
+(function($){
+	$(document).ready(function(){
+		SyntaxHighlighter.highlight();
+
+		$("#datepicker").datepicker($.extend($.extend($.datepicker.regional[iKEPLang.datepicker.langCode], {yearSuffix:""}), {
+			//inline: true,
+			changeYear:true,
+			changeMonth : true,
+			alarmDays : ["2011.04.12", "2011.04.23", "2011.05.01"],
+			onSelect: function(date) { alert(date); },
+			onChangeMonthYear : function(year, month, datepicker) {
+				iKEP.debug(arguments);
+			}
+		}));
+		$("#inputSepcialCalendar").datepicker();
+		$("#btnAddDate").click(function() {
+			$("#datepicker").datepicker("addAlarmDays", $(this).prev().val());
+		});
+		$("#btnRemoveDate").click(function() {
+			$("#datepicker").datepicker("removeAlarmDays", $(this).prev().prev().val());
+		});
+		
+		$("input.datepicker").datepicker({
+			onSelect: function(date, event) {
+				var arrDate = date.split(".");
+				var objDate = new Date(arrDate[0], (arrDate[1]-1), parseInt(arrDate[2], 10) + 6);
+				event.input.next("input.datepicker:eq(0)").val(objDate.getFullYear() + "." + (objDate.getMonth()+1) + "." + objDate.getDate());
+			}
+		});
+		
+		$("#date1").datepicker()
+			.next().eq(0).click(function() { $(this).prev().eq(0).datepicker("show"); });
+		
+		$("#date2" ).datepicker({
+			showOn: "button",
+			buttonImage: "../../images/icon/ic_cal.gif",
+			buttonImageOnly: true
+		});
+		
+		$("#date3").datepicker({
+			showOtherMonths : true,
+			selectOtherMonths: true,
+			hoverWeek : true,
+			maxDate : "2011.04.28"
+		});
+		
+		$("#date4").datepicker({
+			showOtherMonths : true,
+			selectOtherMonths: true,
+			hoverWeek : true,
+			//hoverWeekResult : "start",	// end
+			hoverRange : 7,
+			maxDate : "2011.04.18"
+		});
+
+	});
+})(jQuery);
+</script>
+</head>
+
+<body>
+<!--guideWrapper Start-->
+<div id="guideConFrame">
+
+	<div class="guideConTitle"><h2>Date picker</h2><a class="refer" target="_blank" href="http://jqueryui.com/demos/datepicker/">reference</a></div>
+	
+	<h4>UI sample</h4>
+	<a target="_blank" href="datepicker_pop.html">New Window</a>
+	<!--UI_sample_area Start-->
+	<div class="UI_sample">
+		<div id="datepicker"></div>
+		<div><input id="inputSepcialCalendar" type="text"/> <input id="btnAddDate" type="button" value="add special date"/> <input id="btnRemoveDate" type="button" value="remove special date"/></div>
+		<br/><br/>
+		<label>처리 기간 : </label><input class="datepicker" type="text" name="startDate"/> ~ <input class="datepicker" type="text" name="endDate"/>
+		<br/><br/>
+		<label>일자 1 : </label><input type="text" id="date1" name="date"/> <img src="../../images/icon/ic_cal.gif" width="15px" height="15px" alt="datepicker" style="cursor:pointer;"/>
+		<br/>
+		<label>일자 2 : </label><input type="text" id="date2" name="date"/>
+		<br/>
+		<label>주간 선택 1 : </label><input type="text" id="date3" name="date" style="width:200px;"/>
+		<br/>
+		<label>주간 선택 2 : </label><input type="text" id="date4" name="date" style="width:200px;"/>
+		<div class="UI_sum">
+			summary
+		</divz>
+	</div>
+	<!--//UI_sample_area End-->
+
+	<h4>View source</h4>
+	<div class="UI_source">
+		<pre class="brush: js;">
+	$("#datepicker").datepicker({
+		inline: true,
+		onSelect: function(date) { alert(date); }
+	});
+	
+	$("input.datepicker").datepicker({
+		onSelect: function(date, event) {
+			var arrDate = date.split("-");
+			var objDate = new Date(arrDate[0], (arrDate[1]-1), parseInt(arrDate[2], 10) + 6);
+			event.input.next("input.datepicker:eq(0)").val(objDate.getFullYear() + "-" + (objDate.getMonth()+1) + "-" + objDate.getDate());
+		}
+	});
+	
+	$("#date1").datepicker()
+		.next().eq(0).click(function() { $(this).prev().eq(0).datepicker("show"); });
+	
+	$("#date2" ).datepicker({
+		showOn: "button",
+		buttonImage: "images/calendar.gif",
+		buttonImageOnly: true
+	});
+		</pre>
+	</div>	
+	<!--UI_source End-->	
+
+	<!--Method Start-->	
+	<h4>Method & Properties</h4>
+	<div class="UI_method">
+		<ul>
+			<li>show : datepicker UI를 활성화 시켜준다.</li>
+			<li>hide : datepicker UI를 비활성화 시켜준다.(사라짐)</li>
+		</ul>
+	</div>
+	<!--//Method End-->
+	<!--UI_source Start-->
+	
+	<!-- //Event Start -->
+	<h4>Event</h4>
+	<div class="UI_event">
+		<ul>
+			<li><span>onSelect : 날짜를 선택했을 때의 이벤트</span><br/>
+				<ul>
+					<li>date : 선택된 날짜의 "-"로 구분된 '년-월-일'문자열</li>
+					<li><span>event : 이벤트 발생시 전달되는 이벤트 객체</span><br/>
+						* event.input을 통해 result로 전달되는 input 엘리먼트를 참조할 수 있다.
+					</li>
+				</ul>
+			</li>
+		</ul>
+	</div>
+	<!-- //Event End -->	
+	
+</div>
+<!--//guideWrapper End-->
+</body>
+</html>

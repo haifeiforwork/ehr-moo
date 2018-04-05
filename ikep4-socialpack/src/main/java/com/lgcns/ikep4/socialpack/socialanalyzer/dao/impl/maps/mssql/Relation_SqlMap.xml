@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="socialpack.socialanalyzer.dao.relation" >
+	<typeAlias alias = "Relation" type="com.lgcns.ikep4.socialpack.socialanalyzer.model.Relation"/>
+	
+	<!-- 테이블 조회 결과 -->
+	<resultMap id="relationResult" class="Relation">		
+		<result property="userId"               column="TARGET_USER_ID"          />
+		<result property="userName"             column="USER_NAME"               />
+		<result property="userEnglishName"      column="USER_ENGLISH_NAME"       />
+		<result property="teamName"             column="TEAM_NAME"               />
+		<result property="teamEnglishName"      column="TEAM_ENGLISH_NAME"       />
+		<result property="jobTitleName"         column="JOB_TITLE_NAME"          />
+		<result property="jobTitleEnglishName"  column="JOB_TITLE_ENGLISH_NAME"  />
+		<result property="point"                column="POINT"                   />
+		<result property="groupId"              column="GROUP_ID"                />
+		<result property="groupName"            column="GROUP_NAME"              />
+		<result property="targetType"           column="TARGET_TYPE"             />
+		<result property="picturePath"           column="PICTURE_PATH"             />
+		<result property="profilePicturePath"           column="PROFILE_PICTURE_PATH"             />
+	</resultMap>
+   	
+   	<!-- MS SQL -->
+   	<!-- //소셜 네트웍 조회-개인별 -->
+	<select id="listPerson" parameterClass="java.util.Map" resultMap="relationResult">
+	  <![CDATA[
+		   SELECT /* [Relation_SqlMap.xml] Relation.listPerson */
+				  A.TARGET_USER_ID,
+		          CASE WHEN A.INDEX_DIRECT           > 0 THEN '1+' ELSE '+' END 
+		          + CASE WHEN A.INDEX_COMMUNICATION > 0 THEN '2+' ELSE '+' END 
+		          + CASE WHEN A.INDEX_FELLOWSHIP    > 0 THEN '3+' ELSE '+' END 
+		          + CASE WHEN A.INDEX_EXPERTISE     > 0 THEN '4+' ELSE '+' END AS GROUP_ID,	
+		          CASE WHEN A.INDEX_DIRECT           > 0 THEN 'INDEX_DIRECT+'        ELSE '+' END 
+		          + CASE WHEN A.INDEX_COMMUNICATION > 0 THEN 'INDEX_COMMUNICATION+' ELSE '+' END 
+		          + CASE WHEN A.INDEX_FELLOWSHIP    > 0 THEN 'INDEX_FELLOWSHIP+'    ELSE '+' END 
+		          + CASE WHEN A.INDEX_EXPERTISE     > 0 THEN 'INDEX_EXPERTISE+'     ELSE '+' END AS GROUP_NAME,
+		          CASE WHEN #type# = 'O' THEN ROUND(A.INDEX_OVERALL      , 1) 
+			           WHEN #type# = 'D' THEN ROUND(A.INDEX_DIRECT       , 1) 
+			           WHEN #type# = 'C' THEN ROUND(A.INDEX_COMMUNICATION, 1) 
+			           WHEN #type# = 'F' THEN ROUND(A.INDEX_FELLOWSHIP   , 1) 
+			           WHEN #type# = 'E' THEN ROUND(A.INDEX_EXPERTISE    , 1) END AS POINT,
+		          'U' AS TARGET_TYPE,
+		          B.USER_NAME,                
+		          B.USER_ENGLISH_NAME,        
+		          B.TEAM_NAME,           
+		          B.TEAM_ENGLISH_NAME,   
+		          B.PICTURE_PATH,
+		          B.PROFILE_PICTURE_PATH, 
+		          C.JOB_TITLE_NAME,       
+		          C.JOB_TITLE_ENGLISH_NAME
+		     FROM (SELECT *
+		             FROM (SELECT Row_number() OVER (ORDER BY CASE WHEN #type# = 'O' THEN INDEX_OVERALL
+												         		   WHEN #type# = 'D' THEN INDEX_DIRECT
+												         		   WHEN #type# = 'C' THEN INDEX_COMMUNICATION
+												         		   WHEN #type# = 'F' THEN INDEX_FELLOWSHIP
+												         		   WHEN #type# = 'E' THEN INDEX_EXPERTISE END DESC) AS RNUM,
+		             			  TARGET_USER_ID,
+				         		  INDEX_OVERALL,
+				         		  INDEX_DIRECT,
+				         		  INDEX_COMMUNICATION,
+				         		  INDEX_FELLOWSHIP,
+				         		  INDEX_EXPERTISE
+				         	 FROM IKEP4_SN_RELATION
+				            WHERE SOURCE_USER_ID = #userID#
+				              AND CASE WHEN #type# = 'O' THEN INDEX_OVERALL
+					         		   WHEN #type# = 'D' THEN INDEX_DIRECT
+					         		   WHEN #type# = 'C' THEN INDEX_COMMUNICATION
+					         		   WHEN #type# = 'F' THEN INDEX_FELLOWSHIP
+					         		   WHEN #type# = 'E' THEN INDEX_EXPERTISE END >= 0.05
+						  ) TBL1
+				    WHERE RNUM < 16		  
+		          ) A
+		          	INNER JOIN IKEP4_EV_USER B
+		          		ON A.TARGET_USER_ID = B.USER_ID
+		          	INNER JOIN IKEP4_EV_JOB_TITLE C
+		          		ON B.JOB_TITLE_CODE = C.JOB_TITLE_CODE
+		          	   AND B.PORTAL_ID = C.PORTAL_ID
+            ORDER BY POINT DESC
+	   ]]>
+	</select>
+	
+	<!-- MS SQL -->
+	<!-- //소셜 네트웍 조회-그룹별 -->
+	<select id="listGroup" parameterClass="java.util.Map" resultMap="relationResult">
+	  <![CDATA[
+		   SELECT /* [Relation_SqlMap.xml] Relation.listGroup */
+				  A.TARGET_USER_ID,
+		          CASE WHEN #type# = 'D' THEN '1'
+			           WHEN #type# = 'C' THEN '2'
+			           WHEN #type# = 'F' THEN '3'
+			           WHEN #type# = 'E' THEN '4' END AS GROUP_ID,	
+			      CASE WHEN #type# = 'D' THEN 'Direct Network'
+			           WHEN #type# = 'C' THEN 'Communication Network'
+			           WHEN #type# = 'F' THEN 'Fellowship Network'
+			           WHEN #type# = 'E' THEN 'Expertise Network' END AS GROUP_NAME,
+		          CASE WHEN #type# = 'D' THEN ROUND(INDEX_DIRECT       , 1) 
+	         		   WHEN #type# = 'C' THEN ROUND(INDEX_COMMUNICATION, 1) 
+	         		   WHEN #type# = 'F' THEN ROUND(INDEX_FELLOWSHIP   , 1) 
+	         		   WHEN #type# = 'E' THEN ROUND(INDEX_EXPERTISE    , 1) END AS POINT,
+		          'U' AS TARGET_TYPE,
+		          B.USER_NAME,                
+		          B.USER_ENGLISH_NAME,        
+		          B.TEAM_NAME,           
+		          B.TEAM_ENGLISH_NAME,   
+		          B.PICTURE_PATH,
+		          B.PROFILE_PICTURE_PATH, 
+		          C.JOB_TITLE_NAME,       
+		          C.JOB_TITLE_ENGLISH_NAME
+		     FROM (SELECT *
+		             FROM (SELECT Row_number() OVER (ORDER BY CASE WHEN #type# = 'D' THEN INDEX_DIRECT
+												         		   WHEN #type# = 'C' THEN INDEX_COMMUNICATION
+												         		   WHEN #type# = 'F' THEN INDEX_FELLOWSHIP
+												         		   WHEN #type# = 'E' THEN INDEX_EXPERTISE END DESC) AS RNUM,
+		             			  TARGET_USER_ID,
+				         		  INDEX_OVERALL,
+				         		  INDEX_DIRECT,
+				         		  INDEX_COMMUNICATION,
+				         		  INDEX_FELLOWSHIP,
+				         		  INDEX_EXPERTISE
+				         	 FROM IKEP4_SN_RELATION
+				            WHERE SOURCE_USER_ID = #userID#
+				              AND CASE WHEN #type# = 'D' THEN INDEX_DIRECT
+					         		   WHEN #type# = 'C' THEN INDEX_COMMUNICATION
+					         		   WHEN #type# = 'F' THEN INDEX_FELLOWSHIP
+					         		   WHEN #type# = 'E' THEN INDEX_EXPERTISE END >= 0.05
+						  ) TBL1
+				    WHERE RNUM < 5		  
+		          ) A
+		          	INNER JOIN IKEP4_EV_USER B
+		          		ON A.TARGET_USER_ID = B.USER_ID
+		          	INNER JOIN IKEP4_EV_JOB_TITLE C
+		          		ON B.JOB_TITLE_CODE = C.JOB_TITLE_CODE
+		      		   AND B.PORTAL_ID = C.PORTAL_ID
+            ORDER BY POINT DESC
+	   ]]>
+	</select>
+	
+	<!-- //배치 -->
+	<procedure id="batchRelation"> 
+		exec dbo.IKEP4_SN_CALC_RELATION 
+	</procedure> 
+</sqlMap>

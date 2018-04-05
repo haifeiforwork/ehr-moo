@@ -1,0 +1,570 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="com.lgcns.ikep4.servicepack.survey.svSurvey" >
+  <typeAlias alias="svSurvey"                type="com.lgcns.ikep4.servicepack.survey.model.Survey"/>
+  <typeAlias alias="svSurveySearchCondition" type="com.lgcns.ikep4.servicepack.survey.search.SurveySearchCondition"/>
+  
+  <resultMap id="result" class="svSurvey" >
+    <result column="SURVEY_ID" property="surveyId" jdbcType="VARCHAR" />
+    <result column="TITLE" property="title" jdbcType="VARCHAR" />
+    <result column="CONTENTS_TYPE" jdbcType="VARCHAR" property="contentsType" />
+    <result column="START_DATE" property="startDate" jdbcType="TIMESTAMP" />
+    <result column="END_DATE" property="endDate" jdbcType="TIMESTAMP" />
+    <result column="ANONYMOUS" property="anonymous" jdbcType="DECIMAL" />
+    <result column="REJECT_BUTTON" property="rejectButton" jdbcType="DECIMAL" />
+    <result column="SURVEY_TARGET" jdbcType="VARCHAR" property="surveyTarget" />
+    <result column="RESULT_OPEN" property="resultOpen" jdbcType="DECIMAL" />
+    <result column="APPROVER_ID" property="approverId" jdbcType="VARCHAR" />
+    <result column="SURVEY_STATUS" property="surveyStatus" jdbcType="DECIMAL" />
+    <result column="OPPOSITION_REASON" property="oppositionReason" jdbcType="VARCHAR" />
+    <result column="PORTAL_ID" property="portalId" jdbcType="VARCHAR" />
+    <result column="REGISTER_ID" property="registerId" jdbcType="VARCHAR" />
+    <result column="REGISTER_NAME" property="registerName" jdbcType="VARCHAR" />
+    <result column="REGIST_DATE" property="registDate" jdbcType="TIMESTAMP" />
+    <result column="UPDATER_ID" property="updaterId" jdbcType="VARCHAR" />
+    <result column="UPDATER_NAME" property="updaterName" jdbcType="VARCHAR" />
+    <result column="UPDATE_DATE" property="updateDate" jdbcType="TIMESTAMP" />
+    <result property="jobTitleName" column="JOB_TITLE_NAME"/>
+	<result property="jobTitleEnglishName" column="JOB_TITLE_ENGLISH_NAME"/>
+	<result property="userName" column="USER_NAME"/>
+	<result property="userEnglishName" column="USER_ENGLISH_NAME"/>
+	<result property="teamName" column="TEAM_NAME"/>
+	<result property="teamEnglishName" column="TEAM_ENGLISH_NAME"/>
+  </resultMap>
+  
+  <resultMap id="resultWithCLOBs" class="svSurvey" extends="com.lgcns.ikep4.servicepack.survey.svSurvey.result" >
+    <result column="CONTENTS" property="contents" jdbcType="CLOB" />
+  </resultMap>
+  
+   <resultMap id="resultIng" class="svSurvey" extends="com.lgcns.ikep4.servicepack.survey.svSurvey.result" >
+    <result column="RESPONSE_CNT" property="responseCnt" jdbcType="DECIMAL" />
+  </resultMap>
+  
+    <sql id="sqlColumnList"> 
+	   s.SURVEY_ID, 
+	   s.TITLE, 
+	   s.CONTENTS_TYPE,
+	   s.START_DATE, 
+	   s.END_DATE, 
+	   s.ANONYMOUS, 
+	   s.REJECT_BUTTON, 
+	   s.SURVEY_TARGET,
+	   s.RESULT_OPEN,
+       s.APPROVER_ID, 
+       s.SURVEY_STATUS, 
+       s.OPPOSITION_REASON, 
+       s.PORTAL_ID, 
+       s.REGISTER_ID, 
+       s.REGISTER_NAME,
+       s.REGIST_DATE, 
+       s.UPDATER_ID, 
+       s.UPDATER_NAME, 
+       s.UPDATE_DATE,
+       eu.USER_NAME, 
+       eu.USER_ENGLISH_NAME, 
+       eu.TEAM_NAME, 
+       eu.TEAM_ENGLISH_NAME,
+       ejt.JOB_TITLE_NAME, 
+       ejt.JOB_TITLE_ENGLISH_NAME
+  </sql> 
+  
+  <sql id="sqlColumnWithCLOBSList"> 
+	   <include refid="com.lgcns.ikep4.servicepack.survey.svSurvey.sqlColumnList" /> ,
+       s.CONTENTS
+  </sql>  
+  
+ <select id="get" parameterClass="string" resultMap="resultWithCLOBs"> 
+    SELECT /* [svSurvey_SqlMap.xml] svSurvey.get */
+    	 <include refid="com.lgcns.ikep4.servicepack.survey.svSurvey.sqlColumnWithCLOBSList" /> 
+    FROM  IKEP4_SV_SURVEY s,IKEP4_EV_USER eu,IKEP4_EV_JOB_TITLE ejt
+    WHERE   eu.job_title_code =ejt.job_title_code
+    		and s.REGISTER_ID = eu.user_id
+    		and s.SURVEY_ID = #surveyId#
+  </select>
+  
+  <select id="exists" parameterClass="string" resultClass="int"> 
+    SELECT /* [svSurvey_SqlMap.xml] svSurvey.exists */
+    	  COUNT(*)
+    FROM  IKEP4_SV_SURVEY
+    WHERE SURVEY_ID = #surveyId#
+  </select> 
+  
+  <select id="listBySearchCondition" parameterClass="svSurveySearchCondition" resultMap="result">  
+	SELECT /* [svSurvey_SqlMap.xml] svSurvey.listBySearchCondition */ 
+			*
+	FROM ( 
+	     SELECT  ROWNUM AS RNUM, A.*
+	     FROM ( 
+		         SELECT <include refid="com.lgcns.ikep4.servicepack.survey.svSurvey.sqlColumnList" /> 
+		         FROM   IKEP4_SV_SURVEY s,IKEP4_EV_USER eu,IKEP4_EV_JOB_TITLE ejt
+    			 WHERE   eu.job_title_code =ejt.job_title_code
+    					 and s.REGISTER_ID = eu.user_id
+    					 and s.PORTAL_ID = eu.PORTAL_ID
+    					 and s.PORTAL_ID = #portalId#
+				<isNotEmpty property="searchWord">
+					<isEqual property="searchColumn" compareValue="title">
+						AND	TITLE LIKE '%' || #searchWord# || '%'
+					</isEqual>
+					<isEqual property="searchColumn" compareValue="registerName">
+						AND	( USER_NAME LIKE '%' || #searchWord# || '%' or USER_ENGLISH_NAME LIKE '%' || #searchWord# || '%' )
+					</isEqual>
+				</isNotEmpty>
+				<isNotEmpty property="registerId">
+					AND  s.REGISTER_ID = #registerId#
+				</isNotEmpty>
+				<isNotEmpty property="surveyStatus">
+					AND  SURVEY_STATUS = #surveyStatus#
+				</isNotEmpty>
+				order by UPDATE_DATE desc
+	<![CDATA[  
+	    	) A WHERE ROWNUM <=  #endRowIndex# /* 종료  */
+	) WHERE RNUM >  #startRowIndex# /* 시작 */
+	]]> 
+  </select>   
+  
+  <select id="countBySearchCondition" parameterClass="svSurveySearchCondition" resultClass="int">  
+	SELECT /* [Board_SqlMap.xml] svSurvey.countBySearchCondition */ 
+           COUNT(*)
+	FROM   IKEP4_SV_SURVEY s,IKEP4_EV_USER eu,IKEP4_EV_JOB_TITLE ejt
+    WHERE   eu.job_title_code =ejt.job_title_code
+    		and s.REGISTER_ID = eu.user_id
+    		and s.PORTAL_ID = eu.PORTAL_ID
+    		and s.PORTAL_ID = #portalId#
+				<isNotEmpty property="searchWord">
+					<isEqual property="searchColumn" compareValue="title">
+						AND	TITLE LIKE '%' || #searchWord# || '%'
+					</isEqual>
+					<isEqual property="searchColumn" compareValue="registerName">
+						AND	( USER_NAME LIKE '%' || #searchWord# || '%' or USER_ENGLISH_NAME LIKE '%' || #searchWord# || '%' )
+					</isEqual>
+				</isNotEmpty>
+				<isNotEmpty property="registerId">
+					AND  s.REGISTER_ID = #registerId#
+				</isNotEmpty>
+				<isNotEmpty property="surveyStatus">
+					AND  SURVEY_STATUS = #surveyStatus#
+				</isNotEmpty>
+  </select> 
+  
+  
+   <select id="approveListBySearchCondition" parameterClass="svSurveySearchCondition" resultMap="result">  
+	SELECT /* [svSurvey_SqlMap.xml] svSurvey.approveListBySearchCondition */ 
+			*
+	FROM ( 
+	     SELECT  ROWNUM AS RNUM, A.*
+	     FROM ( 
+		         SELECT <include refid="com.lgcns.ikep4.servicepack.survey.svSurvey.sqlColumnList" /> 
+		         FROM   IKEP4_SV_SURVEY s ,IKEP4_EV_USER eu,IKEP4_EV_JOB_TITLE ejt
+				 WHERE eu.job_title_code =ejt.job_title_code
+    				   and s.REGISTER_ID = eu.user_id
+    				   and s.PORTAL_ID = eu.PORTAL_ID
+    				   and s.PORTAL_ID = #portalId#
+				<isNotEmpty property="searchWord">
+					<isEqual property="searchColumn" compareValue="title">
+						AND	TITLE LIKE '%' || #searchWord# || '%'
+					</isEqual>
+					<isEqual property="searchColumn" compareValue="registerName">
+						AND	( USER_NAME LIKE '%' || #searchWord# || '%' or USER_ENGLISH_NAME LIKE '%' || #searchWord# || '%' )
+					</isEqual>
+				</isNotEmpty>
+				<isNotEmpty property="approverId">
+					AND APPROVER_ID = #approverId#
+				</isNotEmpty>
+				<isNotEmpty property="surveyStatus">
+					AND  SURVEY_STATUS = #surveyStatus#
+				</isNotEmpty>
+				AND  SURVEY_STATUS in(1,2,5)
+				order by UPDATE_DATE desc
+	<![CDATA[  
+	    	) A WHERE ROWNUM <=  #endRowIndex# /* 종료  */
+	) WHERE RNUM >  #startRowIndex# /* 시작 */
+	]]> 
+  </select>   
+  
+  <select id="approveCountBySearchCondition" parameterClass="svSurveySearchCondition" resultClass="int">  
+	SELECT /* [svSurvey_SqlMap.xml] svSurvey.ingListBySearchCondition */ 
+           COUNT(*)
+	FROM   IKEP4_SV_SURVEY s,IKEP4_EV_USER eu,IKEP4_EV_JOB_TITLE ejt
+	WHERE  eu.job_title_code =ejt.job_title_code
+    	   and s.REGISTER_ID = eu.user_id
+    	   and s.PORTAL_ID = eu.PORTAL_ID
+    	   and s.PORTAL_ID = #portalId#
+				<isNotEmpty property="searchWord">
+					<isEqual property="searchColumn" compareValue="title">
+						AND	TITLE LIKE '%' || #searchWord# || '%'
+					</isEqual>
+					<isEqual property="searchColumn" compareValue="registerName">
+						AND	( USER_NAME LIKE '%' || #searchWord# || '%' or USER_ENGLISH_NAME LIKE '%' || #searchWord# || '%' )
+					</isEqual>
+				</isNotEmpty>
+				<isNotEmpty property="approverId">
+					AND APPROVER_ID = #approverId#
+				</isNotEmpty>
+				<isNotEmpty property="surveyStatus">
+					AND  SURVEY_STATUS = #surveyStatus#
+				</isNotEmpty>
+				AND  SURVEY_STATUS in(1,2,5)
+  </select> 
+  
+  
+    <select id="ingListBySearchCondition" parameterClass="svSurveySearchCondition" resultMap="resultIng">  
+	SELECT /* [svSurvey_SqlMap.xml] svSurvey.listBySearchCondition */ 
+	      a.*,
+	      (select count(*) from IKEP4_SV_RESPONSE where survey_id = A.survey_id and RESPONSE=0) RESPONSE_CNT
+	FROM ( 
+	     SELECT  ROWNUM AS RNUM, A.* FROM ( 
+	         /* START========================================= */
+	         SELECT <include refid="com.lgcns.ikep4.servicepack.survey.svSurvey.sqlColumnList" /> 
+	         FROM   IKEP4_SV_SURVEY s,
+	         		(   SELECT s.survey_id
+						FROM IKEP4_SV_SURVEY s,(
+												  SELECT st.survey_id
+										          FROM IKEP4_SV_TARGET st,IKEP4_EV_USER eu,IKEP4_EV_USER_GROUP eug
+										          WHERE st.target_id = eug.group_id
+										               AND eu.user_id = eug.user_id
+										               AND st.target_type=1	
+										               AND eu.user_id =#responseUserId#									               
+										               and eu.PORTAL_ID = #portalId#     
+										          UNION ALL
+										          SELECT st.survey_id
+										          FROM IKEP4_SV_TARGET st,IKEP4_EV_USER eu
+										          WHERE st.target_id = eu.user_id
+										                AND st.target_type=0
+										                and eu.user_id = #responseUserId# 
+										                and eu.PORTAL_ID = #portalId#     
+										          UNION ALL 
+										          SELECT survey_id 
+										          FROM IKEP4_SV_SURVEY
+										          WHERE SURVEY_TARGET=0 
+											    		and PORTAL_ID = #portalId#     
+						) sl
+						WHERE s.survey_id = sl.survey_id						    
+						      AND s.end_date <![CDATA[>=]]> SYSDATE
+						      and s.SURVEY_STATUS = #surveyStatus#
+						      and s.PORTAL_ID = #portalId#     
+						MINUS
+						SELECT survey_id
+						FROM IKEP4_SV_RESPONSE
+						WHERE response_user_id = #responseUserId#
+						AND survey_id is not null
+					) r ,IKEP4_EV_USER eu,IKEP4_EV_JOB_TITLE ejt
+			 WHERE  s.survey_id = r.survey_id 
+			        and eu.job_title_code =ejt.job_title_code
+    			    and s.REGISTER_ID = eu.user_id
+    			    and s.PORTAL_ID = eu.PORTAL_ID
+    				and s.PORTAL_ID = #portalId#
+				<isNotEmpty property="searchWord">
+					<isEqual property="searchColumn" compareValue="title">
+						AND	s.TITLE LIKE '%' || #searchWord# || '%'
+					</isEqual>
+					<isEqual property="searchColumn" compareValue="registerName">
+						AND	( USER_NAME LIKE '%' || #searchWord# || '%' or USER_ENGLISH_NAME LIKE '%' || #searchWord# || '%' )
+					</isEqual>
+				</isNotEmpty>
+			    AND s.SURVEY_STATUS = #surveyStatus#
+				AND s.END_DATE <![CDATA[>=]]> sysdate
+		    	order by s.START_DATE desc
+			 /* ===========================================END  */ 
+	<![CDATA[  
+	    ) A WHERE ROWNUM <=  #endRowIndex# /* 종료  */ 
+	)A WHERE RNUM >  #startRowIndex# /* 시작 */
+	]]> 
+  </select>   
+  
+  <select id="ingCountBySearchCondition" parameterClass="svSurveySearchCondition" resultClass="int">  
+	 SELECT /* [svSurvey_SqlMap.xml] svSurvey.ingCountBySearchCondition */ count(*) 
+     FROM   IKEP4_SV_SURVEY s,
+       		(   SELECT s.survey_id
+				FROM IKEP4_SV_SURVEY s,(
+									      SELECT st.survey_id
+								          FROM IKEP4_SV_TARGET st,IKEP4_EV_USER eu,IKEP4_EV_USER_GROUP eug
+								          WHERE st.target_id = eug.group_id
+								               AND eu.user_id = eug.user_id
+								               AND st.target_type=1			
+								               AND eu.USER_ID = #responseUserId#					               
+								               and eu.PORTAL_ID = #portalId#
+								          UNION ALL
+								          SELECT st.survey_id
+								          FROM IKEP4_SV_TARGET st,IKEP4_EV_USER eu
+								          WHERE st.target_id = eu.user_id
+								                AND st.target_type=0
+								                and eu.user_id = #responseUserId#
+								                and eu.PORTAL_ID = #portalId#
+								          UNION ALL
+								          SELECT survey_id 
+								          FROM IKEP4_SV_SURVEY
+								          WHERE SURVEY_TARGET=0
+								          		and PORTAL_ID = #portalId#
+						) sl
+				WHERE s.survey_id = sl.survey_id				      
+				      AND s.end_date <![CDATA[>=]]> SYSDATE
+				      and s.SURVEY_STATUS = #surveyStatus#
+				MINUS
+				SELECT survey_id
+				FROM IKEP4_SV_RESPONSE
+				WHERE response_user_id = #responseUserId#
+				AND survey_id is not null
+			) r ,IKEP4_EV_USER eu,IKEP4_EV_JOB_TITLE ejt
+	  WHERE  s.survey_id = r.survey_id 
+			        and eu.job_title_code =ejt.job_title_code
+    			    and s.REGISTER_ID = eu.user_id
+    			    and s.PORTAL_ID = eu.PORTAL_ID
+    				and s.PORTAL_ID = #portalId#
+				<isNotEmpty property="searchWord">
+					<isEqual property="searchColumn" compareValue="title">
+						AND	s.TITLE LIKE '%' || #searchWord# || '%'
+					</isEqual>
+					<isEqual property="searchColumn" compareValue="registerName">
+						AND	( USER_NAME LIKE '%' || #searchWord# || '%' or USER_ENGLISH_NAME LIKE '%' || #searchWord# || '%' )
+					</isEqual>
+				</isNotEmpty>
+			    AND s.SURVEY_STATUS = #surveyStatus#
+				AND s.END_DATE <![CDATA[>=]]> sysdate
+  </select> 
+  
+  
+  <select id="endListBySearchCondition" parameterClass="svSurveySearchCondition" resultMap="resultIng">  
+	SELECT /* [svSurvey_SqlMap.xml] svSurvey.endListBySearchCondition */ 
+	       a.*,
+	       (select count(*) from IKEP4_SV_RESPONSE where survey_id = A.survey_id and RESPONSE=0) RESPONSE_CNT
+	FROM ( 
+	     SELECT  ROWNUM AS RNUM, A.* FROM ( 
+	         /* START========================================= */
+	         SELECT <include refid="com.lgcns.ikep4.servicepack.survey.svSurvey.sqlColumnList" /> 
+	         <isEqual property="admin" compareValue="false">
+		         FROM   IKEP4_SV_SURVEY s,(
+                                          SELECT st.survey_id
+                                          FROM IKEP4_SV_TARGET st,IKEP4_EV_USER eu,IKEP4_EV_USER_GROUP eug
+                                          WHERE st.target_id = eug.group_id
+                                               AND eu.user_id = eug.user_id
+                                               AND st.target_type=1
+                                               and st.TARGET_ID =#responseUserId#
+                                               and eu.PORTAL_ID = #portalId#
+                                          UNION
+                                          SELECT st.survey_id
+                                          FROM IKEP4_SV_TARGET st,IKEP4_EV_USER eu
+                                          WHERE st.target_id = eu.user_id
+                                                AND st.target_type=0
+                                                and eu.user_id = #responseUserId#
+                                                and eu.PORTAL_ID = #portalId#
+                                          UNION 
+                                          SELECT survey_id 
+                                          FROM IKEP4_SV_SURVEY
+                                          WHERE SURVEY_TARGET=0
+                                          		and PORTAL_ID = #portalId#
+                                          union
+                                          SELECT survey_id 
+                                          FROM IKEP4_SV_SURVEY
+                                          WHERE SURVEY_TARGET=1
+                                          		and REGISTER_ID = #responseUserId#
+                                          		and PORTAL_ID = #portalId#
+                        ) r ,IKEP4_EV_USER eu,IKEP4_EV_JOB_TITLE ejt
+				 WHERE  s.survey_id = r.survey_id 
+				 		AND s.SURVEY_STATUS in(3,4)
+				 		and eu.job_title_code =ejt.job_title_code
+    					and s.REGISTER_ID = eu.user_id
+    					and s.PORTAL_ID = eu.PORTAL_ID
+    					and s.PORTAL_ID = #portalId#
+			 </isEqual>
+			 <isEqual property="admin" compareValue="true">
+			 	FROM   IKEP4_SV_SURVEY s,IKEP4_EV_USER eu,IKEP4_EV_JOB_TITLE ejt
+			 	WHERE  s.SURVEY_STATUS in(3,4)
+			 	       and eu.job_title_code =ejt.job_title_code
+    				   and s.REGISTER_ID = eu.user_id
+    				   and s.PORTAL_ID = eu.PORTAL_ID
+    				   and s.PORTAL_ID = #portalId#
+			 </isEqual>
+			 <isNotEmpty property="surveyStatus">
+					AND  SURVEY_STATUS = #surveyStatus#
+				</isNotEmpty>
+			 <isNotEmpty property="searchWord">
+				<isEqual property="searchColumn" compareValue="title">
+					AND	s.TITLE LIKE '%' || #searchWord# || '%'
+				</isEqual>
+				<isEqual property="searchColumn" compareValue="registerName">
+					AND	( USER_NAME LIKE '%' || #searchWord# || '%' or USER_ENGLISH_NAME LIKE '%' || #searchWord# || '%' )
+				</isEqual>
+			 </isNotEmpty>
+		     order by s.UPDATE_DATE desc
+			 /* ===========================================END  */ 
+	<![CDATA[  
+	    ) A WHERE ROWNUM <=  #endRowIndex# /* 종료  */ 
+	)A WHERE RNUM >  #startRowIndex# /* 시작 */
+	]]> 
+  </select>   
+  
+  <select id="endCountBySearchCondition" parameterClass="svSurveySearchCondition" resultClass="int">  
+	 		SELECT count(*)
+	         <isEqual property="admin" compareValue="false">
+		         FROM   IKEP4_SV_SURVEY s,(
+                                          SELECT st.survey_id
+                                          FROM IKEP4_SV_TARGET st,IKEP4_EV_USER eu,IKEP4_EV_USER_GROUP eug
+                                          WHERE st.target_id = eug.group_id
+                                               AND eu.user_id = eug.user_id
+                                               AND st.target_type=1
+                                               and st.TARGET_ID =#responseUserId#
+                                               and eu.PORTAL_ID = #portalId#
+                                          UNION
+                                          SELECT st.survey_id
+                                          FROM IKEP4_SV_TARGET st,IKEP4_EV_USER eu
+                                          WHERE st.target_id = eu.user_id
+                                                AND st.target_type=0
+                                                and eu.user_id = #responseUserId#
+                                                and eu.PORTAL_ID = #portalId#
+                                          UNION 
+                                          SELECT survey_id 
+                                          FROM IKEP4_SV_SURVEY
+                                          WHERE SURVEY_TARGET=0
+                                          		and PORTAL_ID = #portalId#
+                                          union
+                                          SELECT survey_id 
+                                          FROM IKEP4_SV_SURVEY
+                                          WHERE SURVEY_TARGET=1
+                                          		and REGISTER_ID = #responseUserId#
+                                          		and PORTAL_ID = #portalId#
+                        ) r ,IKEP4_EV_USER eu,IKEP4_EV_JOB_TITLE ejt
+				 WHERE  s.survey_id = r.survey_id 
+				 		AND s.SURVEY_STATUS in(3,4)
+				 		and eu.job_title_code =ejt.job_title_code
+    					and s.REGISTER_ID = eu.user_id
+    					and s.PORTAL_ID = eu.PORTAL_ID
+    					and s.PORTAL_ID = #portalId#
+			 </isEqual>
+			 <isEqual property="admin" compareValue="true">
+			 	FROM   IKEP4_SV_SURVEY s,IKEP4_EV_USER eu,IKEP4_EV_JOB_TITLE ejt
+			 	WHERE  s.SURVEY_STATUS in(3,4)
+			 	       and eu.job_title_code =ejt.job_title_code
+    				   and s.REGISTER_ID = eu.user_id
+    				   and s.PORTAL_ID = eu.PORTAL_ID
+    				   and s.PORTAL_ID = #portalId#
+			 </isEqual>
+			 <isNotEmpty property="surveyStatus">
+					AND  SURVEY_STATUS = #surveyStatus#
+				</isNotEmpty>
+			 <isNotEmpty property="searchWord">
+				<isEqual property="searchColumn" compareValue="title">
+					AND	s.TITLE LIKE '%' || #searchWord# || '%'
+				</isEqual>
+				<isEqual property="searchColumn" compareValue="registerName">
+					AND	( USER_NAME LIKE '%' || #searchWord# || '%' or USER_ENGLISH_NAME LIKE '%' || #searchWord# || '%' )
+				</isEqual>
+			 </isNotEmpty>
+  </select>
+  
+  
+  <insert id="create" parameterClass="svSurvey"> 
+    INSERT INTO IKEP4_SV_SURVEY ( /* [svSurvey_SqlMap.xml] svSurvey.insert */
+       SURVEY_ID, 
+	   TITLE, 
+	   CONTENTS_TYPE,
+	   START_DATE, 
+	   END_DATE, 
+	   ANONYMOUS, 
+	   REJECT_BUTTON, 
+	   SURVEY_TARGET,
+	   RESULT_OPEN,
+       APPROVER_ID, 
+       SURVEY_STATUS, 
+       OPPOSITION_REASON, 
+       PORTAL_ID, 
+       REGISTER_ID, 
+       REGISTER_NAME,
+       REGIST_DATE, 
+       UPDATER_ID, 
+       UPDATER_NAME, 
+       UPDATE_DATE, 
+       CONTENTS
+     ) VALUES (
+        #surveyId#, 
+        #title#, 
+        #contentsType#,
+        #startDate#, 
+        #endDate#,
+        #anonymous#, 
+        #rejectButton#, 
+        #surveyTarget#,
+        #resultOpen#, 
+        #approverId#,
+        #surveyStatus#, 
+        #oppositionReason#, 
+        #portalId#, 
+        #registerId#,
+        #registerName#, 
+        #registDate#, 
+        #updaterId#, 
+        #updaterName#,
+        #updateDate#, 
+        #contents#
+    )
+  </insert>
+  <update id="update" parameterClass="svSurvey"> 
+    update IKEP4_SV_SURVEY /* [svSurvey_SqlMap.xml] svSurvey.update */
+    set TITLE = #title#,
+      CONTENTS_TYPE = #contentsType#,
+      CONTENTS = #contents#,
+      START_DATE = #startDate#,
+      END_DATE = #endDate#,
+      ANONYMOUS = #anonymous#,
+      REJECT_BUTTON = #rejectButton#,
+      SURVEY_TARGET = #surveyTarget#,
+      RESULT_OPEN = #resultOpen#,
+      APPROVER_ID = #approverId#,
+      SURVEY_STATUS = #surveyStatus#,
+      OPPOSITION_REASON = #oppositionReason#,
+      PORTAL_ID = #portalId#,
+      UPDATER_ID = #updaterId#,
+      UPDATER_NAME = #updaterName#,
+      UPDATE_DATE = #updateDate#
+    where SURVEY_ID = #surveyId#
+  </update>
+   <update id="approve" parameterClass="svSurvey"> 
+    update IKEP4_SV_SURVEY /* [svSurvey_SqlMap.xml] svSurvey.update */
+    set APPROVER_ID = #approverId#,
+      SURVEY_STATUS = #surveyStatus#,
+      UPDATER_ID = #updaterId#,
+      UPDATER_NAME = #updaterName#,
+      UPDATE_DATE = #updateDate#
+    where SURVEY_ID = #surveyId#
+  </update>
+  
+  <update id="reject" parameterClass="svSurvey"> 
+    update IKEP4_SV_SURVEY /* [svSurvey_SqlMap.xml] svSurvey.update */
+    set APPROVER_ID = #approverId#,
+      SURVEY_STATUS = #surveyStatus#,
+      UPDATER_ID = #updaterId#,
+      UPDATER_NAME = #updaterName#,
+      UPDATE_DATE = #updateDate#,
+      OPPOSITION_REASON = #oppositionReason#
+    where SURVEY_ID = #surveyId#
+  </update>
+  
+  <delete id="remove" parameterClass="string"> 
+    delete from IKEP4_SV_SURVEY  /* [svSurvey_SqlMap.xml] svSurvey.remove */
+    where SURVEY_ID = #surveyId#
+  </delete>    
+  
+  
+   <update id="exipireDateUpdate">  
+    update IKEP4_SV_SURVEY
+    set SURVEY_STATUS = 4
+	WHERE survey_status = 3
+		  AND end_date <![CDATA[<]]> SYSDATE
+  </update> 
+  
+  <!-- ANSI --> 
+ <select id="listTargetGroup" parameterClass="string" resultClass="java.util.HashMap"> 
+	select
+		A.MAIL, A.USER_NAME
+	from IKEP4_EV_USER A, IKEP4_EV_USER_GROUP B
+	where A.USER_ID = B.USER_ID AND B.GROUP_ID = #targetId#
+  </select> 
+  
+ <!-- ANSI --> 
+ <select id="listTarget" parameterClass="string" resultClass="java.util.HashMap"> 
+	select
+		A.MAIL, A.USER_NAME
+	from IKEP4_EV_USER A
+	where A.USER_ID = #targetId#
+  </select>   
+  
+</sqlMap>

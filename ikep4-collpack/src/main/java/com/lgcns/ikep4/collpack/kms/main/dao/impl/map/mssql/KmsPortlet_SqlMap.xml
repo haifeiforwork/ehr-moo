@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="collpack.kms.main.dao.KmsPortlet">
+
+	<typeAlias alias="KmsPortlet" type="com.lgcns.ikep4.collpack.kms.main.model.KmsPortlet" />
+
+	<sql id="sqlColumnList">
+		PORTLET_ID AS portletId,
+		PORTLET_NAME AS portletName,
+		VIEW_URL AS viewUrl,
+		SORT_ORDER AS sortOrder,
+		IS_DEFAULT AS isDefault,
+		PORTLET_ENGLISH_NAME AS portletEnglishName
+	</sql>
+
+	<!-- ANSI -->
+	<select id="get" parameterClass="java.lang.String" resultClass="KmsPortlet">
+		SELECT /* [KmsPortlet_SqlMap.xml] collpack.kms.main.dao.KmsPortlet.get */
+			<include refid="collpack.kms.main.dao.KmsPortlet.sqlColumnList" />
+		FROM 
+			IKEP4_KMS_PORTLET
+		WHERE
+			PORTLET_ID = #portletId#
+	</select>
+
+	<!-- ANSI -->
+	<select id="exists" parameterClass="java.lang.String"	resultClass="int">
+		SELECT /* [KmsPortlet_SqlMap.xml] collpack.kms.main.dao.KmsPortlet.exists */
+			COUNT(*)
+		FROM
+			IKEP4_KMS_PORTLET
+		WHERE
+			PORTLET_ID = #portletId# 
+	</select>
+
+	<!-- ANSI -->
+	<select id="listAllPortlet" parameterClass="KmsPortlet" resultClass="KmsPortlet">
+		SELECT /* [KmsPortlet_SqlMap.xml]	collpack.kms.main.dao.KmsPortlet.listAllPortlet */
+			<include refid="collpack.kms.main.dao.KmsPortlet.sqlColumnList" />
+		FROM 
+			IKEP4_KMS_PORTLET
+		<dynamic>
+			<!-- 디폴트 포틀릿 요청시에만 -->
+			<isNotEmpty property="isDefault">
+				<isEqual property="isDefault" compareValue="1" prepend="WHERE">
+					IS_DEFAULT = #isDefault#
+				</isEqual>
+			</isNotEmpty>
+		</dynamic>
+		ORDER BY SORT_ORDER
+	</select>
+
+	<!-- ANSI -->
+	<select id="countAllPortlet" parameterClass="KmsPortlet"	resultClass="int">
+		SELECT /* [KmsPortlet_SqlMap.xml] collpack.kms.main.dao.KmsPortlet.countAllPortlet */
+		COUNT(*)
+		FROM IKEP4_KMS_PORTLET
+		<dynamic>
+			<!-- 디폴트 포틀릿 요청시에만 -->
+			<isNotEmpty property="isDefault">
+				<isEqual property="isDefault" compareValue="1" prepend="WHERE">
+					IS_DEFAULT = #isDefault#
+				</isEqual>
+			</isNotEmpty>
+		</dynamic>
+		ORDER BY SORT_ORDER
+	</select>
+	
+	<!-- MS SQL -->
+	<select id="listAllKmsPortlet" parameterClass="String" resultClass="KmsPortlet">
+		SELECT
+			PORTLET_ID,
+			PORTLET_NAME,
+			VIEW_URL,
+			SORT_ORDER , 
+			IS_DEFAULT,
+			'' AS BOARD_ID,
+			PORTLET_ENGLISH_NAME
+		FROM  
+			IKEP4_KMS_PORTLET 
+		WHERE 
+			IS_DEFAULT=1
+		ORDER BY 
+			SORT_ORDER 
+	</select>
+
+	<!-- MS SQL -->
+	<select id="countAllKmsPortlet" parameterClass="String"	resultClass="int">
+		SELECT /* [KmsPortlet_SqlMap.xml] collpack.kms.main.dao.KmsPortlet.countAllKmsPortlet */
+			COUNT(*)
+		FROM  
+			IKEP4_KMS_PORTLET 
+		WHERE 
+			IS_DEFAULT=1		
+	</select>
+	
+
+</sqlMap> 

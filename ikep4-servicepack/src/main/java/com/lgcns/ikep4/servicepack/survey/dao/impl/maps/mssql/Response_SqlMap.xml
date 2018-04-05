@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="com.lgcns.ikep4.servicepack.survey.svResponse" >
+  <typeAlias alias="svResponse"                type="com.lgcns.ikep4.servicepack.survey.model.Response"/>
+  <typeAlias alias="svResponseKey"                type="com.lgcns.ikep4.servicepack.survey.model.ResponseKey"/>
+  
+  <resultMap id="result" class="svResponse" >
+    <result column="RESPONSE_ID" jdbcType="VARCHAR" property="responseId" />
+    <result column="RESPONSE_USER_ID" jdbcType="VARCHAR" property="responseUserId" />
+    <result column="SURVEY_ID" jdbcType="VARCHAR" property="surveyId" />
+    <result column="RESPONSE" jdbcType="DECIMAL" property="response" />
+    <result column="RESPONSE_USER_MAIL" jdbcType="VARCHAR" property="responseUserMail" />
+    <result column="SURVEY_REJECT_REASON1" jdbcType="DECIMAL" property="surveyRejectReason1" />
+    <result column="SURVEY_REJECT_REASON2" jdbcType="VARCHAR" property="surveyRejectReason2" />
+    <result column="RESPONSE_DATE" jdbcType="DATE" property="responseDate" />
+    <result property="jobTitleName" column="JOB_TITLE_NAME"/>
+	<result property="jobTitleEnglishName" column="JOB_TITLE_ENGLISH_NAME"/>
+	<result property="userName" column="USER_NAME"/>
+	<result property="userEnglishName" column="USER_ENGLISH_NAME"/>
+	<result property="teamName" column="TEAM_NAME"/>
+	<result property="teamEnglishName" column="TEAM_ENGLISH_NAME"/>
+  </resultMap>
+  
+  <resultMap id="dayResult" class="svResponse">
+  	<result column="RESPONSE_CNT" jdbcType="DECIMAL" property="responseCnt" />
+	<result column="RESPONSE_DATE" jdbcType="DATE" property="responseDate" />
+  </resultMap>
+  
+    <sql id="sqlColumnList"> 
+	   s.RESPONSE_ID, 
+	   s.RESPONSE_USER_ID, 
+	   s.SURVEY_ID, 
+	   s.RESPONSE,
+       s.RESPONSE_USER_MAIL, 
+	   s.SURVEY_REJECT_REASON1, 
+	   s.SURVEY_REJECT_REASON2, 
+	   s.RESPONSE_DATE,
+	   eu.USER_NAME, 
+       eu.USER_ENGLISH_NAME, 
+       eu.TEAM_NAME, 
+       eu.TEAM_ENGLISH_NAME,
+       ejt.JOB_TITLE_NAME, 
+       ejt.JOB_TITLE_ENGLISH_NAME
+  </sql> 
+  
+  <!-- ANSI -->
+ <select id="get" parameterClass="svResponseKey" resultMap="result"> 
+    SELECT /* [svResponse_SqlMap.xml] svResponse.get */
+    <include refid="com.lgcns.ikep4.servicepack.survey.svResponse.sqlColumnList" />
+    FROM  IKEP4_SV_RESPONSE s,IKEP4_EV_USER eu,IKEP4_EV_JOB_TITLE ejt
+    WHERE eu.job_title_code =ejt.job_title_code
+    	  and s.RESPONSE_USER_ID = eu.user_id
+    	  and s.RESPONSE_ID = #responseId#
+		  and s.RESPONSE_USER_ID = #responseUserId#
+  </select>
+  
+  <!-- ANSI -->
+   <select id="getDayResultList" parameterClass="String" resultMap="dayResult"> 
+	select *
+	FROM  
+	(
+	  SELECT CONVERT(NVARCHAR, response_date, 23) response_date,
+	         COUNT (*) response_cnt
+	    FROM IKEP4_SV_RESPONSE
+	   WHERE survey_id = #surveyId#
+	   		 and RESPONSE = 0
+	   GROUP BY CONVERT(NVARCHAR, response_date,  23)
+	)A order by A.response_date  
+  </select>
+  
+  <!-- ANSI -->
+  <select id="exists" parameterClass="svResponseKey" resultClass="int"> 
+    SELECT /* [svResponse_SqlMap.xml] svResponse.exists */
+    	  COUNT(*)
+    FROM  IKEP4_SV_RESPONSE
+    WHERE RESPONSE_ID = #responseId#
+		  and RESPONSE_USER_ID = #responseUserId#
+  </select> 
+  
+  <!-- ANSI -->
+  <select id="already" parameterClass="svResponse" resultClass="int"> 
+    SELECT /* [svResponse_SqlMap.xml] svResponse.exists */
+    	  COUNT(*)
+    FROM  IKEP4_SV_RESPONSE
+    WHERE SURVEY_ID = #surveyId#
+		  and RESPONSE_USER_ID = #responseUserId#
+  </select> 
+  
+  <!-- ANSI -->
+  <select id="responseAllCount" parameterClass="string" resultClass="int"> 
+    SELECT /* [svResponse_SqlMap.xml] svResponse.exists */
+    	  COUNT(*)
+    FROM  IKEP4_SV_RESPONSE
+    WHERE SURVEY_ID = #surveyId#
+  </select> 
+  
+  <!-- ANSI -->
+  <insert id="create" parameterClass="svResponse"> 
+    INSERT INTO IKEP4_SV_RESPONSE ( /* [svResponse_SqlMap.xml] svResponse.insert */
+       RESPONSE_ID, 
+	   RESPONSE_USER_ID, 
+	   SURVEY_ID, 
+	   RESPONSE,
+       RESPONSE_USER_MAIL, 
+	   SURVEY_REJECT_REASON1, 
+	   SURVEY_REJECT_REASON2, 
+	   RESPONSE_DATE
+     ) VALUES (
+        #responseId#, 
+		#responseUserId#, 
+		#surveyId#, 
+		#response#,
+        #responseUserMail#, 
+	    #surveyRejectReason1#, 
+	    #surveyRejectReason2#,
+        #responseDate#
+    )
+  </insert>
+  
+  <!-- ANSI -->
+  <update id="update" parameterClass="svResponse"> 
+   update IKEP4_SV_RESPONSE
+   set SURVEY_ID = #surveyId#,
+	      RESPONSE = #response#,
+	      RESPONSE_USER_MAIL = #responseUserMail#,
+	      SURVEY_REJECT_REASON1 = #surveyRejectReason1#,
+	      SURVEY_REJECT_REASON2 = #surveyRejectReason2#,
+	      RESPONSE_DATE = #responseDate#
+    where RESPONSE_ID = #responseId#
+      	  and RESPONSE_USER_ID = #responseUserId#
+  </update>
+  
+  <!-- ANSI -->
+  <delete id="remove" parameterClass="svResponseKey"> 
+    delete from IKEP4_SV_RESPONSE  /* [svResponse_SqlMap.xml] svResponse.remove */
+    where RESPONSE_ID = #responseId#
+      	  and RESPONSE_USER_ID = #responseUserId#
+  </delete>    
+  
+  <!-- ANSI -->
+  <delete id="removeAllBySurveyId" parameterClass="string"> 
+    delete from IKEP4_SV_RESPONSE  /* [svResponse_SqlMap.xml] svResponse.remove */
+    where  survey_id = #surveyId#
+  </delete>  
+</sqlMap>

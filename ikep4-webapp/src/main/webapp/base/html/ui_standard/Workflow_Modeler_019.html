@@ -1,0 +1,289 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ko">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>IKEP Workflow</title>
+<link rel="stylesheet" type="text/css" href="../../css/theme01/jquery_ui_custom.css" />
+<link rel="stylesheet" type="text/css" href="../../css/common.css" />
+<link rel="stylesheet" type="text/css" href="../../css/workflow/style.css" />
+
+<script type="text/javascript" src="../../js/jquery/jquery-1.6.2.min.js"></script>
+<script type="text/javascript" src="../../js/jquery/jquery-ui-1.8.13.min.without.datepicker.js"></script>
+<script type="text/javascript" src="../../js/langResource/ko.js"></script>
+<script type="text/javascript" src="../../js/common.pack.js"></script>
+<script type="text/javascript" src="../../js/jquery/jquery.layout-latest.js"></script>
+<script type="text/javascript">
+(function($) {
+	var workflowLayout, centerLayout;
+	$(document).ready(function() {
+		$("#divTab_work1").tabs();
+		$("#divTab_work2").tabs(); 
+		
+		workflowLayout = $('#wrap').layout({ 
+			center__paneSelector:	".ui-layout-center" 
+			,	west__paneSelector:		".ui-layout-west" 
+			,	north__paneSelector:	".ui-layout-north"
+			,	south__paneSelector:	".ui-layout-south"
+			,	resizerClass:			"splitbarV"
+			,	togglerClass:			"toggler"
+			,   west__onresize:			resizeWestPaneScroll  // west resize 시 호출
+			,	west__size:				225
+			,	west__spacing_open:		6
+			,   west__spacing_closed:	6
+			,	west__resizable:		true
+			,	west__slidable:			true
+			,	spacing_open:			0 // ALL panes
+			,	south__size:			20
+			, 	south__spacing_open:	0
+			,	south__closable:		false
+			,	south__slidable:		false
+			,	south__resizable:		false
+			,	north__size:			28
+			, 	north__spacing_open:	0
+			,	north__closable:		false
+			,	north__slidable:		false
+			,	north__resizable:		false
+			,	east__initClosed:       true
+		});
+		
+		
+		centerLayout = $('div.ui-layout-center').layout({
+				resizerClass:			"splitbarH"
+			,	togglerClass:			"toggler"
+			,	center__minSize:		100	// top panes
+			,	center__paneSelector:	".center-center"
+			,   south__onresize:		resizeSouthPaneScroll  // south resize 시 호출
+			,	south__paneSelector:	".center-south"
+			,	north__paneSelector:	".center-north"
+			,	north__size:			78
+			,	north__spacing_open:	0
+			,   north__spacing_closed:	0
+			,	north__closable:		false
+			,	north__slidable:		false
+			,	north__resizable:		false
+			,	south__size:			"30%"
+			,	south__spacing_open:	6
+			,   south__spacing_closed:	6
+		});		
+	
+		// 메뉴영역 높이 조절 초기
+		resizeWestPaneScroll();	
+		
+		// 테이블 영역 높이 조절
+		resizeSouthPaneScroll();	
+	
+	});
+	
+	/* 메뉴영역 높이 조절 */
+	resizeWestPaneScroll = function(){
+		var westPaneHeight = $(".ui-layout-west").height();
+		var menuHeight = $(".l_tree").height();		
+		$(".l_tree").height(westPaneHeight-18);
+	}
+	
+	/* table영역 높이 조절 */
+	resizeSouthPaneScroll = function(){
+		var detailHeight = $(".p_box_info_con").height()-27;
+		$(".box_ty1").height(detailHeight);
+	}	
+	
+})(jQuery);
+</script>
+</head>
+
+<body>
+
+<div id="wrap">
+
+	<!--header start-->
+	<div id="header_l" class="ui-layout-north">
+		<h1>IKEP4.0 WORKFLOW</h1>
+		<div class="btn t_close">
+			<a href="#a" title="t_close"><span>t_close</span></a>
+		</div>		
+	<div id="header_r"></div>	
+	</div>
+	<!--//header end-->
+		
+	<div class="content_leftbox ui-layout-west">	
+		<!--lnb start-->
+		<div class="lnb">
+			<h1 class="none">레프트메뉴</h1>
+			<h2>Process Tree</h2>			
+			<div class="l_tree">
+				<div class="partition"><a class="button" href="#a" onclick="show_layer();"><span><img src="../../images/workflow/ic_plus.gif" alt="" />Partition</span></a></div>
+				<div class="l_tree_wrap"><img src="../../images/workflow/img_tree_sample.gif" alt="트리샘플"  /></div>
+			</div>
+		</div>
+		<!--//lnb end-->
+	</div>				
+	
+	<div class="content_rightbox ui-layout-center">	
+
+		<h1 class="none">컨텐츠영역</h1>
+		
+			<!--t_box start-->
+			<div class="t_box center-north">
+			
+				<div class="t_box_tab">		
+					<!--tab Start-->		
+					<div id="divTab_work1" class="iKEP_tab_work1">
+						<ul>
+							<li><a href="#tabs-1">Process A1</a></li>
+							<li><a href="#tabs-2">Process A2</a></li>
+							<li><a href="#tabs-3">Process A3</a></li>
+						</ul>
+					</div>		
+					<!--//tab End-->			
+				</div>
+				
+				<div class="t_box_conbox_l">			
+					<div class="t_box_btn textRight">
+						<ul>
+							<li>				
+								<div class="btn add">
+									<a class="button" href="#a"><span><img src="../../images/workflow/ic_add.gif" alt="" />추가</span></a>
+								</div>		
+							</li>
+							<li>				
+								<div class="btn add">
+									<a class="button" href="#a"><span><img src="../../images/workflow/ic_save.gif" alt="" />저장</span></a>
+								</div>		
+							</li>
+							<li>				
+								<div class="btn add">
+									<a class="button" href="#a"><span><img src="../../images/workflow/ic_arrange.gif" alt="" />배치</span></a>
+								</div>		
+							</li>
+							<li>				
+								<div class="btn add">
+									<a class="button" href="#a"><span><img src="../../images/workflow/ic_arrange_cancel.gif" alt="" />배치해제</span></a>
+								</div>		
+							</li>
+						</ul>
+					</div>
+					
+					<div class="t_box_con">	
+						<span class="ty1">상태 <img src="../../images/workflow/img_blue.gif" alt="활성"> <img src="../../images/workflow/img_red.gif" alt="비활성"></span>
+						<img src="../../images/workflow/line_tab_box.gif" alt="라인">
+						<span class="ty1"><strong>버전1.0</strong> (기본)</span>				
+						<img src="../../images/workflow/line_tab_box.gif" alt="라인">		
+						<span class="ty1"><strong>최종저장일시</strong> 2011.03.22 00:00:00</span>				
+						<img src="../../images/workflow/line_tab_box.gif" alt="라인">	
+						<span class="ty1">배치여부</span>																
+					</div>	
+				<div class="t_box_conbox_r"></div>				
+				</div>
+				
+			</div>
+			<!--//t_box end-->
+			
+			<!--p_box_con start-->
+			<div class="p_box_con center-center">
+				<table style="height:100%;width:100%">
+					<tr>
+						<td style="text-align:center;">						
+							프로세스가 선택되지 않았습니다.<br>
+							프로세스 트리에서 프로세스를 선택하거나 신규 프로세스를 <a href="#" class="bold"><strong>추가</strong></a> 하세요.				
+						</td>
+					</tr>
+				</table>			
+			</div>
+			<!--//p_box_con end-->
+			
+			<!--p_box_info start-->
+			<div class="p_box_info_con center-south">
+				<h1 class="none">프로세스 정보영역</h1>
+				<h2>Process</h2>			
+				<div class="box_ty1">
+
+					<!--tab Start-->		
+					<div id="divTab_work2" class="iKEP_tab_work2">
+						<div class="p_box_search">
+							<select title="검색조건" name="" class="select">
+								<option value="">EMAIL</option>
+								<option value="">SMS</option>								
+							</select>		
+							<a class="button_s" href="#a"><span>search</span></a>
+							<a class="button_s" href="#a"><span>add</span></a>																			
+						</div>					
+						<ul>
+							<li><a href="#tabs-1">기본정보</a></li>
+							<li><a href="#tabs-2">변수</a></li>
+							<li><a href="#tabs-3">고급</a></li>
+							<li><a href="#tabs-3">참여자</a></li>
+							<li><a href="#tabs-3">알림</a><img src="../../images/workflow/line_tab1.gif" alt="" /></li>														
+						</ul>
+					</div>		
+					<!--//tab End-->	
+					
+					<!--blockDetail Start-->					
+					<div class="blockDetail">
+						<table summary="리스트">
+							<caption></caption>
+							<thead>
+								<tr>
+									<th scope="col" width="20%" class="textCenter first">상태</th>
+									<th scope="col" width="50%" class="textCenter">수신자</th>
+									<th scope="col" width="16%" class="textCenter">알림</th>
+									<th scope="col" width="14%" class="textCenter last">메시지</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td class="textCenter first">ASSIGN</td>
+									<td class="textCenter">
+										TO <input type="text" class="inputbox m_none" title="지식검색" value="UESR;UESR2;USER3" size="40" /><br />
+										TO <input type="text" class="inputbox m_none" title="지식검색" value="UESR;UESR2;USER3" size="40" /><br />
+										TO <input type="text" class="inputbox m_none" title="지식검색" value="UESR;UESR2;USER3" size="40" />
+									</td>
+									<td class="textCenter">5일 5시이후</td>
+									<td class="textCenter last">
+										<a href="#a"><img src="../../images/workflow/ic_menu_microblog.png" alt="" /></a>
+									</td>
+								</tr>
+								<tr>
+									<td class="textCenter first">FINISH</td>
+									<td class="textCenter">
+										TO <input type="text" class="inputbox m_none" title="지식검색" value="UESR;UESR2;USER3" size="40" /><br />
+										TO <input type="text" class="inputbox m_none" title="지식검색" value="UESR;UESR2;USER3" size="40" /><br />
+										TO <input type="text" class="inputbox m_none" title="지식검색" value="UESR;UESR2;USER3" size="40" />									
+									</td>
+									<td class="textCenter">5일 5시이후</td>
+									<td class="textCenter last">
+										<a href="#a"><img src="../../images/workflow/ic_menu_microblog.png" alt="" /></a>
+									</td>
+								</tr>																						
+							</tbody>
+						</table>
+					</div>
+					<!--//blockDetail End-->		
+
+				</div>
+			</div>
+					
+			<!--프로세스가 선택되지 않았을때 사용합니다-->
+			<!--div class="p_box_info_con">
+				<p>
+					프로세스가 선택되지 않았습니다.<br>
+					프로세스 트리에서 프로세스를 선택하거나 신규 프로세스를 <a href="#" class="bold">추가</a> 하세요. 
+				</p>
+			</div-->	
+			<!--//p_box_info end-->		
+
+	</div>
+
+	<div class="clear"></div>
+	<!-- //container -->	
+	
+	<!-- footer -->
+	<div id="footer_l" class="ui-layout-south">
+		<h1 class="none">푸터영역</h1>
+	<div id="footer_r"></div>
+	</div>
+	<!-- //footer End-->
+
+</div>
+ 
+</body>
+</html>

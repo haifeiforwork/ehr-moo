@@ -1,0 +1,314 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ko">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Home</title>
+<link rel="shortcut icon" href="../../images/common/favicon.ico" />
+<link rel="stylesheet" type="text/css" href="../../css/theme01/jquery_ui_custom.css" />
+<link rel="stylesheet" type="text/css" href="../../css/common.css" />
+<link rel="stylesheet" type="text/css" href="../../css/theme01/theme.css" />
+
+<script type="text/javascript" src="../../js/jquery/jquery-1.6.2.min.js"></script>
+<script type="text/javascript" src="../../js/jquery/jquery-ui-1.8.13.min.without.datepicker.js"></script>
+<script type="text/javascript" src="../../js/jquery/jquery.jstree.pack.js"></script>
+<script type="text/javascript" src="../../js/jquery/jquery.validate-1.8.min.js"></script>
+<script type="text/javascript" src="../../js/jquery/plugins.pack.js"></script>
+<script type="text/javascript">var contextRoot = "/ikep4-webapp";</script>
+
+<script type="text/javascript" src="../../js/etc.plugins.pack.js"></script>
+<script type="text/javascript" src="../../js/langResource/ko.js"></script>
+<script type="text/javascript" src="../../js/common.pack.js"></script>
+<script type="text/javascript" src="../../js/jquery/jquery.layout-latest.js"></script>
+<script type="text/javascript">
+(function($) {
+	var chkDuplicate = false;
+	var isDuplicate = false;
+	
+	$(document).ready(function() {
+		
+		iKEP.setSelect("#select");
+		
+		new iKEP.Validator("#fmExample1", {
+			rules : {
+				tag : {
+					required : true,
+					tagCount : 10,
+					tagDuplicate : []
+				},
+				date1 : "required",
+				dateGap : { dateGap:["date1", 7] },	// 0-refElement, 1-gap
+				numberHyphen : { numberHyphen : true },
+				product : {
+					required : true,
+					terminology : true
+				},
+				userId : {
+					required:true,
+					rangelength:[6, 12],
+					chkDuplicate:function() { if(!chkDuplicate) return true; },
+					duplicate:function() { if(isDuplicate) return true }
+				},
+				passwd : { required:true, minlength:6 },
+				retype_passwd : { required:true, equalTo:"input[name=passwd]" },
+				email : { email : true },
+				age : "required",
+				phone : "phone", 
+				zipcode : "zipcode",
+				birthday : { required:true, date:true },
+				radio_1 : "required",
+				checkbox_1 : "required"
+			},
+			messages : {
+				tag : {
+					required : "태그를 입력해주세요.",
+					tagCount : "태그는 10개까지만 입력하실 수 있습니다.",
+					tagDuplicate : "입력하신 태그 중 \"{0}\"태그가 중복 되었습니다."
+				},
+				date1 : "시작일자를 입력해주세요.",
+				dateGap : "시작일을 기준으로 {1}일 이내로 지정하셔야 합니다.",
+				numberHyphen : "숫자와 하이픈만 입력해주세요.",
+				product : {
+					required : "제품명을 입력해주세요.",
+					terminology : "영문으로만 입력하셔야 합니다."
+				},
+				userId : {
+					required : "사용자 아이디를 입력해주세요.",
+					rangelength : "사용자 아이디는 6자 이상 12자 이내로 입력하셔야 합니다.",
+					chkDuplicate : "중복체크를 해주세요.",
+					duplicate : "아이디가 중복되어 사용할 수 없습니다.",
+					direction : "bottom"
+				},
+				passwd : {
+					required : "비밀번호를 입력해주세요.",
+					minlength : "비밀번호는 6자 이상 입력하셔야 합니다."
+				},
+				retype_passwd : {
+					required : "비밀번호를 확인해주세요.",
+					equalTo : "입력하신 비밀번호가 일치하지 않습니다."
+				},
+				email : "이메일 주소 형식으로 입력 해주세요.(xxx@xxx.xxx)",
+				age : { required : "나이를 선택해주세요", direction:"right" },
+				phone : { phone : "전화번호 형식으로 입력해주세요.(000-0000-0000)", direction:"left" },
+				zipcode : "우편번호 형식으로 입력해주세요.(000-000)",
+				birthday : {
+					required : "생년월일을 입력해주세요.",
+					date : "날짜입력 형식으로 입력해주세요.(0000.00.00)",
+					equal : "주어진 일자와 일치하지 않습니다."
+				},
+				radio_1 : "radio를 선택해주세요.",
+				checkbox_1 : "checkbox를 선택해주세요."
+			},
+			notice : {
+				userId : { message:"사용자 아이디를 입력하는 항목 입니다.", direction:"bottom" },
+				email : "이메일 주소를 입력하는 항목 입니다.",
+				age : "나이를 입력합니다.",
+				phone : { message:"전화번호 메세지", direction:"right" },
+				zipcode : { message:"우편번호 메세지", direction:"left" },
+				radio_1 : "radio 선택 알림 메세지",
+				checkbox_1 : "checkbox 선택 알림 메세지"
+			}
+		});
+		
+		$("input[name=userId]", "#fmExample1").change(function() {
+			chkDuplicate = false;
+		});
+		
+		$("#btnCheckDuplicate").click(function() {
+			if(chkDuplicate) {
+				if(isDuplicate) {
+					alert("입력하신 아이디는 중복되어 사용할 수 없습니다.");
+					return false;
+				}
+			}
+			
+			$.ajax({
+				success : function(result) {
+					if(true) {//result
+						isDuplicate = true;
+						alert("입력하신 아이디는 중복되어 사용할 수 없습니다.");
+					}
+					else isDuplicate = false;
+				},
+				complete : function() {
+					chkDuplicate = true;
+					$("input[name=userId]", "#fmExample1").trigger("focusout");	// 중복체크 메세지를 없애기 위해
+				}
+				
+			});
+		});
+			
+		$("#btnSave1").click(function() {
+			$("#fmExample1").trigger("submit");
+		});
+		
+		$("#fmExample2").validate({
+			submitHandler : function(form) {
+				iKEP.debug(form);
+				//form.submit();
+			}
+		});
+		
+		$("#btnSave2").click(function() {
+			$("#fmExample2").trigger("submit");
+		});
+		
+		$("input[name=date1]", "#fmExample1").datepicker({
+			onSelect : function() {
+				$(this).trigger("focusout");
+			}
+		});
+		
+		$("input[name=tag]", "#fmExample1").focus();
+	});
+})(jQuery);
+</script>
+<style type="text/css">
+	form > p { border-bottom:1px dashed #eee; padding-bottom:3px; }
+	form label { display:inline-block; }
+	form label.label { width:100px; }
+	form label > input[type=text] { width:200px; }
+	
+	form div.error { display:none; }
+	form div.error:before { content:"Error : "; font-weight:bold; }
+	form div.error > span { color:red; }
+	
+</style>
+</head>
+
+<body class="popup">
+<div>
+	<div style="float:left;">
+		<h3>type 1 : rules</h3>
+		<form id="fmExample1" onsubmit="return false" method="post" action="">
+			<table>
+				<tbody>
+					<tr>
+						<td><label class="label">tag</label></td>
+						<td><div><input name="tag" type="text" value=""/></div></td>
+					</tr>
+					<tr>
+						<td><label class="label">dateGap</label></td>
+						<td><div><input name="date1" type="text" value="2011.05.11"/> ~ <input name="dateGap" type="text" value="2011.05.16"/></div></td>
+					</tr>
+					<tr>
+						<td><label class="label">numberHyphen</label></td>
+						<td><div><input name="numberHyphen" type="text" value=""/></div></td>
+					</tr>
+					<tr>
+						<td><label class="label">Product</label></td>
+						<td><div><input name="product" type="text" value=""/></div></td>
+					</tr>
+					<tr>
+						<td><label class="label">ID</label></td>
+						<td><div><input name="userId" type="text" value="userid3"/> <input id="btnCheckDuplicate" type="button" value="check"/><label for="userId" class="serverError">에러 메세지......</label></div></td>
+					</tr>
+					<tr>
+						<td><label class="label">Password</label></td>
+						<td><div><input name="passwd" type="password"/></div></td>
+					</tr>
+					<tr>
+						<td><label class="label">Retype password</label></td>
+						<td><div><input name="retype_passwd" type="password"/></div></td>
+					</tr>
+					<tr>
+						<td><label class="label">Email</label></td>
+						<td><div><input name="email" type="text" value="aaa.com"></input></div></td>
+					</tr>
+					<tr>
+						<td><label class="label">age</label></td>
+						<td>
+							<div>
+								<select name="age">
+									<option value="">select</option>
+									<option value="1">1살</option>
+									<option value="2">2살</option>
+									<option value="3">3살</option>
+									<option value="4" selected>4살</option>
+									<option value="5">5살</option>
+									<option value="6">6살</option>
+									<option value="7">7살</option>
+								</select>
+								<select id="select" style="width:80px;">
+									<option value="">전체</option>
+									<option value="name" selected="selected">이름</option>
+									<option value="team">팀</option>
+									<option value="tel">전화번호</option>
+									<option value="tel">가나다라마바사</option>
+									<option value="team">팀</option>
+									<option value="tel">전화번호</option>
+									<option value="tel">가나다라마바사</option-->
+								</select>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td><label class="label">Phone</label></td>
+						<td><div><input name="phone" type="text"/></div></td>
+					</tr>
+					<tr>
+						<td><label class="label">Zipcode</label></td>
+						<td><div><input name="zipcode" type="text"/>
+				<label for="zipcode" class="serverError"> </label></div></td>
+					</tr>
+					<tr>
+						<td><label class="label">Birthday</label></td>
+						<td><div><input name="birthday" type="text" value="2000-01-01"/></div></td>
+					</tr>
+					<tr>
+						<td><label class="label">radio</label></td>
+						<td><div><label><input name="radio_1" type="radio" value="0"/>item 1</label>
+				<label><input name="radio_1" type="radio" value="1"/>item 2</label>
+				<label><input name="radio_1" type="radio" value="2"/>item 3</label></div></td>
+					</tr>
+					<tr>
+						<td><label class="label">checkbox</label></td>
+						<td><div><label><input name="checkbox_1" type="checkbox" value="0"/>item 1</label>
+				<label><input name="checkbox_1" type="checkbox" value="1"/>item 2</label>
+				<label><input name="checkbox_1" type="checkbox" value="2"/>item 3</label></div></td>
+					</tr>
+				</tbody>
+			</table>
+
+			<input id="btnSave1" type="button" value="save"/>
+		</form>
+	</div>
+	
+	<div style="float:left; margin-left:100px;">
+		<h3>type 2 : className</h3>
+		<form id="fmExample2">
+			<div class="error"><span></span></div>
+			<p>
+				<label class="label">ID</label>
+				<input name="userId" class="required" maxlength="12" type="text"/>
+			</p>
+			<p>
+				<label class="label">Password</label>
+				<input name="passwd" class="required password" type="password"/>
+			</p>
+			<p>
+				<label class="label">Retype password</label>
+				<input name="retype_passwd" equalTo="input[name=passwd]" class="required password" type="password"/>
+			</p>
+			<p>
+				<label class="label">Email</label>
+				<input name="email" class="email" type="text"/>
+			</p>
+			<p>
+				<label class="label">Phone</label>
+				<input name="phone" class="phone" type="text"/>
+			</p>
+			<p>
+				<label class="label">Zipcode</label>
+				<input name="zipcode" class="zipcode" type="text"/>
+			</p>
+			<p>
+				<label class="label">Birthday</label>
+				<input name="birthday" class="required dateISO" type="text"/>
+			</p>
+			<input id="btnSave2" type="button" value="save"/>
+		</form>
+	</div>
+</div>
+
+</body>
+</html>

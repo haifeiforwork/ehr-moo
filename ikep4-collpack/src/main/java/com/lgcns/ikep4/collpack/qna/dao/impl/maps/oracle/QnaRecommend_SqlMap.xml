@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="collpack.qna.dao.QnaRecommend" >
+  
+ <typeAlias alias = "QnaRecommend" type="com.lgcns.ikep4.collpack.qna.model.QnaRecommend"/>
+  
+  
+  <resultMap id="QnaRecommendResultMap" class="QnaRecommend" >
+    <result column="QNA_ID" 				property="qnaId"  />
+    <result column="REGISTER_ID" 		property="registerId"  />
+    <result column="REGIST_DATE" 		property="registDate"  />
+  </resultMap>
+  
+  <select id="select" resultMap="QnaRecommendResultMap" parameterClass="QnaRecommend" >
+    SELECT 					/* [QnaRecommend_SqlMap.xml] qnaRecommend.select */
+    	QNA_ID, 
+    	REGISTER_ID, 
+    	REGIST_DATE
+    FROM IKEP4_QA_RECOMMEND
+    WHERE QNA_ID = #qnaId#
+      AND REGISTER_ID = #registerId#
+  </select>
+  
+  
+   <select id="selectByQnaId" resultMap="QnaRecommendResultMap" parameterClass="String" >
+    SELECT 						/* [QnaRecommend_SqlMap.xml] qnaRecommend.selectByQnaId */
+    	QNA_ID, 
+    	REGISTER_ID, 
+    	REGIST_DATE
+    FROM IKEP4_QA_RECOMMEND
+    WHERE QNA_ID = #qnaId#
+  </select>
+  
+   <select id="selectAll" resultMap="QnaRecommendResultMap">
+    SELECT 						/* [QnaRecommend_SqlMap.xml] qnaRecommend.selectAll */
+    	QNA_ID, 
+    	REGISTER_ID, 
+    	REGIST_DATE
+    FROM IKEP4_QA_RECOMMEND
+  </select>
+
+  <insert id="insert" parameterClass="QnaRecommend" >
+    INSERT INTO IKEP4_QA_RECOMMEND (				/* [QnaRecommend_SqlMap.xml] qnaRecommend.insert */
+    	QNA_ID, 
+    	REGISTER_ID, 
+      	REGIST_DATE
+      ) VALUES (
+      	#qnaId#, 
+      	#registerId#, 
+      	sysdate
+     )
+  </insert>
+
+  <select id="count" parameterClass="String" resultClass="int" >
+    SELECT 					/* [QnaRecommend_SqlMap.xml] qnaRecommend.count */
+    	COUNT(QNA_ID) 
+    FROM IKEP4_QA_RECOMMEND
+    WHERE QNA_ID = #qnaId#
+  </select>
+  
+  <update id="update" parameterClass="QnaRecommend" >
+  </update>
+  
+   <delete id="delete" parameterClass="QnaRecommend" >
+    DELETE 				/* [QnaRecommend_SqlMap.xml] qnaRecommend.delete */
+    FROM IKEP4_QA_RECOMMEND
+    WHERE 
+    	QNA_ID = #qnaId#
+      	AND REGISTER_ID = #registerId#
+  </delete>
+  
+  <delete id="deleteQna" parameterClass="String" >
+    DELETE 					/* [QnaRecommend_SqlMap.xml] qnaRecommend.deleteQna */
+    FROM IKEP4_QA_RECOMMEND
+    WHERE 
+    	QNA_ID = #qnaId#
+  </delete>
+  
+</sqlMap>

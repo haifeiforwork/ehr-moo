@@ -1,0 +1,104 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ko">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Home</title>
+<link rel="stylesheet" type="text/css" href="../../css/guide.css" />
+<link rel="stylesheet" type="text/css" href="../../css/theme01/jquery_ui_custom.css" />
+<link rel="stylesheet" type="text/css" href="../../css/common.css" />
+<link rel="stylesheet" type="text/css" href="../../css/theme01/theme.css" />
+<script type="text/javascript" src="../../js/jquery/jquery-1.6.2.min.js"></script>
+<script type="text/javascript" src="../../js/jquery/jquery-ui-1.8.13.min.without.datepicker.js"></script>
+<script type="text/javascript" src="../../js/langResource/ko.js"></script>
+<script type="text/javascript" src="../../js/common.pack.js"></script>
+<style>
+	.barText {
+    color: #000;
+    position: absolute;
+    text-align: center;
+    line-height: 2.0em;
+	}
+</style>
+<script type="text/javascript">
+var val = 0;
+var handle = 0;
+var update;
+
+(function($){
+	$(document).ready(function() {
+		$("#progressbar0").progressbar({
+			value: 45
+		});
+		
+		$("#progressbar").progressbar({
+			value:val,
+			create: function(event, ui) {
+				val = 0;
+				$(this).progressbar({value:val});		
+				$("<span class='barText'>&nbsp;</span>")
+				.css({"width":$("#progressbar").width(),"height":$("#progressbar").height()})
+				.appendTo($("#progressbar > div")[0]);
+			}
+		});
+		
+		$("#run").click(function(){
+			if(this.value=="start"){
+				handle=setInterval("update()",100);
+				this.value="stop";
+			} else {
+				clearInterval(handle);
+				this.value="start";
+			}
+		});
+    
+    	$("#reset").click(function(){
+			val=0;
+			$("#progressbar").progressbar({value:val});
+			$("#progressbar").find(".barText").html("");
+    	});
+	});
+	
+	update = function (){
+		var max=100;
+		var progress = $("#progressbar").progressbar({value:++val});
+		var nowVal = progress.attr("aria-valuenow");
+		var innerdiv=$("#progressbar > div");//progress.children().eq(0);
+		
+		if(nowVal==14){
+			//iKEP.debug(progress.progressbar("widget"));			
+		}
+		
+		var width=Math.round(nowVal/max*100);
+		innerdiv.css("width",width+"%");	
+		$("#progressbar").find(".barText").html(width+" %");
+		    
+	    if(val==100){
+			clearInterval(handle);
+			$("#run").val("start");
+			val=0;
+	    }
+	};
+})(jQuery);
+</script>
+</head>
+
+<body class="popup">
+<div>
+	<p>예제 1</p>
+	<div id="progressbar0"></div>			
+</div>
+<div class="UI_sum">
+	진행율을 정의된 값으로 표시한 예제.
+</div>
+<br/>
+<div>
+	<p>예제 2</p>
+	<div id="progressbar"></div><br/>
+	<input type='button' id='run' value='start'/>
+	<input type='button' id='reset' value='reset'/>
+</div>
+<div class="UI_sum">
+	진행율을 시작과 끝 이벤트를 부여하여 진행율을 표시하게 만든 예제.<br/>			
+</div>
+</body>
+</html>

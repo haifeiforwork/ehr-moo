@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="support.rss.dao.channelCategory">
+  
+  <typeAlias alias = "channelCategory" type="com.lgcns.ikep4.support.rss.model.ChannelCategory"/>
+ 
+  <resultMap class="channelCategory" id="channelCategoryResult">
+    <result column="CATEGORY_ID" 	 	property="categoryId" />
+    <result column="CATEGORY_NAME"  	property="categoryName" />
+    <result column="CATEGORY_ORDER"  	property="categoryOrder" />
+    <result column="REGISTER_ID"  		property="registerId" />
+    <result column="REGISTER_NAME"  	property="registerName" />
+    <result column="REGIST_DATE"  		property="registDate" />
+  </resultMap>
+  
+  <resultMap class="channelCategory" id="channelCategoryportletResult">
+    <result column="CATEGORY_ID"        property="categoryId" />
+    <result column="CATEGORY_NAME"      property="categoryName" />
+    <result column="CATEGORY_ORDER"     property="categoryOrder" />
+    <result column="REGISTER_ID"        property="registerId" />
+    <result column="REGISTER_NAME"      property="registerName" />
+    <result column="REGIST_DATE"        property="registDate" />
+    <result column="PORTLET"            property="portlet" />
+  </resultMap>
+  
+  
+  <!-- ANSI -->
+  <select id="select" parameterClass="String" resultMap="channelCategoryResult">
+    SELECT 					/* [ChannelCategoryResult_SqlMap.xml] idCategory.select */  
+	    CATEGORY_ID, 
+	    CATEGORY_NAME, 
+	    CATEGORY_ORDER,
+	    REGISTER_ID, 
+	    REGISTER_NAME, 
+	    REGIST_DATE
+    FROM IKEP4_RS_CATEGORY
+    WHERE 
+    	CATEGORY_ID = #categoryId#
+  </select>
+  
+   <!-- ANSI -->
+   <select id="selectAll" parameterClass="String" resultMap="channelCategoryResult">
+    SELECT 						/* [ChannelCategoryResult_SqlMap.xml] idCategory.selectAll */  
+	    CATEGORY_ID, 
+	    CATEGORY_NAME, 
+	    CATEGORY_ORDER,
+	    REGISTER_ID, 
+	    REGISTER_NAME, 
+	    REGIST_DATE
+    FROM IKEP4_RS_CATEGORY
+    WHERE  OWNER_ID = #ownerId#
+    ORDER BY CATEGORY_ORDER ASC
+  </select>
+  
+  <!-- ANSI -->
+   <select id="selectForPortletConfig" parameterClass="String" resultMap="channelCategoryportletResult">
+    SELECT                      /* [ChannelCategoryResult_SqlMap.xml] idCategory.selectForPortletConfig */  
+        C.CATEGORY_ID, 
+        C.CATEGORY_NAME, 
+        C.CATEGORY_ORDER,
+        C.REGISTER_ID, 
+        C.REGISTER_NAME, 
+        C.REGIST_DATE,
+        isnull(R.portlet_config_id, 0) PORTLET        
+    FROM IKEP4_RS_CATEGORY C
+    LEFT OUTER JOIN IKEP4_PO_PORTLET_RSSNEWS R ON C.CATEGORY_ID = R.CATEGORY_ID
+    WHERE  C.OWNER_ID = #ownerId#
+    ORDER BY C.CATEGORY_ORDER ASC
+  </select>
+  
+  
+   <!-- ANSI -->
+   <select id="selectForPortlet" parameterClass="String" resultMap="channelCategoryResult">
+    SELECT                      /* [ChannelCategoryResult_SqlMap.xml] idCategory.selectForPortlet */  
+        C.CATEGORY_ID, 
+        C.CATEGORY_NAME, 
+        C.CATEGORY_ORDER,
+        C.REGISTER_ID, 
+        C.REGISTER_NAME, 
+        C.REGIST_DATE
+    FROM IKEP4_RS_CATEGORY C
+    INNER JOIN IKEP4_PO_PORTLET_RSSNEWS R ON C.CATEGORY_ID = R.CATEGORY_ID
+    WHERE  C.OWNER_ID = #ownerId#
+    ORDER BY C.CATEGORY_ORDER ASC
+  </select>
+  
+   	<!-- ANSI -->
+    <select id="selectCategoryIdByCategoryName" parameterClass="channelCategory" resultClass="String">
+    SELECT 						/* [IdCategory_SqlMap.xml] idCategory.selectCategoryIdByCategoryName */ 
+	    CATEGORY_ID
+    FROM IKEP4_RS_CATEGORY
+    WHERE 
+    	CATEGORY_NAME = #categoryName#
+    	AND OWNER_ID = #ownerId#
+  </select>
+  
+  
+  <!-- MS SQL -->
+  <insert id="insert" parameterClass="channelCategory">
+    INSERT INTO IKEP4_RS_CATEGORY (			/* [IdCategory_SqlMap.xml] idCategory.insert */ 
+    	CATEGORY_ID, 
+    	CATEGORY_NAME, 
+    	CATEGORY_ORDER,
+    	REGISTER_ID, 
+        REGISTER_NAME, 
+        REGIST_DATE, 
+        OWNER_ID
+    ) VALUES (
+    	#categoryId#, 
+    	#categoryName#, 
+    	(SELECT ISNULL(MAX(CATEGORY_ORDER),0) FROM IKEP4_RS_CATEGORY WHERE OWNER_ID = #ownerId#)+1,
+    	#registerId#, 
+        #registerName#, 
+        CURRENT_TIMESTAMP,
+        #ownerId#
+    )
+  </insert>
+  
+  <!-- ANSI -->
+  <update id="update" parameterClass="channelCategory">
+    UPDATE IKEP4_RS_CATEGORY			/* [IdCategory_SqlMap.xml] idCategory.update */ 
+    SET CATEGORY_NAME = #categoryName#
+    WHERE CATEGORY_ID = #categoryId#
+  </update>
+   
+   <!-- ANSI -->
+   <update id="updateCategoryOrder" parameterClass="channelCategory">
+    UPDATE IKEP4_RS_CATEGORY					/* [IdCategory_SqlMap.xml] idCategory.updateCategoryOrder */ 
+    SET CATEGORY_ORDER = #categoryOrder#
+    WHERE CATEGORY_ID = #categoryId#
+  </update>
+  
+  <!-- ANSI -->
+  <update id="updateOrder" parameterClass="channelCategory">
+    UPDATE IKEP4_RS_CATEGORY					/* [IdCategory_SqlMap.xml] idCategory.updateOrder */ 
+    SET CATEGORY_ORDER = CATEGORY_ORDER + #categoryOrder#
+    WHERE CATEGORY_ID = #categoryId#
+  </update>
+  
+   <!-- ANSI -->
+   <delete id="delete" parameterClass="String">
+    DELETE 				/* [IdCategory_SqlMap.xml] idCategory.delete */ 
+    FROM IKEP4_RS_CATEGORY					
+    WHERE CATEGORY_ID = #categoryId#
+  </delete>
+  
+</sqlMap>

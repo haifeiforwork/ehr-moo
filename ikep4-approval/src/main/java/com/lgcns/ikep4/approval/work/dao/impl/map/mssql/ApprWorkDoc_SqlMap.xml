@@ -1,0 +1,877 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="approval.admin.dao.ApprWorkDoc" >
+	
+	<!-- class declare  -->
+	<typeAlias alias="apprDoc" 			            type="com.lgcns.ikep4.approval.admin.model.ApprDoc" />
+	<typeAlias alias="apprFormSearchCondition"		type="com.lgcns.ikep4.approval.admin.search.ApprFormSearchCondition" />
+	
+	
+	<!-- apprDoc Detail  -->
+	<resultMap id="apprDocDetailResult" class="apprDoc">
+		<result property="systemId"         column="SYSTEM_ID" 			jdbcType="VARCHAR"/>
+	    <result property="formId"          	column="FORM_ID" 			jdbcType="VARCHAR"/>
+	    <result property="apprId"          	column="APPR_ID" 			jdbcType="VARCHAR"/>
+	    <result property="formVersion"      column="FORM_VERSION" 		jdbcType="DECIMAL"/>
+	    <result property="docVersion"      	column="DOC_VERSION" 		jdbcType="DECIMAL"/>
+	    <result property="parentApprId"     column="PARENT_APPR_ID" 	jdbcType="VARCHAR"/>
+	    <result property="apprGroupId"     	column="APPR_GROUP_ID" 		jdbcType="VARCHAR"/>
+	    <result property="apprGroupName"    column="APPR_GROUP_NAME" 	jdbcType="VARCHAR"/>
+	    <result property="apprDocType"     	column="APPR_DOC_TYPE" 		jdbcType="DECIMAL"/>
+	    <result property="apprDocNo"    	column="APPR_DOC_NO" 		jdbcType="VARCHAR"/>
+	    <result property="apprTitle"    	column="APPR_TITLE" 		jdbcType="VARCHAR"/>
+	    <result property="apprReqDate"    	column="APPR_REQ_DATE" 		jdbcType="VARCHAR"/>
+	    <result property="apprPeriodCd"    	column="APPR_PERIOD_CD" 	jdbcType="VARCHAR"/>
+	    <result property="apprPeriodNm"    	column="APPR_PERIOD_NM" 	jdbcType="VARCHAR"/>
+	    <result property="apprDocCd"    	column="APPR_DOC_CD" 		jdbcType="VARCHAR"/>
+	    <result property="apprSecurityType" column="APPR_SECURITY_TYPE" jdbcType="DECIMAL"/>
+	    <result property="apprDocStatus"   	column="APPR_DOC_STATUS" 	jdbcType="DECIMAL"/>
+	    <result property="apprEndDate"    	column="APPR_END_DATE" 		jdbcType="TIMESTAMP"/>
+	    <result property="isApprReceive"   	column="IS_APPR_RECEIVE" 	jdbcType="DECIMAL"/>
+	    <result property="apprLineType"    	column="APPR_LINE_TYPE" 	jdbcType="DECIMAL"/>
+	    <result property="registerId"    	column="REGISTER_ID" 		jdbcType="VARCHAR"/>
+	    <result property="registerName"    	column="REGISTER_NAME" 		jdbcType="VARCHAR"/>
+	    <result property="registerJobTitle" column="REGISTER_JOB_TITLE" jdbcType="VARCHAR"/>
+	    <result property="registDate"    	column="REGIST_DATE" 		jdbcType="TIMESTAMP"/>
+	    <result property="updaterId"    	column="UPDATER_ID" 		jdbcType="VARCHAR"/>
+	    <result property="updaterName"    	column="UPDATER_NAME" 		jdbcType="VARCHAR"/>
+	    <result property="updateDate"    	column="UPDATE_DATE" 		jdbcType="TIMESTAMP"/>
+	    <result property="registerMessage"  column="REGISTER_MESSAGE" 	jdbcType="VARCHAR"/>
+	    <result property="formEditorData"  	column="FORM_EDITOR_DATA" 	jdbcType="VARCHAR"/>
+	    <result property="formData"    		column="FORM_DATA" 			jdbcType="VARCHAR"/>
+	    <result property="formLayoutData"  	column="FORM_LAYOUT_DATA" 	jdbcType="VARCHAR"/>
+	    <result property="formLinkedData"  	column="FORM_Linked_DATA" 	jdbcType="VARCHAR"/>
+	    <result property="isHidden"    		column="IS_HIDDEN" 			jdbcType="DECIMAL"/> 	    	    
+	</resultMap>
+	<!-- apprDoc Detail2  -->
+	<resultMap id="apprDocDetailResult2" class="apprDoc">
+		<result property="systemId"         column="SYSTEM_ID" 			jdbcType="VARCHAR"/>
+	    <result property="formId"          	column="FORM_ID" 			jdbcType="VARCHAR"/>
+	    <result property="apprId"          	column="APPR_ID" 			jdbcType="VARCHAR"/>
+	    <result property="formVersion"      column="FORM_VERSION" 		jdbcType="DECIMAL"/>
+	    <result property="docVersion"      	column="DOC_VERSION" 		jdbcType="DECIMAL"/>
+	    <result property="parentApprId"     column="PARENT_APPR_ID" 	jdbcType="VARCHAR"/>
+	    <result property="apprGroupId"     	column="APPR_GROUP_ID" 		jdbcType="VARCHAR"/>
+	    <result property="apprGroupName"    column="APPR_GROUP_NAME" 	jdbcType="VARCHAR"/>
+	    <result property="apprDocType"     	column="APPR_DOC_TYPE" 		jdbcType="DECIMAL"/>
+	    <result property="apprDocNo"    	column="APPR_DOC_NO" 		jdbcType="VARCHAR"/>
+	    <result property="apprTitle"    	column="APPR_TITLE" 		jdbcType="VARCHAR"/>
+	    <result property="apprReqDate"    	column="APPR_REQ_DATE" 		jdbcType="TIMESTAMP"/>
+	    <result property="apprPeriodCd"    	column="APPR_PERIOD_CD" 	jdbcType="VARCHAR"/>
+	    <result property="apprPeriodNm"    	column="APPR_PERIOD_NM" 	jdbcType="VARCHAR"/>
+	    <result property="apprDocCd"    	column="APPR_DOC_CD" 		jdbcType="VARCHAR"/>
+	    <result property="apprSecurityType" column="APPR_SECURITY_TYPE" jdbcType="DECIMAL"/>
+	    <result property="apprDocStatus"   	column="APPR_DOC_STATUS" 	jdbcType="DECIMAL"/>
+	    <result property="apprEndDate"    	column="APPR_END_DATE" 		jdbcType="TIMESTAMP"/>
+	    <result property="isApprReceive"   	column="IS_APPR_RECEIVE" 	jdbcType="DECIMAL"/>
+	    <result property="apprLineType"    	column="APPR_LINE_TYPE" 	jdbcType="DECIMAL"/>
+	    <result property="registerId"    	column="REGISTER_ID" 		jdbcType="VARCHAR"/>
+	    <result property="registerName"    	column="REGISTER_NAME" 		jdbcType="VARCHAR"/>
+	    <result property="registerJobTitle" column="REGISTER_JOB_TITLE" jdbcType="VARCHAR"/>
+	    <result property="registDate"    	column="REGIST_DATE" 		jdbcType="TIMESTAMP"/>
+	    <result property="updaterId"    	column="UPDATER_ID" 		jdbcType="VARCHAR"/>
+	    <result property="updaterName"    	column="UPDATER_NAME" 		jdbcType="VARCHAR"/>
+	    <result property="updateDate"    	column="UPDATE_DATE" 		jdbcType="TIMESTAMP"/>
+	    <result property="registerMessage"  column="REGISTER_MESSAGE" 	jdbcType="VARCHAR"/>
+	    <result property="formEditorData"  	column="FORM_EDITOR_DATA" 	jdbcType="VARCHAR"/>
+	    <result property="formData"    		column="FORM_DATA" 			jdbcType="VARCHAR"/>
+	    <result property="formLayoutData"  	column="FORM_LAYOUT_DATA" 	jdbcType="VARCHAR"/>
+	    <result property="formLinkedData"  	column="FORM_Linked_DATA" 	jdbcType="VARCHAR"/>
+	    <result property="isHidden"    		column="IS_HIDDEN" 			jdbcType="DECIMAL"/>
+	    <result property="approverId"    	column="APPROVER_ID" 		jdbcType="VARCHAR"/>
+	    <result property="approverName"   	column="APPROVER_NAME" 		jdbcType="VARCHAR"/>
+	    <result property="approverJobTitle" column="APPROVER_JOB_TITLE" jdbcType="VARCHAR"/>	    	    
+	</resultMap>	
+	<!-- apprDoc History  -->
+	<resultMap id="apprDocHistoryListResult" class="apprDoc">
+		<result property="apprId"           column="APPR_ID" 			jdbcType="VARCHAR"/>
+		<result property="formVersion"      column="FORM_VERSION" 		jdbcType="DECIMAL"/>
+		<result property="docVersion"       column="DOC_VERSION" 		jdbcType="DECIMAL"/>
+		<result property="formEditorData"   column="FORM_EDITOR_DATA" 	jdbcType="VARCHAR"/>
+		<result property="formData"         column="FORM_DATA" 			jdbcType="VARCHAR"/>
+		<result property="formLayoutData"   column="FORM_LAYOUT_DATA" 	jdbcType="VARCHAR"/>
+		<result property="formLinkedData"  	column="FORM_Linked_DATA" 	jdbcType="VARCHAR"/>
+		<result property="changeReason"     column="CHANGE_REASON" 		jdbcType="VARCHAR"/>
+		<result property="registerId"       column="REGISTER_ID" 		jdbcType="VARCHAR"/>
+		<result property="registerName"     column="REGISTER_NAME" 		jdbcType="VARCHAR"/>
+		<result property="registDate"       column="REGIST_DATE" 		jdbcType="TIMESTAMP"/>
+	</resultMap>
+		
+	<!-- apprDoc read list -->
+	<resultMap id="apprReadListResult" class="apprDoc">
+		<result property="readId"   	column="READ_ID" 				jdbcType="VARCHAR"/>
+		<result property="groupId"   	column="GROUP_ID" 				jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	<!-- apprDoc reference list -->
+	<resultMap id="apprReferenceListResult" class="apprDoc">
+		<result property="userId"   	column="USER_ID" 				jdbcType="VARCHAR"/>
+		<result property="groupId"   	column="GROUP_ID" 				jdbcType="VARCHAR"/>
+	</resultMap>
+
+	<!-- apprDoc Relations list -->
+	<resultMap id="apprRelationsListResult" class="apprDoc">
+		<result property="apprId"   	column="APPR_ID" 				jdbcType="VARCHAR"/>
+		<result property="apprTitle"   	column="APPR_TITLE" 			jdbcType="VARCHAR"/>
+	</resultMap>	
+	
+	<!--apprDoc  생성 -->
+   	<insert id="create"  parameterClass="apprDoc"> 
+   		<![CDATA[
+      	/* [ApprWorkDoc_SqlMap.xml] approval.work.dao.ApprWorkDoc.create */ 
+      	INSERT 
+		  INTO IKEP4_APPR_DOC 
+		       ( 	
+		       		PORTAL_ID,
+		       		SYSTEM_ID,
+		       		FORM_ID,
+		           	APPR_ID,
+		           	APPR_GROUP_ID,
+		           	APPR_GROUP_NAME,
+		           	APPR_DOC_TYPE,
+		           	APPR_TITLE,
+		           	APPR_REQ_DATE,
+		           	APPR_PERIOD_CD,
+		           	APPR_SECURITY_TYPE,
+		           	APPR_DOC_STATUS,
+		           	IS_APPR_RECEIVE,
+		           	APPR_LINE_TYPE,
+		           	REGISTER_ID,
+		           	REGISTER_NAME,
+		           	REGISTER_JOB_TITLE,
+		           	REGISTER_MESSAGE,
+		           	REGIST_DATE,
+		           	UPDATER_ID,
+		           	UPDATER_NAME,
+		           	UPDATE_DATE
+		       ) 
+		       VALUES 
+		       ( 	
+		       		#portalId#,
+		       		#systemId#,
+		       		#formId#,
+		            #apprId#,
+		            #apprGroupId#,
+		            #apprGroupName#,
+		            #apprDocType#,
+		            #apprTitle#,
+		            GETDATE(),
+		            #apprPeriodCd#,
+		            #apprSecurityType#,
+		            #apprDocStatus#,
+		            #isApprReceive#,
+		            #apprLineType#,
+		            #registerId#,
+		            #registerName#,
+		            #registerJobTitle#,
+		            #registerMessage#,
+		            GETDATE(),
+		            #updaterId#,
+		            #updaterName#,
+		            GETDATE()
+		       ) 
+    	]]>
+   	</insert>
+   	
+   	<!--apprDoc  생성 -->
+   	<insert id="duplicateApprDoc"  parameterClass="Map"> 
+
+      	/* [ApprWorkDoc_SqlMap.xml] approval.work.dao.ApprWorkDoc.duplicateApprDoc */ 
+      	INSERT 
+		  INTO IKEP4_APPR_DOC
+		       ( 
+		       		APPR_ID, 
+		           	FORM_ID, 
+		           	PARENT_APPR_ID, 
+		           	APPR_GROUP_ID, 
+		           	APPR_GROUP_NAME, 
+		           	APPR_DOC_TYPE, 
+		           	APPR_TITLE, 
+		           	APPR_REQ_DATE, 
+		           	APPR_PERIOD_CD, 
+		           	APPR_DOC_CD,
+		           	APPR_SECURITY_TYPE, 
+		           	APPR_DOC_STATUS, 
+		           	IS_APPR_RECEIVE, 
+		           	APPR_LINE_TYPE, 
+		           	REGISTER_ID, 
+		           	REGISTER_NAME, 
+		           	REGISTER_JOB_TITLE, 
+		           	REGISTER_MESSAGE,
+		           	REGIST_DATE, 
+		           	UPDATER_ID, 
+		           	UPDATER_NAME, 
+		           	UPDATE_DATE,
+		           	PORTAL_ID,
+		           	SYSTEM_ID,
+		           	APPROVER_ID
+		           	<isNotEmpty property="apprType">
+		           	,
+		           	APPR_TYPE
+		           	</isNotEmpty>		           	
+		       )  
+		SELECT 		#newApprId#, 
+		       		FORM_ID, 
+		       		#apprId#, 
+		       		#apprGroupId#, 
+		       		#apprGroupName#, 
+		       		0, 
+		       		APPR_TITLE, 
+		       		GETDATE(), 
+		       		APPR_PERIOD_CD, 
+		       		APPR_DOC_CD,
+		       		APPR_SECURITY_TYPE, 
+		       		6, 
+		       		IS_APPR_RECEIVE, 
+		       		0, 
+		       		<isNotEmpty property="registerId">
+		       		#registerId#, 
+		       		#registerName#, 
+		       		#registerJobTitle#,
+		       		</isNotEmpty>
+		       		<isEmpty property="registerId">
+		       		REGISTER_ID, 
+		       		REGISTER_NAME, 
+		       		REGISTER_JOB_TITLE,
+		       		</isEmpty>		       		
+		       		REGISTER_MESSAGE, 
+		       		GETDATE(), 
+		       		<isNotEmpty property="registerId">
+		       		#registerId#, 
+		       		#registerName#,
+		       		</isNotEmpty> 
+		       		<isEmpty property="registerId">
+		       		REGISTER_ID, 
+		       		REGISTER_NAME, 
+		       		</isEmpty>		       		
+		       		GETDATE(),
+		       		PORTAL_ID,
+		       		SYSTEM_ID,
+		       		#approverId#
+					<isNotEmpty property="apprType">
+		       		, 
+		       		#apprType#
+		       		</isNotEmpty>			       		
+		FROM 		IKEP4_APPR_DOC 
+		WHERE 		APPR_ID = #apprId#
+
+   	</insert>
+   	
+   	<!--apprDoc 수정 -->
+   	<update id="update" parameterClass="apprDoc"> 
+      	<![CDATA[
+      	/* [ApprWorkDoc_SqlMap.xml] approval.work.dao.ApprWorkDoc.update */ 
+     	UPDATE IKEP4_APPR_DOC 
+		SET     
+		        APPR_GROUP_ID 		= #apprGroupId#, 
+		        APPR_GROUP_NAME 	= #apprGroupName#, 
+		        APPR_DOC_TYPE 		= #apprDocType#, 
+		        APPR_TITLE 			= #apprTitle#,
+		        APPR_REQ_DATE 		= GETDATE(), 
+		        APPR_PERIOD_CD 		= #apprPeriodCd#, 
+		        APPR_SECURITY_TYPE 	= #apprSecurityType#, 
+		        APPR_DOC_STATUS 	= #apprDocStatus#, 
+		        IS_APPR_RECEIVE 	= #isApprReceive#, 
+		        APPR_LINE_TYPE 		= #apprLineType#, 
+		        REGISTER_MESSAGE	= #registerMessage#,
+		        UPDATER_ID 			= #updaterId#, 
+		        UPDATER_NAME 		= #updaterName#, 
+		        UPDATE_DATE 		= GETDATE()
+		 WHERE 	APPR_ID 			= #apprId#
+	  	]]>
+   </update>
+   
+   	<!--apprDoc 삭제 -->
+   	<delete id="remove"  parameterClass="String">
+   		<![CDATA[
+      	/* [ApprWorkDoc_SqlMap.xml] approval.work.dao.ApprWorkDoc.remove */ 
+      	DELETE	IKEP4_APPR_DOC
+      	WHERE	APPR_ID = #apprId#
+    	]]>
+   	</delete> 
+   	
+   	<!--apprDoc 상세  -->
+	<select id="readApprDoc" parameterClass="Map" resultMap="apprDocDetailResult">
+		<![CDATA[
+  		/* [ApprWorkDoc_SqlMap.xml] approval.work.dao.ApprWorkDoc.readApprDoc */
+  		SELECT 	A.SYSTEM_ID,
+  				A.FORM_ID,
+  				A.APPR_ID,
+		       	A.PARENT_APPR_ID,
+		       	A.APPR_GROUP_ID,
+		       	A.APPR_GROUP_NAME,
+		       	A.APPR_DOC_TYPE,
+		       	A.APPR_DOC_NO,
+		       	A.APPR_TITLE,
+		       	A.APPR_REQ_DATE,
+		       	A.APPR_PERIOD_CD,
+		       	(SELECT CASE #locale# WHEN 'ko' THEN Z.CODE_KR_NAME
+						ELSE ISNULL(Z.CODE_EN_NAME, Z.CODE_KR_NAME)
+						END CODE_NAME
+		       	FROM IKEP4_APPR_CODE Z WHERE Z.CODE_ID=A.APPR_PERIOD_CD) APPR_PERIOD_NM,
+		       	A.APPR_DOC_CD,
+		       	A.APPR_SECURITY_TYPE,
+		       	A.APPR_DOC_STATUS,
+		       	A.APPR_END_DATE,
+		       	A.IS_APPR_RECEIVE,
+		       	A.APPR_LINE_TYPE,
+		       	A.REGISTER_ID,
+		       	A.REGISTER_NAME,
+		       	A.REGISTER_JOB_TITLE,
+		       	A.REGIST_DATE,
+		       	A.UPDATER_ID,
+		       	A.UPDATER_NAME,
+		       	A.UPDATE_DATE,
+		       	A.IS_HIDDEN,
+		       	A.REGISTER_MESSAGE,
+		       	B.FORM_VERSION,
+		       	B.DOC_VERSION,
+		       	B.FORM_EDITOR_DATA,
+		       	B.FORM_DATA,
+		       	B.FORM_LAYOUT_DATA,
+		       	B.FORM_LINKED_DATA
+		FROM 	IKEP4_APPR_DOC A
+        INNER JOIN 
+        		(SELECT #apprId# APPR_ID,
+		        		FORM_VERSION,
+		        		DOC_VERSION,
+						FORM_EDITOR_DATA,
+						FORM_LAYOUT_DATA,
+						FORM_LINKED_DATA,
+                        FORM_DATA
+		          FROM	IKEP4_APPR_DOC_DATA
+		          WHERE	APPR_ID =  (SELECT	ISNULL(MAX(PARENT_APPR_ID), #apprId#)
+									FROM	IKEP4_APPR_DOC Z
+									WHERE	APPR_ID=#apprId#)
+		          AND	DOC_VERSION = (SELECT ISNULL(MAX(DOC_VERSION), 1) FROM IKEP4_APPR_DOC_DATA WHERE APPR_ID = (SELECT	ISNULL(MAX(PARENT_APPR_ID), #apprId#)
+																												 FROM	IKEP4_APPR_DOC Z
+																												 WHERE	APPR_ID=#apprId#))
+		          ) B
+		ON		A.APPR_ID = B.APPR_ID
+        WHERE	A.APPR_ID =  #apprId#
+		]]>
+	</select>
+   	<!--apprDocSub 상세  -->
+	<select id="readApprDocSub" parameterClass="Map" resultMap="apprDocDetailResult">
+		<![CDATA[
+  		/* [ApprWorkDoc_SqlMap.xml] approval.admin.work.ApprWorkDoc.readApprDocSub */
+  		SELECT 	A.SYSTEM_ID,
+  				A.FORM_ID,
+  				A.APPR_ID,
+		       	A.PARENT_APPR_ID,
+		       	A.APPR_GROUP_ID,
+		       	A.APPR_GROUP_NAME,
+		       	A.APPR_DOC_TYPE,
+		       	A.APPR_DOC_NO,
+		       	A.APPR_TITLE,
+		       	A.APPR_REQ_DATE,
+		       	A.APPR_PERIOD_CD,
+		       	(SELECT CASE #locale# WHEN 'ko' THEN Z.CODE_KR_NAME
+						ELSE ISNULL(Z.CODE_EN_NAME, Z.CODE_KR_NAME)
+						END CODE_NAME
+		       	FROM IKEP4_APPR_CODE Z WHERE Z.CODE_ID=A.APPR_PERIOD_CD) APPR_PERIOD_NM,
+		       	A.APPR_DOC_CD,
+		       	A.APPR_SECURITY_TYPE,
+		       	A.APPR_DOC_STATUS,
+		       	A.APPR_END_DATE,
+		       	A.IS_APPR_RECEIVE,
+		       	A.APPR_LINE_TYPE,
+		       	A.REGISTER_ID,
+		       	A.REGISTER_NAME,
+		       	A.REGISTER_JOB_TITLE,
+		       	A.REGIST_DATE,
+		       	A.UPDATER_ID,
+		       	A.UPDATER_NAME,
+		       	A.UPDATE_DATE,
+		       	A.IS_HIDDEN,
+		       	A.REGISTER_MESSAGE,
+		       	0 FORM_VERSION,
+		       	0 DOC_VERSION,
+		        '' FORM_EDITOR_DATA,
+		       	'' FORM_DATA,
+		       	'' FORM_LINKED_DATA,
+		       	'' FORM_LAYOUT_DATA
+		FROM 	
+			IKEP4_APPR_DOC A
+        WHERE	
+        	A.PARENT_APPR_ID =  #apprId#
+        	AND A.APPROVER_ID = #groupId#
+		]]>
+	</select>   	
+   	<!--apprDoc 열람권한 목록  -->
+	<select id="getApprDocHistoryList" parameterClass="String" resultMap="apprDocHistoryListResult">
+		<![CDATA[
+  		/* [ApprWorkDoc_SqlMap.xml] approval.work.dao.ApprWorkDoc.getApprDocHistoryList */
+  		SELECT  APPR_ID,
+		        DOC_VERSION,
+		        FORM_VERSION,
+		        FORM_EDITOR_DATA,
+		        FORM_DATA,
+		        FORM_LAYOUT_DATA,
+		        FORM_LINKED_DATA,
+		        CHANGE_REASON,
+		        REGISTER_ID,
+		        REGISTER_NAME + ' ' +
+		        ISNULL((SELECT Y.group_name
+	  			FROM IKEP4_EV_USER_GROUP X 
+	   				INNER JOIN IKEP4_EV_GROUP Y 
+	       		ON X.group_id = Y.group_id 
+	 			WHERE X.user_id = A.REGISTER_ID 
+	       		AND Y.group_type_id = 'G0001' 
+	       		AND X.represent_group = 1), '') REGISTER_NAME,
+		        REGIST_DATE
+		FROM 	IKEP4_APPR_DOC_DATA A
+		WHERE	APPR_ID=#apprId#
+		ORDER BY REGIST_DATE DESC
+		]]>
+	</select>
+   	
+   	<!--apprDoc Content 생성 -->
+   	<insert id="createApprDocContent"  parameterClass="apprDoc"> 
+   		<![CDATA[
+      	/* [ApprWorkDoc_SqlMap.xml] approval.work.dao.ApprWorkDoc.createApprDocContent */ 
+      	INSERT 
+		  INTO IKEP4_APPR_DOC_DATA 
+		       ( 
+		           	APPR_ID,
+		           	DOC_VERSION,
+		           	FORM_VERSION,
+		           	FORM_EDITOR_DATA,
+		           	FORM_DATA,
+		           	FORM_LAYOUT_DATA,
+		           	FORM_LINKED_DATA,
+		           	CHANGE_REASON,
+		           	REGISTER_ID,
+		           	REGISTER_NAME,
+		           	REGIST_DATE 
+		       ) 
+		       VALUES 
+		       ( 
+		         	#apprId#,
+					(SELECT ISNULL(MAX(DOC_VERSION), 0)+1 FROM IKEP4_APPR_DOC_DATA WHERE APPR_ID = #apprId#),
+					#formVersion#,
+					#formEditorData#,
+					#formData#,
+					#formLayoutData#,
+					#formLinkedData#,
+					#changeReason#,
+					#registerId#,
+					#registerName#,
+					GETDATE()
+		       ) 
+    	]]>
+   	</insert>
+   	
+   	<!--apprDoc Content 생성 -->
+   	<insert id="duplicateApprDocContent"  parameterClass="Map"> 
+   		<![CDATA[
+      	/* [ApprWorkDoc_SqlMap.xml] approval.work.dao.ApprWorkDoc.duplicateApprDocContent */ 
+      	INSERT 
+		  INTO IKEP4_APPR_DOC_DATA
+		       ( 
+		           	APPR_ID,
+		            DOC_VERSION,
+		            FORM_VERSION,
+		            FORM_EDITOR_DATA,
+		            FORM_DATA,
+		            FORM_LAYOUT_DATA,
+		            FORM_LINKED_DATA,
+		            REGISTER_ID,
+		            REGISTER_NAME,
+		            REGIST_DATE 
+		       )  
+		SELECT 		#newApprId#,
+		            1,
+		            FORM_VERSION,
+		            FORM_EDITOR_DATA,
+		            FORM_DATA,
+		            FORM_LAYOUT_DATA,
+		            FORM_LINKED_DATA,
+		            REGISTER_ID,
+		            REGISTER_NAME,
+		            GETDATE() 
+		FROM 		IKEP4_APPR_DOC_DATA 
+		WHERE 		APPR_ID = #apprId#
+		AND		 	DOC_VERSION = (SELECT MAX(DOC_VERSION) FROM IKEP4_APPR_DOC_DATA WHERE APPR_ID = #apprId#)
+    	]]>
+   	</insert>
+   	
+   <!--apprDoc Content 수정 -->
+   	<update id="updateApprDocContent" parameterClass="apprDoc"> 
+      	<![CDATA[
+      	/* [ApprWorkDoc_SqlMap.xml] approval.work.dao.ApprWorkDoc.updateApprDocContent */ 
+     	UPDATE 	IKEP4_APPR_DOC_DATA 
+		SET    	FORM_EDITOR_DATA 	= #formEditorData#, 
+		       	FORM_DATA 			= #formData#, 
+		       	FORM_LAYOUT_DATA 	= #formLayoutData#
+		 WHERE 	APPR_ID 			= #apprId#
+		 AND	FORM_VERSION 		= #formVersion#
+		 AND	DOC_VERSION 		= #docVersion#
+		 AND	REGISTER_ID 		= #updaterId# 
+	  	]]>
+   </update>
+	
+	<!--apprDoc 삭제 -->
+   	<delete id="deleteApprDocContent"  parameterClass="String">
+   		<![CDATA[
+      	/* [ApprWorkDoc_SqlMap.xml] approval.work.dao.ApprWorkDoc.deleteApprDocContent */ 
+      	DELETE	IKEP4_APPR_DOC_DATA
+      	WHERE	APPR_ID = #apprId#
+    	]]>
+   	</delete> 
+   	
+	<!--apprDoc 참조자 생성 -->
+   	<insert id="createApprReference"  parameterClass="Map"> 
+   		<![CDATA[
+      	/* [ApprWorkDoc_SqlMap.xml] approval.work.dao.ApprWorkDoc.createApprReference */ 
+      	INSERT 
+		  INTO IKEP4_APPR_REFERENCE 
+		       ( 
+		           APPR_ID,
+		           USER_ID,
+		           GROUP_ID
+		       ) 
+		       VALUES 
+		       ( 
+		           #apprId#, 
+		           #userId#, 
+		           #groupId#
+		       ) 
+    	]]>
+   	</insert>
+   	
+   	<!--apprDoc 참조자 삭제 -->
+   	<delete id="deleteApprReference"  parameterClass="String">
+   		<![CDATA[
+      	/* [ApprWorkDoc_SqlMap.xml] approval.work.dao.ApprWorkDoc.deleteApprReference */ 
+      	DELETE	IKEP4_APPR_REFERENCE
+      	WHERE	APPR_ID = #apprId#
+    	]]>
+   	</delete> 
+   	
+   	<!--apprDoc 열람권한 생성 -->
+   	<insert id="createApprRead"  parameterClass="Map"> 
+   		<![CDATA[
+      	/* [ApprWorkDoc_SqlMap.xml] approval.work.dao.ApprWorkDoc.createApprRead */ 
+      	INSERT 
+		  INTO IKEP4_APPR_READ 
+		       ( 
+		           APPR_ID,
+		           READ_ID,
+		           READ_TYPE,
+		           GROUP_ID,
+		           REGISTER_ID,
+		           REGISTER_NAME,
+		           REGIST_DATE 
+		       ) 
+		       VALUES 
+		       ( 
+		          	#apprId#,
+					#readId#,
+					#readType#,
+					#groupId#,
+					#registerId#,
+					#registerName#,
+					GETDATE()
+		       ) 
+    	]]>
+   	</insert>
+   	
+   	<!--apprDoc 열람권한 삭제 -->
+   	<delete id="deleteApprRead"  parameterClass="String">
+   		<![CDATA[
+      	/* [ApprWorkDoc_SqlMap.xml] approval.work.dao.ApprWorkDoc.deleteApprRead */ 
+      	DELETE	IKEP4_APPR_READ
+      	WHERE	APPR_ID = #apprId#
+    	]]>
+   	</delete> 
+   	
+   	<!--apprDoc 기결재 생성 -->
+   	<insert id="createApprRelations"  parameterClass="Map"> 
+   		<![CDATA[
+      	/* [ApprWorkDoc_SqlMap.xml] approval.work.dao.ApprWorkDoc.createApprRelations */ 
+      	INSERT 
+		  INTO IKEP4_APPR_RELATIONS 
+		       ( 
+		           APPR_ID,
+		           APPR_REF_ID
+		       ) 
+		       VALUES 
+		       ( 
+		          	#apprId#,
+					#apprRefId#
+		       ) 
+    	]]>
+   	</insert>
+   	
+   	<!--apprDoc 기결재 삭제 -->
+   	<delete id="deleteApprRelations"  parameterClass="String">
+   		<![CDATA[
+      	/* [ApprWorkDoc_SqlMap.xml] approval.work.dao.ApprWorkDoc.deleteApprRelations */ 
+      	DELETE	IKEP4_APPR_RELATIONS
+      	WHERE	APPR_ID = #apprId#
+    	]]>
+   	</delete> 
+   	
+   	<!--apprDoc 기결재 목록  -->
+	<select id="getApprRelationsList" parameterClass="String" resultMap="apprRelationsListResult">
+		<![CDATA[
+  		/* [ApprWorkDoc_SqlMap.xml] approval.work.dao.ApprWorkDoc.getApprRelationsList */
+  		SELECT 	B.APPR_ID,
+				B.APPR_TITLE
+		FROM 	IKEP4_APPR_RELATIONS A
+				INNER JOIN IKEP4_APPR_DOC B
+		ON		A.APPR_REF_ID = B.APPR_ID
+		WHERE	A.APPR_ID = #apprId#
+		]]>
+	</select>
+	
+   	<!--apprDoc 열람권한 목록  -->
+	<select id="getApprReadList" parameterClass="Map" resultMap="apprReadListResult">
+		<![CDATA[
+  		/* [ApprWorkDoc_SqlMap.xml] approval.work.dao.ApprWorkDoc.getApprReadList */
+  		SELECT 	READ_ID,
+  				GROUP_ID 
+		FROM 	IKEP4_APPR_READ
+		WHERE	APPR_ID =  #apprId#
+		AND		READ_TYPE = #readType#
+		]]>
+	</select>
+	
+	<!--apprDoc 참조자 목록  -->
+	<select id="getApprReferenceList" parameterClass="Map" resultMap="apprReferenceListResult">
+		<![CDATA[
+  		/* [ApprWorkDoc_SqlMap.xml] approval.work.dao.ApprWorkDoc.getApprReferenceList */
+  		SELECT 	USER_ID,
+  				GROUP_ID 
+		FROM 	IKEP4_APPR_REFERENCE
+		WHERE	APPR_ID =  #apprId#
+		]]>
+	</select>
+	
+	<!--apprDoc 결제상태변경 -->
+   	<update id="updateApprDocStatus" parameterClass="apprDoc"> 
+      	<![CDATA[
+      	/* [ApprWorkDoc_SqlMap.xml] approval.work.dao.ApprWorkDoc.updateApprDocStatus */ 
+     	UPDATE 	IKEP4_APPR_DOC
+		SET 	APPR_DOC_STATUS = #apprDocStatus#,
+		]]>
+		<isEqual property="apprDocStatus" compareValue="2">
+		       	APPR_END_DATE = GETDATE(),
+		       	APPR_DOC_NO   = #apprDocNo#,
+		</isEqual>
+		<![CDATA[
+		       	UPDATER_ID    	= #updaterId#,
+		        UPDATER_NAME    = #updaterName#,
+		        UPDATE_DATE     = GETDATE()
+		WHERE 	APPR_ID 		= #apprId#
+	  	]]>
+   </update>
+   
+	<!--apprDoc 부서 수신 문서 접수자 처리(전결,내부결재진행) -->
+   	<update id="updateReceiverApprDocStatus" parameterClass="apprDoc"> 
+      	/* [ApprWorkDoc_SqlMap.xml] approval.work.dao.ApprWorkDoc.updateReceiverApprDocStatus */ 
+     	UPDATE 	IKEP4_APPR_DOC
+		SET 	
+		<isNotEmpty property="apprDocStatus">
+			APPR_DOC_STATUS = #apprDocStatus#,
+		</isNotEmpty>		
+		<isEqual property="apprDocStatus" compareValue="2">
+		    APPR_END_DATE = GETDATE(),
+		    APPR_DOC_NO   = #apprDocNo#,
+		</isEqual>
+		<isNotEmpty property="registerMessage">
+			REGISTER_MESSAGE = #registerMessage#,
+		</isNotEmpty>
+
+			REGISTER_ID    	= #updaterId#,
+			REGISTER_NAME   = #updaterName#,
+			REGIST_DATE     = GETDATE(),
+			UPDATER_ID    	= #updaterId#,
+			UPDATER_NAME    = #updaterName#,
+			UPDATE_DATE     = GETDATE(),
+			REGISTER_JOB_TITLE = #registerJobTitle#
+		WHERE 	
+			APPR_ID 		= #apprId#
+   </update>
+   
+   	<!--apprDoc Child 문서중 부서합의 목록  -->
+	<select id="subList" parameterClass="Map" resultMap="apprDocDetailResult2">
+	/* [ApprWorkDoc_SqlMap.xml] approval.work.dao.ApprWorkDoc.subList */
+	SELECT 	
+		A.SYSTEM_ID,
+		A.FORM_ID,
+		A.APPR_ID,
+       	A.PARENT_APPR_ID,
+       	A.APPR_GROUP_ID,
+       	A.APPR_GROUP_NAME,
+       	A.APPR_DOC_TYPE,
+       	A.APPR_DOC_NO,
+       	A.APPR_TITLE,
+       	A.APPR_REQ_DATE,
+       	A.APPR_PERIOD_CD,
+       	(SELECT CASE #locale# WHEN 'ko' THEN Z.CODE_KR_NAME
+				ELSE ISNULL(Z.CODE_EN_NAME, Z.CODE_KR_NAME)
+				END CODE_NAME
+       	FROM IKEP4_APPR_CODE Z WHERE Z.CODE_ID=A.APPR_PERIOD_CD) APPR_PERIOD_NM,
+       	A.APPR_DOC_CD,
+       	A.APPR_SECURITY_TYPE,
+       	A.APPR_DOC_STATUS,
+       	A.APPR_END_DATE,
+       	A.IS_APPR_RECEIVE,
+       	A.APPR_LINE_TYPE,
+       	A.REGISTER_ID,
+       	A.REGISTER_NAME,
+       	A.REGISTER_JOB_TITLE,
+       	A.REGIST_DATE,
+       	A.UPDATER_ID,
+       	A.UPDATER_NAME,
+       	A.UPDATE_DATE,
+       	A.IS_HIDDEN,
+       	A.REGISTER_MESSAGE,
+       	0 FORM_VERSION,
+       	0 DOC_VERSION,
+       	'' FORM_EDITOR_DATA,
+       	'' FORM_DATA,
+       	'' FORM_LAYOUT_DATA,
+       	'' FORM_LINKED_DATA		
+		
+		<isNotEmpty property="apprType">
+		<isEqual property="apprType" compareValue="3">
+		,PAL.APPROVER_ID
+		,PAL.APPROVER_NAME
+		,PAL.APPROVER_JOB_TITLE
+		</isEqual>
+		<isNotEqual property="apprType" compareValue="3">
+		,'' APPROVER_ID
+		,'' APPROVER_NAME
+		,'' APPROVER_JOB_TITLE
+		</isNotEqual>						
+		</isNotEmpty>
+			
+		<isEmpty property="apprType">
+		,'' APPROVER_ID
+		,'' APPROVER_NAME
+		,'' APPROVER_JOB_TITLE				
+		</isEmpty>			       	
+	FROM 	
+		IKEP4_APPR_DOC A
+		INNER JOIN IKEP4_APPR_DOC PAD ON (PAD.APPR_ID=A.PARENT_APPR_ID )
+		INNER JOIN IKEP4_APPR_LINE PAL ON (PAD.APPR_ID=PAL.APPR_ID)		
+	WHERE
+		PAD.APPR_ID=#apprId#
+		
+		AND A.APPROVER_ID = PAL.APPROVER_ID
+    	<isNotEmpty property="apprType">
+    	<isNotEqual property="apprType" compareValue="3">	
+		AND PAL.APPR_TYPE IN (1,2) 
+		AND PAL.APPROVER_TYPE=1 
+		</isNotEqual>	
+		<isEqual property="apprType" compareValue="3">
+		/** AND A.REGISTER_ID=PAL.APPROVER_ID **/
+		AND PAL.APPR_TYPE = 3 
+		/** AND PAL.APPROVER_TYPE=0 **/
+		</isEqual>
+		</isNotEmpty>
+		
+	ORDER BY 
+		A.APPR_ID
+	</select>
+	
+   	<!-- apprDoc 원본 + Sub 문서 정보상세  -->
+	<select id="listApprDoc" parameterClass="Map" resultMap="apprDocDetailResult">
+		<![CDATA[
+  		/* [ApprWorkDoc_SqlMap.xml] approval.work.dao.ApprWorkDoc.listApprDoc */
+  		SELECT 	A.SYSTEM_ID,
+  				A.FORM_ID,
+  				A.APPR_ID,
+		       	A.PARENT_APPR_ID,
+		       	A.APPR_GROUP_ID,
+		       	A.APPR_GROUP_NAME,
+		       	A.APPR_DOC_TYPE,
+		       	A.APPR_DOC_NO,
+		       	A.APPR_TITLE,
+		       	A.APPR_REQ_DATE,
+		       	A.APPR_PERIOD_CD,
+		       	(SELECT CASE #locale# WHEN 'ko' THEN Z.CODE_KR_NAME
+						ELSE ISNULL(Z.CODE_EN_NAME, Z.CODE_KR_NAME)
+						END CODE_NAME
+		       	FROM IKEP4_APPR_CODE Z WHERE Z.CODE_ID=A.APPR_PERIOD_CD) APPR_PERIOD_NM,
+		       	A.APPR_DOC_CD,
+		       	A.APPR_SECURITY_TYPE,
+		       	A.APPR_DOC_STATUS,
+		       	A.APPR_END_DATE,
+		       	A.IS_APPR_RECEIVE,
+		       	A.APPR_LINE_TYPE,
+		       	A.REGISTER_ID,
+		       	A.REGISTER_NAME,
+		       	A.REGISTER_JOB_TITLE,
+		       	A.REGIST_DATE,
+		       	A.UPDATER_ID,
+		       	A.UPDATER_NAME,
+		       	A.UPDATE_DATE,
+		       	A.IS_HIDDEN,
+		       	A.REGISTER_MESSAGE,
+		       	0 FORM_VERSION,
+		       	0 DOC_VERSION,
+		       	'' FORM_EDITOR_DATA,
+		       	'' FORM_DATA,
+		       	'' FORM_LAYOUT_DATA,
+       			'' FORM_LINKED_DATA	
+		FROM 	IKEP4_APPR_DOC A
+        WHERE	A.APPR_ID =  #apprId# OR A.PARENT_APPR_ID = #apprId#
+        ORDER BY A.APPR_ID
+		]]>
+	</select>
+	
+	<!--apprDoc 참조권한 -->
+	<select id="getApprReferenceCount" parameterClass="Map" resultClass="int">  
+  		<![CDATA[
+  		/* [ApprWorkDoc_SqlMap.xml] approval.work.dao.ApprWorkDoc.getApprReferenceCount */
+		SELECT	COUNT(*)
+		FROM	IKEP4_APPR_REFERENCE
+		WHERE	APPR_ID = #apprId#
+		AND		USER_ID = #userId#
+		]]>
+  	</select> 
+  	
+  	<!--apprDoc 열람권한 -->
+	<select id="getApprReadCount" parameterClass="Map" resultClass="int">  
+  		<![CDATA[
+  		/* [ApprWorkDoc_SqlMap.xml] approval.work.dao.ApprWorkDoc.getApprReadCount */
+		SELECT 	SUM(CNT) CNT
+		FROM	(SELECT	COUNT(*) CNT
+		        FROM	IKEP4_APPR_READ
+		        WHERE	APPR_ID = #apprId#
+		        AND		READ_TYPE = 0
+		        AND		READ_ID = #userId#
+		        UNION ALL
+		        SELECT	COUNT(*) CNT
+		        FROM	IKEP4_APPR_READ
+		        WHERE	APPR_ID = #apprId#
+		        AND		READ_TYPE = 1
+		        AND		READ_ID IN(	SELECT 	A.GROUP_ID 
+		                            FROM 	IKEP4_EV_GROUP A 
+		                                    INNER JOIN IKEP4_EV_USER_GROUP B 
+		                            ON 		A.GROUP_ID = B.GROUP_ID 
+		                            AND 	A.GROUP_TYPE_ID = 'G0001' 
+		                            WHERE 	USER_ID = #userId#)
+		        ) Z
+		]]>
+  	</select> 
+	<!-- appr_doc_no Max -->
+	<select id="getApprDocMaxNo" parameterClass="String" resultClass="int">  
+  		<![CDATA[
+  		/* [ApprWorkDoc_SqlMap.xml] approval.work.dao.ApprWorkDoc.getApprReferenceCount */
+		SELECT	TOP 1
+			SUBSTR(APPR_DOC_NO,LEN(#searchDocNo#)+1,LEN(APPR_DOC_NO))
+		FROM	
+			IKEP4_APPR_DOC
+		WHERE	
+			APPR_DOC_STATUS			=		2
+			AND APPR_DOC_NO 		LIKE	#searchDocNo# + '%'
+		ORDER BY   APPR_DOC_NO DESC 			
+		]]>
+  	</select>    	
+</sqlMap>

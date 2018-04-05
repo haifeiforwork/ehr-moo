@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="collpack.assess.dao.AssessmentManagementGroupPvi">
+	<typeAlias alias="AssessmentManagementGroupPviPK" type="com.lgcns.ikep4.collpack.assess.model.AssessmentManagementGroupPviPK"/>
+	<typeAlias alias="AssessmentManagementGroupPvi" type="com.lgcns.ikep4.collpack.assess.model.AssessmentManagementGroupPvi"/>
+	<typeAlias alias="AssessmentManagementBlockPageCondition" type="com.lgcns.ikep4.collpack.assess.search.AssessmentManagementBlockPageCondition"/>
+
+	<resultMap class="AssessmentManagementGroupPvi" id="result">
+		<result column="GROUP_ID" property="groupId" jdbcType="VARCHAR" javaType="String"/>
+		<result column="RANK" property="rank" jdbcType="NUMBER" javaType="Integer"/>
+		<result column="PVI" property="pvi" jdbcType="NUMBER" javaType="Integer"/>
+		<result column="CONTRIBUTION_SCORE" property="contributionScore" jdbcType="NUMBER" javaType="Integer"/>
+		<result column="PARTICIPATION_SCORE" property="participationScore" jdbcType="NUMBER" javaType="Integer"/>
+		<result column="APPLICATION_SCORE" property="applicationScore" jdbcType="NUMBER" javaType="Integer"/>
+		<result column="FRIENDSHIP_SCORE" property="friendshipScore" jdbcType="NUMBER" javaType="Integer"/>
+		<result column="INFLUENCE_SCORE" property="influenceScore" jdbcType="NUMBER" javaType="Integer"/>
+	</resultMap>
+
+	<resultMap class="AssessmentManagementGroupPvi" extends="result" id="groupResult">
+		<result column="GROUP_NAME" property="groupName" jdbcType="VARCHAR" javaType="String"/>
+		<result column="GROUP_ENGLISH_NAME" property="groupEnglishName" jdbcType="VARCHAR" javaType="String"/>
+	</resultMap>
+
+	<resultMap class="AssessmentManagementGroupPvi" id="groupHierarchyResult">
+		<result column="GROUP_ID" property="groupId" jdbcType="VARCHAR" javaType="String"/>
+		<result column="GROUP_NAME" property="groupName" jdbcType="VARCHAR" javaType="String"/>
+		<result column="GROUP_ENGLISH_NAME" property="groupEnglishName" jdbcType="VARCHAR" javaType="String"/>
+	</resultMap>
+
+<!-- 하위조직 개수 조회 -->
+	<select id="getChildGroupCount" parameterClass="String" resultClass="Integer">
+	<![CDATA[
+		SELECT /* [AssessmentManagementGroupPvi_SqlMap.xml] collpack.assess.dao.AssessmentManagementGroupPvi.getChildGroupCount */
+		       COUNT(GROUP_ID) GROUP_COUNT
+		  FROM IKEP4_EV_GROUP
+		 WHERE PARENT_GROUP_ID = #groupId#
+	]]>
+	</select>
+
+<!-- 조직계층 조회 -->
+	<select id="listGroupHierarchy" parameterClass="String" resultMap="groupHierarchyResult">
+	<![CDATA[
+		 SELECT /* [AssessmentManagementGroupPvi_SqlMap.xml] collpack.assess.dao.AssessmentManagementGroupPvi.listGroupHierarchy */
+		 		B.GROUP_ID, B.GROUP_NAME, B.GROUP_ENGLISH_NAME
+			FROM (
+    			SELECT tbl3._group_id, @lv2 := @lv2 + 1 AS LEVEL
+    			FROM (SELECT @r AS _group_id, (SELECT @r := PARENT_GROUP_ID FROM IKEP4_EV_GROUP  WHERE GROUP_ID = _group_id ) AS parent, @l := @l +1 AS lv
+            			FROM (SELECT @r := #groupId#, @l := 0) tbl1, IKEP4_EV_GROUP
+            			WHERE @r IS NOT NULL
+            			ORDER BY lv DESC
+    			) tbl3 INNER JOIN (SELECT @lv2 := 0 ) tbl2
+			) A INNER JOIN ikep4_ev_group B ON A._group_id = B.GROUP_ID
+	]]>
+	</select>
+
+<!-- 조직별 평가 조회 -->
+	<select id="get" parameterClass="AssessmentManagementGroupPviPK" resultMap="result">
+	<![CDATA[
+		SELECT /* [AssessmentManagementGroupPvi_SqlMap.xml] collpack.assess.dao.AssessmentManagementGroupPvi.get */
+		       GROUP_ID
+		     , RANK
+		     , ROUND(PVI / (CASE USER_COUNT WHEN 0 THEN 1 ELSE USER_COUNT END)) PVI
+		     , ROUND(CONTRIBUTION_SCORE / (CASE USER_COUNT WHEN 0 THEN 1 ELSE USER_COUNT END)) CONTRIBUTION_SCORE
+		     , ROUND(PARTICIPATION_SCORE / (CASE USER_COUNT WHEN 0 THEN 1 ELSE USER_COUNT END)) PARTICIPATION_SCORE
+		     , ROUND(APPLICATION_SCORE / (CASE USER_COUNT WHEN 0 THEN 1 ELSE USER_COUNT END)) APPLICATION_SCORE
+		     , ROUND(FRIENDSHIP_SCORE / (CASE USER_COUNT WHEN 0 THEN 1 ELSE USER_COUNT END)) FRIENDSHIP_SCORE
+		     , ROUND(INFLUENCE_SCORE / (CASE USER_COUNT WHEN 0 THEN 1 ELSE USER_COUNT END)) INFLUENCE_SCORE
+		  FROM IKEP4_AM_GROUP_PVI
+		 WHERE GROUP_ID = #groupId#
+	]]>
+	</select>
+
+<!-- 포털별 최상위 조직 -->
+	<select id="listRootGroupByPortalId" parameterClass="String" resultMap="groupResult">
+	<![CDATA[
+		SELECT /* [AssessmentManagementGroupPvi_SqlMap.xml] collpack.assess.dao.AssessmentManagementGroupPvi.listRootGroupByPortalId */
+		       GROUP_ID, PVI.RANK
+		     , ROUND(PVI.PVI / (CASE PVI.USER_COUNT WHEN 0 THEN 1 ELSE PVI.USER_COUNT END)) PVI
+		     , ROUND(PVI.CONTRIBUTION_SCORE / (CASE PVI.USER_COUNT WHEN 0 THEN 1 ELSE PVI.USER_COUNT END)) CONTRIBUTION_SCORE
+		     , ROUND(PVI.PARTICIPATION_SCORE / (CASE PVI.USER_COUNT WHEN 0 THEN 1 ELSE PVI.USER_COUNT END)) PARTICIPATION_SCORE
+		     , ROUND(PVI.APPLICATION_SCORE / (CASE PVI.USER_COUNT WHEN 0 THEN 1 ELSE PVI.USER_COUNT END)) APPLICATION_SCORE
+		     , ROUND(PVI.FRIENDSHIP_SCORE / (CASE PVI.USER_COUNT WHEN 0 THEN 1 ELSE PVI.USER_COUNT END)) FRIENDSHIP_SCORE
+		     , ROUND(PVI.INFLUENCE_SCORE / (CASE PVI.USER_COUNT WHEN 0 THEN 1 ELSE PVI.USER_COUNT END)) INFLUENCE_SCORE
+		     , GRP.GROUP_NAME GROUP_NAME, GRP.GROUP_ENGLISH_NAME GROUP_ENGLISH_NAME
+		  FROM IKEP4_EV_GROUP GRP
+		  JOIN IKEP4_AM_GROUP_PVI PVI
+		 USING (GROUP_ID)
+		 WHERE GRP.PORTAL_ID = #portalId#
+		   AND GRP.GROUP_TYPE_ID = 'G0001'
+		   AND GRP.PARENT_GROUP_ID IS NULL
+		 ORDER BY GRP.SORT_ORDER
+	]]>
+	</select>
+
+<!-- 그룹별 전체개수 반환 (페이징) -->
+	<select id="countByGroupIdPage" parameterClass="String" resultClass="Integer">
+	<![CDATA[
+		SELECT /* [AssessmentManagementGroupPvi_SqlMap.xml] collpack.assess.dao.AssessmentManagementGroupPvi.countByGroupIdPage */
+		       COUNT(GROUP_ID) COUNT_ITEM_ID
+		  FROM IKEP4_AM_GROUP_PVI PVI
+		  JOIN IKEP4_EV_GROUP GRP
+		 USING (GROUP_ID)
+		 WHERE GRP.PARENT_GROUP_ID = #groupId#
+	]]>
+	</select>
+
+<!-- 그룹별 리스트 (페이징) -->
+	<select id="listByGroupIdPage" parameterClass="AssessmentManagementBlockPageCondition" resultMap="groupResult">
+	<![CDATA[
+		/* [AssessmentManagementGroupPvi_SqlMap.xml] collpack.assess.dao.AssessmentManagementGroupPvi.listByGroupIdPage */
+	]]>
+		WITH MAIN_BODY AS (
+		    SELECT GROUP_ID, PVI.PVI PVI, PVI.RANK RANK, USER_COUNT
+		         , CONTRIBUTION_SCORE, PARTICIPATION_SCORE, APPLICATION_SCORE, FRIENDSHIP_SCORE, INFLUENCE_SCORE
+		         , GRP.GROUP_NAME GROUP_NAME, GRP.GROUP_ENGLISH_NAME GROUP_ENGLISH_NAME
+		      FROM IKEP4_AM_GROUP_PVI PVI
+		      JOIN IKEP4_EV_GROUP GRP
+		     USING (GROUP_ID)
+		     WHERE GRP.PARENT_GROUP_ID = #groupId#
+		     ORDER BY PVI.PVI / (CASE PVI.USER_COUNT WHEN 0 THEN 1 ELSE PVI.USER_COUNT END) <isEqual property="pviOrder" compareValue="1">DESC</isEqual>
+		)
+	<![CDATA[
+		SELECT GROUP_ID, RANK_NUMBER RANK
+		     , ROUND(PVI / (CASE USER_COUNT WHEN 0 THEN 1 ELSE USER_COUNT END)) PVI
+		     , ROUND(CONTRIBUTION_SCORE / (CASE USER_COUNT WHEN 0 THEN 1 ELSE USER_COUNT END)) CONTRIBUTION_SCORE
+		     , ROUND(PARTICIPATION_SCORE / (CASE USER_COUNT WHEN 0 THEN 1 ELSE USER_COUNT END)) PARTICIPATION_SCORE
+		     , ROUND(APPLICATION_SCORE / (CASE USER_COUNT WHEN 0 THEN 1 ELSE USER_COUNT END)) APPLICATION_SCORE
+		     , ROUND(FRIENDSHIP_SCORE / (CASE USER_COUNT WHEN 0 THEN 1 ELSE USER_COUNT END)) FRIENDSHIP_SCORE
+		     , ROUND(INFLUENCE_SCORE / (CASE USER_COUNT WHEN 0 THEN 1 ELSE USER_COUNT END)) INFLUENCE_SCORE
+		     , GROUP_NAME, GROUP_ENGLISH_NAME
+		  FROM (
+		        SELECT ROWNUM RANK_NUMBER, BODY.*
+		          FROM MAIN_BODY BODY
+		         WHERE ROWNUM <= #endOrder#
+		       ) BODY
+		 WHERE RANK_NUMBER >= #startOrder#
+	]]>
+	</select>
+
+<!-- 평가점수 초기화 -->
+	<update id="initScoreByPortalId" parameterClass="Map">
+	<![CDATA[
+		UPDATE /* [AssessmentManagementGroupPvi_SqlMap.xml] collpack.assess.dao.AssessmentManagementGroupPvi.initScoreByPortalId */
+		       IKEP4_AM_GROUP_PVI
+		   SET PVI = 0
+		     , RANK = 0
+		     , CONTRIBUTION_SCORE = 0
+		     , PARTICIPATION_SCORE = 0
+		     , APPLICATION_SCORE = 0
+		     , FRIENDSHIP_SCORE = 0
+		     , INFLUENCE_SCORE = 0
+		     , USER_COUNT = 0
+		     , REGISTER_ID = #registerId#
+		     , REGIST_DATE = NOW()
+		 WHERE PORTAL_ID = #portalId#
+	]]>
+	</update>
+
+</sqlMap>

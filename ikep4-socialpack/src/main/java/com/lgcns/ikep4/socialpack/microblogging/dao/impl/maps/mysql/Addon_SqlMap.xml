@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="socialpack.microblogging.dao.addon" >
+	<typeAlias alias = "Addon" type="com.lgcns.ikep4.socialpack.microblogging.model.Addon"/>
+	
+	<!-- IKEP4_MB_ADDON 테이블 조회 결과 -->
+	<resultMap id="result" class="Addon">
+		<result property="addonCode" 		column="ADDON_CODE" 		/>
+		<result property="addonType" 		column="ADDON_TYPE" 		/>
+		<result property="sourceLink" 		column="SOURCE_LINK" 		/>
+		<result property="displayCode" 		column="DISPLAY_CODE" 		/>
+	</resultMap>
+	
+	<!-- insert -->
+	<insert id="insert" parameterClass="Addon"> 
+      <![CDATA[ 
+           INSERT INTO IKEP4_MB_ADDON ( /* [Addon_SqlMap.xml] addon.insert */
+           ADDON_CODE, ADDON_TYPE, SOURCE_LINK, DISPLAY_CODE)  
+           VALUES (#addonCode#, #addonType#, #sourceLink#, #displayCode#)
+       ]]>
+   </insert>
+   
+   <!-- select -->
+	<select id="select" parameterClass="java.lang.String" resultMap="result">
+	  <![CDATA[
+		   SELECT /* [Addon_SqlMap.xml] addon.select */ 
+		    * FROM IKEP4_MB_ADDON WHERE ADDON_CODE = #id#
+	   ]]>
+	</select>
+	   
+   <!-- select By SourceLink -->
+	<select id="selectBySourceLink" parameterClass="java.lang.String" resultMap="result">
+	  <![CDATA[
+		   SELECT  /* [Addon_SqlMap.xml] addon.selectBySourceLink */ 
+		   * FROM IKEP4_MB_ADDON WHERE SOURCE_LINK = #sourceLink#
+	   ]]>
+	</select>
+	   
+   <!-- select By DisplayCode -->
+	<select id="selectByDisplayCode" parameterClass="java.lang.String" resultMap="result">
+	  <![CDATA[
+		   SELECT  /* [Addon_SqlMap.xml] addon.selectByDisplayCode */ 
+		   * FROM IKEP4_MB_ADDON WHERE DISPLAY_CODE = #displayCode#
+	   ]]>
+	</select>
+	   
+   <!-- delete -->
+   <delete id="delete" parameterClass="java.lang.String">
+      <![CDATA[
+	       DELETE FROM IKEP4_MB_ADDON   /* [Addon_SqlMap.xml] addon.delete */ 
+	       WHERE ADDON_CODE = #id#
+	   ]]>
+	</delete>
+	
+   <!-- getSeq -->
+   <select id="getSeq" resultClass="int">
+      <![CDATA[
+	       SELECT  /* [Addon_SqlMap.xml] addon.getSeq */ 
+		   SEQ_IKEP4_MB_ADDON.NEXTVAL FROM DUAL
+	   ]]>
+	</select>
+	
+</sqlMap>

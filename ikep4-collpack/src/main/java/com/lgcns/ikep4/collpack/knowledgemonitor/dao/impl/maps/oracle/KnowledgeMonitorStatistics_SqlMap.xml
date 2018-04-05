@@ -1,0 +1,794 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="collpack.knowledgemonitor.dao.KnowledgeMonitorStatistics">
+	<typeAlias alias="KnowledgeMonitorStatisticsPK" type="com.lgcns.ikep4.collpack.knowledgemonitor.model.KnowledgeMonitorStatisticsPK"/>
+	<typeAlias alias="KnowledgeMonitorStatistics" type="com.lgcns.ikep4.collpack.knowledgemonitor.model.KnowledgeMonitorStatistics"/>
+	<typeAlias alias="KnowledgeAccumulationSearchCondition" type="com.lgcns.ikep4.collpack.knowledgemonitor.search.KnowledgeAccumulationSearchCondition"/>
+	<typeAlias alias="KnowledgeMonitorAccumulationChart" type="com.lgcns.ikep4.collpack.knowledgemonitor.model.KnowledgeMonitorAccumulationChart"/>
+	<typeAlias alias="KnowledgeMonitorAccumulation" type="com.lgcns.ikep4.collpack.knowledgemonitor.model.KnowledgeMonitorAccumulation"/>
+	<typeAlias alias="KnowledgeMonitorBatchCondition" type="com.lgcns.ikep4.collpack.knowledgemonitor.batch.KnowledgeMonitorBatchCondition"/>
+
+	<resultMap class="KnowledgeMonitorAccumulationChart" id="chartResult">
+		<result column="YMD" property="ymd" jdbcType="VARCHAR" javaType="String"/>
+		<result column="PUBLIC_DOC_COUNT" property="publicDocCount" jdbcType="NUMBER" javaType="Integer"/>
+		<result column="ALL_DOC_COUNT" property="allDocCount" jdbcType="NUMBER" javaType="Integer"/>
+	</resultMap>
+
+	<resultMap class="KnowledgeMonitorAccumulation" extends="chartResult" id="listResult">
+		<result column="BD_PUBLIC_DOC_COUNT" property="bdPublicDocCount" jdbcType="NUMBER" javaType="Integer"/>
+		<result column="BD_ALL_DOC_COUNT" property="bdAllDocCount" jdbcType="NUMBER" javaType="Integer"/>
+		<result column="CF_PUBLIC_DOC_COUNT" property="cfPublicDocCount" jdbcType="NUMBER" javaType="Integer"/>
+		<result column="CF_ALL_DOC_COUNT" property="cfAllDocCount" jdbcType="NUMBER" javaType="Integer"/>
+		<result column="CV_PUBLIC_DOC_COUNT" property="cvPublicDocCount" jdbcType="NUMBER" javaType="Integer"/>
+		<result column="CV_ALL_DOC_COUNT" property="cvAllDocCount" jdbcType="NUMBER" javaType="Integer"/>
+		<result column="FR_PUBLIC_DOC_COUNT" property="frPublicDocCount" jdbcType="NUMBER" javaType="Integer"/>
+		<result column="FR_ALL_DOC_COUNT" property="frAllDocCount" jdbcType="NUMBER" javaType="Integer"/>
+		<result column="ID_PUBLIC_DOC_COUNT" property="idPublicDocCount" jdbcType="NUMBER" javaType="Integer"/>
+		<result column="ID_ALL_DOC_COUNT" property="idAllDocCount" jdbcType="NUMBER" javaType="Integer"/>
+		<result column="QA_PUBLIC_DOC_COUNT" property="qaPublicDocCount" jdbcType="NUMBER" javaType="Integer"/>
+		<result column="QA_ALL_DOC_COUNT" property="qaAllDocCount" jdbcType="NUMBER" javaType="Integer"/>
+		<result column="SB_PUBLIC_DOC_COUNT" property="sbPublicDocCount" jdbcType="NUMBER" javaType="Integer"/>
+		<result column="SB_ALL_DOC_COUNT" property="sbAllDocCount" jdbcType="NUMBER" javaType="Integer"/>
+		<result column="WM_PUBLIC_DOC_COUNT" property="wmPublicDocCount" jdbcType="NUMBER" javaType="Integer"/>
+		<result column="WM_ALL_DOC_COUNT" property="wmAllDocCount" jdbcType="NUMBER" javaType="Integer"/>
+		<result column="WS_PUBLIC_DOC_COUNT" property="wsPublicDocCount" jdbcType="NUMBER" javaType="Integer"/>
+		<result column="WS_ALL_DOC_COUNT" property="wsAllDocCount" jdbcType="NUMBER" javaType="Integer"/>
+	</resultMap>
+
+<!-- 포털별 Chart 리스트 -->
+	<select id="listChartBySearchCondition" parameterClass="KnowledgeAccumulationSearchCondition" resultMap="chartResult">
+		SELECT /* [KnowledgeMonitorStatistics_SqlMap.xml] collpack.knowledgemonitor.dao.KnowledgeMonitorStatistics.listChartBySearchCondition */
+		       <isEqual property="itemType" compareValue="month">SUBSTR(YMD,1,4)||'.'||SUBSTR(YMD,5,2)</isEqual>
+		       <isEqual property="itemType" compareValue="week">TO_CHAR(YMD,'yyyy.mm.dd')</isEqual>
+		       YMD
+		     , PUBLIC_DOC_COUNT, ALL_DOC_COUNT
+		  FROM (
+		        SELECT YMD
+		             , <isEqual property="sumItem" compareValue="0">PUBLIC_DOC_COUNT</isEqual>
+		               <isEqual property="sumItem" compareValue="1">SUM(PUBLIC_DOC_COUNT) OVER (ORDER BY YMD)</isEqual>
+		               PUBLIC_DOC_COUNT
+		             , <isEqual property="sumItem" compareValue="0">ALL_DOC_COUNT</isEqual>
+		               <isEqual property="sumItem" compareValue="1">SUM(ALL_DOC_COUNT) OVER (ORDER BY YMD)</isEqual>
+		               ALL_DOC_COUNT
+		          FROM (
+		                SELECT <isEqual property="itemType" compareValue="month">YEAR_MONTH</isEqual>
+		                       <isEqual property="itemType" compareValue="week">WEEK_START_DATE</isEqual>
+		                       YMD
+		                     , SUM(PUBLIC_DOC_COUNT) PUBLIC_DOC_COUNT
+		                     , SUM(PUBLIC_DOC_COUNT + CLOSED_DOC_COUNT) ALL_DOC_COUNT
+		                  FROM IKEP4_KN_STATISTICS
+		                 WHERE PORTAL_ID = #portalId#
+		                   <isNotEmpty property="moduleCodes" prepend="AND ">MODULE_CODE IN <iterate property="moduleCodeArray" open="(" conjunction="," close=")">#moduleCodeArray[]#</iterate></isNotEmpty>
+		                   <isEmpty property="moduleCodes" prepend="AND ">1 = 2</isEmpty>
+		                   <isEqual property="sumItem" compareValue="0" prepend="AND ">
+		                     <isEqual property="itemType" compareValue="month">YEAR_MONTH BETWEEN #fromYear#||#fromMonth# AND #toYear#||#toMonth#</isEqual>
+		                     <isEqual property="itemType" compareValue="week">WEEK_START_DATE BETWEEN TO_DATE(#fromDate#,'yyyy.mm.dd') AND TO_DATE(#toDate#,'yyyy.mm.dd')</isEqual>
+		                   </isEqual>
+		                   <isEqual property="sumItem" compareValue="1" prepend="AND ">
+		                     <isEqual property="itemType" compareValue="month">YEAR_MONTH BETWEEN '1900'||'01' AND #toYear#||#toMonth#</isEqual>
+		                     <isEqual property="itemType" compareValue="week">WEEK_START_DATE BETWEEN TO_DATE('1900-01-01','yyyy.mm.dd') AND TO_DATE(#toDate#,'yyyy.mm.dd')</isEqual>
+		                   </isEqual>
+		                 GROUP BY <isEqual property="itemType" compareValue="month">YEAR_MONTH</isEqual>
+		                          <isEqual property="itemType" compareValue="week">WEEK_START_DATE</isEqual>
+		               )
+		       )
+		 <dynamic prepend="WHERE ">
+		   <isEqual property="sumItem" compareValue="1">
+		     <isEqual property="itemType" compareValue="month">YMD BETWEEN #fromYear#||#fromMonth# AND #toYear#||#toMonth#</isEqual>
+		     <isEqual property="itemType" compareValue="week">YMD BETWEEN TO_DATE(#fromDate#,'yyyy.mm.dd') AND TO_DATE(#toDate#,'yyyy.mm.dd')</isEqual>
+		   </isEqual>
+		 </dynamic>
+		 ORDER BY YMD
+	<![CDATA[
+	]]>
+	</select>
+
+<!-- 
+listBySearchCondition SQL 예시
+조건 : 주별/월별 or 일반/누적 (총 4가지 경우가 생긴다)
+(인라인뷰에서는 선택한 모듈만 select 한다)
+
+일반, 월별
+SELECT SUBSTR(YEAR_MONTH,1,4)||'-'||SUBSTR(YEAR_MONTH,5,2) YMD
+     , PUBLIC_DOC_COUNT
+     , ALL_DOC_COUNT
+     , FR_PUBLIC_DOC_COUNT
+     , FR_ALL_DOC_COUNT
+     , SB_PUBLIC_DOC_COUNT
+     , SB_ALL_DOC_COUNT
+     , 0 BD_PUBLIC_DOC_COUNT
+     , 0 BD_ALL_DOC_COUNT
+     , 0 CF_PUBLIC_DOC_COUNT
+     , 0 CF_ALL_DOC_COUNT
+     , 0 CV_PUBLIC_DOC_COUNT
+     , 0 CV_ALL_DOC_COUNT
+     , 0 ID_PUBLIC_DOC_COUNT
+     , 0 ID_ALL_DOC_COUNT
+     , 0 QA_PUBLIC_DOC_COUNT
+     , 0 QA_ALL_DOC_COUNT
+     , 0 WM_PUBLIC_DOC_COUNT
+     , 0 WM_ALL_DOC_COUNT
+     , 0 WS_PUBLIC_DOC_COUNT
+     , 0 WS_ALL_DOC_COUNT
+  FROM (
+        SELECT YEAR_MONTH
+             , SUM(PUBLIC_DOC_COUNT) PUBLIC_DOC_COUNT
+             , SUM(PUBLIC_DOC_COUNT + CLOSED_DOC_COUNT) ALL_DOC_COUNT
+             , SUM(DECODE(MODULE_CODE, 'FR', PUBLIC_DOC_COUNT)) FR_PUBLIC_DOC_COUNT
+             , SUM(DECODE(MODULE_CODE, 'FR', PUBLIC_DOC_COUNT + CLOSED_DOC_COUNT)) FR_ALL_DOC_COUNT
+             , SUM(DECODE(MODULE_CODE, 'SB', PUBLIC_DOC_COUNT)) SB_PUBLIC_DOC_COUNT
+             , SUM(DECODE(MODULE_CODE, 'SB', PUBLIC_DOC_COUNT + CLOSED_DOC_COUNT)) SB_ALL_DOC_COUNT
+          FROM IKEP4_KN_STATISTICS 
+          JOIN IKEP4_KN_MODULE
+         USING (PORTAL_ID, MODULE_CODE)
+         WHERE IS_USAGE = 1
+           AND PORTAL_ID = 'P000001' 
+           AND MODULE_CODE IN ('FR','SB')
+           AND YEAR_MONTH BETWEEN '2010'||'10' AND '2011'||'04'
+         GROUP BY YEAR_MONTH
+       )
+UNION ALL
+SELECT 'Total' YMD
+     , PUBLIC_DOC_COUNT
+     , ALL_DOC_COUNT
+     , FR_PUBLIC_DOC_COUNT
+     , FR_ALL_DOC_COUNT
+     , SB_PUBLIC_DOC_COUNT
+     , SB_ALL_DOC_COUNT
+     , 0 BD_PUBLIC_DOC_COUNT
+     , 0 BD_ALL_DOC_COUNT
+     , 0 CF_PUBLIC_DOC_COUNT
+     , 0 CF_ALL_DOC_COUNT
+     , 0 CV_PUBLIC_DOC_COUNT
+     , 0 CV_ALL_DOC_COUNT
+     , 0 ID_PUBLIC_DOC_COUNT
+     , 0 ID_ALL_DOC_COUNT
+     , 0 QA_PUBLIC_DOC_COUNT
+     , 0 QA_ALL_DOC_COUNT
+     , 0 WM_PUBLIC_DOC_COUNT
+     , 0 WM_ALL_DOC_COUNT
+     , 0 WS_PUBLIC_DOC_COUNT
+     , 0 WS_ALL_DOC_COUNT
+  FROM (
+        SELECT SUM(PUBLIC_DOC_COUNT) PUBLIC_DOC_COUNT
+             , SUM(PUBLIC_DOC_COUNT + CLOSED_DOC_COUNT) ALL_DOC_COUNT
+             , SUM(DECODE(MODULE_CODE, 'FR', PUBLIC_DOC_COUNT)) FR_PUBLIC_DOC_COUNT
+             , SUM(DECODE(MODULE_CODE, 'FR', PUBLIC_DOC_COUNT + CLOSED_DOC_COUNT)) FR_ALL_DOC_COUNT
+             , SUM(DECODE(MODULE_CODE, 'SB', PUBLIC_DOC_COUNT)) SB_PUBLIC_DOC_COUNT
+             , SUM(DECODE(MODULE_CODE, 'SB', PUBLIC_DOC_COUNT + CLOSED_DOC_COUNT)) SB_ALL_DOC_COUNT
+          FROM IKEP4_KN_STATISTICS 
+          JOIN IKEP4_KN_MODULE
+         USING (PORTAL_ID, MODULE_CODE)
+         WHERE IS_USAGE = 1
+           AND PORTAL_ID = 'P000001' 
+           AND MODULE_CODE IN ('FR','SB')
+           AND YEAR_MONTH BETWEEN '2010'||'10' AND '2011'||'04'
+       )
+ORDER BY 1;
+
+일반, 주별
+SELECT TO_CHAR(WEEK_START_DATE,'yyyy-MM-dd') YMD
+     , PUBLIC_DOC_COUNT
+     , ALL_DOC_COUNT
+     , FR_PUBLIC_DOC_COUNT
+     , FR_ALL_DOC_COUNT
+     , SB_PUBLIC_DOC_COUNT
+     , SB_ALL_DOC_COUNT
+     , 0 BD_PUBLIC_DOC_COUNT
+     , 0 BD_ALL_DOC_COUNT
+     , 0 CF_PUBLIC_DOC_COUNT
+     , 0 CF_ALL_DOC_COUNT
+     , 0 CV_PUBLIC_DOC_COUNT
+     , 0 CV_ALL_DOC_COUNT
+     , 0 ID_PUBLIC_DOC_COUNT
+     , 0 ID_ALL_DOC_COUNT
+     , 0 QA_PUBLIC_DOC_COUNT
+     , 0 QA_ALL_DOC_COUNT
+     , 0 WM_PUBLIC_DOC_COUNT
+     , 0 WM_ALL_DOC_COUNT
+     , 0 WS_PUBLIC_DOC_COUNT
+     , 0 WS_ALL_DOC_COUNT
+  FROM (
+        SELECT YEAR_MONTH
+             , SUM(PUBLIC_DOC_COUNT) PUBLIC_DOC_COUNT
+             , SUM(PUBLIC_DOC_COUNT + CLOSED_DOC_COUNT) ALL_DOC_COUNT
+             , SUM(DECODE(MODULE_CODE, 'FR', PUBLIC_DOC_COUNT)) FR_PUBLIC_DOC_COUNT
+             , SUM(DECODE(MODULE_CODE, 'FR', PUBLIC_DOC_COUNT + CLOSED_DOC_COUNT)) FR_ALL_DOC_COUNT
+             , SUM(DECODE(MODULE_CODE, 'SB', PUBLIC_DOC_COUNT)) SB_PUBLIC_DOC_COUNT
+             , SUM(DECODE(MODULE_CODE, 'SB', PUBLIC_DOC_COUNT + CLOSED_DOC_COUNT)) SB_ALL_DOC_COUNT
+          FROM IKEP4_KN_STATISTICS 
+          JOIN IKEP4_KN_MODULE
+         USING (PORTAL_ID, MODULE_CODE)
+         WHERE IS_USAGE = 1
+           AND PORTAL_ID = 'P000001' 
+           AND MODULE_CODE IN ('FR','SB')
+           AND WEEK_START_DATE BETWEEN TO_DATE('2011-03-27','yyyy-MM-dd') AND TO_DATE('2011-04-30','yyyy-MM-dd')
+         GROUP BY WEEK_START_DATE
+       )
+UNION ALL
+SELECT 'Total' YMD
+     , PUBLIC_DOC_COUNT
+     , ALL_DOC_COUNT
+     , FR_PUBLIC_DOC_COUNT
+     , FR_ALL_DOC_COUNT
+     , SB_PUBLIC_DOC_COUNT
+     , SB_ALL_DOC_COUNT
+     , 0 BD_PUBLIC_DOC_COUNT
+     , 0 BD_ALL_DOC_COUNT
+     , 0 CF_PUBLIC_DOC_COUNT
+     , 0 CF_ALL_DOC_COUNT
+     , 0 CV_PUBLIC_DOC_COUNT
+     , 0 CV_ALL_DOC_COUNT
+     , 0 ID_PUBLIC_DOC_COUNT
+     , 0 ID_ALL_DOC_COUNT
+     , 0 QA_PUBLIC_DOC_COUNT
+     , 0 QA_ALL_DOC_COUNT
+     , 0 WM_PUBLIC_DOC_COUNT
+     , 0 WM_ALL_DOC_COUNT
+     , 0 WS_PUBLIC_DOC_COUNT
+     , 0 WS_ALL_DOC_COUNT
+  FROM (
+        SELECT SUM(PUBLIC_DOC_COUNT) PUBLIC_DOC_COUNT
+             , SUM(PUBLIC_DOC_COUNT + CLOSED_DOC_COUNT) ALL_DOC_COUNT
+             , SUM(DECODE(MODULE_CODE, 'FR', PUBLIC_DOC_COUNT)) FR_PUBLIC_DOC_COUNT
+             , SUM(DECODE(MODULE_CODE, 'FR', PUBLIC_DOC_COUNT + CLOSED_DOC_COUNT)) FR_ALL_DOC_COUNT
+             , SUM(DECODE(MODULE_CODE, 'SB', PUBLIC_DOC_COUNT)) SB_PUBLIC_DOC_COUNT
+             , SUM(DECODE(MODULE_CODE, 'SB', PUBLIC_DOC_COUNT + CLOSED_DOC_COUNT)) SB_ALL_DOC_COUNT
+          FROM IKEP4_KN_STATISTICS 
+          JOIN IKEP4_KN_MODULE
+         USING (PORTAL_ID, MODULE_CODE)
+         WHERE IS_USAGE = 1
+           AND PORTAL_ID = 'P000001' 
+           AND MODULE_CODE IN ('FR','SB')
+           AND WEEK_START_DATE BETWEEN TO_DATE('2011-03-27','yyyy-MM-dd') AND TO_DATE('2011-04-30','yyyy-MM-dd')
+       )
+ORDER BY 1;
+
+
+누적, 월별
+SELECT SUBSTR(YEAR_MONTH,1,4)||'-'||SUBSTR(YEAR_MONTH,5,2) YMD
+     , PUBLIC_DOC_COUNT 
+     , ALL_DOC_COUNT 
+     , FR_PUBLIC_DOC_COUNT
+     , FR_ALL_DOC_COUNT 
+     , SB_PUBLIC_DOC_COUNT
+     , SB_ALL_DOC_COUNT 
+     , 0 BD_PUBLIC_DOC_COUNT
+     , 0 BD_ALL_DOC_COUNT
+     , 0 CF_PUBLIC_DOC_COUNT
+     , 0 CF_ALL_DOC_COUNT
+     , 0 CV_PUBLIC_DOC_COUNT
+     , 0 CV_ALL_DOC_COUNT
+     , 0 ID_PUBLIC_DOC_COUNT
+     , 0 ID_ALL_DOC_COUNT
+     , 0 QA_PUBLIC_DOC_COUNT
+     , 0 QA_ALL_DOC_COUNT
+     , 0 WM_PUBLIC_DOC_COUNT
+     , 0 WM_ALL_DOC_COUNT
+     , 0 WS_PUBLIC_DOC_COUNT
+     , 0 WS_ALL_DOC_COUNT
+  FROM ( 
+        SELECT WEEK_START_DATE 
+             , SUM(SUM(PUBLIC_DOC_COUNT)) OVER (ORDER BY YEAR_MONTH) PUBLIC_DOC_COUNT 
+             , SUM(SUM(PUBLIC_DOC_COUNT + CLOSED_DOC_COUNT)) OVER (ORDER BY YEAR_MONTH) ALL_DOC_COUNT 
+             , SUM(SUM(DECODE(MODULE_CODE, 'FR', PUBLIC_DOC_COUNT))) OVER (ORDER BY YEAR_MONTH) FR_PUBLIC_DOC_COUNT 
+             , SUM(SUM(DECODE(MODULE_CODE, 'FR', PUBLIC_DOC_COUNT + CLOSED_DOC_COUNT))) OVER (ORDER BY YEAR_MONTH) FR_ALL_DOC_COUNT 
+             , SUM(SUM(DECODE(MODULE_CODE, 'SB', PUBLIC_DOC_COUNT))) OVER (ORDER BY YEAR_MONTH) SB_PUBLIC_DOC_COUNT 
+             , SUM(SUM(DECODE(MODULE_CODE, 'SB', PUBLIC_DOC_COUNT + CLOSED_DOC_COUNT))) OVER (ORDER BY YEAR_MONTH) SB_ALL_DOC_COUNT 
+          FROM IKEP4_KN_STATISTICS 
+          JOIN IKEP4_KN_MODULE
+         USING (PORTAL_ID, MODULE_CODE)
+         WHERE IS_USAGE = 1
+           AND PORTAL_ID = 'P000001' 
+           AND MODULE_CODE IN ('FR','SB')
+           AND YEAR_MONTH BETWEEN '1900'||'01' AND '2011'||'04'
+         GROUP BY YEAR_MONTH 
+       ) 
+ WHERE YEAR_MONTH BETWEEN '2010'||'10' AND '2011'||'04' 
+ ORDER BY 1
+
+
+누적, 주별
+SELECT TO_CHAR(WEEK_START_DATE,'yyyy-MM-dd') YMD 
+     , PUBLIC_DOC_COUNT 
+     , ALL_DOC_COUNT 
+     , FR_PUBLIC_DOC_COUNT
+     , FR_ALL_DOC_COUNT 
+     , SB_PUBLIC_DOC_COUNT
+     , SB_ALL_DOC_COUNT 
+     , 0 BD_PUBLIC_DOC_COUNT
+     , 0 BD_ALL_DOC_COUNT
+     , 0 CF_PUBLIC_DOC_COUNT
+     , 0 CF_ALL_DOC_COUNT
+     , 0 CV_PUBLIC_DOC_COUNT
+     , 0 CV_ALL_DOC_COUNT
+     , 0 ID_PUBLIC_DOC_COUNT
+     , 0 ID_ALL_DOC_COUNT
+     , 0 QA_PUBLIC_DOC_COUNT
+     , 0 QA_ALL_DOC_COUNT
+     , 0 WM_PUBLIC_DOC_COUNT
+     , 0 WM_ALL_DOC_COUNT
+     , 0 WS_PUBLIC_DOC_COUNT
+     , 0 WS_ALL_DOC_COUNT
+  FROM ( 
+        SELECT WEEK_START_DATE 
+             , SUM(SUM(PUBLIC_DOC_COUNT)) OVER (ORDER BY WEEK_START_DATE) PUBLIC_DOC_COUNT 
+             , SUM(SUM(PUBLIC_DOC_COUNT + CLOSED_DOC_COUNT)) OVER (ORDER BY WEEK_START_DATE) ALL_DOC_COUNT 
+             , SUM(SUM(DECODE(MODULE_CODE, 'FR', PUBLIC_DOC_COUNT))) OVER (ORDER BY WEEK_START_DATE) FR_PUBLIC_DOC_COUNT 
+             , SUM(SUM(DECODE(MODULE_CODE, 'FR', PUBLIC_DOC_COUNT + CLOSED_DOC_COUNT))) OVER (ORDER BY WEEK_START_DATE) FR_ALL_DOC_COUNT 
+             , SUM(SUM(DECODE(MODULE_CODE, 'SB', PUBLIC_DOC_COUNT))) OVER (ORDER BY WEEK_START_DATE) SB_PUBLIC_DOC_COUNT 
+             , SUM(SUM(DECODE(MODULE_CODE, 'SB', PUBLIC_DOC_COUNT + CLOSED_DOC_COUNT))) OVER (ORDER BY WEEK_START_DATE) SB_ALL_DOC_COUNT 
+          FROM IKEP4_KN_STATISTICS 
+          JOIN IKEP4_KN_MODULE
+         USING (PORTAL_ID, MODULE_CODE)
+         WHERE IS_USAGE = 1
+           AND PORTAL_ID = 'P000001' 
+           AND MODULE_CODE IN ('FR','SB') 
+           AND WEEK_START_DATE BETWEEN TO_DATE('1900-01-01','yyyy-MM-dd') AND TO_DATE('2011-04-30','yyyy-MM-dd') 
+         GROUP BY WEEK_START_DATE 
+       ) 
+ WHERE WEEK_START_DATE BETWEEN TO_DATE('2011-03-27','yyyy-MM-dd') AND TO_DATE('2011-04-30','yyyy-MM-dd') 
+ ORDER BY 1
+
+-->
+
+<!-- 포털별 리스트 -->
+	<select id="listBySearchCondition" parameterClass="KnowledgeAccumulationSearchCondition" resultMap="listResult">
+		SELECT /* [KnowledgeMonitorStatistics_SqlMap.xml] collpack.knowledgemonitor.dao.KnowledgeMonitorStatistics.listBySearchCondition */
+		       <isEqual property="itemType" compareValue="month">SUBSTR(YMD,1,4)||'.'||SUBSTR(YMD,5,2) YMD</isEqual>
+		       <isEqual property="itemType" compareValue="week">TO_CHAR(YMD,'yyyy.mm.dd')||' ~ '||TO_CHAR(YMD + 6,'yyyy.mm.dd') YMD</isEqual>
+		     , NVL(PUBLIC_DOC_COUNT, 0) PUBLIC_DOC_COUNT
+		     , NVL(ALL_DOC_COUNT, 0) ALL_DOC_COUNT
+		     <iterate property="moduleCodeArray">
+		       <isEqual property="moduleCodeArray[]" compareValue="BD">, NVL(BD_PUBLIC_DOC_COUNT, 0) BD_PUBLIC_DOC_COUNT, NVL(BD_ALL_DOC_COUNT, 0) BD_ALL_DOC_COUNT</isEqual>
+		       <isEqual property="moduleCodeArray[]" compareValue="CF">, NVL(CF_PUBLIC_DOC_COUNT, 0) CF_PUBLIC_DOC_COUNT, NVL(CF_ALL_DOC_COUNT, 0) CF_ALL_DOC_COUNT</isEqual>
+		       <isEqual property="moduleCodeArray[]" compareValue="CV">, NVL(CV_PUBLIC_DOC_COUNT, 0) CV_PUBLIC_DOC_COUNT, NVL(CV_ALL_DOC_COUNT, 0) CV_ALL_DOC_COUNT</isEqual>
+		       <isEqual property="moduleCodeArray[]" compareValue="FR">, NVL(FR_PUBLIC_DOC_COUNT, 0) FR_PUBLIC_DOC_COUNT, NVL(FR_ALL_DOC_COUNT, 0) FR_ALL_DOC_COUNT</isEqual>
+		       <isEqual property="moduleCodeArray[]" compareValue="ID">, NVL(ID_PUBLIC_DOC_COUNT, 0) ID_PUBLIC_DOC_COUNT, NVL(ID_ALL_DOC_COUNT, 0) ID_ALL_DOC_COUNT</isEqual>
+		       <isEqual property="moduleCodeArray[]" compareValue="QA">, NVL(QA_PUBLIC_DOC_COUNT, 0) QA_PUBLIC_DOC_COUNT, NVL(QA_ALL_DOC_COUNT, 0) QA_ALL_DOC_COUNT</isEqual>
+		       <isEqual property="moduleCodeArray[]" compareValue="SB">, NVL(SB_PUBLIC_DOC_COUNT, 0) SB_PUBLIC_DOC_COUNT, NVL(SB_ALL_DOC_COUNT, 0) SB_ALL_DOC_COUNT</isEqual>
+		       <isEqual property="moduleCodeArray[]" compareValue="WM">, NVL(WM_PUBLIC_DOC_COUNT, 0) WM_PUBLIC_DOC_COUNT, NVL(WM_ALL_DOC_COUNT, 0) WM_ALL_DOC_COUNT</isEqual>
+		       <isEqual property="moduleCodeArray[]" compareValue="WS">, NVL(WS_PUBLIC_DOC_COUNT, 0) WS_PUBLIC_DOC_COUNT, NVL(WS_ALL_DOC_COUNT, 0) WS_ALL_DOC_COUNT</isEqual>
+		     </iterate>
+		     <iterate property="excludeModuleCodeArray">
+		       <isEqual property="excludeModuleCodeArray[]" compareValue="BD">, 0 BD_PUBLIC_DOC_COUNT, 0 BD_ALL_DOC_COUNT</isEqual>
+		       <isEqual property="excludeModuleCodeArray[]" compareValue="CF">, 0 CF_PUBLIC_DOC_COUNT, 0 CF_ALL_DOC_COUNT</isEqual>
+		       <isEqual property="excludeModuleCodeArray[]" compareValue="CV">, 0 CV_PUBLIC_DOC_COUNT, 0 CV_ALL_DOC_COUNT</isEqual>
+		       <isEqual property="excludeModuleCodeArray[]" compareValue="FR">, 0 FR_PUBLIC_DOC_COUNT, 0 FR_ALL_DOC_COUNT</isEqual>
+		       <isEqual property="excludeModuleCodeArray[]" compareValue="ID">, 0 ID_PUBLIC_DOC_COUNT, 0 ID_ALL_DOC_COUNT</isEqual>
+		       <isEqual property="excludeModuleCodeArray[]" compareValue="QA">, 0 QA_PUBLIC_DOC_COUNT, 0 QA_ALL_DOC_COUNT</isEqual>
+		       <isEqual property="excludeModuleCodeArray[]" compareValue="SB">, 0 SB_PUBLIC_DOC_COUNT, 0 SB_ALL_DOC_COUNT</isEqual>
+		       <isEqual property="excludeModuleCodeArray[]" compareValue="WM">, 0 WM_PUBLIC_DOC_COUNT, 0 WM_ALL_DOC_COUNT</isEqual>
+		       <isEqual property="excludeModuleCodeArray[]" compareValue="WS">, 0 WS_PUBLIC_DOC_COUNT, 0 WS_ALL_DOC_COUNT</isEqual>
+		     </iterate>
+		  FROM (
+		        SELECT YMD
+		             , <isEqual property="sumItem" compareValue="0">PUBLIC_DOC_COUNT</isEqual>
+		               <isEqual property="sumItem" compareValue="1">SUM(PUBLIC_DOC_COUNT) OVER (ORDER BY YMD)</isEqual>
+		               PUBLIC_DOC_COUNT
+		             , <isEqual property="sumItem" compareValue="0">ALL_DOC_COUNT</isEqual>
+		               <isEqual property="sumItem" compareValue="1">SUM(ALL_DOC_COUNT) OVER (ORDER BY YMD)</isEqual>
+		               ALL_DOC_COUNT
+		             <iterate property="moduleCodeArray">
+		             , <isEqual property="moduleCodeArray[]" compareValue="BD">
+		                 <isEqual property="sumItem" compareValue="0">BD_PUBLIC_DOC_COUNT, BD_ALL_DOC_COUNT</isEqual>
+		                 <isEqual property="sumItem" compareValue="1">SUM(BD_PUBLIC_DOC_COUNT) OVER (ORDER BY YMD) BD_PUBLIC_DOC_COUNT,
+		                                                              SUM(BD_ALL_DOC_COUNT) OVER (ORDER BY YMD) BD_ALL_DOC_COUNT</isEqual>
+		               </isEqual>
+		               <isEqual property="moduleCodeArray[]" compareValue="CF">
+		                 <isEqual property="sumItem" compareValue="0">CF_PUBLIC_DOC_COUNT, CF_ALL_DOC_COUNT</isEqual>
+		                 <isEqual property="sumItem" compareValue="1">SUM(CF_PUBLIC_DOC_COUNT) OVER (ORDER BY YMD) CF_PUBLIC_DOC_COUNT,
+		                                                              SUM(CF_ALL_DOC_COUNT) OVER (ORDER BY YMD) CF_ALL_DOC_COUNT</isEqual>
+		               </isEqual>
+		               <isEqual property="moduleCodeArray[]" compareValue="CV">
+		                 <isEqual property="sumItem" compareValue="0">CV_PUBLIC_DOC_COUNT, CV_ALL_DOC_COUNT</isEqual>
+		                 <isEqual property="sumItem" compareValue="1">SUM(CV_PUBLIC_DOC_COUNT) OVER (ORDER BY YMD) CV_PUBLIC_DOC_COUNT,
+		                                                              SUM(CV_ALL_DOC_COUNT) OVER (ORDER BY YMD) CV_ALL_DOC_COUNT</isEqual>
+		               </isEqual>
+		               <isEqual property="moduleCodeArray[]" compareValue="FR">
+		                 <isEqual property="sumItem" compareValue="0">FR_PUBLIC_DOC_COUNT, FR_ALL_DOC_COUNT</isEqual>
+		                 <isEqual property="sumItem" compareValue="1">SUM(FR_PUBLIC_DOC_COUNT) OVER (ORDER BY YMD) FR_PUBLIC_DOC_COUNT,
+		                                                              SUM(FR_ALL_DOC_COUNT) OVER (ORDER BY YMD) FR_ALL_DOC_COUNT</isEqual>
+		               </isEqual>
+		               <isEqual property="moduleCodeArray[]" compareValue="ID">
+		                 <isEqual property="sumItem" compareValue="0">ID_PUBLIC_DOC_COUNT, ID_ALL_DOC_COUNT</isEqual>
+		                 <isEqual property="sumItem" compareValue="1">SUM(ID_PUBLIC_DOC_COUNT) OVER (ORDER BY YMD) ID_PUBLIC_DOC_COUNT,
+		                                                              SUM(ID_ALL_DOC_COUNT) OVER (ORDER BY YMD) ID_ALL_DOC_COUNT</isEqual>
+		               </isEqual>
+		               <isEqual property="moduleCodeArray[]" compareValue="QA">
+		                 <isEqual property="sumItem" compareValue="0">QA_PUBLIC_DOC_COUNT, QA_ALL_DOC_COUNT</isEqual>
+		                 <isEqual property="sumItem" compareValue="1">SUM(QA_PUBLIC_DOC_COUNT) OVER (ORDER BY YMD) QA_PUBLIC_DOC_COUNT,
+		                                                              SUM(QA_ALL_DOC_COUNT) OVER (ORDER BY YMD) QA_ALL_DOC_COUNT</isEqual>
+		               </isEqual>
+		               <isEqual property="moduleCodeArray[]" compareValue="SB">
+		                 <isEqual property="sumItem" compareValue="0">SB_PUBLIC_DOC_COUNT, SB_ALL_DOC_COUNT</isEqual>
+		                 <isEqual property="sumItem" compareValue="1">SUM(SB_PUBLIC_DOC_COUNT) OVER (ORDER BY YMD) SB_PUBLIC_DOC_COUNT,
+		                                                              SUM(SB_ALL_DOC_COUNT) OVER (ORDER BY YMD) SB_ALL_DOC_COUNT</isEqual>
+		               </isEqual>
+		               <isEqual property="moduleCodeArray[]" compareValue="WM">
+		                 <isEqual property="sumItem" compareValue="0">WM_PUBLIC_DOC_COUNT, WM_ALL_DOC_COUNT</isEqual>
+		                 <isEqual property="sumItem" compareValue="1">SUM(WM_PUBLIC_DOC_COUNT) OVER (ORDER BY YMD) WM_PUBLIC_DOC_COUNT,
+		                                                              SUM(WM_ALL_DOC_COUNT) OVER (ORDER BY YMD) WM_ALL_DOC_COUNT</isEqual>
+		               </isEqual>
+		               <isEqual property="moduleCodeArray[]" compareValue="WS">
+		                 <isEqual property="sumItem" compareValue="0">WS_PUBLIC_DOC_COUNT, WS_ALL_DOC_COUNT</isEqual>
+		                 <isEqual property="sumItem" compareValue="1">SUM(WS_PUBLIC_DOC_COUNT) OVER (ORDER BY YMD) WS_PUBLIC_DOC_COUNT,
+		                                                              SUM(WS_ALL_DOC_COUNT) OVER (ORDER BY YMD) WS_ALL_DOC_COUNT</isEqual>
+		               </isEqual>
+		             </iterate>
+		          FROM (
+		                SELECT <isEqual property="itemType" compareValue="month">YEAR_MONTH</isEqual>
+		                       <isEqual property="itemType" compareValue="week">WEEK_START_DATE</isEqual>
+		                       YMD
+		                     , SUM(PUBLIC_DOC_COUNT) PUBLIC_DOC_COUNT
+		                     , SUM(PUBLIC_DOC_COUNT + CLOSED_DOC_COUNT) ALL_DOC_COUNT
+		                     <iterate property="moduleCodeArray">
+		                     , SUM(DECODE(MODULE_CODE, #moduleCodeArray[]#, PUBLIC_DOC_COUNT))
+		                       <isEqual property="moduleCodeArray[]" compareValue="BD"> BD_PUBLIC_DOC_COUNT</isEqual>
+		                       <isEqual property="moduleCodeArray[]" compareValue="ID"> ID_PUBLIC_DOC_COUNT</isEqual>
+		                       <isEqual property="moduleCodeArray[]" compareValue="FR"> FR_PUBLIC_DOC_COUNT</isEqual>
+		                       <isEqual property="moduleCodeArray[]" compareValue="CF"> CF_PUBLIC_DOC_COUNT</isEqual>
+		                       <isEqual property="moduleCodeArray[]" compareValue="WM"> WM_PUBLIC_DOC_COUNT</isEqual>
+		                       <isEqual property="moduleCodeArray[]" compareValue="CV"> CV_PUBLIC_DOC_COUNT</isEqual>
+		                       <isEqual property="moduleCodeArray[]" compareValue="QA"> QA_PUBLIC_DOC_COUNT</isEqual>
+		                       <isEqual property="moduleCodeArray[]" compareValue="WS"> WS_PUBLIC_DOC_COUNT</isEqual>
+		                       <isEqual property="moduleCodeArray[]" compareValue="SB"> SB_PUBLIC_DOC_COUNT</isEqual>
+                
+		                     , SUM(DECODE(MODULE_CODE, #moduleCodeArray[]#, PUBLIC_DOC_COUNT + CLOSED_DOC_COUNT))
+		                       <isEqual property="moduleCodeArray[]" compareValue="BD"> BD_ALL_DOC_COUNT</isEqual>
+		                       <isEqual property="moduleCodeArray[]" compareValue="ID"> ID_ALL_DOC_COUNT</isEqual>
+		                       <isEqual property="moduleCodeArray[]" compareValue="FR"> FR_ALL_DOC_COUNT</isEqual>
+		                       <isEqual property="moduleCodeArray[]" compareValue="CF"> CF_ALL_DOC_COUNT</isEqual>
+		                       <isEqual property="moduleCodeArray[]" compareValue="WM"> WM_ALL_DOC_COUNT</isEqual>
+		                       <isEqual property="moduleCodeArray[]" compareValue="CV"> CV_ALL_DOC_COUNT</isEqual>
+		                       <isEqual property="moduleCodeArray[]" compareValue="QA"> QA_ALL_DOC_COUNT</isEqual>
+		                       <isEqual property="moduleCodeArray[]" compareValue="WS"> WS_ALL_DOC_COUNT</isEqual>
+		                       <isEqual property="moduleCodeArray[]" compareValue="SB"> SB_ALL_DOC_COUNT</isEqual>
+		                     </iterate>
+		                  FROM IKEP4_KN_STATISTICS
+		                 WHERE PORTAL_ID = #portalId#
+		                   <isNotEmpty property="moduleCodes" prepend="AND ">MODULE_CODE IN <iterate property="moduleCodeArray" open="(" conjunction="," close=")">#moduleCodeArray[]#</iterate></isNotEmpty>
+		                   <isEmpty property="moduleCodes" prepend="AND ">1 = 2</isEmpty>
+		                   <isEqual property="sumItem" compareValue="0" prepend="AND ">
+		                     <isEqual property="itemType" compareValue="month">YEAR_MONTH BETWEEN #fromYear#||#fromMonth# AND #toYear#||#toMonth#</isEqual>
+		                     <isEqual property="itemType" compareValue="week">WEEK_START_DATE BETWEEN TO_DATE(#fromDate#,'yyyy.mm.dd') AND TO_DATE(#toDate#,'yyyy.mm.dd')</isEqual>
+		                   </isEqual>
+		                   <isEqual property="sumItem" compareValue="1" prepend="AND ">
+		                     <isEqual property="itemType" compareValue="month">YEAR_MONTH BETWEEN '1900'||'01' AND #toYear#||#toMonth#</isEqual>
+		                     <isEqual property="itemType" compareValue="week">WEEK_START_DATE BETWEEN TO_DATE('1900-01-01','yyyy.mm.dd') AND TO_DATE(#toDate#,'yyyy.mm.dd')</isEqual>
+		                   </isEqual>
+		                 GROUP BY <isEqual property="itemType" compareValue="month">YEAR_MONTH</isEqual>
+		                          <isEqual property="itemType" compareValue="week">WEEK_START_DATE</isEqual>
+		               )
+		       )
+		 <dynamic prepend="WHERE ">
+		   <isEqual property="sumItem" compareValue="1">
+		     <isEqual property="itemType" compareValue="month">YMD BETWEEN #fromYear#||#fromMonth# AND #toYear#||#toMonth#</isEqual>
+		     <isEqual property="itemType" compareValue="week">YMD BETWEEN TO_DATE(#fromDate#,'yyyy.mm.dd') AND TO_DATE(#toDate#,'yyyy.mm.dd')</isEqual>
+		   </isEqual>
+		 </dynamic>
+
+		<isEqual property="sumItem" compareValue="0" prepend="UNION ALL ">
+		SELECT #sumText# YMD
+		     , NVL(PUBLIC_DOC_COUNT, 0) PUBLIC_DOC_COUNT
+		     , NVL(ALL_DOC_COUNT, 0) ALL_DOC_COUNT
+		     <iterate property="moduleCodeArray">
+		       <isEqual property="moduleCodeArray[]" compareValue="BD">, NVL(BD_PUBLIC_DOC_COUNT, 0) BD_PUBLIC_DOC_COUNT, NVL(BD_ALL_DOC_COUNT, 0) BD_ALL_DOC_COUNT</isEqual>
+		       <isEqual property="moduleCodeArray[]" compareValue="ID">, NVL(ID_PUBLIC_DOC_COUNT, 0) ID_PUBLIC_DOC_COUNT, NVL(ID_ALL_DOC_COUNT, 0) ID_ALL_DOC_COUNT</isEqual>
+		       <isEqual property="moduleCodeArray[]" compareValue="FR">, NVL(FR_PUBLIC_DOC_COUNT, 0) FR_PUBLIC_DOC_COUNT, NVL(FR_ALL_DOC_COUNT, 0) FR_ALL_DOC_COUNT</isEqual>
+		       <isEqual property="moduleCodeArray[]" compareValue="CF">, NVL(CF_PUBLIC_DOC_COUNT, 0) CF_PUBLIC_DOC_COUNT, NVL(CF_ALL_DOC_COUNT, 0) CF_ALL_DOC_COUNT</isEqual>
+		       <isEqual property="moduleCodeArray[]" compareValue="WM">, NVL(WM_PUBLIC_DOC_COUNT, 0) WM_PUBLIC_DOC_COUNT, NVL(WM_ALL_DOC_COUNT, 0) WM_ALL_DOC_COUNT</isEqual>
+		       <isEqual property="moduleCodeArray[]" compareValue="CV">, NVL(CV_PUBLIC_DOC_COUNT, 0) CV_PUBLIC_DOC_COUNT, NVL(CV_ALL_DOC_COUNT, 0) CV_ALL_DOC_COUNT</isEqual>
+		       <isEqual property="moduleCodeArray[]" compareValue="QA">, NVL(QA_PUBLIC_DOC_COUNT, 0) QA_PUBLIC_DOC_COUNT, NVL(QA_ALL_DOC_COUNT, 0) QA_ALL_DOC_COUNT</isEqual>
+		       <isEqual property="moduleCodeArray[]" compareValue="WS">, NVL(WS_PUBLIC_DOC_COUNT, 0) WS_PUBLIC_DOC_COUNT, NVL(WS_ALL_DOC_COUNT, 0) WS_ALL_DOC_COUNT</isEqual>
+		       <isEqual property="moduleCodeArray[]" compareValue="SB">, NVL(SB_PUBLIC_DOC_COUNT, 0) SB_PUBLIC_DOC_COUNT, NVL(SB_ALL_DOC_COUNT, 0) SB_ALL_DOC_COUNT</isEqual>
+		     </iterate>
+		     <iterate property="excludeModuleCodeArray">
+		       <isEqual property="excludeModuleCodeArray[]" compareValue="BD">, 0 BD_PUBLIC_DOC_COUNT, 0 BD_ALL_DOC_COUNT</isEqual>
+		       <isEqual property="excludeModuleCodeArray[]" compareValue="ID">, 0 ID_PUBLIC_DOC_COUNT, 0 ID_ALL_DOC_COUNT</isEqual>
+		       <isEqual property="excludeModuleCodeArray[]" compareValue="FR">, 0 FR_PUBLIC_DOC_COUNT, 0 FR_ALL_DOC_COUNT</isEqual>
+		       <isEqual property="excludeModuleCodeArray[]" compareValue="CF">, 0 CF_PUBLIC_DOC_COUNT, 0 CF_ALL_DOC_COUNT</isEqual>
+		       <isEqual property="excludeModuleCodeArray[]" compareValue="WM">, 0 WM_PUBLIC_DOC_COUNT, 0 WM_ALL_DOC_COUNT</isEqual>
+		       <isEqual property="excludeModuleCodeArray[]" compareValue="CV">, 0 CV_PUBLIC_DOC_COUNT, 0 CV_ALL_DOC_COUNT</isEqual>
+		       <isEqual property="excludeModuleCodeArray[]" compareValue="QA">, 0 QA_PUBLIC_DOC_COUNT, 0 QA_ALL_DOC_COUNT</isEqual>
+		       <isEqual property="excludeModuleCodeArray[]" compareValue="WS">, 0 WS_PUBLIC_DOC_COUNT, 0 WS_ALL_DOC_COUNT</isEqual>
+		       <isEqual property="excludeModuleCodeArray[]" compareValue="SB">, 0 SB_PUBLIC_DOC_COUNT, 0 SB_ALL_DOC_COUNT</isEqual>
+		     </iterate>
+		  FROM (
+		        SELECT SUM(PUBLIC_DOC_COUNT) PUBLIC_DOC_COUNT
+		             , SUM(PUBLIC_DOC_COUNT + CLOSED_DOC_COUNT) ALL_DOC_COUNT
+		             <iterate property="moduleCodeArray">
+		             , SUM(DECODE(MODULE_CODE, #moduleCodeArray[]#, PUBLIC_DOC_COUNT))
+		               <isEqual property="moduleCodeArray[]" compareValue="BD"> BD_PUBLIC_DOC_COUNT</isEqual>
+		               <isEqual property="moduleCodeArray[]" compareValue="ID"> ID_PUBLIC_DOC_COUNT</isEqual>
+		               <isEqual property="moduleCodeArray[]" compareValue="FR"> FR_PUBLIC_DOC_COUNT</isEqual>
+		               <isEqual property="moduleCodeArray[]" compareValue="CF"> CF_PUBLIC_DOC_COUNT</isEqual>
+		               <isEqual property="moduleCodeArray[]" compareValue="WM"> WM_PUBLIC_DOC_COUNT</isEqual>
+		               <isEqual property="moduleCodeArray[]" compareValue="CV"> CV_PUBLIC_DOC_COUNT</isEqual>
+		               <isEqual property="moduleCodeArray[]" compareValue="QA"> QA_PUBLIC_DOC_COUNT</isEqual>
+		               <isEqual property="moduleCodeArray[]" compareValue="WS"> WS_PUBLIC_DOC_COUNT</isEqual>
+		               <isEqual property="moduleCodeArray[]" compareValue="SB"> SB_PUBLIC_DOC_COUNT</isEqual>
+		             , SUM(DECODE(MODULE_CODE, #moduleCodeArray[]#, PUBLIC_DOC_COUNT + CLOSED_DOC_COUNT))
+		               <isEqual property="moduleCodeArray[]" compareValue="BD"> BD_ALL_DOC_COUNT</isEqual>
+		               <isEqual property="moduleCodeArray[]" compareValue="ID"> ID_ALL_DOC_COUNT</isEqual>
+		               <isEqual property="moduleCodeArray[]" compareValue="FR"> FR_ALL_DOC_COUNT</isEqual>
+		               <isEqual property="moduleCodeArray[]" compareValue="CF"> CF_ALL_DOC_COUNT</isEqual>
+		               <isEqual property="moduleCodeArray[]" compareValue="WM"> WM_ALL_DOC_COUNT</isEqual>
+		               <isEqual property="moduleCodeArray[]" compareValue="CV"> CV_ALL_DOC_COUNT</isEqual>
+		               <isEqual property="moduleCodeArray[]" compareValue="QA"> QA_ALL_DOC_COUNT</isEqual>
+		               <isEqual property="moduleCodeArray[]" compareValue="WS"> WS_ALL_DOC_COUNT</isEqual>
+		               <isEqual property="moduleCodeArray[]" compareValue="SB"> SB_ALL_DOC_COUNT</isEqual>
+		             </iterate>
+		          FROM IKEP4_KN_STATISTICS
+		         WHERE PORTAL_ID = #portalId#
+		           <isNotEmpty property="moduleCodes" prepend="AND ">MODULE_CODE IN <iterate property="moduleCodeArray" open="(" conjunction="," close=")">#moduleCodeArray[]#</iterate></isNotEmpty>
+		           <isEmpty property="moduleCodes" prepend="AND ">1 = 2</isEmpty>
+		           <isEqual property="itemType" compareValue="month" prepend="AND ">YEAR_MONTH BETWEEN #fromYear#||#fromMonth# AND #toYear#||#toMonth#</isEqual>
+		           <isEqual property="itemType" compareValue="week" prepend="AND ">WEEK_START_DATE BETWEEN TO_DATE(#fromDate#,'yyyy.mm.dd') AND TO_DATE(#toDate#,'yyyy.mm.dd')</isEqual>
+		       )
+		</isEqual>
+
+		 ORDER BY 1
+	<![CDATA[
+	]]>
+	</select>
+
+
+<!-- 배치 작업 -->
+
+	<sql id="KnowledgeMonitorStatisticsColumnList">
+	       PORTAL_ID
+	     , MODULE_CODE
+	     , REGIST_DATE
+	     , PUBLIC_DOC_COUNT
+	     , CLOSED_DOC_COUNT
+	     , YEAR_MONTH
+	     , WEEK_START_DATE
+	</sql>
+
+<!-- BBS -->
+	<insert id="batchGatherBBS">
+		INSERT /* [KnowledgeMonitorStatistics_SqlMap.xml] collpack.knowledgemonitor.dao.KnowledgeMonitorStatistics.batchGatherBBS */
+		       INTO IKEP4_KN_STATISTICS (<include refid="KnowledgeMonitorStatisticsColumnList"/>)
+	<![CDATA[
+		SELECT BOARD.PORTAL_ID PORTAL_ID
+		     , 'BD' MODULE_CODE
+		     , SYSDATE - 1 REGIST_DATE
+		     , NVL(SUM(DECODE(BOARD.READ_PERMISSION, 1, 1, 0)), 0) PUBLIC_DOC_COUNT
+		     , NVL(SUM(DECODE(BOARD.READ_PERMISSION, 1, 0, 1)), 0) CLOSED_DOC_COUNT
+		     , TO_CHAR(SYSDATE - 1, 'yyyymm') YEAR_MONTH
+		     , NEXT_DAY(TRUNC(SYSDATE) - 1 - 7, '일') WEEK_START_DATE
+		  FROM IKEP4_BD_ITEM ITEM
+		  JOIN IKEP4_BD_BOARD BOARD
+		 USING (BOARD_ID)
+		  JOIN IKEP4_KN_MODULE MODULE
+		    ON MODULE.PORTAL_ID = BOARD.PORTAL_ID
+		   AND MODULE.MODULE_CODE = 'BD'
+		   AND MODULE.IS_USAGE = 1
+		 WHERE ITEM.REGIST_DATE BETWEEN TRUNC(SYSDATE) - 1
+		                            AND TRUNC(SYSDATE)
+		   AND ITEM.ITEM_DELETE = 0
+		 GROUP BY BOARD.PORTAL_ID
+	]]>
+	</insert>
+
+<!-- WorkSpace -->
+	<insert id="batchGatherWorkSpace">
+		INSERT /* [KnowledgeMonitorStatistics_SqlMap.xml] collpack.knowledgemonitor.dao.KnowledgeMonitorStatistics.batchGatherWorkSpace */
+		       INTO IKEP4_KN_STATISTICS (<include refid="KnowledgeMonitorStatisticsColumnList"/>)
+	<![CDATA[
+		SELECT BOARD.PORTAL_ID PORTAL_ID
+		     , 'WS' MODULE_CODE
+		     , SYSDATE - 1 REGIST_DATE
+		     , NVL(SUM(DECODE(ITEM.FOLLOW_BOARD_PERMISSION, 1, DECODE(BOARD.READ_PERMISSION, 1, 1, 0)
+		                                                  , 0, DECODE(ITEM.READ_PERMISSION, 1, 1, 0))), 0) PUBLIC_DOC_COUNT
+		     , NVL(SUM(DECODE(ITEM.FOLLOW_BOARD_PERMISSION, 1, DECODE(BOARD.READ_PERMISSION, 1, 0, 1)
+		                                                  , 0, DECODE(ITEM.READ_PERMISSION, 1, 0, 1))), 0) CLOSED_DOC_COUNT
+		     , TO_CHAR(SYSDATE - 1, 'yyyymm') YEAR_MONTH
+		     , NEXT_DAY(TRUNC(SYSDATE) - 1 - 7, '일') WEEK_START_DATE
+		  FROM IKEP4_WS_BD_ITEM ITEM
+		  JOIN IKEP4_WS_BD_BOARD BOARD
+		 USING (BOARD_ID)
+		  JOIN IKEP4_KN_MODULE MODULE
+		    ON MODULE.PORTAL_ID = BOARD.PORTAL_ID
+		   AND MODULE.MODULE_CODE = 'WS'
+		   AND MODULE.IS_USAGE = 1
+		 WHERE ITEM.REGIST_DATE BETWEEN TRUNC(SYSDATE) - 1
+		                            AND TRUNC(SYSDATE)
+		   AND ITEM.ITEM_DELETE = 0
+		 GROUP BY BOARD.PORTAL_ID
+	]]>
+	</insert>
+
+<!-- Cafe -->
+	<insert id="batchGatherCafe">
+		INSERT /* [KnowledgeMonitorStatistics_SqlMap.xml] collpack.knowledgemonitor.dao.KnowledgeMonitorStatistics.batchGatherCafe */
+		       INTO IKEP4_KN_STATISTICS (<include refid="KnowledgeMonitorStatisticsColumnList"/>)
+	<![CDATA[
+		SELECT BOARD.PORTAL_ID PORTAL_ID
+		     , 'CF' MODULE_CODE
+		     , SYSDATE - 1 REGIST_DATE
+		     , NVL(SUM(DECODE(BOARD.READ_PERMISSION, 1, 1, 0)), 0) PUBLIC_DOC_COUNT
+		     , NVL(SUM(DECODE(BOARD.READ_PERMISSION, 1, 0, 1)), 0) CLOSED_DOC_COUNT
+		     , TO_CHAR(SYSDATE - 1, 'yyyymm') YEAR_MONTH
+		     , NEXT_DAY(TRUNC(SYSDATE) - 1 - 7, '일') WEEK_START_DATE
+		  FROM IKEP4_CF_BD_ITEM ITEM
+		  JOIN IKEP4_CF_BD_BOARD BOARD
+		 USING (BOARD_ID)
+		  JOIN IKEP4_KN_MODULE MODULE
+		    ON MODULE.PORTAL_ID = BOARD.PORTAL_ID
+		   AND MODULE.MODULE_CODE = 'CF'
+		   AND MODULE.IS_USAGE = 1
+		 WHERE ITEM.REGIST_DATE BETWEEN TRUNC(SYSDATE) - 1
+		                            AND TRUNC(SYSDATE)
+		   AND ITEM.ITEM_DELETE = 0
+		 GROUP BY BOARD.PORTAL_ID
+	]]>
+	</insert>
+
+<!-- WorkManual -->
+	<insert id="batchGatherWorkManual">
+		INSERT /* [KnowledgeMonitorStatistics_SqlMap.xml] collpack.knowledgemonitor.dao.KnowledgeMonitorStatistics.batchGatherWorkManual */
+		       INTO IKEP4_KN_STATISTICS (<include refid="KnowledgeMonitorStatisticsColumnList"/>)
+	<![CDATA[
+		SELECT BOARD.PORTAL_ID PORTAL_ID
+		     , 'WM' MODULE_CODE
+		     , SYSDATE - 1 REGIST_DATE
+		     , NVL(SUM(DECODE(BOARD.READ_PERMISSION, 1, 1, 0)), 0) PUBLIC_DOC_COUNT
+		     , NVL(SUM(DECODE(BOARD.READ_PERMISSION, 1, 0, 1)), 0) CLOSED_DOC_COUNT
+		     , TO_CHAR(SYSDATE - 1, 'yyyymm') YEAR_MONTH
+		     , NEXT_DAY(TRUNC(SYSDATE) - 1 - 7, '일') WEEK_START_DATE
+		  FROM IKEP4_WM_MANUAL ITEM
+		  JOIN IKEP4_WM_CATEGORY BOARD
+		 USING (CATEGORY_ID)
+		  JOIN IKEP4_KN_MODULE MODULE
+		    ON MODULE.PORTAL_ID = BOARD.PORTAL_ID
+		   AND MODULE.MODULE_CODE = 'WM'
+		   AND MODULE.IS_USAGE = 1
+		 WHERE ITEM.REGIST_DATE BETWEEN TRUNC(SYSDATE) - 1
+		                            AND TRUNC(SYSDATE)
+		   AND ITEM.MANUAL_TYPE != 'C'
+		 GROUP BY BOARD.PORTAL_ID
+	]]>
+	</insert>
+
+<!-- SocialBlog -->
+	<insert id="batchGatherSocialBlog">
+		INSERT /* [KnowledgeMonitorStatistics_SqlMap.xml] collpack.knowledgemonitor.dao.KnowledgeMonitorStatistics.batchGatherSocialBlog */
+		       INTO IKEP4_KN_STATISTICS (<include refid="KnowledgeMonitorStatisticsColumnList"/>)
+	<![CDATA[
+		SELECT BOARD.PORTAL_ID PORTAL_ID
+		     , 'SB' MODULE_CODE
+		     , SYSDATE - 1 REGIST_DATE
+		     , NVL(SUM(DECODE(ITEM.READ_PERMISSION, 1, 1, 0)), 0) PUBLIC_DOC_COUNT
+		     , NVL(SUM(DECODE(ITEM.READ_PERMISSION, 1, 0, 1)), 0) CLOSED_DOC_COUNT
+		     , TO_CHAR(SYSDATE - 1, 'yyyymm') YEAR_MONTH
+		     , NEXT_DAY(TRUNC(SYSDATE) - 1 - 7, '일') WEEK_START_DATE
+		  FROM IKEP4_SB_BD_ITEM ITEM
+		  JOIN IKEP4_EV_USER BOARD
+		    ON ITEM.REGISTER_ID = BOARD.USER_ID
+		  JOIN IKEP4_KN_MODULE MODULE
+		    ON MODULE.PORTAL_ID = BOARD.PORTAL_ID
+		   AND MODULE.MODULE_CODE = 'SB'
+		   AND MODULE.IS_USAGE = 1
+		 WHERE ITEM.REGIST_DATE BETWEEN TRUNC(SYSDATE) - 1
+		                            AND TRUNC(SYSDATE)
+		 GROUP BY BOARD.PORTAL_ID
+	]]>
+	</insert>
+
+<!-- Q&A -->
+	<insert id="batchGatherQnA">
+		INSERT /* [KnowledgeMonitorStatistics_SqlMap.xml] collpack.knowledgemonitor.dao.KnowledgeMonitorStatistics.batchGatherQnA */
+		       INTO IKEP4_KN_STATISTICS (<include refid="KnowledgeMonitorStatisticsColumnList"/>)
+	<![CDATA[
+		SELECT ITEM.PORTAL_ID PORTAL_ID
+		     , 'QA' MODULE_CODE
+		     , SYSDATE - 1 REGIST_DATE
+		     , NVL(COUNT(QNA_ID), 0) PUBLIC_DOC_COUNT
+		     , 0 CLOSED_DOC_COUNT
+		     , TO_CHAR(SYSDATE - 1, 'yyyymm') YEAR_MONTH
+		     , NEXT_DAY(TRUNC(SYSDATE) - 1 - 7, '일') WEEK_START_DATE
+		  FROM IKEP4_QA_QNA ITEM
+		  JOIN IKEP4_KN_MODULE MODULE
+		    ON MODULE.PORTAL_ID = ITEM.PORTAL_ID
+		   AND MODULE.MODULE_CODE = 'QA'
+		   AND MODULE.IS_USAGE = 1
+		 WHERE ITEM.REGIST_DATE BETWEEN TRUNC(SYSDATE) - 1
+		                            AND TRUNC(SYSDATE)
+		   AND ITEM.ITEM_DELETE = 0
+		 GROUP BY ITEM.PORTAL_ID
+	]]>
+	</insert>
+
+<!-- Forum -->
+	<insert id="batchGatherForum">
+		INSERT /* [KnowledgeMonitorStatistics_SqlMap.xml] collpack.knowledgemonitor.dao.KnowledgeMonitorStatistics.batchGatherForum */
+		       INTO IKEP4_KN_STATISTICS (<include refid="KnowledgeMonitorStatisticsColumnList"/>)
+	<![CDATA[
+		SELECT ITEM.PORTAL_ID PORTAL_ID
+		     , 'FR' MODULE_CODE
+		     , SYSDATE - 1 REGIST_DATE
+		     , NVL(COUNT(ITEM_ID), 0) PUBLIC_DOC_COUNT
+		     , 0 CLOSED_DOC_COUNT
+		     , TO_CHAR(SYSDATE - 1, 'yyyymm') YEAR_MONTH
+		     , NEXT_DAY(TRUNC(SYSDATE) - 1 - 7, '일') WEEK_START_DATE
+		  FROM IKEP4_FR_ITEM ITEM
+		  JOIN IKEP4_KN_MODULE MODULE
+		    ON MODULE.PORTAL_ID = ITEM.PORTAL_ID
+		   AND MODULE.MODULE_CODE = 'FR'
+		   AND MODULE.IS_USAGE = 1
+		 WHERE ITEM.REGIST_DATE BETWEEN TRUNC(SYSDATE) - 1
+		                            AND TRUNC(SYSDATE)
+		 GROUP BY ITEM.PORTAL_ID
+	]]>
+	</insert>
+
+<!-- Ideation -->
+	<insert id="batchGatherIdeation">
+		INSERT /* [KnowledgeMonitorStatistics_SqlMap.xml] collpack.knowledgemonitor.dao.KnowledgeMonitorStatistics.batchGatherIdeation */
+		       INTO IKEP4_KN_STATISTICS (<include refid="KnowledgeMonitorStatisticsColumnList"/>)
+	<![CDATA[
+		SELECT ITEM.PORTAL_ID PORTAL_ID
+		     , 'ID' MODULE_CODE
+		     , SYSDATE - 1 REGIST_DATE
+		     , NVL(COUNT(ITEM_ID), 0) PUBLIC_DOC_COUNT
+		     , 0 CLOSED_DOC_COUNT
+		     , TO_CHAR(SYSDATE - 1, 'yyyymm') YEAR_MONTH
+		     , NEXT_DAY(TRUNC(SYSDATE) - 1 - 7, '일') WEEK_START_DATE
+		  FROM IKEP4_ID_IDEA ITEM
+		  JOIN IKEP4_KN_MODULE MODULE
+		    ON MODULE.PORTAL_ID = ITEM.PORTAL_ID
+		   AND MODULE.MODULE_CODE = 'ID'
+		   AND MODULE.IS_USAGE = 1
+		 WHERE ITEM.REGIST_DATE BETWEEN TRUNC(SYSDATE) - 1
+		                            AND TRUNC(SYSDATE)
+		 GROUP BY ITEM.PORTAL_ID
+	]]>
+	</insert>
+
+<!-- CoporateVoca -->
+	<insert id="batchGatherCorVoca">
+		INSERT /* [KnowledgeMonitorStatistics_SqlMap.xml] collpack.knowledgemonitor.dao.KnowledgeMonitorStatistics.batchGatherCorVoca */
+		       INTO IKEP4_KN_STATISTICS (<include refid="KnowledgeMonitorStatisticsColumnList"/>)
+	<![CDATA[
+		SELECT ITEM.PORTAL_ID PORTAL_ID
+		     , 'CV' MODULE_CODE
+		     , SYSDATE - 1 REGIST_DATE
+		     , NVL(COUNT(WORD_ID), 0) PUBLIC_DOC_COUNT
+		     , 0 CLOSED_DOC_COUNT
+		     , TO_CHAR(SYSDATE - 1, 'yyyymm') YEAR_MONTH
+		     , NEXT_DAY(TRUNC(SYSDATE) - 1 - 7, '일') WEEK_START_DATE
+		  FROM IKEP4_CV_WORD ITEM
+		  JOIN IKEP4_KN_MODULE MODULE
+		    ON MODULE.PORTAL_ID = ITEM.PORTAL_ID
+		   AND MODULE.MODULE_CODE = 'CV'
+		   AND MODULE.IS_USAGE = 1
+		 WHERE ITEM.REGIST_DATE BETWEEN TRUNC(SYSDATE) - 1
+		                            AND TRUNC(SYSDATE)
+		 GROUP BY ITEM.PORTAL_ID
+	]]>
+	</insert>
+
+
+<!-- 포털별 Chart 리스트 포틀릿 -->
+	<select id="listChartBySearchConditionPortlet" parameterClass="KnowledgeAccumulationSearchCondition" resultMap="chartResult">
+		SELECT /* [KnowledgeMonitorStatistics_SqlMap.xml] collpack.knowledgemonitor.dao.KnowledgeMonitorStatistics.listChartBySearchConditionPortlet */
+		       SUBSTR(YEAR_MONTH,1,4)||'.'||SUBSTR(YEAR_MONTH,5,2) YMD
+		     , PUBLIC_DOC_COUNT, ALL_DOC_COUNT
+		  FROM (
+		        SELECT YEAR_MONTH
+		             , SUM(PUBLIC_DOC_COUNT) PUBLIC_DOC_COUNT
+		             , SUM(PUBLIC_DOC_COUNT + CLOSED_DOC_COUNT) ALL_DOC_COUNT
+		          FROM IKEP4_KN_STATISTICS
+		         WHERE PORTAL_ID = #portalId#
+		           AND YEAR_MONTH BETWEEN #fromYear#||#fromMonth# AND #toYear#||#toMonth#
+		         GROUP BY YEAR_MONTH
+		       )
+		 ORDER BY YEAR_MONTH
+	<![CDATA[
+	]]>
+	</select>
+
+
+</sqlMap>

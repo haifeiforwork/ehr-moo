@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="collpack.workmanual.dao.readGroup">
+	<typeAlias alias = "ReadGroup" type="com.lgcns.ikep4.collpack.workmanual.model.ReadGroup"/>
+	
+	<!-- 테이블 조회 결과 -->
+	<resultMap id="readGroupResult" class="ReadGroup">
+		<result property="readGroupId"          column="READ_GROUP_ID"           />
+		<result property="categoryId"           column="CATEGORY_ID"             />
+		<result property="portalId"             column="PORTAL_ID"               />
+		<result property="readGroupName"        column="READ_GROUP_NAME"         />
+		<result property="readGroupEnglishName" column="READ_GROUP_ENGLISH_NAME" />
+	</resultMap>
+
+	<insert id="create" parameterClass="ReadGroup"> 
+      <![CDATA[ 
+           INSERT INTO IKEP4_WM_READ_GROUP (/* [ReadGroup_SqlMap.xml] ReadGroup.create */
+           		READ_GROUP_ID, CATEGORY_ID)  
+           VALUES (#readGroupId#, #categoryId#)
+       ]]>
+   </insert>
+   
+	<select id="get" parameterClass="ReadGroup" resultMap="readGroupResult">
+	  <![CDATA[
+		   SELECT /* [ReadGroup_SqlMap.xml] ReadGroup.get */
+				  READ_GROUP_ID,
+				  CATEGORY_ID
+		     FROM IKEP4_WM_READ_GROUP
+		    WHERE READ_GROUP_ID = #readGroupId#
+		      AND CATEGORY_ID   = #categoryId#
+	   ]]>
+	</select>
+	
+	<update id="update" parameterClass="ReadGroup">
+	  <![CDATA[
+		   UPDATE IKEP4_WM_READ_GROUP /* [ReadGroup_SqlMap.xml] ReadGroup.update */ 
+		      SET CATEGORY_ID   = #categoryId#
+		    WHERE READ_GROUP_ID = #readGroupId#
+		      AND CATEGORY_ID   = #categoryId#
+	   ]]>
+	</update>
+   
+   <delete id="remove" parameterClass="ReadGroup">
+      <![CDATA[
+	       DELETE FROM IKEP4_WM_READ_GROUP /* [ReadGroup_SqlMap.xml] ReadGroup.remove */ 
+	        WHERE READ_GROUP_ID = #readGroupId#
+		      AND CATEGORY_ID   = #categoryId#
+	   ]]>
+	</delete>
+	
+	<select id="count" parameterClass="ReadGroup" resultClass="java.lang.Integer">
+	  <![CDATA[
+		   SELECT /* [ReadGroup_SqlMap.xml] ReadGroup.count */ 
+		   		  COUNT(1) 
+		     FROM IKEP4_WM_READ_GROUP 
+		    WHERE READ_GROUP_ID = #readGroupId#
+		      AND CATEGORY_ID   = #categoryId#
+	   ]]>
+	</select>
+   
+	<!-- //문서 조회 조직 정보 -->
+	<select id="listReadGroup" parameterClass="ReadGroup" resultMap="readGroupResult">
+	  <![CDATA[
+		   SELECT /* [ReadGroup_SqlMap.xml] ReadGroup.listReadGroup */
+				  A.READ_GROUP_ID,  
+				  A.CATEGORY_ID,           
+		          B.PORTAL_ID,     
+		          B.GROUP_NAME AS READ_GROUP_NAME,
+		          B.GROUP_ENGLISH_NAME AS READ_GROUP_ENGLISH_NAME
+		     FROM IKEP4_WM_READ_GROUP A,
+		          IKEP4_EV_GROUP B, 
+                  IKEP4_EV_GROUP_TYPE C 
+		    WHERE A.CATEGORY_ID = #categoryId#
+		      AND A.READ_GROUP_ID = B.GROUP_ID
+		      AND B.PORTAL_ID = #portalId#
+		      AND B.GROUP_TYPE_ID = C.GROUP_TYPE_ID
+		      AND C.GROUP_TYPE_ID = 'G0001'
+	   ]]>
+	</select>
+   
+   <!-- //카테고리 아이디로 삭제 -->
+   <delete id="removeByCategoryId" parameterClass="java.lang.String">
+      <![CDATA[
+	       DELETE FROM IKEP4_WM_READ_GROUP /* [ReadGroup_SqlMap.xml] ReadGroup.removeByCategoryId */ 
+	        WHERE CATEGORY_ID = #categoryId#
+	   ]]>
+	</delete>
+</sqlMap>

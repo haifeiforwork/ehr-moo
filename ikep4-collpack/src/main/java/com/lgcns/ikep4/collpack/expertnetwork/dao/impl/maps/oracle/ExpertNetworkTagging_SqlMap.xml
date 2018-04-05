@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="collpack.expertnetwork.dao.ExpertNetworkTagging">
+	<typeAlias alias="ExpertNetworkTaggingPK" type="com.lgcns.ikep4.collpack.expertnetwork.model.ExpertNetworkTaggingPK"/>
+	<typeAlias alias="ExpertNetworkTagging" type="com.lgcns.ikep4.collpack.expertnetwork.model.ExpertNetworkTagging"/>
+
+	<resultMap class="ExpertNetworkTagging" id="result">
+		<result column="TAG" property="tag" jdbcType="VARCHAR" javaType="String"/>
+		<result column="CATEGORY_ID" property="categoryId" jdbcType="VARCHAR" javaType="String"/>
+		<result column="SORT_ORDER" property="sortOrder" jdbcType="NUMBER" javaType="Integer"/>
+	</resultMap>
+
+<!-- Tagging 입력 -->
+	<insert id="create" parameterClass="ExpertNetworkTagging">
+	<![CDATA[
+		INSERT /* [ExpertNetworkTagging_SqlMap.xml] collpack.expertnetwork.dao.ExpertNetworkTagging.create */
+		       INTO IKEP4_EX_TAGGING (
+		       TAG
+		     , CATEGORY_ID
+		     , SORT_ORDER
+		       )
+		VALUES (
+		       #tag#
+		     , #categoryId#
+		     , #sortOrder#
+		       )
+	]]>
+	</insert>
+
+<!-- Tagging 수정 -->
+	<update id="update" parameterClass="ExpertNetworkTagging">
+	<![CDATA[
+		UPDATE /* [ExpertNetworkTagging_SqlMap.xml] collpack.expertnetwork.dao.ExpertNetworkTagging.update */
+		       IKEP4_EX_TAGGING
+		   SET SORT_ORDER = #sortOrder#
+		 WHERE TAG = #tag#
+		   AND CATEGORY_ID = #categoryId#
+	]]>
+	</update>
+
+<!-- Tagging 삭제 -->
+	<delete id="remove" parameterClass="ExpertNetworkTaggingPK">
+	<![CDATA[
+		DELETE /* [ExpertNetworkTagging_SqlMap.xml] collpack.expertnetwork.dao.ExpertNetworkTagging.remove */
+		       IKEP4_EX_TAGGING
+		 WHERE TAG = #tag#
+		   AND CATEGORY_ID = #categoryId#
+	]]>
+	</delete>
+
+<!-- Tagging 조회 -->
+	<select id="get" parameterClass="ExpertNetworkTaggingPK" resultMap="result">
+	<![CDATA[
+		SELECT /* [ExpertNetworkTagging_SqlMap.xml] collpack.expertnetwork.dao.ExpertNetworkTagging.get */
+		       TAG
+		     , CATEGORY_ID
+		     , SORT_ORDER
+		  FROM IKEP4_EX_TAGGING
+		 WHERE TAG = #tag#
+		   AND CATEGORY_ID = #categoryId#
+	]]>
+	</select>
+
+<!-- Tagging 조회 -->
+	<select id="list" resultMap="result">
+	<![CDATA[
+		SELECT /* [ExpertNetworkTagging_SqlMap.xml] collpack.expertnetwork.dao.ExpertNetworkTagging.list */
+		       TAG
+		     , CATEGORY_ID
+		     , SORT_ORDER
+		  FROM IKEP4_EX_TAGGING
+		 ORDER BY SORT_ORDER
+	]]>
+	</select>
+
+
+<!-- Category별 Tagging 조회 -->
+	<select id="listByCategoryId" parameterClass="string" resultMap="result">
+	<![CDATA[
+		SELECT /* [ExpertNetworkTagging_SqlMap.xml] collpack.expertnetwork.dao.ExpertNetworkTagging.listByCategoryId */
+		       TAG
+		     , CATEGORY_ID
+		     , SORT_ORDER
+		  FROM IKEP4_EX_TAGGING
+		 WHERE CATEGORY_ID = #categoryId#
+		 ORDER BY SORT_ORDER
+	]]>
+	</select>
+
+<!-- Tagging 삭제  (categoryId 에 해당하는 자료 일괄삭제)-->
+	<delete id="removeByCategoryId" parameterClass="String">
+	<![CDATA[
+		DELETE /* [ExpertNetworkTagging_SqlMap.xml] collpack.expertnetwork.dao.ExpertNetworkTagging.removeByCategoryId */
+		       IKEP4_EX_TAGGING
+		 WHERE CATEGORY_ID = #categoryId#
+	]]>
+	</delete>
+
+<!-- Tagging 삭제  (categoryId 에 해당하는 자료 일괄삭제)-->
+	<delete id="removeByCategoryIdHierarchy" parameterClass="String">
+	<![CDATA[
+		DELETE /* [ExpertNetworkTagging_SqlMap.xml] collpack.expertnetwork.dao.ExpertNetworkTagging.removeByCategoryIdHierarchy */
+		       IKEP4_EX_TAGGING
+		 WHERE CATEGORY_ID IN (
+		                       SELECT CATEGORY_ID
+		                         FROM IKEP4_EX_CATEGORY
+		                        START WITH CATEGORY_ID = #categoryId#
+		                        CONNECT BY PRIOR CATEGORY_ID = CATEGORY_PARENT_ID
+		                      )
+	]]>
+	</delete>
+
+</sqlMap>

@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="com.lgcns.ikep4.workflow.engine.model.InstanceBean" >
+	<typeAlias alias = "InstanceBean" type="com.lgcns.ikep4.workflow.engine.model.InstanceBean"/>
+	
+	<!-- Activity 테이블 조회 결과 -->
+	<resultMap id="result" class="InstanceBean">
+		<result property="instanceId"   column="INSTANCE_ID"    columnIndex="1"/>
+		<result property="processId"    column="PROCESS_ID"    	columnIndex="2"/>
+		<result property="processVer"   column="PROCESS_VER"    columnIndex="2"/>
+		<result property="parentInsId"  column="PARENT_INS_ID"  columnIndex="3"/>
+		<result property="title"        column="TITLE"        	columnIndex="4"/>
+		<result property="performerId"  column="PERFORMER_ID"  	columnIndex="5"/>
+		<result property="performerOrg" column="PERFORMER_ORG" 	columnIndex="6"/>
+		<result property="state"        column="STATE"        	columnIndex="7"/>
+		<result property="result"       column="RESULT"       	columnIndex="8"/>
+		<result property="varSchema"    column="VAR_SCHEMA"     columnIndex="9"/>
+		<result property="createDate"   column="CREATE_DATE"   	columnIndex="10"/>
+		<result property="dueDate"      column="DUE_DATE"      	columnIndex="11"/>
+		<result property="finishedDate"	column="FINISHED_DATE" 	columnIndex="12"/>	
+	</resultMap>
+	
+	<!-- ANSI -->
+	<!-- 인스턴스 정보를 SELECT 한다.  -->
+	<select id="select" parameterClass="InstanceBean" resultClass="InstanceBean">
+      <![CDATA[
+      		/* [Instance_SqlMap.xml] com.lgcns.ikep4.workflow.engine.model.InstanceBean.select */ 
+      		
+			SELECT 	INSTANCE_ID AS instanceId, PROCESS_ID AS processId, PROCESS_VER AS processVer, PARENT_INS_ID AS parentInsId,
+					TITLE AS title, PERFORMER_ID AS performerId, PERFORMER_ORG AS performerOrg, STATE AS state,
+					RESULT AS result, VAR_SCHEMA AS varSchema, CREATE_DATE AS createDate, DUE_DATE AS dueDate, 
+					FINISHED_DATE AS finishedDate
+			FROM IKEP4_WF_INSTANCE INS
+			WHERE INS.INSTANCE_ID = #instanceId#					
+       ]]>		
+	</select>
+	
+	<!-- ANSI -->
+	<!-- 인스턴스 정보를 INSERT 한다.  -->
+	<insert id="insert" parameterClass="InstanceBean">
+      <![CDATA[ 
+      		/* [Instance_SqlMap.xml] com.lgcns.ikep4.workflow.engine.model.InstanceBean.insert */
+      		
+			INSERT INTO IKEP4_WF_INSTANCE (							
+			INSTANCE_ID, PROCESS_ID, PROCESS_VER, PARENT_INS_ID, TITLE, PERFORMER_ID, PERFORMER_ORG,	
+			STATE, RESULT, VAR_SCHEMA, APP_KEY01, APP_KEY02, APP_KEY03, APP_KEY04, APP_KEY05,
+			APP_KEY06, APP_KEY07, APP_KEY08, APP_KEY09, APP_KEY10, CREATE_DATE, DUE_DATE, FINISHED_DATE, OPEN_DATE	)				
+			VALUES ( 	#instanceId#, #processId#, #processVer#, #parentInsId#, #title#, #performerId#, #performerOrg#,	
+			#state#, #result#, #varSchema#, #appKey01#, #appKey02#, #appKey03#, #appKey04#, #appKey05#, 
+			#appKey06#, #appKey07#, #appKey08#, #appKey09#, #appKey10#, #createDate#, #dueDate#, #finishedDate#, #openDate# )						
+       ]]>
+   </insert>
+   
+   <!-- ANSI -->
+	<update id="update" parameterClass="InstanceBean">
+      <![CDATA[
+      		/* [Instance_SqlMap.xml] com.lgcns.ikep4.workflow.engine.model.InstanceBean.update */ 
+      		
+			UPDATE 	IKEP4_WF_INSTANCE 
+			   SET 	STATE	= #state#,
+			   		FINISHED_DATE = #finishedDate#
+			 WHERE 	INSTANCE_ID = #instanceId#						
+       ]]>
+   	</update> 
+   	
+   	<!-- ANSI -->
+	<update id="updateResult" parameterClass="InstanceBean">
+      <![CDATA[
+      		/* [Instance_SqlMap.xml] com.lgcns.ikep4.workflow.engine.model.InstanceBean.update */ 
+      		
+			UPDATE 	IKEP4_WF_INSTANCE 
+			   SET 	RESULT	= #result#,
+			   		RESULT_MSG = #resultMsg#,
+			   		UPDATE_DATE = #updateDate#
+			 WHERE 	INSTANCE_ID = #instanceId#						
+       ]]>
+   	</update>    	
+   	
+   <!-- ANSI -->
+	<update id="updateKeyData" parameterClass="InstanceBean">
+      <![CDATA[
+      		/* [Instance_SqlMap.xml] com.lgcns.ikep4.workflow.engine.model.InstanceBean.updateKeyData */ 
+      		
+			UPDATE 	IKEP4_WF_INSTANCE 
+			   SET 	APP_KEY01	= #appKey01#,
+			   		APP_KEY02 	= #appKey02#,
+			   		APP_KEY03 	= #appKey03#,
+			   		APP_KEY04 	= #appKey04#,
+			   		APP_KEY05 	= #appKey05#,
+			   		APP_KEY06 	= #appKey06#,
+			   		APP_KEY07 	= #appKey07#,
+			   		APP_KEY08 	= #appKey08#,
+			   		APP_KEY09 	= #appKey09#,
+			   		APP_KEY10 	= #appKey10#
+			 WHERE 	INSTANCE_ID = #instanceId#						
+       ]]>
+   	</update>        
+   
+   <!-- ANSI -->
+	<update id="updateVarSchema" parameterClass="InstanceBean">
+      <![CDATA[ 
+      		/* [Instance_SqlMap.xml] com.lgcns.ikep4.workflow.engine.model.InstanceBean.updateVarSchema */
+      		
+			UPDATE 	IKEP4_WF_INSTANCE 
+			   SET 	VAR_SCHEMA	= #varSchema#
+			 WHERE 	INSTANCE_ID = #instanceId#						
+       ]]>
+   </update>     
+   
+   <!-- ANSI -->
+   <delete id="deleteIns" parameterClass="InstanceBean">
+   		<![CDATA[
+   			/* [Instance_SqlMap.xml] com.lgcns.ikep4.workflow.engine.model.InstanceBean.deleteIns */
+   		
+			DELETE 	FROM IKEP4_WF_INSTANCE 
+			 WHERE 	INSTANCE_ID = #instanceId#
+		]]>   
+   </delete>
+   
+   <!-- ANSI -->
+	<delete id="deleteTodoIns" parameterClass="InstanceBean">
+   		<![CDATA[
+   			/* [Instance_SqlMap.xml] com.lgcns.ikep4.workflow.engine.model.InstanceBean.deleteTodoIns */
+   			
+			DELETE 	FROM IKEP4_WF_TODO_LIST 
+			 WHERE 	INSTANCE_ID = #instanceId#
+		]]>   
+   </delete>
+   
+   <!-- ANSI -->
+	<delete id="deleteVarIns" parameterClass="InstanceBean">
+   		<![CDATA[
+   			/* [Instance_SqlMap.xml] com.lgcns.ikep4.workflow.engine.model.InstanceBean.deleteVarIns */
+   			
+			DELETE 	FROM IKEP4_WF_INSTANCE_VAR 
+			 WHERE 	INSTANCE_ID = #instanceId#
+		]]>   
+   </delete>  
+   
+   <!-- ANSI -->
+   <delete id="deleteLogIns" parameterClass="InstanceBean">
+   		<![CDATA[
+   			/* [Instance_SqlMap.xml] com.lgcns.ikep4.workflow.engine.model.InstanceBean.deleteLogIns */
+   			
+			DELETE 	FROM IKEP4_WF_INSTANCE_LOG 
+			 WHERE 	INSTANCE_ID = #instanceId#
+		]]>   
+   </delete>   
+   
+   <!-- ANSI -->
+   <delete id="deleteVarLogIns" parameterClass="InstanceBean">
+   		<![CDATA[
+   			/* [Instance_SqlMap.xml] com.lgcns.ikep4.workflow.engine.model.InstanceBean.deleteVarLogIns */
+   			
+			DELETE 	FROM IKEP4_WF_VAR_LOG
+			 WHERE 	INSTANCE_ID = #instanceId#
+		]]>   
+   </delete>    
+      
+</sqlMap>

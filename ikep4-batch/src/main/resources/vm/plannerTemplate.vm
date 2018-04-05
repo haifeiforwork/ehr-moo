@@ -1,0 +1,136 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ko">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Planner</title>
+<style>
+body {background: none repeat scroll 0 0 #FFFFFF;color: #555555;font: 12px Tahoma,'돋움','Dotum';height: 100%;}
+.blockDetail { position:relative; margin-bottom:12px; width:100%; border-top:2px solid #919fb2; }
+.blockDetail table { width:100%; border-collapse:collapse; table-layout:fixed; font-size:12px}
+.blockDetail table caption { display:none; }
+.blockDetail table th { font-weight:bold; font-size:12px ; line-height:19px; text-align:right; color:#333; padding:3px 5px; border:1px solid #e0e0e0; border-top:none; background:#f3f3f3; }
+.blockDetail table th a:link, .blockDetail table th a:visited, .blockDetail table th a:active, .blockDetail table th a:hover { color:#333; text-decoration:none; }
+.blockDetail table td { line-height:19px; font-size:12px ; padding:3px 5px; word-break:break-all; border:1px solid #e0e0e0; border-top:none; background-color:#fff; }
+.blockDetail .bgSelected { background-color: #edf2f5; }
+.blockDetail table td .radio, .blockDetail table td .checkbox { vertical-align:middle; }
+.blockDetail table td .button_s { vertical-align:middle; margin:-1px 3px -2px 0; }
+* {margin: 0;padding: 0;}
+.colorBlue {color: #5F84C2;}
+.schedule_bg01 {margin: 5px;}
+.ml5 {margin-left: 5px;}
+.schedule_bg01 span {margin-right: 5px;}
+.colorPoint {color: #C50050 !important;}
+</style>
+</head>
+
+<body>
+
+<!-- Modal window Start -->
+<!-- 사용시class="none"으로 설정 -->
+<div class="" id="layer_p">
+	<!--blockDetail Start-->		
+	<div class="blockDetail">
+		<table summary="일정조회테이블">
+			<caption></caption>
+			<tbody>
+				<tr>
+					<th width="18%" scope="row">기간</th>
+					<td width="82%">
+						<span class="colorBlue">*</span><span class="colorBlue">${schedule.registerName}</span>님이 등록한 일정입니다.
+						<div class="schedule_bg01 ml5">
+							<span>${startStr}</span>~
+							<span>${endStr}</span>							
+						</div>					
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">제목</th>
+					<td>
+						<span class="colorPoint">#if(${schedule.categoryName})[${schedule.categoryName}]#end</span>&nbsp;
+						<span>${schedule.title}</span>							
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">참여자</th>
+					<td colspan="2">
+						<ul class="listStyle">
+							#foreach ($item in $schedule.participantList)
+							#if($item.targetType == 1)
+								<li>
+									#if($item.isAccept == 0)
+										#if($schedule.attendanceRequest == 1)
+										<span>[미정]</span>&nbsp;
+										#end
+									#elseif($item.isAccept == 1)
+										#if($schedule.attendanceRequest == 1)
+										<span class="colorBlue">[참여]</span>&nbsp;
+										#end
+									#else
+										#if($schedule.attendanceRequest == 1)
+										<span class="colorPoint">[불참]</span>&nbsp;
+										#end
+									#end
+									<span>${item.targetUserInfo} </span>
+								</li>
+							#end
+							#end
+						</ul>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">참조자</th>
+					<td colspan="2">
+						<ul class="listStyle">
+							#foreach ($item in $schedule.participantList)
+							#if($item.targetType == 2)
+								<li>
+									#if($item.isAccept == 0)
+										#if($schedule.attendanceRequest == 1)
+										<span>[미정]</span>&nbsp;
+										#end
+									#elseif($item.isAccept == 1)
+										#if($schedule.attendanceRequest == 1)
+										<span class="colorBlue">[참여]</span>&nbsp;
+										#end
+									#else
+										#if($schedule.attendanceRequest == 1)
+										<span class="colorPoint">[불참]</span>&nbsp;
+										#end
+									#end
+									<span>${item.targetUserInfo} </span>
+								</li>
+							#end
+							#end
+						</ul>		
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">장소</th>
+					<td>
+						<span>#if(${schedule.place})${schedule.place}#end</span>						
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">내용</th>
+					<td>
+						<span>#if(${schedule.contents})${schedule.contents}#end</span>							
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">파일첨부</th>
+					<td>
+						<ul class="listStyle">
+						#foreach($item in $schedule.fileDataList)
+							<li><a class="fc-ic-attach" href="${fileUrl}$item.fileId&thumbnailYn=N">&nbsp;&nbsp;&nbsp;$item.fileRealName</a></li>
+						#end
+						</ul>				
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>			
+	<!--//blockDetail End-->	
+</div>	
+<!-- //Modal window End -->
+</body>
+</html>

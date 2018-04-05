@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="socialpack.socialblog.dao.SocialBlog">
+
+	<typeAlias alias="SocialBlog"                		type="com.lgcns.ikep4.socialpack.socialblog.model.SocialBlog"/>
+
+	<!-- SocialBlog 조회 결과 -->
+	<resultMap id="resultSocialBlog" class="SocialBlog" groupBy="blogId">
+		<result property="blogId" column="BLOG_ID" columnIndex="1"/>
+		<result property="ownerId" column="OWNER_ID" columnIndex="2"/>
+		<result property="introduction" column="INTRODUCTION" columnIndex="3"/>
+		<result property="imageFileId" column="IMAGE_FILE_ID" columnIndex="4"/>
+		<result property="isPrivateImage" column="IS_PRIVATE_IMAGE" columnIndex="5"/>
+		<result property="imageUrl" column="IMAGE_URL" columnIndex="6"/>
+		<result property="layoutId" column="LAYOUT_ID" columnIndex="7"/>
+		<result property="owner" column="OWNER_ID" select="support.user.member.dao.User.select" />
+	</resultMap>
+	<sql id="sqlColumnList"> 
+	    BLOG_ID, 
+	    OWNER_ID, 
+	    INTRODUCTION, 
+	    IMAGE_FILE_ID, 
+	    IS_PRIVATE_IMAGE, 
+	    IMAGE_URL,
+	    LAYOUT_ID
+	</sql>  
+
+	<!-- ANSI -->
+	<select id="select" parameterClass="SocialBlog" resultMap="resultSocialBlog"> 
+		SELECT /* [SocialBlog_SqlMap.xml] SocialBlog.select */
+			<include refid="socialpack.socialblog.dao.SocialBlog.sqlColumnList" /> 
+		FROM  IKEP4_SB_BLOG
+		WHERE OWNER_ID = #ownerId# 
+	</select>
+
+	<!-- ANSI -->
+	<select id="exists" parameterClass="SocialBlog" resultClass="int"> 
+		SELECT /* [SocialBlog_SqlMap.xml] SocialBlog.exists */
+			COUNT(*)
+		FROM  IKEP4_SB_BLOG
+		WHERE OWNER_ID = #ownerId# 
+	</select> 
+  
+	<!-- ANSI -->
+	<insert id="create" parameterClass="SocialBlog"> 
+		INSERT INTO IKEP4_SB_BLOG ( 
+			/* [SocialBlog_SqlMap.xml] SocialBlog.create */
+			<include refid="socialpack.socialblog.dao.SocialBlog.sqlColumnList" />
+		) VALUES (
+			#blogId#, 
+			#ownerId#, 
+			#introduction#, 
+			#imageFileId#, 
+			#isPrivateImage#, 
+			#imageUrl#,
+			#layoutId#
+		) 
+  </insert>
+  
+  <!-- ANSI -->
+  <update id="updateBlogBgImage" parameterClass="SocialBlog"> 
+    UPDATE IKEP4_SB_BLOG 
+    	/* [SocialBlog_SqlMap.xml] SocialBlog.updateBlogBgImage */
+    SET   IMAGE_FILE_ID         = #imageFileId#,
+          IS_PRIVATE_IMAGE    	= #isPrivateImage#,
+          IMAGE_URL     		= #imageUrl# 
+    WHERE BLOG_ID = #blogId#
+    AND	OWNER_ID = #ownerId#
+  </update>
+  
+  	<!-- ANSI -->
+    <update id="updateIntroduction" parameterClass="SocialBlog"> 
+    UPDATE IKEP4_SB_BLOG 
+    	/* [SocialBlog_SqlMap.xml] SocialBlog.updateIntroduction */
+    SET   INTRODUCTION      = #introduction#
+    WHERE BLOG_ID = #blogId#
+    AND	OWNER_ID = #ownerId#
+  </update>
+
+	<!-- ANSI -->  
+ <update id="updateLayoutId" parameterClass="SocialBlog"> 
+    UPDATE IKEP4_SB_BLOG 
+    	/* [SocialBlog_SqlMap.xml] SocialBlog.updateLayoutId */
+    SET   LAYOUT_ID     		= #layoutId#
+    WHERE BLOG_ID = #blogId#
+    AND	OWNER_ID = #ownerId#
+  </update>
+  
+</sqlMap> 

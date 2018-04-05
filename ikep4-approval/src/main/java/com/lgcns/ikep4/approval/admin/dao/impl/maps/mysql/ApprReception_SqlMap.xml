@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="com.lgcns.ikep4.approval.admin.dao.ApprReception" >
+	<typeAlias alias="apprReception" type="com.lgcns.ikep4.approval.admin.model.ApprReception"/>
+	
+	<resultMap id="apprReceptionResult" class="apprReception"> 
+		<result property="receptionistId" 		column="RECEPTIONIST_ID" 	jdbcType="VARCHAR"/>
+		<result property="groupId" 				column="GROUP_ID" 			jdbcType="VARCHAR"/>
+		<result property="registerId" 			column="REGISTER_ID" 		jdbcType="VARCHAR"/>
+		<result property="userId" 				column="USER_ID" 			jdbcType="VARCHAR"/>
+		<result property="userName" 			column="USER_NAME" 			jdbcType="VARCHAR"/>
+		<result property="userEnglishName" 		column="USER_ENGLISH_NAME" 	jdbcType="VARCHAR"/>
+		<result property="jobTitleName" 		column="JOB_TITLE_NAME" 	jdbcType="VARCHAR"/>
+		<result property="jobTitleEnglishName" 	column="JOB_TITLE_ENGLISH_NAME"		jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	<insert id="createApprReceptionSave" parameterClass="apprReception"> 
+      <![CDATA[ 
+           INSERT INTO IKEP4_APPR_RECEPTION 
+           		  (RECEPTIONIST_ID, 
+           		   GROUP_ID, 
+           		   REGISTER_ID, 
+           		   REGISTER_NAME, 
+           		   REGIST_DATE,
+           	       PORTAL_ID
+           	       )
+           VALUES (#receptionistId#, 
+           		   #groupId#, 
+           		   #registerId#,
+           		   #registerName#,
+           		   now(), 
+           		   #portalId#
+           		   )
+       ]]>
+  	</insert>
+  
+  	<select id="listByReception" parameterClass="String" resultMap="apprReceptionResult">
+  		<![CDATA[  
+		SELECT /* [ApprReception_SqlMap.xml] approval.admin.dao.ApprReception.listByReception */ 
+                   AR.RECEPTIONIST_ID, 
+	               AR.GROUP_ID, 
+	               AR.REGISTER_ID,
+                   EU.USER_ID, 
+                   EU.USER_NAME, 
+                   EU.USER_ENGLISH_NAME, 
+                   EJT.JOB_TITLE_NAME, 
+                   EJT.JOB_TITLE_ENGLISH_NAME
+	          FROM IKEP4_APPR_RECEPTION AR 
+                 LEFT OUTER JOIN IKEP4_EV_USER EU ON AR.RECEPTIONIST_ID = EU.USER_ID
+                 LEFT OUTER JOIN IKEP4_EV_USER_GROUP EUG ON EU.USER_ID = EUG.USER_ID  
+                 										AND AR.GROUP_ID = EUG.GROUP_ID
+                 LEFT OUTER JOIN IKEP4_EV_JOB_TITLE EJT  ON EU.JOB_TITLE_CODE = EJT.JOB_TITLE_CODE              
+	         WHERE AR.GROUP_ID = #groupId#
+	          ORDER BY AR.REGIST_DATE DESC 
+        ]]>	  
+	</select>
+	
+	<delete id="deleteApprReception" parameterClass="String"> 
+		/* [ApprReception_SqlMap.xml] approval.admin.dao.ApprReception.deleteApprReception */
+		DELETE 
+		FROM 
+			IKEP4_APPR_RECEPTION
+		WHERE
+			GROUP_ID = #groupId#
+	</delete>
+	
+	<select id="existReceptionUser" parameterClass="map" resultClass="int">
+  		<![CDATA[  
+			SELECT /* [ApprExam_SqlMap.xml] approval.admin.dao.ApprReception.existReceptionUser */ 
+				COUNT(*)
+			FROM IKEP4_APPR_RECEPTION 
+			WHERE GROUP_ID IN (SELECT GROUP_ID FROM IKEP4_EV_USER_GROUP WHERE USER_ID = #userId#)
+        ]]>	  
+	</select>
+	
+</sqlMap>

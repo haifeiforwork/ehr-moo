@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="collpack.knowledgehub.dao.KnowledgeMapCategory">
+	<typeAlias alias="KnowledgeMapCategoryPK" type="com.lgcns.ikep4.collpack.knowledgehub.model.KnowledgeMapCategoryPK"/>
+	<typeAlias alias="KnowledgeMapCategory" type="com.lgcns.ikep4.collpack.knowledgehub.model.KnowledgeMapCategory"/>
+	<typeAlias alias="CategorySortOrderMap" type="com.lgcns.ikep4.support.base.model.CategorySortOrderMap"/>
+
+	<resultMap class="KnowledgeMapCategory" id="result">
+		<result column="CATEGORY_ID" property="categoryId" jdbcType="VARCHAR" javaType="String"/>
+		<result column="CATEGORY_PARENT_ID" property="categoryParentId" jdbcType="VARCHAR" javaType="String"/>
+		<result column="CATEGORY_NAME" property="categoryName" jdbcType="VARCHAR" javaType="String"/>
+		<result column="SORT_ORDER" property="sortOrder" jdbcType="NUMBER" javaType="Integer"/>
+		<result column="IS_BLOG" property="isBlog" jdbcType="NUMBER" javaType="Integer"/>
+		<result column="IS_COLL" property="isColl" jdbcType="NUMBER" javaType="Integer"/>
+		<result column="IS_MANUAL" property="isManual" jdbcType="NUMBER" javaType="Integer"/>
+		<result column="IS_QNA" property="isQna" jdbcType="NUMBER" javaType="Integer"/>
+		<result column="IS_DIC" property="isDic" jdbcType="NUMBER" javaType="Integer"/>
+		<result column="IS_CAFE" property="isCafe" jdbcType="NUMBER" javaType="Integer"/>
+		<result column="IS_FORUM" property="isForum" jdbcType="NUMBER" javaType="Integer"/>
+		<result column="IS_IDEA" property="isIdea" jdbcType="NUMBER" javaType="Integer"/>
+		<result column="IS_BBS" property="isBbs" jdbcType="NUMBER" javaType="Integer"/>
+		<result column="PORTAL_ID" property="portalId" jdbcType="VARCHAR" javaType="String"/>
+	</resultMap>
+
+	<resultMap class="KnowledgeMapCategory" extends="result" id="categoryAndChildCountResult">
+		<result column="CHILD_COUNT" property="childCount" jdbcType="NUMBER" javaType="Integer"/>
+	</resultMap>
+
+	<sql id="KnowledgeMapCategoryColumnList">
+	       CATEGORY_ID
+	     , CATEGORY_PARENT_ID
+	     , CATEGORY_NAME
+	     , SORT_ORDER
+	     , IS_BLOG
+	     , IS_COLL
+	     , IS_MANUAL
+	     , IS_QNA
+	     , IS_DIC
+	     , IS_CAFE
+	     , IS_FORUM
+	     , IS_IDEA
+	     , IS_BBS
+	     , PORTAL_ID
+	</sql>
+
+	<!-- ANSI -->
+	<!-- Category 입력 -->
+	<insert id="create" parameterClass="KnowledgeMapCategory">
+		INSERT /* [KnowledgeMapCategory_SqlMap.xml] collpack.knowledgehub.dao.KnowledgeMapCategory.create */
+		       INTO IKEP4_KM_CATEGORY (
+		     <include refid="KnowledgeMapCategoryColumnList"/>
+		     , REGISTER_ID
+		     , REGISTER_NAME
+		     , REGIST_DATE
+		       )
+	<![CDATA[
+		VALUES (
+		       #categoryId#
+		     , #categoryParentId#
+		     , #categoryName#
+		     , #sortOrder#
+		     , #isBlog#
+		     , #isColl#
+		     , #isManual#
+		     , #isQna#
+		     , #isDic#
+		     , #isCafe#
+		     , #isForum#
+		     , #isIdea#
+		     , #isBbs#
+		     , #portalId#
+		     , #registerId#
+		     , #registerName#
+		     , CURRENT_TIMESTAMP
+		       )
+	]]>
+	</insert>
+
+	<!-- ANSI -->
+	<!-- Category 수정 -->
+	<update id="update" parameterClass="KnowledgeMapCategory">
+	<![CDATA[
+		UPDATE /* [KnowledgeMapCategory_SqlMap.xml] collpack.knowledgehub.dao.KnowledgeMapCategory.update */
+		       IKEP4_KM_CATEGORY
+		   SET CATEGORY_PARENT_ID = #categoryParentId#
+		     , CATEGORY_NAME = #categoryName#
+		     , SORT_ORDER = #sortOrder#
+		     , IS_BLOG = #isBlog#
+		     , IS_COLL = #isColl#
+		     , IS_MANUAL = #isManual#
+		     , IS_QNA = #isQna#
+		     , IS_DIC = #isDic#
+		     , IS_CAFE = #isCafe#
+		     , IS_FORUM = #isForum#
+		     , IS_IDEA = #isIdea#
+		     , IS_BBS = #isBbs#
+		     , REGISTER_ID = #registerId#
+		     , REGISTER_NAME = #registerName#
+		     , REGIST_DATE = CURRENT_TIMESTAMP
+		 WHERE CATEGORY_ID = #categoryId#
+	]]>
+	</update>
+
+	<!-- ANSI -->
+	<!-- Category 삭제 -->
+	<delete id="remove" parameterClass="KnowledgeMapCategoryPK">
+	<![CDATA[
+		DELETE /* [KnowledgeMapCategory_SqlMap.xml] collpack.knowledgehub.dao.KnowledgeMapCategory.remove */
+		       IKEP4_KM_CATEGORY
+		 WHERE CATEGORY_ID = #categoryId#
+	]]>
+	</delete>
+
+	<!-- ANSI -->
+	<!-- Category 조회 -->
+	<select id="get" parameterClass="KnowledgeMapCategoryPK" resultMap="result">
+		SELECT /* [KnowledgeMapCategory_SqlMap.xml] collpack.knowledgehub.dao.KnowledgeMapCategory.get */
+		     <include refid="KnowledgeMapCategoryColumnList"/>
+	<![CDATA[
+		  FROM IKEP4_KM_CATEGORY
+		 WHERE CATEGORY_ID = #categoryId#
+	]]>
+	</select>
+
+	<!-- ANSI -->
+	<!-- Category 조회 -->
+	<select id="list" resultMap="result">
+		SELECT /* [KnowledgeMapCategory_SqlMap.xml] collpack.knowledgehub.dao.KnowledgeMapCategory.list */
+		     <include refid="KnowledgeMapCategoryColumnList"/>
+		  FROM IKEP4_KM_CATEGORY
+		 ORDER BY SORT_ORDER
+	<![CDATA[
+	]]>
+	</select>
+
+
+	<!-- ANSI -->
+	<!-- Category 조회 -->
+	<select id="countByCategoryName" parameterClass="KnowledgeMapCategory" resultClass="Integer">
+		SELECT /* [KnowledgeMapCategory_SqlMap.xml] collpack.knowledgehub.dao.KnowledgeMapCategory.countByCategoryName */
+		       COUNT(CATEGORY_ID) CATEGORY_COUNT
+		  FROM IKEP4_KM_CATEGORY
+		 WHERE PORTAL_ID = #portalId#
+		   AND CATEGORY_NAME = #categoryName#
+	<![CDATA[
+	]]>
+	</select>
+	
+	<!-- ANSI -->
+	<!-- Root Category 조회 -->
+	<select id="getRootCategory" parameterClass="String" resultMap="result">
+		SELECT /* [KnowledgeMapCategory_SqlMap.xml] collpack.knowledgehub.dao.KnowledgeMapCategory.getRootCategory */
+		     <include refid="KnowledgeMapCategoryColumnList"/>
+		  FROM IKEP4_KM_CATEGORY
+	<![CDATA[
+		 WHERE PORTAL_ID = #portalId#
+		   AND CATEGORY_ID = CATEGORY_PARENT_ID
+	]]>
+	</select>
+
+	<!-- ANSI -->
+	<!-- CategoryParentId 에 해당하는 Category 전체조회 -->
+	<select id="listByCategoryParentId" parameterClass="String" resultMap="result">
+		SELECT /* [KnowledgeMapCategory_SqlMap.xml] collpack.knowledgehub.dao.KnowledgeMapCategory.listByCategoryParentId */
+		     <include refid="KnowledgeMapCategoryColumnList"/>
+		  FROM IKEP4_KM_CATEGORY A
+	<![CDATA[
+		 WHERE CATEGORY_PARENT_ID = #CategoryParentId#
+		   AND CATEGORY_PARENT_ID != CATEGORY_ID
+		 ORDER BY SORT_ORDER
+ 	]]>
+	</select>
+
+	<!-- ANSI -->
+	<!-- CategoryParentId 에 해당하는 Category 전체조회 -->
+	<select id="listAndChildCountByCategoryParentId" parameterClass="String" resultMap="categoryAndChildCountResult">
+		SELECT /* [KnowledgeMapCategory_SqlMap.xml] collpack.knowledgehub.dao.KnowledgeMapCategory.listAndChildCountByCategoryParentId */
+		     <include refid="KnowledgeMapCategoryColumnList"/>
+		     , (SELECT COUNT(CATEGORY_ID) FROM IKEP4_KM_CATEGORY B WHERE B.CATEGORY_PARENT_ID = A.CATEGORY_ID) CHILD_COUNT
+		  FROM IKEP4_KM_CATEGORY A
+	<![CDATA[
+		 WHERE CATEGORY_PARENT_ID = #CategoryParentId#
+		   AND CATEGORY_PARENT_ID != CATEGORY_ID
+		 ORDER BY SORT_ORDER
+	]]>
+	</select>
+
+	<!-- ANSI -->
+	<!-- 같은 부모 category 중 sortOrder 최대값 -->
+	<select id="getLastSortOrder" parameterClass="String" resultClass="Integer">
+	<![CDATA[
+		SELECT /* [KnowledgeMapCategory_SqlMap.xml] collpack.knowledgehub.dao.KnowledgeMapCategory.getLastSortOrder */
+		       ISNULL(MAX(SORT_ORDER), 0)
+		  FROM IKEP4_KM_CATEGORY
+		 WHERE CATEGORY_PARENT_ID = #categoryParentId#
+	]]>
+	</select>
+
+	<!-- MS SQL -->
+	<!-- Category 삭제  -->
+	<delete id="removeByCategoryIdHierarchy" parameterClass="String">
+	<![CDATA[
+		WITH CTE AS (
+			SELECT	*
+			FROM	IKEP4_KM_CATEGORY
+			WHERE	CATEGORY_ID = #categoryId#
+			UNION ALL
+			SELECT	C.*
+			FROM	IKEP4_KM_CATEGORY C, CTE
+			WHERE	CTE.CATEGORY_ID = C.CATEGORY_PARENT_ID
+		)
+		DELETE /* [KnowledgeMapCategory_SqlMap.xml] collpack.knowledgehub.dao.KnowledgeMapCategory.removeByCategoryIdHierarchy */
+		       IKEP4_KM_CATEGORY
+		 WHERE CATEGORY_ID IN (
+		                       SELECT CATEGORY_ID
+		                         FROM CTE
+		                      )
+	]]>
+	</delete>
+
+	<!-- ANSI -->
+	<!-- Category 정렬순서 수정 -->
+	<update id="updateSortOrder" parameterClass="CategorySortOrderMap">
+	<![CDATA[
+		UPDATE /* [KnowledgeMapCategory_SqlMap.xml] collpack.knowledgehub.dao.KnowledgeMapCategory.updateSortOrder */
+		       IKEP4_KM_CATEGORY
+		   SET SORT_ORDER = #sortOrder#
+		 WHERE CATEGORY_ID = #categoryId#
+	]]>
+	</update>
+
+	<!-- ANSI -->
+	<!-- Category 정렬순서 수정 (일괄 감소) -->
+	<update id="updateSortOrderMinus" parameterClass="CategorySortOrderMap">
+		UPDATE /* [KnowledgeMapCategory_SqlMap.xml] collpack.knowledgehub.dao.KnowledgeMapCategory.updateSortOrderMinus */
+		       IKEP4_KM_CATEGORY
+		   SET SORT_ORDER = SORT_ORDER - 1
+		 WHERE CATEGORY_PARENT_ID = #categoryParentId#
+		 <isNotEqual property="sortOrderFrom" compareValue="0" prepend="AND "><![CDATA[SORT_ORDER >= #sortOrderFrom#]]></isNotEqual>
+		 <isNotEqual property="sortOrderTo" compareValue="0" prepend="AND "><![CDATA[SORT_ORDER <= #sortOrderTo#]]></isNotEqual>
+	<![CDATA[
+	]]>
+	</update>
+
+	<!-- ANSI -->
+	<!-- Category 정렬순서 수정 (일괄 증가) -->
+	<update id="updateSortOrderPlus" parameterClass="CategorySortOrderMap">
+		UPDATE /* [KnowledgeMapCategory_SqlMap.xml] collpack.knowledgehub.dao.KnowledgeMapCategory.updateSortOrderPlus */
+		       IKEP4_KM_CATEGORY
+		   SET SORT_ORDER = SORT_ORDER + 1
+		 WHERE CATEGORY_PARENT_ID = #categoryParentId#
+		 <isNotEqual property="sortOrderFrom" compareValue="0" prepend="AND "><![CDATA[SORT_ORDER >= #sortOrderFrom#]]></isNotEqual>
+		 <isNotEqual property="sortOrderTo" compareValue="0" prepend="AND "><![CDATA[SORT_ORDER <= #sortOrderTo#]]></isNotEqual>
+	<![CDATA[
+	]]>
+	</update>
+	
+	<!-- ANSI -->
+	<!-- Category 수정 (이동시) -->
+	<update id="updateSortOrderCategoryParentId" parameterClass="CategorySortOrderMap">
+	<![CDATA[
+		UPDATE /* [KnowledgeMapCategory_SqlMap.xml] collpack.knowledgehub.dao.KnowledgeMapCategory.updateMove */
+		       IKEP4_KM_CATEGORY
+		   SET CATEGORY_PARENT_ID = #categoryParentId#
+		     , SORT_ORDER = #sortOrder#
+		 WHERE CATEGORY_ID = #categoryId#
+	]]>
+	</update>
+
+
+
+
+
+</sqlMap>

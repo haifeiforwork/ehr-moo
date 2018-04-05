@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="collpack.fourm.dao.FrCategory" >
+  
+   <typeAlias alias = "FrCategory" type="com.lgcns.ikep4.collpack.forum.model.FrCategory"/>
+ 
+  <resultMap class="FrCategory" id="FrCategoryResult">
+    <result column="CATEGORY_ID" 	 	property="categoryId" />
+    <result column="CATEGORY_NAME"  	property="categoryName" />
+    <result column="CATEGORY_ORDER"  	property="categoryOrder" />
+    <result column="REGISTER_ID"  		property="registerId" />
+    <result column="REGISTER_NAME"  	property="registerName" />
+    <result column="REGIST_DATE"  		property="registDate" />
+    <result column="PORTAL_ID"  		property="portalId" />
+  </resultMap>
+  
+  <insert id="create" parameterClass="FrCategory">
+    INSERT INTO IKEP4_FR_CATEGORY (			/* [FrCategory_SqlMap.xml] FrCategory.insert */ 
+    	CATEGORY_ID, 
+    	CATEGORY_NAME, 
+    	CATEGORY_ORDER,
+    	REGISTER_ID, 
+        REGISTER_NAME, 
+        REGIST_DATE, 
+        PORTAL_ID
+    ) VALUES (
+    	#categoryId#, 
+    	#categoryName#, 
+    	(SELECT NVL(MAX(CATEGORY_ORDER),0) FROM IKEP4_FR_CATEGORY WHERE PORTAL_ID = #portalId#)+1,
+    	#registerId#, 
+        #registerName#, 
+        sysdate,
+        #portalId#
+    )
+  </insert>
+  
+ 
+  <select id="get" parameterClass="String" resultMap="FrCategoryResult">
+    SELECT 					/* [FrCategory_SqlMap.xml] FrCategory.select */  
+	    CATEGORY_ID, 
+	    CATEGORY_NAME, 
+	    CATEGORY_ORDER,
+	    REGISTER_ID, 
+	    REGISTER_NAME, 
+	    REGIST_DATE,
+	    PORTAL_ID
+    FROM IKEP4_FR_CATEGORY
+    WHERE 
+    	CATEGORY_ID = #categoryId#
+  </select>
+  
+   <select id="list" parameterClass="String" resultMap="FrCategoryResult">
+    SELECT 						/* [FrCategory_SqlMap.xml] FrCategory.selectAll */  
+	    CATEGORY_ID, 
+	    CATEGORY_NAME, 
+	    CATEGORY_ORDER,
+	    REGISTER_ID, 
+	    REGISTER_NAME, 
+	    REGIST_DATE,
+	    PORTAL_ID
+    FROM IKEP4_FR_CATEGORY
+    WHERE PORTAL_ID = #portalId#
+    ORDER BY CATEGORY_ORDER ASC
+  </select>
+  
+  <update id="update" parameterClass="FrCategory">
+    UPDATE IKEP4_FR_CATEGORY			/* [FrCategory_SqlMap.xml] FrCategory.update */ 
+    SET CATEGORY_NAME = #categoryName#
+    WHERE CATEGORY_ID = #categoryId#
+  </update>
+  
+   <update id="updateOrder" parameterClass="FrCategory">
+    UPDATE IKEP4_FR_CATEGORY					/* [FrCategory_SqlMap.xml] FrCategory.updateOrder */ 
+    SET CATEGORY_ORDER = #categoryOrder#
+    WHERE CATEGORY_ID = #categoryId#
+  </update>
+  
+   <delete id="remove" parameterClass="String">
+    DELETE 				/* [FrCategory_SqlMap.xml] FrCategory.delete */ 
+    FROM IKEP4_FR_CATEGORY					
+    WHERE CATEGORY_ID = #categoryId#
+  </delete>
+  
+</sqlMap>

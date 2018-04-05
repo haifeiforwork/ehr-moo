@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="collpack.workmanual.dao.reference" >
+	<typeAlias alias = "Reference" type="com.lgcns.ikep4.collpack.workmanual.model.Reference"/>
+	
+	<!-- 테이블 조회 결과 -->
+	<resultMap id="referenceResult" class="Reference">
+		<result property="manualId"    column="MANUAL_ID"   />
+		<result property="registerId"  column="REGISTER_ID" />
+		<result property="registDate"  column="REGIST_DATE" />
+	</resultMap>
+	
+	<insert id="create" parameterClass="Reference"> 
+      <![CDATA[ 
+           INSERT INTO IKEP4_WM_REFERENCE (/* [Reference_SqlMap.xml] Reference.create */
+           		MANUAL_ID, REGISTER_ID, REGIST_DATE)  
+           VALUES (#manualId#, #registerId#, SYSDATE)
+       ]]>
+   </insert>
+   
+	<select id="get" parameterClass="Reference" resultMap="referenceResult">
+	  <![CDATA[
+		   SELECT /* [Reference_SqlMap.xml] Reference.get */
+				  MANUAL_ID,
+				  REGISTER_ID,
+				  REGIST_DATE
+		     FROM IKEP4_WM_REFERENCE
+		    WHERE MANUAL_ID = #manualId#
+		      AND REGISTER_ID = #registerId#
+	   ]]>
+	</select>
+	
+	<update id="update" parameterClass="Reference">
+	  <![CDATA[
+		   UPDATE IKEP4_WM_REFERENCE /* [Reference_SqlMap.xml] Reference.update */ 
+		      SET REGIST_DATE = SYSDATE
+		    WHERE MANUAL_ID = #manualId#
+		      AND REGISTER_ID = #registerId#
+	   ]]>
+	</update>
+   
+   <delete id="remove" parameterClass="Reference">
+      <![CDATA[
+	       DELETE FROM IKEP4_WM_REFERENCE /* [Reference_SqlMap.xml] Reference.remove */ 
+	        WHERE MANUAL_ID = #manualId#
+		      AND REGISTER_ID = #registerId#
+	   ]]>
+	</delete>
+	
+	<select id="count" parameterClass="Reference" resultClass="java.lang.Integer">
+	  <![CDATA[
+		   SELECT /* [Reference_SqlMap.xml] Reference.count */ 
+		   		  COUNT(1) 
+		     FROM IKEP4_WM_REFERENCE 
+		    WHERE MANUAL_ID = #manualId#
+		      AND REGISTER_ID = #registerId#
+	   ]]>
+	</select>
+	
+	<!-- //금일 카운드 여부 -->
+	<select id="countShowToday" parameterClass="Reference" resultClass="java.lang.Integer">
+	  <![CDATA[
+		   SELECT /* [Reference_SqlMap.xml] Reference.countShowToday */ 
+		   		  COUNT(1) 
+		     FROM IKEP4_WM_REFERENCE 
+		    WHERE MANUAL_ID = #manualId#
+		      AND REGISTER_ID = #registerId#
+		      AND TO_CHAR(REGIST_DATE, 'YYYYMMDD') = TO_CHAR(SYSDATE, 'YYYYMMDD')
+	   ]]>
+	</select>
+   
+   <!-- //매뉴얼아이디로 모두 삭제 -->
+   <delete id="removeByManualId" parameterClass="java.lang.String">
+      <![CDATA[
+	       DELETE FROM IKEP4_WM_REFERENCE /* [Reference_SqlMap.xml] Reference.removeByManualId */ 
+	        WHERE MANUAL_ID = #manualId#
+	   ]]>
+	</delete>
+</sqlMap>

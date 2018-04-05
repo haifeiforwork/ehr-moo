@@ -1,0 +1,103 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ko">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>iKEP 4.00</title>
+<style>
+body {background: none repeat scroll 0 0 #FFFFFF;color: #555555;font: 75%/1.5em Tahoma,'돋움','Dotum';height: 100%;}
+.blockDetail { position:relative; margin-bottom:10px; width:100%; border-top:2px solid #919fb2; }
+.blockDetail table { width:100%; border-collapse:collapse; table-layout:fixed; }
+.blockDetail table caption { display:none; }
+.blockDetail table th { font-weight:bold; line-height:19px; text-align:right; color:#333; padding:3px 5px; border:1px solid #e0e0e0; border-top:none; background:#f3f3f3; }
+.blockDetail table th a:link, .blockDetail table th a:visited, .blockDetail table th a:active, .blockDetail table th a:hover { color:#333; text-decoration:none; }
+.blockDetail table td { line-height:19px; padding:3px 5px; word-break:break-all; border:1px solid #e0e0e0; border-top:none; background-color:#fff; }
+.blockDetail .bgSelected { background-color: #edf2f5; }
+.blockDetail table td .radio, .blockDetail table td .checkbox { vertical-align:middle; }
+.blockDetail table td .button_s { vertical-align:middle; margin:-1px 3px -2px 0; }
+* {margin: 0;padding: 0;}
+.colorBlue {color: #5F84C2;}
+.schedule_bg01 {margin: 5px;}
+.ml5 {margin-left: 5px;}
+.schedule_bg01 span {margin-right: 5px;}
+.colorPoint {color: #C50050 !important;}
+</style>
+</head>
+
+<body>
+
+<!-- Modal window Start -->
+<div class="" id="layer_p" title="Workspace Mail">
+	<!--blockDetail Start-->		
+	<div class="blockDetail">
+		<table summary="Workspace Mail">
+			<caption></caption>
+			<tbody>
+				#if($memberLevel == '5')
+				<tr>
+					<th width="18%" scope="row">메일 내용</th>
+					<td width="82%">
+						<span class="colorBlue">*</span><span class="colorBlue">
+						${member.workspaceName}</span> 워크스페이스 회원가입 승인을 요청합니다.
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">요청자</th>
+					<td>
+						<span>${member.memberName} ${member.jobTitleName} / ${member.teamName}</span>							
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">요청일</th>
+					<td>
+						<span>${registDate}</span>							
+					</td>
+				</tr>				
+				#elseif($memberLevel == '3' || $memberLevel =='4')
+				<tr>
+					<th width="18%" scope="row">메일 내용</th>
+					<td width="82%">
+						<span class="colorBlue">*</span><span class="colorBlue">
+						${member.workspaceName}</span> 워크스페이스 회원가입이 승인되었습니다.
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">승인자</th>
+					<td>
+						<span>${user.userName} ${user.jobTitleName} / ${user.teamName}</span>							
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">승인일</th>
+					<td>
+						<span>${registDate}</span>							
+					</td>
+				</tr>													
+				#elseif($memberLevel == '6')
+				<tr>
+					<th width="18%" scope="row">메일 내용</th>
+					<td width="82%">
+						<span class="colorBlue">*</span><span class="colorBlue">
+						${member.workspaceName}</span> 워크스페이스 회원가입이 반려되었습니다.
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">반려자</th>
+					<td>
+						<span>${user.userName} ${user.jobTitleName} / ${user.teamName}</span>							
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">반려일</th>
+					<td>
+						<span>${registDate}</span>							
+					</td>
+				</tr>						
+				#end
+			</tbody>
+		</table>
+	</div>			
+	<!--//blockDetail End-->	
+</div>	
+<!-- //Modal window End -->
+</body>
+</html>

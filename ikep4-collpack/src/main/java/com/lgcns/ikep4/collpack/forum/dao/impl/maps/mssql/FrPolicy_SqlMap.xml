@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="collpack.fourm.dao.FrPolicy" >
+  
+  <typeAlias alias="FrPolicy" type="com.lgcns.ikep4.collpack.forum.model.FrPolicy"/>
+  
+  <resultMap id="FrPolicyResult" class="FrPolicy" >
+	    <result column="POLICY_ID" 				property="policyId" />
+	    <result column="POLICY_TYPE" 			property="policyType" />
+	    <result column="PARTICIPATION_WEIGHT" 	property="participationWeight" />
+	    <result column="FEEDBACK_WEIGHT" 		property="feedbackWeight"/>
+	    <result column="DISCUSSION_WEIGHT" 		property="discussionWeight" />
+	    <result column="ITEM_WEIGHT" 			property="itemWeight" />
+	    <result column="LINEREPLY_WEIGHT" 		property="linereplyWeight" />
+	    <result column="MAX_COUNT" 				property="maxCount"  />
+	    <result column="BEST_ITEM_WEIGHT" 		property="bestItemWeight" />
+	    <result column="BEST_LINEREPLY_WEIGHT" 	property="bestLinereplyWeight"  />
+	    <result column="FAVORITE_WEIGHT" 		property="favoriteWeight" />
+	    <result column="AGREEMENT_WEIGHT" 		property="agreementWeight"  />
+	    <result column="RECOMMEND_WEIGHT" 		property="recommendWeight" />
+	    <result column="TARGET_TERM" 			property="targetTerm"  />
+	    <result column="PORTAL_ID" 				property="portalId" />
+	    <result column="REGISTER_ID" 			property="registerId" />
+	    <result column="REGISTER_NAME" 			property="registerName"  />
+	    <result column="REGIST_DATE" 			property="registDate" />
+  </resultMap>
+  
+  <!-- ANSI -->
+   <insert id="create" parameterClass="FrPolicy" >
+    INSERT INTO IKEP4_FR_POLICY (				/* [FrPolicy_SqlMap.xml] FrPolicy.create */
+	    POLICY_ID
+	    , POLICY_TYPE
+	    , PARTICIPATION_WEIGHT
+	    , FEEDBACK_WEIGHT
+	    , DISCUSSION_WEIGHT
+	    , ITEM_WEIGHT
+	    , LINEREPLY_WEIGHT
+	    , MAX_COUNT
+	    , BEST_ITEM_WEIGHT
+	    , BEST_LINEREPLY_WEIGHT
+	    , FAVORITE_WEIGHT
+	    , AGREEMENT_WEIGHT
+	    , RECOMMEND_WEIGHT
+	    , TARGET_TERM
+	    , PORTAL_ID
+	    , REGISTER_ID
+	    , REGISTER_NAME
+	    , REGIST_DATE
+      )VALUES (
+	      #policyId#
+	      , #policyType#
+	      , #participationWeight#
+	      , #feedbackWeight#
+	      , #discussionWeight#
+	      , #itemWeight#
+	      , #linereplyWeight#
+	      , #maxCount#
+	      , #bestItemWeight#
+	      , #bestLinereplyWeight#
+	      , #favoriteWeight#
+	      , #agreementWeight#
+	      , #recommendWeight#
+	      , #targetTerm#
+	      , #portalId#
+	      , #registerId#
+	      , #registerName#
+	      , CURRENT_TIMESTAMP 
+	  )
+  </insert>
+  
+  <!-- ANSI -->
+  <select id="get" resultMap="FrPolicyResult" parameterClass="FrPolicy" >
+    SELECT 						/* [FrPolicy_SqlMap.xml] FrPolicy.get */
+    	POLICY_ID
+	    , POLICY_TYPE
+	    , PARTICIPATION_WEIGHT
+	    , FEEDBACK_WEIGHT
+	    , DISCUSSION_WEIGHT
+	    , ITEM_WEIGHT
+	    , LINEREPLY_WEIGHT
+	    , MAX_COUNT
+	    , BEST_ITEM_WEIGHT
+	    , BEST_LINEREPLY_WEIGHT
+	    , FAVORITE_WEIGHT
+	    , AGREEMENT_WEIGHT
+	    , RECOMMEND_WEIGHT
+	    , TARGET_TERM
+	    , PORTAL_ID
+	    , REGISTER_ID
+	    , REGISTER_NAME
+	    , REGIST_DATE
+    FROM IKEP4_FR_POLICY
+    WHERE POLICY_TYPE = #policyType#
+    AND PORTAL_ID = #portalId#
+  </select>
+  
+  <!-- ANSI -->
+  <select id="list" resultMap="FrPolicyResult" parameterClass="String" >
+    SELECT 						/* [FrPolicy_SqlMap.xml] FrPolicy.list */
+    	POLICY_ID
+	    , POLICY_TYPE
+	    , PARTICIPATION_WEIGHT
+	    , FEEDBACK_WEIGHT
+	    , DISCUSSION_WEIGHT
+	    , ITEM_WEIGHT
+	    , LINEREPLY_WEIGHT
+	    , MAX_COUNT
+	    , BEST_ITEM_WEIGHT
+	    , BEST_LINEREPLY_WEIGHT
+	    , FAVORITE_WEIGHT
+	    , AGREEMENT_WEIGHT
+	    , RECOMMEND_WEIGHT
+	    , TARGET_TERM
+	    , PORTAL_ID
+	    , REGISTER_ID
+	    , REGISTER_NAME
+	    , REGIST_DATE
+    FROM IKEP4_FR_POLICY
+    WHERE POLICY_TYPE = #policyType#
+  </select>
+  
+  <!-- ANSI -->
+  <update id="update" parameterClass="FrPolicy" >
+    UPDATE IKEP4_FR_POLICY				/* [FrPolicy_SqlMap.xml] FrPolicy.update */
+    SET POLICY_TYPE = #policyType#,
+      PARTICIPATION_WEIGHT = #participationWeight#,
+      FEEDBACK_WEIGHT = #feedbackWeight#,
+      DISCUSSION_WEIGHT = #discussionWeight#,
+      ITEM_WEIGHT = #itemWeight#,
+      LINEREPLY_WEIGHT = #linereplyWeight#,
+      MAX_COUNT = #maxCount#,
+      BEST_ITEM_WEIGHT = #bestItemWeight#,
+      BEST_LINEREPLY_WEIGHT = #bestLinereplyWeight#,
+      FAVORITE_WEIGHT = #favoriteWeight#,
+      AGREEMENT_WEIGHT = #agreementWeight#,
+      RECOMMEND_WEIGHT = #recommendWeight#,
+      TARGET_TERM = #targetTerm#,
+      PORTAL_ID = #portalId#,
+      REGISTER_ID = #registerId#,
+      REGISTER_NAME = #registerName#
+    WHERE POLICY_ID = #policyId#
+  </update>
+  
+  <!-- ANSI -->
+   <delete id="remove" parameterClass="String" >
+    DELETE 					/* [FrPolicy_SqlMap.xml] FrPolicy.remove */
+    FROM IKEP4_FR_POLICY
+    WHERE POLICY_ID = #policyId#
+  </delete>
+  
+  
+</sqlMap>

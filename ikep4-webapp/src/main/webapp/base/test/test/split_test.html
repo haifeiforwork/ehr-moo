@@ -1,0 +1,281 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd"> 
+<html>
+<head>
+<meta http-equiv="Content-Language" content="en" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>jQuery 3-Column Splitter</title>
+<link rel="stylesheet" type="text/css" href="../../css/theme01/jquery_ui_custom.css" />
+<link rel="stylesheet" type="text/css" href="../../css/common.css" />
+<link rel="stylesheet" type="text/css" href="../../css/theme01/theme.css" />
+<script type="text/javascript" src="../../js/jquery/jquery-1.4.4.min.js"></script>
+<script type="text/javascript" src="../../js/jquery/jquery-ui-1.8.7.custom.min.js"></script>
+<script type="text/javascript" src="../../js/jquery/splitter.js"></script>
+<script type="text/javascript" src="../../js/jquery/plugins.pack.js"></script>
+<script type="text/javascript" src="../../js/common.pack.js"></script>
+
+<!-- General page styles (not critical to the demos) -->
+<style type="text/css">
+
+#splitterContainer {/* Main splitter element */
+	height:100%;width:100%;border-top:solid 1px #9cbdff;
+}
+#leftPane{
+float:left;width:50%;height:100%;border-top:solid 1px #9cbdff;
+background:#ffffff;
+overflow: auto;
+}
+#rightPane{	/*Contains toolbar and horizontal splitter*/
+float:right;width:50%;height:100%;
+background:#ffffff;
+}
+#topPane{
+width:100%;height:50%;border-top:solid 1px #9cbdff;
+background:#ffffff;
+overflow: auto;
+}
+#bottomPane{	/*Contains toolbar and horizontal splitter*/
+width:100%;height:50%;
+background:#ffffff;
+overflow: auto;
+}
+#rightSplitterContainer{/*horizontal splitter*/	
+width:100%;
+background:#FFFFFF;border-top:solid 1px #9cbdff;
+} 
+
+#rightTopPane{/*Top nested in horizontal splitter */
+width:100%;height:50%;overflow:auto;background:#f4f4f4;
+}
+#rightBottomPane{/*Bottom nested in horizontal splitter */
+background:#f4f4f4;width:100%;overflow:auto;
+}
+
+
+/* Splitbar styles; these are the default class names and required styles */
+.splitbarV {
+float:left;width:6px;height:100%;
+line-height:0px;font-size:0px;
+border-left:solid 1px #9cbdff;border-right:solid 1px #9cbdff;
+background:#cbe1fb url(../../images/icon/panev.gif) 0% 50%;
+}
+.splitbarH {
+height:6px;text-align:left;line-height:0px;font-size:0px;
+border-top:solid 1px #9cbdff;border-bottom:solid 1px #9cbdff;
+background:#cbe1fb url(../../images/icon/paneh.gif) 50% 0%;
+}
+
+.splitbuttonV{
+margin-top:-41px;margin-left:-4px;top:50%;position:relative;
+height:83px;width:10px;
+background:transparent url(../../images/icon/panevc.gif) 10px 50%;
+}
+.splitbuttonV.invert{
+margin-left:0px;background:transparent url(../../images/icon/panevc.gif) 0px 50%;
+}
+.splitbuttonH{
+margin-left:-41px;left:50%;position:relative;
+height:10px !important;width:83px;
+background:transparent url(../../images/icon/panehc.gif) 50% 0px;
+}
+.splitbuttonH.invert{
+margin-top:-4px;background:transparent url(../../images/icon/panehc.gif) 50% -10px;
+}
+.splitbarV.working,.splitbarH.working,.splitbuttonV.working,.splitbuttonH.working{
+ -moz-opacity:.50; filter:alpha(opacity=50); opacity:.50;
+}
+</style>
+<script type="text/javascript">
+(function($){
+	$().ready(function() {
+		
+		var paneHei = $(window).height() - $("#blockHeader").height() - 40;
+		$("#splitterContainer").height(paneHei);
+		//iKEP.debug("w = " + $(window).height() + " d = " + $(document).height() + " h = " + $("#blockHeader").height());
+		
+		//$("#splitterContainer").splitter({minAsize:100,splitVertical:true,A:$('#leftPane'),B:$('#rightPane'),closeableto:0});
+		$("#splitterContainer").splitter({splitHorizontal:true,A:$('#topPane'),B:$('#bottomPane'),closeableto:0});
+		
+		
+		
+	});
+})(jQuery);
+</script>
+</head>
+<body>
+
+<!--skipNavigation Start-->
+<div id="skipNavigation">
+	<p><a href="#topInfo">헤더정보영역 바로가기</a></p>
+	<p><a href="#topMenu">탑메뉴 바로가기</a></p>	
+	<p><a href="#blockHeaderSub">퀵메뉴 바로가기</a></p>
+	<p><a href="#leftMenu">레프트메뉴 바로가기</a></p>	
+	<p><a href="#mainContents">컨텐츠영역 바로가기</a></p>
+	<!--//skipNavigation End-->
+</div>
+
+<!--wrapper Start-->
+<div id="wrapper">
+
+	<!--blockContainer Start-->
+	<div id="blockContainer" class="leftbg"  style="height:100%;"><!--leftmenu bg 필요없는 화면에서는 class 삭제-->
+
+		<!--blockHeader Start-->
+		<div id="blockHeader">	
+		
+			<!--topInfo Start-->	
+			<div id="topInfo">
+				<h1 class="none">헤더정보영역</h1>
+				<div id="topLogo">
+					<a href="#a"><img src="../../images/common/logo.png" alt="iKEP Logo" /></a>
+				</div>
+			</div>
+			<!--//topInfo End-->
+						
+			<!--topMenu Start-->
+			<div id="topMenu">
+				<h1 class="none">탑메뉴</h1>			
+			</div>
+			<!--//topMenu End-->		
+
+			<!--blockHeaderSub Start-->
+			<div id="blockHeaderSub">
+				<h1 class="none">퀵메뉴</h1>		
+			</div>
+			<!--//blockHeaderSub End-->
+										
+		</div>
+		<!--//blockHeader End-->
+		
+		<!--blockMain Start-->
+		<div id="blockMain">
+
+			<!--leftMenu Start-->
+			<div id="leftMenu">
+				<h1 class="none">레프트메뉴</h1>	
+				<h2 class="message_title">Message</h2>	
+				<div class="message_num">127</div>
+				<div class="clear"></div>
+
+				<div class="blockButton_2"> 
+					<a class="button_2" href="#a"><span><img src="../../images/icon/ic_message.gif" alt="" />쪽지작성</span></a>				
+				</div>
+			
+				<ul>			
+					<li class="no_child"><a href="#a">받은쪽지함 <span class="colorPoint">24</span></a></li>
+					<li class="no_child"><a href="#a">보낸쪽지함</a></li>
+					<li class="no_child"><a href="#a">받은쪽지함 <span class="colorPoint">24</span></a></li>
+					<li class="no_child"><a href="#a">보낸쪽지함</a></li>
+					<li class="no_child"><a href="#a">받은쪽지함 <span class="colorPoint">24</span></a></li>
+					<li class="no_child"><a href="#a">보낸쪽지함</a></li>
+					<li class="no_child"><a href="#a">받은쪽지함 <span class="colorPoint">24</span></a></li>
+					<li class="no_child"><a href="#a">보낸쪽지함</a></li>
+					<li class="no_child"><a href="#a">받은쪽지함 <span class="colorPoint">24</span></a></li>
+					<li class="no_child"><a href="#a">보낸쪽지함</a></li>
+					<li class="opened"><a href="#a">Administrator</a>
+						<ul>
+							<li class="no_child"><a href="#a">개인보관함 용량모니터링</a></li>
+							<li class="no_child"><a href="#a">개인보관함 최대용량설정</a></li>
+						</ul>
+					</li>						
+				</ul>
+				<div class="messagebox">
+					<div class="messagebox_num">개인보관함 <span>30</span>Mb/1Gb</div>
+					<div class="messagebox_graph">
+						<div class="messagebox_bar_color" style="width:30%;"></div><!--그래프는 width로 수치 조절_1기가 중 30메가는 30%-->
+					</div>
+					<div class="messagebox_ins">
+						<ul>
+							<li>메세지당 첨부파일 최대 1GB</li>
+							<li>개인보관함 최대 2GB</li>
+						</ul>
+					</div>
+				</div>
+			</div>	
+			<!--//leftMenu End-->
+				
+			<!--mainContents Start-->
+			<div id="mainContents">
+				<h1 class="none">컨텐츠영역</h1>
+				
+				<div id="splitterContainer">
+				
+					<!-- 
+					<div id="leftPane">
+						<p>This pane limited to a range of 100 to 300 pixels wide with the minAsize / maxAsize 
+						properties of the plugin..</p>
+						<p>&nbsp;</p>
+					</div>
+				
+					<div id="rightPane">
+						<p>some content</p>
+						<p>some content</p>
+						<p>some content</p>
+						<p>some content</p>
+						<p>some content</p>
+						<p>some content</p>
+						<p>some content</p>
+						<p>some content</p>
+						<p>some content</p>
+						<p>some content</p>
+						<p>some content</p>
+						<p>some content</p>
+						<p>some content</p>
+						<p>some content</p>
+						<p>some content</p>
+						<p>some content</p>
+						<p>some content</p>
+					</div>
+						
+				-->
+					<div id="topPane">
+						<p>This pane limited to a range of 100 to 300 pixels wide with the minAsize / maxAsize 
+						properties of the plugin..</p>
+						<p>&nbsp;</p>
+					</div>
+				
+					<div id="bottomPane">
+						<p>some content</p>
+						<p>some content</p>
+						<p>some content</p>
+						<p>some content</p>
+						<p>some content</p>
+						<p>some content</p>
+						<p>some content</p>
+						<p>some content</p>
+						<p>some content</p>
+						<p>some content</p>
+						<p>some content</p>
+						<p>some content</p>
+						<p>some content</p>
+						<p>some content</p>
+						<p>some content</p>
+						<p>some content</p>
+						<p>some content</p>
+					</div>		
+					
+				</div>
+					
+			</div>
+			<!--//mainContents End-->
+			<div class="clear"></div>
+		</div>
+		<!--//blockMain End-->
+		
+	</div>
+	<!--//blockContainer End-->
+	
+		
+</div>
+<!--//wrapper End-->
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>

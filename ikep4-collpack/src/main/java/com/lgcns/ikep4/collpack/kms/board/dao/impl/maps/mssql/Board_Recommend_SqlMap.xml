@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="collpack.kms.board.dao.boardRecommend">
+  <typeAlias alias="kmsBoardRecommend"   type="com.lgcns.ikep4.collpack.kms.board.model.BoardRecommend"/>
+  <typeAlias alias="kmsBoardRecommendPK" type="com.lgcns.ikep4.collpack.kms.board.model.BoardRecommendPK"/>
+  
+  <resultMap class="com.lgcns.ikep4.collpack.kms.board.model.BoardRecommend" id="boardRecommendResult"> 
+    <result column="ITEM_ID"     jdbcType="VARCHAR" property="itemId" />
+    <result column="REGISTER_ID" jdbcType="VARCHAR" property="registerId" />
+    <result column="REGIST_DATE" jdbcType="DATE"    property="registDate" />
+  </resultMap> 
+  
+  <!-- ANSI -->
+  <insert id="create" parameterClass="kmsBoardRecommend"> 
+    INSERT INTO IKEP4_KMS_BD_RECOMMEND /* [Board_Recommend_SqlMap.xml] collpack.kms.board.dao.boardRecommend.insert */ 
+           (ITEM_ID, REGISTER_ID, REGIST_DATE)
+    VALUES (#itemId#, #registerId#,  CURRENT_TIMESTAMP)
+  </insert>
+  
+  <insert id="insertScore" parameterClass="kmsBoardRecommend"> 
+    <![CDATA[
+		 /* [Board_Recommend_SqlMap.xml] collpack.kms.board.dao.boardScore.insert */ 
+		DECLARE @chcker INTEGER;
+		
+		SELECT @chcker = COUNT(*) from IKEP4_KMS_BD_ITEM t WHERE t.register_id =  #registerId# and t.item_id = #itemId#
+		if(@chcker = 0)
+			BEGIN
+				INSERT INTO IKEP4_KMS_SCORE 
+				   (ITEM_ID, REGISTER_ID, REGIST_DATE, SCORE, FLAG)
+				VALUES (#itemId#, #registerId#,  CURRENT_TIMESTAMP, #score#, #flag#)	
+			END
+			ELSE
+			BEGIN
+				INSERT INTO IKEP4_KMS_SCORE 
+				   (ITEM_ID, REGISTER_ID, REGIST_DATE, SCORE, FLAG)
+				VALUES (#itemId#, #registerId#,  CURRENT_TIMESTAMP, '1', #flag#)		
+		END
+       ]]> 
+  </insert>
+ 
+  <!-- ANSI -->
+  <select id="exists" parameterClass="kmsBoardRecommendPK" resultClass="int">
+    SELECT /* [Board_Recommend_SqlMap.xml] collpack.kms.board.dao.boardRecommend.exists */
+           COUNT(*)
+    FROM   IKEP4_KMS_BD_RECOMMEND
+    WHERE  ITEM_ID = #itemId#
+    AND    REGISTER_ID = #registerId#
+  </select> 
+  
+  <select id="scoreExists" parameterClass="kmsBoardRecommendPK" resultClass="int">
+    SELECT /* [Board_Recommend_SqlMap.xml] collpack.kms.board.dao.boardScore.exists */
+           COUNT(*)
+    FROM   IKEP4_KMS_SCORE
+    WHERE  REGISTER_ID = #registerId#
+    AND    CONVERT(VARCHAR,REGIST_DATE,102) = CONVERT(VARCHAR,current_timestamp,102)
+  </select> 
+  
+  <!-- ANSI -->
+  <update id="update" parameterClass="kmsBoardRecommend"> 
+    UPDATE IKEP4_KMS_BD_RECOMMEND /* [Board_Recommend_SqlMap.xml] collpack.kms.board.dao.boardRecommend.update */
+    SET REGIST_DATE = CURRENT_TIMESTAMP
+    WHERE ITEM_ID = #itemId#
+    AND REGISTER_ID = #registerId#
+  </update>
+  
+  <!-- ANSI -->
+  <delete id="removeByItemId" parameterClass="string"> 
+    DELETE FROM IKEP4_KMS_BD_RECOMMEND /* [Board_Recommend_SqlMap.xml] collpack.kms.board.dao.boardRecommend.removeByItemId */
+    WHERE ITEM_ID = #itemId#
+  </delete>   
+</sqlMap>

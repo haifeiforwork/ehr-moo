@@ -1,0 +1,472 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="collpack.workmanual.dao.manualCategory">
+	<typeAlias alias = "ManualCategory" type="com.lgcns.ikep4.collpack.workmanual.model.ManualCategory"/>
+	
+	<!-- 테이블 조회 결과 -->
+	<resultMap id="manualCategoryResult" class="ManualCategory">
+		<result property="categoryId"           column="CATEGORY_ID"         />
+		<result property="categoryName"         column="CATEGORY_NAME"       />
+		<result property="categoryParentId"     column="CATEGORY_PARENT_ID"  />
+		<result property="readPermission"       column="READ_PERMISSION"     />
+		<result property="sortOrder"            column="SORT_ORDER"          />
+		<result property="portalId"             column="PORTAL_ID"           />
+		<result property="registerId"           column="REGISTER_ID"         />
+		<result property="registerName"         column="REGISTER_NAME"       />
+		<result property="registDate"           column="REGIST_DATE"         />
+		<result property="childCount"           column="CHILD_COUNT"         />
+	</resultMap>
+	
+	<!-- ANSI -->
+	<insert id="create" parameterClass="ManualCategory"> 
+      <![CDATA[ 
+           INSERT INTO IKEP4_WM_CATEGORY (/* [ManualCategory_SqlMap.xml] ManualCategory.create */
+           		CATEGORY_ID, CATEGORY_NAME, CATEGORY_PARENT_ID, READ_PERMISSION, SORT_ORDER, 
+           		PORTAL_ID, REGISTER_ID, REGISTER_NAME, REGIST_DATE)  
+           VALUES (#categoryId#, #categoryName#, #categoryParentId#, #readPermission#, #sortOrder#,
+           		   #portalId#, #registerId#, #registerName#, CURRENT_TIMESTAMP)
+       ]]>
+   </insert>
+   
+   	<!-- ANSI -->
+	<select id="get" parameterClass="java.lang.String" resultMap="manualCategoryResult">
+	  <![CDATA[
+		   SELECT /* [ManualCategory_SqlMap.xml] ManualCategory.get */
+				  CATEGORY_ID,
+				  CATEGORY_NAME,
+				  CATEGORY_PARENT_ID,
+				  READ_PERMISSION,
+				  SORT_ORDER,
+				  PORTAL_ID,
+				  REGISTER_ID,
+				  REGISTER_NAME,
+				  REGIST_DATE,
+				  0 AS CHILD_COUNT
+		     FROM IKEP4_WM_CATEGORY
+		    WHERE CATEGORY_ID = #categoryId#
+	   ]]>
+	</select>
+	
+	<!-- ANSI -->
+	<update id="update" parameterClass="ManualCategory">
+	  <![CDATA[
+		   UPDATE IKEP4_WM_CATEGORY /* [ManualCategory_SqlMap.xml] ManualCategory.update */ 
+		      SET CATEGORY_NAME      = #categoryName#,
+				  READ_PERMISSION    = #readPermission#
+		    WHERE CATEGORY_ID = #categoryId#
+		      AND PORTAL_ID = #portalId#
+	   ]]>
+	</update>
+   
+   <!-- ANSI -->
+   <delete id="remove" parameterClass="java.lang.String">
+      <![CDATA[
+	       DELETE FROM IKEP4_WM_CATEGORY /* [ManualCategory_SqlMap.xml] ManualCategory.remove */ 
+	        WHERE CATEGORY_ID = #categoryId#
+	   ]]>
+	</delete>
+	
+	<!-- ANSI -->
+	<select id="count" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+	  <![CDATA[
+		   SELECT /* [ManualCategory_SqlMap.xml] ManualCategory.count */ 
+		   		  COUNT(1) 
+		     FROM IKEP4_WM_CATEGORY 
+		    WHERE CATEGORY_ID = #categoryId#
+	   ]]>
+	</select>
+	
+	<!-- ANSI -->
+	<!-- //Portal 포함하여 조회 -->
+	<select id="getManualCategory" parameterClass="ManualCategory" resultMap="manualCategoryResult">
+	  <![CDATA[
+		   SELECT /* [ManualCategory_SqlMap.xml] ManualCategory.getManualCategory */
+				  CATEGORY_ID,
+				  CATEGORY_NAME,
+				  CATEGORY_PARENT_ID,
+				  READ_PERMISSION,
+				  SORT_ORDER,
+				  PORTAL_ID,
+				  REGISTER_ID,
+				  REGISTER_NAME,
+				  REGIST_DATE,
+				  0 AS CHILD_COUNT
+		     FROM IKEP4_WM_CATEGORY
+		    WHERE CATEGORY_ID = #categoryId#
+		      AND PORTAL_ID = #portalId#
+	   ]]>
+	</select>
+	
+	<!-- ANSI -->
+	<!-- //Portal로 조회 -->
+	<select id="listManualCategoryByPortalId" parameterClass="java.lang.String" resultMap="manualCategoryResult">
+	  <![CDATA[
+		   SELECT /* [ManualCategory_SqlMap.xml] ManualCategory.listManualCategoryByPortalId */
+				  A.*,
+				  0 AS CHILD_COUNT
+		     FROM IKEP4_WM_CATEGORY A
+		    WHERE PORTAL_ID = #portalId#
+		    ORDER BY SORT_ORDER ASC
+	   ]]>
+	</select>
+	
+	<!-- ANSI -->
+	<!-- //하위 매뉴얼수  -->
+	<select id="countChildren" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+	  <![CDATA[
+		   SELECT /* [ManualCategory_SqlMap.xml] ManualCategory.countChildren */ 
+		   		  COUNT(1) 
+		     FROM IKEP4_WM_CATEGORY 
+		    WHERE CATEGORY_PARENT_ID = #categoryParentId#
+	   ]]>
+	</select>
+	
+	<!-- MS SQL -->	
+   <!-- //매뉴얼 결재자 정보 삭제 -->
+   <delete id="removeApprovalLineByCategoryId" parameterClass="ManualCategory">
+      <![CDATA[
+      	 	WITH CTE AS (
+      	 		SELECT 	*
+      	 		FROM	IKEP4_WM_CATEGORY
+      	 		WHERE	CATEGORY_ID = #categoryId#
+      	 		UNION ALL
+      	 		SELECT	C.*
+      	 		FROM	IKEP4_WM_CATEGORY C, CTE
+      	 		WHERE	CTE.CATEGORY_ID = C.CATEGORY_PARENT_ID
+      	 	)
+		   	DELETE FROM IKEP4_WM_APPROVAL_LINE /* [ManualCategory_SqlMap.xml] ManualCategory.removeApprovalLineByCategoryId */ 
+			WHERE APPROVAL_ID IN (SELECT APPROVAL_ID
+			                        FROM IKEP4_WM_APPROVAL A
+			                        	 INNER JOIN                       
+			                             (SELECT A.MANUAL_ID
+			                            	FROM IKEP4_WM_MANUAL A
+			                            		 INNER JOIN 
+			                                 	 (SELECT CATEGORY_ID, PORTAL_ID
+			                                    	FROM CTE
+			                                       WHERE PORTAL_ID = #portalId#
+			                                     ) B
+			                               			 ON A.CATEGORY_ID = B.CATEGORY_ID
+			                                 		AND A.PORTAL_ID = B.PORTAL_ID
+			                             ) B
+			                       			 ON A.MANUAL_ID = B.MANUAL_ID
+								 ) 
+	   ]]>
+	</delete>
+
+	<!-- MS SQL -->
+   <!-- //매뉴얼 결재정보 삭제 -->
+   <delete id="removeApprovalByCategoryId" parameterClass="ManualCategory">
+      <![CDATA[
+      		WITH CTE AS (
+      			SELECT 	*
+      	 		FROM	IKEP4_WM_CATEGORY
+      	 		WHERE	CATEGORY_ID = #categoryId#
+      	 		UNION ALL
+      	 		SELECT	C.*
+      	 		FROM	IKEP4_WM_CATEGORY C, CTE
+      	 		WHERE	CTE.CATEGORY_ID = C.CATEGORY_PARENT_ID
+      		)
+	       	DELETE FROM IKEP4_WM_APPROVAL /* [ManualCategory_SqlMap.xml] ManualCategory.removeApprovalByCategoryId */ 
+	        WHERE MANUAL_ID IN (SELECT A.MANUAL_ID
+								  FROM IKEP4_WM_MANUAL A
+								  	   INNER JOIN
+								       (SELECT CATEGORY_ID, PORTAL_ID
+								          FROM CTE
+								         WHERE PORTAL_ID = #portalId#
+								       ) B
+								 			 ON A.CATEGORY_ID = B.CATEGORY_ID
+								   			AND A.PORTAL_ID = B.PORTAL_ID
+							   )
+	   ]]>
+	</delete>
+
+	<!-- MS SQL -->
+   <!-- //댓글 정보 삭제 -->
+   <delete id="removeLinereplyByCategoryId" parameterClass="ManualCategory">
+      <![CDATA[
+      		WITH CTE AS (
+      			SELECT 	*
+      	 		FROM	IKEP4_WM_CATEGORY
+      	 		WHERE	CATEGORY_ID = #categoryId#
+      	 		UNION ALL
+      	 		SELECT	C.*
+      	 		FROM	IKEP4_WM_CATEGORY C, CTE
+      	 		WHERE	CTE.CATEGORY_ID = C.CATEGORY_PARENT_ID
+      		)
+	       	DELETE FROM IKEP4_WM_LINEREPLY /* [ManualCategory_SqlMap.xml] ManualCategory.removeLinereplyByCategoryId */ 
+	        WHERE MANUAL_ID IN (SELECT A.MANUAL_ID
+								  FROM IKEP4_WM_MANUAL A
+								  	   INNER JOIN 
+								       (SELECT CATEGORY_ID, PORTAL_ID
+								          FROM CTE
+								         WHERE PORTAL_ID = #portalId#
+								       ) B
+								 			 ON A.CATEGORY_ID = B.CATEGORY_ID
+								   			AND A.PORTAL_ID = B.PORTAL_ID
+							   )
+	   ]]>
+	</delete>
+
+	<!-- MS SQL -->
+   <!-- //조회 정보 삭제 -->
+   <delete id="removeReferenceByCategoryId" parameterClass="ManualCategory">
+      <![CDATA[
+      		WITH CTE AS (
+      			SELECT 	*
+      	 		FROM	IKEP4_WM_CATEGORY
+      	 		WHERE	CATEGORY_ID = #categoryId#
+      	 		UNION ALL
+      	 		SELECT	C.*
+      	 		FROM	IKEP4_WM_CATEGORY C, CTE
+      	 		WHERE	CTE.CATEGORY_ID = C.CATEGORY_PARENT_ID
+      		)
+	       	DELETE FROM IKEP4_WM_REFERENCE /* [ManualCategory_SqlMap.xml] ManualCategory.removeReferenceByCategoryId */ 
+	        WHERE MANUAL_ID IN (SELECT A.MANUAL_ID
+								  FROM IKEP4_WM_MANUAL A
+								  	   INNER JOIN 
+								       (SELECT CATEGORY_ID, PORTAL_ID
+								       	  FROM CTE
+								         WHERE PORTAL_ID = #portalId#
+								       ) B
+								 			 ON A.CATEGORY_ID = B.CATEGORY_ID
+								   			AND A.PORTAL_ID = B.PORTAL_ID
+							   )
+	   ]]>
+	</delete>
+
+	<!-- MS SQL -->
+    <!-- //버젼 정보 삭제 -->
+	<delete id="removeManualVersionByCategoryId" parameterClass="ManualCategory">
+      <![CDATA[
+      		WITH CTE AS (
+      			SELECT 	*
+      	 		FROM	IKEP4_WM_CATEGORY
+      	 		WHERE	CATEGORY_ID = #categoryId#
+      	 		UNION ALL
+      	 		SELECT	C.*
+      	 		FROM	IKEP4_WM_CATEGORY C, CTE
+      	 		WHERE	CTE.CATEGORY_ID = C.CATEGORY_PARENT_ID
+      		)
+	       	DELETE FROM IKEP4_WM_MANUAL_VERSION /* [ManualCategory_SqlMap.xml] ManualCategory.removeManualVersionByCategoryId */ 
+	        WHERE PORTAL_ID = #portalId#
+   				  AND MANUAL_ID IN (SELECT A.MANUAL_ID
+									  FROM IKEP4_WM_MANUAL A
+									  	   INNER JOIN 
+									       (SELECT CATEGORY_ID, PORTAL_ID
+									          FROM CTE 
+									         WHERE PORTAL_ID = #portalId#
+									       ) B
+									 			 ON A.CATEGORY_ID = B.CATEGORY_ID
+									   			AND A.PORTAL_ID = B.PORTAL_ID
+								   )
+	   ]]>
+	</delete>	
+
+	<!-- MS SQL -->
+    <!-- //매뉴얼 정보 삭제 -->
+    <delete id="removeManualByCategoryId" parameterClass="ManualCategory">
+      <![CDATA[
+      		WITH CTE AS (
+      			SELECT 	*
+      	 		FROM	IKEP4_WM_CATEGORY
+      	 		WHERE	CATEGORY_ID = #categoryId#
+      	 		UNION ALL
+      	 		SELECT	C.*
+      	 		FROM	IKEP4_WM_CATEGORY C, CTE
+      	 		WHERE	CTE.CATEGORY_ID = C.CATEGORY_PARENT_ID
+      		)
+	       	DELETE FROM IKEP4_WM_MANUAL /* [ManualCategory_SqlMap.xml] ManualCategory.removeManualByCategoryId */ 
+	        WHERE PORTAL_ID = #portalId#
+   				  AND CATEGORY_ID IN (SELECT CATEGORY_ID
+				                        FROM CTE 
+				                       WHERE PORTAL_ID = #portalId#
+				                     )
+	   ]]>
+	</delete>
+
+	<!-- MS SQL -->
+   <!-- //조회 사용자 정보 삭제 -->
+   <delete id="removeReadUserByCategoryId" parameterClass="ManualCategory">
+      <![CDATA[
+      		WITH CTE AS (
+      			SELECT 	*
+      	 		FROM	IKEP4_WM_CATEGORY
+      	 		WHERE	CATEGORY_ID = #categoryId#
+      	 		UNION ALL
+      	 		SELECT	C.*
+      	 		FROM	IKEP4_WM_CATEGORY C, CTE
+      	 		WHERE	CTE.CATEGORY_ID = C.CATEGORY_PARENT_ID
+      		)
+	       	DELETE FROM IKEP4_WM_READ_USER /* [ManualCategory_SqlMap.xml] ManualCategory.removeReadUserByCategoryId */ 
+	        WHERE CATEGORY_ID IN (SELECT CATEGORY_ID
+			                        FROM CTE 
+			                       WHERE PORTAL_ID = #portalId#
+			                     )
+	   ]]>
+	</delete>
+
+	<!-- MS SQL -->
+   <!-- //조회 조직 삭제 -->
+   <delete id="removeReadGroupByCategoryId" parameterClass="ManualCategory">
+      <![CDATA[
+      		WITH CTE AS (
+      			SELECT 	*
+      	 		FROM	IKEP4_WM_CATEGORY
+      	 		WHERE	CATEGORY_ID = #categoryId#
+      	 		UNION ALL
+      	 		SELECT	C.*
+      	 		FROM	IKEP4_WM_CATEGORY C, CTE
+      	 		WHERE	CTE.CATEGORY_ID = C.CATEGORY_PARENT_ID
+      		)
+	       	DELETE FROM IKEP4_WM_READ_GROUP /* [ManualCategory_SqlMap.xml] ManualCategory.removeReadGroupByCategoryId */ 
+	        WHERE CATEGORY_ID IN (SELECT CATEGORY_ID
+			                        FROM CTE 
+			                       WHERE PORTAL_ID = #portalId#
+			                     )
+	   ]]>
+	</delete>
+
+	<!-- MS SQL -->
+   <!-- //문서 결재자 삭제 -->
+   <delete id="removeApprovalUserByCategoryId" parameterClass="ManualCategory">
+      <![CDATA[
+      		WITH CTE AS (
+      			SELECT 	*
+      	 		FROM	IKEP4_WM_CATEGORY
+      	 		WHERE	CATEGORY_ID = #categoryId#
+      	 		UNION ALL
+      	 		SELECT	C.*
+      	 		FROM	IKEP4_WM_CATEGORY C, CTE
+      	 		WHERE	CTE.CATEGORY_ID = C.CATEGORY_PARENT_ID
+      		)
+	       	DELETE FROM IKEP4_WM_APPROVAL_USER /* [ManualCategory_SqlMap.xml] ManualCategory.removeApprovalUserByCategoryId */ 
+	        WHERE CATEGORY_ID IN (SELECT CATEGORY_ID
+			                        FROM CTE 
+			                       WHERE PORTAL_ID = #portalId#
+			                     )
+	   ]]>
+	</delete>
+
+	<!-- MS SQL -->
+   <!-- //문서 담당자 삭제 -->
+   <delete id="removeWriteUserByCategoryId" parameterClass="ManualCategory">
+      <![CDATA[
+      		WITH CTE AS (
+      			SELECT 	*
+      	 		FROM	IKEP4_WM_CATEGORY
+      	 		WHERE	CATEGORY_ID = #categoryId#
+      	 		UNION ALL
+      	 		SELECT	C.*
+      	 		FROM	IKEP4_WM_CATEGORY C, CTE
+      	 		WHERE	CTE.CATEGORY_ID = C.CATEGORY_PARENT_ID
+      		)
+	       	DELETE FROM IKEP4_WM_WRITE_USER /* [ManualCategory_SqlMap.xml] ManualCategory.removeWriteUserByCategoryId */ 
+	        WHERE CATEGORY_ID IN (SELECT CATEGORY_ID
+			                        FROM CTE 
+			                       WHERE PORTAL_ID = #portalId#
+			                     )
+	   ]]>
+	</delete>
+
+	<!-- MS SQL -->
+   <!-- //카테고리 삭제 -->
+   <delete id="removeManualCategoryByCategoryId" parameterClass="ManualCategory">
+      <![CDATA[
+      		WITH CTE AS (
+      			SELECT 	*
+      	 		FROM	IKEP4_WM_CATEGORY
+      	 		WHERE	CATEGORY_ID = #categoryId#
+      	 		UNION ALL
+      	 		SELECT	C.*
+      	 		FROM	IKEP4_WM_CATEGORY C, CTE
+      	 		WHERE	CTE.CATEGORY_ID = C.CATEGORY_PARENT_ID
+      		)
+	       	DELETE FROM IKEP4_WM_CATEGORY /* [ManualCategory_SqlMap.xml] ManualCategory.removeManualCategoryByCategoryId */ 
+	        WHERE PORTAL_ID = #portalId#
+   				  AND CATEGORY_ID IN (SELECT CATEGORY_ID
+				                        FROM CTE 
+				                       WHERE PORTAL_ID = #portalId#
+				                     )
+	   ]]>
+	</delete>
+	
+	<!-- ANSI -->
+	<!-- //루트 카테고리 조회 -->
+	<select id="getRootCategory" parameterClass="java.lang.String" resultMap="manualCategoryResult">
+	  <![CDATA[
+		   SELECT /* [ManualCategory_SqlMap.xml] ManualCategory.getRootCategory */
+				  CATEGORY_ID,
+				  CATEGORY_NAME,
+				  CATEGORY_PARENT_ID,
+				  READ_PERMISSION,
+				  SORT_ORDER,
+				  PORTAL_ID,
+				  REGISTER_ID,
+				  REGISTER_NAME,
+				  REGIST_DATE,
+				  0 AS CHILD_COUNT
+		     FROM IKEP4_WM_CATEGORY
+		    WHERE PORTAL_ID = #portalId# 
+              AND CATEGORY_ID = CATEGORY_PARENT_ID
+	   ]]>
+	</select>
+	
+	<!-- ANSI -->
+	<!-- //하위 카테고리 조회 -->
+	<select id="listChildCategory" parameterClass="java.lang.String" resultMap="manualCategoryResult">
+	  <![CDATA[
+		   SELECT /* [ManualCategory_SqlMap.xml] ManualCategory.listChildCategory */
+				  CATEGORY_ID,
+				  CATEGORY_NAME,
+				  CATEGORY_PARENT_ID,
+				  READ_PERMISSION,
+				  SORT_ORDER,
+				  PORTAL_ID,
+				  REGISTER_ID,
+				  REGISTER_NAME,
+				  REGIST_DATE,
+				  (SELECT COUNT(1) 
+                     FROM IKEP4_WM_CATEGORY B 
+                    WHERE B.CATEGORY_PARENT_ID = A.CATEGORY_ID
+                  ) AS CHILD_COUNT
+		     FROM IKEP4_WM_CATEGORY A
+		    WHERE CATEGORY_PARENT_ID = #categoryParentId# 
+              AND CATEGORY_ID <> CATEGORY_PARENT_ID 
+            ORDER BY SORT_ORDER
+	   ]]>
+	</select>	
+	
+	<!-- ANSI -->
+	<!-- //카테고리 이동 - 원본 순번 바꾸기 -->
+	<update id="updateMoveCategoryInSource" parameterClass="java.util.Map">
+	  <![CDATA[
+		   UPDATE IKEP4_WM_CATEGORY /* [ManualCategory_SqlMap.xml] ManualCategory.updateMoveCategoryInSource */ 
+		      SET SORT_ORDER = SORT_ORDER - 1
+		    WHERE CATEGORY_PARENT_ID = #categoryParentId#
+		      AND SORT_ORDER > #sortOrder#
+	   ]]>
+	</update>	
+	
+	<!-- ANSI -->
+	<!-- //카테고리 이동 - 타겟 순번 바꾸기 -->
+	<update id="updateMoveCategoryInTarget" parameterClass="java.util.Map">
+	  <![CDATA[
+		   UPDATE IKEP4_WM_CATEGORY /* [ManualCategory_SqlMap.xml] ManualCategory.updateMoveCategoryInTarget */ 
+		      SET SORT_ORDER = SORT_ORDER + 1
+		    WHERE CATEGORY_PARENT_ID = #categoryParentId#
+		      AND SORT_ORDER >= #sortOrder#
+	   ]]>
+	</update>	
+	
+	<!-- ANSI -->
+	<!-- //카테고리 이동 - 자신 변경 -->
+	<update id="updateMoveCategoryInMine" parameterClass="java.util.Map">
+	  <![CDATA[
+		   UPDATE IKEP4_WM_CATEGORY /* [ManualCategory_SqlMap.xml] ManualCategory.updateMoveCategoryInMine */ 
+		      SET CATEGORY_PARENT_ID = #categoryParentId#,
+				  SORT_ORDER = #sortOrder#
+		    WHERE CATEGORY_ID = #categoryId#
+	   ]]>
+	</update>
+</sqlMap>

@@ -1,0 +1,314 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="collpack.kms.admin.dao.AdminBoardManage">
+
+  <typeAlias alias="kmsBoard" type="com.lgcns.ikep4.collpack.kms.admin.model.Board"/>
+    
+  <resultMap id="boardResult" class="com.lgcns.ikep4.collpack.kms.admin.model.Board"> 
+    <result column="BOARD_ID"           jdbcType="VARCHAR" property="boardId" />
+    <result column="BOARD_PARENT_ID"    jdbcType="VARCHAR" property="boardParentId" />
+    <result column="SORT_ORDER"         jdbcType="DECIMAL" property="sortOrder" />
+    <result column="BOARD_NAME"         jdbcType="VARCHAR" property="boardName" />
+    <result column="BOARD_ROOT_ID"      jdbcType="VARCHAR" property="boardRootId" />
+    <result column="DESCRIPTION"  		jdbcType="VARCHAR" property="description" />
+    <result column="BOARD_TYPE"         jdbcType="VARCHAR" property="boardType" />
+    <result column="IS_KNOWHOW"         jdbcType="DECIMAL" property="isKnowHow" />
+    <result column="URL"                jdbcType="VARCHAR" property="url" />
+    <result column="LIST_TYPE"          jdbcType="VARCHAR" property="listType" />
+	<result column="URL_POPUP"			jdbcType="DECIMAL" property="urlPopup" />
+    <result column="RSS"                jdbcType="DECIMAL" property="rss" />
+    <result column="FILE_SIZE"          jdbcType="DECIMAL" property="fileSize" />
+    <result column="IMAGE_FILE_SIZE"    jdbcType="DECIMAL" property="imageFileSize" />
+    <result column="IMAGE_WIDTH"        jdbcType="DECIMAL" property="imageWidth" />
+    <result column="PAGE_NUM"           jdbcType="DECIMAL" property="pageNum" />
+    <result column="DOC_POPUP"          jdbcType="DECIMAL" property="docPopup" />
+    <result column="REPLY"              jdbcType="DECIMAL" property="reply" />
+    <result column="LINEREPLY"          jdbcType="DECIMAL" property="linereply" />
+    <result column="RESTRICTION_TYPE"   jdbcType="VARCHAR" property="restrictionType" />
+	<result column="VERSION_MANAGE"		jdbcType="DECIMAL" property="versionManage" />
+	<result column="WIKI"				jdbcType="DECIMAL" property="wiki" />
+	<result column="MOVE"				jdbcType="DECIMAL" property="move" />
+	<result column="WRITE_PERMISSION"	jdbcType="VARCHAR" property="writePermission" />
+	<result column="ITEM_PERMISSION_UPDATE"	jdbcType="VARCHAR" property="itemPermissionUpdate" />
+    <result column="BOARD_POPUP"        jdbcType="DECIMAL" property="boardPopup" /> 
+    <result column="FILE_ATTACH_OPTION" jdbcType="DECIMAL" property="fileAttachOption" />
+    <result column="ALLOW_TYPE"         jdbcType="VARCHAR" property="allowType" /> 
+    <result column="PORTAL_ID"          jdbcType="VARCHAR" property="portalId" />
+    <result column="REGISTER_ID"        jdbcType="VARCHAR" property="registerId" />
+    <result column="REGISTER_NAME"      jdbcType="VARCHAR" property="registerName" />
+    <result column="REGIST_DATE"        jdbcType="DATE"    property="registDate" />
+    <result column="UPDATER_ID"         jdbcType="VARCHAR" property="updaterId" />
+    <result column="UPDATER_NAME"       jdbcType="VARCHAR" property="updaterName" />
+    <result column="UPDATE_DATE"        jdbcType="DATE"    property="updateDate" />
+    <result column="IS_DELETE"          jdbcType="DECIMAL"    property="isDelete" />
+  </resultMap>                          
+  <resultMap id="boardIndentationResult" extends="boardResult" class="com.lgcns.ikep4.collpack.kms.admin.model.Board"> 
+    <result column="INDENTATION" jdbcType="VARCHAR" property="indentation" /> 
+    <result column="HAS_CHILDREN" jdbcType="DECIMAL" property="hasChildren" />
+  </resultMap> 
+  <resultMap id="boardResultEx" extends="boardResult"  class="com.lgcns.ikep4.collpack.kms.admin.model.Board">  
+    <result column="HAS_CHILDREN" jdbcType="DECIMAL" property="hasChildren" />
+  </resultMap> 
+ 
+
+  <sql id="sqlColumnList">
+	BOARD_ID, 
+    BOARD_PARENT_ID,
+    SORT_ORDER, 
+    BOARD_NAME, 
+    BOARD_ROOT_ID, 
+    DESCRIPTION, 
+    BOARD_TYPE, 
+    IS_KNOWHOW,
+    URL, 
+    URL_POPUP,
+    LIST_TYPE, 
+    RSS, 
+    FILE_SIZE, 
+    IMAGE_FILE_SIZE, 
+    IMAGE_WIDTH, 
+    PAGE_NUM, 
+    DOC_POPUP, 
+    REPLY, 
+    LINEREPLY, 
+    RESTRICTION_TYPE, 
+    VERSION_MANAGE,
+    WIKI,
+    MOVE,    
+    WRITE_PERMISSION, 
+    ITEM_PERMISSION_UPDATE, 
+    BOARD_POPUP,     
+    FILE_ATTACH_OPTION,
+    ALLOW_TYPE,        
+    PORTAL_ID, 
+    REGISTER_ID, 
+    REGISTER_NAME, 
+    REGIST_DATE, 
+    UPDATER_ID, 
+    UPDATER_NAME, 
+    UPDATE_DATE,
+    IS_DELETE
+  </sql>   
+	
+	<!-- ANSI -->
+	<select id="listByBoardRootId" parameterClass="Map" resultClass="kmsBoard">
+		SELECT /* [AdminBoardManage_SqlMap.xml] collpack.kms.admin.dao.AdminBoardManage.listByBoardRootId */ 
+			BOARD_ID		boardId,			
+			BOARD_PARENT_ID	boardParentId,
+			BOARD_NAME		boardName,
+			BOARD_TYPE		boardType,
+			IS_KNOWHOW		isKnowHow,
+			URL				url,
+			URL_POPUP		urlPopup,
+			LIST_TYPE		listType,
+			URL_POPUP		urlPopup,
+			PORTAL_ID		portalId,
+			SORT_ORDER		sortOrder,
+			BOARD_ROOT_ID	boardRootId
+		FROM
+			IKEP4_KMS_BD_BOARD
+		WHERE
+			BOARD_ROOT_ID = #boardRootId# 
+			AND IS_DELETE =0
+			AND IS_KNOWHOW = #isKnowHow#
+		ORDER BY 
+			SORT_ORDER ASC
+	</select>	
+	  
+	<!-- ANSI -->
+  <select id="listChildrenBoard" parameterClass="Map" resultMap="boardResultEx">
+	SELECT /* [AdminBoardManage_SqlMap.xml] collpack.kms.admin.dao.AdminBoardManage.listChildrenBoard */ 
+	<include refid="collpack.kms.admin.dao.AdminBoardManage.sqlColumnList"/>,
+	       (SELECT COUNT(*) FROM IKEP4_KMS_BD_BOARD B WHERE A.BOARD_ID = B.BOARD_PARENT_ID) AS HAS_CHILDREN
+    FROM   IKEP4_KMS_BD_BOARD A
+    <isNotEmpty property="boardId">
+		WHERE BOARD_PARENT_ID = #boardId#
+	</isNotEmpty>
+    <isEmpty property="boardId">
+		WHERE BOARD_PARENT_ID IS NULL
+	</isEmpty>
+	AND IS_DELETE=0
+	AND IS_KNOWHOW = #isKnowHow#
+    ORDER BY SORT_ORDER ASC
+  </select>	
+  
+    <!-- ANSI -->
+  <select id="get" parameterClass="Map" resultMap="boardResult">
+    SELECT /* [AdminBoardManage_SqlMap.xml] collpack.kms.admin.dao.AdminBoardManage.readBoard */ 
+    <include refid="collpack.kms.admin.dao.AdminBoardManage.sqlColumnList" />
+    FROM  IKEP4_KMS_BD_BOARD
+    WHERE BOARD_ID = #boardId#
+    AND IS_KNOWHOW = #isKnowHow#
+  </select>  
+
+	<!-- MS SQL -->
+	<select id="getParents" parameterClass="Map" resultMap="boardResult">
+		WITH CTE AS (
+			SELECT	1 LEV,
+					*
+			FROM	IKEP4_KMS_BD_BOARD
+			WHERE	BOARD_ID =  #boardId#
+				AND IS_KNOWHOW = #isKnowHow#
+			UNION ALL
+			SELECT	LEV + 1,
+					B.*
+			FROM	IKEP4_KMS_BD_BOARD B, CTE
+			WHERE	CTE.BOARD_PARENT_ID = B.BOARD_ID
+				AND B.IS_KNOWHOW = #isKnowHow#
+		)
+		SELECT /* [AdminBoardManage_SqlMap.xml] collpack.kms.admin.dao.AdminBoardManage.getParents */
+		<include refid="collpack.kms.admin.dao.AdminBoardManage.sqlColumnList" />  
+		FROM CTE
+		ORDER BY LEV DESC
+	</select>  
+	
+	
+  <!-- ANSI -->
+  <update id="update" parameterClass="kmsBoard">
+    UPDATE IKEP4_KMS_BD_BOARD /* [AdminBoardManage_SqlMap.xml] collpack.kms.admin.dao.AdminBoardManage.update */
+    SET    
+    	BOARD_ID           =  #boardId#,
+		BOARD_PARENT_ID    =  #boardParentId#,
+		SORT_ORDER         =  #sortOrder#,
+		BOARD_NAME         =  #boardName#,
+		BOARD_ROOT_ID      =  #boardRootId#,
+        DESCRIPTION  	   =  #description#,
+        BOARD_TYPE         =  #boardType#,
+        URL                =  #url#,
+        URL_POPUP		=	#urlPopup#,  
+        LIST_TYPE          =  #listType#,        
+        RSS                =  #rss#,
+        FILE_SIZE          =  #fileSize#,
+        IMAGE_FILE_SIZE    =  #imageFileSize#,
+        IMAGE_WIDTH        =  #imageWidth#,
+        PAGE_NUM           =  #pageNum#,
+        DOC_POPUP          =  #docPopup#,
+        REPLY              =  #reply#,
+        LINEREPLY          =  #linereply#,
+        RESTRICTION_TYPE   =  #restrictionType#,
+        VERSION_MANAGE	=	#versionManage#,
+        WIKI			=	#wiki#,
+        MOVE			=	#move#,
+        ITEM_PERMISSION_UPDATE	=	#itemPermissionUpdate#,
+        WRITE_PERMISSION   =  #writePermission#, 
+        BOARD_POPUP        =  #boardPopup#,
+		FILE_ATTACH_OPTION =  #fileAttachOption#,   
+		ALLOW_TYPE         =  #allowType#,  
+        PORTAL_ID          =  #portalId#, 
+        UPDATER_ID         =  #updaterId#,
+        UPDATER_NAME       =  #updaterName#,
+        UPDATE_DATE        =  CURRENT_TIMESTAMP  
+    WHERE  BOARD_ID = #boardId# AND IS_KNOWHOW = #isKnowHow#
+  </update> 	
+  
+<!-- ANSI -->
+  <update id="updateSortOderIncrease" parameterClass="kmsBoard">
+    UPDATE IKEP4_KMS_BD_BOARD /* [AdminBoardManage_SqlMap.xml] collpack.kms.admin.dao.AdminBoardManage.updateSortOderIncrease */
+    SET    SORT_ORDER      =  SORT_ORDER + 1
+    WHERE  1 = 1
+    <isEmpty property="boardParentId">
+    AND  BOARD_PARENT_ID IS NULL
+    </isEmpty>
+    <isNotEmpty property="boardParentId">
+    AND  BOARD_PARENT_ID = #boardParentId#
+    </isNotEmpty>
+    AND    IS_KNOWHOW = #isKnowHow#
+    AND    SORT_ORDER &gt;= #sortOrder#
+  </update> 
+   
+  <update id="updateSortOderDecrease" parameterClass="kmsBoard">
+    UPDATE IKEP4_KMS_BD_BOARD /* [AdminBoardManage_SqlMap.xml] collpack.kms.admin.dao.AdminBoardManage.updateSortOderDecrease */
+    SET    SORT_ORDER      =  SORT_ORDER - 1
+    WHERE  1 = 1
+    <isEmpty property="boardParentId">
+    AND  BOARD_PARENT_ID IS NULL
+    </isEmpty>
+    <isNotEmpty property="boardParentId">
+    AND  BOARD_PARENT_ID = #boardParentId#
+    </isNotEmpty>
+    AND  IS_KNOWHOW = #isKnowHow#
+    AND  SORT_ORDER &gt; #sortOrder#
+  </update>    
+  
+<!-- ANSI -->
+  <update id="updateMove" parameterClass="kmsBoard">
+    UPDATE IKEP4_KMS_BD_BOARD /* [AdminBoardManage_SqlMap.xml] collpack.kms.admin.dao.AdminBoardManage.updateMove */
+    SET    
+	   	<isEmpty property="boardParentId">
+	   	BOARD_PARENT_ID  =  NULL,
+	   	</isEmpty>
+	   	<isNotEmpty property="boardParentId">
+	   	BOARD_PARENT_ID  =  #boardParentId#,
+	   	</isNotEmpty>   	
+           SORT_ORDER       =  #sortOrder#, 
+           UPDATER_ID       =  #updaterId#,
+           UPDATER_NAME     =  #updaterName#,
+           UPDATE_DATE      =  CURRENT_TIMESTAMP  
+    WHERE  BOARD_ID = #boardId# AND IS_KNOWHOW = #isKnowHow#
+  </update>     
+  
+  <delete id="logicalDelete" parameterClass="Map">
+		UPDATE IKEP4_KMS_BD_BOARD /* [AdminBoardManage_SqlMap.xml] collpack.kms.admin.dao.AdminBoardManage.logicalDelete */
+			SET IS_DELETE = 1
+		WHERE
+			BOARD_ID = #boardId# AND IS_KNOWHOW = #isKnowHow#
+ </delete>
+ 
+ <!-- MS SQL -->
+  <insert id="create" parameterClass="kmsBoard">
+    INSERT INTO IKEP4_KMS_BD_BOARD ( /* [AdminBoardManage_SqlMap.xml] collpack.kms.admin.dao.AdminBoardManage.insert */
+     <include refid="collpack.kms.admin.dao.AdminBoardManage.sqlColumnList" />
+    ) VALUES (
+      #boardId#,
+                  
+      <isEmpty property="boardParentId">
+      	NULL,
+      </isEmpty>
+      <isNotEmpty property="boardParentId">
+      	#boardParentId#,   
+      </isNotEmpty>
+       
+      <isNotEmpty property="boardParentId">
+			 (SELECT ISNULL(MAX(SORT_ORDER), -1) + 1 FROM IKEP4_KMS_BD_BOARD WHERE BOARD_PARENT_ID = #boardParentId#),  
+	  </isNotEmpty>
+      <isEmpty property="boardParentId">
+			 (SELECT ISNULL(MAX(SORT_ORDER), -1) + 1 FROM IKEP4_KMS_BD_BOARD WHERE BOARD_PARENT_ID IS NULL AND IS_KNOWHOW = #isKnowHow# AND IS_DELETE = '0'),  
+	  </isEmpty>  
+	  
+      #boardName#,        
+      #boardRootId#,      
+      #description#, 
+      #boardType#,
+      #isKnowHow#,        
+      #url#, 
+      #urlPopup#,   
+      #listType#,
+      #rss#,    
+      #fileSize#,         
+      #imageFileSize#,    
+      #imageWidth#,       
+      #pageNum#,
+      #docPopup#,         
+      #reply#,  
+      #linereply#,        
+      #restrictionType#,
+      #versionManage#,
+      #wiki#,
+      #move#,
+      #writePermission#,
+      #itemPermissionUpdate#, 
+      #boardPopup#, 
+      #fileAttachOption#,  
+      #allowType#, 
+      #portalId#,         
+      #registerId#,       
+      #registerName#,     
+      CURRENT_TIMESTAMP,       
+      #updaterId#,        
+      #updaterName#,      
+      CURRENT_TIMESTAMP,
+      0
+    )
+  </insert>  	
+  
+</sqlMap>

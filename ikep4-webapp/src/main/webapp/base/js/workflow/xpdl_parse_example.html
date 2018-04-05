@@ -1,0 +1,771 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>XPDL Parser Javascript Library Sample~~</title>
+<link rel="stylesheet" type="text/css" href="../../css/guide.css" />
+<link rel="stylesheet" type="text/css" href="../../css/theme01/jquery_ui_custom.css" />
+<link rel="stylesheet" type="text/css" href="../../css/common.css" />
+<link rel="stylesheet" type="text/css" href="../../css/theme01/theme.css" />
+
+<script type="text/javascript" src="../jquery/jquery-1.5.1.min.js"></script>
+<script type="text/javascript" src="../jquery/jquery-ui-1.8.7.custom.min.js"></script>
+<script type="text/javascript" src="../jquery/json.min.js"></script>
+<script type="text/javascript" src="../common.pack.js"></script>
+<script type="text/javascript" src="xmlUtil.js"></script>
+<script type="text/javascript" src="xpdl.js"></script>
+
+<script type="text/javascript"><!--
+
+$jq(document).ready(function() {
+	
+	// XPDL 정보 최초 로드
+	var xpdlDOM;
+	//xpdlDOM = getInitXPDLDom("xpdl_sample_v1.xml");
+	initialzeXPDLDom(xpdlDOM, "iKEP_SAMPLE_V01", "샘플 프로세스","1.0","This is a workflow process");
+	//createProcessInfo();			프로세스 기본 정보 DIV 및 프로세스 변수 DIV 생성 함수
+	
+	//WorkflowProcess Element 새로 생성
+	//xpdl.createWorkflowProcess(document.getElementById("processInfo"));
+	
+	//WorkflowPsetProcessParticipantslaceWorkflowProcess(document.getElementById("processInfo"));
+	
+	//alert(xmlStr(xmlUtil.getDocument()));
+	
+});
+
+
+function initialzeXPDLDom(xpdlDOM, processId, processName, processVersion, processDescription) {
+	// create xpdlDOM & xmlUtil Object
+	if(xpdlDOM == undefined) {
+		createDefaultXPDLDom(processId, processName, processVersion, processDescription);
+	} else {
+		createXPDLDom(xpdlDOM);
+	}
+}
+
+function createProcessInfo() {
+	createProcessDefaultInfo();	// 프로세스 기본 DIV 생성
+	createProcessVariables();	// 프로세스 변수 DIV 생성
+}
+
+function createProcessDefaultInfo() {
+	var processId = xmlUtil.selectSingleNode("//xpdl:WorkflowProcesses/xpdl:WorkflowProcess/@Id");
+	var processName = xmlUtil.selectSingleNode("//xpdl:WorkflowProcesses/xpdl:WorkflowProcess/@Name");
+	var processDescription = xmlUtil.selectSingleNode("//xpdl:WorkflowProcesses/xpdl:WorkflowProcess/xpdl:ProcessHeader/xpdl:Description");
+	var processVersion = xmlUtil.selectSingleNode("//xpdl:WorkflowProcesses/xpdl:WorkflowProcess/xpdl:RedefinableHeader/xpdl:Version");
+	
+	// create processDefaultInfo DIV Method 생성
+	alert(processId.nodeValue);
+	alert(processName.nodeValue);
+	alert(processDescription.firstChild.nodeValue);
+	alert(processVersion.firstChild.nodeValue);
+}
+
+function createProcessVariables() {
+	// create processVariables DIV Method 생성을 위한 데이터 추출
+	var dataFieldNodes = xmlUtil.selectNodes("//xpdl:WorkflowProcesses/xpdl:WorkflowProcess/xpdl:DataFields/xpdl:DataField");
+	var formalParameterNodes = xmlUtil.selectNodes("//xpdl:WorkflowProcesses/xpdl:WorkflowProcess/xpdl:FormalParameters/xpdl:FormalParameter");	
+	
+	if(dataFieldNodes.length > 0) {
+		// 전체 변수 목록
+	    for(var i=0; i < dataFieldNodes.length; i++) {
+			alert(dataFieldNodes[i].getAttribute("Id") + ":"
+				+ dataFieldNodes[i].getAttribute("Name") + ":"
+				+ dataFieldNodes[i].getAttribute("IsArray") + ":"
+				+ dataFieldNodes[i].getElementsByTagName("BasicType")[0].getAttribute("Type"));
+		}
+		// 변수중 IN/OUT 여부 체크
+		for(var i=0; i < formalParameterNodes.length; i++) {
+			alert(formalParameterNodes[i].getAttribute("Id") + ":"
+			    + formalParameterNodes[i].getAttribute("Mode") + ":"
+			    + formalParameterNodes[i].getAttribute("IsArray") + ":"
+			    + formalParameterNodes[i].getElementsByTagName("BasicType")[0].getAttribute("Type")
+			     );
+		}
+	} else {
+		alert("변수없음");
+	}
+}
+
+// 프로세스 기본 정보 신규/수정 (append, remove)
+function applyProcessDefaultInfo(action) {
+	
+	var process = new Array();
+	process["id"] = $jq("#processDefaultInfo").find("input[name=processId]").val();
+	process["name"] = $jq("#processDefaultInfo").find("input[name=processName]").val();
+	process["version"] = $jq("#processDefaultInfo").find("input[name=processVersion]").val();
+	process["description"] = $jq("#processDefaultInfo").find("textarea[name=processDescription]").val();
+	
+	// processName, processDescription 반영
+	xpdl.setProcessDefaultInfo(process, action);
+}
+
+// 프로세스 변수 설정 (action : append, replace, remove)
+function applyProcessVariable(action) {
+	if(action == 'remove') {
+		var processVariableIds = new Array();
+		
+		processVariableIds[0] = "111";
+		processVariableIds[1] = "222";
+		
+		xpdl.removeProcessVariables(processVariableIds);
+	} else {
+		
+		var processVariable = new Array();
+		
+		processVariable["id"] = $jq("#processVariable").find("input[name=processVariableId]").val();
+		processVariable["name"] = $jq("#processVariable").find("input[name=processVariableName]").val();
+		processVariable["mode"] = $jq("#processVariable").find("select[name=processVariableMode]").val();
+		processVariable["type"] = $jq("#processVariable").find("select[name=processVariableType]").val();
+		processVariable["isArray"] = $jq("#processVariable").find("select[name=processVariableIsArray]").val();
+		processVariable["isKey"] = $jq("#processVariable").find("input[name=isProcessKey]")[0].checked;
+		processVariable["keyIndex"] = $jq("#processVariable").find("select[name=processKeyIndex]").val();
+		
+		// variable Id, variable Name, variable Type, variable isArray, variable mode(IN/OUT/INOUT), isProcessKey, processKeyIndex
+		xpdl.setProcessVariable(processVariable, action);
+	}
+}
+
+// Activity 기본정보 신규/수정/변경(action : append, replace, delete)
+function applyActivityDefaultInfo(action) {
+	
+	var $activityDefaultInfo = $jq("#activityDefaultInfo");
+	
+	
+	var activity = new Array();
+	activity["id"] = $jq("#activityDefaultInfo").find("input[name=activityId]").val();
+	activity["name"] = $jq("#activityDefaultInfo").find("input[name=activityName]").val();
+	activity["type"] = $jq("#activityDefaultInfo").find("select[name=activityType]").val();
+	activity["gatewayType"] = $jq("#activityDefaultInfo").find("select[name=gatewayType]").val();
+	activity["startMode"] = $jq("#activityDefaultInfo").find("input[name=startMode]").val();
+	activity["finishMode"] = $jq("#activityDefaultInfo").find("input[name=finishMode]").val();
+	
+	if(action == 'replace') {	// 수정할 경우만 들어감.
+		activity["description"] = $jq("#activityDefaultInfo").find("textarea[name=activityDescription]").val();
+		activity["priority"] = $jq("#activityDefaultInfo").find("select[name=activityPriority]").val();
+	}
+	
+	xpdl.setActivityDefaultInfo(activity, action);
+}
+
+// Activity 변수 설정 (mode : in, out) (action : append, remove)
+function applyActivityVariable(mode, activityId, action) {
+	var activityVariableIds = new Array();
+	
+	activityId = $jq("#activityVariable").find("input[name='activityId']").val();
+	
+	$jq("input[name='activityVariableId']").each(function(i) {
+		activityVariableIds[i] = $jq(this).val();
+	});
+	
+	xpdl.setActivityVariables(mode, activityId, activityVariableIds, action);
+}
+
+
+// 여기서 부터 수정
+// Activity Advanced Info 관련하여 메소드 변경 (append, replace, delete 형식으로)
+// Activity 고급 정보 (Duration 설정)
+function applyActivityAdvanceInfo(activityId) {
+	
+	activityId = $jq("#activityAdvanceInfo").find("input[name='activityId']").val();
+	
+	var activityAdvance = new Array();
+	activityAdvance["activityId"] = activityId;
+	activityAdvance["isDeadline"] = $jq("#activityAdvanceInfo").find("input[name=isDeadline]")[0].checked;
+	
+	// durationType : radio type
+	activityAdvance["durationType"] = $jq("#activityAdvanceInfo").find("input[name=duration]:checked")[0].value;
+	
+	// durationType 이 durationDay 일 경우만 활성화
+	activityAdvance["day"] = $jq("#activityAdvanceInfo").find("input[name=day]").val();
+	activityAdvance["hour"] = $jq("#activityAdvanceInfo").find("input[name=hour]").val();
+	activityAdvance["minutes"] = $jq("#activityAdvanceInfo").find("input[name=minutes]").val();
+	
+	// durationType 이 variable 일 경우만 활성화
+	activityAdvance["durationVariable"] = $jq("#activityAdvanceInfo").find("input[name=durationVariable]").val();
+	
+	activityAdvance["url"] = $jq("#activityAdvanceInfo").find("input[name=activityUrl]").val();
+	
+	xpdl.setActivityAdvanceInfo(activityAdvance);
+}
+
+function applyActivityNotificationInfo(activityId, action) {
+
+	
+	activityId = $jq("#activityNotification").find("input[name='activityId']").val();
+	
+	var activityNotification = new Array();
+	activityNotification["activityId"] = activityId;
+	activityNotification["id"] = $jq("#activityNotification").find("input[name=notificationId]").val();
+	activityNotification["type"] = $jq("#activityNotification").find("select[name=notificationType]").val();
+	activityNotification["state"] = $jq("#activityNotification").find("select[name=activityState]").val();
+    activityNotification["trigger"] = $jq("#activityNotification").find("select[name=trigger]").val();
+    
+    activityNotification["day"] = $jq("#activityNotification").find("input[name=day]").val();
+    activityNotification["hour"] = $jq("#activityNotification").find("input[name=hour]").val();
+    activityNotification["minutes"] = $jq("#activityNotification").find("input[name=minutes]").val();
+	
+ 	// Email
+ 	if(activityNotification.type == 'EMAIL') {
+ 		activityNotification["to"] = $jq("#activityNotification").find("input[name=to]").val();
+ 		activityNotification["to_type"] = $jq("#activityNotification").find("select[name=to_type]").val();
+ 	    
+ 		activityNotification["cc"] = $jq("#activityNotification").find("input[name=cc]").val();
+ 	    activityNotification["cc_type"] = $jq("#activityNotification").find("select[name=cc_type]").val();
+ 	    
+ 	    activityNotification["bcc"] = $jq("#activityNotification").find("input[name=bcc]").val();
+ 	    activityNotification["bcc_type"] = $jq("#activityNotification").find("select[name=bcc_type]").val();
+ 	} else if (activityNotification.type == 'SMS') {
+ 		activityNotification["from"] = $jq("#activityNotification").find("input[name=from]").val();
+ 	    activityNotification["from_type"] = $jq("#activityNotification").find("select[name=from_type]").val();
+ 	    activityNotification["to"] = $jq("#activityNotification").find("input[name=to]").val();
+	    activityNotification["to_type"] = $jq("#activityNotification").find("select[name=to_type]").val();
+ 	}
+ 	
+    activityNotification["title"] = $jq("#activityNotification").find("input[name=title]").val();
+    activityNotification["body"] = $jq("#activityNotification").find("textarea[name=body]").val();
+    
+    xpdl.setActivityNotification(activityNotification, action)
+}
+
+
+function applyParticipants(action) {
+	
+	/* 
+	var participants = new Array();
+	for(var i=0; i < $participantsInfo.find("input[name='participantId']").length; i++) {
+		var participant = new Array();
+		
+		participant[$participantsInfo.find("input[name='participantId']").get(i).name] = $participantsInfo.find("input[name='participantId']").get(i).value;
+		participant[$participantsInfo.find("input[name='participantValue']").get(i).name] = $participantsInfo.find("input[name='participantValue']").get(i).value;
+		participant[$participantsInfo.find("input[name='participantName']").get(i).name] = $participantsInfo.find("input[name='participantName']").get(i).value;
+		participant[$participantsInfo.find("select[name='participantType']").get(i).name] = $participantsInfo.find("select[name='participantType']").get(i).value;
+		participants[i] = participant;
+	}
+	
+	//JSON Object 생성
+	var participants_json =  {
+						  "participants" : participants
+	                    };
+	
+	 */
+	 // 테스트용 데이터 생성
+	 for(var i=0; i < $jq("#participantsInfo").find("input[name='participantId']").length; i++) {
+		 var participant = new Array();
+			participant["id"] = $jq("#participantsInfo").find("input[name='participantId']").get(i).value;
+			participant["value"] = $jq("#participantsInfo").find("input[name='participantValue']").get(i).value;
+			participant["name"] = $jq("#participantsInfo").find("input[name='participantName']").get(i).value;
+			participant["type"] = $jq("#participantsInfo").find("select[name='participantType']").get(i).value;
+			
+			// 프로세스 참여자 설정 및 삭제
+			xpdl.setProcessParticipant(participant, action);
+	 }
+}
+
+function getParticipants(activityId) {
+	// 프로세스 참여자 목록 가져옴
+	// activity 가 가지고 있는 Performer 가 잇을 경우 체크
+}
+
+function applyActivityPerformers(activityId, action) {
+	// action : append, remove
+	
+	activityId = $jq("#participantsInfo").find("input[name='activityId']").val();
+	
+	var participantIds = new Array();
+	$jq("input[name='participantId']").each(function(i) {
+		participantIds[i] = $jq(this).val();
+	});
+	
+	xpdl.setActivityPerformers(activityId, participantIds, action);
+}
+
+function applyTransition(action) {
+	// action : append, replace, delete
+	
+	var transition = new Array();
+	transition["id"] =  $jq("#transitionInfo").find("input[name='transitionId']").val();
+	transition["conditionType"] =  $jq("#transitionInfo").find("input[name='transitionConditionType']:checked")[0].value;
+	transition["name"] =  $jq("#transitionInfo").find("input[name='transitionName']").val();
+	transition["conditionExpression"] =  $jq("#transitionInfo").find("input[name='transitionConditionExpression']").val();
+	transition["from"] =  $jq("#transitionInfo").find("input[name='transitionFrom']").val();
+	transition["to"] =  $jq("#transitionInfo").find("input[name='transitionTo']").val();
+	transition["description"] =  $jq("#transitionInfo").find("textarea[name='transitionDescription']").val();
+	
+	xpdl.setTransition(transition, action);
+}
+
+function convertToJqueryObjectFromArray() {
+	var array = [ "one", "two", "three", "four", "five" ];
+	
+	var $jobj = $jq(array);
+	
+	$jobj.each(function() {
+		alert(this);
+	});
+	
+}
+
+// PRISM 에서 Activity와 라인(Transition) 을 같이 삭제할 경우 호출함.
+// components 라는 ArrayList 에 component.type, component.id 를 HashMap 형태로
+// 넣어 전달함.
+function removeProcessComponents(components) {
+	
+	// Test 데이터 시작
+	components = new Array();
+	
+	var component = new Array();
+	component["type"] = "transition";
+	component["id"] = "transition_1";
+	components[0] = component;
+	
+	var component = new Array();
+	component["type"] = "activity";
+	component["id"] = "activity_1";
+	components[1] = component;
+	// Test 데이터 종료
+	
+	// Components(activity, transition) 다중 삭제
+	xpdl.removeProcessComponents(components);
+}
+
+function handleArrayByJquery() {
+	var array = [ "one", "two", "three", "four", "five" ];
+	var object = { one:1, two:2, three:3, four:4, five:5 };
+
+	$jq.each(array, function() {
+	    alert(this);
+	});
+
+	$jq.each(object, function(i, value) {
+		alert(i+': '+value);
+	});
+}
+
+function domObjWithJson() {
+	var xml = "<datas><data>111</data><data>222</data><data>333</data></datas>";
+
+	var domObj = xmlDOM(xml);
+	
+	
+	
+	
+	
+	var data_json =  {
+			  "domobj" : domObj, "data1" : "111", "data2" : 222
+          };
+	
+	alert(data_json.domobj);
+	alert(xmlStr(data_json.domobj[0]));
+	alert(data_json.data1);
+	alert(data_json.data2);
+	
+}
+
+function getXPDL() {
+	$jq("#xpdl_source").val(formatXml(xmlStr(xmlUtil.getDocument())));
+	var dialog1 = $jq("#xpdl_source").dialog({title:"XPDL Source", modal:true, width:650, height:600}); 
+}
+
+--></script>
+</head>
+<body>
+<textarea id="xpdl_source" rows="50" cols="100" style="display: none"></textarea>
+<input type="button" value="View XPDL Source" onClick="getXPDL()"> 
+<input type="button" value="Remove Process Components" onClick="removeProcessComponents()"> 
+<input type="button" value="Dom Object With Json" onClick="domObjWithJson()">
+<input type="button" value="Get Date From ISO Duration" onClick="getDateFromISODuration('P1DT2H3M')">
+<br><br>
+<table border="1">
+ 	<thead bgcolor="green">
+ 		<tr><th colspan="2"><font color="#FFFFFF">Process Default Info</font></th></tr>
+ 	</thead>
+ 	<tbody>
+ 		<tr><td bgcolor="green"><font color="#FFFFFF">프로세스 ID</font></td><td>iKEP_SAMPLE_V01</td></tr>
+		<tr><td bgcolor="green"><font color="#FFFFFF">프로세스 명</font></td><td>샘플 프로세스</td></tr>
+ 		<tr><td bgcolor="green"><font color="#FFFFFF">프로세스 버전</font></td><td>1.0</td></tr>
+ 		<tr><td bgcolor="green"><font color="#FFFFFF">프로세스 설명</font></td><td>This is a workflow process adfasfd</td></tr>
+ 	</tbody>
+</table>
+<br>
+<table border="1">
+  	<thead bgcolor="green">
+  		<tr><th colspan="2"><font color="#FFFFFF">Process Variables Info</font></th></tr>
+  	</thead>
+  	<tbody>
+  	  	<tr><td bgcolor="green"><font color="#FFFFFF">변수</font></td>
+  		    <td>var_1</td>
+  		    <td>변수 1</td>
+  		    <td>TRUE</td>
+  		    <td>STRING</td>
+  		    <td>IN</td>
+  		</tr>
+  		<tr><td bgcolor="green"><font color="#FFFFFF">변수</font></td>
+  		    <td>var_2</td>
+  		    <td>변수 2</td>
+  		    <td>FALSE</td>
+  		    <td>STRING</td>
+  		    <td>OUT</td>
+  		</tr>
+  		<tr><td bgcolor="green"><font color="#FFFFFF">변수</font></td>
+  		    <td>var_3</td>
+  		    <td>변수 3</td>
+  		    <td>TRUE</td>
+  		    <td>STRING</td>
+  		    <td>&nbsp;</td>
+  		</tr>
+  	</tbody>
+</table>
+<br>
+<div id="processDefaultInfo"> 
+    <table border="1">
+	    <thead bgcolor="green">
+	  		<tr><th colspan="4"><font color="#FFFFFF">Modify Process Default Info Popup</font></th></tr>
+	  	</thead>
+		<tbody>
+		  <tr>
+		    <td bgcolor="green"><font color="#FFFFFF">프로세스 ID</font></td><td>iKEP_SAMPLE_V01<input type="hidden" name="processId" value="iKEP_SAMPLE_V01"/></td>
+		  </tr>
+		  <tr>
+		    <td bgcolor="green"><font color="#FFFFFF">프로세스 명</font></td><td><input name="processName" type="text" value="샘플 프로세스" size="100"/></td>
+		  </tr>
+		  <tr>
+		    <td bgcolor="green"><font color="#FFFFFF">프로세스 버전</font></td><td>1.0<input type="hidden" name="processVersion" value="1.0"/></td>
+		  </tr>
+		  <tr>
+		    <td bgcolor="green"><font color="#FFFFFF">프로세스 설명</font></td><td><textarea name="processDescription" cols="50"  rows="2">This is a workflow process</textarea></td>
+		  </tr>
+		</tbody>
+	  </table>
+	  <table>
+	    <tr><td align="right"><input type="button" name="적용" value="적용" onClick="applyProcessDefaultInfo()"></td></tr>
+	  </table>
+</div>
+<br>
+<div id="processVariable">
+  <table border="1">
+    <thead bgcolor="green">
+	  <tr><th colspan="2"><font color="#FFFFFF">Modify Process Variable Popup</font></th></tr>
+	</thead>
+	<tbody>
+	  <tr>
+	   <td bgcolor="green"><font color="#FFFFFF">변수 아이디</font></td><td><input name="processVariableId" type="text" value="var1" size="50"/></td>
+	  </tr>
+	  <tr>
+	   <td bgcolor="green"><font color="#FFFFFF">변수 명</font></td><td><input name="processVariableName" type="text" value="변수 1" size="50"/></td>
+	  </tr>
+	  <tr>
+	   <td bgcolor="green"><font color="#FFFFFF">변수 유형</font></td>
+	   <td>
+	   <select name="processVariableType">
+	   	 <option value="STRING">STRING</option>
+	   	 <option value="DATE">DATE</option>
+	   	 <option value="INT">INT</option>
+	   </select>
+	   </td>
+	  </tr>
+	  <tr>
+	   <td bgcolor="green"><font color="#FFFFFF">변수 배열 여부</font></td>
+	   <td>
+	   <select name="processVariableIsArray">
+	   	 <option value="FALSE">FALSE</option>
+	   	 <option value="TRUE">TRUE</option>
+	   </select>
+	   </td>
+	  </tr>
+	  <tr>
+	   <td bgcolor="green"><font color="#FFFFFF">변수 파라미터</font></td>
+	   <td>
+	   <select name="processVariableMode">
+	     <option value="">없음</option>
+	   	 <option value="IN">IN</option>
+	   	 <option value="OUT">OUT</option>
+	   	 <option value="INOUT">INOUT</option>
+	   </select>
+	   </td>
+	  </tr>
+	  <tr>
+	   <td bgcolor="green"><font color="#FFFFFF">프로세스 키</font></td>
+	   <td><table border="0" width="100%">
+	         <tr>
+	           <td><input type="checkbox" name="isProcessKey"></td>
+	           <td bgcolor="green"><font color="#FFFFFF">Index</font></td>
+	           <td>
+	             <select name="processKeyIndex">
+				   <option value="1">1</option>
+				   <option value="2">2</option>
+				   <option value="3">3</option>
+				   <option value="4">4</option>
+				   <option value="5">5</option>
+				   <option value="6">6</option>
+				   <option value="7">7</option>
+				   <option value="8">8</option>
+				   <option value="9">9</option>
+				   <option value="10">10</option>
+				 </select>
+	           </td>
+	         </tr>
+	       </table></td>
+	  </tr>
+	</tbody>
+  </table>
+  <table>
+    <tr><td align="right"><input type="button" name="적용" value="추가" onClick="applyProcessVariable('append')"><input type="button" name="적용" value="수정" onClick="applyProcessVariable('replace')"><input type="button" name="적용" value="삭제" onClick="applyProcessVariable('remove')"></td></tr>
+  </table>
+</div>
+<br>
+<div id="activityDefaultInfo"> 
+  <input type="hidden" name="startMode" id="startMode" value="Manual"/>
+  <input type="hidden" name="finishMode" id="finishMode" value="Manual"/>
+    <table border="1">
+	    <thead bgcolor="green">
+	  		<tr><th colspan="4"><font color="#FFFFFF">Modify Activity Default Info Popup</font></th></tr>
+	  	</thead>
+		<tbody>
+		  <tr>
+		    <td bgcolor="green"><font color="#FFFFFF">액티비티 ID</font></td><td><input name="activityId" type="text" value="Activity_1" size="100"/></td>
+		  </tr>
+		  <tr>
+		    <td bgcolor="green"><font color="#FFFFFF">액티비티 명</font></td><td><input name="activityName" type="text" value="Activity 1" size="100"/></td>
+		  </tr>
+		  <tr>
+		    <td bgcolor="green"><font color="#FFFFFF">액티비티 유형</font></td><td><select name="activityType" id="activityType">
+		    						  <option value="HUMAN">HUMAN</option>
+		    						  <option value="START">START</option>
+		    						  <option value="END">END</option>
+		    						  <option value="GATEWAY">GATEWAY</option>
+		                            </select></td>
+		  </tr>
+		  <tr>
+		    <td bgcolor="green"><font color="#FFFFFF">게이트웨이 유형</font></td><td><select name="gatewayType" id="gatewayType">
+		    						  <option value="">아님</option>
+		    						  <option value="AND">AND</option>
+		    						  <option value="OR">OR</option>
+		                              <option value="XOR">XOR</option>
+		                            </select></td>
+		  </tr>
+		  <tr>
+		    <td bgcolor="green"><font color="#FFFFFF">우선순위</font></td><td><select name="activityPriority" id="activityPriority">
+		    						  <option value="100">100</option>
+		    						  <option value="50" selected>50</option>
+		    						  <option value="0">0</option>
+		                            </select></td>
+		  </tr>
+		  <tr>
+		    <td bgcolor="green"><font color="#FFFFFF">액티비티 설명</font></td><td><textarea name="activityDescription" cols="50"  rows="2">Activity 1 Description</textarea></td>
+		  </tr>
+		</tbody>
+	  </table>
+	  <table>
+	    <tr><td align="right"><input type="button" name="적용" value="추가" onClick="applyActivityDefaultInfo('append')"></td>
+	    <td align="right"><input type="button" name="적용" value="수정" onClick="applyActivityDefaultInfo('replace')"></td>
+	    <td align="right"><input type="button" name="삭제" value="삭제" onClick="applyActivityDefaultInfo('delete')"></td></tr>
+	  </table>
+</div>
+<br>
+<div id="activityVariable">
+  <table border="1">
+    <thead bgcolor="green">
+	  <tr><th colspan="5"><font color="#FFFFFF">Modify Activity Variable Popup</font>&nbsp<input type="text" name="activityId"></th></tr>
+	</thead>
+	<tbody>
+	  <!-- input 의 name 은 동일하게 유지함. -->
+	  <tr>
+	   <td bgcolor="green"><font color="#FFFFFF">변수 아이디</font></td><td><input name="activityVariableId" type="text" value="var1" size="50"/></td>
+	   <td bgcolor="green"><font color="#FFFFFF">변수 명</font></td><td><input name="activityVariableName" type="text" value="변수 1" size="50"/></td>
+	   <td><a href="javascript:applyActivityVariable('in', 'Activity_1', 'remove')">X</a></td>
+	  </tr>
+	  <tr>
+	   <td bgcolor="green"><font color="#FFFFFF">변수 아이디</font></td><td><input name="activityVariableId" type="text" value="var2" size="50"/></td>
+	   <td bgcolor="green"><font color="#FFFFFF">변수 명</font></td><td><input name="activityVariableName" type="text" value="변수 2" size="50"/></td>
+	   <td><a href="javascript:applyActivityVariable('out', 'Activity_1', 'remove')">X</a></td>
+	  </tr>
+	  <tr>
+	   <td bgcolor="green"><font color="#FFFFFF">변수 아이디</font></td><td><input name="activityVariableId" type="text" value="var3" size="50"/></td>
+	   <td bgcolor="green"><font color="#FFFFFF">변수 명</font></td><td><input name="activityVariableName" type="text" value="변수 3" size="50"/></td>
+	   <td><a href="javascript:applyActivityVariable('out', 'Activity_1', 'remove')">X</a></td>
+	  </tr>
+	</tbody>
+  </table>
+  <table>
+    <tr><td align="right"><input type="button" name="적용" value="INPUT" onClick="applyActivityVariable('in', 'Activity_1', 'append')"></td><td align="right"><input type="button" name="적용" value="OUTPUT" onClick="applyActivityVariable('out', 'Activity_1', 'append')"></td></tr>
+  </table>
+</div>
+<br>
+<div id="activityAdvanceInfo">
+  <table border="1">
+    <thead>
+	  <tr bgcolor="green"><th colspan="5"><font color="#FFFFFF">Modify Activity Advanced Settup Popup &nbsp; <input type="text" name="activityId"></font></th></tr>
+	  <tr bgcolor="black"><th colspan="5"><font color="#FFFFFF">Deadline</font></th></tr>
+	</thead>
+	<tbody>
+	  <tr>
+	   <td bgcolor="green"><font color="#FFFFFF">Dead Line</font></td><td><input type="checkbox" id="isDeadline" name="isDeadline"/></td>
+	  </tr>
+	  <tr>
+	   <td><input type="radio" name="duration" value="durationDay" checked>Duration Day</td><td>Day <input type="text" name="day"> Hour <input type="text" name="hour"> Minutes <input type="text" name="minutes"> </td>
+	  </tr>
+	  <tr>
+	   <td><input type="radio" name="duration" value="variable">Variable</td><td><input type="text" name="durationVariable"/></td>
+	  </tr>
+	</tbody>
+  </table>
+  <table border="1">
+    <thead>
+	  <tr bgcolor="black"><th colspan="5"><font color="#FFFFFF">Activity URL</font></th></tr>
+	</thead>
+	<tbody>
+	  <tr>
+	   <td bgcolor="green"><font color="#FFFFFF">URL</font></td><td><input type="text" id="activityUrl" name="activityUrl" size="80"/></td>
+	  </tr>
+	</tbody>
+  </table>
+  <table>
+    <tr><td align="right"><input type="button" name="적용" value="INPUT" onClick="applyActivityAdvanceInfo('Activity_1')"></td></tr>
+  </table>
+</div>
+<br>
+<div id="activityNotification">
+	<table border="1">
+    <thead>
+	  <tr bgcolor="green"><th colspan="4"><font color="#FFFFFF">Activity Notification Setup Popup</font> &nbsp; <input type="text" name="activityId"> &nbs; <input type="text" name="notificationId"></th></tr>
+	</thead>
+	<tbody>
+	  <tr>
+	   <td bgcolor="green"><font color="#FFFFFF">알림 유형</font></td><td><select name="notificationType">
+		    						  <option value="EMAIL">EMAIL</option>
+		    						  <option value="SMS">SMS</option>
+		                            </select></td>
+	  </tr>
+	  <tr>
+	   <td bgcolor="green"><font color="#FFFFFF">상태</font></td><td><select name="activityState">
+		    						  <option value="ASSIGN">ASSIGN(할당)</option>
+		    						  <option value="FINISH">FINISH(완료)</option>
+		    						  <option value="EXPIRE">EXPIRE(만료)</option>
+		                            </select></td>
+	  </tr>
+	  <tr>
+	   <td bgcolor="green"><font color="#FFFFFF">알림 시점</font></td><td><select name="trigger">
+		    						  <option value="NONE">NONE</option>
+		    						  <option value="BEFORE">BEFORE</option>
+		    						  <option value="AFTER">AFTER</option>
+		                            </select></td>
+	  </tr>
+	  <tr>
+	   <td bgcolor="green"><font color="#FFFFFF">기한</font></td><td>Day <input type="text" name="day"> Hour <input type="text" name="hour"> Minutes <input type="text" name="minutes"> </td>
+	  </tr>
+	  <tr>
+	   <td bgcolor="green"><font color="#FFFFFF">Email 수신자</font></td><td>To <input type="text" name="to"> <select name="to_type"><option value="participant">participant</option><option value="variable">variable</option></select> Cc <input type="text" name="cc"> <select name="cc_type"><option value="participant">participant</option><option value="variable">variable</option></select> Bcc <input type="text" name="bcc"> <select name="bcc_type"><option value="participant">participant</option><option value="variable">variable</option></select></td>
+	  </tr>
+	  <tr>
+	   <td bgcolor="green"><font color="#FFFFFF">SMS 수신자</font></td><td>From <input type="text" name="from"> <select name="from_type"><option value="participant">participant</option><option value="variable">variable</option></select> To <input type="text" name="to"> <select name="to_type"><option value="participant">participant</option><option value="variable">variable</option></select></td>
+	  </tr>
+	  <tr>
+	   <td bgcolor="green"><font color="#FFFFFF">메시지</font></td><td>제목 <input type="text" name="title">(SMS에는 안나타남) <br><br>내용 <textarea name="body" cols="30" rows="3" ></textarea> </td>
+	  </tr>
+	</tbody>
+  </table>
+  <table>
+    <tr><td align="right"><input type="button" name="적용" value="추가" onClick="applyActivityNotificationInfo('','append')"><input type="button" name="적용" value="수정" onClick="applyActivityNotificationInfo('','replace')"><input type="button" name="적용" value="삭제" onClick="applyActivityNotificationInfo('','delete')"></td></tr>
+  </table>
+</div>
+<br>
+<div id="participantsInfo">
+  <table border="1">
+    <thead>
+	  <tr bgcolor="green"><th colspan="4"><font color="#FFFFFF">Modify Activity Participants Settup Popup &nbsp; <input type="text" name="activityId"></font></th></tr>
+	  <tr bgcolor="black">
+	  <th><font color="#FFFFFF">아이디</font></th>
+	  <th><font color="#FFFFFF">참여자 유형</font></th>
+	  <th><font color="#FFFFFF">참여자 아이디(변수 아이디)</font></th>
+	  <th><font color="#FFFFFF">참여자 명(변수명)</font></th>
+	  </tr>
+	</thead>
+	<tbody>
+	  <tr>
+	   <td><input type="text" name="participantId" value=""/></td>
+	   <td><select name="participantType">participantId
+	         <option value="HUMAN" selected>HUMAN</option>
+	         <option value="SYSTEM">SYSTEM</option>
+	         <option value="ORGANIZATIONAL_UNIT">ORGANIZATIONAL_UNIT</option>
+	         <option value="ROLE">ROLE</option>
+	       </select></td>
+	   <td><input  type="text" name="participantValue" value="user1"/></td>
+	   <td><input type="text" name="participantName" value="사용자1"/></td>
+	  </tr>
+	  <tr>
+	   <td><input type="text" name="participantId" value=""/></td>
+	   <td><select name="participantType">
+	         <option value="HUMAN">HUMAN</option>
+	         <option value="SYSTEM" selected>SYSTEM</option>
+	         <option value="ORGANIZATIONAL_UNIT">ORGANIZATIONAL_UNIT</option>
+	         <option value="ROLE">ROLE</option>
+	       </select></td>
+	   <td><input type="text" name="participantValue" value="$var1"/></td>
+	   <td><input type="text" name="participantName" value="변수1"/></td>
+	  </tr>
+	  <tr>
+	   <td><input type="text" name="participantId" value=""/></td>
+	   <td><select name="participantType">
+	         <option value="HUMAN">HUMAN</option>
+	         <option value="SYSTEM">SYSTEM</option>
+	         <option value="ORGANIZATIONAL_UNIT" selected>ORGANIZATIONAL_UNIT</option>
+	         <option value="ROLE">ROLE</option>
+	       </select></td>
+	   <td><input type="text" name="participantValue" value="org1"/></td>
+	   <td><input type="text" name="participantName" value="조직1"/></td>
+	  </tr>
+	  <tr>
+	   <td><input type="text" name="participantId" value=""/></td>
+	   <td><select name="participantType">
+	         <option value="HUMAN">HUMAN</option>
+	         <option value="SYSTEM">SYSTEM</option>
+	         <option value="ORGANIZATIONAL_UNIT">ORGANIZATIONAL_UNIT</option>
+	         <option value="ROLE" selected>ROLE</option>
+	       </select></td>
+	   <td><input type="text" name="participantValue" value="role1"/></td>
+	   <td><input type="text" name="participantName" value="롤1"/></td>
+	  </tr>
+	</tbody>
+  </table>
+  <table>
+    <tr><td align="right"><input type="button" name="적용" value="추가" onClick="applyParticipants('append')"><input type="button" name="적용" value="삭제" onClick="applyParticipants('remove')"><input type="button" name="적용" value="참여자 전체 삭제" onClick="xpdl.removeProcessParticipants()"><input type="button" name="적용" value="액티비티에 참여자 추가" onClick="applyActivityPerformers('Activity_1', 'append')"><input type="button" name="적용" value="액티비티에 참여자 삭제" onClick="applyActivityPerformers('Activity_1', 'remove')"><input type="button" name="적용" value="잘못된 액티비티 참여자 제거" onClick="xpdl.removeInValidActivityPerformer()"></td></tr>
+  </table>
+</div>
+<br>
+<div id="transitionInfo">
+	<table border="1">
+    <thead>
+	  <tr bgcolor="green"><th colspan="4"><font color="#FFFFFF">Transition Settup Popup</font></th></tr>
+	</thead>
+	<tbody>
+	  <tr>
+	   <td>Transition Id<input type="text" name="transitionId" value=""/></td>
+	  </tr>
+	  <tr>
+	   <td><input type="radio" name="transitionConditionType" checked value="DEFAULT"/> Default <input type="radio" name="transitionConditionType" value="CONDITION"/> condition <input type="radio" name="transitionConditionType" value="OTHERWISE"/> Otherwise</td>
+	  </tr>
+	  <tr>
+	   <td>Transition Name <input type="text" name="transitionName"/></td>
+	  </tr>
+	  <tr>
+	   <td>Transition Condition <input type="text" name="transitionConditionExpression"/></td>
+	  </tr>
+	  <tr>
+	   <td>From <input type="text" name="transitionFrom"/></td>
+	  </tr>
+	  <tr>
+	   <td>To <input type="text" name="transitionTo"/></td>
+	  </tr>
+	  <tr>
+	   <td>Description <textarea name="transitionDescription" cols="50"  rows="2">Transition Description</textarea></td>
+	  </tr>
+	</tbody>
+  </table>
+  <table>
+    <tr><td align="right"><input type="button" name="적용" value="추가" onClick="applyTransition('append')"><input type="button" name="적용" value="수정" onClick="applyTransition('replace')"><input type="button" name="적용" value="삭제" onClick="applyTransition('delete')"></td></tr>
+  </table>
+</div>
+</body>
+</html>

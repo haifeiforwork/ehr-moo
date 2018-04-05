@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="lightpack.award.dao.awardRecommend">
+  <typeAlias alias="AwardRecommend"   type="com.lgcns.ikep4.lightpack.award.model.AwardRecommend"/>
+  <typeAlias alias="AwardRecommendPK" type="com.lgcns.ikep4.lightpack.award.model.AwardRecommendPK"/>
+  
+  <resultMap class="com.lgcns.ikep4.lightpack.award.model.AwardRecommend" id="awardRecommendResult"> 
+    <result column="ITEM_ID"     jdbcType="VARCHAR" property="itemId" />
+    <result column="REGISTER_ID" jdbcType="VARCHAR" property="registerId" />
+    <result column="REGIST_DATE" jdbcType="DATE"    property="registDate" />
+  </resultMap> 
+
+  <!-- ANSI -->    
+  <insert id="create" parameterClass="AwardRecommend"> 
+    INSERT INTO IKEP4_AW_RECOMMEND /* [Award_Recommend_SqlMap.xml] lightpack.award.dao.awardRecommend.insert */ 
+           (ITEM_ID, REGISTER_ID, REGIST_DATE)
+    VALUES (#itemId#, #registerId#,  CURRENT_TIMESTAMP)
+  </insert>
+
+  <!-- ANSI -->    
+  <select id="exists" parameterClass="AwardRecommendPK" resultClass="int">
+    SELECT /* [Award_Recommend_SqlMap.xml] lightpack.award.dao.awardRecommend.exists */
+           COUNT(*)
+    FROM   IKEP4_AW_RECOMMEND
+    WHERE  ITEM_ID = #itemId#
+    AND    REGISTER_ID = #registerId#
+  </select> 
+
+  <!-- ANSI -->   
+  <update id="update" parameterClass="AwardRecommend"> 
+    UPDATE IKEP4_AW_RECOMMEND /* [Award_Recommend_SqlMap.xml] lightpack.award.dao.awardRecommend.update */
+    SET REGIST_DATE = CURRENT_TIMESTAMP
+    WHERE ITEM_ID = #itemId#
+    AND REGISTER_ID = #registerId#
+  </update>
+  
+  <!-- ANSI --> 
+  <delete id="removeByItemId" parameterClass="string"> 
+    DELETE FROM IKEP4_AW_RECOMMEND /* [Award_Recommend_SqlMap.xml] lightpack.award.dao.awardRecommend.removeByItemId */
+    WHERE ITEM_ID = #itemId#
+  </delete>   
+</sqlMap>

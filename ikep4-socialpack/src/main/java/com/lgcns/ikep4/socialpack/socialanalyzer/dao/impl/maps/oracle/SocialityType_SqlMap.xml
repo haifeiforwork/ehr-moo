@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="socialpack.socialanalyzer.dao.socialityType" >
+	<typeAlias alias = "SocialityType" type="com.lgcns.ikep4.socialpack.socialanalyzer.model.SocialityType"/>
+	<typeAlias alias = "SocialityTypePk" type="com.lgcns.ikep4.socialpack.socialanalyzer.model.SocialityTypePk"/>
+	
+	<!-- 테이블 조회 결과 -->
+	<resultMap id="socialityTypeResult" class="SocialityType">
+		<result property="typeCode"        column="TYPE_CODE"       />
+		<result property="portalId"        column="PORTAL_ID"       />
+		<result property="typeName"        column="TYPE_NAME"       />
+		<result property="typeWeight"      column="TYPE_WEIGHT"     />
+		<result property="validMonth"      column="VALID_MONTH"     />
+		<result property="registerId"      column="REGISTER_ID"     />
+		<result property="registerName"    column="REGISTER_NAME"   />
+		<result property="registDate"      column="REGIST_DATE"     />
+		<result property="updaterId"       column="UPDATER_ID"      />
+		<result property="updaterName"     column="UPDATER_NAME"    />
+		<result property="updateDate"      column="UPDATE_DATE"     />
+	</resultMap>
+	
+	<insert id="create" parameterClass="SocialityType"> 
+      <![CDATA[ 
+           INSERT INTO IKEP4_SN_SOCIALITY_TYPE (/* [SocialityType_SqlMap.xml] SocialityType.create */
+           		TYPE_CODE, PORTAL_ID, TYPE_NAME, TYPE_WEIGHT, VALID_MONTH, 
+           		REGISTER_ID, REGISTER_NAME, REGIST_DATE, UPDATER_ID, UPDATER_NAME, 
+           		UPDATE_DATE)  
+           VALUES (#typeCode#, #portalId#, #typeName#, #typeWeight#, #validMonth#,
+           		   #registerId#, #registerName#, #registDate#, #updaterId#, #updaterName#,
+           		   #updateDate#)
+       ]]>
+   </insert>
+   
+	<select id="get" parameterClass="SocialityTypePk" resultMap="socialityTypeResult">
+	  <![CDATA[
+		   SELECT /* [SocialityType_SqlMap.xml] SocialityType.get */
+				  A.*
+		     FROM IKEP4_SN_SOCIALITY_TYPE A
+		    WHERE TYPE_CODE = #typeCode#
+		      AND PORTAL_ID = #portalId#
+	   ]]>
+	</select>
+	
+	<update id="update" parameterClass="SocialityType">
+	  <![CDATA[
+		   UPDATE IKEP4_SN_SOCIALITY_TYPE /* [SocialityType_SqlMap.xml] SocialityType.update */ 
+		      SET TYPE_WEIGHT = #typeWeight#,
+				  VALID_MONTH = #validMonth#,
+				  UPDATER_ID = #updaterId#,
+				  UPDATER_NAME = #updaterName#,
+				  UPDATE_DATE = SYSDATE
+		    WHERE TYPE_CODE = #typeCode#
+		      AND PORTAL_ID = #portalId#
+	   ]]>
+	</update>
+   
+   <delete id="remove" parameterClass="SocialityTypePk">
+      <![CDATA[
+	       DELETE FROM IKEP4_SN_SOCIALITY_TYPE /* [SocialityType_SqlMap.xml] SocialityType.remove */ 
+	        WHERE TYPE_CODE = #typeCode#
+		      AND PORTAL_ID = #portalId#
+	   ]]>
+	</delete>
+	
+	<select id="count" parameterClass="SocialityTypePk" resultClass="java.lang.Integer">
+	  <![CDATA[
+		   SELECT /* [SocialityType_SqlMap.xml] SocialityType.count */ 
+		   		  COUNT(1) 
+		     FROM IKEP4_SN_SOCIALITY_TYPE 
+		    WHERE TYPE_CODE = #typeCode#
+		      AND PORTAL_ID = #portalId#
+	   ]]>
+	</select>
+</sqlMap>

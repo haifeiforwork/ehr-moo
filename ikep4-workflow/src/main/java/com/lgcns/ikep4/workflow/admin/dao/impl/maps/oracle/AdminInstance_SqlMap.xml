@@ -1,0 +1,348 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="workflow.admin.dao.AdminInstanceDao">
+	<typeAlias alias="AdminInstance" type="com.lgcns.ikep4.workflow.admin.model.AdminInstance"/>
+	<typeAlias alias="AdminInstanceSearchCondition" type="com.lgcns.ikep4.workflow.admin.model.AdminInstanceSearchCondition"/>
+
+	<resultMap id="AdminInstanceResult" class="AdminInstance">
+		<result property="instanceId" column="INSTANCE_ID" columnIndex="1"/>
+		<result property="parentInsId" column="PARENT_INS_ID" columnIndex="2"/>
+		<result property="createDate" column="CREATE_DATE" columnIndex="3"/>
+		<result property="title" column="TITLE" columnIndex="4"/>
+		<result property="finishedDate" column="FINISHED_DATE" columnIndex="5"/>
+		<result property="performerId" column="PERFORMER_ID" columnIndex="6"/>
+		<result property="state" column="STATE" columnIndex="7"/>
+		<result property="performerOrg" column="PERFORMER_ORG" columnIndex="8"/>
+		<result property="result" column="RESULT" columnIndex="9"/>
+		<result property="dueDate" column="DUE_DATE" columnIndex="10"/>
+		<result property="processId" column="PROCESS_ID" columnIndex="11"/>
+		<result property="processVer" column="PROCESS_VER" columnIndex="12"/>
+		<result property="partitionId" column="PARTITION_ID" columnIndex="13"/>
+		
+	</resultMap>
+	
+	<resultMap id="AdminInstanceViewResult" class="AdminInstance">
+		<result property="instanceId" column="INSTANCE_ID" columnIndex="1"/>
+		<result property="createDate" column="CREATE_DATE" columnIndex="2"/>
+		<result property="title" column="TITLE" columnIndex="3"/>
+		<result property="finishedDate" column="FINISHED_DATE" columnIndex="4"/>
+		<result property="state" column="STATE" columnIndex="5"/>
+		<result property="partitionName" column="PARTITION_NAME" columnIndex="6"/>
+		<result property="processName" column="PROCESS_NAME" columnIndex="7"/>
+		<result property="partitionId" column="PARTITION_ID" columnIndex="8"/>
+		<result property="processVer" column="PROCESS_VER" columnIndex="9"/>
+		<result property="processId" column="PROCESS_ID" columnIndex="10"/>		
+	</resultMap>
+	
+	<!-- insert -->
+	<insert id="insert" parameterClass="AdminInstance"> 
+      <![CDATA[ 
+      		/* [AdminInstance_SqlMap.xml] workflow.admin.dao.AdminInstanceDao.insert */
+          INSERT INTO IKEP4_WF_INSTANCE (INSTANCE_ID, PROCESS_ID, PROCESS_VER,TITLE, CREATE_DATE)
+			VALUES ( 	#instanceId#, #processId#, #processVer#,#title#,sysdate)	
+       ]]>
+      <selectKey resultClass="String" keyProperty="instanceId" type="pre"> 
+         <![CDATA[ 
+               SELECT #instanceId# AS INSTANCE_ID FROM DUAL 
+            ]]>
+      </selectKey>
+   </insert>
+   
+   <!-- select -->
+	<select id="select" parameterClass="String" resultMap="AdminInstanceResult">
+	  <![CDATA[
+	  /* [AdminInstance_SqlMap.xml] workflow.admin.dao.AdminInstanceDao.select */
+		   SELECT IWI.*,'' PARTITION_ID FROM IKEP4_WF_INSTANCE IWI WHERE IWI.INSTANCE_ID = #instanceId#
+	   ]]>
+	</select>
+	
+	<!-- update -->
+	<update id="update" parameterClass="AdminInstance">
+	  <![CDATA[
+	  /* [AdminInstance_SqlMap.xml] workflow.admin.dao.AdminInstanceDao.update */
+		   UPDATE IKEP4_WF_INSTANCE 
+		   SET TITLE = #title# 
+		   WHERE INSTANCE_ID = #instanceId#
+	   ]]>
+	</update>
+   
+   <!-- delete -->
+   <delete id="delete" parameterClass="String">
+      <![CDATA[
+      	   /* [AdminInstance_SqlMap.xml] workflow.admin.dao.AdminInstanceDao.delete */
+	       DELETE FROM IKEP4_WF_INSTANCE WHERE INSTANCE_ID = #instanceId#
+	   ]]>
+	</delete>
+	
+	<!-- selectCount -->
+	<select id="selectCount" parameterClass="String" resultClass="java.lang.Integer">
+	  <![CDATA[
+	  	   /* [AdminInstance_SqlMap.xml] workflow.admin.dao.AdminInstanceDao.selectCount */
+		   SELECT COUNT(*) FROM IKEP4_WF_INSTANCE WHERE INSTANCE_ID = #instanceId#
+	   ]]>
+	</select>
+	
+	<select id="selectAll" resultMap="AdminInstanceResult">
+	<![CDATA[	
+	  SELECT   /* [AdminInstance_SqlMap.xml] workflow.admin.dao.AdminInstanceDao.selectAll */
+	  IWI.*,'' PARTITION_ID
+	  FROM IKEP4_WF_INSTANCE IWI
+	  ORDER BY IWI.CREATE_DATE
+	]]>
+	</select>
+	
+	<!-- 워크플로우 - 현황관리 - 인스턴스 관리 - 인스턴스 리스트 조회조건 -->
+	<sql id="listInstance_Parametercase">
+        
+        <isNotEmpty property="instanceAdministrationSearchTitle">
+        	<![CDATA[
+            AND    TITLE LIKE '%' || #instanceAdministrationSearchTitle# || '%'
+            ]]>
+        </isNotEmpty>
+        
+        <isEqual property="instanceAdministrationSearchDateFlag" compareValue="start">
+        	<![CDATA[
+            AND   CREATE_DATE BETWEEN #instanceAdministrationSearchStartDate# AND DECODE(#instanceAdministrationSearchEndDate#,'','9999.99.99',#instanceAdministrationSearchEndDate#||' 99:99')
+            ]]>
+        </isEqual>	
+        
+        <isEqual property="instanceAdministrationSearchDateFlag" compareValue="end">
+        	<![CDATA[
+            AND   CREATE_DATE BETWEEN DECODE(#instanceAdministrationSearchStartDate#,'','0000.00.00',#instanceAdministrationSearchStartDate#) AND #instanceAdministrationSearchEndDate#
+            ]]>
+        </isEqual>	
+        
+        <isNotEqual property="instanceAdministrationSearchPartition" compareValue="all">
+        	<![CDATA[	
+            AND    PARTITION_ID = #instanceAdministrationSearchPartition# 
+            ]]>
+        </isNotEqual>
+        <isNotEqual property="instanceAdministrationSearchProcess" compareValue="all">
+        	<![CDATA[
+            AND    PROCESS_ID = #instanceAdministrationSearchProcess#
+            ]]>
+        </isNotEqual>
+        <isNotEqual property="instanceAdministrationSearchState" compareValue="all">
+        	<![CDATA[
+            AND    STATE = #instanceAdministrationSearchState#
+            ]]>
+        </isNotEqual>
+        <isNotEmpty property="sortColumn" >
+        	<![CDATA[
+        	ORDER BY $sortColumn$ $sortType$
+        	]]>
+        </isNotEmpty>
+	</sql>	
+	
+	<!-- 워크플로우 - 현황관리 - 인스턴스 관리 - 인스턴스 리스트 조회 -->
+	<select id="listInstance" parameterClass="AdminInstanceSearchCondition" resultMap="AdminInstanceViewResult">
+	<![CDATA[
+	/* [AdminInstance_SqlMap.xml] workflow.admin.dao.AdminInstanceDao.listInstance */
+    SELECT * FROM(
+    SELECT A.*,ROWNUM AS RNUM FROM(
+              SELECT
+              PROCESS_ID,
+              PARTITION_ID,
+              INSTANCE_ID,
+              TITLE,
+              PARTITION_NAME,
+              PROCESS_NAME,
+              PROCESS_VER,
+              STATE,              
+              CREATE_DATE,
+              FINISHED_DATE 
+              FROM(
+                  SELECT 
+                  IWPR.PROCESS_ID,
+                  IWPR.PARTITION_ID,
+                  IWIN.INSTANCE_ID,
+                  IWIN.TITLE,
+                  IWPA.PARTITION_NAME,
+                  IWPR.PROCESS_NAME,
+                  IWPR.PROCESS_VER,
+                  IWIN.STATE STATE,              
+                  TO_CHAR(IWIN.CREATE_DATE,'YYYY.MM.DD HH24:MI') CREATE_DATE,
+                  TO_CHAR(IWIN.FINISHED_DATE,'YYYY.MM.DD HH24:MI') FINISHED_DATE              
+                  FROM IKEP4_WF_PARTITION IWPA, 
+                       IKEP4_WF_PROCESS IWPR, 
+                       IKEP4_WF_INSTANCE IWIN
+                  WHERE IWPA.PARTITION_ID = IWPR.PARTITION_ID
+                  AND IWPR.PROCESS_ID = IWIN.PROCESS_ID
+                  AND IWPR.PROCESS_STATE = 'ACTIVE'
+              )   
+              WHERE 1=1
+    ]]>
+	<include refid="listInstance_Parametercase"/>
+    <![CDATA[
+        ) A WHERE ROWNUM <=  #endRowIndex# /* 종료  */
+    ) WHERE RNUM >  #startRowIndex# /* 시작 */
+	]]>
+	</select>
+	
+	<!-- 워크플로우 - 현황관리 - 인스턴스 관리 - 인스턴스 리스트  조회건수 -->
+	<select id="listInstanceCount" parameterClass="AdminInstanceSearchCondition" resultClass="int">
+	<![CDATA[  
+	SELECT  /* [AdminInstance_SqlMap.xml] workflow.admin.dao.AdminInstanceDao.listInstanceCount */
+           COUNT(*) FROM(
+              SELECT 
+              IWIN.INSTANCE_ID,
+              IWIN.TITLE,
+              IWPR.PROCESS_ID,
+              IWPR.PARTITION_ID,
+              IWPA.PARTITION_NAME,
+              IWPR.PROCESS_NAME,
+              IWPR.PROCESS_VER,
+              IWIN.STATE,
+              TO_CHAR(IWIN.CREATE_DATE,'YYYY.MM.DD HH24:MI') CREATE_DATE,
+              TO_CHAR(IWIN.FINISHED_DATE,'YYYY.MM.DD HH24:MI') FINISHED_DATE
+              FROM IKEP4_WF_PARTITION IWPA, 
+                   IKEP4_WF_PROCESS IWPR, 
+                   IKEP4_WF_INSTANCE IWIN
+              WHERE IWPA.PARTITION_ID = IWPR.PARTITION_ID
+              AND IWPR.PROCESS_ID = IWIN.PROCESS_ID
+              AND IWPR.PROCESS_STATE = 'ACTIVE'
+             )
+             WHERE 1=1
+	]]> 
+	<include refid="listInstance_Parametercase"/>
+    </select> 
+    
+    <!-- 워크플로우 - 현황관리 - 인스턴스  상태 변경 -->
+	<update id="updateInstanceStateChange" parameterClass="java.util.Map">
+	<![CDATA[
+		UPDATE   IKEP4_WF_INSTANCE /* [AdminInstance_SqlMap.xml] workflow.admin.dao.AdminInstanceDao.updateInstanceStateChange */
+        SET   STATE = #instanceState#
+        WHERE INSTANCE_ID IN
+	]]>
+	<iterate property="instanceId" open="(" close=")" conjunction=",">
+	<![CDATA[
+        #instanceId[]#
+    ]]>
+    </iterate>
+	</update>
+	
+	<!-- 워크플로우 - 현황관리 - 데시보드 - 인스턴스  진행현황 -->
+	<select id="instanceStateCount" resultClass="java.util.HashMap">
+	<![CDATA[
+	/* [AdminInstance_SqlMap.xml] workflow.admin.dao.AdminInstanceDao.instanceStateCount */    
+	WITH RUNNING_COUNT
+           AS (  SELECT   COUNT (IWI.STATE) RUNNING                      
+                   FROM   IKEP4_WF_PROCESS IWP, IKEP4_WF_INSTANCE IWI
+                  WHERE   IWP.PROCESS_ID = IWI.PROCESS_ID AND IWI.STATE = 'RUNNING'
+                          AND (SYSDATE < IWI.DUE_DATE
+                               OR IWI.DUE_DATE IS NULL)
+               ),
+        OVERDUE_COUNT
+           AS (  SELECT COUNT (IWI.STATE) OVERDUE
+                   FROM   IKEP4_WF_PROCESS IWP, IKEP4_WF_INSTANCE IWI
+                  WHERE       IWP.PROCESS_ID = IWI.PROCESS_ID
+                          AND STATE = 'RUNNING'
+                          AND SYSDATE - 1 > DUE_DATE
+              ),
+        FAULT_COUNT
+            AS (
+                SELECT  COUNT (IWI.STATE) FAULT                                                
+                   FROM   IKEP4_WF_PROCESS IWP, IKEP4_WF_INSTANCE IWI
+                  WHERE   IWP.PROCESS_ID = IWI.PROCESS_ID AND IWI.STATE = 'FAULT'
+            )        
+    SELECT   NVL (RD.RUNNING, 0) RUNNING,
+             NVL (OD.OVERDUE, 0) OVERDUE,
+             NVL (FD.FAULT, 0) FAULT
+      FROM   RUNNING_COUNT RD, OVERDUE_COUNT OD, FAULT_COUNT FD
+	]]>
+    </select> 
+    
+    <!-- 워크플로우 - 현황관리 - 데시보드 - 프로세스별 인스턴스  진행현황 -->
+	<select id="listCurrentInstance"  resultClass="java.util.HashMap">
+	<![CDATA[
+	/* [AdminInstance_SqlMap.xml] workflow.admin.dao.AdminInstanceDao.listCurrentInstance */
+		WITH TOTAL_PROCESS AS (  SELECT   PROCESS_ID, PROCESS_NAME
+                               FROM   IKEP4_WF_PROCESS
+                           GROUP BY   PROCESS_ID, PROCESS_NAME),
+        RUNNING_DATA
+           AS (  SELECT   IWP.PROCESS_ID,
+                          IWP.PROCESS_NAME,
+                          COUNT (IWI.STATE) RUNNING                      
+                   FROM   IKEP4_WF_PROCESS IWP, IKEP4_WF_INSTANCE IWI
+                  WHERE   IWP.PROCESS_ID = IWI.PROCESS_ID AND IWI.STATE = 'RUNNING'
+                          AND (SYSDATE < IWI.DUE_DATE
+                               OR IWI.DUE_DATE IS NULL)
+               GROUP BY   IWP.PROCESS_ID, IWP.PROCESS_NAME),
+        OVERDUE_DATA
+           AS (  SELECT   IWP.PROCESS_ID,
+                          IWP.PROCESS_NAME,                      
+                          COUNT ( * ) OVERDUE
+                   FROM   IKEP4_WF_PROCESS IWP, IKEP4_WF_INSTANCE IWI
+                  WHERE       IWP.PROCESS_ID = IWI.PROCESS_ID
+                          AND STATE = 'RUNNING'
+                          AND SYSDATE - 1 > DUE_DATE
+               GROUP BY   IWP.PROCESS_ID, IWP.PROCESS_NAME),
+        FAULT_DATA
+            AS (
+                SELECT   IWP.PROCESS_ID,
+                          IWP.PROCESS_NAME,
+                          COUNT (IWI.STATE) FAULT                                                
+                   FROM   IKEP4_WF_PROCESS IWP, IKEP4_WF_INSTANCE IWI
+                  WHERE   IWP.PROCESS_ID = IWI.PROCESS_ID AND IWI.STATE = 'FAULT'                          
+               GROUP BY   IWP.PROCESS_ID, IWP.PROCESS_NAME
+            )        
+    SELECT ROWNUM NO,A.* FROM(
+    SELECT   TP.PROCESS_ID,
+             TP.PROCESS_NAME,
+             NVL (RD.RUNNING, 0) RUNNING,
+             NVL (OD.OVERDUE, 0) OVERDUE,
+             NVL (FD.FAULT, 0) FAULT
+      FROM   TOTAL_PROCESS TP, RUNNING_DATA RD, OVERDUE_DATA OD, FAULT_DATA FD
+     WHERE   TP.PROCESS_ID = RD.PROCESS_ID(+)
+             AND TP.PROCESS_ID = OD.PROCESS_ID(+)
+             AND TP.PROCESS_ID = FD.PROCESS_ID(+)             
+    ORDER BY TP.PROCESS_ID,PROCESS_NAME
+    )A
+	]]>
+    </select> 
+    
+    <!-- 워크플로우 - 현황관리 - 데시보드 - 프로세스별  인스턴스 누적현황 -->
+	<select id="listAccumulateInstance"  parameterClass="String" resultClass="java.util.HashMap">
+	<![CDATA[
+	/* [AdminInstance_SqlMap.xml] workflow.admin.dao.AdminInstanceDao.listAccumulateInstance */
+		WITH TOTAL_PROCESS AS (  SELECT   PROCESS_ID, PROCESS_NAME
+	                           FROM   IKEP4_WF_PROCESS
+	                       GROUP BY   PROCESS_ID, PROCESS_NAME),
+	    TOTAL_INSTANCE
+	       AS (  SELECT   IWP.PROCESS_ID,
+	                      IWP.PROCESS_NAME,
+	                      COUNT (IWI.INSTANCE_ID) TOTAL_COUNT
+	               FROM   IKEP4_WF_PROCESS IWP, IKEP4_WF_INSTANCE IWI
+	              WHERE   IWP.PROCESS_ID = IWI.PROCESS_ID
+	           GROUP BY   IWP.PROCESS_ID, IWP.PROCESS_NAME),
+	    CONDITION_INSTANCE
+	       AS (  SELECT   IWP.PROCESS_ID,
+	                      IWP.PROCESS_NAME,
+	                      COUNT (IWI.INSTANCE_ID) CONDITION_COUNT
+	               FROM   IKEP4_WF_PROCESS IWP, IKEP4_WF_INSTANCE IWI
+	              WHERE   IWP.PROCESS_ID = IWI.PROCESS_ID
+	 ]]>
+	 <isNotEqual compareValue="all">
+        	<![CDATA[	
+            AND IWI.CREATE_DATE BETWEEN SYSDATE - #searchCondition# AND SYSDATE 
+            ]]>
+     </isNotEqual>
+	 <![CDATA[
+	        GROUP BY   IWP.PROCESS_ID, IWP.PROCESS_NAME)
+	        SELECT ROWNUM NO,A.* FROM(
+		     SELECT   
+			 TP.PROCESS_ID,
+	         TP.PROCESS_NAME,
+	         NVL (TI.TOTAL_COUNT, 0) TOTAL_COUNT,
+	         NVL (CI.CONDITION_COUNT, 0) CONDITION_COUNT,
+	         NVL (CEIL ((CI.CONDITION_COUNT/(SELECT COUNT(*) FROM IKEP4_WF_INSTANCE))* 1000), 0) CONDITION_PERCENT
+	  FROM   TOTAL_PROCESS TP, TOTAL_INSTANCE TI, CONDITION_INSTANCE CI
+	 WHERE   TP.PROCESS_ID = TI.PROCESS_ID(+)
+	         AND TP.PROCESS_ID = CI.PROCESS_ID(+)
+	         ORDER BY CONDITION_PERCENT DESC
+	 )A
+	]]>
+    </select>
+	
+</sqlMap>

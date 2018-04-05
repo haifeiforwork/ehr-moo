@@ -1,0 +1,367 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="lightpack.meeting.dao.cartooletc" >
+	
+	<typeAlias alias="Cartooletc" type="com.lgcns.ikep4.lightpack.meetingroom.model.Cartooletc"/>
+	
+	<resultMap id="Result" class="Cartooletc">
+		<result property="cartooletcId" column="CARTOOLETC_ID" />
+		<result property="cartooletcName" column="CARTOOLETC_NAME" />
+		<result property="cartooletcEnglishName" column="CARTOOLETC_ENGLISH_NAME" />
+		<result property="categoryId" column="CATEGORY_ID" />
+		<result property="categoryName" column="CATEGORY_NAME" />
+		<result property="regionId" column="REGION_ID" />
+		<result property="regionName" column="REGION_NAME" />
+		<result property="managerId" column="MANAGER_ID" />
+		<result property="subManagerId" column="SUB_MANAGER_ID" />
+		<result property="lastManagerId" column="LAST_MANAGER_ID" />
+		<result property="managerName" column="MANAGER_NAME" />
+		<result property="phone" column="PHONE" />
+		<result property="description" column="DESCRIPTION" />
+		<result property="fileId" column="FILE_ID" />
+		<result property="useFlag" column="USE_FLAG" />
+		<result property="viewYn" column="VIEW_YN" />
+		<result property="sortOrder" column="SORT_ORDER" />
+		<result property="portalId" column="PORTAL_ID" />
+		<result property="autoApprove" column="AUTO_APPROVE" />
+	</resultMap>
+	
+	<resultMap id="resultTool" class="Cartooletc">
+		<result property="cartooletcId" column="CARTOOLETC_ID" />
+		<result property="cartooletcName" column="CARTOOLETC_NAME" />
+		<result property="cartooletcEnglishName" column="CARTOOLETC_ENGLISH_NAME" />
+		<result property="categoryId" column="CATEGORY_ID" />
+		<result property="categoryName" column="CATEGORY_NAME" />
+		<result property="regionId" column="REGION_ID" />
+		<result property="regionName" column="REGION_NAME" />
+		<result property="managerId" column="MANAGER_ID" />
+		<result property="phone" column="PHONE" />
+		<result property="description" column="DESCRIPTION" />
+		<result property="fileId" column="FILE_ID" />
+		<result property="useFlag" column="USE_FLAG" />
+		<result property="viewYn" column="VIEW_YN" />
+		<result property="sortOrder" column="SORT_ORDER" />
+		<result property="portalId" column="PORTAL_ID" />
+		<result property="autoApprove" column="AUTO_APPROVE" />
+		<result property="toolUseFlag" column="TOOL_USE_FLAG" />
+	</resultMap>
+	
+	<resultMap id="CategroyResult" class="Cartooletc">
+		<result property="categoryId" column="CATEGORY_ID" />
+		<result property="categoryName" column="CATEGORY_NAME" />
+	</resultMap>
+	
+		
+	<resultMap id="RegionResult" class="Cartooletc">
+		<result property="regionId" column="REGION_ID" />
+		<result property="regionName" column="REGION_NAME" />
+	</resultMap>
+	
+	
+	<select id="categoryList" parameterClass="java.util.Map" resultMap="CategroyResult">
+		<![CDATA[
+		/* [Cartooletc_SqlMap.xml] categoryList */		
+		SELECT				distinct CATEGORY_ID,
+							CATEGORY_NAME
+    	FROM  				IKEP4_MR_CARTOOLETC
+		WHERE				PORTAL_ID = #portalId#
+    	]]>
+    	<![CDATA[
+    	ORDER BY			CATEGORY_NAME ASC
+    	]]>
+	</select>
+	
+	<select id="regionList" parameterClass="java.util.Map" resultMap="RegionResult">
+		<![CDATA[
+		/* [Cartooletc_SqlMap.xml] regionList */		
+		SELECT				distinct REGION_ID,
+							REGION_NAME
+    	FROM  				IKEP4_MR_CARTOOLETC
+		WHERE				PORTAL_ID = #portalId#
+    	]]>
+    	
+    	<isNotEmpty property="mid">
+    	AND region_id IN (select building_id from IKEP4_MR_MEETING_ROOM
+		where meeting_room_id = #mid#)
+		</isNotEmpty>
+		<![CDATA[
+    	ORDER BY			REGION_NAME ASC
+    	
+    	]]>
+	</select>
+	
+	<insert id="insert" parameterClass="Cartooletc"> 
+		INSERT INTO			IKEP4_MR_CARTOOLETC
+							(
+							CARTOOLETC_ID,
+							CARTOOLETC_NAME,
+							CARTOOLETC_ENGLISH_NAME,
+							CATEGORY_ID,
+							CATEGORY_NAME,
+							REGION_ID,
+							REGION_NAME,
+							MANAGER_ID,
+							SUB_MANAGER_ID,
+							LAST_MANAGER_ID,
+							PHONE,
+							DESCRIPTION,
+							FILE_ID,
+							USE_FLAG,
+							VIEW_YN,
+							SORT_ORDER,
+							PORTAL_ID,
+							REGISTER_ID,
+							REGISTER_NAME,
+							REGIST_DATE,
+							UPDATER_ID,
+							UPDATER_NAME,
+							UPDATE_DATE,
+							AUTO_APPROVE
+							) 
+		VALUES 				( 
+							#cartooletcId#,
+							#cartooletcName#,
+							#cartooletcEnglishName#,
+							#categoryId#,
+							#categoryName#,
+							#regionId#,
+							#regionName#,
+							#managerId#,
+							#subManagerId#,
+							#lastManagerId#,
+							#phone#,
+							#description#,
+							#fileId#,
+							#useFlag#,
+							#viewYn#,
+							#sortOrder#,
+							#portalId#,
+							#registerId#,
+							#registerName#,
+							GETDATE(),
+							#updaterId#,
+							#updaterName#,
+							GETDATE(),
+							<isEmpty property="autoApprove">'N'</isEmpty>
+							<isNotEmpty property="autoApprove">#autoApprove#</isNotEmpty>
+							)
+   	</insert>	
+   
+   	<update id="update" parameterClass="Cartooletc">
+		UPDATE 				IKEP4_MR_CARTOOLETC
+		SET					CARTOOLETC_NAME = #cartooletcName#,
+							CARTOOLETC_ENGLISH_NAME = #cartooletcEnglishName#,
+					       	CATEGORY_ID = #categoryId#,
+					       	CATEGORY_NAME = #categoryName#,
+					       	REGION_ID = #regionId#,
+					       	REGION_NAME = #regionName#,
+					       	MANAGER_ID = #managerId#,
+					       	SUB_MANAGER_ID = #subManagerId#,
+					       	LAST_MANAGER_ID = #lastManagerId#,
+					       	PHONE = #phone#,
+					       	DESCRIPTION = #description#,
+					       	FILE_ID = #fileId#,
+					       	USE_FLAG = #useFlag#,
+					       	VIEW_YN = #viewYn#,
+					       	UPDATER_ID = #updaterId#,
+					       	UPDATER_NAME = #updaterName#,
+					       	UPDATE_DATE = GETDATE(),
+					       	<isEmpty property="autoApprove">AUTO_APPROVE = 'N'</isEmpty>
+							<isNotEmpty property="autoApprove">AUTO_APPROVE = #autoApprove#</isNotEmpty>
+		WHERE  				CARTOOLETC_ID = #cartooletcId#
+	</update>
+	
+	<delete id="delete" parameterClass="String">
+     	DELETE 				IKEP4_MR_CARTOOLETC 
+		WHERE 				CARTOOLETC_ID = #cartooletcId#
+	</delete>
+	
+	<delete id="deleteFavorite" parameterClass="String"> 
+		DELETE 
+		FROM 				IKEP4_MR_CARFAVORITE 
+		WHERE 				CARTOOLETC_ID = #cartooletcId#
+   	</delete>
+	
+	<select id="get" parameterClass="String" resultMap="Result">
+		SELECT				A.CARTOOLETC_ID, 
+							A.CARTOOLETC_NAME,
+							A.CARTOOLETC_ENGLISH_NAME, 
+		   					A.CATEGORY_ID, 
+		   					A.CATEGORY_NAME AS CATEGORY_NAME,
+		   					A.REGION_ID,
+		   					A.REGION_NAME AS REGION_NAME,
+		   					A.MANAGER_ID, 
+		   					A.SUB_MANAGER_ID, 
+		   					A.LAST_MANAGER_ID, 
+		   					B.USER_NAME AS MANAGER_NAME,  
+		   					A.PHONE, 
+		   					A.DESCRIPTION, 
+		   					A.FILE_ID, 
+		   					A.USE_FLAG, 
+		   					A.VIEW_YN,
+		   					A.SORT_ORDER,
+		   					A.PORTAL_ID,
+		   					A.AUTO_APPROVE
+		FROM 				IKEP4_MR_CARTOOLETC A 
+		LEFT OUTER JOIN 	IKEP4_EV_USER B		
+		ON 					A.MANAGER_ID = B.USER_ID
+		WHERE 				A.CARTOOLETC_ID = #cartooletcId#
+	</select>
+	
+	<select id="select" parameterClass="Cartooletc" resultMap="Result">
+	/*Cartooletc_SqlMap.xml Select*/
+	  	SELECT				A.CARTOOLETC_ID, 
+							A.CARTOOLETC_NAME,
+							A.CARTOOLETC_ENGLISH_NAME, 
+		   					A.CATEGORY_ID, 
+		   					A.CATEGORY_NAME AS CATEGORY_NAME,
+		   					A.REGION_ID,
+		   					A.REGION_NAME AS REGION_NAME,
+		   					A.MANAGER_ID, 
+		   					A.SUB_MANAGER_ID, 
+		   					A.LAST_MANAGER_ID, 
+		   					B.USER_NAME AS MANAGER_NAME,  
+		   					A.PHONE, 
+		   					A.DESCRIPTION, 
+		   					A.FILE_ID, 
+		   					A.USE_FLAG, 
+		   					A.VIEW_YN,
+		   					A.SORT_ORDER,
+		   					A.PORTAL_ID,
+		   					A.AUTO_APPROVE
+		FROM 				IKEP4_MR_CARTOOLETC A 
+		LEFT OUTER JOIN 	IKEP4_EV_USER B		
+		ON 					A.MANAGER_ID = B.USER_ID
+		WHERE 				A.PORTAL_ID = #portalId#
+		<isNotEmpty property="useFlag" prepend="AND">
+    						A.USE_FLAG = #useFlag#
+    	</isNotEmpty>
+    	<isNotEmpty property="viewYn">
+			<isEmpty property="mid">
+			AND A.VIEW_YN = #viewYn#
+			</isEmpty>
+    	</isNotEmpty>
+		<isNotEmpty property="categoryId" prepend="AND">
+							A.CATEGORY_ID = #categoryId#
+		</isNotEmpty>
+		<isNotEmpty property="regionId" prepend="AND">
+			<isEmpty property="mid">
+			A.REGION_ID = #regionId#
+			</isEmpty>
+			<isNotEmpty property="mid">
+    						A.cartooletc_id IN (select tool_id from IKEP4_MR_TOOL_ROOM
+							where meeting_room_id = #mid#)
+	    	</isNotEmpty>
+		</isNotEmpty>
+		<isNotEmpty property="isRecent" prepend="AND">
+		<![CDATA[		
+							A.CARTOOLETC_ID IN (
+								SELECT				tbl.CARTOOLETC_ID
+								FROM				(
+													SELECT 	 top 10		SCHEDULE_ID, CARTOOLETC_ID
+												  	FROM 				IKEP4_SD_SCHEDULE
+												 	WHERE 				REGISTER_ID = #registerId#
+												 	AND 				CARTOOLETC_ID IS NOT NULL
+												 	ORDER BY			SCHEDULE_ID DESC
+												 	) tbl
+							)
+		]]>							
+		</isNotEmpty>
+		<isNotEmpty property="isFavorite" prepend="AND">
+		<![CDATA[		
+							A.CARTOOLETC_ID IN (
+								SELECT				CARTOOLETC_ID
+				  				FROM 				IKEP4_MR_CARFAVORITE
+				 				WHERE 				USER_ID = #registerId#
+							)
+		]]>							
+		</isNotEmpty>
+		ORDER BY 			CATEGORY_NAME, REGION_NAME, CARTOOLETC_NAME
+	</select>
+	
+	<select id="selectSortOrder" resultClass="String">
+		SELECT 				dbo.IKEP4_UFN_LPAD(MAX(ISNULL(CONVERT(INT, SORT_ORDER), 0))+1, 13, '0')
+		FROM 				IKEP4_MR_CARTOOLETC 
+    </select>
+    
+    <insert id="updateSortOrder" parameterClass="Cartooletc">
+		UPDATE 				IKEP4_MR_CARTOOLETC
+    	SET					SORT_ORDER = #sortOrder#
+    	WHERE 				CARTOOLETC_ID = #cartooletcId#
+	</insert>
+	
+	<insert id="addFavorite" parameterClass="Cartooletc"> 
+		INSERT INTO 		IKEP4_MR_CARFAVORITE 
+							(
+							USER_ID,
+							CARTOOLETC_ID,
+							REGIST_DATE
+		   					) 
+		VALUES 				( 
+							#registerId#,
+				 			#cartooletcId#,
+				 			GETDATE()
+				 			)
+   	</insert>	
+   	
+   	<delete id="delFavorite" parameterClass="Cartooletc"> 
+		DELETE 
+		FROM 				IKEP4_MR_CARFAVORITE 
+		WHERE 				USER_ID = #registerId#
+	  	AND 				CARTOOLETC_ID = #cartooletcId#
+   	</delete>
+	
+	<select id="checkFavorite" parameterClass="Cartooletc" resultClass="String">
+	  	SELECT 				COUNT(*) 
+  		FROM 				IKEP4_MR_CARFAVORITE
+	  	WHERE 				USER_ID = #registerId#
+	  	AND 				CARTOOLETC_ID = #cartooletcId#
+	</select>
+	
+	<select id="toolList" parameterClass="java.util.Map" resultMap="resultTool">
+		<![CDATA[
+		SELECT				CARTOOLETC_ID,
+	                      	CARTOOLETC_NAME,
+	                      	CARTOOLETC_ENGLISH_NAME,
+	                      	CATEGORY_ID,
+	                      	CATEGORY_NAME,
+	                      	REGION_ID,
+	                      	REGION_NAME,
+	                      	MANAGER_ID,
+	                      	USE_FLAG,
+	                      	VIEW_YN,
+	                      	PHONE,
+	                      	DESCRIPTION,
+	                      	SORT_ORDER,
+	                      	FILE_ID,
+	                      	PORTAL_ID,
+	                      	AUTO_APPROVE,
+	                      	REGISTER_ID,
+	                      	REGISTER_NAME,
+							CONVERT(VARCHAR, REGIST_DATE, 23) AS REGIST_DATE,
+							UPDATER_ID,
+							UPDATER_NAME,
+							CONVERT(VARCHAR, UPDATE_DATE, 23) AS UPDATE_DATE
+		]]>					
+							<isEmpty property="meetingRoomId">
+							,'' as TOOL_USE_FLAG
+							</isEmpty>
+							<isNotEmpty property="meetingRoomId">
+							,(select count(*) from IKEP4_MR_TOOL_ROOM B WHERE B.TOOL_ID = cartooletc_id
+							AND B.MEETING_ROOM_ID = #meetingRoomId#
+							) as TOOL_USE_FLAG
+							</isNotEmpty>
+		<![CDATA[
+    	FROM  				IKEP4_MR_CARTOOLETC
+    	WHERE				REGION_ID = #parentBuildingFloorId#
+    	AND					PORTAL_ID = #portalId#
+    	]]>
+    	<isNotNull property="useFlag" prepend="AND">
+    						USE_FLAG = #useFlag#
+    	</isNotNull>
+    	<![CDATA[
+    	ORDER BY			CARTOOLETC_NAME ASC
+    	]]>
+	</select>
+</sqlMap>

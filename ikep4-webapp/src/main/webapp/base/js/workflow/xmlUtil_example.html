@@ -1,0 +1,76 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=EUC-KR">
+<title>Insert title here</title>
+<script type="text/javascript" src="../jquery-1.4.4.js"></script>
+<script type="text/javascript" src="xmlUtil.js"></script>
+<script type="text/javascript" src="xpdl.js"></script>
+
+<script type="text/javascript"><!--<!--
+
+// Initialize xpdl DOM
+//xpdlDom = getInitXPDLDom("xpdl_empty_sample.xml");
+//var xpdl = new XPDL(xpdlDom);
+//xpdlDom = xpdl.makePools();
+//alert($.xmlStr(xpdlDom));
+
+var xpdlDom = getInitXPDLDom("xpdl_empty_sample.xml");
+var xmlUtil = new XMLUtil(xpdlDom);
+
+// Element 추가
+xmlUtil.appendChildElementByTagName("Package", 0, "http://www.wfmc.org/2004/XPDL2.1", "Pools");
+xmlUtil.appendChildElementByTagName("Pools", 0, "http://www.wfmc.org/2004/XPDL2.1", "Pool");
+xmlUtil.appendChildElementByTagName("Pools", 0, "http://www.wfmc.org/2004/XPDL2.1", "Pool");
+
+// Text Node 추가
+xmlUtil.appendTextNode("Pool", 0, "Pool_1.......");
+xmlUtil.appendTextNode("Pool", 1, "Pool_2.......");
+
+// Single Node 삭제 (하나가 확실한 경우)
+//xmlUtil.removeSingleNode("//lgcns:customDatas/lgcns:customData[@id='id_111']");
+//xmlUtil.removeSingleNode("//lgcns:customDatas");
+
+// Multi Node 삭제 (하나 혹은 여러개 일경우)
+//xmlUtil.removeNodes("//lgcns:customDatas/lgcns:customData");
+
+// 별도의 Element 생성하여 xmlDom 하위에 추가
+// lgcns:Id = 1111 Activity 추가
+var activitiesEle = xmlUtil.createElement("Activities", "http://www.wfmc.org/2004/XPDL2.1");  //추가할 상위 Element 생성
+var activityEle = xmlUtil.createElement("Activity", "http://www.wfmc.org/2004/XPDL2.1");  // 추가할 하위 Element 생성
+activityEle = xmlUtil.createAttributeAndAppend(activityEle, "Id", "1111");	// lgcns:Id Attribute 생성
+activityEle = xmlUtil.createAttributeAndAppend(activityEle, "Name", "1111");	// Name Attribute 생성
+activitiesEle.appendChild(activityEle);
+
+// lgcns:Id = 2222 Activity 추가
+var activityEle2 = xmlUtil.createElement("Activity", "http://www.wfmc.org/2004/XPDL2.1");  // 추가할 하위 Element 생성
+activityEle2 = xmlUtil.createAttributeAndAppend(activityEle2, "Id", "2222");	// lgcns:Id Attribute 생성
+activityEle2 = xmlUtil.createAttributeAndAppend(activityEle2, "Name", "2222");	// Name Attribute 생성
+activitiesEle.appendChild(activityEle2);
+xmlUtil.appendChildElement("Package", 0, activitiesEle);  // Package Element 하위 노드로 추가
+
+// 노드 갯수 반환
+//alert(xmlUtil.nodeCount("//default:Activities/default:Activity[@Id='1111']"));
+//xmlUtil.nodeCount("//default:Activities/default:Activity");
+
+// 신규 노드 생성하여 이전 노드를 교체
+var activityEle3 = xmlUtil.createElement("Activity", "http://www.wfmc.org/2004/XPDL2.1");  // 추가할 하위 Element 생성
+activityEle3 = xmlUtil.createAttributeAndAppend(activityEle3, "Id", "new_1111");	// lgcns:Id Attribute 생성
+activityEle3 = xmlUtil.createAttributeAndAppend(activityEle3, "Name", "new_1111");	// Name Attribute 생성
+
+xmlUtil.replaceChildXpathNode(activityEle3, "//default:Activities/default:Activity[@Id='1111']");
+
+xmlUtil.setNodeValue("//default:Pools/default:Pool["+xmlUtil.nodePoint(1)+"]", "new_Pool_Element_11");
+xmlUtil.setNodeValue("//default:Pools/default:Pool["+xmlUtil.nodePoint(2)+"]/text()", "new_Pool_text_22");
+xmlUtil.setNodeValue("//default:Activities/default:Activity[@Id='new_1111']/@Id", "new_Activity_Attribute_11");
+
+alert($.xmlStr(xpdlDom));
+
+</script>
+</head>
+<body>
+
+XML Utility Javascript Library Sample~~
+
+</body>
+</html>

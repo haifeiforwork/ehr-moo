@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace = "portal.moorimess.dao.statement">
+<typeAlias alias = "StatementDetail" type="com.lgcns.ikep4.util.model.StatementDetail"/>
+<typeAlias alias="User" type="com.lgcns.ikep4.support.user.member.model.User"/>
+
+	<resultMap id="result" class="User">
+		<result property="userName" column="USER_NAME" jdbcType="VARCHAR" />
+		<result property="teamName" column="TEAM_NAME" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<resultMap id="resultId" class="StatementDetail">
+		<result property="trusteeId" column="TRUSTEE_ID" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<insert id="insertMandator" parameterClass="StatementDetail"> 
+      <![CDATA[ 
+           insert into statement_mandate (mandator_id,trustee_id,start_date,end_date,portal_id,register_id,register_name,regist_date) 
+           VALUES (#mandatorId#,#trusteeId#,#startDate#,#endDate#,#portalId#,#registerId#,#registerName#,#registDate#)
+       ]]>
+   </insert>
+   
+   <select id="selectMandatorInfo" parameterClass="StatementDetail" resultMap="result">
+   	  <![CDATA[
+   	  		SELECT USER_NAME
+   	  			  ,TEAM_NAME
+   	  		FROM IKEP4_EV_USER 
+			WHERE SAP_ID = #uname# 
+   	  ]]>
+   </select>
+   
+   <select id="selectMandatorCount" parameterClass="StatementDetail" resultClass="int">
+   	  <![CDATA[
+   	  		SELECT COUNT(*)
+	   	  		FROM STATEMENT_MANDATE 
+				WHERE mandator_id = #mandatorId# 
+   	  ]]>
+   </select>
+   
+   <delete id="deleteMandator" parameterClass="StatementDetail" >
+   	  <![CDATA[
+   	  		DELETE FROM STATEMENT_MANDATE 
+				WHERE mandator_id = #mandatorId# 
+   	  ]]>
+   </delete>
+   
+   <select id="selectMandatorRoleCount" parameterClass="StatementDetail" resultClass="int">
+   	  <![CDATA[
+   	  		SELECT COUNT(*)
+	   	  		FROM STATEMENT_MANDATE 
+				WHERE trustee_id = #trusteeId# 
+   	  ]]>
+   </select>
+   
+   <select id="selectExistRoleCount" parameterClass="StatementDetail" resultClass="int">
+   	  <![CDATA[
+   	  		SELECT COUNT(*)
+	   	  		FROM IKEP4_EV_USER_ROLE 
+				WHERE role_id = #roleId# 
+					AND user_id = #trusteeId# 
+   	  ]]>
+   </select>
+   
+   <insert id="insertMandatorRole" parameterClass="StatementDetail"> 
+      <![CDATA[ 
+           insert into IKEP4_EV_USER_ROLE (role_id,user_id,register_id,register_name,regist_date,updater_id,updater_name,update_date) 
+           VALUES (#roleId#,#trusteeId#,#registerId#,#registerName#,#registDate#,#registerId#,#registerName#,#registDate#)
+       ]]>
+   </insert>
+   
+   <delete id="deleteMandatorRole" parameterClass="StatementDetail" >
+   	  <![CDATA[
+   	  		DELETE FROM IKEP4_EV_USER_ROLE
+				WHERE role_id = #roleId#
+					AND user_id = #trusteeId# 
+   	  ]]>
+   </delete>
+   
+   <select id="isMaster" parameterClass="User" resultClass="int">
+   	  <![CDATA[
+   	  		SELECT COUNT(*)
+	   	  		FROM IKEP4_EV_USER 
+					WHERE USER_ID = #userId#
+					AND JOB_DUTY_CODE IN ('18','12','19') 
+   	  ]]>
+   </select>
+   
+   <select id="selectMandatorId" parameterClass="StatementDetail" resultMap="resultId">
+   	  <![CDATA[
+   	  		SELECT TRUSTEE_ID
+   	  		FROM STATEMENT_MANDATE 
+			WHERE mandator_id = #mandatorId# 
+   	  ]]>
+   </select>
+
+</sqlMap>

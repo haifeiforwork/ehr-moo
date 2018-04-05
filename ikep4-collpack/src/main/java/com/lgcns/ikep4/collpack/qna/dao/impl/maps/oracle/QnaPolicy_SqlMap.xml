@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="collpack.qna.dao.QnaPolicy" >
+
+	<typeAlias alias = "QnaPolicy" type="com.lgcns.ikep4.collpack.qna.model.QnaPolicy"/>
+
+	  <resultMap id="QnaPolicyResult" class="QnaPolicy" >
+	    <result column="POLICY_ID" 					property="policyId" 		/>
+	    <result column="QNA_TYPE" 					property="qnaType" 			/>
+	    <result column="HIT_WEIGHT" 				property="hitWeight" 		/>
+	    <result column="LINEREPLY_WEIGHT" 			property="linereplyWeight" 	/>
+	    <result column="ANSWER_WEIGHT" 				property="answerWeight" 	/>
+	    <result column="FAVORITE_WEIGHT" 			property="favoriteWeight" 	/>
+	    <result column="ANSWER_SUM_WEIGHT" 			property="answerSumWeight" 	/>
+	    <result column="BEST_QNA_BASIS_POINT" 		property="bestQnaBasisPoint" 	/>
+	    <result column="ANSWER_LINEREPLY_WEIGHT" 	property="answerLinereplyWeight" 	/>
+	     <result column="ANSWER_RECOMMEND_WEIGHT" 	property="answerRecommendWeight" 	/>
+	    <result column="ANSWER_ADOPT_WEIGHT" 		property="answerAdoptWeight" 	/>
+	    <result column="BEST_ANSWER_BASIS_POINT" 	property="bestAnswerBasisPoint" 	/>
+	  </resultMap>
+	  
+  <select id="selectPolicy" resultMap="QnaPolicyResult" parameterClass="String">
+     SELECT 				/* [QnaPolicy_SqlMap.xml] qnaPolicy.selectPolicy */  
+	    POLICY_ID, 
+	    QNA_TYPE, 
+	    HIT_WEIGHT, 
+	    LINEREPLY_WEIGHT,
+	    ANSWER_WEIGHT, 
+	    FAVORITE_WEIGHT,
+	    ANSWER_SUM_WEIGHT,
+	    BEST_QNA_BASIS_POINT,
+	    ANSWER_LINEREPLY_WEIGHT,
+	    ANSWER_RECOMMEND_WEIGHT,
+	    ANSWER_ADOPT_WEIGHT,
+	    BEST_ANSWER_BASIS_POINT
+    FROM IKEP4_QA_POLICY
+    WHERE PORTAL_ID = #portalId#
+    ORDER BY QNA_TYPE
+  </select>
+  
+  
+   <select id="listPotalId" resultClass="String" >
+     SELECT 				/* [QnaPolicy_SqlMap.xml] qnaPolicy.selectPotalId */  
+	    PORTAL_ID
+    FROM IKEP4_QA_POLICY
+    GROUP BY PORTAL_ID
+  </select>
+  
+  
+  <select id="selectCount" resultClass="int" parameterClass="String">
+     SELECT 		/* [QnaPolicy_SqlMap.xml] qnaPolicy.selectCount */  
+     	COUNT(POLICY_ID)		
+    FROM IKEP4_QA_POLICY
+    WHERE PORTAL_ID = #portalId#
+  </select>
+ 
+  
+  <insert id="insert" parameterClass="QnaPolicy" >
+    INSERT INTO IKEP4_QA_POLICY (			/* [QnaPolicy_SqlMap.xml] qnaPolicy.insert */  
+    	POLICY_ID, 
+	    QNA_TYPE, 
+	    HIT_WEIGHT, 
+	    LINEREPLY_WEIGHT,
+	    ANSWER_WEIGHT, 
+	    FAVORITE_WEIGHT,
+	    ANSWER_SUM_WEIGHT,
+	    BEST_QNA_BASIS_POINT,
+	    ANSWER_LINEREPLY_WEIGHT,
+	    ANSWER_RECOMMEND_WEIGHT,
+	    ANSWER_ADOPT_WEIGHT,
+	    BEST_ANSWER_BASIS_POINT,
+      	REGISTER_ID, 
+      	REGISTER_NAME, 
+      	REGIST_DATE,
+      	PORTAL_ID
+     ) VALUES (
+     	#policyId#, 
+     	#qnaType#, 
+     	#hitWeight#, 
+     	#linereplyWeight#, 
+      	#answerWeight#, 
+      	#favoriteWeight#, 
+      	#answerSumWeight#,
+      	#bestQnaBasisPoint#,
+      	#answerLinereplyWeight#,
+      	#answerRecommendWeight#,
+      	#answerAdoptWeight#,
+      	#bestAnswerBasisPoint#,
+      	#registerId#, 
+      	#registerName#, 
+      	sysdate,
+      	#portalId#
+      )
+  </insert>
+  
+  <update id="update" parameterClass="QnaPolicy" >
+    UPDATE IKEP4_QA_POLICY				/* [QnaPolicy_SqlMap.xml] qnaPolicy.update */  
+    SET QNA_TYPE = #qnaType#,
+	      HIT_WEIGHT = #hitWeight#,
+	      LINEREPLY_WEIGHT = #linereplyWeight#,
+	      ANSWER_WEIGHT = #answerWeight#,
+	      FAVORITE_WEIGHT = #favoriteWeight#,
+	      ANSWER_SUM_WEIGHT= #answerSumWeight#,
+	      BEST_QNA_BASIS_POINT= #bestQnaBasisPoint#,
+	      ANSWER_LINEREPLY_WEIGHT= #answerLinereplyWeight#,
+	      ANSWER_RECOMMEND_WEIGHT= #answerRecommendWeight#,
+	      ANSWER_ADOPT_WEIGHT= #answerAdoptWeight#,
+	      BEST_ANSWER_BASIS_POINT= #bestAnswerBasisPoint#,
+	      REGISTER_ID = #registerId#,
+	      REGISTER_NAME = #registerName#,
+	      REGIST_DATE = sysdate
+    WHERE POLICY_ID = #policyId#
+  </update>
+  
+  
+   
+  <delete id="delete" parameterClass="String" >
+    DELETE 					/* [QnaPolicy_SqlMap.xml] qnaPolicy.delete */  
+    FROM IKEP4_QA_POLICY
+    WHERE POLICY_ID = #policyId#
+  </delete>
+  
+</sqlMap>

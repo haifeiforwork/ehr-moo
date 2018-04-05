@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="support.user.code.dao.JobPosition" >
+	<typeAlias alias = "JobPosition" type="com.lgcns.ikep4.support.user.code.model.JobPosition"/>
+	<typeAlias alias = "SearchCondition" type="com.lgcns.ikep4.support.user.code.model.AdminSearchCondition"/>
+
+	<resultMap id="result" class="JobPosition">
+		<result property="jobPositionCode" column="JOB_POSITION_CODE" />
+		<result property="portalId" column="PORTAL_ID" />
+		<result property="jobPositionName" column="JOB_POSITION_NAME" />
+		<result property="jobPositionEnglishName" column="JOB_POSITION_ENGLISH_NAME" />
+		<result property="sortOrder" column="SORT_ORDER" />
+		<result property="registerId" column="REGISTER_ID" />
+		<result property="registerName" column="REGISTER_NAME" />
+		<result property="updaterId" column="UPDATER_ID" />
+		<result property="updaterName" column="UPDATER_NAME" />
+		<result property="registDate" column="REGIST_DATE" />
+		<result property="updateDate" column="UPDATE_DATE" />
+		<result property="num" column="NUM" />
+	</resultMap>
+	
+	<resultMap id="getResult" class="JobPosition">
+		<result property="jobPositionCode" column="JOB_POSITION_CODE" />
+		<result property="portalId" column="PORTAL_ID" />
+		<result property="jobPositionName" column="JOB_POSITION_NAME" />
+		<result property="jobPositionEnglishName" column="JOB_POSITION_ENGLISH_NAME" />
+		<result property="sortOrder" column="SORT_ORDER" />
+		<result property="registerId" column="REGISTER_ID" />
+		<result property="registerName" column="REGISTER_NAME" />
+		<result property="updaterId" column="UPDATER_ID" />
+		<result property="updaterName" column="UPDATER_NAME" />
+		<result property="registDate" column="REGIST_DATE" />
+		<result property="updateDate" column="UPDATE_DATE" />
+	</resultMap>
+	
+	<resultMap id="sortOrderResult" class="JobPosition">
+		<result property="sortOrder" column="SORT_ORDER" />
+	</resultMap>
+	
+	<!-- 신규 등록 -->
+	<insert id="insert" parameterClass="JobPosition"> 
+	<![CDATA[
+		INSERT INTO /* [JobPosition_SqlMap.xml] support.user.code.dao.JobPosition.insert */
+			IKEP4_EV_JOB_POSITION (
+			JOB_POSITION_CODE,
+			PORTAL_ID, 
+			JOB_POSITION_NAME, 
+			JOB_POSITION_ENGLISH_NAME,
+			SORT_ORDER,
+			REGISTER_ID, 
+			REGISTER_NAME,
+			UPDATER_ID, 
+			UPDATER_NAME,
+			REGIST_DATE, 
+			UPDATE_DATE)
+		VALUES ( 
+			#jobPositionCode#,
+			#portalId#,
+			#jobPositionName#,
+			#jobPositionEnglishName#,
+			#sortOrder#,
+		    #registerId#,
+		    #registerName#,
+		    #updaterId#,
+		    #updaterName#,
+		    NOW(), 
+		    NOW())
+	]]>
+	</insert>
+   
+   <!-- 상세정보 -->
+	<select id="select" parameterClass="java.lang.String" resultMap="getResult">
+	<![CDATA[
+		SELECT /* [JobPosition_SqlMap.xml] support.user.code.dao.JobPosition.select */
+		    JOB_POSITION_CODE,
+		    JOB_POSITION_NAME,
+		    JOB_POSITION_ENGLISH_NAME,
+		    SORT_ORDER,
+		    PORTAL_ID,
+		    REGISTER_ID,
+		    REGISTER_NAME,
+		    UPDATER_ID,
+		    UPDATER_NAME,
+		    REGIST_DATE,
+		    UPDATE_DATE
+		FROM 
+		    IKEP4_EV_JOB_POSITION
+		WHERE
+			JOB_POSITION_CODE = #jobPositionCode#
+	]]>
+	</select>
+	
+	<!-- 기존 정보 수정 -->
+	<update id="update" parameterClass="JobPosition">
+	<![CDATA[
+		UPDATE /* [JobPosition_SqlMap.xml] support.user.code.dao.JobPosition.update */
+			IKEP4_EV_JOB_POSITION
+		SET
+			JOB_POSITION_NAME = #jobPositionName#,
+			JOB_POSITION_ENGLISH_NAME = #jobPositionEnglishName#,
+			SORT_ORDER = #sortOrder#,
+			PORTAL_ID = #portalId#,
+			UPDATER_ID = #updaterId#,
+			UPDATER_NAME = #updaterName#,
+			UPDATE_DATE = NOW()
+		WHERE
+			JOB_POSITION_CODE = #jobPositionCode#
+	]]>
+	</update>
+   
+	<!-- 삭제 -->
+	<delete id="delete" parameterClass="java.lang.String">
+	<![CDATA[
+		DELETE /* [JobPosition_SqlMap.xml] support.user.code.dao.JobPosition.delete */ 
+		FROM IKEP4_EV_JOB_POSITION
+		WHERE
+			JOB_POSITION_CODE = #jobPositionCode#
+	]]>
+	</delete>
+	
+	<!-- 목록 가져오기 -->
+	<select id="selectAll" parameterClass="SearchCondition" resultMap="result">
+		<![CDATA[
+		SELECT				/* [JobPosition_SqlMap.xml] support.user.code.dao.JobPosition.selectAll */
+							(CASE tbl1.JOB_POSITION_CODE WHEN tbl1.JOB_POSITION_CODE THEN @ROWNUM := @ROWNUM + 1 ELSE @ROWNUM := 1 END) AS NUM,
+		    				tbl1.*
+		FROM 				(
+							SELECT				JOB_POSITION_CODE,
+											    JOB_POSITION_NAME,
+											    JOB_POSITION_ENGLISH_NAME,
+											    SORT_ORDER,
+											    PORTAL_ID,
+											    REGISTER_ID,
+											    REGISTER_NAME,
+											    UPDATER_ID,
+											    UPDATER_NAME,
+											    REGIST_DATE,
+											    UPDATE_DATE
+							FROM				IKEP4_EV_JOB_POSITION
+		        			WHERE 				1 = 1
+		]]>
+							<isNotEmpty property="portalId">
+							AND 				PORTAL_ID = #portalId#
+							</isNotEmpty>
+							<isNotEmpty property="searchWord">
+							<isEqual property="searchColumn" compareValue="title">
+							AND					UPPER(JOB_POSITION_NAME) LIKE CONCAT('%', UPPER(#searchWord#), '%')
+							</isEqual>
+							<isEqual property="searchColumn" compareValue="code">
+							AND					JOB_POSITION_CODE LIKE CONCAT('%', #searchWord#, '%')
+							</isEqual>
+							</isNotEmpty>
+							<isNotNull property="sortColumn">
+							<isEqual property="sortColumn" compareValue="SORT_ORDER">
+							<isEqual property="sortType" compareValue="ASC">
+							ORDER BY 			SORT_ORDER ASC
+							</isEqual>
+							<isEqual property="sortType" compareValue="DESC">
+							ORDER BY 			SORT_ORDER DESC
+							</isEqual>
+							</isEqual>
+							<isEqual property="sortColumn" compareValue="JOB_POSITION_CODE">
+							<isEqual property="sortType" compareValue="ASC">
+							ORDER BY 			JOB_POSITION_CODE ASC
+							</isEqual>
+							<isEqual property="sortType" compareValue="DESC">
+							ORDER BY 			JOB_POSITION_CODE DESC
+							</isEqual>
+							</isEqual>
+							<isEqual property="sortColumn" compareValue="JOB_POSITION_NAME">
+							<isEqual property="sortType" compareValue="ASC">
+							ORDER BY 			JOB_POSITION_NAME ASC
+							</isEqual>
+							<isEqual property="sortType" compareValue="DESC">
+							ORDER BY 			JOB_POSITION_NAME DESC
+							</isEqual>
+							</isEqual>
+							<isEqual property="sortColumn" compareValue="JOB_POSITION_ENGLISH_NAME">
+							<isEqual property="sortType" compareValue="ASC">
+							ORDER BY 			JOB_POSITION_ENGLISH_NAME ASC
+							</isEqual>
+							<isEqual property="sortType" compareValue="DESC">
+							ORDER BY 			JOB_POSITION_ENGLISH_NAME DESC
+							</isEqual>
+							</isEqual>
+							</isNotNull>
+							<isNull property="sortColumn">
+							ORDER BY 			SORT_ORDER ASC
+							</isNull>
+		<![CDATA[	
+							LIMIT				#startRowIndex#, #pagePerRecord#
+							) tbl1,
+							(
+							SELECT				@ROWNUM := #startRowIndex#
+							) tbl2
+		]]>	
+	</select>
+	
+	<select id="selectCount" parameterClass="SearchCondition" resultClass="int">
+	<![CDATA[
+	    SELECT /* [JobPosition_SqlMap.xml] support.user.code.dao.JobPosition.selectCount */ 
+	        COUNT(*)
+	    FROM 
+	        IKEP4_EV_JOB_POSITION
+        WHERE 1 = 1
+	]]>
+		<isNotEmpty property="portalId">
+				AND PORTAL_ID = #portalId#
+		</isNotEmpty>
+		<isNotEmpty property="searchWord">
+		    <isEqual property="searchColumn" compareValue="title">
+		        AND UPPER(JOB_POSITION_NAME) LIKE CONCAT('%', UPPER(#searchWord#), '%')
+		    </isEqual>
+		    <isEqual property="searchColumn" compareValue="code">
+		        AND JOB_POSITION_CODE LIKE CONCAT('%', #searchWord#, '%')
+		    </isEqual>
+		</isNotEmpty>
+	</select>
+
+	<select id="checkCode" parameterClass="java.lang.String" resultClass="java.lang.String">
+	<![CDATA[
+		SELECT /* [JobPosition_SqlMap.xml] support.user.code.dao.JobPosition.checkCode */
+			COUNT(JOB_POSITION_CODE)
+		FROM
+			IKEP4_EV_JOB_POSITION
+		WHERE
+			JOB_POSITION_CODE = #jobPositionCode#	
+	]]>
+	</select>
+	
+	<select id="getMaxSortOrder" resultClass="java.lang.String">
+	<![CDATA[
+		SELECT
+			LPAD((MAX(SORT_ORDER)+1), 6, '0') AS SORT_ORDER
+		FROM
+			IKEP4_EV_JOB_POSITION
+	]]>
+	</select>
+	
+	<insert id="updateSortOrder" parameterClass="JobPosition">
+	<![CDATA[
+		UPDATE /* [JobPosition_SqlMap.xml] support.user.code.dao.JobPosition.updateSortOrder */
+			IKEP4_EV_JOB_POSITION
+    	SET 
+    		SORT_ORDER = #sortOrder#
+    	WHERE 
+    		JOB_POSITION_CODE = #jobPositionCode#
+   	]]>
+	</insert>
+	
+	<select id="selectGoUp" parameterClass="java.util.Map" resultMap="getResult">
+	<![CDATA[	
+		SELECT				/* [JobPosition_SqlMap.xml] support.user.code.dao.JobPosition.selectGoUp */
+							tbl.*
+		FROM 				(
+							SELECT				* 
+							FROM 				IKEP4_EV_JOB_POSITION 
+							WHERE 				SORT_ORDER < #sortOrder#
+							ORDER BY 			SORT_ORDER DESC
+							) tbl 
+		LIMIT 1
+	]]>
+    </select>
+    
+    <select id="selectGoDown" parameterClass="java.util.Map" resultMap="getResult">
+	<![CDATA[	
+		SELECT				/* [JobPosition_SqlMap.xml] support.user.code.dao.JobPosition.selectGoDown */
+							tbl.*
+		FROM 				(
+							SELECT				* 
+							FROM 				IKEP4_EV_JOB_POSITION 
+							WHERE 				SORT_ORDER > #sortOrder#
+							ORDER BY 			SORT_ORDER ASC
+							) tbl 
+		LIMIT 1
+	]]>
+    </select>
+	
+	<!-- 목록 가져오기 -->
+	<select id="listJobPositionAll" parameterClass="java.lang.String" resultMap="getResult">
+	<![CDATA[
+		/* [JobPosition_SqlMap.xml] support.user.code.dao.JobPosition.listJobPositionAll */
+		SELECT 
+		    JOB_POSITION_CODE,
+		    JOB_POSITION_NAME,
+		    JOB_POSITION_ENGLISH_NAME,
+		    SORT_ORDER,
+		    PORTAL_ID,
+		    REGISTER_ID,
+		    REGISTER_NAME,
+		    UPDATER_ID,
+		    UPDATER_NAME,
+		    REGIST_DATE,
+		    UPDATE_DATE
+		FROM 
+		    IKEP4_EV_JOB_POSITION
+	       WHERE PORTAL_ID = #portalId#
+	]]>
+	</select>
+</sqlMap>

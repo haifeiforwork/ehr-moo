@@ -1,0 +1,330 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="support.user.code.dao.Timezone" >
+	<typeAlias alias = "Timezone" type="com.lgcns.ikep4.support.user.code.model.Timezone"/>
+	<typeAlias alias = "SearchCondition" type="com.lgcns.ikep4.support.user.code.model.AdminSearchCondition"/>
+
+	<resultMap id="result" class="Timezone">
+		<result property="timezoneId" column="TIMEZONE_ID" columnIndex="1"/>
+		<result property="timezoneName" column="TIMEZONE_NAME" columnIndex="2"/>
+		<result property="description" column="DESCRIPTION" columnIndex="3"/>
+		<result property="timeDifference" column="TIME_DIFFERENCE" columnIndex="4"/>
+		<result property="sortOrder" column="SORT_ORDER" columnIndex="5"/>
+		<result property="displayName" column="DISPLAY_NAME"	columnIndex="6"/>
+		<result property="registerId" column="REGISTER_ID" columnIndex="7"/>
+		<result property="registerName" column="REGISTER_NAME" columnIndex="8"/>
+		<result property="updaterId" column="UPDATER_ID" columnIndex="9"/>
+		<result property="updaterName" column="UPDATER_NAME" columnIndex="10"/>
+		<result property="registDate" column="REGIST_DATE" columnIndex="11"/>
+		<result property="updateDate" column="UPDATE_DATE" columnIndex="12"/>
+		<result property="num" column="NUM" columnIndex="13"/>
+	</resultMap>
+	
+	<resultMap id="getResult" class="Timezone">
+		<result property="timezoneId" column="TIMEZONE_ID" columnIndex="1"/>
+		<result property="timezoneName" column="TIMEZONE_NAME" columnIndex="2"/>
+		<result property="description" column="DESCRIPTION" columnIndex="3"/>
+		<result property="timeDifference" column="TIME_DIFFERENCE" columnIndex="4"/>
+		<result property="sortOrder" column="SORT_ORDER" columnIndex="5"/>
+		<result property="displayName" column="DISPLAY_NAME"	columnIndex="6"/>
+		<result property="registerId" column="REGISTER_ID" columnIndex="7"/>
+		<result property="registerName" column="REGISTER_NAME" columnIndex="8"/>
+		<result property="updaterId" column="UPDATER_ID" columnIndex="9"/>
+		<result property="updaterName" column="UPDATER_NAME" columnIndex="10"/>
+		<result property="registDate" column="REGIST_DATE" columnIndex="11"/>
+		<result property="updateDate" column="UPDATE_DATE" columnIndex="12"/>
+	</resultMap>	
+		
+	<resultMap id="sortOrderResult" class="Timezone">
+		<result property="sortOrder" column="SORT_ORDER" columnIndex="1"/>
+	</resultMap>
+	
+	<!-- 신규 등록 -->
+	<insert id="insert" parameterClass="Timezone"> 
+	<![CDATA[
+		INSERT INTO /* [Timezone_SqlMap.xml] support.user.code.dao.Timezone.insert */
+			IKEP4_EV_TIMEZONE (
+			TIMEZONE_ID, 
+			TIMEZONE_NAME, 
+			TIME_DIFFERENCE, 
+			SORT_ORDER,
+			DISPLAY_NAME,
+			REGISTER_ID, 
+			REGISTER_NAME,
+			UPDATER_ID, 
+			UPDATER_NAME,
+			REGIST_DATE, 
+			UPDATE_DATE,
+			DESCRIPTION)
+		VALUES ( 
+			#timezoneId#,
+			#timezoneName#,
+			#timeDifference#,
+			#sortOrder#,
+			#displayName#,
+		    #registerId#,
+		    #registerName#,
+		    #updaterId#,
+		    #updaterName#,
+		    SYSDATE,
+		    SYSDATE,
+		    #description#)
+	]]>
+   </insert>
+   
+   <!-- 상세정보 -->
+	<select id="select" parameterClass="java.lang.String" resultMap="getResult">
+	<![CDATA[
+		SELECT /* [Timezone_SqlMap.xml] support.user.code.dao.Timezone.select */
+		    TIMEZONE_ID,
+		    TIMEZONE_NAME,
+		    DESCRIPTION,
+		    TIME_DIFFERENCE,
+		    SORT_ORDER,
+		    DISPLAY_NAME,
+		    REGISTER_ID,
+		    REGISTER_NAME,
+		    UPDATER_ID,
+		    UPDATER_NAME,
+		    REGIST_DATE,
+		    UPDATE_DATE
+		FROM 
+		    IKEP4_EV_TIMEZONE
+		WHERE
+			TIMEZONE_ID = #timezoneId#
+	]]>
+	</select>
+	
+	<!-- 기존 정보 수정 -->
+	<update id="update" parameterClass="Timezone">
+	<![CDATA[
+		UPDATE /* [Timezone_SqlMap.xml] support.user.code.dao.Timezone.update */
+			IKEP4_EV_TIMEZONE
+		SET
+			TIMEZONE_NAME = #timezoneName#,
+			DESCRIPTION = #description#,
+			TIME_DIFFERENCE = #timeDifference#,
+			SORT_ORDER = #sortOrder#,
+			DISPLAY_NAME = #displayName#,
+			UPDATER_ID = #updaterId#,
+			UPDATER_NAME = #updaterName#,
+			UPDATE_DATE = SYSDATE
+		WHERE
+			TIMEZONE_ID = #timezoneId#
+	]]>
+	</update>
+   
+	<!-- 삭제 -->
+	<delete id="delete" parameterClass="java.lang.String">
+	<![CDATA[
+		DELETE /* [Timezone_SqlMap.xml] support.user.code.dao.Timezone.delete */ 
+		FROM IKEP4_EV_TIMEZONE
+		WHERE
+			TIMEZONE_ID = #timezoneId#
+	]]>
+	</delete>
+	
+	<!-- 목록 가져오기 -->
+	<select id="selectAll" parameterClass="SearchCondition" resultMap="result">
+	<![CDATA[
+		SELECT /* [Timezone_SqlMap.xml] support.user.code.dao.Timezone.selectAll */
+		    *
+		FROM 
+		( 
+		    SELECT 
+		        ROWNUM AS NUM, 
+		        A.* 
+		    FROM 
+		    ( 
+				SELECT 
+				    A.TIMEZONE_ID AS TIMEZONE_ID,
+				    B.ITEM_MESSAGE AS TIMEZONE_NAME,
+				    A.DESCRIPTION AS DESCRIPTION,
+				    A.TIME_DIFFERENCE AS TIME_DIFFERENCE,
+				    A.SORT_ORDER AS SORT_ORDER,
+				    A.DISPLAY_NAME AS DISPLAY_NAME,
+				    A.REGISTER_ID AS REGISTER_ID,
+				    A.REGISTER_NAME AS REGISTER_NAME,
+				    A.UPDATER_ID AS UPDATER_ID,
+				    A.UPDATER_NAME AS UPDATER_NAME,
+				    A.REGIST_DATE AS REGIST_DATE,
+				    A.UPDATE_DATE AS UPDATE_DATE
+				FROM 
+				    IKEP4_EV_TIMEZONE A
+				    JOIN IKEP4_I18N_MESSAGE B
+				    ON A.TIMEZONE_ID = B.ITEM_ID
+				    AND B.FIELD_NAME = #fieldName#
+				    AND B.LOCALE_CODE = #userLocaleCode#
+		        WHERE 1 = 1
+	]]>
+		<isNotEmpty property="searchWord">
+			<isEqual property="searchColumn" compareValue="title">
+				AND	UPPER(TIMEZONE_NAME) LIKE '%' || UPPER(#searchWord#) || '%'
+			</isEqual>
+			<isEqual property="searchColumn" compareValue="id">
+				AND	TIMEZONE_ID LIKE '%' || #searchWord# || '%'
+			</isEqual>
+		</isNotEmpty>
+	    <isNotNull property="sortColumn">
+			<isEqual property="sortColumn" compareValue="SORT_ORDER">
+				<isEqual property="sortType" compareValue="ASC">
+					ORDER BY SORT_ORDER ASC
+				</isEqual>
+				<isEqual property="sortType" compareValue="DESC">
+					ORDER BY SORT_ORDER DESC
+				</isEqual>
+			</isEqual>
+			<isEqual property="sortColumn" compareValue="TIMEZONE_NAME">
+				<isEqual property="sortType" compareValue="ASC">
+					ORDER BY TIMEZONE_NAME ASC
+				</isEqual>
+				<isEqual property="sortType" compareValue="DESC">
+					ORDER BY TIMEZONE_NAME DESC
+				</isEqual>
+			</isEqual>
+			<isEqual property="sortColumn" compareValue="TIME_DIFFERENCE">
+				<isEqual property="sortType" compareValue="ASC">
+					ORDER BY TIME_DIFFERENCE ASC
+				</isEqual>
+				<isEqual property="sortType" compareValue="DESC">
+					ORDER BY TIME_DIFFERENCE DESC
+				</isEqual>
+			</isEqual>
+		</isNotNull>
+		<isNull property="sortColumn">
+			ORDER BY SORT_ORDER ASC
+		</isNull>
+	<![CDATA[
+		    ) A 
+		    WHERE ROWNUM <=  #endRowIndex# /* 종료  */
+		) 
+		WHERE NUM >  #startRowIndex# /* 시작 */
+	]]>
+	</select>
+	
+	<!-- 페이지 없는 목록 가져오기 -->
+	<select id="selectNoPage" parameterClass="java.util.Map" resultMap="getResult">
+	<![CDATA[
+		SELECT /* [Timezone_SqlMap.xml] support.user.code.dao.Timezone.selectNoPage */
+		    A.TIMEZONE_ID AS TIMEZONE_ID,
+		    B.ITEM_MESSAGE AS TIMEZONE_NAME,
+		    A.DESCRIPTION AS DESCRIPTION,
+		    A.TIME_DIFFERENCE AS TIME_DIFFERENCE,
+		    A.SORT_ORDER AS SORT_ORDER,
+		    A.DISPLAY_NAME AS DISPLAY_NAME,
+		    A.REGISTER_ID AS REGISTER_ID,
+		    A.REGISTER_NAME AS REGISTER_NAME,
+		    A.UPDATER_ID AS UPDATER_ID,
+		    A.UPDATER_NAME AS UPDATER_NAME,
+		    A.REGIST_DATE AS REGIST_DATE,
+		    A.UPDATE_DATE AS UPDATE_DATE
+		FROM 
+		    IKEP4_EV_TIMEZONE A
+		    JOIN IKEP4_I18N_MESSAGE B
+		    ON A.TIMEZONE_ID = B.ITEM_ID
+		    AND B.FIELD_NAME = #fieldName#
+		    AND B.LOCALE_CODE = #userLocaleCode#
+        ORDER BY SORT_ORDER
+	]]>
+	</select>	
+
+	<select id="selectCount" parameterClass="SearchCondition" resultClass="int">
+	<![CDATA[
+		SELECT /* [Timezone_SqlMap.xml] support.user.code.dao.Timezone.selectCount */ 
+		    COUNT(*)
+		FROM 
+		    IKEP4_EV_TIMEZONE A
+		    JOIN IKEP4_I18N_MESSAGE B
+		    ON A.TIMEZONE_ID = B.ITEM_ID
+		    AND B.FIELD_NAME = #fieldName#
+		    AND B.LOCALE_CODE = #userLocaleCode#
+        WHERE 1 = 1
+	]]>
+		<isNotEmpty property="searchWord">
+			<isEqual property="searchColumn" compareValue="title">
+				AND	UPPER(A.TIMEZONE_NAME) LIKE '%' || UPPER(#searchWord#) || '%'
+			</isEqual>
+			<isEqual property="searchColumn" compareValue="id">
+				AND	A.TIMEZONE_ID LIKE '%' || #searchWord# || '%'
+			</isEqual>
+		</isNotEmpty>
+	</select>
+	
+	<select id="checkId" parameterClass="java.lang.String" resultClass="java.lang.String">
+	<![CDATA[
+		SELECT /* [Timezone_SqlMap.xml] support.user.code.dao.Timezone.checkId */
+			COUNT(TIMEZONE_ID)
+		FROM
+			IKEP4_EV_TIMEZONE
+		WHERE
+			TIMEZONE_ID = #timezoneId#	
+	]]>
+	</select>
+
+	<select id="getMaxSortOrder" resultClass="java.lang.String">
+	<![CDATA[
+		SELECT /* [Timezone_SqlMap.xml] support.user.code.dao.Timezone.getMaxSortOrder */
+			LPAD((MAX(SORT_ORDER)+1), 5, '0') AS SORT_ORDER
+		FROM
+			IKEP4_EV_TIMEZONE
+	]]>
+	</select>
+	
+	<select id="getSortOrderList" resultMap="sortOrderResult">
+	<![CDATA[
+		SELECT /* [Timezone_SqlMap.xml] support.user.code.dao.Timezone.getSortOrderList */
+		    SORT_ORDER
+		FROM
+		    IKEP4_EV_TIMEZONE
+	]]>
+	</select>
+	
+	<insert id="updateSortOrder" parameterClass="Timezone">
+	<![CDATA[
+		UPDATE /* [Timezone_SqlMap.xml] support.user.code.dao.Timezone.updateSortOrder */
+			IKEP4_EV_TIMEZONE
+    	SET 
+    		SORT_ORDER = #sortOrder#
+    	WHERE 
+    		TIMEZONE_ID = #timezoneId#
+   	]]>
+	</insert>
+	
+	<select id="selectGoUp" parameterClass="java.util.Map" resultMap="getResult">
+	<![CDATA[	
+		SELECT /* [Timezone_SqlMap.xml] support.user.code.dao.Timezone.selectGoUp */
+			*
+		FROM 
+		(
+			SELECT 
+				* 
+			FROM 
+				IKEP4_EV_TIMEZONE 
+			WHERE 
+				SORT_ORDER < #sortOrder#
+			ORDER BY SORT_ORDER DESC
+		) 
+		WHERE ROWNUM= 1
+	]]>
+    </select>
+    
+    <select id="selectGoDown" parameterClass="java.util.Map" resultMap="getResult">
+	<![CDATA[	
+		SELECT /* [Timezone_SqlMap.xml] support.user.code.dao.Timezone.selectGoDown */
+			*
+		FROM 
+		(
+			SELECT 
+				* 
+			FROM 
+				IKEP4_EV_TIMEZONE 
+			WHERE 
+				SORT_ORDER > #sortOrder#
+			ORDER BY SORT_ORDER ASC
+		) 
+		WHERE ROWNUM= 1
+	]]>
+    </select>
+    
+</sqlMap>

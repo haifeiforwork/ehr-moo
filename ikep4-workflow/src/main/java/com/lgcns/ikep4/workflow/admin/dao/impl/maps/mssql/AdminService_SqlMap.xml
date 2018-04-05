@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="workflow.admin.dao.AdminServiceDao">
+	<typeAlias alias="AdminService" type="com.lgcns.ikep4.workflow.admin.model.AdminService"/>
+
+	<resultMap id="AdminServiceResult" class="AdminService">
+		<result property="serviceId" column="SERVICE_ID" columnIndex="1"/>
+		<result property="baseCheck" column="BASE_CHECK" columnIndex="2"/>
+		<result property="createDate" column="CREATE_DATE" columnIndex="3"/>
+		<result property="applyStartDate" column="APPLY_START_DATE" columnIndex="4"/>
+		<result property="applyEndDate" column="APPLY_END_DATE" columnIndex="5"/>
+		<result property="updateDate" column="UPDATE_DATE" columnIndex="6"/>
+		<result property="processId" column="PROCESS_ID" columnIndex="7"/>
+		<result property="processVer" column="PROCESS_VER" columnIndex="8"/>
+		<result property="processName" column="PROCESS_NAME" columnIndex="9"/>
+		<result property="author" column="AUTHOR" columnIndex="10"/>
+		<result property="description" column="DESCRIPTION" columnIndex="11"/>
+	</resultMap>
+	
+	<!-- MS SQL -->
+	<!-- insert -->
+	<insert id="insert" parameterClass="AdminService"> 
+      <![CDATA[ 
+      		/* [AdminService_SqlMap.xml] workflow.admin.dao.AdminService.insert */
+          INSERT INTO IKEP4_WF_SERVICE (PROCESS_ID, PROCESS_VER, APPLY_START_DATE)
+			VALUES ( 	#processId#, #processVer#, CURRENT_TIMESTAMP)	
+       ]]>
+      <selectKey resultClass="String" keyProperty="processId" type="pre"> 
+         <![CDATA[ 
+               SELECT #processId# AS PROCESS_ID
+            ]]>
+      </selectKey>
+   </insert>
+   
+   <!-- ANSI -->
+   <!-- select -->
+	<select id="select" parameterClass="String" resultMap="AdminServiceResult">
+	  <![CDATA[
+	  /* [AdminService_SqlMap.xml] workflow.admin.dao.AdminService.select */
+		   SELECT IWS.*,'' PROCESS_NAME,'' AUTHOR,'' DESCRIPTION FROM IKEP4_WF_SERVICE IWS WHERE IWS.PROCESS_ID = #processId#
+	   ]]>
+	</select>
+	
+	<!-- ANSI -->
+	<!-- update -->
+	<update id="update" parameterClass="AdminService">
+	  <![CDATA[
+	  /* [AdminService_SqlMap.xml] workflow.admin.dao.AdminService.update */
+		   UPDATE IKEP4_WF_SERVICE 
+		   SET APPLY_START_DATE = CURRENT_TIMESTAMP 
+		   WHERE PROCESS_ID = #processId#
+	   ]]>
+	</update>
+   
+   <!-- ANSI -->
+   <!-- delete -->
+   <delete id="delete" parameterClass="String">
+      <![CDATA[
+      	   /* [AdminService_SqlMap.xml] workflow.admin.dao.AdminService.delete */
+	       DELETE FROM IKEP4_WF_SERVICE WHERE PROCESS_ID = #processId#
+	   ]]>
+	</delete>
+	
+	<!-- ANSI -->
+	<!-- selectCount -->
+	<select id="selectCount" parameterClass="String" resultClass="java.lang.Integer">
+	  <![CDATA[
+	  	   /* [AdminService_SqlMap.xml] workflow.admin.dao.AdminService.selectCount */
+		   SELECT COUNT(*) FROM IKEP4_WF_SERVICE WHERE PROCESS_ID = #processId#
+	   ]]>
+	</select>
+	
+	<!-- ANSI -->
+	<select id="selectAll" resultMap="AdminServiceResult">
+	<![CDATA[	
+	  SELECT   /* [AdminService_SqlMap.xml] workflow.admin.dao.AdminService.selectAll */
+	  IWS.*,'' PROCESS_NAME,'' AUTHOR,'' DESCRIPTION
+	  FROM IKEP4_WF_SERVICE IWS
+	  ORDER BY IWS.APPLY_START_DATE
+	]]>
+	</select>
+	
+	<!-- MS SQL -->
+	<!-- 워크플로우 - 현황관리 - 프로세스 관리 - 프로세스 상세화면 -->
+	<select id="listProcessDetail" parameterClass="java.util.Map" resultMap="AdminServiceResult">
+	<![CDATA[	
+	  /* [AdminService_SqlMap.xml] workflow.admin.dao.AdminServiceDao.listProcessDetail */
+	  	 SELECT   
+	  	 IWS.SERVICE_ID,
+         IWS.BASE_CHECK,
+         IWS.CREATE_DATE,
+         CONVERT(NVARCHAR, IWS.APPLY_START_DATE, 102) APPLY_START_DATE,
+         CONVERT(NVARCHAR, IWS.APPLY_END_DATE, 102) APPLY_END_DATE,
+         IWS.UPDATE_DATE,
+         IWS.PROCESS_ID,
+         IWS.PROCESS_VER,
+         IWP.PROCESS_NAME,
+         (SELECT USER_NAME FROM IKEP4_EV_USER WHERE USER_ID =IWP.AUTHOR) AUTHOR,
+         IWP.DESCRIPTION                  
+		 FROM   IKEP4_WF_SERVICE IWS
+		       inner join IKEP4_WF_PROCESS IWP
+		         ON IWS.PROCESS_VER = IWP.PROCESS_VER
+		       	AND IWS.PROCESS_ID = IWP.PROCESS_ID
+		WHERE  IWS.PROCESS_ID = #processId#
+		       AND IWS.PROCESS_VER = #processVer# 
+	]]>
+	</select>
+	
+	<!-- MS SQL -->
+	<!-- 워크플로우 - 현황관리 - 프로세스 관리 - 프로세스 상세화면 적용일자 수정 -->
+	<update id="updateProcessApplyDate" parameterClass="java.util.Map">
+	<![CDATA[
+		/* [AdminService_SqlMap.xml] workflow.admin.dao.AdminServiceDao.updateProcessApplyDate */
+		UPDATE IKEP4_WF_SERVICE  SET APPLY_START_DATE = #applyStartDate#,APPLY_END_DATE = #applyEndDate#
+		WHERE PROCESS_ID = #processId#
+		AND PROCESS_VER = #processVer#
+	]]>
+	</update>
+	
+</sqlMap>

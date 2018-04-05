@@ -1,0 +1,213 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ko">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Home</title>
+<link rel="stylesheet" type="text/css" href="../../css/guide.css" />
+<link rel="stylesheet" type="text/css" href="../../css/theme01/jquery_ui_custom.css" />
+<link rel="stylesheet" type="text/css" href="../../css/common.css" />
+<link rel="stylesheet" type="text/css" href="../../css/theme01/theme.css" />
+<link type="text/css" rel="stylesheet" href="../../css/syntaxhighlighter_3.0.83/shCoreDefault.css"/>
+
+<script type="text/javascript" src="../../js/jquery/jquery-1.6.2.min.js"></script>
+<script type="text/javascript" src="../../js/jquery/jquery-ui-1.8.13.min.without.datepicker.js"></script>
+
+<script type="text/javascript" src="../../js/jquery/jquery.validate-1.8.min.js"></script>
+<script type="text/javascript" src="../../js/jquery/plugins.pack.js"></script>
+
+<script type="text/javascript" src="../../js/syntaxhighlighter_3.0.83/shCore.js"></script>
+<script type="text/javascript" src="../../js/syntaxhighlighter_3.0.83/shBrushJScript.js"></script>
+<script type="text/javascript">var contextRoot = "/ikep4-webapp";</script>
+<script type="text/javascript" src="../../js/langResource/ko.js"></script>
+<script type="text/javascript" src="../../js/common.pack.js"></script>
+
+<script type="text/javascript" src="../../js/plupload/plupload.full.min.js"></script>
+<script type="text/javascript" src="../../js/plupload/plupload.browserplus.min.js"></script>
+<script type="text/javascript" src="../../js/plupload/plupload.flash.min.js"></script>
+<!-- <script type="text/javascript" src="../../js/plupload/src/javascript/plupload.flash.js"></script> -->
+<script type="text/javascript" src="../../js/plupload/jquery.plupload.queue.min.customize.js"></script>
+<!-- <script type="text/javascript" src="../../js/plupload/src/javascript/jquery.plupload.queue.js"></script> -->
+
+
+<!-- <script type="text/javascript" src="../../js/plupload_1.4.3.2/plupload.js"></script> -->
+<!-- <script type="text/javascript" src="../../js/plupload_1.4.3.2/plupload.gears.js"></script> -->
+<!-- <script type="text/javascript" src="../../js/plupload_1.4.3.2/plupload.silverlight.js"></script> -->
+<!-- <script type="text/javascript" src="../../js/plupload_1.4.3.2/plupload.flash.js"></script> -->
+<!-- <script type="text/javascript" src="../../js/plupload_1.4.3.2/plupload.browserplus.js"></script> -->
+<!-- <script type="text/javascript" src="../../js/plupload_1.4.3.2/plupload.html4.js"></script> -->
+<!-- <script type="text/javascript" src="../../js/plupload_1.4.3.2/plupload.html5.js"></script> -->
+<!-- <script type="text/javascript" src="../../js/plupload_1.4.3.2/plupload.full.js"></script> -->
+<!-- <script type="text/javascript" src="../../js/plupload_1.4.3.2/jquery.plupload.queue.js"></script> -->
+
+
+<script type="text/javascript" src="../../js/upload.controll.js"></script>
+
+
+<script type="text/javascript">
+var uploader;
+(function($){
+	$(document).ready(function() {
+		SyntaxHighlighter.highlight();
+
+		var uploadedFiles = [
+			{fileId:"file1", fileRealName:"파일 1.doc", fileSize:100, fileExtension:"doc"},
+   			{fileId:"file2", fileRealName:"파일 2.zip", fileSize:10000, fileExtension:"zip"},
+   			{fileId:"file3", fileRealName:"파일 3.jpg", fileSize:10000000, fileExtension:"jpg"},
+   			{fileId:"file4", fileRealName:"파일 4.txt", fileSize:100000, fileExtension:"txt"}
+		];
+		uploader = new iKEP.FileController("#fmExample", "#divUploader", {
+			files : uploadedFiles,
+			allowFileType : "all",
+			onLoad : function() {
+				iKEP.debug("fileController initial complete");
+			}
+		});
+		
+		new iKEP.Validator("#fmExample", {
+			rules : {
+				field1 : "required"
+			},
+			messages : {
+				field1 : "field1을 입력해주세요."
+			},
+			submitHandler : function(form) {
+				isSubmit = true;
+				$("#btnSubmit").children().html("cancel");
+				
+				uploader.upload(function(isSuccess, files) {
+					iKEP.debug(isSuccess);
+					iKEP.debug(files);
+					
+					isSubmit = false;
+					$("#btnSubmit").children().html("submit");
+					
+					//if(isSuccess == true) form.submit();
+				});
+			}
+		});
+
+	    $("#btnTotal").click(function() {
+	    	iKEP.debug(uploader.getUploadFileCount());
+	    });
+	    
+	    $("#btnUploader").click(function() {
+	    	iKEP.debug(uploader.getPLUploader());
+	    });
+	    
+	    $("#btnFiles").click(function() {
+	    	iKEP.debug(uploader.getFiles());
+	    });
+	    
+	    var isSubmit = false;
+	    $("#btnSubmit").click(function(event) {
+	    	if(!isSubmit)
+	    		$("#fmExample").submit();
+	    	else {
+	    		uploader.cancel();
+	    		
+	    		isSubmit = false;
+				$("#btnSubmit").children().html("submit");
+	    	}
+	    	
+	    	event.preventDefault();
+	    });
+
+	});	
+})(jQuery);
+</script>
+</head>
+
+<body>
+<!--guideWrapper Start-->
+<div id="guideConFrame">
+
+	<div class="guideConTitle"><h2>plupload</h2><a class="refer" target="_blank" href="http://plupload.com/">reference</a></div>
+	
+	<!--UI_sample_area Start-->
+	<h4>UI sample</h4>	
+	<div class="UI_sample">
+		
+		<!--UI_sample Start-->
+		<div>
+			<form id="fmExample" method="post" action="">
+				<table width="100%">
+					<tbody>
+						<tr>
+							<td tooltip="tooltip">field 1</td>
+							<td><div><input type="text" name="field1" value=""/></div></td>
+						</tr>
+						<tr>
+							<td>field 2</td>
+							<td><div><input type="text" name="field2" value=""/></div></td>
+						</tr>
+					</tbody>
+				</table>
+				
+				<div id="divUploader"></div>
+				
+				<div>
+					<a id="btnUploader" href="#a" class="button_s"><span>uploader</span></a>
+					<a id="btnTotal" href="#a" class="button_s"><span>total</span></a>
+					<a id="btnFiles" href="#a" class="button_s"><span>files</span></a>
+					
+					<a id="btnSubmit" href="#a" class="button_s"><span>submit</span></a>
+				</div>
+			</form>
+		</div>
+		<!--//UI_sample End-->
+		
+		<div class="UI_sum">
+			summary
+		</div>
+	</div>
+	<!--//UI_sample_area End-->
+
+	<!--UI_source Start-->
+	<h4>View source</h4>
+	<div class="UI_source">
+		<pre class="brush: js;">
+		var uploadedFiles = [
+			{fileId:"file1", fileRealName:"파일 1.doc", fileSize:100, fileExtension:"doc"},
+   			{fileId:"file2", fileRealName:"파일 2.zip", fileSize:10000, fileExtension:"zip"},
+   			{fileId:"file3", fileRealName:"파일 3.jpg", fileSize:10000000, fileExtension:"jpg"},
+   			{fileId:"file4", fileRealName:"파일 4.txt", fileSize:100000, fileExtension:"txt"}
+		];
+		
+		var uploader = new iKEP.FileController("#fmExample", "#divUploader", {
+			files : uploadedFiles,
+			allowFileType : "all",
+			onLoad : function() {
+				// 경우에 따라 프레임 사이즈를 조절해 줘야 할 필요 있음.
+			}
+		});
+		</pre>
+	</div>	
+	<!--UI_source End-->	
+
+	<!--Method Start-->	
+	<h4>Method & Properties</h4>
+	<div class="UI_method">
+		<ul>
+			<li>method :
+				<ul>
+					<li>getPLUploader() : upload 컨트롤로 부터 PLUpload 컨트롤을 받아 올 수 있다.</li>
+					<li>getFiles() : 업로드 대상 파일의 목록을 리턴</li>
+					<li>getUploadFileCount() : 업로드 대상 파일 개수 리턴</li>
+					<li><b>upload(fnCallback)</b> : 선택된 파일 업로드 수행, 업로드 완료후 fnCallback 함수를 실행하며 업로드 목록 파일을 파라미터로 받을 수 있다.</li>
+					<li>cancel() : 업로드 수행을 중단한다.</li>
+					<li>destroy() : 업로드 객체 및 UI를 없앨때 사용하며, PLUpload option을 수정하고자 할때 없앤 후 재생성으로 option값을 변경할 수 있다.</li>
+				</ul>
+			</li>
+		</ul>
+	</div>
+	<!--//Method End-->
+	
+	<!-- //Event Start -->
+	<h4>Event</h4>
+	<div class="UI_event"></div>
+	<!-- //Event End -->
+	
+</div>
+<!--//guideWrapper End-->
+</body>
+</html>

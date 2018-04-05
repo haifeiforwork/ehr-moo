@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="collpack.collaboration.workspace.dao.WorkspacePortletLayout">
+
+	<typeAlias alias="WorkspacePortletLayout" type="com.lgcns.ikep4.collpack.collaboration.workspace.model.WorkspacePortletLayout"/>
+  
+	<sql id="sqlColumnList"> 
+		A.PORTLET_LAYOUT_ID	AS portletLayoutId, 
+		A.PORTLET_ID	AS portletId, 
+		A.COL_INDEX	AS colIndex,
+		A.ROW_INDEX	AS rowIndex,
+		A.IS_BOARD_PORTLET AS isBoardPortlet,
+		A.WORKSPACE_ID AS workspaceId,
+		A.BOARD_ID	AS boardId
+	</sql>  
+    
+	<select id="get" parameterClass="java.lang.String" resultClass="WorkspacePortletLayout"> 
+		SELECT 
+			/* [WorkspacePortletLayout_SqlMap.xml] collpack.collaboration.workspace.dao.WorkspacePortletLayout.get */
+			<include refid="collpack.collaboration.workspace.dao.WorkspacePortletLayout.sqlColumnList" /> 
+		FROM  
+			IKEP4_WS_PORTLET_LAYOUT A
+			LEFT OUTER JOIN IKEP4_WS_BD_BOARD B ON (A.BOARD_ID=B.BOARD_ID AND B.BOARD_TYPE=0 AND B.IS_DELETE=0 )
+    	WHERE
+    		A.PORTLET_LAYOUT_ID = #portletLayoutId#  
+	</select>
+  
+	<select id="exists" parameterClass="java.lang.String" resultClass="int"> 
+		SELECT /* [WorkspacePortletLayout_SqlMap.xml] collpack.collaboration.workspace.dao.WorkspacePortletLayout.exists */
+			COUNT(*)
+		FROM  
+			IKEP4_WS_PORTLET_LAYOUT
+		WHERE
+			PORTLET_LAYOUT_ID = #portletLayoutId# 
+	</select> 
+  
+	<select id="listByWorkspace" parameterClass="java.lang.String" resultClass="WorkspacePortletLayout">  
+		SELECT /* [WorkspacePortletLayout_SqlMap.xml] collpack.collaboration.workspace.dao.WorkspacePortletLayout.listByWorkspace */ 
+			<include refid="collpack.collaboration.workspace.dao.WorkspacePortletLayout.sqlColumnList" /> 
+		FROM   
+			IKEP4_WS_PORTLET_LAYOUT  A
+			LEFT OUTER JOIN IKEP4_WS_BD_BOARD B ON (A.BOARD_ID=B.BOARD_ID AND B.BOARD_TYPE=0 AND B.IS_DELETE=0 )
+		WHERE  
+			A.WORKSPACE_ID = #workspaceId# 
+		ORDER BY 
+			A.ROW_INDEX
+	</select> 
+	<select id="listLayoutByWorkspace" parameterClass="String" resultClass="WorkspacePortletLayout">
+		SELECT /* [WorkspacePortletLayout_SqlMap.xml] collpack.collaboration.workspace.dao.WorkspacePortletLayout.listLayoutByWorkspace */
+		    <include refid="collpack.collaboration.workspace.dao.WorkspacePortletLayout.sqlColumnList" /> 
+		FROM 
+			IKEP4_WS_PORTLET_LAYOUT  A
+			LEFT OUTER JOIN IKEP4_WS_BD_BOARD B ON A.BOARD_ID=B.BOARD_ID
+		WHERE A.WORKSPACE_ID = #workspaceId#
+		AND (B.IS_DELETE IS NULL OR B.IS_DELETE = 0)
+		ORDER BY A.COL_INDEX,A.ROW_INDEX
+	</select>  
+	<select id="countByWorkspace" parameterClass="java.lang.String" resultClass="int">  
+		SELECT /* [WorkspacePortletLayout_SqlMap.xml] collpack.collaboration.workspace.dao.WorkspacePortletLayout.countByWorkspace */ 
+           COUNT(*)
+		FROM
+			IKEP4_WS_PORTLET_LAYOUT 
+		WHERE
+			WORKSPACE_ID = #workspaceId# 
+		ORDER BY ROW_INDEX
+  	</select>
+ 
+	<insert id="create" parameterClass="WorkspacePortletLayout"> 
+	<![CDATA[ 
+		INSERT INTO IKEP4_WS_PORTLET_LAYOUT /* [WorkspacePortletLayout_SqlMap.xml] collpack.collaboration.workspace.dao.WorkspacePortletLayout.create */
+		( 
+		    PORTLET_LAYOUT_ID,	PORTLET_ID,			COL_INDEX,
+		    ROW_INDEX,			IS_BOARD_PORTLET,	WORKSPACE_ID,	BOARD_ID
+		) VALUES (
+			#portletLayoutId#,	#portletId#,		#colIndex#, 
+			#rowIndex#,			#isBoardPortlet#,	#workspaceId#,	#boardId#
+		)
+	]]>		
+	</insert>
+	
+	<update id="update" parameterClass="WorkspacePortletLayout"> 
+		UPDATE IKEP4_WS_PORTLET_LAYOUT 
+			/* [WorkspacePortletLayout_SqlMap.xml] collpack.collaboration.workspace.dao.WorkspacePortletLayout.update */
+    	SET 
+    		WORKSPACE_ID     = #workspaceId#,
+          	PORTLET_ID    = #portletId#,
+          	COL_INDEX    = #colIndex#,
+          	ROW_INDEX    = #rowIndex#          	
+		WHERE 
+			PORTLET_LAYOUT_ID = #portletLayoutId# 
+	</update>
+ 
+	<delete id="physicalDelete" parameterClass="java.lang.String"> 
+		DELETE FROM IKEP4_WS_PORTLET_LAYOUT 
+			/* [WorkspacePortletLayout_SqlMap.xml] collpack.collaboration.workspace.dao.WorkspacePortletLayout.physicalDelete */
+		WHERE
+			PORTLET_LAYOUT_ID = #portletLayoutId# 
+	</delete>
+	
+	<delete id="physicalDeleteByWorkspaceId" parameterClass="java.lang.String"> 
+		DELETE FROM IKEP4_WS_PORTLET_LAYOUT 
+			/* [WorkspacePortletLayout_SqlMap.xml] collpack.collaboration.workspace.dao.WorkspacePortletLayout.physicalDeleteByWorkspaceId */
+		WHERE
+			WORKSPACE_ID = #workspaceId# 
+	</delete>  
+	  
+</sqlMap> 

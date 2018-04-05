@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="socialpack.socialblog.dao.SocialBoardItem">
+
+	<typeAlias alias="SocialBoardItem"                	type="com.lgcns.ikep4.socialpack.socialblog.model.SocialBoardItem"/>
+	<typeAlias alias="SocialBoardItemSearchCondition" 	type="com.lgcns.ikep4.socialpack.socialblog.search.SocialBoardItemSearchCondition"/>
+
+	<!-- IKEP4_AD_ADDRGROUP 테이블 조회 결과 -->
+	<resultMap id="resultSocialBoardItem" class="SocialBoardItem" groupBy="itemId">
+		<result property="itemId" column="ITEM_ID" columnIndex="1"/>
+		<result property="title" column="TITLE" columnIndex="2"/>
+		<result property="contents" column="CONTENTS" columnIndex="3"/>
+		<result property="categoryId" column="CATEGORY_ID" columnIndex="4"/>
+		<result property="categoryName" column="CATEGORY_NAME" columnIndex="5"/>
+		<result property="recommendCount" column="RECOMMEND_COUNT" columnIndex="6"/>
+		<result property="linereplyCount" column="LINEREPLY_COUNT" columnIndex="7"/>
+		<result property="attachFileCount" column="ATTACH_FILE_COUNT" columnIndex="8"/>
+		<result property="readPermission" column="READ_PERMISSION" columnIndex="9"/>
+		<result property="registerId" column="REGISTER_ID" columnIndex="10"/>
+		<result property="registerName" column="REGISTER_NAME" columnIndex="11"/>
+		<result property="registDate" column="REGIST_DATE" columnIndex="12"/>
+		<result property="updateDate" column="UPDATE_DATE" columnIndex="13"/>
+		
+		<result property="registerEnglishName" column="REGISTER_ENGLISH_NAME" columnIndex="14"/>
+		
+		<result property="registerJobTitleCode" column="REGISTER_JOB_TITLE_CODE" columnIndex="15"/>
+		<result property="registerJobTitleName" column="REGISTER_JOB_TITLE_NAME" columnIndex="16"/>
+		<result property="registerJobTitleEngName" column="REGISTER_JOB_TITLE_ENG_NAME" columnIndex="17"/>
+		
+		<result property="registerTeamName" column="REGISTER_TEAM_NAME" columnIndex="18"/>
+		<result property="registerTeamEngName" column="REGISTER_TEAM_ENG_NAME" columnIndex="19"/>
+		
+		<result property="hitCount" column="HIT_COUNT" columnIndex="20"/>
+
+	</resultMap>
+	
+	<resultMap id="StringMap" class="String" >
+		<result column="POSTING_DATE" property="com" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<sql id="sqlColumnList"> 
+	    ITEM_ID, 
+	    TITLE, 
+	    CONTENTS, 
+	    CATEGORY_ID, 
+	    RECOMMEND_COUNT, 
+	    LINEREPLY_COUNT,
+	    ATTACH_FILE_COUNT,
+	    READ_PERMISSION,
+	    REGISTER_ID,
+	    REGISTER_NAME,
+	    REGIST_DATE,
+	    UPDATE_DATE,
+	    HIT_COUNT
+	</sql> 
+	
+	<sql id="sqlExtendColumnList"> 
+	    ITEM.ITEM_ID 									AS ITEM_ID, 
+	    ITEM.TITLE 										AS TITLE, 
+	    ITEM.CONTENTS 									AS CONTENTS, 
+	    ITEM.CATEGORY_ID 								AS CATEGORY_ID, 
+	    (SELECT CATEGORY_NAME FROM IKEP4_SB_CATEGORY WHERE CATEGORY_ID = ITEM.CATEGORY_ID) AS CATEGORY_NAME,
+	    ITEM.RECOMMEND_COUNT 							AS RECOMMEND_COUNT, 
+	    ITEM.LINEREPLY_COUNT 							AS LINEREPLY_COUNT,
+	    ITEM.ATTACH_FILE_COUNT 							AS ATTACH_FILE_COUNT,
+	    ITEM.READ_PERMISSION 							AS READ_PERMISSION,
+	    ITEM.REGISTER_ID 								AS REGISTER_ID,
+	    USR.USER_NAME 									AS REGISTER_NAME,
+	    ITEM.REGIST_DATE 								AS REGIST_DATE,
+	    ITEM.UPDATE_DATE 								AS UPDATE_DATE,
+	    USR.USER_ENGLISH_NAME 							AS REGISTER_ENGLISH_NAME,
+	    USR.JOB_TITLE_CODE 								AS REGISTER_JOB_TITLE_CODE, 
+		
+		JOB.JOB_TITLE_NAME                 AS REGISTER_JOB_TITLE_NAME,
+		JOB.JOB_TITLE_ENGLISH_NAME         AS REGISTER_JOB_TITLE_ENG_NAME,
+		GRP.GROUP_NAME                     AS REGISTER_TEAM_NAME,
+		GRP.GROUP_ENGLISH_NAME             AS REGISTER_TEAM_ENG_NAME,
+		ITEM.HIT_COUNT                     AS HIT_COUNT
+	</sql> 
+	
+	<select id="get" parameterClass="SocialBoardItem" resultMap="resultSocialBoardItem"> 
+		SELECT 
+			/* [SocialBoardItem_SqlMap.xml] socialpack.socialblog.dao.SocialBoardItem.get */
+			<include refid="socialpack.socialblog.dao.SocialBoardItem.sqlExtendColumnList" /> 
+		FROM  IKEP4_SB_BD_ITEM ITEM, IKEP4_EV_USER USR, IKEP4_EV_USER_GROUP UG, IKEP4_EV_GROUP GRP, IKEP4_EV_JOB_TITLE JOB
+		WHERE ITEM.REGISTER_ID = USR.USER_ID
+		AND UG.GROUP_ID = GRP.GROUP_ID AND UG.USER_ID = ITEM.REGISTER_ID AND UG.REPRESENT_GROUP = 1
+		AND GRP.GROUP_TYPE_ID = 'G0001'
+		AND JOB.JOB_TITLE_CODE = USR.JOB_TITLE_CODE
+		AND ITEM.ITEM_ID = #itemId# 
+	</select>
+	
+	<select id="selectItemBySearchCondition" parameterClass="SocialBoardItemSearchCondition" resultMap="resultSocialBoardItem">
+		SELECT /* [SocialBoardItem_SqlMap.xml] socialpack.socialblog.dao.SocialBoardItem.selectItemBySearchCondition */ 
+	       *
+		FROM (  
+	    	SELECT ROWNUM AS RNUM, A.* 
+	    	FROM ( 
+				SELECT 
+					<include refid="socialpack.socialblog.dao.SocialBoardItem.sqlExtendColumnList" /> 
+				FROM  IKEP4_SB_BD_ITEM ITEM, IKEP4_EV_USER USR, IKEP4_EV_USER_GROUP UG, IKEP4_EV_GROUP GRP, IKEP4_EV_JOB_TITLE JOB
+				WHERE ITEM.REGISTER_ID = USR.USER_ID
+				AND UG.GROUP_ID = GRP.GROUP_ID AND UG.USER_ID = ITEM.REGISTER_ID AND UG.REPRESENT_GROUP = 1
+				AND GRP.GROUP_TYPE_ID = 'G0001'
+				AND JOB.JOB_TITLE_CODE = USR.JOB_TITLE_CODE
+
+				<dynamic>
+					<!-- 해당 블로그에 작성자 기준으로 조회  항상 포함 -->
+					<isNotEmpty property="registerId" prepend="AND">
+					    ITEM.REGISTER_ID = #registerId#
+					</isNotEmpty>
+					
+					<!-- 해당 블로그 글 ItemId 해당 글만 조회시 사용 -->
+					<isNotEmpty property="itemId" prepend="AND">
+					    ITEM.ITEM_ID = #itemId#
+					</isNotEmpty>
+					
+					<!-- 해당 카테고리 내 블로그 글만 조회시 사용 -->
+					<isNotEmpty property="categoryId" prepend="AND">
+					    ITEM.CATEGORY_ID = #categoryId#
+					</isNotEmpty>
+					
+					<!-- 공개 비공개 관련 글 조회시 사용 0 공개만 1 비공개까지 -->
+					<isNotEmpty property="readPermission">
+						<isEqual property="readPermission" compareValue="0" prepend="AND">
+							ITEM.READ_PERMISSION = #readPermission#
+						</isEqual>
+					</isNotEmpty>
+					
+					<!-- 날짜별 검색시 해당 일자별  블로그 글만 조회시 사용 -->
+					<isNotEmpty property="searchDate" prepend="AND">
+					    TO_CHAR(ITEM.REGIST_DATE, 'YYYY.MM.DD') = #searchDate#
+					</isNotEmpty>
+					
+					<!-- 검색 기능을 이용시  -->
+					<isNotEmpty property="searchColumn">
+						<isEqual property="searchColumn" compareValue="title" prepend="AND">
+							TITLE LIKE '%' || #searchWord# || '%'
+						</isEqual>
+						<isEqual property="searchColumn" compareValue="contents" prepend="AND">
+							CONTENTS LIKE '%' || #searchWord# || '%'
+						</isEqual>
+						<isEqual property="searchColumn" compareValue="registerName" prepend="AND">
+							REGISTER_NAME LIKE '%' || #searchWord# || '%'
+						</isEqual>
+						<isEqual property="searchColumn" compareValue="ALL" >
+							AND ( TITLE LIKE '%' || #searchWord# || '%'
+								OR CONTENTS LIKE '%' || #searchWord# || '%'
+								OR ITEM.REGISTER_NAME LIKE '%' || #searchWord# || '%' )
+						</isEqual>
+					</isNotEmpty>
+				</dynamic>
+				
+				ORDER BY REGIST_DATE DESC
+		<![CDATA[   
+	    	) A WHERE ROWNUM <=  #endRowIndex# /* 종료  */
+		) WHERE RNUM >  #startRowIndex# /* 시작 */
+		]]> 
+	</select>
+  
+	<select id="selectItemCountBySearchCondition" parameterClass="SocialBoardItemSearchCondition" resultClass="int"> 
+		SELECT /* [SocialBoardItem_SqlMap.xml] socialpack.socialblog.dao.SocialBoardItem.selectItemCountBySearchCondition */
+			COUNT(*)
+		FROM  IKEP4_SB_BD_ITEM ITEM, IKEP4_EV_USER USR, IKEP4_EV_USER_GROUP UG, IKEP4_EV_GROUP GRP, IKEP4_EV_JOB_TITLE JOB
+		WHERE ITEM.REGISTER_ID = USR.USER_ID
+		AND UG.GROUP_ID = GRP.GROUP_ID AND UG.USER_ID = ITEM.REGISTER_ID AND UG.REPRESENT_GROUP = 1
+		AND GRP.GROUP_TYPE_ID = 'G0001'
+		AND JOB.JOB_TITLE_CODE = USR.JOB_TITLE_CODE
+		<dynamic>
+			<!-- 해당 블로그에 작성자 기준으로 조회  항상 포함 -->
+			<isNotEmpty property="registerId" prepend="AND">
+			    ITEM.REGISTER_ID = #registerId#
+			</isNotEmpty>
+			
+			<!-- 해당 블로그 글 ItemId 해당 글만 조회시 사용 -->
+			<isNotEmpty property="itemId" prepend="AND">
+			    ITEM.ITEM_ID = #itemId#
+			</isNotEmpty>
+			
+			<!-- 해당 카테고리 내 블로그 글만 조회시 사용 -->
+			<isNotEmpty property="categoryId" prepend="AND">
+			    ITEM.CATEGORY_ID = #categoryId#
+			</isNotEmpty>
+			
+			<!-- 공개 비공개 관련 글 조회시 사용 0 공개만 1 비공개까지 -->
+			<isNotEmpty property="readPermission">
+				<isEqual property="readPermission" compareValue="0" prepend="AND">
+					ITEM.READ_PERMISSION = #readPermission#
+				</isEqual>
+			</isNotEmpty>			
+			
+			<!-- 날짜별 검색시 해당 일자별  블로그 글만 조회시 사용 -->
+			<isNotEmpty property="searchDate" prepend="AND">
+			    TO_CHAR(ITEM.REGIST_DATE, 'YYYY.MM.DD') = #searchDate#
+			</isNotEmpty>
+			
+			<!-- 검색 기능을 이용시  -->
+			<isNotEmpty property="searchColumn">
+				<isEqual property="searchColumn" compareValue="title" prepend="AND">
+					TITLE LIKE '%' || #searchWord# || '%'
+				</isEqual>
+				<isEqual property="searchColumn" compareValue="contents" prepend="AND">
+					CONTENTS LIKE '%' || #searchWord# || '%'
+				</isEqual>
+				<isEqual property="searchColumn" compareValue="registerName" prepend="AND">
+					REGISTER_NAME LIKE '%' || #searchWord# || '%'
+				</isEqual>
+				<isEqual property="searchColumn" compareValue="ALL" >
+					AND ( TITLE LIKE '%' || #searchWord# || '%'
+						OR CONTENTS LIKE '%' || #searchWord# || '%'
+						OR ITEM.REGISTER_NAME LIKE '%' || #searchWord# || '%' )
+				</isEqual>
+			</isNotEmpty>
+		</dynamic>
+	</select> 
+     
+     <!-- 해당 월에 하나 이상의 포스팅이 된 날짜를 가져 온다. -->
+    <select id="selectPostingDate" parameterClass="SocialBoardItemSearchCondition" resultClass="java.lang.String"> 
+    
+		SELECT /* [SocialBoardItem_SqlMap.xml] socialpack.socialblog.dao.SocialBoardItem.selectPostingDate */
+				DISTINCT TO_CHAR(ITEM.REGIST_DATE, 'YYYY.MM.DD') AS POSTING_DATE
+		FROM IKEP4_SB_BD_ITEM ITEM, IKEP4_EV_USER USR
+		WHERE ITEM.REGISTER_ID = USR.USER_ID
+		AND ITEM.REGISTER_ID = #registerId#
+		AND TO_CHAR(ITEM.REGIST_DATE, 'YYYY.MM') = #searchDate#
+
+	</select> 
+     
+	<insert id="create" parameterClass="SocialBoardItem"> 
+		INSERT INTO IKEP4_SB_BD_ITEM ( 
+			/* [SocialBoardItem_SqlMap.xml] socialpack.socialblog.dao.SocialBoardItem.create */
+			<include refid="socialpack.socialblog.dao.SocialBoardItem.sqlColumnList" /> 
+		) VALUES (
+      		#itemId#, 
+      		#title#, 
+      		#contents#, 
+      		#categoryId#, 
+      		#recommendCount#, 
+      		#linereplyCount#, 
+      		#attachFileCount#,  
+      		#readPermission#, 
+      		#registerId#, 
+      		#registerName#, 
+			SYSDATE, 
+			SYSDATE,
+			#hitCount#
+    	)
+	</insert>
+  
+	<update id="update" parameterClass="SocialBoardItem"> 
+		UPDATE IKEP4_SB_BD_ITEM 
+			/* [SocialBoardItem_SqlMap.xml] socialpack.socialblog.dao.SocialBoardItem.update */
+	    SET ITEM_ID = #itemId#, 
+		    TITLE = #title#, 
+		    CONTENTS = #contents#, 
+		    CATEGORY_ID = #categoryId#, 
+		    READ_PERMISSION = #readPermission#,
+		    UPDATE_DATE = SYSDATE
+	    WHERE ITEM_ID = #itemId# 
+	</update>
+  
+	<update id="updateRecommendCount" parameterClass="java.lang.String">
+		UPDATE IKEP4_SB_BD_ITEM 
+			/* [SocialBoardItem_SqlMap.xml] socialpack.socialblog.dao.SocialBoardItem.updateRecommendCount */
+    	SET    RECOMMEND_COUNT = (SELECT COUNT(*) FROM IKEP4_SB_BD_ITEM_RECOMMEND WHERE ITEM_ID = #itemId# )
+    	WHERE ITEM_ID = #itemId# 
+	</update> 
+  
+	<update id="updateLinereplyCount" parameterClass="java.lang.String">
+		UPDATE IKEP4_SB_BD_ITEM 
+			/* [SocialBoardItem_SqlMap.xml] socialpack.socialblog.dao.SocialBoardItem.updateLinereplyCount */
+		SET    LINEREPLY_COUNT = (SELECT COUNT(*) FROM IKEP4_SB_BD_LINEREPLY WHERE ITEM_ID = #itemId# )
+		WHERE ITEM_ID = #itemId# 
+	</update> 
+	
+	<update id="updateMailCount" parameterClass="string">
+    	UPDATE IKEP4_SB_BD_ITEM /* [SocialBoardItem_SqlMap.xml] socialpack.socialblog.dao.SocialBoardItem.updateMailCount */
+    	SET    MAIL_COUNT = MAIL_COUNT + 1
+    	WHERE ITEM_ID = #itemId# 
+	</update> 
+	
+	<update id="updateMBlogCount" parameterClass="string">
+    	UPDATE IKEP4_SB_BD_ITEM /* [SocialBoardItem_SqlMap.xml] socialpack.socialblog.dao.SocialBoardItem.updateMBlogCount */
+    	SET    MBLOG_COUNT = MBLOG_COUNT + 1
+    	WHERE ITEM_ID = #itemId# 
+	</update>
+	
+	<update id="updateHitCount" parameterClass="string">
+    	UPDATE IKEP4_SB_BD_ITEM /* [SocialBoardItem_SqlMap.xml] socialpack.socialblog.dao.SocialBoardItem.updateMBlogCount */
+    	SET    HIT_COUNT = (SELECT COUNT(*) FROM IKEP4_SB_BD_REFERENCE WHERE ITEM_ID = #itemId# )
+    	WHERE ITEM_ID = #itemId# 
+	</update> 
+
+	<delete id="physicalDelete" parameterClass="java.lang.String"> 
+		DELETE FROM IKEP4_SB_BD_ITEM 
+			/* [SocialBoardItem_SqlMap.xml] socialpack.socialblog.dao.SocialBoardItem.physicalDelete */
+		WHERE ITEM_ID = #itemId# 
+	</delete>
+  
+</sqlMap> 

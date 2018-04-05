@@ -1,0 +1,267 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ko">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>iKEP 4.00</title>
+<link rel="stylesheet" type="text/css" href="../../css/theme01/jquery_ui_custom.css" />
+<link rel="stylesheet" type="text/css" href="../../css/common.css" />
+<link rel="stylesheet" type="text/css" href="../../css/theme01/theme.css" />
+<link rel="stylesheet" type="text/css" href="../../css/plot_chart/jquery.jqplot.css" />
+<script type="text/javascript" src="../../js/jquery/jquery-1.6.2.min.js"></script>
+<script type="text/javascript" src="../../js/jquery/jquery-ui-1.8.13.min.without.datepicker.js"></script>
+<script type="text/javascript" src="../../js/plot_chart/jquery.jqplot.min.js"></script>
+<script type="text/javascript" src="../../js/plot_chart/jqplot.barRenderer.min.js"></script>
+<script type="text/javascript" src="../../js/plot_chart/jqplot.categoryAxisRenderer.min.js"></script>
+<script type="text/javascript" src="../../js/langResource/ko.js"></script>
+<script type="text/javascript" src="../../js/common.pack.js"></script>
+<script type="text/javascript"> 
+<!--
+(function($) {
+	$(document).ready(function() {
+		// left menu setting
+		 iKEP.setLeftMenu();
+		
+		$("#date1").datepicker().next().eq(0).click(function() { $(this).prev().eq(0).datepicker("show"); });
+		$("#date2").datepicker().next().eq(0).click(function() { $(this).prev().eq(0).datepicker("show"); });
+		
+		$("#chart1").width($(".usage_graph").width()*0.85);
+		
+		$.jqplot.config.enablePlugins = true;
+		
+		line1 	= [['2010-11', 240], ['2010-12', 350], ['2011-01', 300], ['2011-02', 270], ['2011-03', 410], ['2011-04', 290]];
+		line2 	= [['2010-11', 700], ['2010-12', 1200], ['2011-01', 890], ['2011-02', 760], ['2011-03', 1250], ['2011-04', 950]];
+		
+
+		plot1 = $.jqplot('chart1', [line1, line2], {
+		    seriesDefaults:{
+		    	renderer:$.jqplot.BarRenderer, 
+		    	rendererOptions:{barPadding:20, barMargin:20}
+			},
+		    legend: {
+		    	show:true, 
+		    	location: 'nw',
+		    	labels:['공개','전체']
+		    },
+		    axes:{
+		    	xaxis:{
+		    		renderer:$.jqplot.CategoryAxisRenderer, 
+		    		rendererOptions:{
+		    			sortMergedLabels:true
+		    		},
+		    		tickOptions: {
+  	                   formatString: '%Y-%m'
+  	               	}
+		    	}, 
+		    	yaxis:{
+		    		tickOptions:{formatString:"%d"}
+		    	}
+		    }
+		});
+				
+	});
+	
+})(jQuery);
+-->
+</script>
+</head>
+
+<body>
+
+<!--skipNavigation Start-->
+<div id="skipNavigation">
+	<p><a href="#topInfo">헤더정보영역 바로가기</a></p>
+	<p><a href="#topMenu">탑메뉴 바로가기</a></p>	
+	<p><a href="#blockHeaderSub">퀵메뉴 바로가기</a></p>
+	<p><a href="#leftMenu">레프트메뉴 바로가기</a></p>	
+	<p><a href="#mainContents">컨텐츠영역 바로가기</a></p>	
+</div>
+<!--//skipNavigation End-->
+
+<!--wrapper Start-->
+<div id="wrapper">
+
+	<!--blockContainer Start-->
+	<div id="blockContainer">
+
+		<!--blockHeader Start-->
+		<div id="blockHeader">	
+		
+			<!--topInfo Start-->	
+			<div id="topInfo">
+				<h1 class="none">헤더정보영역</h1>
+				<div id="topLogo">
+					<a href="#a"><img src="../../images/common/logo.png" alt="iKEP Logo" /></a>
+				</div>
+			</div>
+			<!--//topInfo End-->
+						
+			<!--topMenu Start-->
+			<div id="topMenu">
+				<h1 class="none">탑메뉴</h1>			
+			</div>
+			<!--//topMenu End-->		
+
+			<!--blockHeaderSub Start-->
+			<div id="blockHeaderSub">
+				<h1 class="none">퀵메뉴</h1>		
+			</div>
+			<!--//blockHeaderSub End-->
+										
+		</div>
+		<!--//blockHeader End-->
+		
+		<!--blockMain Start-->
+		<div id="blockMain">
+
+			<!--leftMenu Start-->
+			<div id="leftMenu">
+				<h1 class="none">레프트메뉴</h1>	
+				<h2>Knowledge Monitor</h2>
+				<div class="left_fixed">
+					<ul>			
+						<li class="no_child liFirst licurrent"><a href="#a">지식축척정보</a></li>			
+						<li class="no_child"><a href="#a">지식순위정보</a></li>
+						<li class="opened"><a href="#a">Administration</a>
+							<ul>
+								<li class="no_child"><a href="#a">관리 범위 설정</a></li>
+								<li class="no_child"><a href="#a">CVI 및 우수자료 기준관리</a></li>
+								<li class="no_child"><a href="#a">우수Comment 기준관리</a></li>
+								<li class="no_child liLast"><a href="#a">관리프로그램 실행로그</a></li>
+							</ul>
+						</li>					
+					</ul>
+				</div>
+			</div>	
+			<!--//leftMenu End-->
+				
+			<!--mainContents Start-->
+			<div id="mainContents" >
+				<h1 class="none">컨텐츠영역</h1>
+				
+				<!--subTitle_2 Start-->
+				<div class="subTitle_2 noline">
+					<h3>지식축척정보</h3>
+				</div>
+				<!--//subTitle_2 End-->
+				
+				<!--blockSearch Start-->
+				<div class="blockSearch">
+					<div class="corner_RoundBox03">
+						<form action="">
+						<table summary="로그인 현황 통계 검색테이블">
+							<caption></caption>
+							<tbody>
+								<tr>
+									<th scope="row" width="4%">검색대상</th>
+									<td scope="row">
+										<input name="" class="checkbox" title="checkbox" type="checkbox" value="" checked="checked"/>Social Blog&nbsp;
+										<input name="" class="checkbox" title="checkbox" type="checkbox" value="" checked="checked" />Team Collaboration&nbsp;
+										<input name="" class="checkbox" title="checkbox" type="checkbox" value="" checked="checked" />Café&nbsp;
+										<input name="" class="checkbox" title="checkbox" type="checkbox" value="" checked="checked" />Work Manual&nbsp;
+										<input name="" class="checkbox" title="checkbox" type="checkbox" value="" checked="checked" />Q&amp;A&nbsp;
+										<input name="" class="checkbox" title="checkbox" type="checkbox" value="" checked="checked" />BBS&nbsp;		
+										<input name="" class="checkbox" title="checkbox" type="checkbox" value="" checked="checked" />Forum&nbsp;
+										<input name="" class="checkbox" title="checkbox" type="checkbox" value="" />Ideation&nbsp;
+										<input name="" class="checkbox" title="checkbox" type="checkbox" value="" />Coporate Vocabulary&nbsp;
+									</td>
+								</tr>
+								<tr>
+									<th scope="row" width="4%">검색기간</th>
+									<td scope="row">
+										<select title="검색조건선택" name="">
+											<option value="">월별</option>
+											<option value="">주별</option>
+										</select>							
+										<div class="subInfo">
+											<input type="text" class="inputbox" id="date1" name="sdate" title="날짜시작" value="" size="8" /> <img class="dateicon" src="../../images/icon/ic_cal.gif" alt="달력" /> ~
+											<input type="text" class="inputbox" id="date2" name="edate" title="날짜끝" value="" size="8" /> <img class="dateicon" src="../../images/icon/ic_cal.gif" alt="달력" />
+										</div>										
+									</td>								
+								</tr>
+							</tbody>
+						</table>
+						<div class="searchBtn"><a href="#a"><span>Search</span></a></div>
+						</form>
+						<div class="l_t_corner"></div>
+						<div class="r_t_corner"></div>
+						<div class="l_b_corner"></div>
+						<div class="r_b_corner"></div>				
+					</div>
+					※ 최대 12개월 동안 추이를 조회할 수 있습니다.	
+				</div>	
+				<!--//blockSearch End-->
+				
+				<!--graph Start-->
+				<div class="corner_RoundBox02">
+					<div class="usage_graph" style="text-align:center;">
+						<span style="margin-right:15px;margin-top:10px;float:right;"><strong><input name="" class="checkbox" title="checkbox" type="checkbox" value="" />누적조회&nbsp;</strong></span>
+						<div class="clear"></div>
+						<div id="chart1" style="height:400px;"></div>			
+					</div>
+					<div class="clear"></div>
+					<div class="l_t_corner"></div>
+					<div class="r_t_corner"></div>
+					<div class="l_b_corner"></div>
+					<div class="r_b_corner"></div>	
+				</div>
+				<!--//graph End-->
+				
+				<div class="blockBlank_20px"></div>
+				
+				<!--tableTop Start-->
+				<div class="tableTop">
+					<div class="listInfo">						
+						<div class="totalNum">※ 자료순서:공개건수/전체건수</div>
+					</div>	
+					<div class="tableSearch">
+						<a href="#a"><img src="../../images/icon/ic_xls.gif" alt="엑셀다운로드" /></a>
+					</div>			
+					<div class="clear"></div>
+				</div>
+				<!--//tableTop End-->
+ 
+				<!--blockListTable Start-->
+				<div class="blockDetail">
+					<table summary="상세목록">
+						<caption></caption>
+						<thead>
+							<tr>
+								<th class="textCenter" scope="col" width="">기간</th>
+								<th class="textCenter" scope="col" width="" colspan="2">11월</th>
+								<th class="textCenter" scope="col" width="" colspan="2">12월</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td class="textCenter">SocialBlog</td>
+								<td class="textCenter">220</td>
+								<td class="textCenter">1200</td>
+								<td class="textCenter">230</td>
+								<td class="textCenter">1400</td>
+							</tr>
+							<tr>
+								<td class="textCenter">Collaboration</td>
+								<td class="textCenter">250</td>
+								<td class="textCenter">1600</td>
+								<td class="textCenter">330</td>
+								<td class="textCenter">1800</td>
+							</tr>																																																																																																				
+						</tbody>
+					</table>							
+				</div>
+				<!--//blockListTable End-->
+									
+			</div>
+			<!--//mainContents End-->
+			<div class="clear"></div>
+		</div>
+		<!--//blockMain End-->
+		
+	</div>
+	<!--//blockContainer End-->
+	
+		
+</div>
+<!--//wrapper End-->
+</body>
+</html>

@@ -1,0 +1,722 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="dictionary" >
+	<typeAlias alias = "Dictionary" type="com.lgcns.ikep4.collpack.dictionary.model.Dictionary"/>	
+	<typeAlias alias = "DictionarySearchCondition" type="com.lgcns.ikep4.collpack.dictionary.search.DictionarySearchCondition"/>
+
+	<!-- DICTIONARY 테이블 조회 결과 -->
+	<resultMap id="resultDictionary" class="Dictionary">
+		<result property="dictionaryId" column="DICTIONARY_ID" />
+		<result property="dictionaryName" column="DICTIONARY_NAME" />
+		<result property="wordCount" column="WORD_COUNT" />
+		<result property="sortOrder" column="SORT_ORDER" />
+		<result property="portalId" column="PORTAL_ID" />
+		<result property="registerId" column="REGISTER_ID" />
+		<result property="registerName" column="REGISTER_NAME" />		
+		<result property="registDate" column="REGIST_DATE" />
+	</resultMap>
+	
+	<resultMap id="resultDictionaryGroup" class="Dictionary">
+		<result property="dictionaryId" column="DICTIONARY_ID" />
+	</resultMap>	
+		
+	<!-- WORD 테이블 조회 결과 -->
+	<resultMap id="result" class="Dictionary">
+		<result property="wordId" column="WORD_ID" />
+		<result property="dictionaryId" column="DICTIONARY_ID" />
+		<result property="dictionaryName" column="DICTIONARY_NAME" />
+		<result property="tag" column="TAG" />			
+		<result property="jobRankName" column="JOB_RANK_NAME" />
+		<result property="jobTitleEnglishName" 	column="JOB_TITLE_ENGLISH_NAME" />
+		<result property="teamName" column="TEAM_NAME" />
+		<result property="teamEnglishName" 		column="TEAM_ENGLISH_NAME" />
+		<result property="wordGroupId" column="WORD_GROUP_ID" />
+		<result property="wordName" column="WORD_NAME" />
+		<result property="wordEnglishName" column="WORD_ENGLISH_NAME" />		
+		<result property="contents" column="CONTENTS" />
+		<result property="updateReason" column="UPDATE_REASON" />
+		<result property="hitCount" column="HIT_COUNT" />
+		<result property="version" column="VERSION" />	
+		<result property="portalId" column="PORTAL_ID" />	
+		<result property="isNew" column="IS_NEW" />	
+		<result property="sortOrder" column="SORT_ORDER" />
+		<result property="registerId" column="REGISTER_ID" />
+		<result property="registerName" column="REGISTER_NAME" />
+		<result property="registerEnglishName" 	column="REGISTER_ENGLISH_NAME"/>		
+		<result property="registDate" column="REGIST_DATE" />
+		<result property="updaterId" column="UPDATER_ID" />
+		<result property="updaterName" column="UPDATER_NAME" />		
+		<result property="updateDate" column="UPDATE_DATE" />
+		<result property="hitDate" column="HIT_DATE" />
+	</resultMap>
+	
+	<!-- HIT 테이블 조회 결과 -->
+	<resultMap id="resultHit" class="Dictionary">
+		<result property="referenceId" column="REFERENCE_ID" />
+		<result property="dictionaryId" column="DICTIONARY_ID" />
+		<result property="wordId" column="WORD_ID" />
+		<result property="wordGroupId" column="WORD_GROUP_ID" />
+		<result property="wordName" column="WORD_NAME" />
+		<result property="dictionaryName" column="DICTIONARY_NAME" />	
+		<result property="version" column="VERSION" />	
+		<result property="portalId" column="PORTAL_ID" />
+		<result property="registerId" column="REGISTER_ID" />
+		<result property="registerName" column="REGISTER_NAME" />		
+		<result property="registDate" column="REGIST_DATE" />
+	</resultMap>
+	
+	<!-- ANSI -->
+	<!-- insert -->
+	<insert id="insert" parameterClass="Dictionary"> 
+      <![CDATA[ 
+			INSERT INTO IKEP4_CV_WORD ( 
+				WORD_ID,
+				DICTIONARY_ID,
+				WORD_GROUP_ID,
+				WORD_NAME,
+				WORD_ENGLISH_NAME,
+				CONTENTS,
+				HIT_COUNT,
+				VERSION,
+				PORTAL_ID,				
+				REGISTER_ID,
+				REGISTER_NAME,
+				REGIST_DATE,
+				UPDATER_ID,
+				UPDATER_NAME,
+				UPDATE_DATE,
+				UPDATE_REASON
+           	)  VALUES (
+           		#wordId#,
+           		#dictionaryId#,
+           		#wordGroupId#,
+           		#wordName#,
+           		#wordEnglishName#,
+           		#contents#,
+           		#hitCount#,           		
+           		#version#,
+           		#portalId#,           		
+           		#registerId#,
+           		#registerName#,
+           		CURRENT_TIMESTAMP,
+           		#registerId#,
+           		#registerName#,
+           		CURRENT_TIMESTAMP,
+           		#updateReason#
+           	)			     
+       ]]>
+   </insert>
+   	
+   	<!-- ANSI -->
+	<!-- insert -->
+	<insert id="insertHit" parameterClass="Dictionary"> 
+      <![CDATA[ 
+			INSERT INTO IKEP4_CV_REFERENCE ( 
+				REFERENCE_ID,
+				DICTIONARY_ID,
+				WORD_ID,
+				WORD_GROUP_ID,
+				VERSION,
+				PORTAL_ID,	
+				REGISTER_ID,
+				REGISTER_NAME,
+				REGIST_DATE
+           	)  VALUES (
+           		#referenceId#,
+           		#dictionaryId#,
+           		#wordId#,
+           		#wordGroupId#,
+           		#version#,
+           		#portalId#,            		
+           		#registerId#,
+           		#registerName#,
+           		CURRENT_TIMESTAMP
+           	)			     
+       ]]>
+   </insert>   
+	
+	<!-- ANSI -->
+	<!-- insert -->
+	<insert id="insertDictionary" parameterClass="Dictionary"> 
+      <![CDATA[ 
+			INSERT INTO IKEP4_CV_DICTIONARY ( 
+				DICTIONARY_ID,
+				DICTIONARY_NAME,
+				SORT_ORDER,
+				PORTAL_ID,
+				REGISTER_ID,
+				REGISTER_NAME,
+				REGIST_DATE
+           	)  VALUES (
+           		#dictionaryId#,
+           		#dictionaryName#,
+           		#sortOrder#,
+           		#portalId#,
+           		#registerId#,
+           		#registerName#,
+           		CURRENT_TIMESTAMP
+           	)			     
+       ]]>
+   </insert> 
+   	
+   <!-- ANSI -->
+   <!-- select -->
+	<select id="select" parameterClass="java.lang.String" resultMap="result">
+	  <![CDATA[
+		   SELECT A.WORD_ID,
+				A.DICTIONARY_ID,
+				(SELECT DICTIONARY_NAME FROM IKEP4_CV_DICTIONARY WHERE DICTIONARY_ID=A.DICTIONARY_ID) DICTIONARY_NAME,
+				'' TAG,
+	            (SELECT JOB_TITLE_NAME FROM IKEP4_EV_USER, IKEP4_EV_JOB_TITLE 
+                       WHERE IKEP4_EV_JOB_TITLE.JOB_TITLE_CODE = IKEP4_EV_USER.JOB_TITLE_CODE
+	                     AND IKEP4_EV_USER.USER_ID=A.REGISTER_ID) AS JOB_RANK_NAME,
+	            (SELECT JOB_TITLE_ENGLISH_NAME FROM IKEP4_EV_USER, IKEP4_EV_JOB_TITLE 
+                       WHERE IKEP4_EV_JOB_TITLE.JOB_TITLE_CODE = IKEP4_EV_USER.JOB_TITLE_CODE
+	                     AND IKEP4_EV_USER.USER_ID=A.REGISTER_ID) AS JOB_TITLE_ENGLISH_NAME,	                     
+	            (SELECT TEAM_NAME FROM IKEP4_EV_USER WHERE USER_ID=A.REGISTER_ID) TEAM_NAME,
+	            (SELECT TEAM_ENGLISH_NAME FROM IKEP4_EV_USER WHERE USER_ID=A.REGISTER_ID) TEAM_ENGLISH_NAME,					
+				A.WORD_GROUP_ID,
+				A.WORD_NAME,
+				A.WORD_ENGLISH_NAME,
+				A.CONTENTS,
+				A.UPDATE_REASON,
+				A.HIT_COUNT,
+				A.VERSION,
+				A.PORTAL_ID,
+				0 IS_NEW,
+				(SELECT SORT_ORDER FROM IKEP4_CV_DICTIONARY WHERE DICTIONARY_ID=A.DICTIONARY_ID) SORT_ORDER,				
+				A.REGISTER_ID,
+				A.REGISTER_NAME,
+				(SELECT USER_ENGLISH_NAME FROM IKEP4_EV_USER WHERE USER_ID=A.REGISTER_ID) REGISTER_ENGLISH_NAME,
+				A.REGIST_DATE,
+				A.UPDATER_ID,
+				A.UPDATER_NAME,
+				A.UPDATE_DATE,
+				CURRENT_TIMESTAMP HIT_DATE	   
+		   FROM IKEP4_CV_WORD A
+		   WHERE A.WORD_ID = #wordId#	   
+	   ]]>
+	</select>
+
+	<!-- MS SQL -->
+   <!-- select -->
+	<select id="selectWordHistoryList" parameterClass="java.lang.String" resultMap="result">
+	  <![CDATA[
+		   SELECT A.WORD_ID,
+				A.DICTIONARY_ID,
+				(SELECT DICTIONARY_NAME FROM IKEP4_CV_DICTIONARY WHERE DICTIONARY_ID=A.DICTIONARY_ID) DICTIONARY_NAME,
+				'' TAG,
+	            (SELECT JOB_TITLE_NAME FROM IKEP4_EV_USER, IKEP4_EV_JOB_TITLE 
+                 	WHERE IKEP4_EV_JOB_TITLE.JOB_TITLE_CODE = IKEP4_EV_USER.JOB_TITLE_CODE
+	                AND IKEP4_EV_USER.USER_ID=A.REGISTER_ID) AS JOB_RANK_NAME,
+	            (SELECT JOB_TITLE_ENGLISH_NAME FROM IKEP4_EV_USER, IKEP4_EV_JOB_TITLE 
+                 	WHERE IKEP4_EV_JOB_TITLE.JOB_TITLE_CODE = IKEP4_EV_USER.JOB_TITLE_CODE
+	                AND IKEP4_EV_USER.USER_ID=A.REGISTER_ID) AS JOB_TITLE_ENGLISH_NAME,	                
+	            (SELECT TEAM_NAME FROM IKEP4_EV_USER WHERE USER_ID=A.REGISTER_ID) TEAM_NAME,
+	            (SELECT TEAM_ENGLISH_NAME FROM IKEP4_EV_USER WHERE USER_ID=A.REGISTER_ID) TEAM_ENGLISH_NAME,				
+				A.WORD_GROUP_ID,
+				A.WORD_NAME,
+				A.WORD_ENGLISH_NAME,
+				A.CONTENTS,
+				A.UPDATE_REASON,
+				A.HIT_COUNT,
+				A.VERSION,
+				A.PORTAL_ID,	
+				(DATEDIFF(DD, A.REGIST_DATE, CURRENT_TIMESTAMP) - 1) IS_NEW,
+				(SELECT SORT_ORDER FROM IKEP4_CV_DICTIONARY WHERE DICTIONARY_ID=A.DICTIONARY_ID) SORT_ORDER,		
+				A.REGISTER_ID,
+				A.REGISTER_NAME,
+				(SELECT USER_ENGLISH_NAME FROM IKEP4_EV_USER WHERE USER_ID=A.REGISTER_ID) REGISTER_ENGLISH_NAME,
+				A.REGIST_DATE,
+				A.UPDATER_ID,
+				A.UPDATER_NAME,
+				A.UPDATE_DATE,
+				CURRENT_TIMESTAMP HIT_DATE	   
+		   FROM IKEP4_CV_WORD A
+		   WHERE WORD_GROUP_ID = #wordGroupId# 
+		   ORDER BY A.VERSION DESC
+	   ]]>
+	</select>	
+	
+	<!-- MS SQL -->
+   	<!-- select -->
+	<select id="selectDictionary" parameterClass="java.lang.String" resultMap="resultDictionary">
+	  <![CDATA[
+		   SELECT DICTIONARY_ID,
+				DICTIONARY_NAME,
+				'0' WORD_COUNT,
+				SORT_ORDER,
+				PORTAL_ID,				
+				REGISTER_ID,
+				REGISTER_NAME,
+				REGIST_DATE	   
+		   FROM IKEP4_CV_DICTIONARY
+		   WHERE DICTIONARY_ID = #dictionaryId#	   
+	   ]]>
+	</select>
+	
+	<!-- ANSI -->
+   	<!-- select -->
+	<select id="selectDictionarys" resultMap="resultDictionary">
+	  <![CDATA[
+	       SELECT A.DICTIONARY_ID,
+		        A.DICTIONARY_NAME,
+		        (SELECT COUNT(DISTINCT WORD_GROUP_ID) FROM IKEP4_CV_WORD WHERE DICTIONARY_ID=A.DICTIONARY_ID) WORD_COUNT,
+		        A.SORT_ORDER,
+		        A.PORTAL_ID,        
+		        A.REGISTER_ID,
+		        A.REGISTER_NAME,
+		        A.REGIST_DATE     
+	       FROM IKEP4_CV_DICTIONARY A
+		   WHERE 1=1 
+		   AND 	A.PORTAL_ID = #portalId#
+		   ORDER BY CONVERT(INT, SORT_ORDER) ASC
+	   ]]>
+	</select>			
+	
+	<!-- MS SQL -->
+	<!-- select -->
+	<select id="selectDictionarysByCondition" parameterClass="DictionarySearchCondition" resultMap="resultDictionary">
+	  <![CDATA[
+	       SELECT A.DICTIONARY_ID,
+		        A.DICTIONARY_NAME,
+		        (SELECT COUNT(DISTINCT WORD_GROUP_ID) FROM IKEP4_CV_WORD WHERE DICTIONARY_ID=A.DICTIONARY_ID) WORD_COUNT,
+		        A.SORT_ORDER,
+		        A.PORTAL_ID,        
+		        A.REGISTER_ID,
+		        A.REGISTER_NAME,
+		        A.REGIST_DATE     
+	       FROM IKEP4_CV_DICTIONARY A
+		   WHERE 1=1 
+		   AND 	A.PORTAL_ID = #portalId#
+		   ORDER BY CONVERT(NUMERIC, SORT_ORDER) ASC
+	   ]]>
+	</select>		
+	
+	<!-- ANSI -->
+	<select id="selectAlreadyRead" parameterClass="Dictionary" resultClass="int">
+	  <![CDATA[
+		   SELECT COUNT(*)
+		   FROM IKEP4_CV_REFERENCE
+		   WHERE WORD_ID = #wordId#
+		   AND REGISTER_ID = #registerId#
+	   ]]>
+	</select>	
+	
+	<!-- MS SQL -->
+	<select id="selectDictionaryId" parameterClass="DictionarySearchCondition" resultClass="String">
+	  <![CDATA[
+			SELECT DICTIONARY_ID 
+			FROM IKEP4_CV_DICTIONARY  
+			WHERE PORTAL_ID = #portalId#
+			AND SORT_ORDER = ( SELECT ISNULL(MIN(CONVERT(NUMERIC, SORT_ORDER)), 1) 
+				FROM IKEP4_CV_DICTIONARY 
+				WHERE PORTAL_ID = #portalId# )	  	   
+	   ]]>
+	</select>	
+	
+	<!-- MS SQL -->
+	<select id="selectVersion" parameterClass="Dictionary" resultClass="String">
+	  <![CDATA[
+		   SELECT (CASE WHEN MAX(VERSION) IS NULL THEN '0.0'
+		   			    ELSE MAX(VERSION) END) VERSION
+		   FROM IKEP4_CV_WORD
+		   WHERE WORD_GROUP_ID = #wordGroupId#		   
+	   ]]>
+	</select>	
+	
+	<!-- ANSI -->
+	<select id="selectRecentInputRegisterId" parameterClass="String" resultClass="String">
+	  <![CDATA[
+			SELECT REGISTER_ID FROM IKEP4_CV_WORD
+			WHERE WORD_ID = (
+				SELECT MAX(WORD_ID) FROM IKEP4_CV_WORD
+				WHERE WORD_GROUP_ID = #wordGroupId#)	   
+	   ]]>
+	</select>
+	
+	<!-- ANSI -->
+	<!-- updateHit -->
+	<update id="updateHit" parameterClass="String">
+	  <![CDATA[
+		   UPDATE IKEP4_CV_WORD
+		   SET HIT_COUNT = HIT_COUNT +1 
+		   WHERE WORD_ID = #wordId#
+	   ]]>
+	</update>
+
+	<!-- ANSI -->
+	<!-- updateHitDate -->
+	<update id="updateHitDate" parameterClass="Dictionary">
+	  <![CDATA[
+		   UPDATE IKEP4_CV_REFERENCE
+		   SET REGIST_DATE = CURRENT_TIMESTAMP
+		   WHERE WORD_ID = #wordId#
+		   AND REGISTER_ID = #viewId#
+	   ]]>
+	</update>		
+	
+	<!-- ANSI -->
+	<!-- update -->
+	<update id="update" parameterClass="Dictionary">
+	  <![CDATA[
+		   UPDATE IKEP4_CV_WORD 
+		   SET 	DICTIONARY_ID = #dictionaryId#,
+		   		WORD_NAME = #wordName#,
+				WORD_ENGLISH_NAME = #wordEnglishName#,	
+				CONTENTS = #contents#,						
+			   	UPDATER_ID = #updaterId#, 
+			   	UPDATER_NAME = #updaterName#, 
+			   	UPDATE_DATE = CURRENT_TIMESTAMP,
+			   	UPDATE_REASON = #updateReason#	
+		   WHERE WORD_ID = #wordId#
+	   ]]>
+	</update>	
+	
+	<!-- ANSI -->
+	<!-- update -->
+	<update id="updateDictionaryName" parameterClass="Dictionary">
+	  <![CDATA[
+		   UPDATE IKEP4_CV_DICTIONARY
+		   SET 	DICTIONARY_NAME = #dictionaryName#	
+		   WHERE DICTIONARY_ID = #dictionaryId#
+	   ]]>
+	</update>
+	
+	<!-- ANSI -->
+	<!-- update -->
+	<update id="updateDictionarySortOrder" parameterClass="Dictionary">
+	  <![CDATA[
+		   UPDATE IKEP4_CV_DICTIONARY
+		   SET 	SORT_ORDER = #sortOrder#	
+		   WHERE DICTIONARY_ID = #dictionaryId#
+	   ]]>
+	</update> 
+	
+	<!-- ANSI -->
+   <!-- delete -->
+   <delete id="delete" parameterClass="java.lang.String">
+      <![CDATA[
+	       DELETE FROM IKEP4_CV_WORD WHERE WORD_ID = #wordId#
+	   ]]>
+	</delete>	
+	
+	<!-- ANSI -->
+   <!-- delete -->
+   <delete id="deleteDictionary" parameterClass="java.lang.String">
+      <![CDATA[
+	       DELETE FROM IKEP4_CV_DICTIONARY WHERE DICTIONARY_ID = #dictionaryId#
+	   ]]>
+	</delete>
+	
+	<!-- ANSI -->
+   <!-- delete -->
+   <delete id="deleteReferenceByDictionaryId" parameterClass="java.lang.String">
+      <![CDATA[
+	       DELETE FROM IKEP4_CV_REFERENCE WHERE DICTIONARY_ID = #dictionaryId#
+	   ]]>
+	</delete>
+	
+	<!-- ANSI -->
+   <!-- delete -->
+   <delete id="deleteReferenceByWordId" parameterClass="java.lang.String">
+      <![CDATA[
+	       DELETE FROM IKEP4_CV_REFERENCE WHERE WORD_ID = #wordId#
+	   ]]>
+	</delete>	
+	
+	<!-- ANSI -->
+   <!-- delete -->
+   <delete id="deleteWordByDictionaryId" parameterClass="java.lang.String">
+      <![CDATA[
+	       DELETE FROM IKEP4_CV_WORD WHERE DICTIONARY_ID = #dictionaryId#
+	   ]]>
+	</delete>	
+   <!-- delete -->	
+   
+   <!-- MS SQL -->	
+	<!-- selectAll -->
+	<select id="selectAll" parameterClass="DictionarySearchCondition" resultMap="result">
+          SELECT  /* [Dictionary_SqlMap.xml] dictionary.selectAll */ *
+	      FROM    (
+	      			   SELECT F2.*
+	      			   FROM
+	      			   		(
+					                SELECT  
+					                		Row_number() OVER (	ORDER BY 
+																         <isEqual property="isMore" compareValue="Y">
+																         	SORT_ORDER ASC,
+																         </isEqual>	
+																		 <isNotEmpty property="viewId">
+																		 	HIT_DATE DESC
+																		 </isNotEmpty>
+																		 <isEmpty property="viewId">
+																		 	WORD_ID DESC
+																		 </isEmpty>				) AS RNUM,
+					                		F.*
+					                FROM
+					                        (
+					                          SELECT  
+					                          		A.WORD_ID, 
+													A.DICTIONARY_ID,
+													(SELECT DICTIONARY_NAME FROM IKEP4_CV_DICTIONARY WHERE DICTIONARY_ID=A.DICTIONARY_ID) DICTIONARY_NAME,
+													'' TAG,
+										            (SELECT JOB_TITLE_NAME FROM IKEP4_EV_USER, IKEP4_EV_JOB_TITLE 
+									                	WHERE IKEP4_EV_JOB_TITLE.JOB_TITLE_CODE = IKEP4_EV_USER.JOB_TITLE_CODE
+										                AND IKEP4_EV_USER.USER_ID=A.REGISTER_ID) AS JOB_RANK_NAME,
+										            (SELECT JOB_TITLE_ENGLISH_NAME FROM IKEP4_EV_USER, IKEP4_EV_JOB_TITLE 
+									                 	WHERE IKEP4_EV_JOB_TITLE.JOB_TITLE_CODE = IKEP4_EV_USER.JOB_TITLE_CODE
+										                AND IKEP4_EV_USER.USER_ID=A.REGISTER_ID) AS JOB_TITLE_ENGLISH_NAME,	                
+										            (SELECT TEAM_NAME FROM IKEP4_EV_USER WHERE USER_ID=A.REGISTER_ID) TEAM_NAME,
+										            (SELECT TEAM_ENGLISH_NAME FROM IKEP4_EV_USER WHERE USER_ID=A.REGISTER_ID) TEAM_ENGLISH_NAME,										
+													A.WORD_GROUP_ID,
+													A.WORD_NAME,
+													A.WORD_ENGLISH_NAME,
+													A.CONTENTS,
+													A.UPDATE_REASON,
+													A.HIT_COUNT,
+													A.VERSION,
+													A.PORTAL_ID,
+													(DATEDIFF(DD, A.REGIST_DATE, CURRENT_TIMESTAMP) - 1) IS_NEW,
+													(SELECT SORT_ORDER FROM IKEP4_CV_DICTIONARY WHERE DICTIONARY_ID=A.DICTIONARY_ID) SORT_ORDER,				
+													A.REGISTER_ID,
+													A.REGISTER_NAME,
+													(SELECT USER_ENGLISH_NAME FROM IKEP4_EV_USER WHERE USER_ID=A.REGISTER_ID) REGISTER_ENGLISH_NAME,
+													A.REGIST_DATE,
+													A.UPDATER_ID,
+													A.UPDATER_NAME,
+													A.UPDATE_DATE,
+													ISNULL((SELECT MAX(REGIST_DATE) FROM IKEP4_CV_REFERENCE WHERE WORD_ID=A.WORD_ID 
+																											<isNotEmpty prepend="AND" property="viewId">
+																												REGISTER_ID = #viewId#
+																											</isNotEmpty>
+																											<isNotEmpty prepend="AND" property="registerId">
+																												REGISTER_ID = #registerId#
+																											</isNotEmpty>
+																											),
+													DATEADD(MM, -3, CURRENT_TIMESTAMP)) HIT_DATE	
+					                         FROM    IKEP4_CV_WORD A
+					                         WHERE  A.WORD_ID IN (
+										           		SELECT MAX(WORD_ID) WORD_ID 
+										       			FROM IKEP4_CV_WORD
+										       			GROUP BY WORD_GROUP_ID)
+										       	AND A.PORTAL_ID = #portalId#
+									       	<isNotEmpty prepend="AND" property="registerId">
+											 	A.WORD_GROUP_ID IN (
+												    SELECT  DISTINCT WORD_GROUP_ID FROM IKEP4_CV_WORD WHERE REGISTER_ID = #registerId#
+												)						    	 
+									     	</isNotEmpty>	
+									        <isNotEmpty prepend="AND" property="viewId">
+											 	A.WORD_GROUP_ID IN (
+												    SELECT  DISTINCT WORD_GROUP_ID FROM IKEP4_CV_REFERENCE WHERE REGISTER_ID = #viewId#
+												)		                         
+									        </isNotEmpty>							     						       			
+					                         <isNotEmpty prepend="AND" property="dictionaryId">
+										    	 A.DICTIONARY_ID = #dictionaryId#
+										     </isNotEmpty>
+										     <isEmpty property="searchColumn">					     
+					                         	<isNotEmpty property="startSortChar">
+						                         	 <isEqual property="localeCode" compareValue="ko">
+											    	 	AND A.WORD_NAME &gt;= #startSortChar# AND A.WORD_NAME &lt; #endSortChar#
+											    	 </isEqual>
+						                         	 <isEqual property="localeCode" compareValue="en">
+						                         	 	AND (A.WORD_NAME LIKE #startSortChar# + '%' OR A.WORD_NAME LIKE LOWER(#startSortChar#) + '%')
+											    	 </isEqual>		
+										             <isEqual property="localeCode" compareValue="enTotal">
+										             	AND ((A.WORD_NAME &gt;= #startSortChar# AND A.WORD_NAME &lt; #endSortChar#) OR (A.WORD_NAME &gt;= LOWER(#startSortChar#) AND A.WORD_NAME &lt; LOWER(#endSortChar#)) OR (A.WORD_NAME LIKE #endSortChar# + '%' OR A.WORD_NAME LIKE LOWER(#endSortChar#) + '%'))
+													 </isEqual>			
+										             <isEqual property="localeCode" compareValue="numTotal">
+										             	AND ((A.WORD_NAME &gt;= #startSortChar# AND A.WORD_NAME &lt; #endSortChar#) OR (A.WORD_NAME LIKE #endSortChar# + '%'))
+													 </isEqual>						    
+												 </isNotEmpty>	 				    	 
+										     </isEmpty>						     	
+											 <isNotEmpty property="searchColumn">
+												<isNotEmpty property="searchWord">
+													<isEqual property="searchColumn" compareValue="wordName">
+														AND	(A.WORD_NAME LIKE '%' + #searchWord# + '%' OR A.WORD_ENGLISH_NAME LIKE '%' + #searchWord# + '%')
+													</isEqual>
+													<isEqual property="searchColumn" compareValue="contents">
+														AND	A.CONTENTS LIKE '%' + #searchWord# + '%'
+													</isEqual>									
+													<isEqual property="searchColumn" compareValue="registerName">
+														AND	(A.REGISTER_NAME LIKE '%' + #searchWord# + '%' OR (SELECT USER_ENGLISH_NAME FROM IKEP4_EV_USER WHERE USER_ID=A.REGISTER_ID) LIKE '%' + #searchWord# + '%') 
+													</isEqual>
+												</isNotEmpty>
+											 </isNotEmpty>	
+											 <isEmpty property="searchColumn">
+											 	 <isNotEmpty property="searchWord">
+											 	 	AND	A.WORD_NAME LIKE '%' + #searchWord# + '%' 
+											 	 </isNotEmpty>
+											 </isEmpty>												 					     					       				                         						     					     
+					                ) F
+			             	) F2
+	                WHERE   RNUM &lt;= #endRowIndex#
+	              ) TBL
+	      WHERE   RNUM &gt; #startRowIndex#
+	</select>
+	
+	<!-- MS SQL -->
+	<select id="countDictionaryBySearchCondition" parameterClass="DictionarySearchCondition" resultClass="int">  
+		SELECT /* [Dictionary_SqlMap.xml] dictionary.countDictionaryBySearchCondition */ 
+	           COUNT(*)
+        FROM IKEP4_CV_WORD A	
+        WHERE  A.WORD_ID IN (
+      		SELECT MAX(WORD_ID) WORD_ID 
+  			FROM IKEP4_CV_WORD
+  			GROUP BY WORD_GROUP_ID)  
+  		AND 	A.PORTAL_ID = #portalId#              
+       	<isNotEmpty prepend="AND" property="registerId">
+		 	A.WORD_GROUP_ID IN (
+			    SELECT  DISTINCT WORD_GROUP_ID FROM IKEP4_CV_WORD WHERE REGISTER_ID = #registerId#
+			)						    	 
+     	</isNotEmpty>	
+        <isNotEmpty prepend="AND" property="viewId">
+		 	A.WORD_GROUP_ID IN (
+			    SELECT  DISTINCT WORD_GROUP_ID FROM IKEP4_CV_REFERENCE WHERE REGISTER_ID = #viewId#
+			)		                         
+        </isNotEmpty>	      	       	        
+        <isNotEmpty prepend="AND" property="dictionaryId">
+	    	 A.DICTIONARY_ID = #dictionaryId#
+	    </isNotEmpty>		    
+        <isEmpty property="searchColumn">
+        	<isNotEmpty property="startSortChar">     	
+	        	<isEqual property="localeCode" compareValue="ko">
+	 				AND A.WORD_NAME &gt;= #startSortChar# AND A.WORD_NAME &lt; #endSortChar#
+	 			</isEqual>
+	            <isEqual property="localeCode" compareValue="en">
+	             	AND (A.WORD_NAME LIKE #startSortChar# + '%' OR A.WORD_NAME LIKE LOWER(#startSortChar#) + '%')
+				</isEqual>	
+	            <isEqual property="localeCode" compareValue="enTotal">
+	             	AND ((A.WORD_NAME &gt;= #startSortChar# AND A.WORD_NAME &lt; #endSortChar#) OR (A.WORD_NAME &gt;= LOWER(#startSortChar#) AND A.WORD_NAME &lt; LOWER(#endSortChar#)) OR (A.WORD_NAME LIKE #endSortChar# + '%' OR A.WORD_NAME LIKE LOWER(#endSortChar#) + '%'))
+				</isEqual>			
+	            <isEqual property="localeCode" compareValue="numTotal">
+	             	AND ((A.WORD_NAME &gt;= #startSortChar# AND A.WORD_NAME &lt; #endSortChar#) OR (A.WORD_NAME LIKE #endSortChar# + '%'))
+				</isEqual>				
+			</isNotEmpty>								    	 
+		</isEmpty>		            				    
+		<isNotEmpty property="searchColumn">
+			<isNotEmpty property="searchWord">
+				<isEqual property="searchColumn" compareValue="wordName">
+					AND	(A.WORD_NAME LIKE '%' + #searchWord# + '%' OR A.WORD_ENGLISH_NAME LIKE '%' + #searchWord# + '%')
+				</isEqual>
+				<isEqual property="searchColumn" compareValue="contents">
+					AND	A.CONTENTS LIKE '%' + #searchWord# + '%'
+				</isEqual>									
+				<isEqual property="searchColumn" compareValue="registerName">
+					AND	(A.REGISTER_NAME LIKE '%' + #searchWord# + '%' OR (SELECT USER_ENGLISH_NAME FROM IKEP4_EV_USER WHERE USER_ID=A.REGISTER_ID) LIKE '%' + #searchWord# + '%')
+				</isEqual>
+			</isNotEmpty>
+		</isNotEmpty>
+	 	<isEmpty property="searchColumn">
+	 	 	<isNotEmpty property="searchWord">
+	 	 		AND	A.WORD_NAME LIKE '%' 
+	 	 	</isNotEmpty>
+	 	</isEmpty>					    	    
+	</select> 
+	
+	<!-- ANSI -->
+	<select id="countDictionaryByWordName" parameterClass="DictionarySearchCondition" resultClass="int">  
+		SELECT /* [Dictionary_SqlMap.xml] dictionary.countDictionaryBySearchCondition */ 
+	           COUNT(*)
+        FROM IKEP4_CV_WORD A	
+        WHERE  A.WORD_ID IN (
+      		SELECT MAX(WORD_ID) WORD_ID 
+  			FROM IKEP4_CV_WORD
+  			GROUP BY WORD_GROUP_ID)  
+  		AND 	A.PORTAL_ID = #portalId#      
+        <isNotEmpty prepend="AND" property="dictionaryId">
+	    	 A.DICTIONARY_ID = #dictionaryId#
+	    </isNotEmpty>		
+		<isNotEmpty property="searchWord">
+				AND	(LOWER(A.WORD_NAME)= LOWER(#searchWord#)  OR LOWER(A.WORD_ENGLISH_NAME) = LOWER(#searchWord#) )
+		</isNotEmpty>
+	</select> 
+
+	<!-- MS SQL -->
+	<select id="selectDictionaryGroup" parameterClass="DictionarySearchCondition" resultMap="resultDictionaryGroup">
+          SELECT  /* [Dictionary_SqlMap.xml] dictionary.selectDictionaryGroup */ DICTIONARY_ID
+          			,MAX(SORT_ORDER) SORT_ORDER
+	      FROM    (
+	      				SELECT Row_number() OVER (ORDER BY WORD_ID DESC) AS RNUM, F.*
+	      				FROM (
+	                          SELECT  
+	                          		A.WORD_ID, 
+									A.DICTIONARY_ID,
+									(SELECT DICTIONARY_NAME FROM IKEP4_CV_DICTIONARY WHERE DICTIONARY_ID=A.DICTIONARY_ID) DICTIONARY_NAME,
+									'' TAG,
+						            (SELECT JOB_TITLE_NAME FROM IKEP4_EV_USER, IKEP4_EV_JOB_TITLE 
+					                	WHERE IKEP4_EV_JOB_TITLE.JOB_TITLE_CODE = IKEP4_EV_USER.JOB_TITLE_CODE
+						                AND IKEP4_EV_USER.USER_ID=A.REGISTER_ID) AS JOB_RANK_NAME,
+						            (SELECT TEAM_NAME FROM IKEP4_EV_USER WHERE USER_ID=A.REGISTER_ID) TEAM_NAME,										
+									A.WORD_GROUP_ID,
+									A.WORD_NAME,
+									A.WORD_ENGLISH_NAME,
+									A.CONTENTS,
+									A.HIT_COUNT,
+									A.VERSION,
+									A.PORTAL_ID,
+									(DATEDIFF(DD, A.REGIST_DATE, CURRENT_TIMESTAMP) - 1) IS_NEW,
+									(SELECT SORT_ORDER FROM IKEP4_CV_DICTIONARY WHERE DICTIONARY_ID=A.DICTIONARY_ID) SORT_ORDER,				
+									A.REGISTER_ID,
+									A.REGISTER_NAME,
+									A.REGIST_DATE,
+									A.UPDATER_ID,
+									A.UPDATER_NAME,
+									A.UPDATE_DATE	
+	                         FROM    IKEP4_CV_WORD A
+	                         WHERE  A.WORD_ID IN (
+						           		SELECT MAX(WORD_ID) WORD_ID 
+						       			FROM IKEP4_CV_WORD
+						       			GROUP BY WORD_GROUP_ID)
+						     AND 	A.PORTAL_ID = #portalId#
+	                         <isNotEmpty prepend="AND" property="registerId">
+						    	 A.REGISTER_ID = #registerId#
+						     </isNotEmpty>	
+	                         <isNotEmpty prepend="AND" property="viewId">
+						    	 (SELECT COUNT(*) FROM IKEP4_CV_REFERENCE WHERE WORD_ID = A.WORD_ID AND REGISTER_ID = #viewId#) > 0
+						     </isNotEmpty>	
+						) F					     						       							     						     					       				                         						     					     
+	              ) TBL
+	      GROUP BY DICTIONARY_ID
+	      ORDER  BY MAX(CONVERT(INT, sort_order))
+	</select>  	
+	
+	<!-- MS SQL -->
+	<!-- selectHit -->
+	<select id="selectHit" parameterClass="DictionarySearchCondition" resultMap="resultHit">
+          SELECT  *
+	      FROM    (
+	                SELECT  F.*
+	                FROM
+	                        (
+	                          SELECT 
+	                          		Row_number() OVER ( ORDER BY A.REFERENCE_ID DESC ) AS RNUM,
+	                          		A.REFERENCE_ID, 
+	                          		A.DICTIONARY_ID, 
+	                          		A.WORD_ID,
+	                          		A.WORD_GROUP_ID,
+	                          		(SELECT DICTIONARY_NAME FROM IKEP4_CV_DICTIONARY WHERE DICTIONARY_ID=A.DICTIONARY_ID) DICTIONARY_NAME,
+	                          		(SELECT WORD_NAME FROM IKEP4_CV_WORD WHERE WORD_ID=A.WORD_ID) WORD_NAME,
+	                          		A.VERSION,
+	                          		A.PORTAL_ID,
+									A.REGISTER_ID,
+									A.REGISTER_NAME,
+									A.REGIST_DATE
+	                         FROM    IKEP4_CV_REFERENCE A	
+	                         WHERE REGISTER_ID = #registerId#				     
+	                  ) F
+	                WHERE   RNUM &lt;= #endRowIndex#
+	              ) TBL
+	      WHERE   RNUM &gt; #startRowIndex#
+	</select>
+	
+	<!-- ANSI -->
+	<select id="countMyDictionaryBySearchCondition" parameterClass="DictionarySearchCondition" resultClass="int">  
+		SELECT /* [Dictionary_SqlMap.xml] dictionary.countMyDictionaryBySearchCondition */ 
+	           COUNT(*)
+        FROM IKEP4_CV_REFERENCE A
+        WHERE 1 = 1						    		    
+  </select> 	
+	
+</sqlMap>

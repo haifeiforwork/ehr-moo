@@ -1,0 +1,403 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="portal.admin.screen.portalQuickMenu" >
+	<typeAlias alias="PortalQuickMenu" type="com.lgcns.ikep4.portal.admin.screen.model.PortalQuickMenu"/>
+
+	<!-- 포탈 퀵 메뉴 조회 결과 -->
+	<resultMap id="result" class="PortalQuickMenu">
+		<result column="QUICKMENU_ID" 			property="quickMenuId" 			columnIndex="1"/>
+		<result column="QUICKMENU_NAME"			property="quickMenuName" 		columnIndex="2"/>
+		<result column="SORT_ORDER"				property="sortOrder" 			columnIndex="3"/>
+		<result column="MORE_URL"				property="moreUrl"				columnIndex="4"/>
+		<result column="TARGET"					property="target"				columnIndex="5"/>
+		<result column="COUNT"					property="count"				columnIndex="6"/>
+		<result column="COUNT_URL"				property="countUrl"				columnIndex="7"/>
+		<result column="REGISTER_ID"			property="registerId"			columnIndex="8"/>
+		<result column="REGISTER_NAME"			property="registerName"			columnIndex="9"/>
+		<result column="REGIST_DATE"			property="registDate"			columnIndex="10"/>
+		<result column="UPDATER_ID"				property="updaterId"			columnIndex="11"/>
+		<result column="UPDATER_NAME"			property="updaterName"			columnIndex="12"/>
+		<result column="UPDATE_DATE"			property="updateDate"			columnIndex="13"/>
+		<result column="PORTAL_ID"				property="portalId"				columnIndex="14"/>
+		<result column="ICON_ID"				property="iconId"				columnIndex="15"/>
+		<result column="INTERVAL_TIME"			property="intervalTime"			columnIndex="16"/>
+		<result column="MORE_URL_TYPE"			property="moreUrlType"			columnIndex="17"/>
+	</resultMap>
+	
+	<sql id="sqlColumnList">
+		QUICKMENU_ID,
+		QUICKMENU_NAME,
+		SORT_ORDER,
+		MORE_URL,
+		TARGET,
+		COUNT,
+		COUNT_URL,
+		REGISTER_ID,
+		REGISTER_NAME,
+		REGIST_DATE,
+		UPDATER_ID,
+		UPDATER_NAME,
+		UPDATE_DATE,
+		PORTAL_ID,
+		ICON_ID,
+		INTERVAL_TIME,
+		MORE_URL_TYPE
+	</sql>
+	
+	<!-- MS SQL -->
+	<select id="list" parameterClass="java.util.Map" resultMap="result">
+		<![CDATA[
+		/* [PortalQuickMenu_SqlMap.xml] portal.admin.screen.portalQuickMenu.list */
+		SELECT				A.QUICKMENU_ID,
+							CASE        
+	                		WHEN	B.ITEM_MESSAGE IS NOT NULL THEN B.ITEM_MESSAGE
+	                		ELSE	A.QUICKMENU_NAME END AS QUICKMENU_NAME,
+							A.SORT_ORDER,
+							A.MORE_URL,
+							A.TARGET,
+							A.COUNT,
+							A.COUNT_URL,
+							A.REGISTER_ID,
+							A.REGISTER_NAME,
+							CONVERT(NVARCHAR, A.REGIST_DATE, 23) AS REGIST_DATE,
+							A.UPDATER_ID,
+							A.UPDATER_NAME,
+							CONVERT(NVARCHAR, A.UPDATE_DATE, 23) AS UPDATE_DATE,
+							A.PORTAL_ID,
+							A.ICON_ID,
+							A.INTERVAL_TIME,
+							A.MORE_URL_TYPE
+		FROM				IKEP4_PO_QUICKMENU A
+		LEFT OUTER JOIN		IKEP4_I18N_MESSAGE B
+		ON              	A.QUICKMENU_ID = B.ITEM_ID
+		WHERE				A.PORTAL_ID = #portalId#
+      	AND         		B.FIELD_NAME = #fieldName#
+    	AND         		B.LOCALE_CODE = #localeCode#
+    	ORDER BY			SORT_ORDER
+		]]>
+	</select>
+	
+	<!-- MS SQL -->
+	<select id="quickMenuList" parameterClass="java.util.Map" resultMap="result">
+		<![CDATA[
+		/* [PortalQuickMenu_SqlMap.xml] portal.admin.screen.portalQuickMenu.quickMenuList */
+		SELECT 				C.QUICKMENU_ID,
+			              	CASE        
+	                		WHEN	D.ITEM_MESSAGE IS NOT NULL THEN D.ITEM_MESSAGE
+	                		ELSE	C.QUICKMENU_NAME END AS QUICKMENU_NAME,
+			              	C.SORT_ORDER,
+			              	C.MORE_URL,
+			              	C.TARGET,
+			              	C.COUNT,
+			              	C.COUNT_URL,
+			              	C.REGISTER_ID,
+			              	C.REGISTER_NAME,
+			              	CONVERT(NVARCHAR, C.REGIST_DATE, 23) AS REGIST_DATE,
+			              	C.UPDATER_ID,
+			              	C.UPDATER_NAME,
+			              	CONVERT(NVARCHAR, C.UPDATE_DATE, 23) AS UPDATE_DATE,
+			              	C.PORTAL_ID,
+			              	C.ICON_ID,
+			              	C.INTERVAL_TIME,
+			              	C.MORE_URL_TYPE
+		FROM				(
+							SELECT				A.QUICKMENU_ID,
+								              	A.QUICKMENU_NAME,
+								              	A.SORT_ORDER,
+								              	A.MORE_URL,
+								              	A.TARGET,
+								              	A.COUNT,
+								              	A.COUNT_URL,
+								              	A.REGISTER_ID,
+								              	A.REGISTER_NAME,
+								              	A.REGIST_DATE,
+								              	A.UPDATER_ID,
+								              	A.UPDATER_NAME,
+								              	A.UPDATE_DATE,
+								              	A.PORTAL_ID,
+								              	A.ICON_ID,
+								              	A.INTERVAL_TIME,
+								              	A.MORE_URL_TYPE
+    						FROM        		IKEP4_PO_QUICKMENU A
+    						INNER JOIN			IKEP4_VW_PERMIT_SYS_RESOURCE B
+						    ON	 				A.QUICKMENU_ID = B.RESOURCE_NAME
+						    WHERE				A.PORTAL_ID = #portalId#
+					        AND   				B.OPERATION_NAME = #operationName#
+					        AND   				B.CLASS_NAME = #className#
+					        AND   				B.USER_ID IN (#userId#, 'OPEN')
+						    ) C
+		LEFT OUTER JOIN		IKEP4_I18N_MESSAGE D
+    	ON           		C.QUICKMENU_ID = D.ITEM_ID
+    	AND          		D.FIELD_NAME = #fieldName#
+    	AND          		D.LOCALE_CODE = #localeCode#
+      	ORDER BY      		C.SORT_ORDER
+		]]>
+	</select>
+	
+	<!-- MS SQL -->
+	<select id="listByUserId" parameterClass="java.util.Map" resultMap="result">
+		<![CDATA[
+		/* [PortalQuickMenu_SqlMap.xml] portal.admin.screen.portalQuickMenu.listByUserId */
+		SELECT 				D.QUICKMENU_ID,
+			              	CASE        
+	                		WHEN	E.ITEM_MESSAGE IS NOT NULL THEN E.ITEM_MESSAGE
+	                		ELSE	D.QUICKMENU_NAME END AS QUICKMENU_NAME,
+			              	D.SORT_ORDER,
+			              	D.MORE_URL,
+			              	D.TARGET,
+			              	D.COUNT,
+			              	D.COUNT_URL,
+			              	D.REGISTER_ID,
+			              	D.REGISTER_NAME,
+			              	CONVERT(NVARCHAR, D.REGIST_DATE, 23) AS REGIST_DATE,
+			              	D.UPDATER_ID,
+			              	d.UPDATER_NAME,
+			              	CONVERT(NVARCHAR, D.UPDATE_DATE, 23) AS UPDATE_DATE,
+			              	D.PORTAL_ID,
+			              	D.ICON_ID,
+			              	D.INTERVAL_TIME,
+			              	D.MORE_URL_TYPE
+		FROM				(
+							SELECT				A.QUICKMENU_ID,
+								              	A.QUICKMENU_NAME,
+								              	B.SORT_ORDER,
+								              	A.MORE_URL,
+								              	A.TARGET,
+								              	A.COUNT,
+								              	A.COUNT_URL,
+								              	A.REGISTER_ID,
+								              	A.REGISTER_NAME,
+								              	A.REGIST_DATE,
+								              	A.UPDATER_ID,
+								              	A.UPDATER_NAME,
+								              	A.UPDATE_DATE,
+								              	A.PORTAL_ID,
+								              	A.ICON_ID,
+								              	A.INTERVAL_TIME,
+								              	A.MORE_URL_TYPE
+    						FROM        		IKEP4_PO_QUICKMENU A
+              				INNER JOIN			IKEP4_PO_USER_QUICKMENU B
+              				ON					A.QUiCKMENU_ID = B.QUICKMENU_ID
+              				INNER JOIN			IKEP4_VW_PERMIT_SYS_RESOURCE C
+              				ON					A.QUICKMENU_ID = C.RESOURCE_NAME
+						    WHERE        		B.USER_ID = #userId#
+						    AND					A.PORTAL_ID = #portalId#
+					        AND   				C.OPERATION_NAME = #operationName#
+					        AND   				C.CLASS_NAME = #className#
+					        AND   				C.USER_ID IN (#userId#, 'OPEN')
+						    ) D
+		LEFT OUTER JOIN		IKEP4_I18N_MESSAGE E
+    	ON           		D.QUICKMENU_ID = E.ITEM_ID
+    	AND          		E.FIELD_NAME = #fieldName#
+    	AND          		E.LOCALE_CODE = #localeCode#
+      	ORDER BY      		D.SORT_ORDER
+		]]>
+	</select>
+	
+	<!-- MS SQL -->
+	<select id="listBySortOrder" parameterClass="string" resultMap="result">
+		<![CDATA[
+		/* [PortalQuickMenu_SqlMap.xml] portal.admin.screen.portalQuickMenu.listBySortOrder */
+		SELECT				QUICKMENU_ID,
+							QUICKMENU_NAME,
+							SORT_ORDER,
+							MORE_URL,
+							TARGET,
+							COUNT,
+							COUNT_URL,
+							REGISTER_ID,
+							REGISTER_NAME,
+							CONVERT(NVARCHAR, REGIST_DATE, 23) AS REGIST_DATE,
+							UPDATER_ID,
+							UPDATER_NAME,
+							CONVERT(NVARCHAR, UPDATE_DATE, 23) AS UPDATE_DATE,
+							PORTAL_ID,
+							ICON_ID,
+							INTERVAL_TIME,
+							MORE_URL_TYPE
+		FROM				IKEP4_PO_QUICKMENU
+		WHERE				PORTAL_ID = #portalId#
+		ORDER BY			SORT_ORDER
+		]]>
+	</select>
+	
+	<!-- ANSI -->
+	<select id="existsByUserId" parameterClass="java.util.Map" resultClass="int">
+		<![CDATA[
+		/* [PortalQuickMenu_SqlMap.xml] portal.admin.screen.portalQuickMenu.getByUserId */
+		SELECT				COUNT(B.QUICKMENU_ID) AS CNT
+		FROM				IKEP4_PO_QUICKMENU A
+		INNER JOIN			IKEP4_PO_USER_QUICKMENU B
+		ON					A.QUICKMENU_ID = B.QUICKMENU_ID
+		WHERE				A.PORTAL_ID = #portalId#
+		AND					B.USER_ID = #userId#
+		]]>
+	</select>
+	
+	<!-- MS SQL -->
+	<select id="get" parameterClass="string" resultMap="result"> 
+		<![CDATA[
+		/* [PortalQuickMenu_SqlMap.xml] portal.admin.screen.portalQuickMenu.get */
+    	SELECT				QUICKMENU_ID,
+							QUICKMENU_NAME,
+							SORT_ORDER,
+							MORE_URL,
+							TARGET,
+							COUNT,
+							COUNT_URL,
+							REGISTER_ID,
+							REGISTER_NAME,
+							CONVERT(NVARCHAR, REGIST_DATE, 23) AS REGIST_DATE,
+							UPDATER_ID,
+							UPDATER_NAME,
+							CONVERT(NVARCHAR, UPDATE_DATE, 23) AS UPDATE_DATE,
+							PORTAL_ID,
+							ICON_ID,
+							INTERVAL_TIME,
+							MORE_URL_TYPE
+    	FROM  				IKEP4_PO_QUICKMENU
+    	WHERE 				QUICKMENU_ID = #quickMenuId# 
+    	]]>
+ 	</select>
+ 	
+ 	<!-- MS SQL -->
+ 	<insert id="create" parameterClass="PortalQuickMenu"> 
+		<selectKey resultClass="string" keyProperty="sortOrder" >
+		<![CDATA[
+		SELECT				CASE 
+							WHEN MAX(ISNULL(CONVERT(INT, SORT_ORDER), 100000)) IS NULL THEN '0000000000001'
+              				ELSE dbo.IKEP4_UFN_LPAD(MAX(ISNULL(CONVERT(INT, SORT_ORDER), 100000))+1, 13,'0') 
+              				END  
+    	FROM         		IKEP4_PO_QUICKMENU
+		]]>
+		</selectKey>
+	
+		<![CDATA[
+		/* [PortalQuickMenu_SqlMap.xml] portal.admin.screen.portalQuickMenu.create */
+		INSERT	INTO		IKEP4_PO_QUICKMENU 
+							(
+		]]>
+							<include refid="portal.admin.screen.portalQuickMenu.sqlColumnList" />
+		<![CDATA[
+							)
+		VALUES	 			(
+							#quickMenuId#,
+							#quickMenuName#,
+							#sortOrder#,
+							#moreUrl#,
+							#target#,
+							#count#,
+							#countUrl#,
+							#registerId#,
+							#registerName#,
+							CURRENT_TIMESTAMP,
+							#updaterId#,
+							#updaterName#,
+							CURRENT_TIMESTAMP,
+							#portalId#,
+							#iconId#,
+							#intervalTime#,
+							#moreUrlType#
+						    )
+		]]>
+	</insert>
+	
+	<!-- MS SQL -->
+	<insert id="createUserQuickMenu" parameterClass="PortalQuickMenu"> 
+		<![CDATA[
+		/* [PortalQuickMenu_SqlMap.xml] portal.admin.screen.portalQuickMenu.createUserQuickMenu */
+		INSERT	INTO		IKEP4_PO_USER_QUICKMENU 
+							(
+							QUICKMENU_ID,
+							USER_ID,
+							SORT_ORDER,
+							REGISTER_ID,
+							REGISTER_NAME,
+							REGIST_DATE,
+							UPDATER_ID,
+							UPDATER_NAME,
+							UPDATE_DATE
+							)
+		VALUES	 			(
+							#quickMenuId#,
+							#userId#,
+							dbo.IKEP4_UFN_LPAD(CONVERT(INT, #sortOrder#), 13, '0'),							
+							#registerId#,
+							#registerName#,
+							CURRENT_TIMESTAMP,
+							#updaterId#,
+							#updaterName#,
+							CURRENT_TIMESTAMP
+						    )
+		]]>
+	</insert>
+	
+	<!-- ANSI -->
+	<update id="update" parameterClass="PortalQuickMenu"> 
+ 		<![CDATA[
+ 		/* [PortalQuickMenu_SqlMap.xml] portal.admin.screen.portalQuickMenu.update */
+    	UPDATE				IKEP4_PO_QUICKMENU
+    	SET					QUICKMENU_NAME = #quickMenuName#,
+							SORT_ORDER = #sortOrder#,
+							MORE_URL = #moreUrl#,
+							TARGET = #target#,
+							COUNT = #count#,
+							COUNT_URL = #countUrl#,
+							UPDATER_ID = #updaterId#,
+							UPDATER_NAME = #updaterName#,
+							UPDATE_DATE = CURRENT_TIMESTAMP,
+							PORTAL_ID = #portalId#,
+							ICON_ID = #iconId#,
+							INTERVAL_TIME = #intervalTime#,
+							MORE_URL_TYPE = #moreUrlType#
+		WHERE				QUICKMENU_ID= #quickMenuId#
+    	]]>
+  	</update>
+  	
+  	<!-- ANSI -->
+  	<delete id="delete" parameterClass="string"> 
+  		<![CDATA[
+  		/* [PortalQuickMenu_SqlMap.xml] portal.admin.screen.portalQuickMenu.delete */
+    	DELETE 
+    	FROM 				IKEP4_PO_QUICKMENU 
+    	WHERE 				QUICKMENU_ID = #quickMenuId# 
+    	]]>
+  	</delete>
+  	
+  	<!-- ANSI -->
+  	<delete id="deleteUserQuickMenu" parameterClass="string"> 
+  		<![CDATA[
+  		/* [PortalQuickMenu_SqlMap.xml] portal.admin.screen.portalQuickMenu.deleteUserQuickMenu */
+    	DELETE 
+    	FROM 				IKEP4_PO_USER_QUICKMENU 
+    	WHERE 				USER_ID = #userId# 
+    	]]>
+  	</delete>
+	
+	<select id="listQuickMenu" parameterClass="string" resultMap="result">
+		<![CDATA[
+		/* [PortalQuickMenu_SqlMap.xml] portal.admin.screen.portalQuickMenu.listQuickMenu */
+		SELECT				A.QUICKMENU_ID,
+	                		A.QUICKMENU_NAME,
+							A.SORT_ORDER,
+							A.MORE_URL,
+							A.TARGET,
+							A.COUNT,
+							A.COUNT_URL,
+							A.REGISTER_ID,
+							A.REGISTER_NAME,
+							CONVERT(NVARCHAR, A.REGIST_DATE, 23) AS REGIST_DATE,
+							A.UPDATER_ID,
+							A.UPDATER_NAME,
+							CONVERT(NVARCHAR, A.UPDATE_DATE, 23) AS UPDATE_DATE,
+							A.PORTAL_ID,
+							A.ICON_ID,
+							A.INTERVAL_TIME,
+							A.MORE_URL_TYPE
+		FROM				IKEP4_PO_QUICKMENU A
+		WHERE				A.PORTAL_ID = #portalId#
+		ORDER BY			SORT_ORDER
+		]]>
+	</select>
+</sqlMap>

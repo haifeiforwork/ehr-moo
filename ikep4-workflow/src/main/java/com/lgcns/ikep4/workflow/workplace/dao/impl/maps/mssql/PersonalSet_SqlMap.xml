@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="workflow.workplace.dao.PersonalSet" >
+	<typeAlias alias="delegateBean" type="com.lgcns.ikep4.workflow.engine.model.DelegateBean"/>
+	
+	<!-- ANSI -->
+	<statement id="delegateCreate" parameterClass="delegateBean">  
+		/* [PersonalSet_SqlMap.xml] workflow.workplace.dao.PersonalSet.delegateCreate */
+		<![CDATA[
+		INSERT INTO IKEP4_WF_DELEGATE(SEQ_ID, USER_ID, IS_SETUP, START_DATE, END_DATE, REASON_COMMENT, MANDATOR_ID)
+		VALUES (#seqId#, #userId#, #isSetup#, #startDate#, #endDate#, #reasonComment#, #mandatorId#)
+		]]>	
+	</statement>
+	
+	<!-- ANSI -->
+	<select id="delegateDetail" parameterClass="delegateBean" resultClass="delegateBean">  
+		/* [PersonalSet_SqlMap.xml] workflow.workplace.dao.PersonalSet.delegateDetail */
+		<![CDATA[
+		SELECT 	SEQ_ID AS seqId, USER_ID AS userId
+				, (SELECT USER_NAME FROM IKEP4_EV_USER WHERE USER_ID =  DELE.USER_ID) AS userName
+				, (SELECT USER_ENGLISH_NAME FROM IKEP4_EV_USER WHERE USER_ID =  DELE.USER_ID) AS userEnglishName
+		        , IS_SETUP AS isSetup
+		        , START_DATE AS startDate
+		        , END_DATE AS endDate
+		        , START_DATE AS startDateStr
+		        , END_DATE AS endDateStr
+		        , REASON_COMMENT AS reasonComment, MANDATOR_ID AS mandatorId
+		        , (SELECT USER_NAME FROM IKEP4_EV_USER WHERE USER_ID =  DELE.MANDATOR_ID) AS mandatorName
+		        , (SELECT USER_ENGLISH_NAME FROM IKEP4_EV_USER WHERE USER_ID =  DELE.MANDATOR_ID) AS mandatorEnglishName
+		FROM 	IKEP4_WF_DELEGATE DELE
+		WHERE	USER_ID = #userId#
+		]]>	
+	</select>
+	
+	<!-- ANSI -->
+	<statement id="delegateUpdate" parameterClass="delegateBean">  
+		/* [PersonalSet_SqlMap.xml] workflow.workplace.dao.PersonalSet.delegateUpdate */
+		<![CDATA[
+		UPDATE IKEP4_WF_DELEGATE
+		SET	IS_SETUP = #isSetup#
+			, START_DATE = CONVERT(DATETIME, #startDate#)
+		    , END_DATE = CONVERT(DATETIME, #endDate#)
+		    , REASON_COMMENT = #reasonComment#
+		    , MANDATOR_ID = #mandatorId#
+		WHERE SEQ_ID = #seqId# AND USER_ID = #userId#
+		]]>	
+	</statement>
+
+</sqlMap>

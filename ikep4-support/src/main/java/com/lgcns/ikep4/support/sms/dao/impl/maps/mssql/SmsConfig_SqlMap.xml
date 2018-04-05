@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="smsConfig" >
+	<typeAlias alias = "SmsConfig" type="com.lgcns.ikep4.support.sms.model.SmsConfig"/>
+	<typeAlias alias = "SmsSearchCondition" type="com.lgcns.ikep4.support.sms.search.SmsSearchCondition"/>
+
+	<resultMap id="smsConfigResult" class="SmsConfig">
+		<result property="userId" column="USER_ID"/>
+		<result property="userName" column="USER_NAME"/>
+		<result property="teamName" column="TEAM_NAME"/>
+		<result property="jobTitleName" column="JOB_TITLE_NAME"/>
+		<result property="smsCount" column="SMS_COUNT"/>
+		<result property="registerId" column="REGISTER_ID"/>
+		<result property="registerName" column="REGISTER_NAME"/>
+		<result property="registDate" column="REGIST_DATE"/>
+		<result property="updaterId" column="UPDATER_ID"/>
+		<result property="updaterName" column="UPDATER_NAME"/>
+		<result property="updateDate" column="UPDATE_DATE"/>
+	</resultMap>
+
+	<select id="countListSmsConfig" parameterClass="SmsSearchCondition" resultClass="int">  
+  		<![CDATA[
+  		/* [SmsConfig_SqlMap.xml] smsConfig.countListSmsConfig */ 
+		SELECT 
+			COUNT(*) 
+		  FROM
+			IKEP4_SM_SMS_CONFIG a INNER JOIN
+			IKEP4_EV_USER b on a.USER_ID = b.USER_ID LEFT OUTER JOIN
+			IKEP4_EV_JOB_TITLE c on b.JOB_TITLE_CODE = c.JOB_TITLE_CODE
+		]]>
+		<isNotEmpty property="searchColumn">
+			<isNotEmpty property="searchWord">
+				<isEqual property="searchColumn" compareValue="USER_NAME">
+					WHERE UPPER(b.USER_NAME) LIKE UPPER('%' + #searchWord# + '%')
+				</isEqual>
+			</isNotEmpty>
+		</isNotEmpty>
+  	</select>
+  	
+  	<select id="listSmsConfig" parameterClass="SmsSearchCondition" resultMap="smsConfigResult">
+	 	<![CDATA[
+  		/* [SmsConfig_SqlMap.xml] smsConfig.listSmsConfig */
+		SELECT	
+			*
+		  FROM	(	
+		  		   SELECT  
+		  		   		Row_number() OVER(ORDER BY b.USER_NAME ASC) AS RNUM,
+						a.USER_ID,
+						b.USER_NAME,
+						b.TEAM_NAME,
+						isnull(ejd.JOB_DUTY_NAME, ejt.JOB_TITLE_NAME) AS JOB_TITLE_NAME,
+						a.SMS_COUNT, 
+						a.REGISTER_ID, 
+						a.REGISTER_NAME, 
+						a.REGIST_DATE, 
+						a.UPDATER_ID, 
+						a.UPDATER_NAME, 
+						a.UPDATE_DATE   
+					FROM 
+						IKEP4_SM_SMS_CONFIG a INNER JOIN
+						IKEP4_EV_USER b on a.USER_ID = b.USER_ID 
+			        left outer join IKEP4_EV_JOB_TITLE ejt  on b.job_title_code =ejt.job_title_code
+        			left outer join IKEP4_EV_JOB_DUTY ejd  on b.job_duty_code = ejd.job_duty_code
+		]]>								         	       
+	    			<isNotEmpty property="searchColumn">
+			 			<isNotEmpty property="searchWord">
+							<isEqual property="searchColumn" compareValue="USER_NAME">
+								WHERE UPPER(b.USER_NAME) LIKE UPPER('%' + #searchWord# + '%')
+							</isEqual>
+						</isNotEmpty>
+					</isNotEmpty>
+		<![CDATA[
+				) C
+		WHERE C.RNUM > #startRowIndex# 
+		  AND C.RNUM <= #endRowIndex#
+		]]>
+	</select>
+	
+	<select id="getSmsConfig" parameterClass="String" resultMap="smsConfigResult">  
+  		<![CDATA[
+  		/* [SmsConfig_SqlMap.xml] smsConfig.getSmsConfig */
+  		select 
+			a.USER_ID,
+			b.USER_NAME,
+			b.TEAM_NAME,
+			isnull(ejd.JOB_DUTY_NAME, ejt.JOB_TITLE_NAME) AS  JOB_TITLE_NAME, 
+			a.SMS_COUNT, 
+			a.REGISTER_ID, 
+			a.REGISTER_NAME, 
+			a.REGIST_DATE, 
+			a.UPDATER_ID, 
+			a.UPDATER_NAME, 
+			a.UPDATE_DATE
+		  from 
+		  	IKEP4_SM_SMS_CONFIG a LEFT OUTER JOIN
+			IKEP4_EV_USER b on a.USER_ID = b.USER_ID 
+			        left outer join IKEP4_EV_JOB_TITLE ejt  on b.job_title_code =ejt.job_title_code
+        			left outer join IKEP4_EV_JOB_DUTY ejd  on b.job_duty_code = ejd.job_duty_code
+		 where a.USER_ID = #userId#  
+		]]>	
+  	</select>
+  	
+  	<insert id="createSmsConfig" parameterClass="SmsConfig"> 
+      <![CDATA[
+      	   /* [SmsConfig_SqlMap.xml] smsConfig.createSmsConfig */ 
+           INSERT INTO IKEP4_SM_SMS_CONFIG (USER_ID, SMS_COUNT, REGISTER_ID, REGISTER_NAME, REGIST_DATE, UPDATER_ID, UPDATER_NAME, UPDATE_DATE)  
+           VALUES (#userId#, #smsCount#, #registerId#, #registerName#, CURRENT_TIMESTAMP, #updaterId#, #updaterName#, CURRENT_TIMESTAMP)
+       ]]>
+   </insert>
+   
+   <update id="updateSmsConfig" parameterClass="SmsConfig">
+       <![CDATA[
+      	   /* [SmsConfig_SqlMap.xml] smsConfig.updateSmsConfig */ 
+		   update IKEP4_SM_SMS_CONFIG
+		      set SMS_COUNT = #smsCount#,
+		          UPDATER_ID = #updaterId#,
+    	  		  UPDATER_NAME = #updaterName#,
+    	  		  UPDATE_DATE = CURRENT_TIMESTAMP 
+		    where user_id = #userId#           
+       ]]>
+   </update>
+   
+   <delete id="removeSmsConfig" parameterClass="String">
+      <![CDATA[
+      	   /* [SmsConfig_SqlMap.xml] smsConfig.removeSmsConfig */
+	       DELETE FROM IKEP4_SM_SMS_CONFIG
+ 			WHERE user_id = #userId# 
+ 	   ]]>    
+	</delete>
+</sqlMap>

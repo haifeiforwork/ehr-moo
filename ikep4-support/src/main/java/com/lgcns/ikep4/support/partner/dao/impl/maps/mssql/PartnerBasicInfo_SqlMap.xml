@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="support.partner.dao.basicInfo">
+
+<typeAlias alias="Partner" type="com.lgcns.ikep4.support.partner.model.Partner"/>
+
+
+
+
+ <select id="existsReference" parameterClass="Partner" resultClass="int">
+    SELECT 
+           COUNT(*)
+    FROM   CUSTOMER_INFO_REFERENCE
+    WHERE  DIV_CODE = #divCode#
+    AND    REGISTER_ID = #registerId#
+	AND	   ITEM_ID = #id#
+  </select> 
+  
+  <update id="updateReference" parameterClass="Partner"> 
+    UPDATE CUSTOMER_INFO_REFERENCE 
+    SET REGIST_DATE = CURRENT_TIMESTAMP
+    WHERE DIV_CODE = #divCode#
+    AND REGISTER_ID = #registerId#
+	AND	   ITEM_ID = #id#
+  </update>
+  
+  <insert id="createReference" parameterClass="Partner"> 
+    INSERT INTO CUSTOMER_INFO_REFERENCE 
+           (ITEM_ID, REGISTER_ID, REGIST_DATE, DIV_CODE)
+    VALUES (#id#, #registerId#, CURRENT_TIMESTAMP, #divCode#)
+  </insert>
+  
+  <update id="updateHitCount" parameterClass="Partner"> 
+  	<isNotEmpty property="divCode">
+  		<isEqual property="divCode" compareValue="BM">
+  			 UPDATE BASICINFO_MASTER 
+			 SET    HIT_COUNT = HIT_COUNT + 1
+			 WHERE  ID = #id#
+  		</isEqual>
+  		<isEqual property="divCode" compareValue="PI">
+  			 UPDATE PERSON_INFO 
+			 SET    HIT_COUNT = HIT_COUNT + 1
+			 WHERE  SEQNUM = #id#
+  		</isEqual>
+  		<isEqual property="divCode" compareValue="MS">
+  			 UPDATE MAIN_SELLING 
+			 SET    HIT_COUNT = HIT_COUNT + 1
+			 WHERE  id = #id#
+  		</isEqual>
+  		<isEqual property="divCode" compareValue="CH">
+  			 UPDATE COUNSEL_HISTORY 
+			 SET    HIT_COUNT = HIT_COUNT + 1
+			 WHERE  SEQNUM = #id#
+  		</isEqual>
+  		<isEqual property="divCode" compareValue="QH">
+  			 UPDATE QC_HISTORY 
+			 SET    HIT_COUNT = HIT_COUNT + 1
+			 WHERE  SEQNUM = #id#
+  		</isEqual>
+  		<isEqual property="divCode" compareValue="CL">
+  			 UPDATE CL_HISTORY 
+			 SET    HIT_COUNT = HIT_COUNT + 1
+			 WHERE  SEQNUM = #id#
+  		</isEqual>
+  		<isEqual property="divCode" compareValue="BH">
+  			 UPDATE BI_HISTORY 
+			 SET    HIT_COUNT = HIT_COUNT + 1
+			 WHERE  SEQNUM = #id#
+  		</isEqual>
+  		<isEqual property="divCode" compareValue="RT">
+  			 UPDATE REALTY 
+			 SET    HIT_COUNT = HIT_COUNT + 1
+			 WHERE  SEQNUM = #id#
+  		</isEqual>
+  		<isEqual property="divCode" compareValue="FM">
+  			 UPDATE FINANCE_MASTER 
+			 SET    HIT_COUNT = HIT_COUNT + 1
+			 WHERE  CUSTOMER_INFO_ID = #id#
+  		</isEqual>
+  	</isNotEmpty>
+    
+  </update> 
+
+
+
+</sqlMap>

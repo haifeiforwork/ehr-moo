@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="servicepack.seamlessmessage.seamlessmessageAdmin">
+
+	<typeAlias alias="SeamlessmessageAdmin" type="com.lgcns.ikep4.servicepack.seamless.model.SeamlessmessageAdmin" />
+	
+    <resultMap class="com.lgcns.ikep4.servicepack.seamless.model.SeamlessmessageAdmin" id="result">
+	    <result column="MAX_ATTACH_FILESIZE" jdbcType="DECIMAL" property="maxAttachFilesize" />
+	    <result column="MAX_RECEIVER_COUNT" jdbcType="DECIMAL" property="maxReceiverCount" />
+	    <result column="KEEP_DAYS" jdbcType="DECIMAL" property="keepDays" />
+	    <result column="MAX_IMAP_COUNT" jdbcType="DECIMAL" property="maxImapCount" />
+	</resultMap>
+	
+	<select id="get" parameterClass="String" resultMap="result">
+		<![CDATA[
+		/* [SeamlessMessage_Admin_SqlMap.xml] seamlessmessageAdmin.get */
+    	SELECT				MAX_ATTACH_FILESIZE, 
+    						MAX_RECEIVER_COUNT, 
+    						KEEP_DAYS, 
+    						MAX_IMAP_COUNT
+		FROM 				IKEP4_UM_SETTING
+		WHERE 				PORTAL_ID = #portalId#
+		]]>
+	</select>
+	
+	<select id="exists" parameterClass="string" resultClass="int">
+		<![CDATA[
+		/* [SeamlessMessage_Admin_SqlMap.xml] seamlessmessageAdmin.exists */
+    	SELECT				COUNT(*)
+	    FROM  				IKEP4_UM_SETTING
+	    WHERE 				PORTAL_ID = #portalId#
+	    ]]>
+	</select> 
+	
+	<insert id="create" parameterClass="SeamlessmessageAdmin">
+		<![CDATA[
+		/* [SeamlessMessage_Admin_SqlMap.xml] seamlessmessageAdmin.create */
+	    INSERT INTO 		IKEP4_UM_SETTING  
+	    					(  
+	    					PORTAL_ID, 
+	    					MAX_ATTACH_FILESIZE, 
+	    					MAX_RECEIVER_COUNT, 
+	    					KEEP_DAYS, 
+	    					MAX_IMAP_COUNT
+	     					) 
+		VALUES 				(
+							#portalId#, 
+							#maxAttachFilesize#, 
+							#maxReceiverCount#, 
+							#keepDays#, 
+							#maxImapCount#
+							)
+		]]>
+	</insert>
+	
+	<update id="update" parameterClass="SeamlessmessageAdmin">
+		<![CDATA[
+		/* [SeamlessMessage_Admin_SqlMap.xml] seamlessmessageAdmin.update */
+		UPDATE 				IKEP4_UM_SETTING 
+	    SET  				PORTAL_ID = PORTAL_ID
+		]]>	    
+					    	<isNotEmpty property="columnName">
+							<isEqual property="columnName" compareValue="maxAttachFilesize">
+					    	, MAX_ATTACH_FILESIZE = #maxAttachFilesize#
+				    		</isEqual>
+					    	<isEqual property="columnName" compareValue="maxReceiverCount">
+					    	, MAX_RECEIVER_COUNT = #maxReceiverCount#
+					    	</isEqual>
+					    	<isEqual property="columnName" compareValue="keepDays">
+					    	, KEEP_DAYS = #keepDays#
+					    	</isEqual>
+					    	<isEqual property="columnName" compareValue="maxImapCount">
+					    	, MAX_IMAP_COUNT = #maxImapCount#
+					    	</isEqual>
+						    </isNotEmpty>
+		<![CDATA[
+	    WHERE 				PORTAL_ID = #portalId#
+	    ]]>
+	</update>
+	
+	<delete id="remove" parameterClass="string">
+		<![CDATA[
+		/* [SeamlessMessage_Admin_SqlMap.xml] seamlessmessageAdmin.remove */
+		DELETE 
+		FROM 				IKEP4_UM_SETTING 
+		WHERE 				PORTAL_ID = #portalId#
+		]]>
+	</delete> 
+	
+	<delete id="deleteReceiveboxRecipientBatch" >
+		<![CDATA[  
+		/* [SeamlessMessage_Admin_SqlMap.xml] seamlessmessageAdmin.deleteReceiveboxRecipientBatch */
+		DELETE 
+		FROM 				IKEP4_UM_RECEIVEBOX_RECIPIENT 
+		WHERE 				MESSAGE_ID IN (
+			    							SELECT				MESSAGE_ID
+			    							FROM 				IKEP4_UM_RECEIVEBOX main,
+			        											( 
+			        											SELECT				insb.USER_ID, 
+			        																DATE_SUB(CURDATE(), INTERVAL KEEP_DAYS DAY) AS DEL_DAY
+			            										FROM 				IKEP4_UM_SETTING insa, 
+			            															IKEP4_EV_USER insb
+			           											WHERE 				insa.PORTAL_ID = insb.PORTAL_ID
+			           											) subb
+			    							WHERE 				main.OWNER_ID = subb.USER_ID
+			    							AND   				main.SEND_DATE <= subb.DEL_DAY
+			   				)
+		]]>
+	</delete>
+	
+	<delete id="deleteReceiveboxAttachBatch" >
+		<![CDATA[  
+		/* [SeamlessMessage_Admin_SqlMap.xml] seamlessmessageAdmin.deleteReceiveboxAttachBatch */
+		DELETE 
+		FROM 				IKEP4_UM_RECEIVEBOX_ATTACH 
+		WHERE 				MESSAGE_ID IN (
+			    							SELECT				MESSAGE_ID
+			    							FROM 				IKEP4_UM_RECEIVEBOX main,
+			        											( 
+			        											SELECT				insb.USER_ID, 
+			        																DATE_SUB(CURDATE(), INTERVAL KEEP_DAYS DAY) AS DEL_DAY
+			            										FROM 				IKEP4_UM_SETTING insa, 
+			            															IKEP4_EV_USER insb
+			           											WHERE 				insa.PORTAL_ID = insb.PORTAL_ID
+			           											) subb
+			    							WHERE 				main.OWNER_ID = subb.USER_ID
+			    							AND   				main.SEND_DATE <= subb.DEL_DAY
+			   				)   
+		]]>
+	</delete>
+	
+	<delete id="deleteReceiveboxBatch" >
+		<![CDATA[  
+		/* [SeamlessMessage_Admin_SqlMap.xml] seamlessmessageAdmin.deleteReceiveboxBatch */
+		DELETE 
+		FROM 				IKEP4_UM_RECEIVEBOX  
+		WHERE 				MESSAGE_ID IN (
+			    							SELECT 				MESSAGE_ID
+			    							FROM 				IKEP4_UM_RECEIVEBOX main,
+			        											( 
+			        											SELECT 				insb.USER_ID, 
+			        																DATE_SUB(CURDATE(), INTERVAL KEEP_DAYS DAY) AS DEL_DAY
+			            										FROM 				IKEP4_UM_SETTING insa, 
+			            															IKEP4_EV_USER insb
+			           											WHERE 				insa.PORTAL_ID = insb.PORTAL_ID
+			           											) subb
+			    							WHERE 				main.OWNER_ID = subb.USER_ID
+			    							AND   				main.SEND_DATE <= subb.DEL_DAY
+			   				)
+		]]>
+	</delete>
+	
+	<delete id="deleteSendboxRecipientBatch" >
+		<![CDATA[  
+		/* [SeamlessMessage_Admin_SqlMap.xml] seamlessmessageAdmin.deleteSendboxRecipientBatch */
+		DELETE 
+		FROM 				IKEP4_UM_SENDBOX_RECIPIENT 
+		WHERE 				MESSAGE_ID IN (
+			    							SELECT 				MESSAGE_ID
+			    							FROM 				IKEP4_UM_SENDBOX main,
+			        											( 
+			        											SELECT 				insb.USER_ID, 
+			        																DATE_SUB(CURDATE(), INTERVAL KEEP_DAYS DAY) AS DEL_DAY
+			            										FROM 				IKEP4_UM_SETTING insa, 
+			            															IKEP4_EV_USER insb
+			           											WHERE 				insa.PORTAL_ID = insb.PORTAL_ID
+			           											) subb
+			    							WHERE 				main.SENDER_ID = subb.USER_ID
+			    							AND   				main.SEND_DATE <= subb.DEL_DAY    
+			   				)
+		]]>
+	</delete>
+	
+	<delete id="deleteSendboxAttachBatch" >
+		<![CDATA[  
+		/* [SeamlessMessage_Admin_SqlMap.xml] seamlessmessageAdmin.deleteSendboxAttachBatch */
+		DELETE 
+		FROM 				IKEP4_UM_SENDBOX_ATTACH 
+		WHERE 				MESSAGE_ID IN (
+			    							SELECT				MESSAGE_ID
+										    FROM 				IKEP4_UM_SENDBOX main,
+										        				( 
+										        				SELECT				insb.USER_ID, 
+										        									DATE_SUB(CURDATE(), INTERVAL KEEP_DAYS DAY) AS DEL_DAY
+										            			FROM 				IKEP4_UM_SETTING insa, 
+										            								IKEP4_EV_USER insb
+										           				WHERE 				insa.PORTAL_ID = insb.PORTAL_ID
+										           				) subb
+										    WHERE 				main.SENDER_ID = subb.USER_ID
+										    AND   				main.SEND_DATE <= subb.DEL_DAY
+			   				)     
+		]]>
+	</delete>
+	
+	<delete id="deleteSendboxBatch" >
+		<![CDATA[  
+		/* [SeamlessMessage_Admin_SqlMap.xml] seamlessmessageAdmin.deleteSendboxBatch */
+		DELETE 
+		FROM 				IKEP4_UM_SENDBOX 
+		WHERE 				MESSAGE_ID IN (
+										    SELECT				MESSAGE_ID
+										    FROM 				IKEP4_UM_SENDBOX main,
+										        				( 
+										        				SELECT				insb.USER_ID, 
+										        									DATE_SUB(CURDATE(), INTERVAL KEEP_DAYS DAY) AS DEL_DAY
+										            			FROM 				IKEP4_UM_SETTING insa, 
+										            								IKEP4_EV_USER insb
+										           				WHERE 				insa.PORTAL_ID = insb.PORTAL_ID
+										           				) subb
+										    WHERE 				main.SENDER_ID = subb.USER_ID
+										    AND   				main.SEND_DATE <= subb.DEL_DAY
+						   	)
+		]]>
+	</delete>
+
+</sqlMap>

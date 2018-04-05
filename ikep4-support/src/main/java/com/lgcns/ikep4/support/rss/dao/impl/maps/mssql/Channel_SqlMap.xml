@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="EUC-KR"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="support.rss.channel">
+
+	<typeAlias alias="channel" type="com.lgcns.ikep4.support.rss.model.Channel" />
+	<typeAlias alias="channelSearchCondition" type="com.lgcns.ikep4.support.rss.model.ChannelSearchCondition"/>
+
+	<resultMap id="channelResult" class="channel">
+        <result property="channelId" column="channel_id" />
+        <result property="categoryId" column="CATEGORY_ID" />
+        <result property="categoryName" column="CATEGORY_NAME" />
+        <result property="ownerId" column="owner_id" />
+        <result property="channelUrl" column="channel_url" />
+        <result property="channelTitle" column="channel_title" />
+        <result property="sortOrder" column="sort_order" />
+        <result property="registerId" column="register_id" />
+        <result property="registerName" column="register_name" />
+        <result property="registDate" column="regist_date" />
+        <result property="updaterId" column="updater_id" />
+        <result property="updaterName" column="updater_name" />
+        <result property="updateDate" column="update_date" />
+    </resultMap>
+	
+	<!-- ANSI -->
+	<insert id="insert" parameterClass="channel">
+		INSERT INTO IKEP4_RS_CHANNEL (
+			CHANNEL_ID, OWNER_ID, CATEGORY_ID, CHANNEL_URL,
+			CHANNEL_TITLE, SORT_ORDER, 
+			REGISTER_ID, REGISTER_NAME, REGIST_DATE,
+			UPDATER_ID, UPDATER_NAME, UPDATE_DATE)
+		values(#channelId#, #ownerId#, #categoryId#, #channelUrl#,
+			#channelTitle#, #sortOrder#, 
+			#registerId#, #registerName#, CURRENT_TIMESTAMP,
+			#updaterId#, #updaterName#, CURRENT_TIMESTAMP)
+	</insert>
+	
+	<!-- MS SQL -->
+	<select id="selectSortOrder" parameterClass="java.util.Map" resultClass="String">
+		SELECT ISNULL(MAX(CONVERT(NUMERIC, SORT_ORDER)),100000)+1 
+			FROM IKEP4_RS_CHANNEL 
+			WHERE OWNER_ID = #ownerId#
+    </select>
+	
+	<!-- ANSI -->
+	<insert id="update" parameterClass="channel">
+		UPDATE IKEP4_RS_CHANNEL
+    	SET 
+    		<isNotEmpty property="channelTitle"> 
+    			CHANNEL_TITLE = #channelTitle#,
+    		</isNotEmpty> 
+    		<isNotEmpty property="channelUrl"> 
+    			CHANNEL_URL = #channelUrl#,
+    		</isNotEmpty> 
+    		<isNotEmpty property="categoryId"> 
+                CATEGORY_ID = #categoryId#,
+            </isNotEmpty>           
+    		UPDATER_ID =  #updaterId#,
+    		UPDATER_NAME = #updaterName#,
+    		UPDATE_DATE = CURRENT_TIMESTAMP
+    	WHERE CHANNEL_ID = #channelId#
+	</insert>
+	
+	<!-- ANSI -->
+	<insert id="updateSortOrder" parameterClass="channel">
+		UPDATE IKEP4_RS_CHANNEL
+    	SET 
+    		SORT_ORDER = #sortOrder#
+    	WHERE CHANNEL_ID = #channelId#
+	</insert>
+	
+	<!-- ANSI -->
+	<delete id="delete" parameterClass="String">
+		DELETE FROM IKEP4_RS_CHANNEL
+		WHERE CHANNEL_ID = #channelId#
+    </delete>
+    
+    <!-- ANSI -->
+    <delete id="deleteByCategoryId" parameterClass="String">
+        DELETE FROM IKEP4_RS_CHANNEL
+        WHERE CATEGORY_ID = #categoryId#
+    </delete>
+	<!-- ANSI -->
+	<select id="select" parameterClass="String" resultMap="channelResult">
+		SELECT
+			A.CHANNEL_ID, A.OWNER_ID, A.CHANNEL_URL,
+			A.CHANNEL_TITLE, A.SORT_ORDER, A.CATEGORY_ID, B.CATEGORY_NAME,
+			A.REGISTER_ID, A.REGISTER_NAME, A.REGIST_DATE,
+			A.UPDATER_ID, A.UPDATER_NAME, A.UPDATE_DATE
+		FROM IKEP4_RS_CHANNEL A 
+		     INNER JOIN IKEP4_RS_CATEGORY B ON A.CATEGORY_ID = B.CATEGORY_ID
+		WHERE A.CHANNEL_ID = #channelId#
+    </select>
+    
+    <!-- MS SQL -->
+    <select id="exists" parameterClass="java.util.Map" resultMap="channelResult">
+		SELECT TOP 1 
+			A.CHANNEL_ID, A.OWNER_ID, A.CHANNEL_URL,
+            A.CHANNEL_TITLE, A.SORT_ORDER, A.CATEGORY_ID, B.CATEGORY_NAME,
+            A.REGISTER_ID, A.REGISTER_NAME, A.REGIST_DATE,
+            A.UPDATER_ID, A.UPDATER_NAME, A.UPDATE_DATE
+		FROM IKEP4_RS_CHANNEL A 
+             INNER JOIN IKEP4_RS_CATEGORY B ON A.CATEGORY_ID = B.CATEGORY_ID
+		WHERE A.OWNER_ID = #ownerId#
+		<isNotEmpty prepend="and" property="channelUrl">
+			A.CHANNEL_URL = #channelUrl#
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="channelTitle">
+			A.CHANNEL_TITLE = #channelTitle#
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="channelId">
+		      <![CDATA[ 
+                A.CHANNEL_ID <> #channelId#
+              ]]> 
+        </isNotEmpty>		
+    </select>
+    
+    <!-- MS SQL -->
+    <select id="selectAll" parameterClass="channelSearchCondition" resultMap="channelResult">    	
+    	SELECT /* [Channel_SqlMap.xml] selectAll */ 
+		       *
+		FROM ( 
+		     SELECT AA.* FROM ( 
+		         /* START========================================= */
+		        SELECT Row_number() OVER (
+		        <isNotEmpty property="sortColumn" >
+                                        <isEqual property="sortColumn" compareValue="SORT_ORDER">
+                                            <isEqual property="sortType" compareValue="ASC">
+                                                ORDER BY A.SORT_ORDER ASC
+                                            </isEqual>
+                                            <isEqual property="sortType" compareValue="DESC">
+                                                ORDER BY A.SORT_ORDER DESC
+                                            </isEqual>
+                                        </isEqual>
+                                        <isEqual property="sortColumn" compareValue="CATEGORY_ID">
+                                            <isEqual property="sortType" compareValue="ASC">
+                                                ORDER BY B.CATEGORY_ORDER ASC
+                                            </isEqual>
+                                            <isEqual property="sortType" compareValue="DESC">
+                                                ORDER BY B.CATEGORY_ORDER DESC
+                                            </isEqual>
+                                        </isEqual>
+                                        <isEqual property="sortColumn" compareValue="CHANNEL_TITLE">
+                                            <isEqual property="sortType" compareValue="ASC">
+                                                ORDER BY A.CHANNEL_TITLE ASC
+                                            </isEqual>
+                                            <isEqual property="sortType" compareValue="DESC">
+                                                ORDER BY A.CHANNEL_TITLE DESC
+                                            </isEqual>
+                                        </isEqual>
+                                         <isEqual property="sortColumn" compareValue="CHANNEL_URL">
+                                            <isEqual property="sortType" compareValue="ASC">
+                                                ORDER BY A.CHANNEL_URL ASC
+                                            </isEqual>
+                                            <isEqual property="sortType" compareValue="DESC">
+                                                ORDER BY A.CHANNEL_URL DESC
+                                            </isEqual>
+                                        </isEqual>
+                                    </isNotEmpty>   
+                                    <isEmpty property="sortColumn" >
+                                        ORDER BY A.SORT_ORDER DESC
+                                    </isEmpty>
+		        ) AS RNUM,
+                        A.CHANNEL_ID, B.CATEGORY_ID, B.CATEGORY_NAME, A.OWNER_ID, A.CHANNEL_URL,
+                        A.CHANNEL_TITLE, A.SORT_ORDER, 
+                        A.REGISTER_ID, A.REGISTER_NAME, A.REGIST_DATE,
+                        A.UPDATER_ID, A.UPDATER_NAME, A.UPDATE_DATE
+					FROM IKEP4_RS_CHANNEL A INNER JOIN IKEP4_RS_CATEGORY B ON A.CATEGORY_ID = B.CATEGORY_ID
+					WHERE A.OWNER_ID = #ownerId#
+					<isNotEmpty prepend="AND" property="categoryId">
+                        A.CATEGORY_ID = #categoryId#
+                    </isNotEmpty>					
+					<isNotEmpty prepend="AND" property="channelId">
+						A.CHANNEL_ID = #channelId#
+					</isNotEmpty>
+					<isNotEmpty prepend="AND" property="notInChannelId">
+						<![CDATA[ 
+						A.CHANNEL_ID <> #notInChannelId#
+						]]> 
+					</isNotEmpty>
+					<isNotEmpty property="searchWord">
+						<isEqual property="searchColumn" compareValue="title">
+							AND	A.CHANNEL_TITLE LIKE '%' + #searchWord# + '%'
+						</isEqual>
+					</isNotEmpty>
+				 /* ===========================================END  */ 
+		<![CDATA[  
+		
+		    ) AA WHERE RNUM <=  #endRowIndex# /* 종료  */
+		) TBL WHERE RNUM >  #startRowIndex# /* 시작 */
+		]]> 
+	</select>
+	
+	<!-- MS SQL -->
+	<select id="countBySearchCondition" parameterClass="channelSearchCondition" resultClass="int">  
+		SELECT /* [Channel_SqlMap.xml] countBySearchCondition */ 
+	           COUNT(*)
+		FROM   IKEP4_RS_CHANNEL
+		WHERE OWNER_ID = #ownerId#
+					<isNotEmpty prepend="AND" property="channelId">
+						CHANNEL_ID = #channelId#
+					</isNotEmpty>
+					<isNotEmpty prepend="AND" property="notInChannelId">
+						<![CDATA[ 
+						CHANNEL_ID <> #notInChannelId#
+						]]> 
+					</isNotEmpty>
+					<isNotEmpty property="searchWord">
+						<isEqual property="searchColumn" compareValue="title">
+							AND	CHANNEL_TITLE LIKE '%' + #searchWord# + '%'
+						</isEqual>
+					</isNotEmpty>
+	</select> 
+
+    <!-- MS SQL -->
+    <select id="selectSortTarget" parameterClass="java.util.Map" resultMap="channelResult">
+		<![CDATA[	
+		SELECT 
+			CHANNEL_ID, OWNER_ID, CHANNEL_URL,
+			CHANNEL_TITLE, SORT_ORDER, 
+			REGISTER_ID, REGISTER_NAME, REGIST_DATE,
+			UPDATER_ID, UPDATER_NAME, UPDATE_DATE
+		  FROM (
+		       SELECT aa.*
+		       FROM (  
+		              SELECT Row_number() OVER ( ORDER BY A.sort_order) AS RNUM,
+		              A.CHANNEL_ID, A.OWNER_ID, A.CHANNEL_URL,
+                      A.CHANNEL_TITLE, A.SORT_ORDER, A.CATEGORY_ID, B.CATEGORY_NAME,
+                      A.REGISTER_ID, A.REGISTER_NAME, A.REGIST_DATE,
+                      A.UPDATER_ID, A.UPDATER_NAME, A.UPDATE_DATE
+                      FROM IKEP4_RS_CHANNEL A 
+                      INNER JOIN IKEP4_RS_CATEGORY B ON A.CATEGORY_ID = B.CATEGORY_ID *
+		             ) aa 
+		       ) TBL
+		 WHERE rnum = #sortOrder#
+		]]>
+    </select>
+   
+
+
+</sqlMap>
+

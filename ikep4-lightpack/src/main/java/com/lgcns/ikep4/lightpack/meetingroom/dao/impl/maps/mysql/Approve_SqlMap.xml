@@ -1,0 +1,351 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="lightpack.meeting.dao.approve" >
+	
+	<typeAlias alias="Approve" type="com.lgcns.ikep4.lightpack.meetingroom.model.Approve"/>
+	<typeAlias alias="MeetingRoomSearchCondition" type="com.lgcns.ikep4.lightpack.meetingroom.model.MeetingRoomSearchCondition"/>
+	
+	<resultMap id="resultMapBase" class="java.util.HashMap">
+		<result property="num" column="num" />
+		<result property="isManager" column="isManager" />
+		<result property="startDate" column="startDate" />
+		<result property="endDate" column="endDate" />
+		<result property="title" column="title" />
+		<result property="place" column="place" />
+		<result property="scheduleId" column="scheduleId" />
+		<result property="repeat" column="repeat" />
+		<result property="managerId" column="managerId" />
+		<result property="managerName" column="managerName" />
+		<result property="registerId" column="registerId" />
+		<result property="approveStatus" column="approveStatus"/>
+		<result property="approveRegistDate" column="approveRegistDate"/>
+	</resultMap>
+	
+	<select id="selectAll" parameterClass="MeetingRoomSearchCondition" resultMap="resultMapBase">
+		<![CDATA[
+		/* [Approve_SqlMap.xml] lightpack.meeting.dao.approve.selectAll */
+		SELECT
+			@rownum := @rownum+1 as num,
+			tbl1.*
+		FROM				(
+				SELECT				1 AS isManager,
+									DATE_FORMAT(sch.START_DATE, '%Y-%m-%d %H:%i') AS startDate,
+									DATE_FORMAT(sch.END_DATE, '%Y-%m-%d %H:%i') AS endDate, 
+									sch.TITLE AS title,
+									sch.PLACE AS place,
+									sch.SCHEDULE_ID AS scheduleId,
+									sch.REPEAT AS `repeat`,
+									mee.MEETING_ROOM_ID AS meetingRoomId,
+									mee.MEETING_ROOM_NAME AS meetingRoomName,
+									mee.MANAGER_ID AS managerId,
+									use.USER_NAME AS managerName,
+									app.REGISTER_ID AS registerId,
+									app.APPROVE_STATUS AS approveStatus,
+									DATE_FORMAT(app.REGIST_DATE, '%Y-%m-%d') AS approveRegistDate
+				FROM				IKEP4_SD_SCHEDULE sch
+				INNER JOIN			IKEP4_MR_MEETING_ROOM mee
+				ON					sch.MEETING_ROOM_ID = mee.MEETING_ROOM_ID
+				INNER JOIN			IKEP4_MR_APPROVE app
+				ON					sch.SCHEDULE_ID = app.SCHEDULE_ID
+				AND					sch.MEETING_ROOM_ID = app.MEETING_ROOM_ID
+				LEFT JOIN			IKEP4_EV_USER `use`
+				ON					mee.MANAGER_ID = use.USER_ID
+				WHERE				sch.MEETING_ROOM_ID IS NOT NULL
+					AND					sch.REPEAT = 0
+					AND					mee.MANAGER_ID = #userId#
+					AND					mee.PORTAL_ID = #portalId#
+		]]>												
+					<isNotNull property="searchType">
+					<isEqual property="searchType" compareValue="ALL">
+					AND					app.APPROVE_STATUS IN ('A', 'W', 'R')
+					</isEqual>
+					<isEqual property="searchType" compareValue="A">
+					AND					app.APPROVE_STATUS = 'A'
+					</isEqual>
+					<isEqual property="searchType" compareValue="W">
+					AND					app.APPROVE_STATUS ='W'
+					</isEqual>
+					<isEqual property="searchType" compareValue="R">
+					AND					app.APPROVE_STATUS = 'R'
+					</isEqual>
+					</isNotNull>
+					
+					<isNull property="searchType">
+					AND					app.APPROVE_STATUS IN ('A', 'W', 'R')
+					</isNull>
+					<![CDATA[
+					AND 				app.REGIST_DATE < DATE_ADD(#endDate#, INTERVAL 1 DAY)
+					AND 				app.REGIST_DATE >= #startDate# 
+					]]>	
+		<![CDATA[													
+				UNION ALL
+																	
+				SELECT				1 AS isManager,
+									DATE_FORMAT(sch.START_DATE, '%Y-%m-%d %H:%i') AS startDate,
+									DATE_FORMAT(sch.END_DATE, '%Y-%m-%d %H:%i') AS endDate, 
+									sch.TITLE AS title,
+									sch.PLACE AS place,
+									sch.SCHEDULE_ID AS scheduleId,
+									sch.REPEAT AS `repeat`,
+									mee.MEETING_ROOM_ID AS meetingRoomId,
+									mee.MEETING_ROOM_NAME AS meetingRoomName,
+									mee.MANAGER_ID AS managerId,
+									use.USER_NAME AS managerName,
+									app.REGISTER_ID AS registerId,
+									app.APPROVE_STATUS AS approveStatus,
+									DATE_FORMAT(app.REGIST_DATE, '%Y-%m-%d') AS approveRegistDate
+				FROM				IKEP4_SD_SCHEDULE sch
+				INNER JOIN			IKEP4_SD_REPEAT rep
+				ON					sch.SCHEDULE_ID = rep.SCHEDULE_ID
+				INNER JOIN			IKEP4_MR_MEETING_ROOM mee
+				ON					sch.MEETING_ROOM_ID = mee.MEETING_ROOM_ID
+				INNER JOIN			IKEP4_MR_APPROVE app
+				ON					sch.SCHEDULE_ID = app.SCHEDULE_ID
+				AND					sch.MEETING_ROOM_ID = app.MEETING_ROOM_ID
+				LEFT JOIN			IKEP4_EV_USER `use`
+				ON					mee.MANAGER_ID = use.USER_ID
+				WHERE				sch.MEETING_ROOM_ID IS NOT NULL
+					AND					sch.REPEAT = 1
+					AND					mee.MANAGER_ID = #userId#
+					AND					mee.PORTAL_ID = #portalId#
+		]]>												
+					<isNotNull property="searchType">
+						<isEqual property="searchType" compareValue="ALL">
+						AND					app.APPROVE_STATUS IN ('A', 'W', 'R')
+						</isEqual>
+						<isEqual property="searchType" compareValue="A">
+						AND					app.APPROVE_STATUS = 'A'
+						</isEqual>
+						<isEqual property="searchType" compareValue="W">
+						AND					app.APPROVE_STATUS ='W'
+						</isEqual>
+						<isEqual property="searchType" compareValue="R">
+						AND					app.APPROVE_STATUS = 'R'
+						</isEqual>
+					</isNotNull>
+					
+					<isNull property="searchType">
+					AND					app.APPROVE_STATUS IN ('A', 'W', 'R')
+					</isNull>
+					<![CDATA[
+					AND 				app.REGIST_DATE < DATE_ADD(#endDate#, INTERVAL 1 DAY)
+					AND 				app.REGIST_DATE >= #startDate# 
+					]]>
+		) tbl1 inner join (select @rownum := 0) tbl2
+		<isNotNull property="sortColumn">
+			<isEqual property="sortColumn" compareValue="PLACE">
+				<isEqual property="sortType" compareValue="ASC">
+				ORDER BY 			tbl1.place ASC
+				</isEqual>
+				<isEqual property="sortType" compareValue="DESC">
+				ORDER BY 			tbl1.place DESC
+				</isEqual>
+			</isEqual>
+			
+			<isEqual property="sortColumn" compareValue="TITLE">
+				<isEqual property="sortType" compareValue="ASC">
+				ORDER BY 			tbl1.title ASC
+				</isEqual>
+				<isEqual property="sortType" compareValue="DESC">
+				ORDER BY 			tbl1.title DESC
+				</isEqual>
+			</isEqual>
+		</isNotNull>
+		
+		<isNull property="sortColumn">
+		ORDER BY			tbl1.scheduleId DESC
+		</isNull>	
+		<![CDATA[								
+		LIMIT #startRowIndex#, #pagePerRecord#								
+		]]>
+	</select>
+	
+	<select id="selectCount" parameterClass="MeetingRoomSearchCondition" resultClass="int">
+		<![CDATA[
+		/* [Approve_SqlMap.xml] lightpack.meeting.dao.approve.selectCount */
+		SELECT				COUNT(*)
+		FROM				(
+							SELECT				DATE_FORMAT(sch.START_DATE, '%Y-%m-%d %H:%i') AS startDate,
+												DATE_FORMAT(sch.END_DATE, '%Y-%m-%d %H:%i') AS endDate, 
+												sch.TITLE AS title,
+												sch.PLACE AS place,
+												sch.SCHEDULE_ID AS scheduleId,
+												sch.REPEAT AS `repeat`,
+												mee.MEETING_ROOM_ID AS meetingRoomId,
+												mee.MEETING_ROOM_NAME AS meetingRoomName,
+												mee.MANAGER_ID AS managerId,
+												use.USER_NAME AS managerName,
+												app.REGISTER_ID AS registerId,
+												app.APPROVE_STATUS AS approveStatus
+							FROM				IKEP4_SD_SCHEDULE sch
+							INNER JOIN			IKEP4_MR_MEETING_ROOM mee
+							ON					sch.MEETING_ROOM_ID = mee.MEETING_ROOM_ID
+							INNER JOIN			IKEP4_MR_APPROVE app
+							ON					sch.SCHEDULE_ID = app.SCHEDULE_ID
+							AND					sch.MEETING_ROOM_ID = app.MEETING_ROOM_ID
+							LEFT JOIN			IKEP4_EV_USER `use`
+							ON					mee.MANAGER_ID = use.USER_ID
+							WHERE				sch.MEETING_ROOM_ID IS NOT NULL
+							AND					sch.REPEAT = 0
+							AND					mee.MANAGER_ID = #userId#
+							AND					mee.PORTAL_ID = #portalId#
+		]]>					
+							<isNotNull property="searchType">
+							<isEqual property="searchType" compareValue="ALL">
+							AND					app.APPROVE_STATUS IN ('A', 'W', 'R')
+							</isEqual>
+							<isEqual property="searchType" compareValue="A">
+							AND					app.APPROVE_STATUS = 'A'
+							</isEqual>
+							<isEqual property="searchType" compareValue="W">
+							AND					app.APPROVE_STATUS ='W'
+							</isEqual>
+							<isEqual property="searchType" compareValue="R">
+							AND					app.APPROVE_STATUS = 'R'
+							</isEqual>
+							</isNotNull>
+							
+							<isNull property="searchType">
+							AND					app.APPROVE_STATUS IN ('A', 'W', 'R')
+							</isNull>		
+							<![CDATA[
+							AND 				app.REGIST_DATE < DATE_ADD(#endDate#, INTERVAL 1 DAY)
+							AND 				app.REGIST_DATE >= #startDate# 
+							]]>	
+		<![CDATA[					
+							UNION ALL
+							
+							SELECT				DATE_FORMAT(sch.START_DATE, '%Y-%m-%d %H:%i') AS startDate,
+												DATE_FORMAT(sch.END_DATE, '%Y-%m-%d %H:%i') AS endDate, 
+												sch.TITLE AS title,
+												sch.PLACE AS place,
+												sch.SCHEDULE_ID AS scheduleId,
+												sch.REPEAT AS `repeat`,
+												mee.MEETING_ROOM_ID AS meetingRoomId,
+												mee.MEETING_ROOM_NAME AS meetingRoomName,
+												mee.MANAGER_ID AS managerId,
+												use.USER_NAME AS managerName,
+												app.REGISTER_ID AS registerId,
+												app.APPROVE_STATUS AS approveStatus
+							FROM				IKEP4_SD_SCHEDULE sch
+							INNER JOIN			IKEP4_SD_REPEAT rep
+							ON					sch.SCHEDULE_ID = rep.SCHEDULE_ID
+							INNER JOIN			IKEP4_MR_MEETING_ROOM mee
+							ON					sch.MEETING_ROOM_ID = mee.MEETING_ROOM_ID
+							INNER JOIN			IKEP4_MR_APPROVE app
+							ON					sch.SCHEDULE_ID = app.SCHEDULE_ID
+							AND					sch.MEETING_ROOM_ID = app.MEETING_ROOM_ID
+							LEFT JOIN			IKEP4_EV_USER `use`
+							ON					mee.MANAGER_ID = use.USER_ID
+							WHERE				sch.MEETING_ROOM_ID IS NOT NULL
+							AND					sch.REPEAT = 1
+							AND					mee.MANAGER_ID = #userId#
+							AND					mee.PORTAL_ID = #portalId#
+		]]>						
+							<isNotNull property="searchType">
+							<isEqual property="searchType" compareValue="ALL">
+							AND					app.APPROVE_STATUS IN ('A', 'W', 'R')
+							</isEqual>
+							<isEqual property="searchType" compareValue="A">
+							AND					app.APPROVE_STATUS = 'A'
+							</isEqual>
+							<isEqual property="searchType" compareValue="W">
+							AND					app.APPROVE_STATUS ='W'
+							</isEqual>
+							<isEqual property="searchType" compareValue="R">
+							AND					app.APPROVE_STATUS = 'R'
+							</isEqual>
+							</isNotNull>
+							
+							<isNull property="searchType">
+							AND					app.APPROVE_STATUS IN ('A', 'W', 'R')
+							</isNull>	
+							<![CDATA[
+							AND 				app.REGIST_DATE < DATE_ADD(#endDate#, INTERVAL 1 DAY)
+							AND 				app.REGIST_DATE >= #startDate# 
+							]]>	
+		<![CDATA[							
+							) tbl1
+		]]>
+	</select>
+	
+	<select id="get" parameterClass="String" resultClass="Approve">
+		<![CDATA[
+		/* [Approve_SqlMap.xml] lightpack.meeting.dao.approve.get */
+		SELECT				SCHEDULE_ID AS scheduleId,
+							MEETING_ROOM_ID AS meetingRoomId,
+							APPROVE_STATUS AS approveStatus,
+							REJECT_REASON AS rejectReason,
+							REGISTER_ID AS registerId,
+							REGISTER_NAME AS registerName,
+							UPDATER_ID AS updaterId,
+							UPDATER_NAME AS updaterName
+		FROM				IKEP4_MR_APPROVE
+		WHERE				SCHEDULE_ID = #scheduleId#
+		]]>
+	</select>
+	
+	<select id="selectCountByManagerId" parameterClass="java.util.Map" resultClass="int">
+		<![CDATA[
+		/* [Approve_SqlMap.xml] lightpack.meeting.dao.approve.selectCountByManagerId */
+		SELECT				COUNT(*)
+		FROM				IKEP4_MR_MEETING_ROOM
+		WHERE				PORTAL_ID = #portalId#
+		AND					MANAGER_ID = #userId#
+		]]>
+	</select>
+	
+	<insert id="insert" parameterClass="Approve"> 
+		<![CDATA[
+		/* [Approve_SqlMap.xml] lightpack.meeting.dao.approve.insert */
+		INSERT INTO			IKEP4_MR_APPROVE
+							(
+							SCHEDULE_ID,
+							MEETING_ROOM_ID,
+							APPROVE_STATUS,
+							REJECT_REASON,
+							REGISTER_ID,
+							REGISTER_NAME,
+							REGIST_DATE,
+							UPDATER_ID,
+							UPDATER_NAME,
+							UPDATE_DATE
+							) 
+		VALUES 				( 
+							#scheduleId#,
+							#meetingRoomId#,
+							#approveStatus#,
+							#rejectReason#,
+							#registerId#,
+							#registerName#,
+							NOW(),
+							#updaterId#,
+							#updaterName#,
+							NOW()
+							)
+		]]>
+   	</insert>	
+   	
+   	<update id="update" parameterClass="Approve">
+   		<![CDATA[
+		/* [Approve_SqlMap.xml] lightpack.meeting.dao.approve.update */
+   		UPDATE				IKEP4_MR_APPROVE
+   		SET					APPROVE_STATUS = #approveStatus#,
+   							REJECT_REASON = #rejectReason#,
+   							UPDATER_ID = #updaterId#,
+   							UPDATER_NAME = #updaterName#,
+   							UPDATE_DATE = NOW()
+   		WHERE				SCHEDULE_ID = #scheduleId#
+   		]]>
+   	</update>
+   	
+   	<delete id="delete" parameterClass="java.util.HashMap"> 
+  		<![CDATA[
+  		/* [Approve_SqlMap.xml] lightpack.meeting.dao.approve.delete */
+    	DELETE 
+    	FROM 				IKEP4_MR_APPROVE
+    	WHERE 				SCHEDULE_ID = #scheduleId#
+    	]]>
+  	</delete>
+</sqlMap>

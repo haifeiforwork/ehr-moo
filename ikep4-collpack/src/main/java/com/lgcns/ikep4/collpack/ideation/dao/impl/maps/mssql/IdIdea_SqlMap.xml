@@ -1,0 +1,482 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="collpack.ideation.dao.IdIdea" >
+   
+	<typeAlias alias = "IdIdea" type="com.lgcns.ikep4.collpack.ideation.model.IdIdea"/>
+
+	<typeAlias alias = "IdSearch" type="com.lgcns.ikep4.collpack.ideation.model.IdSearch"/>
+
+
+  <resultMap id="IdIdeaResult" class="com.lgcns.ikep4.collpack.ideation.model.IdIdea" >
+    <result column="ITEM_ID" 				property="itemId" />    
+    <result column="CATEGORY_ID"            property="categoryId"/>    
+    <result column="TITLE" 					property="title"  />
+    <result column="CONTENTS" 				property="contents"  />
+    <result column="BEST_ITEM" 				property="bestItem"  />
+    <result column="BUSINESS_ITEM" 			property="businessItem"  />
+    <result column="HIT_COUNT" 				property="hitCount" />
+    <result column="RECOMMEND_COUNT" 		property="recommendCount" />
+    <result column="FAVORITE_COUNT" 		property="favoriteCount" />
+    <result column="ADOPT_COUNT" 			property="adoptCount" />
+    <result column="LINEREPLY_COUNT" 		property="linereplyCount" />
+    <result column="MAIL_COUNT" 			property="mailCount" />
+    <result column="MBLOG_COUNT" 			property="mblogCount" />
+    <result column="EXAMINATION_COMMENT" 	property="examinationComment" />
+    <result column="REGISTER_ID" 			property="registerId"  />
+    <result column="REGISTER_NAME" 			property="registerName" />
+    <result column="REGIST_DATE" 			property="registDate"/>
+    <result column="UPDATER_ID" 			property="updaterId" />
+    <result column="UPDATER_NAME" 			property="updaterName"  />
+    <result column="UPDATE_DATE" 			property="updateDate" />
+    <result column="TEAM_NAME" 				property="teamName" />
+	<result column="JOB_TITLE_NAME" 			property="jobTitleName" />
+	<result column="USER_ENGLISH_NAME" 		property="userEnglishName" 		/>
+	<result column="TEAM_ENGLISH_NAME" 		property="teamEnglishName" 		/>
+	<result column="JOB_TITLE_ENGLISH_NAME" property="jobTitleEnglishName" 	/>
+	
+  </resultMap>
+  
+  
+  <resultMap id="IdIdeaCountResult" class="IdIdea" >
+    <result column="COUNT" 				property="count" />
+    <result column="BEST_COUNT" 		property="bestCount" />
+    <result column="FAVORITE_COUNT" 	property="favoriteCount" />
+    <result column="RECOMMEND_ITEM" 	property="recommendItem"  />
+	<result column="ADOPT_ITEM" 		property="adoptItem" />
+	<result column="RECOMMEND_COUNT" 	property="recommendCount" />
+	<result column="ADOPT_COUNT" 		property="adoptCount" />
+	<result column="LINEREPLY_COUNT" 	property="linereplyCount" />
+	<result column="MAIL_COUNT" 		property="mailCount" />
+	<result column="MBLOG_COUNT" 		property="mblogCount" />
+  </resultMap>
+  
+  <sql id="IdIdeaResult_Column_List" >
+   	 A.ITEM_ID
+   	,A.CATEGORY_ID
+   	,E.CATEGORY_NAME   	
+    ,A.TITLE
+    ,A.CONTENTS
+    ,A.RECOMMEND_ITEM
+    ,A.ADOPT_ITEM
+    ,A.BEST_ITEM
+    ,A.BUSINESS_ITEM
+    ,A.HIT_COUNT
+    ,A.RECOMMEND_COUNT
+    ,A.FAVORITE_COUNT
+    ,A.LINEREPLY_COUNT
+    ,A.ADOPT_COUNT
+    ,A.MAIL_COUNT
+    ,A.MBLOG_COUNT
+    ,A.EXAMINATION_COMMENT
+    ,A.REGISTER_ID
+    ,A.REGISTER_NAME
+    ,A.REGIST_DATE
+    ,A.UPDATER_ID
+    ,A.UPDATER_NAME
+    ,A.UPDATE_DATE
+    ,C.TEAM_NAME
+	, isnull(ejd.JOB_DUTY_NAME, ejt.JOB_TITLE_NAME) AS JOB_TITLE_NAME
+	,C.USER_ENGLISH_NAME
+ 	,C.TEAM_ENGLISH_NAME
+ 	,'' AS JOB_TITLE_ENGLISH_NAME
+  </sql>
+  
+	<!-- ANSI -->    
+  <insert id="create" parameterClass="IdIdea" >
+    INSERT INTO IKEP4_ID_IDEA (			/* [IdIdea_SqlMap.xml] collpack.ideation.dao.IdIdea.create */
+     	ITEM_ID
+     	,CATEGORY_ID
+	    ,TITLE
+	    ,CONTENTS
+	    ,RECOMMEND_ITEM
+	    ,ADOPT_ITEM
+	    ,BEST_ITEM
+	    ,BUSINESS_ITEM
+	    ,HIT_COUNT
+	    ,RECOMMEND_COUNT
+	    ,FAVORITE_COUNT
+	    ,ADOPT_COUNT
+	    ,LINEREPLY_COUNT
+	    ,MAIL_COUNT
+	    ,MBLOG_COUNT
+	    ,EXAMINATION_COMMENT
+	    ,PORTAL_ID
+	    ,REGISTER_ID
+	    ,REGISTER_NAME
+	    ,REGIST_DATE
+	    ,UPDATER_ID
+	    ,UPDATER_NAME
+	    ,UPDATE_DATE
+    ) VALUES (     
+         #itemId#
+        ,#categoryId#
+	    , #title#
+	    , #contents#
+	    , 0
+	    , 0
+	    , 0
+	    , 0
+	    , 0
+	    , 0
+	    , 0
+	    , 0
+	    , 0
+	    , 0
+	    , 0
+	    , ''
+	    , #portalId#
+	    , #registerId#
+	    , #registerName#
+	    , CURRENT_TIMESTAMP
+	    , #updaterId#
+	    , #updaterName#
+	    , CURRENT_TIMESTAMP
+    ) 
+  </insert>
+  
+  	<!-- ANSI -->
+   <select id="get" resultMap="IdIdeaResult" parameterClass="String" >
+    SELECT								/* [IdIdea_SqlMap.xml] collpack.ideation.dao.IdIdea.get */	
+    	 
+    	 <include refid="IdIdeaResult_Column_List" />
+	    
+    FROM IKEP4_ID_IDEA A
+    	 INNER JOIN IKEP4_EV_USER C
+    	 	ON A.REGISTER_ID = C.USER_ID
+        left outer join IKEP4_EV_JOB_TITLE ejt  on C.job_title_code =ejt.job_title_code
+        left outer join IKEP4_EV_JOB_DUTY ejd  on C.job_duty_code = ejd.job_duty_code
+    	 LEFT JOIN IKEP4_ID_CATEGORY E
+    	    ON A.CATEGORY_ID = E.CATEGORY_ID
+    WHERE A.ITEM_ID = #itemId#
+  </select>
+  
+  <!-- MS SQL -->
+  <select id="getCountes" resultMap="IdIdeaCountResult" parameterClass="IdSearch" >
+    SELECT								/* [IdIdea_SqlMap.xml] collpack.ideation.dao.IdIdea.getCountes */	
+		COUNT(A.ITEM_ID)		   			COUNT
+		,ISNULL(SUM(A.BEST_ITEM),0)	   		BEST_COUNT
+		,ISNULL(SUM(A.FAVORITE_COUNT),0)   	FAVORITE_COUNT
+		,ISNULL(SUM(A.RECOMMEND_ITEM),0)  	RECOMMEND_ITEM
+		,ISNULL(SUM(A.ADOPT_ITEM),0) 		ADOPT_ITEM
+		,ISNULL(SUM(A.RECOMMEND_COUNT),0) 	RECOMMEND_COUNT
+		,ISNULL(SUM(A.ADOPT_COUNT),0) 		ADOPT_COUNT
+		,ISNULL(SUM(A.LINEREPLY_COUNT),0) 	LINEREPLY_COUNT
+		,ISNULL(SUM(A.MAIL_COUNT),0) 		MAIL_COUNT
+		,ISNULL(SUM(A.MBLOG_COUNT),0) 		MBLOG_COUNT
+    FROM IKEP4_ID_IDEA A, IKEP4_EV_USER C
+    WHERE A.REGISTER_ID = C.USER_ID
+
+    	<isNotEmpty prepend="AND" property="userId" >
+			A.REGISTER_ID = #userId#
+		</isNotEmpty>
+	    <isNotEmpty prepend="AND" property="isBusiness" >
+			A.BUSINESS_ITEM &gt; 0
+		</isNotEmpty>
+		<isNotEmpty property="startDate">
+			<isNotEmpty property="endDate" prepend="AND">
+				CONVERT(NVARCHAR, A.REGIST_DATE, 23) BETWEEN CONVERT(NVARCHAR, #startDate#, 23) AND CONVERT(NVARCHAR, #endDate#, 23)
+			</isNotEmpty>
+		</isNotEmpty>
+		<isNotEmpty property="searchColumn">
+			<isNotEmpty property="searchWord">
+				<isEqual property="searchColumn" compareValue="title" prepend="AND">
+					 A.TITLE LIKE '%' + #searchWord# + '%'
+				</isEqual>
+				<isEqual property="searchColumn" compareValue="registerName" prepend="AND">
+					(C.USER_NAME LIKE '%' + #searchWord# + '%'  OR C.USER_ENGLISH_NAME LIKE '%' + #searchWord# + '%' )
+				</isEqual>
+				<isEqual property="searchColumn" compareValue="all" prepend="AND">
+					 (A.TITLE LIKE '%' + #searchWord# + '%' OR A.REGISTER_Name = #searchWord# OR C.USER_ENGLISH_NAME = #searchWord#) 
+				</isEqual>
+			</isNotEmpty>
+		</isNotEmpty>  
+		<isNotEmpty prepend="AND" property="portalId" >
+			A.PORTAL_ID = #portalId#
+		</isNotEmpty>
+  </select>
+  
+  	<!-- MS SQL -->
+    <select id="list" resultMap="IdIdeaResult" parameterClass="IdSearch" >
+     <isNotEmpty property="endRowIndex">
+     SELECT  										/* [IdIdea_SqlMap.xml] collpack.ideation.dao.IdIdea.list */				
+          		*
+	      FROM    (
+	                SELECT  F.*
+	                FROM
+                        (
+     </isNotEmpty>                   
+                        SELECT 
+                        	<isNotEmpty property="endRowIndex">
+                        		Row_number() OVER (
+                       								<isEmpty property="orderType" prepend="ORDER BY">
+														A.ITEM_ID DESC
+													</isEmpty>
+													<isEqual  property="orderType" compareValue="date"  prepend="ORDER BY">
+														A.ITEM_ID DESC
+													</isEqual>
+													<isEqual property="orderType" compareValue="recommend"  prepend="ORDER BY">
+														A.RECOMMEND_COUNT DESC, A.ITEM_ID DESC
+													</isEqual>
+													<isEqual property="orderType" compareValue="hit"  prepend="ORDER BY">
+														A.HIT_COUNT DESC, A.ITEM_ID DESC
+													</isEqual>
+													<isEqual property="orderType" compareValue="linereply"  prepend="ORDER BY">
+														A.LINEREPLY_COUNT DESC, A.ITEM_ID DESC
+													</isEqual>
+                        						   ) AS NUM, 
+                        	</isNotEmpty>
+                        
+						     <include refid="IdIdeaResult_Column_List" />
+						     
+					    FROM IKEP4_ID_IDEA A
+					    	 INNER JOIN IKEP4_EV_USER C
+					    	 	ON A.REGISTER_ID = C.USER_ID
+        left outer join IKEP4_EV_JOB_TITLE ejt  on C.job_title_code =ejt.job_title_code
+        left outer join IKEP4_EV_JOB_DUTY ejd  on C.job_duty_code = ejd.job_duty_code
+					    	 LEFT JOIN IKEP4_ID_CATEGORY E
+    	    					ON A.CATEGORY_ID=E.CATEGORY_ID
+					    WHERE 1=1
+						<isNotEmpty prepend="AND" property="portalId" >
+							A.PORTAL_ID = #portalId#
+						</isNotEmpty>
+						<isNotEmpty prepend="AND" property="limitDate" >
+						    A.REGIST_DATE &gt; DATEADD(DD, -1 * #limitDate#, CURRENT_TIMESTAMP)
+						</isNotEmpty>
+						
+						<isNotEmpty property="startDate">
+							<isNotEmpty property="endDate">
+								AND CONVERT(NVARCHAR, A.REGIST_DATE, 23) BETWEEN CONVERT(NVARCHAR, #startDate#, 23) AND CONVERT(NVARCHAR, #endDate#, 23)
+							</isNotEmpty>
+						</isNotEmpty>
+						<isNotEmpty prepend="AND" property="categoryId" >
+						    A.CATEGORY_ID = #categoryId#
+						</isNotEmpty>		
+						<isNotEmpty prepend="AND" property="isNullCategory">
+					    	 A.CATEGORY_ID IS NULL
+					     </isNotEmpty>						
+						<isNotEmpty prepend="AND" property="isBest" >
+						    A.BEST_ITEM = 1
+						</isNotEmpty>
+						<isNotEmpty prepend="AND" property="isAdopt" >
+						    A.ADOPT_ITEM = 1
+						</isNotEmpty>
+						<isNotEmpty prepend="AND" property="isBusiness" >
+						    A.BUSINESS_ITEM &gt; 0
+						</isNotEmpty>
+						<isEmpty property="isUserAdopt">
+							<isNotEmpty prepend="AND" property="userId" >
+						   	 	A.REGISTER_ID = #userId#
+							</isNotEmpty>
+						</isEmpty>
+						<isNotEmpty prepend="AND" property="itemIdList" >
+							<iterate open="(" close=")" property="itemIdList" conjunction="," prepend="AND A.ITEM_ID IN">
+					           #itemIdList[]#
+					         </iterate>
+					    </isNotEmpty>   
+					    <isNotEmpty property="searchColumn">
+					    	<isNotEmpty property="searchWord">
+								<isEqual property="searchColumn" compareValue="title" prepend="AND">
+									 A.TITLE LIKE '%' + #searchWord# + '%'
+								</isEqual>
+								<isEqual property="searchColumn" compareValue="registerName" prepend="AND">
+									(C.USER_NAME  LIKE '%' + #searchWord# + '%'  OR C.USER_ENGLISH_NAME LIKE '%' + #searchWord# + '%' )
+								</isEqual>
+								<isEqual property="searchColumn" compareValue="all" prepend="AND">
+									 (A.TITLE LIKE '%' + #searchWord# + '%' OR A.REGISTER_Name = #searchWord# OR C.USER_ENGLISH_NAME = #searchWord#) 
+								</isEqual>
+							</isNotEmpty>
+						</isNotEmpty>  
+						<isNotEmpty prepend="AND" property="isUserAdopt" >
+							A.ITEM_ID IN (SELECT ITEM_ID FROM IKEP4_ID_LINEREPLY WHERE REGISTER_ID= #userId# AND ADOPT_LINEREPLY = 1 GROUP BY ITEM_ID)
+					    </isNotEmpty>						  
+	  <isNotEmpty property="endRowIndex">				
+					  ) F
+                WHERE   NUM &lt;= #endRowIndex#
+              ) TBL
+      WHERE   NUM &gt; #startRowIndex#
+      </isNotEmpty>
+  </select>
+  
+  <!-- MS SQL -->
+  <select id="getCountList" resultClass="int" parameterClass="IdSearch" >
+	    SELECT							/* [IdIdea_SqlMap.xml] collpack.ideation.dao.IdIdea.getCountList */	
+		     COUNT(A.ITEM_ID)
+	    FROM IKEP4_ID_IDEA A, IKEP4_EV_USER C
+	    WHERE A.PORTAL_ID = #portalId#
+	    	AND A.REGISTER_ID = C.USER_ID
+		<isNotEmpty prepend="AND" property="limitDate" >
+		    A.REGIST_DATE &gt; DATEADD(DD, -1 * #limitDate#, CURRENT_TIMESTAMP)
+		</isNotEmpty>
+		<isNotEmpty property="startDate">
+			<isNotEmpty property="endDate">
+				AND CONVERT(NVARCHAR, A.REGIST_DATE, 23) BETWEEN CONVERT(NVARCHAR, #startDate#, 23) AND CONVERT(NVARCHAR, #endDate#, 23)
+			</isNotEmpty>
+		</isNotEmpty>		
+		<isNotEmpty prepend="AND" property="categoryId" >
+		    A.CATEGORY_ID = #categoryId#
+		</isNotEmpty>		
+	     <isNotEmpty prepend="AND" property="isNullCategory">
+	    	 ISNULL(A.CATEGORY_ID,'') = ''
+	     </isNotEmpty>			
+		<isNotEmpty prepend="AND" property="isBest" >
+		    A.BEST_ITEM = 1
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="isAdopt" >
+		    A.ADOPT_ITEM = 1
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="isBusiness" >
+		    A.BUSINESS_ITEM &gt; 0
+		</isNotEmpty>
+		<isEmpty property="isUserAdopt">
+			<isNotEmpty prepend="AND" property="userId" >
+		   	 	A.REGISTER_ID = #userId#
+			</isNotEmpty>
+		</isEmpty>
+		<isNotEmpty prepend="AND" property="itemIdList" >
+			<iterate open="(" close=")" property="itemIdList" conjunction="," prepend="AND A.ITEM_ID IN">
+	           #itemIdList[]#
+	         </iterate>
+	    </isNotEmpty>   
+	    <isNotEmpty property="searchColumn">
+		    <isNotEmpty property="searchWord">
+				<isEqual property="searchColumn" compareValue="title" prepend="AND">
+					 A.TITLE LIKE '%' + #searchWord# + '%'
+				</isEqual>
+				<isEqual property="searchColumn" compareValue="registerName" prepend="AND">
+					(C.USER_NAME LIKE '%' + #searchWord# + '%'  OR C.USER_ENGLISH_NAME LIKE '%' + #searchWord# + '%' )
+				</isEqual>
+				<isEqual property="searchColumn" compareValue="all" prepend="AND">
+					 (A.TITLE LIKE '%' + #searchWord# + '%' OR A.REGISTER_Name = #searchWord# OR C.USER_ENGLISH_NAME = #searchWord#) 
+				</isEqual>
+			</isNotEmpty>
+		</isNotEmpty>  
+		<isNotEmpty prepend="AND" property="isUserAdopt" >
+			A.ITEM_ID IN (SELECT ITEM_ID FROM IKEP4_ID_LINEREPLY WHERE REGISTER_ID= #userId# AND ADOPT_LINEREPLY = 1 GROUP BY ITEM_ID)
+	    </isNotEmpty>
+  </select>
+  
+  <!-- ANSI -->
+  <update id="update" parameterClass="IdIdea" >
+    UPDATE IKEP4_ID_IDEA					/* [IdIdea_SqlMap.xml] collpack.ideation.dao.IdIdea.update */	
+    SET TITLE = #title#,
+      UPDATER_ID = #updaterId#,
+      UPDATER_NAME = #updaterName#,
+      UPDATE_DATE = CURRENT_TIMESTAMP,
+      CONTENTS = #contents#,     
+      CATEGORY_ID=#categoryId#
+    WHERE ITEM_ID = #itemId#
+  </update>
+  
+  <!-- ANSI -->
+  <update id="updateBestItem" parameterClass="String" >
+    UPDATE IKEP4_ID_IDEA					/* [IdIdea_SqlMap.xml] collpack.ideation.dao.IdIdea.updateBestItem */
+    SET BEST_ITEM = 1
+    WHERE ITEM_ID = #itemId#
+  </update>
+  
+  	<!-- ANSI -->
+   <update id="updateBestItemInit" >
+    UPDATE IKEP4_ID_IDEA					/* [IdIdea_SqlMap.xml] collpack.ideation.dao.IdIdea.updateBestItemInit */
+    SET BEST_ITEM = 0
+  </update>
+  
+  	<!-- ANSI -->
+   <update id="updateRecommendItem" parameterClass="IdIdea" >
+    UPDATE IKEP4_ID_IDEA					/* [IdIdea_SqlMap.xml] collpack.ideation.dao.IdIdea.updateRecommendItem */
+    SET RECOMMEND_ITEM = #recommendItem#
+    WHERE ITEM_ID = #itemId#
+  </update>
+  
+  <!-- ANSI -->
+  <update id="updateAdoptItem" parameterClass="IdIdea" >
+    UPDATE IKEP4_ID_IDEA					/* [IdIdea_SqlMap.xml] collpack.ideation.dao.IdIdea.updateAdoptItem */
+    SET ADOPT_ITEM = #adoptItem#
+    WHERE ITEM_ID = #itemId#
+  </update>
+  
+  <!-- ANSI -->
+ <update id="updateBusinessItem" parameterClass="IdIdea" >
+    UPDATE IKEP4_ID_IDEA					/* [IdIdea_SqlMap.xml] collpack.ideation.dao.IdIdea.updateBusinessItem */
+    SET BUSINESS_ITEM = #businessItem#
+    WHERE ITEM_ID = #itemId#
+  </update>
+  
+  <!-- ANSI -->
+  <update id="updateExamination" parameterClass="IdIdea" >
+    UPDATE IKEP4_ID_IDEA					/* [IdIdea_SqlMap.xml] collpack.ideation.dao.IdIdea.updateExamination */
+    SET EXAMINATION_COMMENT = #examinationComment#
+    WHERE ITEM_ID = #itemId#
+  </update>
+  
+  <!-- MS SQL -->
+  <update id="updateHitCount" parameterClass="String" >
+    UPDATE IKEP4_ID_IDEA					/* [IdIdea_SqlMap.xml] collpack.ideation.dao.IdIdea.updateHitCount */
+    SET HIT_COUNT = (SELECT ISNULL(COUNT(ITEM_ID),0) FROM IKEP4_ID_REFERENCE WHERE ITEM_ID = #itemId#)
+    WHERE ITEM_ID = #itemId#
+  </update>
+  
+  <!-- MS SQL -->
+  <update id="updateRecommendCount" parameterClass="String" >
+    UPDATE IKEP4_ID_IDEA					/* [IdIdea_SqlMap.xml] collpack.ideation.dao.IdIdea.updateRecommendCount */
+    SET RECOMMEND_COUNT = (SELECT ISNULL(COUNT(ITEM_ID),0) FROM IKEP4_ID_RECOMMEND WHERE ITEM_ID = #itemId#)
+    WHERE ITEM_ID = #itemId#
+  </update>
+  
+   <!-- ANSI -->
+   <update id="updateFavoriteCount" parameterClass="IdIdea" >
+    UPDATE IKEP4_ID_IDEA					/* [IdIdea_SqlMap.xml] collpack.ideation.dao.IdIdea.updateFavoriteCount */
+    SET FAVORITE_COUNT = FAVORITE_COUNT + #favoriteCount#
+    WHERE ITEM_ID = #itemId#
+  </update>
+  
+  <!-- MS SQL -->
+  <update id="updateAdoptCount" parameterClass="String" >
+    UPDATE IKEP4_ID_IDEA					/* [IdIdea_SqlMap.xml] collpack.ideation.dao.IdIdea.updateAdoptCount */
+    SET ADOPT_COUNT = (SELECT ISNULL(COUNT(LINEREPLY_ID),0) FROM IKEP4_ID_LINEREPLY WHERE ITEM_ID = #itemId# AND ADOPT_LINEREPLY=1)
+    WHERE ITEM_ID = #itemId#
+  </update>
+  
+   <!-- MS SQL -->
+   <update id="updateLinereplyCount" parameterClass="String" >
+    UPDATE IKEP4_ID_IDEA					/* [IdIdea_SqlMap.xml] collpack.ideation.dao.IdIdea.updateLinereplyCount */
+    SET LINEREPLY_COUNT = (SELECT ISNULL(COUNT(LINEREPLY_ID),0) FROM IKEP4_ID_LINEREPLY WHERE ITEM_ID = #itemId#)
+    WHERE ITEM_ID = #itemId#
+  </update>
+  
+  	<!-- ANSI -->
+  	<update id="updateMailCount" parameterClass="string">
+	   UPDATE IKEP4_ID_IDEA 		/* [IdIdea_SqlMap.xml] collpack.ideation.dao.IdIdea.updateMailCount */
+	   SET MAIL_COUNT = MAIL_COUNT + 1
+	   WHERE ITEM_ID = #itemId#
+	</update>
+	
+	<!-- ANSI -->
+	<update id="updateMblogCount" parameterClass="string">
+	   UPDATE IKEP4_ID_IDEA 		/* [IdIdea_SqlMap.xml] collpack.ideation.dao.IdIdea.updateMblogCount */
+	   SET MBLOG_COUNT = MBLOG_COUNT + 1
+	   WHERE  ITEM_ID = #itemId#
+	</update>
+
+	<!-- ANSI -->
+   <delete id="remove" parameterClass="String" >
+    DELETE 					/* [IdIdea_SqlMap.xml] collpack.ideation.dao.IdIdea.remove */
+    FROM IKEP4_ID_IDEA		
+    WHERE ITEM_ID = #itemId#
+  </delete>
+  
+  <!-- ANSI -->
+  <select id="getFavorite" resultClass="int" parameterClass="map" >
+    SELECT								/* [IdIdea_SqlMap.xml] collpack.ideation.dao.IdIdea.getFavorite */	
+    	COUNT(FAVORITE_ID)
+    FROM IKEP4_AS_FAVORITE
+    WHERE REGISTER_ID = #userId#
+		AND ITEM_TYPE_CODE = #itemTypeCode#
+  </select>
+     
+	<update id="updateCategoryId" parameterClass="map">
+		   UPDATE IKEP4_ID_IDEA 		/* [IdIdea_SqlMap.xml] collpack.ideation.dao.IdIdea.updateCategoryId */
+		   SET CATEGORY_ID = #afterCategoryId# 
+		   WHERE CATEGORY_ID = #beforeCategoryId#
+	</update>
+	
+</sqlMap>

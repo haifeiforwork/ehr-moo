@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="portal.portlet.weatherInfo" >
+	<typeAlias alias = "WeatherInfo" type="com.lgcns.ikep4.portal.portlet.model.WeatherInfo"/>
+	
+	<resultMap id="weatherInfoResult" class="WeatherInfo">
+		<result property="cityId" column="CITY_ID"/>
+		<result property="localeCode" column="LOCALE_CODE"/>
+		<result property="cityName" column="CITY_NAME"/>
+		<result property="cityEnglishName" column="CITY_ENGLISH_NAME"/>
+		<result property="currentConditionIcon" column="CURRENT_CONDITION_ICON"/>
+		<result property="currentCentTemp" column="CURRENT_CENT_TEMP"/>
+		<result property="currentFahrTemp" column="CURRENT_FAHR_TEMP"/>
+		<result property="currentCondition" column="CURRENT_CONDITION"/>
+		<result property="dayOfWeekdate1" column="DAY_OF_WEEKDATE1"/>
+		<result property="lowTemp1" column="LOW_TEMP1"/>
+		<result property="highTemp1" column="HIGH_TEMP1"/>
+		<result property="condition1" column="CONDITION1"/>
+		<result property="conditionIcon1" column="CONDITION_ICON1"/>
+		<result property="dayOfWeekdate2" column="DAY_OF_WEEKDATE2"/>
+		<result property="lowTemp2" column="LOW_TEMP2"/>
+		<result property="highTemp2" column="HIGH_TEMP2"/>
+		<result property="condition2" column="CONDITION2"/>
+		<result property="conditionIcon2" column="CONDITION_ICON2"/>
+		<result property="dayOfWeekdate3" column="DAY_OF_WEEKDATE3"/>
+		<result property="lowTemp3" column="LOW_TEMP3"/>
+		<result property="highTemp3" column="HIGH_TEMP3"/>
+		<result property="condition3" column="CONDITION3"/>
+		<result property="conditionIcon3" column="CONDITION_ICON3"/>
+		<result property="dayOfWeekdate4" column="DAY_OF_WEEKDATE4"/>
+		<result property="lowTemp4" column="LOW_TEMP4"/>
+		<result property="highTemp4" column="HIGH_TEMP4"/>
+		<result property="condition4" column="CONDITION4"/>
+		<result property="conditionIcon4" column="CONDITION_ICON4"/>
+		<result property="registerId" column="REGISTER_ID"/>
+		<result property="registerName" column="REGISTER_NAME"/>
+		<result property="registDate" column="REGIST_DATE"/>
+		<result property="updaterId" column="UPDATER_ID"/>
+		<result property="updaterName" column="UPDATER_NAME"/>
+		<result property="updateDate" column="UPDATE_DATE"/>
+		<result property="currentWindCondition" column="CURRENT_WIND_CONDITION"/>
+		<result property="currentHumidityCondition" column="CURRENT_HUMIDITY_CONDITION"/>
+	</resultMap>
+	
+	<insert id="createWeatherInfo" parameterClass="java.util.HashMap"> 
+      <![CDATA[
+      	   /* [WeatherInfo_SqlMap.xml] portal.portlet.weatherInfo.createWeatherInfo */
+           INSERT INTO IKEP4_PO_PORTLET_WEATHER_INFO 
+           (
+           	 CITY_ID, LOCALE_CODE, CITY_NAME, CITY_ENGLISH_NAME, CURRENT_CONDITION_ICON, 
+           	 CURRENT_CENT_TEMP, CURRENT_FAHR_TEMP, CURRENT_CONDITION, 
+           	 DAY_OF_WEEKDATE1, LOW_TEMP1, HIGH_TEMP1, CONDITION1, CONDITION_ICON1, 
+           	 DAY_OF_WEEKDATE2, LOW_TEMP2, HIGH_TEMP2, CONDITION2, CONDITION_ICON2, 
+           	 DAY_OF_WEEKDATE3, LOW_TEMP3, HIGH_TEMP3, CONDITION3, CONDITION_ICON3, 
+           	 DAY_OF_WEEKDATE4, LOW_TEMP4, HIGH_TEMP4, CONDITION4, CONDITION_ICON4, 
+           	 REGISTER_ID, REGISTER_NAME, REGIST_DATE, UPDATER_ID, UPDATER_NAME, UPDATE_DATE,
+           	 CURRENT_WIND_CONDITION, CURRENT_HUMIDITY_CONDITION
+           )  
+           VALUES 
+           (
+             #cityId#, #localeCode#, #cityName#, #englishName#, #icon#,
+             #temp_c#, #temp_f#, #condition#,
+             #day_of_week1#, #low1#, #high1#, #condition1#, #icon1#, 
+           	 #day_of_week2#, #low2#, #high2#, #condition2#, #icon2#, 
+           	 #day_of_week3#, #low3#, #high3#, #condition3#, #icon3#, 
+           	 #day_of_week4#, #low4#, #high4#, #condition4#, #icon4#, 
+             #registerId#, #registerName#, NOW(), #updaterId#, #updaterName#, NOW(),
+             #wind_condition#, #humidity#
+           )
+       ]]>
+   </insert>
+
+	<delete id="removeWeatherInfoAll">
+      <![CDATA[
+      	   /* [WeatherInfo_SqlMap.xml] portal.portlet.weatherInfo.removeWeatherInfoAll */
+	       DELETE FROM IKEP4_PO_PORTLET_WEATHER_INFO 
+ 	   ]]>    
+	</delete>
+	
+	<select id="listWeatherInfo" parameterClass="java.util.HashMap" resultMap="weatherInfoResult">
+	  <![CDATA[
+	  	   /* [WeatherInfo_SqlMap.xml] portal.portlet.weatherInfo.listWeatherInfo */
+		   SELECT 
+			   CITY_ID, 
+			   LOCALE_CODE, 
+			   CITY_NAME, 
+			   CITY_ENGLISH_NAME, 
+			   CURRENT_CONDITION_ICON, 
+			   CURRENT_CENT_TEMP, 
+			   CURRENT_FAHR_TEMP, 
+			   CURRENT_CONDITION, 
+			   DAY_OF_WEEKDATE1, 
+			   LOW_TEMP1, 
+			   HIGH_TEMP1, 
+			   CONDITION1, 
+			   CONDITION_ICON1, 
+			   DAY_OF_WEEKDATE2, 
+			   LOW_TEMP2, 
+			   HIGH_TEMP2, 
+			   CONDITION2, 
+			   CONDITION_ICON2, 
+			   DAY_OF_WEEKDATE3, 
+			   LOW_TEMP3, 
+			   HIGH_TEMP3, 
+			   CONDITION3, 
+			   CONDITION_ICON3, 
+			   DAY_OF_WEEKDATE4, 
+			   LOW_TEMP4, HIGH_TEMP4, 
+			   CONDITION4, 
+			   CONDITION_ICON4, 
+			   REGISTER_ID, 
+			   REGISTER_NAME,
+			   REGIST_DATE, 
+			   UPDATER_ID, 
+			   UPDATER_NAME, 
+			   UPDATE_DATE,
+			   CURRENT_WIND_CONDITION, 
+			   CURRENT_HUMIDITY_CONDITION
+			 FROM IKEP4_PO_PORTLET_WEATHER_INFO
+			where LOCALE_CODE = #localeCode#
+			  and CITY_ID
+	  ]]>
+			<dynamic prepend="IN">
+				<iterate property="cityIdList" open="(" conjunction="," close=")">	
+					#cityIdList[]#
+				</iterate>
+			</dynamic> 
+	   
+	</select>
+</sqlMap>

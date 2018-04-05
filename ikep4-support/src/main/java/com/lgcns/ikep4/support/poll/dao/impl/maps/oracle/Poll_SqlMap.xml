@@ -1,0 +1,564 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="poll" >
+	<typeAlias alias = "Poll" type="com.lgcns.ikep4.support.poll.model.Poll"/>
+	<typeAlias alias = "Answer" type="com.lgcns.ikep4.support.poll.model.Answer"/>
+	<typeAlias alias = "Target" type="com.lgcns.ikep4.support.poll.model.Target"/>
+	<typeAlias alias = "PollReceiverSearchCondition" type="com.lgcns.ikep4.support.poll.search.PollReceiverSearchCondition"/>
+	
+	<!-- POLL 테이블 조회 결과 -->
+	<resultMap id="result" class="Poll" >
+		<result property="pollId" 			column="POLL_ID" />
+		<result property="question" 		column="QUESTION" />
+		<result property="startDate" 		column="START_DATE" />
+		<result property="endDate" 			column="END_DATE" />
+		<result property="answerCount" 		column="ANSWER_COUNT" />
+		<result property="status" 			column="STATUS" />
+		<result property="permissionType" 	column="PERMISSION_TYPE" />	
+		<result property="requestChannel" 	column="REQUEST_CHANNEL" />	
+		<result property="chartType" 		column="CHART_TYPE" />	
+		<result property="portalId" 		column="PORTAL_ID" />		
+		<result property="registerId" 		column="REGISTER_ID"/>
+		<result property="registerName" 	column="REGISTER_NAME"/>
+		<result property="registerEnglishName" 	column="REGISTER_ENGLISH_NAME"/>
+		<result property="jobTitleName" 	column="JOB_TITLE_NAME" />		
+		<result property="jobTitleEnglishName" 	column="JOB_TITLE_ENGLISH_NAME" />
+		<result property="teamName" 		column="TEAM_NAME" />		
+		<result property="teamEnglishName" 		column="TEAM_ENGLISH_NAME" />			
+		<result property="registDate" 		column="REGIST_DATE"/>
+	    <result property="updaterId" 		column="UPDATER_ID" />
+	    <result property="updaterName" 		column="UPDATER_NAME" />
+	    <result property="updateDate"		column="UPDATE_DATE" />			
+	</resultMap>
+
+	<resultMap id="resultPoll" extends="result" class="Poll">
+	    <result property="isApply"			column="IS_APPLY" />	    
+	    <result property="remainDayCnt"		column="REMAIN_DAY_CNT" />
+	    <result property="resultCnt"		column="RESULT_CNT" />
+	    <result property="isTarget"			column="IS_TARGET" />
+	</resultMap>
+			
+	<resultMap id="resultAll" extends="resultPoll" class="Poll">
+		<result property="answerId" 		column="ANSWER_ID" />
+		<result property="answerTitle" 		column="ANSWER_TITLE" />
+		<result property="answerTotal" 		column="ANSWER_TOTAL" />
+		<result property="answerTotalSum" 	column="ANSWER_TOTAL_SUM" />
+	</resultMap>
+		
+	<resultMap id="resultAnswer" class="Answer" >
+		<result property="answerId" 		column="ANSWER_ID" />
+		<result property="answerTitle" 		column="ANSWER_TITLE" />
+		<result property="answerTotal" 		column="ANSWER_TOTAL" />
+		<result property="answerPercent" 	column="ANSWER_PERCENT" />
+		<result property="answerTotalSum" 	column="ANSWER_TOTAL_SUM" />
+	</resultMap>	
+
+	<resultMap id="resultTarget" class="Target" >
+		<result property="pollId" 			column="POLL_ID" />
+		<result property="targetId" 		column="TARGET_ID" />
+		<result property="targetType" 		column="TARGET_TYPE" />
+		<result property="userId" 			column="USER_ID" />
+		<result property="userName" 		column="USER_NAME" />
+		<result property="userEnglishName" 		column="USER_ENGLISH_NAME" />
+		<result property="teamName" 			column="TEAM_NAME" />
+		<result property="teamEnglishName" 		column="TEAM_ENGLISH_NAME" />
+		<result property="mail" 				column="MAIL" />
+		<result property="jobTitleName" 		column="JOB_TITLE_NAME" />
+		<result property="jobTitleEnglishName" 	column="JOB_TITLE_ENGLISH_NAME" />
+		<result property="groupId" 				column="GROUP_ID" />
+		<result property="groupName" 			column="GROUP_NAME" />
+		<result property="groupEnglishName" 	column="GROUP_ENGLISH_NAME" />
+		<result property="groupTypeName" 		column="GROUP_TYPE_NAME" />
+		<result property="groupTypeEnglishName" 	column="GROUP_TYPE_ENGLISH_NAME" />
+	</resultMap>
+		
+	<!-- insert -->
+	<insert id="insert" parameterClass="Poll"> 
+      <![CDATA[ 
+			INSERT INTO IKEP4_OP_POLL ( 
+				POLL_ID,
+				QUESTION,
+				START_DATE,
+				END_DATE,
+				ANSWER_COUNT,
+				STATUS,
+				PERMISSION_TYPE,
+				REQUEST_CHANNEL,
+				CHART_TYPE,
+				PORTAL_ID,
+				REGISTER_ID,
+				REGISTER_NAME,
+				REGIST_DATE,
+				UPDATER_ID,
+				UPDATER_NAME,
+				UPDATE_DATE
+			) VALUES ( 
+				#pollId#, 
+				#question#, 
+				#startDate#, 
+				#endDate#,
+				#answerCount#,
+				#status#,
+				#permissionType#,
+				#requestChannel#,
+				#chartType#,
+				#portalId#,
+				#registerId#,
+				#registerName#,
+				SYSDATE,				
+				#registerId#,
+				#registerName#,
+				SYSDATE)      
+       ]]>
+   </insert>
+	
+	<!-- insert -->
+	<insert id="insertAnswer" parameterClass="Poll"> 
+      <![CDATA[ 
+			INSERT INTO IKEP4_OP_ANSWER ( 
+				POLL_ID,
+				ANSWER_ID,
+				ANSWER_TITLE,
+				REGISTER_ID,
+				REGISTER_NAME,
+				REGIST_DATE
+			) VALUES ( 
+				#pollId#, 
+				#answerId#, 
+				#answerTitle#,
+				#registerId#,
+				#registerName#,
+				SYSDATE)      
+       ]]>
+   </insert>
+   
+   <!-- insert -->
+	<insert id="insertTarget" parameterClass="Poll"> 
+      <![CDATA[ 
+			INSERT INTO IKEP4_OP_TARGET ( 
+				POLL_ID,
+				TARGET_ID,
+				TARGET_TYPE,
+				REGISTER_ID,
+				REGISTER_NAME,
+				REGIST_DATE
+			) VALUES ( 
+				#pollId#, 
+				#targetId#, 
+				#targetType#, 
+				#registerId#,
+				#registerName#,
+				SYSDATE)      
+       ]]>
+   </insert>
+
+    <!-- insert -->
+	<insert id="insertResult" parameterClass="Poll"> 
+      <![CDATA[ 
+			INSERT INTO IKEP4_OP_RESULT ( 
+				POLL_ID,
+				ANSWER_ID,
+				ANSWER_USER_ID,
+				ANSWER_DATE
+			) VALUES ( 
+				#pollId#, 
+				#answerId#, 
+				#answerUserId#,
+				SYSDATE)      
+       ]]>
+   </insert>
+   
+   <!-- select -->
+	<select id="select" parameterClass="Poll" resultMap="resultPoll">
+	  <![CDATA[
+		   SELECT	A.POLL_ID,
+					A.QUESTION,
+					A.START_DATE,
+					A.END_DATE,
+					A.ANSWER_COUNT,
+					A.STATUS,
+					A.PERMISSION_TYPE,
+					A.REQUEST_CHANNEL,
+					A.CHART_TYPE,
+					A.PORTAL_ID,
+					A.REGISTER_ID,
+					A.REGISTER_NAME,
+					(SELECT USER_ENGLISH_NAME FROM IKEP4_EV_USER WHERE USER_ID=A.REGISTER_ID) REGISTER_ENGLISH_NAME,
+					(SELECT JOB_TITLE_NAME FROM IKEP4_EV_USER, IKEP4_EV_JOB_TITLE 
+                            WHERE IKEP4_EV_JOB_TITLE.JOB_TITLE_CODE = IKEP4_EV_USER.JOB_TITLE_CODE
+                            AND IKEP4_EV_USER.USER_ID=A.REGISTER_ID) AS JOB_TITLE_NAME,
+                    (SELECT JOB_TITLE_ENGLISH_NAME FROM IKEP4_EV_USER, IKEP4_EV_JOB_TITLE 
+                            WHERE IKEP4_EV_JOB_TITLE.JOB_TITLE_CODE = IKEP4_EV_USER.JOB_TITLE_CODE
+                            AND IKEP4_EV_USER.USER_ID=A.REGISTER_ID) AS JOB_TITLE_ENGLISH_NAME,	                     
+                    (SELECT TEAM_NAME FROM IKEP4_EV_USER WHERE USER_ID=A.REGISTER_ID) TEAM_NAME,
+                    (SELECT TEAM_ENGLISH_NAME FROM IKEP4_EV_USER WHERE USER_ID=A.REGISTER_ID) TEAM_ENGLISH_NAME,						
+					A.REGIST_DATE,
+					A.UPDATER_ID,
+					A.UPDATER_NAME,
+					A.UPDATE_DATE,
+					(SELECT COUNT(POLL_ID) FROM IKEP4_OP_RESULT WHERE POLL_ID=A.POLL_ID AND ANSWER_USER_ID='admin') IS_APPLY,
+					TO_DATE(END_DATE) - TO_DATE(SYSDATE) REMAIN_DAY_CNT,
+					(SELECT COUNT(*) FROM IKEP4_OP_RESULT WHERE POLL_ID=A.POLL_ID) RESULT_CNT,
+					(SELECT COUNT(*) FROM IKEP4_OP_TARGET WHERE POLL_ID=A.POLL_ID 
+				    AND ((TARGET_TYPE='0' AND TARGET_ID=#answerUserId#) OR (TARGET_TYPE='1' AND TARGET_ID=#groupId#))) IS_TARGET
+		    FROM IKEP4_OP_POLL A
+		    WHERE A.POLL_ID = #pollId#
+	   ]]>
+	</select>
+	
+	<!-- update -->
+	<update id="update" parameterClass="Poll">
+	  <![CDATA[
+		   UPDATE IKEP4_OP_POLL 
+		   SET  QUESTION = #question#,
+				START_DATE = #startDate#,
+				END_DATE = #endDate#,
+				ANSWER_COUNT = #answerCount#,
+				STATUS = #status#,
+				PERMISSION_TYPE = #permissionType#,
+				REQUEST_CHANNEL = #requestChannel#,
+				CHART_TYPE = #chartType#,
+				PORTAL_ID = #portalId#,
+				UPDATER_ID = #updaterId#,
+				UPDATER_NAME = #updaterName#,
+				UPDATE_DATE	= SYSDATE
+		   WHERE POLL_ID = #pollId#
+	   ]]>
+	</update>
+   
+	<!-- update -->
+	<update id="updateStatus" parameterClass="Poll">
+	  <![CDATA[
+		   UPDATE IKEP4_OP_POLL
+		   SET  STATUS = #status#,
+				UPDATER_ID = #updaterId#,
+				UPDATER_NAME = #updaterName#,
+				UPDATE_DATE	= SYSDATE		   
+		   WHERE POLL_ID = #pollId#
+	   ]]>
+	</update>
+	   
+   	<!-- delete -->
+   	<delete id="delete" parameterClass="java.lang.String">
+      <![CDATA[
+	       DELETE FROM IKEP4_OP_POLL WHERE POLL_ID = #pollId#
+	   ]]>
+	</delete>
+	
+   	<!-- delete -->
+   	<delete id="deleteAnswer" parameterClass="java.lang.String">
+      <![CDATA[
+	       DELETE FROM IKEP4_OP_ANSWER WHERE POLL_ID = #pollId#
+	   ]]>
+	</delete>	
+	
+   	<!-- delete -->
+   	<delete id="deleteTarget" parameterClass="java.lang.String">
+      <![CDATA[
+	       DELETE FROM IKEP4_OP_TARGET WHERE POLL_ID = #pollId#
+	   ]]>
+	</delete>		
+
+   	<!-- delete -->
+   	<delete id="deleteResult" parameterClass="java.lang.String">
+      <![CDATA[
+	       DELETE FROM IKEP4_OP_RESULT WHERE POLL_ID = #pollId#
+	   ]]>
+	</delete>	
+		
+	<!-- selectAnswers -->
+	<select id="selectAnswers" parameterClass="java.lang.String" resultMap="resultAnswer">	
+      SELECT A.ANSWER_ID,
+             A.ANSWER_TITLE,
+             (SELECT COUNT(*) FROM IKEP4_OP_RESULT WHERE POLL_ID=A.POLL_ID AND ANSWER_ID=A.ANSWER_ID) ANSWER_TOTAL,
+             0 ANSWER_PERCENT,
+             (SELECT COUNT(*) FROM IKEP4_OP_RESULT WHERE POLL_ID=A.POLL_ID) ANSWER_TOTAL_SUM
+      FROM IKEP4_OP_ANSWER A 
+      WHERE A.POLL_ID = #pollId#
+	  ORDER BY A.ANSWER_ID					    
+	</select>
+
+	<!-- selectTargets -->
+	<select id="selectTargets" parameterClass="java.lang.String" resultMap="resultTarget">	
+		SELECT  T.POLL_ID,
+				T.TARGET_ID,
+		        T.TARGET_TYPE,
+		        U.USER_ID,
+		        U.USER_NAME,
+		        U.USER_ENGLISH_NAME,
+		        U.TEAM_NAME,
+		        U.TEAM_ENGLISH_NAME,
+		        U.MAIL,
+		        (SELECT JOB_TITLE_NAME
+		                FROM IKEP4_EV_JOB_TITLE 
+		                WHERE JOB_TITLE_CODE = U.JOB_TITLE_CODE) JOB_TITLE_NAME,
+		        (SELECT JOB_TITLE_ENGLISH_NAME
+		                FROM IKEP4_EV_JOB_TITLE 
+		                WHERE JOB_TITLE_CODE = U.JOB_TITLE_CODE) JOB_TITLE_ENGLISH_NAME,		                
+		        G.GROUP_ID,        
+		        G.GROUP_NAME,
+		        G.GROUP_ENGLISH_NAME,
+		        (SELECT GROUP_TYPE_NAME
+		                FROM IKEP4_EV_GROUP_TYPE
+		                WHERE GROUP_TYPE_ID = G.GROUP_TYPE_ID) GROUP_TYPE_NAME,
+		        (SELECT GROUP_TYPE_ENGLISH_NAME
+		                FROM IKEP4_EV_GROUP_TYPE
+		                WHERE GROUP_TYPE_ID = G.GROUP_TYPE_ID) GROUP_TYPE_ENGLISH_NAME 		                               
+		FROM    IKEP4_OP_TARGET T,IKEP4_EV_USER U,IKEP4_EV_GROUP G
+		WHERE T.TARGET_ID=U.USER_ID(+)
+		AND   T.TARGET_ID=G.GROUP_ID(+)
+		AND   T.POLL_ID=#pollId#
+      	ORDER BY T.TARGET_TYPE				    
+	</select>
+		
+	<!-- selectAll -->
+	<select id="selectAll" resultMap="resultPoll">	
+      SELECT  /* [Poll_SqlMap.xml] poll.selectAll */ 
+			POLL_ID,
+			QUESTION,
+			START_DATE,
+			END_DATE,
+			ANSWER_COUNT,
+			STATUS,
+			PERMISSION_TYPE,
+			REQUEST_CHANNEL,
+			CHART_TYPE,
+			PORTAL_ID,
+			REGISTER_ID,
+			REGISTER_NAME,
+			REGISTER_ENGLISH_NAME,
+			JOB_TITLE_NAME,
+			JOB_TITLE_ENGLISH_NAME,
+			TEAM_NAME,
+			TEAM_ENGLISH_NAME,
+			REGIST_DATE,
+			UPDATER_ID,
+			UPDATER_NAME,
+			UPDATE_DATE,
+			IS_APPLY,
+			REMAIN_DAY_CNT,
+			RESULT_CNT,
+			IS_TARGET
+	  FROM    (
+	                SELECT  ROWNUM NUM, F.*
+	                FROM
+	                        (	  
+				                 SELECT  A.POLL_ID,
+				                    A.QUESTION,
+				                    A.START_DATE,
+				                    A.END_DATE,
+				                    A.ANSWER_COUNT,
+				                    A.STATUS,
+				                    A.PERMISSION_TYPE,
+				                    A.REQUEST_CHANNEL,
+				                    A.CHART_TYPE,
+				                    A.PORTAL_ID,
+				                    A.REGISTER_ID,
+				                    A.REGISTER_NAME,
+				                    (SELECT USER_ENGLISH_NAME FROM IKEP4_EV_USER WHERE USER_ID=A.REGISTER_ID) REGISTER_ENGLISH_NAME,
+			                       (SELECT JOB_TITLE_NAME FROM IKEP4_EV_USER, IKEP4_EV_JOB_TITLE 
+			                               WHERE IKEP4_EV_JOB_TITLE.JOB_TITLE_CODE = IKEP4_EV_USER.JOB_TITLE_CODE
+			                               AND IKEP4_EV_USER.USER_ID=A.REGISTER_ID) AS JOB_TITLE_NAME,
+			                       (SELECT JOB_TITLE_ENGLISH_NAME FROM IKEP4_EV_USER, IKEP4_EV_JOB_TITLE 
+			                               WHERE IKEP4_EV_JOB_TITLE.JOB_TITLE_CODE = IKEP4_EV_USER.JOB_TITLE_CODE
+			                               AND IKEP4_EV_USER.USER_ID=A.REGISTER_ID) AS JOB_TITLE_ENGLISH_NAME,	                     
+			                       (SELECT TEAM_NAME FROM IKEP4_EV_USER WHERE USER_ID=A.REGISTER_ID) TEAM_NAME,
+			                       (SELECT TEAM_ENGLISH_NAME FROM IKEP4_EV_USER WHERE USER_ID=A.REGISTER_ID) TEAM_ENGLISH_NAME,				                    
+				                    A.REGIST_DATE,
+				                    A.UPDATER_ID,
+				                    A.UPDATER_NAME,
+				                    A.UPDATE_DATE,
+				                    (SELECT COUNT(*) FROM IKEP4_OP_RESULT WHERE POLL_ID=A.POLL_ID AND ANSWER_USER_ID=#answerUserId#) IS_APPLY,
+				                    TO_DATE(A.END_DATE) - TO_DATE(SYSDATE) REMAIN_DAY_CNT,
+				                    (SELECT COUNT(*) FROM IKEP4_OP_RESULT WHERE POLL_ID=A.POLL_ID) RESULT_CNT,
+				                    (SELECT COUNT(*) FROM IKEP4_OP_TARGET WHERE POLL_ID=A.POLL_ID 
+				                    	AND ((TARGET_TYPE='0' AND TARGET_ID=#answerUserId#) OR (TARGET_TYPE='1' AND TARGET_ID=#groupId#))) IS_TARGET
+				                  FROM IKEP4_OP_POLL A
+				                  WHERE 1 = 1	
+				                  AND A.PORTAL_ID = #portalId#					    
+							    <isNotEmpty property="isComplete">
+							    	<isEqual prepend="AND" property="isComplete" compareValue="0">
+							    		A.REGISTER_ID = #answerUserId#
+							    	</isEqual>
+							    	<isEqual prepend="AND" property="isComplete" compareValue="1">
+							    		A.STATUS = 1 AND TO_CHAR(SYSDATE,'YYYY-MM-DD') &lt;= TO_CHAR(A.END_DATE,'YYYY-MM-DD')
+							    		<isEqual property="isAdmin" compareValue="0">
+							    		AND ((A.PERMISSION_TYPE = 1 AND (SELECT COUNT(*) FROM IKEP4_OP_TARGET WHERE POLL_ID=A.POLL_ID 
+				                    	AND ((TARGET_TYPE='0' AND TARGET_ID=#answerUserId#) OR (TARGET_TYPE='1' AND TARGET_ID=#groupId#))) > 0)
+				                    	OR A.PERMISSION_TYPE = 0)
+				                    	</isEqual>
+							    	</isEqual>
+							    	<isEqual prepend="AND" property="isComplete" compareValue="2">
+							    		(A.STATUS = 2 OR (A.STATUS = 1 AND TO_CHAR(SYSDATE,'YYYY-MM-DD') &gt; TO_CHAR(A.END_DATE,'YYYY-MM-DD')))
+							    	</isEqual>								    								    	
+							    </isNotEmpty>
+							    <isNotEmpty property="isRegister">
+							    	<isEqual prepend="AND" property="isRegister" compareValue="1">
+							    		A.REGISTER_ID = #answerUserId#
+							    	</isEqual>						    	
+							    </isNotEmpty>							    
+							    <isNotEmpty property="isResultExists">
+							    	<isEqual prepend="AND" property="isResultExists" compareValue="0">
+							    		(SELECT COUNT(*) FROM IKEP4_OP_RESULT WHERE POLL_ID=A.POLL_ID AND ANSWER_USER_ID=#answerUserId#) = 0
+							    	</isEqual>
+							    	<isEqual prepend="AND" property="isResultExists" compareValue="1">
+							    		(SELECT COUNT(*) FROM IKEP4_OP_RESULT WHERE POLL_ID=A.POLL_ID AND ANSWER_USER_ID=#answerUserId#) > 0
+							    	</isEqual>							    	
+							    </isNotEmpty>							    
+							    ORDER BY A.UPDATE_DATE DESC, A.POLL_ID DESC
+	                  ) F
+	                WHERE   ROWNUM &lt;= #endRowIndex#
+	              )
+	      WHERE   NUM &gt; #startRowIndex#							    
+	</select>
+	
+	<select id="countPollReceiverBySearchCondition" parameterClass="PollReceiverSearchCondition" resultClass="int">  
+		SELECT /* [Poll_SqlMap.xml] poll.countBySearchCondition */ 
+	           COUNT(*)
+        FROM IKEP4_OP_POLL A
+        WHERE 1 = 1		
+        AND A.PORTAL_ID = #portalId#				    
+	    <isNotEmpty property="isComplete">
+	    	<isEqual prepend="AND" property="isComplete" compareValue="0">
+	    		A.REGISTER_ID = #answerUserId#
+	    	</isEqual>
+	    	<isEqual prepend="AND" property="isComplete" compareValue="1">
+	    		A.STATUS = 1 AND TO_CHAR(SYSDATE,'YYYY-MM-DD') &lt;= TO_CHAR(A.END_DATE,'YYYY-MM-DD')
+	    		<isEqual property="isAdmin" compareValue="0">
+	    		AND ((A.PERMISSION_TYPE = 1 AND (SELECT COUNT(*) FROM IKEP4_OP_TARGET WHERE POLL_ID=A.POLL_ID 
+                AND ((TARGET_TYPE='0' AND TARGET_ID=#answerUserId#) OR (TARGET_TYPE='1' AND TARGET_ID=#groupId#))) > 0)
+                OR A.PERMISSION_TYPE = 0)    		
+                </isEqual>
+	    	</isEqual>
+	    	<isEqual prepend="AND" property="isComplete" compareValue="2">
+	    		(A.STATUS = 2 OR (A.STATUS = 1 AND TO_CHAR(SYSDATE,'YYYY-MM-DD') &gt; TO_CHAR(A.END_DATE,'YYYY-MM-DD')))
+	    	</isEqual>							    	
+	    </isNotEmpty>
+	    <isNotEmpty property="isRegister">
+	    	<isEqual prepend="AND" property="isRegister" compareValue="1">
+	    		A.REGISTER_ID = #answerUserId#
+	    	</isEqual>						    	
+	    </isNotEmpty>		    
+	    <isNotEmpty property="isResultExists">
+	    	<isEqual prepend="AND" property="isResultExists" compareValue="0">
+	    		(SELECT COUNT(*) FROM IKEP4_OP_RESULT WHERE POLL_ID=A.POLL_ID AND ANSWER_USER_ID=#answerUserId#) = 0
+	    	</isEqual>
+	    	<isEqual prepend="AND" property="isResultExists" compareValue="1">
+	    		(SELECT COUNT(*) FROM IKEP4_OP_RESULT WHERE POLL_ID=A.POLL_ID AND ANSWER_USER_ID=#answerUserId#) > 0
+	    	</isEqual>							    	
+	    </isNotEmpty>	    
+  </select> 
+
+	<!-- selectAdminList -->
+	<select id="selectAdminList" resultMap="result">	
+      SELECT  
+			POLL_ID,
+			QUESTION,
+			START_DATE,
+			END_DATE,
+			ANSWER_COUNT,
+			STATUS,
+			PERMISSION_TYPE,
+			REQUEST_CHANNEL,
+			CHART_TYPE,
+			PORTAL_ID,
+			REGISTER_ID,
+			REGISTER_NAME,
+			REGISTER_ENGLISH_NAME,
+			JOB_TITLE_NAME,
+			JOB_TITLE_ENGLISH_NAME,
+			TEAM_NAME,
+			TEAM_ENGLISH_NAME,			
+			REGIST_DATE,
+			UPDATER_ID,
+			UPDATER_NAME,
+			UPDATE_DATE
+	  FROM    (
+	                SELECT  ROWNUM NUM, F.*
+	                FROM
+	                        (	  
+				                 SELECT  A.POLL_ID,
+				                    A.QUESTION,
+				                    A.START_DATE,
+				                    A.END_DATE,
+				                    A.ANSWER_COUNT,
+				                    A.STATUS,
+				                    A.PERMISSION_TYPE,
+				                    A.REQUEST_CHANNEL,
+				                    A.CHART_TYPE,
+				                    A.PORTAL_ID,
+				                    A.REGISTER_ID,
+				                    A.REGISTER_NAME,
+				                    (SELECT USER_ENGLISH_NAME FROM IKEP4_EV_USER WHERE USER_ID=A.REGISTER_ID) REGISTER_ENGLISH_NAME,
+			                       (SELECT JOB_TITLE_NAME FROM IKEP4_EV_USER, IKEP4_EV_JOB_TITLE 
+			                               WHERE IKEP4_EV_JOB_TITLE.JOB_TITLE_CODE = IKEP4_EV_USER.JOB_TITLE_CODE
+			                               AND IKEP4_EV_USER.USER_ID=A.REGISTER_ID) AS JOB_TITLE_NAME,
+			                       (SELECT JOB_TITLE_ENGLISH_NAME FROM IKEP4_EV_USER, IKEP4_EV_JOB_TITLE 
+			                               WHERE IKEP4_EV_JOB_TITLE.JOB_TITLE_CODE = IKEP4_EV_USER.JOB_TITLE_CODE
+			                               AND IKEP4_EV_USER.USER_ID=A.REGISTER_ID) AS JOB_TITLE_ENGLISH_NAME,	                     
+			                       (SELECT TEAM_NAME FROM IKEP4_EV_USER WHERE USER_ID=A.REGISTER_ID) TEAM_NAME,
+			                       (SELECT TEAM_ENGLISH_NAME FROM IKEP4_EV_USER WHERE USER_ID=A.REGISTER_ID) TEAM_ENGLISH_NAME,				                    
+				                    A.REGIST_DATE,
+				                    A.UPDATER_ID,
+				                    A.UPDATER_NAME,
+				                    A.UPDATE_DATE
+				                FROM IKEP4_OP_POLL A
+				                WHERE 1 = 1	
+				                AND A.PORTAL_ID = #portalId#
+								<isNotEmpty property="searchColumn">
+									<isNotEmpty property="searchWord">
+										<isEqual property="searchColumn" compareValue="question">
+											AND	A.QUESTION LIKE '%' || #searchWord# || '%'
+										</isEqual>
+										<isEqual property="searchColumn" compareValue="registerName">
+											AND	(A.REGISTER_NAME LIKE '%' || #searchWord# || '%' OR (SELECT USER_ENGLISH_NAME FROM IKEP4_EV_USER WHERE USER_ID=A.REGISTER_ID) LIKE '%' || #searchWord# || '%')
+										</isEqual>
+									</isNotEmpty>
+								</isNotEmpty>
+								ORDER BY 
+					 			<isNotEmpty property="sortColumn" >$sortColumn$ $sortType$,</isNotEmpty>				                  					    						    
+							    A.POLL_ID DESC
+	                  ) F
+	                WHERE   ROWNUM &lt;= #endRowIndex#
+	              )
+	      WHERE   NUM &gt; #startRowIndex#							    
+	</select>
+	
+	<!-- countPollAdminBySearchCondition -->
+	<select id="countPollAdminBySearchCondition" parameterClass="PollReceiverSearchCondition" resultClass="int">  
+		SELECT /* [Poll_SqlMap.xml] poll.countPollAdminBySearchCondition */ 
+	           COUNT(*)
+        FROM IKEP4_OP_POLL A
+        WHERE 1 = 1	
+        AND A.PORTAL_ID = #portalId#
+		<isNotEmpty property="searchColumn">
+			<isNotEmpty property="searchWord">
+				<isEqual property="searchColumn" compareValue="question">
+					AND	A.QUESTION LIKE '%' || #searchWord# || '%'
+				</isEqual>
+				<isEqual property="searchColumn" compareValue="registerName">
+					AND	(A.REGISTER_NAME LIKE '%' || #searchWord# || '%' OR (SELECT USER_ENGLISH_NAME FROM IKEP4_EV_USER WHERE USER_ID=A.REGISTER_ID) LIKE '%' || #searchWord# || '%')
+				</isEqual>
+			</isNotEmpty>
+		</isNotEmpty>        				    	    	    
+    </select> 
+  	
+	<!-- selectCount -->
+	<select id="selectCount" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+	  <![CDATA[
+		   SELECT COUNT(POLL_ID) FROM IKEP4_OP_POLL WHERE POLL_ID = #pollId#
+	   ]]>
+	</select>
+
+	<!-- selectAlreadyApply -->
+	<select id="selectAlreadyApply" parameterClass="Poll" resultClass="int">
+	  <![CDATA[
+	       SELECT COUNT(*)
+	       FROM IKEP4_OP_RESULT
+	       WHERE POLL_ID= #pollId#
+	       AND ANSWER_ID = #answerId#
+	       AND ANSWER_USER_ID = #answerUserId#
+	   ]]>
+	</select>	
+</sqlMap>

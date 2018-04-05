@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="collpack.ideation.dao.IdLinereplyRecommend" >
+
+	<typeAlias alias = "IdLinereplyRecommend" type="com.lgcns.ikep4.collpack.ideation.model.IdLinereplyRecommend"/>
+
+  <resultMap id="IdLinereplyRecommendResult" class="IdLinereplyRecommend" >
+    <result column="REGISTER_ID" property="registerId" jdbcType="VARCHAR" />
+    <result column="REGIST_DATE" property="registDate" jdbcType="DATE" />
+    <result column="LINEREPLY_ID" property="linereplyId" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <!-- ANSI -->
+  <insert id="create" parameterClass="IdLinereplyRecommend" >
+    INSERT INTO IKEP4_ID_LINEREPLY_RECOMMEND (				/* [IdLinereplyRecommend_SqlMap.xml] collpack.ideation.dao.IdLinereplyRecommend.create */
+	    REGISTER_ID
+	    , REGIST_DATE
+	    , LINEREPLY_ID
+    ) VALUES (
+	    #registerId#
+	    , CURRENT_TIMESTAMP
+	    , #linereplyId#
+    )
+  </insert>
+  
+  <!-- ANSI -->
+  <select id="exists" resultClass="int" parameterClass="IdLinereplyRecommend" >
+    SELECT 					/* [IdLinereplyRecommend_SqlMap.xml] collpack.ideation.dao.IdLinereplyRecommend.exists */
+   	 COUNT(LINEREPLY_ID)
+    FROM IKEP4_ID_LINEREPLY_RECOMMEND
+    WHERE REGISTER_ID = #registerId#
+   	 AND LINEREPLY_ID = #linereplyId#
+  </select>
+  
+  <!-- ANSI -->
+  <select id="getCountByUserId" resultClass="int" parameterClass="String" >
+	    SELECT								/* [IdLinereplyRecommend_SqlMap.xml] collpack.ideation.dao.IdLinereplyRecommend.getCountByUserId */	
+			COUNT(LINEREPLY_ID)	    
+	    FROM IKEP4_ID_LINEREPLY_RECOMMEND
+	    WHERE REGISTER_ID = #registerId#
+  </select>
+  
+  <!-- ANSI -->
+  <select id="listUserIdByLinereplyId" resultClass="String" parameterClass="String" >
+	     SELECT 						/* [IdLinereplyRecommend_SqlMap.xml] collpack.ideation.dao.IdLinereplyRecommend.listUserIdByLinereplyId */
+	     	DISTINCT(REGISTER_ID)
+	    FROM IKEP4_ID_LINEREPLY_RECOMMEND
+	    WHERE  LINEREPLY_ID = #linereplyId#
+  </select>
+  	
+  	<!-- ANSI -->
+   <select id="listUserIdByItemId" resultClass="String" parameterClass="String" >
+	     SELECT 						/* [IdLinereplyRecommend_SqlMap.xml] collpack.ideation.dao.IdLinereplyRecommend.listUserIdByItemId */
+	     	DISTINCT(REGISTER_ID)
+	    FROM IKEP4_ID_LINEREPLY_RECOMMEND
+	    WHERE  LINEREPLY_ID IN (
+					    SELECT LINEREPLY_ID 				
+					    FROM IKEP4_ID_LINEREPLY
+					    WHERE 
+					    	ITEM_ID = #itemId#
+					   )
+		
+  </select>
+  
+  <!-- ANSI -->
+  <select id="list" resultMap="IdLinereplyRecommendResult" parameterClass="String" >
+    SELECT				/* [IdLinereplyRecommend_SqlMap.xml] collpack.ideation.dao.IdLinereplyRecommend.list */
+   	 REGISTER_ID
+   	 , REGIST_DATE
+   	 , LINEREPLY_ID
+    FROM IKEP4_ID_LINEREPLY_RECOMMEND
+    WHERE LINEREPLY_ID = #linereplyId#
+  </select>
+  
+  <!-- ANSI -->
+  <delete id="remove" parameterClass="IdLinereplyRecommend" >
+    DELETE 						/* [IdLinereplyRecommend_SqlMap.xml] collpack.ideation.dao.IdLinereplyRecommend.remove */
+    FROM IKEP4_ID_LINEREPLY_RECOMMEND
+    WHERE  LINEREPLY_ID = #linereplyId#
+    	AND REGISTER_ID = #registerId#
+  </delete>
+  
+  <!-- ANSI -->
+  <delete id="removeByLinereplyId" parameterClass="String" >
+    DELETE 						/* [IdLinereplyRecommend_SqlMap.xml] collpack.ideation.dao.IdLinereplyRecommend.removeByLinereplyId */
+    FROM IKEP4_ID_LINEREPLY_RECOMMEND
+    WHERE  LINEREPLY_ID = #linereplyId#
+  </delete>
+  
+  <!-- ANSI -->
+  <delete id="removeByItemId" parameterClass="String" >
+    DELETE 						/* [IdLinereplyRecommend_SqlMap.xml] collpack.ideation.dao.IdLinereplyRecommend.removeByLinereplyId */
+    FROM IKEP4_ID_LINEREPLY_RECOMMEND
+    WHERE  LINEREPLY_ID IN (
+					    SELECT LINEREPLY_ID 				
+					    FROM IKEP4_ID_LINEREPLY
+					    WHERE 
+					    	ITEM_ID = #itemId#
+					   )
+  </delete>
+  
+  
+</sqlMap>

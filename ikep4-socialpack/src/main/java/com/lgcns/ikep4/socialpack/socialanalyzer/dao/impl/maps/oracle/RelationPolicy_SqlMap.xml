@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="socialpack.socialanalyzer.dao.relationPolicy" >
+	<typeAlias alias = "RelationPolicy" type="com.lgcns.ikep4.socialpack.socialanalyzer.model.RelationPolicy"/>
+	
+	<!-- 테이블 조회 결과 -->
+	<resultMap id="relationPolicyResult" class="RelationPolicy">
+		<result property="portalId"              column="PORTAL_ID"                />
+		<result property="dTeamMemberWeight"     column="D_TEAM_MEMBER_WEIGHT"     />
+		<result property="dTeamLeaderWeight"     column="D_TEAM_LEADER_WEIGHT"     />
+		<result property="dFavoriteWeight"       column="D_FAVORITE_WEIGHT"        />
+		<result property="dFollowingWeight"      column="D_FOLLOWING_WEIGHT"       />
+		<result property="dFollowerWeight"       column="D_FOLLOWER_WEIGHT"        />
+		<result property="dBothFollowingWeight"  column="D_BOTH_FOLLOWING_WEIGHT"  />
+		<result property="cMailWeight"           column="C_MAIL_WEIGHT"            />
+		<result property="cMailMax"              column="C_MAIL_MAX"               />
+		<result property="cMessageMax"           column="C_MESSAGE_MAX"            />
+		<result property="cMessageWeight"        column="C_MESSAGE_WEIGHT"         />
+		<result property="cSmsMax"               column="C_SMS_MAX"                />
+		<result property="cSmsWeight"            column="C_SMS_WEIGHT"             />
+		<result property="cGuestbookMax"         column="C_GUESTBOOK_MAX"          />
+		<result property="cGuestbookWeight"      column="C_GUESTBOOK_WEIGHT"       />
+		<result property="fFollowerWeight"       column="F_FOLLOWER_WEIGHT"        />
+		<result property="fFollowingWeight"      column="F_FOLLOWING_WEIGHT"       />
+		<result property="fBothFollowingWeight"  column="F_BOTH_FOLLOWING_WEIGHT"  />
+		<result property="fMyLinereplyMax"       column="F_MY_LINEREPLY_MAX"       />
+		<result property="fMyLinereplyWeight"    column="F_MY_LINEREPLY_WEIGHT"    />
+		<result property="fMyMentionMax"         column="F_MY_MENTION_MAX"         />
+		<result property="fMyMentionWeight"      column="F_MY_MENTION_WEIGHT"      />
+		<result property="fYourLinereplyMax"     column="F_YOUR_LINEREPLY_MAX"     />
+		<result property="fYourLinereplyWeight"  column="F_YOUR_LINEREPLY_WEIGHT"  />
+		<result property="fYourMentionMax"       column="F_YOUR_MENTION_MAX"       />
+		<result property="fYourMentionWeight"    column="F_YOUR_MENTION_WEIGHT"    />
+		<result property="fBothMbloggroupMax"    column="F_BOTH_MBLOGGROUP_MAX"    />
+		<result property="fBothMbloggroupWeight" column="F_BOTH_MBLOGGROUP_WEIGHT" />
+		<result property="eExpertTagMax"         column="E_EXPERT_TAG_MAX"         />
+		<result property="eExpertTagWeight"      column="E_EXPERT_TAG_WEIGHT"      />
+		<result property="eInterestTagMax"       column="E_INTEREST_TAG_MAX"       />
+		<result property="eInterestTagWeight"    column="E_INTEREST_TAG_WEIGHT"    />
+		<result property="eDocTagMax"            column="E_DOC_TAG_MAX"            />
+		<result property="eDocTagWeight"         column="E_DOC_TAG_WEIGHT"         />
+		<result property="eBothAnswerMax"        column="E_BOTH_ANSWER_MAX"        />
+		<result property="eBothAnswerWeight"     column="E_BOTH_ANSWER_WEIGHT"     />
+		<result property="registerId"            column="REGISTER_ID"              />
+		<result property="registerName"          column="REGISTER_NAME"            />
+		<result property="registDate"            column="REGIST_DATE"              />
+		<result property="updaterId"             column="UPDATER_ID"               />
+		<result property="updaterName"           column="UPDATER_NAME"             />
+		<result property="updateDate"            column="UPDATE_DATE"              />
+	</resultMap>
+	
+	<insert id="create" parameterClass="RelationPolicy"> 
+      <![CDATA[ 
+           INSERT INTO IKEP4_SN_RELATION_POLICY (/* [RelationPolicy_SqlMap.xml] RelationPolicy.create */
+           		PORTAL_ID, D_TEAM_MEMBER_WEIGHT, D_TEAM_LEADER_WEIGHT, D_FAVORITE_WEIGHT, D_FOLLOWING_WEIGHT, 
+				D_FOLLOWER_WEIGHT, D_BOTH_FOLLOWING_WEIGHT, C_MAIL_WEIGHT, C_MAIL_MAX, C_MESSAGE_MAX, 
+				C_MESSAGE_WEIGHT, C_SMS_MAX, C_SMS_WEIGHT, C_GUESTBOOK_MAX, C_GUESTBOOK_WEIGHT, 
+				F_FOLLOWER_WEIGHT, F_FOLLOWING_WEIGHT, F_BOTH_FOLLOWING_WEIGHT, F_MY_LINEREPLY_MAX, F_MY_LINEREPLY_WEIGHT, 
+				F_MY_MENTION_MAX, F_MY_MENTION_WEIGHT, F_YOUR_LINEREPLY_MAX, F_YOUR_LINEREPLY_WEIGHT, F_YOUR_MENTION_MAX, 
+				F_YOUR_MENTION_WEIGHT, F_BOTH_MBLOGGROUP_MAX, F_BOTH_MBLOGGROUP_WEIGHT, E_EXPERT_TAG_MAX, E_EXPERT_TAG_WEIGHT, 
+				E_INTEREST_TAG_MAX, E_INTEREST_TAG_WEIGHT, E_DOC_TAG_MAX, E_DOC_TAG_WEIGHT, E_BOTH_ANSWER_MAX, 
+				E_BOTH_ANSWER_WEIGHT, REGISTER_ID, REGISTER_NAME, REGIST_DATE, UPDATER_ID, 
+				UPDATER_NAME, UPDATE_DATE)  
+           VALUES (#portalId#, #dTeamMemberWeight#, #dTeamLeaderWeight#, #dFavoriteWeight#, #dFollowingWeight#, 
+				#dFollowerWeight#, #dBothFollowingWeight#, #cMailWeight#, #cMailMax#, #cMessageMax#, 
+				#cMessageWeight#, #cSmsMax#, #cSmsWeight#, #cGuestbookMax#, #cGuestbookWeight#, 
+				#fFollowerWeight#, #fFollowingWeight#, #fBothFollowingWeight#, #fMyLinereplyMax#, #fMyLinereplyWeight#, 
+				#fMyMentionMax#, #fMyMentionWeight#, #fYourLinereplyMax#, #fYourLinereplyWeight#, #fYourMentionMax#, 
+				#fYourMentionWeight#, #fBothMbloggroupMax#, #fBothMbloggroupWeight#, #eExpertTagMax#, #eExpertTagWeight#, 
+				#eInterestTagMax#, #eInterestTagWeight#, #eDocTagMax#, #eDocTagWeight#, #eBothAnswerMax#, 
+				#eBothAnswerWeight#, #registerId#, #registerName#, SYSDATE, #updaterId#, 
+				#updaterName#, SYSDATE)
+       ]]>
+   </insert>
+   
+	<select id="get" parameterClass="java.lang.String" resultMap="relationPolicyResult">
+	  <![CDATA[
+		   SELECT /* [RelationPolicy_SqlMap.xml] RelationPolicy.get */
+				  A.*
+		     FROM IKEP4_SN_RELATION_POLICY A
+		    WHERE PORTAL_ID = #portalId#
+	   ]]>
+	</select>
+	
+	<update id="update" parameterClass="RelationPolicy">
+	  <![CDATA[
+		   UPDATE IKEP4_SN_RELATION_POLICY /* [RelationPolicy_SqlMap.xml] RelationPolicy.update */ 
+		      SET D_TEAM_MEMBER_WEIGHT     = #dTeamMemberWeight#,    
+				  D_TEAM_LEADER_WEIGHT     = #dTeamLeaderWeight#,    
+				  D_FAVORITE_WEIGHT        = #dFavoriteWeight#,      
+				  D_FOLLOWING_WEIGHT       = #dFollowingWeight#,     
+				  D_FOLLOWER_WEIGHT        = #dFollowerWeight#,      
+				  D_BOTH_FOLLOWING_WEIGHT  = #dBothFollowingWeight#, 
+				  C_MAIL_WEIGHT            = #cMailWeight#,          
+				  C_MAIL_MAX               = #cMailMax#,             
+				  C_MESSAGE_MAX            = #cMessageMax#,          
+				  C_MESSAGE_WEIGHT         = #cMessageWeight#,       
+				  C_SMS_MAX                = #cSmsMax#,              
+				  C_SMS_WEIGHT             = #cSmsWeight#,           
+				  C_GUESTBOOK_MAX          = #cGuestbookMax#,        
+				  C_GUESTBOOK_WEIGHT       = #cGuestbookWeight#,     
+				  F_FOLLOWER_WEIGHT        = #fFollowerWeight#,      
+				  F_FOLLOWING_WEIGHT       = #fFollowingWeight#,     
+				  F_BOTH_FOLLOWING_WEIGHT  = #fBothFollowingWeight#, 
+				  F_MY_LINEREPLY_MAX       = #fMyLinereplyMax#,      
+				  F_MY_LINEREPLY_WEIGHT    = #fMyLinereplyWeight#,   
+				  F_MY_MENTION_MAX         = #fMyMentionMax#,        
+				  F_MY_MENTION_WEIGHT      = #fMyMentionWeight#,     
+				  F_YOUR_LINEREPLY_MAX     = #fYourLinereplyMax#,    
+				  F_YOUR_LINEREPLY_WEIGHT  = #fYourLinereplyWeight#, 
+				  F_YOUR_MENTION_MAX       = #fYourMentionMax#,      
+				  F_YOUR_MENTION_WEIGHT    = #fYourMentionWeight#,   
+				  F_BOTH_MBLOGGROUP_MAX    = #fBothMbloggroupMax#,   
+				  F_BOTH_MBLOGGROUP_WEIGHT = #fBothMbloggroupWeight#,
+				  E_EXPERT_TAG_MAX         = #eExpertTagMax#,        
+				  E_EXPERT_TAG_WEIGHT      = #eExpertTagWeight#,     
+				  E_INTEREST_TAG_MAX       = #eInterestTagMax#,      
+				  E_INTEREST_TAG_WEIGHT    = #eInterestTagWeight#,   
+				  E_DOC_TAG_MAX            = #eDocTagMax#,           
+				  E_DOC_TAG_WEIGHT         = #eDocTagWeight#,        
+				  E_BOTH_ANSWER_MAX        = #eBothAnswerMax#,       
+				  E_BOTH_ANSWER_WEIGHT     = #eBothAnswerWeight#,           
+				  UPDATER_ID               = #updaterId#,            
+				  UPDATER_NAME             = #updaterName#,          
+				  UPDATE_DATE              = SYSDATE
+		    WHERE PORTAL_ID = #portalId#
+	   ]]>
+	</update>
+   
+   <delete id="remove" parameterClass="java.lang.String">
+      <![CDATA[
+	       DELETE FROM IKEP4_SN_RELATION_POLICY /* [RelationPolicy_SqlMap.xml] RelationPolicy.remove */ 
+	        WHERE PORTAL_ID = #portalId#
+	   ]]>
+	</delete>
+	
+	<select id="count" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+	  <![CDATA[
+		   SELECT /* [RelationPolicy_SqlMap.xml] RelationPolicy.count */ 
+		   		  COUNT(1) 
+		     FROM IKEP4_SN_RELATION_POLICY 
+		    WHERE PORTAL_ID = #portalId#
+	   ]]>
+	</select>
+</sqlMap>

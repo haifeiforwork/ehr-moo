@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="socialpack.socialblog.dao.SocialBlogVisit">
+
+	<typeAlias alias="SocialBlogVisit"  type="com.lgcns.ikep4.socialpack.socialblog.model.SocialBlogVisit"/>
+
+	<!-- IKEP4_SB_BLOG_VISIT 테이블 조회 결과 -->
+	<resultMap id="resultSocialBlogVisit" class="SocialBlogVisit" >
+		<result property="blogId" column="BLOG_ID" columnIndex="1"/>
+		<result property="visitorId" column="VISITOR_ID" columnIndex="2"/>
+		<result property="visitDate" column="VISIT_DATE" columnIndex="3"/>
+	</resultMap>
+	
+	<!-- IKEP4_SB_BLOG_VISIT 테이블 조회 결과 -->
+	<resultMap id="resultSocialBlogVisitDetail" class="SocialBlogVisit" >
+		<result property="blogId" column="BLOG_ID" columnIndex="1"/>
+		<result property="visitorId" column="VISITOR_ID" columnIndex="2"/>
+		<result property="visitDate" column="VISIT_DATE" columnIndex="3"/>
+		
+		<result property="userName" column="USER_NAME" columnIndex="4"/>
+		<result property="userEnglishName" column="USER_ENGLISH_NAME" columnIndex="5"/>
+		<result property="visitorJobTitleName" column="VISITOR_JOB_TITLE_NAME" columnIndex="6"/>
+		<result property="visitorJobTitleEngName" column="VISITOR_JOB_TITLE_ENG_NAME" columnIndex="7"/>
+		<result property="visitorTeamName" column="VISITOR_TEAM_NAME" columnIndex="8"/>
+		<result property="visitorTeanEngName" column="VISITOR_TEAM_ENG_NAME" columnIndex="9"/>
+		
+	</resultMap>
+	
+	<!-- IKEP4_SB_BLOG_VISIT 테이블 조회 결과 -->
+	<resultMap id="resultSocialBlogVisitStatic" class="SocialBlogVisit" >
+		<result property="visitBaseDate" column="VISIT_BASE_DATE" columnIndex="1"/>
+		<result property="visitorCount" column="VISITOR_COUNT" columnIndex="2"/>
+	</resultMap>
+	
+	<sql id="sqlColumnList"> 
+		BLOG_ID,
+		VISITOR_ID,
+		VISIT_DATE
+	</sql>  
+	
+	<!-- MS SQL -->
+	<sql id="sqlColumnDetailList"> 
+		VIT.BLOG_ID,
+		VIT.VISITOR_ID,
+		VIT.VISIT_DATE,
+		USR.USER_NAME, 
+		USR.USER_ENGLISH_NAME,
+		
+		(SELECT JOB_TITLE_NAME  FROM IKEP4_EV_JOB_TITLE WHERE JOB_TITLE_CODE = USR.JOB_TITLE_CODE ) AS VISITOR_JOB_TITLE_NAME,
+		(SELECT JOB_TITLE_ENGLISH_NAME FROM IKEP4_EV_JOB_TITLE WHERE JOB_TITLE_CODE = USR.JOB_TITLE_CODE ) AS VISITOR_JOB_TITLE_ENG_NAME,
+  			   
+	    (SELECT TOP 1 EG.GROUP_NAME FROM IKEP4_EV_USER_GROUP UG, IKEP4_EV_GROUP EG
+			WHERE UG.GROUP_ID = EG.GROUP_ID and UG.USER_ID = VIT.VISITOR_ID AND UG.REPRESENT_GROUP = '1' AND EG.GROUP_TYPE_ID = 'G0001') AS VISITOR_TEAM_NAME,
+		(SELECT TOP 1 EG.GROUP_ENGLISH_NAME FROM IKEP4_EV_USER_GROUP UG, IKEP4_EV_GROUP EG
+			WHERE UG.GROUP_ID = EG.GROUP_ID and UG.USER_ID = VIT.VISITOR_ID AND UG.REPRESENT_GROUP = '1' AND EG.GROUP_TYPE_ID = 'G0001') AS VISITOR_TEAM_ENG_NAME
+		
+		
+	</sql>  
+   
+	<!-- MS SQL -->
+   	<select id="get" parameterClass="SocialBlogVisit" resultMap="resultSocialBlogVisit"> 
+    	SELECT  
+    		/* [SocialBlogVisit_SqlMap.xml] socialpack.socialblog.dao.SocialBlogVisit.get */
+    		<include refid="socialpack.socialblog.dao.SocialBlogVisit.sqlColumnList" /> 
+    	FROM IKEP4_SB_BLOG_VISIT
+    	WHERE BLOG_ID = #blogId# 
+    	AND VISITOR_ID = #visitorId#
+		<dynamic>
+			<isNotEmpty property="visitFlag">
+				<isEqual property="visitFlag" compareValue="TODAY" prepend="AND">
+					  CONVERT(NVARCHAR, VISIT_DATE, 102) = CONVERT(NVARCHAR, CURRENT_TIMESTAMP, 102)
+				</isEqual>
+				<isEqual property="visitFlag" compareValue="YESTERDAY" prepend="AND">
+					  CONVERT(NVARCHAR, VISIT_DATE, 102) = CONVERT(NVARCHAR, DATEADD(DD, -1, CURRENT_TIMESTAMP), 102)
+				</isEqual>
+				<isEqual property="visitFlag" compareValue="LASTWEEK" prepend="AND">
+					  CONVERT(NVARCHAR, VISIT_DATE, 102) BETWEEN CONVERT(NVARCHAR, DATEADD(DD, -7, DATEADD(DD, -1 * DATEPART(DW, CURRENT_TIMESTAMP) + 1, CURRENT_TIMESTAMP)), 102) AND CONVERT(NVARCHAR, DATEADD(DD, -1, DATEADD(DD, -1 * DATEPART(DW, CURRENT_TIMESTAMP) + 1, CURRENT_TIMESTAMP)), 102)
+				</isEqual>
+				<isEqual property="visitFlag" compareValue="WEEK" prepend="AND">
+			          DATEPART(WK, VISIT_DATE) = DATEPART(WK, CURRENT_TIMESTAMP)
+			          AND YEAR(VISIT_DATE) =  YEAR(CURRENT_TIMESTAMP)
+				</isEqual>
+				<isEqual property="visitFlag" compareValue="MONTH" prepend="AND">
+					  CONVERT(NVARCHAR(7), VISIT_DATE, 102) = CONVERT(NVARCHAR(7), CURRENT_TIMESTAMP, 102)
+				</isEqual>
+				<isEqual property="visitFlag" compareValue="YEAR" prepend="AND">
+					   YEAR(VISIT_DATE) =  YEAR(CURRENT_TIMESTAMP)
+				</isEqual>
+			</isNotEmpty>
+		</dynamic>
+	</select> 
+   
+   	<!-- MS SQL -->
+	<select id="selectAllByblogId" parameterClass="SocialBlogVisit" resultMap="resultSocialBlogVisitDetail"> 
+		SELECT * FROM (
+			SELECT /* [SocialBlogVisit_SqlMap.xml] socialpack.socialblog.dao.SocialBlogVisit.selectAllByblogId */
+				Row_number() OVER (ORDER BY VISIT_DATE DESC) AS RNUM,
+				<include refid="socialpack.socialblog.dao.SocialBlogVisit.sqlColumnDetailList" /> 
+			FROM  IKEP4_SB_BLOG_VISIT VIT, IKEP4_EV_USER USR
+			WHERE  VIT.VISITOR_ID = USR.USER_ID
+			AND BLOG_ID = #blogId# 
+			<dynamic>
+				<isNotEmpty property="visitFlag">
+					<isEqual property="visitFlag" compareValue="TODAY" prepend="AND">
+						  CONVERT(NVARCHAR, VISIT_DATE, 102) = CONVERT(NVARCHAR, CURRENT_TIMESTAMP, 102)
+					</isEqual>
+					<isEqual property="visitFlag" compareValue="YESTERDAY" prepend="AND">
+						  CONVERT(NVARCHAR, VISIT_DATE, 102) = CONVERT(NVARCHAR, DATEADD(DD, -1, CURRENT_TIMESTAMP), 102)
+					</isEqual>
+					<isEqual property="visitFlag" compareValue="LASTWEEK" prepend="AND">
+						  CONVERT(NVARCHAR, VISIT_DATE, 102) BETWEEN CONVERT(NVARCHAR, DATEADD(DD, -7, DATEADD(DD, -1 * DATEPART(DW, CURRENT_TIMESTAMP) + 1, CURRENT_TIMESTAMP)), 102) AND CONVERT(NVARCHAR, DATEADD(DD, -1, DATEADD(DD, -1 * DATEPART(DW, CURRENT_TIMESTAMP) + 1, CURRENT_TIMESTAMP)), 102)
+					</isEqual>
+					<isEqual property="visitFlag" compareValue="WEEK" prepend="AND">
+				          DATEPART(WK, VISIT_DATE) = DATEPART(WK, CURRENT_TIMESTAMP)
+				          AND YEAR(VISIT_DATE) =  YEAR(CURRENT_TIMESTAMP)
+					</isEqual>
+					<isEqual property="visitFlag" compareValue="MONTH" prepend="AND">
+						  CONVERT(NVARCHAR(7), VISIT_DATE, 102) = CONVERT(NVARCHAR(7), CURRENT_TIMESTAMP, 102)
+					</isEqual>
+					<isEqual property="visitFlag" compareValue="YEAR" prepend="AND">
+						   YEAR(VISIT_DATE) =  YEAR(CURRENT_TIMESTAMP)
+					</isEqual>
+				</isNotEmpty>
+			</dynamic>
+		) TBL
+		<dynamic>
+			<isNotEmpty property="recentVisitCnt">
+				<![CDATA[ 
+				WHERE RNUM <= #recentVisitCnt#
+				]]>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+  
+  	<!-- MS SQL -->
+	<select id="selectAllCountByblogId" parameterClass="SocialBlogVisit" resultClass="int"> 
+		SELECT /* [SocialBlogVisit_SqlMap.xml] socialpack.socialblog.dao.SocialBlogVisit.selectAllCountByblogId */
+			COUNT(*)
+		FROM  IKEP4_SB_BLOG_VISIT
+		WHERE BLOG_ID = #blogId# 
+		
+		<dynamic>
+			<isNotEmpty property="visitFlag">
+				<isEqual property="visitFlag" compareValue="TODAY" prepend="AND">
+					  CONVERT(NVARCHAR, VISIT_DATE, 102) = CONVERT(NVARCHAR, CURRENT_TIMESTAMP, 102)
+				</isEqual>
+				<isEqual property="visitFlag" compareValue="YESTERDAY" prepend="AND">
+					  CONVERT(NVARCHAR, VISIT_DATE, 102) = CONVERT(NVARCHAR, DATEADD(DD, -1, CURRENT_TIMESTAMP), 102)
+				</isEqual>
+				<isEqual property="visitFlag" compareValue="LASTWEEK" prepend="AND">
+					  CONVERT(NVARCHAR, VISIT_DATE, 102) BETWEEN CONVERT(NVARCHAR, DATEADD(DD, -7, DATEADD(DD, -1 * DATEPART(DW, CURRENT_TIMESTAMP) + 1, CURRENT_TIMESTAMP)), 102) AND CONVERT(NVARCHAR, DATEADD(DD, -1, DATEADD(DD, -1 * DATEPART(DW, CURRENT_TIMESTAMP) + 1, CURRENT_TIMESTAMP)), 102)
+				</isEqual>
+				<isEqual property="visitFlag" compareValue="WEEK" prepend="AND">
+			          DATEPART(WK, VISIT_DATE) = DATEPART(WK, CURRENT_TIMESTAMP)
+			          AND YEAR(VISIT_DATE) =  YEAR(CURRENT_TIMESTAMP)
+				</isEqual>
+				<isEqual property="visitFlag" compareValue="MONTH" prepend="AND">
+					  CONVERT(NVARCHAR(7), VISIT_DATE, 102) = CONVERT(NVARCHAR(7), CURRENT_TIMESTAMP, 102)
+				</isEqual>
+				<isEqual property="visitFlag" compareValue="YEAR" prepend="AND">
+					   YEAR(VISIT_DATE) =  YEAR(CURRENT_TIMESTAMP)
+				</isEqual>
+			</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!-- ANSI -->  
+	<insert id="create" parameterClass="SocialBlogVisit"> 
+    	INSERT INTO IKEP4_SB_BLOG_VISIT ( 
+    		/* [SocialBlogVisit_SqlMap.xml] socialpack.socialblog.dao.SocialBlogVisit.create */
+     		<include refid="socialpack.socialblog.dao.SocialBlogVisit.sqlColumnList" />
+     	) VALUES (
+      		#blogId#, 
+      		#visitorId#, 
+      		CURRENT_TIMESTAMP
+    	) 
+  	</insert>
+
+	<!-- ANSI -->
+	<delete id="physicalDelete" parameterClass="SocialBlogVisit"> 
+    	DELETE FROM IKEP4_SB_BLOG_VISIT 
+    		/* [SocialBlogVisit_SqlMap.xml] socialpack.socialblog.dao.SocialBlogVisit.physicalDelete */
+    	WHERE BLOG_ID = #blogId# 
+    	AND VISITOR_ID = #visitorId#
+	</delete>   
+
+	<!-- ANSI -->  
+	<delete id="physicalDeleteThreadByBlogId" parameterClass="SocialBlogVisit"> 
+		DELETE FROM IKEP4_SB_BLOG_VISIT 
+    		/* [SocialBlogVisit_SqlMap.xml] socialpack.socialblog.dao.SocialBlogVisit.physicalDelete */
+		WHERE BLOG_ID = #blogId# 
+	</delete>   
+  
+	<!-- MS SQL -->
+    <select id="getVisitorManage" parameterClass="SocialBlogVisit" resultMap="resultSocialBlogVisitStatic"> 
+    	WITH CTE AS (
+			SELECT 1 LEV, DATEADD(DD, -6, CONVERT(DATETIME, #baseDate#)) AS VISIT_BASE_DATE
+			UNION ALL
+			SELECT LEV + 1, DATEADD(DD, 1, CTE.VISIT_BASE_DATE) AS VISIT_BASE_DATE
+			FROM CTE
+			WHERE LEV <![CDATA[<]]> 7
+		),
+		CTE2 AS (
+			SELECT 1 LEV, DATEADD(DD, -208, DATEADD(DAY, 1, DATEADD(DAY, -DATEPART(DD, CONVERT(DATETIME, #baseDate#)), CONVERT(DATETIME, #baseDate#)))) AS VISIT_DATE
+			UNION ALL
+			SELECT LEV + 1, DATEADD(DD, 1, CTE.VISIT_BASE_DATE) AS VISIT_DATE
+			FROM CTE
+			WHERE LEV + 1 <![CDATA[<]]> 210
+		)
+		SELECT A.VISIT_BASE_DATE, ISNULL(VISITOR_COUNT,0) AS VISITOR_COUNT
+		  FROM (
+		        <dynamic>
+					<isEqual property="baseDateType" compareValue="DAILY">     
+						SELECT * FROM CTE
+					</isEqual>
+					<isEqual property="baseDateType" compareValue="MONTH">
+						SELECT CONVERT(NVARCHAR(7), VISIT_DATE, 23) AS VISIT_BASE_DATE 
+						FROM CTE2
+						WHERE CONVERT(NVARCHAR(7), VISIT_DATE, 23) BETWEEN CONVERT(NVARCHAR(7), DATEADD(MM, -6, CONVERT(DATETIME, #baseDate#)), 23) AND CONVERT(NVARCHAR(7), CONVERT(DATETIME, #baseDate#), 23)
+				        GROUP BY CONVERT(NVARCHAR(7), VISIT_DATE, 23)
+					</isEqual>
+				</dynamic>
+		        ) A LEFT OUTER JOIN
+		       (
+				<dynamic>
+		       		<isEqual property="baseDateType" compareValue="DAILY">     
+						SELECT CONVERT(NVARCHAR, SBV.VISIT_DATE, 23) VISIT_BASE_DATE
+		               		, COUNT(*) AS VISITOR_COUNT
+		        		FROM IKEP4_SB_BLOG_VISIT SBV
+		        		WHERE SBV.BLOG_ID = #blogId#
+		        		GROUP BY CONVERT(NVARCHAR, SBV.VISIT_DATE, 23)
+					</isEqual>
+					<isEqual property="baseDateType" compareValue="MONTH">
+						SELECT CONVERT(NVARCHAR(7), SBV.VISIT_DATE, 23) VISIT_BASE_DATE
+		               		, COUNT(*) AS VISITOR_COUNT
+		        		FROM IKEP4_SB_BLOG_VISIT SBV
+		        		WHERE SBV.BLOG_ID = #blogId#
+		        		GROUP BY CONVERT(NVARCHAR(7), SBV.VISIT_DATE, 23)
+					</isEqual>
+				</dynamic>
+
+		       ) B ON A.VISIT_BASE_DATE = B.VISIT_BASE_DATE
+		 ORDER BY A.VISIT_BASE_DATE
+	</select> 
+
+</sqlMap> 

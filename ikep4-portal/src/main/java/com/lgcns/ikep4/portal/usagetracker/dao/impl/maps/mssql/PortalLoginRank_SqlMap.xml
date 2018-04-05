@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="portal.usagetracker.PortalLoginRank">
+	<typeAlias alias="PortalLoginRank" type="com.lgcns.ikep4.portal.usagetracker.model.PortalLoginRank" />
+
+	<!-- ANSI -->
+	<insert id="createLoginLog" parameterClass="PortalLoginRank">
+      	<![CDATA[
+      		/* [PortalLoginRank_SqlMap.xml] portal.usagetracker.PortalLoginRank.createLoginLog */ 
+			INSERT INTO IKEP4_UT_LOGIN_LOG
+			VALUES (#loginHistoryId#, #portalId#, #userId#, #ipAddress#, #userAgent#, #browser#, CURRENT_TIMESTAMP)
+       	]]>
+   	</insert>
+   	
+   	<!-- ANSI -->
+   	<select id="getLoginLog" parameterClass="String" resultClass="PortalLoginRank">
+	  <![CDATA[
+	  		/* [PortalLoginRank_SqlMap.xml] portal.usagetracker.PortalLoginRank.getLoginLog */
+		   SELECT 
+		   	   LOGIN_HISTORY_ID  loginHistoryId
+		   	 FROM IKEP4_UT_LOGIN_LOG 
+		   	WHERE LOGIN_HISTORY_ID = #loginHistoryId#
+	   ]]>
+	</select>
+</sqlMap>

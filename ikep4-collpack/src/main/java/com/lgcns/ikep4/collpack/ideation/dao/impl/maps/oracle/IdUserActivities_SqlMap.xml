@@ -1,0 +1,378 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="collpack.ideation.dao.IdUserActivities" >
+
+	<typeAlias alias = "IdUserActivities" type="com.lgcns.ikep4.collpack.ideation.model.IdUserActivities"/>
+
+ 	<typeAlias alias = "IdSearch" type="com.lgcns.ikep4.collpack.ideation.model.IdSearch"/>
+
+  <resultMap id="IdUserActivitiesResult" class="IdUserActivities" >
+    <result column="USER_ID" 				property="userId"  />
+    <result column="SUGGESTION_RANK" 		property="suggestionRank"  />
+    <result column="SUGGESTION_SCORE" 		property="suggestionScore"  />
+    <result column="CONTRIBUTION_RANK" 		property="contributionRank"  />
+    <result column="CONTRIBUTION_SCORE" 	property="contributionScore" />
+    <result column="ITEM_COUNT" 			property="itemCount" />
+    <result column="RECOMMEND_ITEM_COUNT" 	property="recommendItemCount" />
+    <result column="ADOPT_ITEM_COUNT" 		property="adoptItemCount"  />
+    <result column="BEST_ITEM_COUNT" 		property="bestItemCount"  />
+    <result column="BUSINESS_ITEM_COUNT" 	property="businessItemCount" />
+    <result column="RECOMMEND_COUNT" 		property="recommendCount" />
+    <result column="ADOPT_COUNT" 			property="adoptCount" />
+    <result column="FAVORITE_COUNT" 		property="favoriteCount" />
+	<result column="LINEREPLY_COUNT" 		property="linereplyCount" />
+	<result column="TEAM_NAME" 				property="teamName" />
+	<result column="JOB_TITLE_NAME" 		property="jobTitleName" />
+	<result column="USER_NAME" 				property="userName" />
+	<result column="USER_ENGLISH_NAME" 		property="userEnglishName" 		/>
+	<result column="TEAM_ENGLISH_NAME" 		property="teamEnglishName" 		/>
+	<result column="JOB_TITLE_ENGLISH_NAME" property="jobTitleEnglishName" 	/>
+  </resultMap>
+  
+  
+  <resultMap id="UserInfoResult" class="IdUserActivities" >
+    <result column="USER_ID" 				property="userId"  />
+	<result column="TEAM_NAME" 				property="teamName" />
+	<result column="JOB_TITLE_NAME" 		property="jobTitleName" />
+	<result column="USER_NAME" 				property="userName" />
+	<result column="USER_ENGLISH_NAME" 		property="userEnglishName" 		/>
+	<result column="TEAM_ENGLISH_NAME" 		property="teamEnglishName" 		/>
+	<result column="JOB_TITLE_ENGLISH_NAME" property="jobTitleEnglishName" 	/>
+  </resultMap>
+  
+  
+  <sql id="IdUserActivities_Column_List" >
+   	A.USER_ID
+     ,A.SUGGESTION_RANK
+     ,A.SUGGESTION_SCORE
+     ,A.CONTRIBUTION_RANK
+     ,A.CONTRIBUTION_SCORE
+     ,A.ITEM_COUNT
+     ,A.RECOMMEND_ITEM_COUNT
+     ,A.ADOPT_ITEM_COUNT
+     ,A.BEST_ITEM_COUNT
+     ,A.BUSINESS_ITEM_COUNT
+     ,A.RECOMMEND_COUNT
+     ,A.ADOPT_COUNT
+     ,A.FAVORITE_COUNT
+     ,A.LINEREPLY_COUNT
+     ,C.TEAM_NAME
+     ,D.JOB_TITLE_NAME
+     ,C.USER_NAME
+     ,C.USER_ENGLISH_NAME
+  	 ,C.TEAM_ENGLISH_NAME
+  	 ,D.JOB_TITLE_ENGLISH_NAME
+  </sql>
+  
+  
+   <insert id="create" parameterClass="IdUserActivities" >
+    INSERT INTO IKEP4_ID_USER_ACTIVITIES (			/* [IdUserActivities_SqlMap.xml] collpack.ideation.dao.IdUserActivities.create */ 
+    		USER_ID
+	     ,SUGGESTION_RANK
+	     ,SUGGESTION_SCORE
+	     ,CONTRIBUTION_RANK
+	     ,CONTRIBUTION_SCORE
+	     ,ITEM_COUNT
+	     ,RECOMMEND_ITEM_COUNT
+	     ,ADOPT_ITEM_COUNT
+	     ,BEST_ITEM_COUNT
+	     ,BUSINESS_ITEM_COUNT
+	     ,RECOMMEND_COUNT
+	     ,ADOPT_COUNT
+	     ,FAVORITE_COUNT
+	     ,LINEREPLY_COUNT
+      ) VALUES (
+      		#userId#
+      	<isEqual compareValue="-1"  property="suggestionRank" prepend=",">
+    	 	0
+    	</isEqual>
+    	<isNotEqual compareValue="-1"  property="suggestionRank" prepend=",">
+    	 	#suggestionRank#
+    	</isNotEqual>
+    	
+    	<isEqual compareValue="-1"  property="suggestionScore" prepend=",">
+    	 	0
+    	</isEqual>
+    	<isNotEqual compareValue="-1"  property="suggestionScore" prepend=",">
+    	 	#suggestionScore#
+    	</isNotEqual>
+    	
+    	<isEqual compareValue="-1"  property="contributionRank" prepend=",">
+    	 	0
+    	</isEqual>
+    	<isNotEqual compareValue="-1"  property="contributionRank" prepend=",">
+    	 	#contributionRank#
+    	</isNotEqual>
+    	
+    	<isEqual compareValue="-1"  property="contributionScore" prepend=",">
+    	 	0
+    	</isEqual>
+    	<isNotEqual compareValue="-1"  property="contributionScore" prepend=",">
+    	 	#contributionScore#
+    	</isNotEqual>
+    	
+    	<isEqual compareValue="-1"  property="itemCount" prepend=",">
+    	 	0
+    	</isEqual>
+    	<isNotEqual compareValue="-1"  property="itemCount" prepend=",">
+    	 	#itemCount#
+    	</isNotEqual>
+    	
+    	<isEqual compareValue="-1"  property="recommendItemCount" prepend=",">
+    	 	0
+    	</isEqual>
+    	<isNotEqual compareValue="-1"  property="recommendItemCount" prepend=",">
+    	 	#recommendItemCount#
+    	</isNotEqual>
+    	
+    	<isEqual compareValue="-1"  property="adoptItemCount" prepend=",">
+    	 	0
+    	</isEqual>
+    	<isNotEqual compareValue="-1"  property="adoptItemCount" prepend=",">
+    	 	#adoptItemCount#
+    	</isNotEqual>
+    	
+    	<isEqual compareValue="-1"  property="bestItemCount" prepend=",">
+    	 	0
+    	</isEqual>
+    	<isNotEqual compareValue="-1"  property="bestItemCount" prepend=",">
+    	 	#bestItemCount#
+    	</isNotEqual>
+    	
+    	<isEqual compareValue="-1"  property="businessItemCount" prepend=",">
+    	 	0
+    	</isEqual>
+    	<isNotEqual compareValue="-1"  property="businessItemCount" prepend=",">
+    	 	#businessItemCount#
+    	</isNotEqual>
+    	
+    	<isEqual compareValue="-1"  property="recommendCount" prepend=",">
+    	 	0
+    	</isEqual>
+    	<isNotEqual compareValue="-1"  property="recommendCount" prepend=",">
+    	 	#recommendCount#
+    	</isNotEqual>
+    	
+    	<isEqual compareValue="-1"  property="adoptCount" prepend=",">
+    	 	0
+    	</isEqual>
+    	<isNotEqual compareValue="-1"  property="adoptCount" prepend=",">
+    	 	#adoptCount#
+    	</isNotEqual>
+    	
+    	<isEqual compareValue="-1"  property="favoriteCount" prepend=",">
+    	 	0
+    	</isEqual>
+    	<isNotEqual compareValue="-1"  property="favoriteCount" prepend=",">
+    	 	#favoriteCount#
+    	</isNotEqual>
+    	
+    	<isEqual compareValue="-1"  property="linereplyCount" prepend=",">
+    	 	0
+    	</isEqual>
+    	<isNotEqual compareValue="-1"  property="linereplyCount" prepend=",">
+    	 	#linereplyCount#
+    	</isNotEqual>
+    	
+      )
+  </insert>
+  
+  
+   <select id="exists" resultClass="int" parameterClass="String" >
+    SELECT 					/* [IdUserActivities_SqlMap.xml] collpack.ideation.dao.IdUserActivities.get */ 
+	    COUNT(USER_ID)
+    FROM IKEP4_ID_USER_ACTIVITIES
+    WHERE USER_ID = #userId#
+  </select>
+  
+   <select id="get" resultMap="IdUserActivitiesResult" parameterClass="String" >
+    SELECT 					/* [IdUserActivities_SqlMap.xml] collpack.ideation.dao.IdUserActivities.get */ 
+	    
+	    <include refid="IdUserActivities_Column_List" />
+	    
+    FROM IKEP4_ID_USER_ACTIVITIES A, IKEP4_EV_USER C, IKEP4_EV_JOB_TITLE D
+    WHERE A.USER_ID = #userId#
+	     AND A.USER_ID = C.USER_ID
+	     AND C.JOB_TITLE_CODE = D.JOB_TITLE_CODE
+  </select>
+  
+   <select id="getUserInfo" resultMap="UserInfoResult" parameterClass="String" >
+    SELECT 					/* [IdUserActivities_SqlMap.xml] collpack.ideation.dao.IdUserActivities.getUserInfo */ 
+	    
+	   	 C.USER_ID
+	     ,C.TEAM_NAME
+	     ,D.JOB_TITLE_NAME
+	     ,C.USER_NAME
+	     ,C.USER_ENGLISH_NAME
+	  	 ,C.TEAM_ENGLISH_NAME
+	  	 ,D.JOB_TITLE_ENGLISH_NAME
+	    
+    FROM IKEP4_EV_USER C, IKEP4_EV_JOB_TITLE D
+    WHERE  C.USER_ID = #userId#
+	     AND C.JOB_TITLE_CODE = D.JOB_TITLE_CODE
+  </select>
+  
+  <select id="list" resultMap="IdUserActivitiesResult" parameterClass="IdSearch" >
+		    SELECT		/* [IdUserActivities_SqlMap.xml] collpack.ideation.dao.IdUserActivities.list */ 	
+			    
+		         <include refid="IdUserActivities_Column_List" />
+		         
+		     FROM IKEP4_ID_USER_ACTIVITIES A, IKEP4_EV_USER C, IKEP4_EV_JOB_TITLE D
+		     WHERE A.USER_ID = C.USER_ID
+			     AND C.JOB_TITLE_CODE = D.JOB_TITLE_CODE
+			    <isNotEmpty prepend="AND" property="endRowIndex">
+			   		<isNotEmpty  property="isSuggestion">
+			    	 	A.SUGGESTION_RANK &lt;= #endRowIndex# AND A.SUGGESTION_RANK &gt; 0
+			    	</isNotEmpty>
+			    	<isNotEmpty  property="isContribution">
+			    	 	A.CONTRIBUTION_RANK &lt;= #endRowIndex# AND A.SUGGESTION_RANK &gt; 0
+			    	</isNotEmpty>
+			    </isNotEmpty>
+			    <isNotEmpty prepend="AND" property="portalId">
+		    	 	D.PORTAL_ID = #portalId#
+		    	</isNotEmpty>
+	   		<isNotEmpty prepend="ORDER BY" property="isSuggestion">
+	    	 	A.SUGGESTION_SCORE DESC
+	    	</isNotEmpty>
+	    	<isNotEmpty prepend="ORDER BY" property="isContribution">
+	    	 	A.CONTRIBUTION_SCORE DESC
+	    	</isNotEmpty>
+	    	
+  </select>
+  
+  
+  <update id="update" parameterClass="IdUserActivities" >
+    UPDATE IKEP4_ID_USER_ACTIVITIES			/* [IdUserActivities_SqlMap.xml] collpack.ideation.dao.IdUserActivities.update */
+     <dynamic prepend="set" >
+      <isNotEqual compareValue="-1" prepend="," property="suggestionRank" >
+        SUGGESTION_RANK = #suggestionRank#
+      </isNotEqual>
+       <isNotEqual compareValue="-1"  prepend="," property="suggestionScore" >
+        SUGGESTION_SCORE = #suggestionScore#
+      </isNotEqual>
+      <isNotEqual compareValue="-1"  prepend="," property="contributionRank" >
+        CONTRIBUTION_RANK = #contributionRank#
+      </isNotEqual>
+      <isNotEqual compareValue="-1"  prepend="," property="contributionScore" >
+        CONTRIBUTION_SCORE = #contributionScore#
+      </isNotEqual>
+      <isNotEqual compareValue="-1"  prepend="," property="itemCount" >
+        ITEM_COUNT = #itemCount#
+      </isNotEqual>
+      <isNotEqual compareValue="-1"  prepend="," property="recommendItemCount" >
+        RECOMMEND_ITEM_COUNT = #recommendItemCount#
+      </isNotEqual>
+      <isNotEqual compareValue="-1"  prepend="," property="adoptItemCount" >
+        ADOPT_ITEM_COUNT = #adoptItemCount#
+      </isNotEqual>
+      <isNotEqual compareValue="-1"  prepend="," property="bestItemCount" >
+        BEST_ITEM_COUNT = #bestItemCount#
+      </isNotEqual>
+      <isNotEqual compareValue="-1"  prepend="," property="businessItemCount" >
+        BUSINESS_ITEM_COUNT = #businessItemCount#
+      </isNotEqual>
+      <isNotEqual compareValue="-1"  prepend="," property="recommendCount" >
+        RECOMMEND_COUNT = #recommendCount#
+     </isNotEqual>
+      <isNotEqual compareValue="-1"  prepend="," property="adoptCount" >
+        ADOPT_COUNT = #adoptCount#
+      </isNotEqual>
+      <isNotEqual compareValue="-1"  prepend="," property="favoriteCount" >
+        FAVORITE_COUNT = #favoriteCount#
+      </isNotEqual>
+      <isNotEqual compareValue="-1"  prepend="," property="linereplyCount" >
+        LINEREPLY_COUNT = #linereplyCount#
+      </isNotEqual>
+    </dynamic>
+    WHERE USER_ID = #userId#
+  </update>
+  
+  
+  <update id="updateItemCount" parameterClass="String" >
+    UPDATE IKEP4_ID_USER_ACTIVITIES			/* [IdUserActivities_SqlMap.xml] collpack.ideation.dao.IdUserActivities.updateItemCount */
+      SET  ITEM_COUNT = (SELECT COUNT(ITEM_ID) FROM IKEP4_ID_IDEA WHERE REGISTER_ID = #userId#)
+    WHERE USER_ID = #userId#
+  </update>
+  
+  
+   <update id="updateFavoriteCount" parameterClass="IdUserActivities" >
+    UPDATE IKEP4_ID_USER_ACTIVITIES			/* [IdUserActivities_SqlMap.xml] collpack.ideation.dao.IdUserActivities.updateFavoriteCount */
+     SET   FAVORITE_COUNT = #favoriteCount#
+    WHERE USER_ID = #userId#
+  </update>
+  
+  <update id="updateBusinessItemCount" parameterClass="String" >
+    UPDATE IKEP4_ID_USER_ACTIVITIES			/* [IdUserActivities_SqlMap.xml] collpack.ideation.dao.IdUserActivities.updateBusinessItemCount */
+      SET  BUSINESS_ITEM_COUNT = (SELECT COUNT(ITEM_ID) FROM IKEP4_ID_IDEA WHERE REGISTER_ID = #userId# AND BUSINESS_ITEM &gt; 0)
+    WHERE USER_ID = #userId#
+  </update>
+  
+  
+  <update id="updateRecommendItemCount" parameterClass="String" >
+    UPDATE IKEP4_ID_USER_ACTIVITIES			/* [IdUserActivities_SqlMap.xml] collpack.ideation.dao.IdUserActivities.updateRecommendItemCount */
+     SET   RECOMMEND_ITEM_COUNT = (SELECT COUNT(ITEM_ID) FROM IKEP4_ID_IDEA WHERE REGISTER_ID = #userId# AND RECOMMEND_ITEM = 1)
+    WHERE USER_ID = #userId#
+  </update>
+  
+  <update id="updateRecommendCount" parameterClass="String" >
+    UPDATE IKEP4_ID_USER_ACTIVITIES			/* [IdUserActivities_SqlMap.xml] collpack.ideation.dao.IdUserActivities.updateRecommendItemCount */
+      SET  RECOMMEND_COUNT = (SELECT COUNT(ITEM_ID) FROM IKEP4_ID_RECOMMEND WHERE REGISTER_ID = #userId# )
+    WHERE USER_ID = #userId#
+  </update>
+  
+  <update id="updateAdoptiItemCount" parameterClass="String" >
+    UPDATE IKEP4_ID_USER_ACTIVITIES			/* [IdUserActivities_SqlMap.xml] collpack.ideation.dao.IdUserActivities.updateAdoptiItemCount */
+      SET  ADOPT_ITEM_COUNT = (SELECT COUNT(ITEM_ID) FROM IKEP4_ID_IDEA WHERE REGISTER_ID = #userId# AND ADOPT_ITEM = 1)
+    WHERE USER_ID = #userId#
+  </update>
+  
+  
+   <update id="updateAdoptCount" parameterClass="String" >
+    UPDATE IKEP4_ID_USER_ACTIVITIES			/* [IdUserActivities_SqlMap.xml] collpack.ideation.dao.IdUserActivities.updateAdoptCount */
+      SET  ADOPT_COUNT = (SELECT COUNT(ITEM_ID) from (SELECT ITEM_ID  FROM IKEP4_ID_LINEREPLY WHERE REGISTER_ID = #userId# AND ADOPT_LINEREPLY = 1 GROUP BY ITEM_ID))
+    WHERE USER_ID = #userId#
+  </update>
+  
+  
+  
+   <update id="updateIncrease" parameterClass="IdUserActivities" >
+	    UPDATE IKEP4_ID_USER_ACTIVITIES			/* [IdUserActivities_SqlMap.xml] collpack.ideation.dao.IdUserActivities.updateIncrease */
+	    <dynamic prepend="set">
+		    <isNotEqual compareValue="-1"  property="itemCount" prepend="," >
+		     	ITEM_COUNT = ITEM_COUNT + #itemCount#
+		    </isNotEqual>
+		    <isNotEqual compareValue="-1"  property="recommendItemCount" prepend="," >
+		     	RECOMMEND_ITEM_COUNT = RECOMMEND_ITEM_COUNT + #recommendItemCount#
+		    </isNotEqual>
+		    <isNotEqual compareValue="-1"  property="adoptItemCount" prepend="," >
+		     	ADOPT_ITEM_COUNT = ADOPT_ITEM_COUNT + #adoptItemCount#
+		    </isNotEqual>
+		    <isNotEqual compareValue="-1"  property="bestItemCount" prepend="," >
+		     	BEST_ITEM_COUNT = BEST_ITEM_COUNT + #bestItemCount#
+		    </isNotEqual>
+		    <isNotEqual compareValue="-1"  property="businessItemCount" prepend="," >
+		     	BUSINESS_ITEM_COUNT = BUSINESS_ITEM_COUNT + #businessItemCount#
+		    </isNotEqual>
+		    <isNotEqual compareValue="-1"  property="recommendCount" prepend="," >
+		     	RECOMMEND_COUNT = RECOMMEND_COUNT + #recommendCount#
+		    </isNotEqual>
+		    <isNotEqual compareValue="-1"  property="adoptCount" prepend="," >
+		     	ADOPT_COUNT = ADOPT_COUNT + #adoptCount#
+		    </isNotEqual>
+		    <isNotEqual compareValue="-1"  property="favoriteCount" prepend="," >
+		     	FAVORITE_COUNT = FAVORITE_COUNT + #favoriteCount#
+		    </isNotEqual>
+		    <isNotEqual compareValue="-1"  property="linereplyCount" prepend="," >
+		     	LINEREPLY_COUNT = LINEREPLY_COUNT + #linereplyCount#
+		    </isNotEqual>
+	    </dynamic>
+	     WHERE USER_ID = #userId#
+  </update>
+  
+   <delete id="remove" parameterClass="String" >
+    DELETE 					/* [IdUserActivities_SqlMap.xml] collpack.ideation.dao.IdUserActivities.remove */
+    FROM IKEP4_ID_USER_ACTIVITIES
+    WHERE USER_ID = #userId#
+  </delete>
+  
+</sqlMap>

@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="com.lgcns.ikep4.workflow.engine.model.ServiceBean" >
+	<typeAlias alias = "ServiceBean" type="com.lgcns.ikep4.workflow.engine.model.ServiceBean"/>
+	
+
+
+	<!-- insert -->
+	<insert id="com.lgcns.ikep4.workflow.engine.model.ServiceBean.insert" parameterClass="ServiceBean">
+      <![CDATA[ 
+      		/* [Service_SqlMap.xml] com.lgcns.ikep4.workflow.engine.model.ServiceBean.insert */
+      		
+			INSERT INTO IKEP4_WF_SERVICE (							
+				SERVICE_ID, PROCESS_ID, PROCESS_VER, BASE_CHECK, 
+				CREATE_DATE, APPLY_START_DATE, APPLY_END_DATE
+			) VALUES ( 	
+				#serviceId#, #processId#, #processVer#, #baseCheck#, 
+				#createDate#, #applyStartDate#, #applyEndDate#
+			)
+       ]]>
+   </insert>
+   
+	<!-- select -->
+	<select id="com.lgcns.ikep4.workflow.engine.model.ServiceBean.selectStartService" parameterClass="ServiceBean" resultClass="ServiceBean">
+      <![CDATA[ 
+            SELECT  SERVICE_ID AS serviceId,
+                    PROCESS_ID AS processId,
+                    PROCESS_VER AS processVer,
+                    BASE_CHECK AS baseCheck,
+                    CREATE_DATE AS createDate,
+                    APPLY_START_DATE AS applyStartDate,
+                    APPLY_END_DATE AS applyEndDate
+              FROM  IKEP4_WF_SERVICE 
+			 WHERE  SERVICE_ID = #serviceId#
+               AND  APPLY_START_DATE <= SYSDATE
+               AND  SYSDATE <= APPLY_END_DATE
+             ORDER BY PROCESS_VER DESC  
+       ]]>
+   </select>   
+   
+	<!-- select -->
+	<select id="com.lgcns.ikep4.workflow.engine.model.ServiceBean.selectCompleteService" parameterClass="ServiceBean" resultClass="ServiceBean">
+            SELECT  INS.INSTANCE_ID AS instanceId,
+                    TODO.LOG_ID AS logId,
+                    SRV.SERVICE_ID AS serviceId,
+                    SRV.PROCESS_ID AS processId,
+                    SRV.PROCESS_VER AS processVer,
+                    SRV.BASE_CHECK AS baseCheck,
+                    SRV.CREATE_DATE AS createDate,
+                    SRV.APPLY_START_DATE AS applyStartDate,
+                    SRV.APPLY_END_DATE AS applyEndDate
+              FROM  IKEP4_WF_SERVICE SRV,
+                    IKEP4_WF_INSTANCE INS,
+                    IKEP4_WF_TODO_LIST TODO
+             WHERE  SRV.PROCESS_ID  = INS.PROCESS_ID
+               AND  SRV.PROCESS_VER = INS.PROCESS_VER
+               AND  INS.INSTANCE_ID = TODO.INSTANCE_ID
+               AND  SRV.SERVICE_ID  = #serviceId#
+        <isNotEmpty property="appKey01">
+		   	   AND  INS.APP_KEY01   = #appKey01#
+		</isNotEmpty>   
+        <isNotEmpty property="appKey02">
+		   	   AND  INS.APP_KEY02   = #appKey02#
+		</isNotEmpty>   
+        <isNotEmpty property="appKey03">
+		   	   AND  INS.APP_KEY03   = #appKey03#
+		</isNotEmpty>
+        <isNotEmpty property="appKey04">
+		   	   AND  INS.APP_KEY04   = #appKey04#
+		</isNotEmpty>
+        <isNotEmpty property="appKey05">
+		   	   AND  INS.APP_KEY05   = #appKey05#
+		</isNotEmpty>
+        <isNotEmpty property="appKey06">
+		   	   AND  INS.APP_KEY06   = #appKey06#
+		</isNotEmpty>
+        <isNotEmpty property="appKey07">
+		   	   AND  INS.APP_KEY07   = #appKey07#
+		</isNotEmpty>
+        <isNotEmpty property="appKey08">
+		   	   AND  INS.APP_KEY08   = #appKey08#
+		</isNotEmpty>
+        <isNotEmpty property="appKey09">
+		   	   AND  INS.APP_KEY09   = #appKey09#
+		</isNotEmpty>
+        <isNotEmpty property="appKey10">
+		   	   AND  INS.APP_KEY10   = #appKey10#
+		</isNotEmpty>
+   </select>      
+
+</sqlMap>

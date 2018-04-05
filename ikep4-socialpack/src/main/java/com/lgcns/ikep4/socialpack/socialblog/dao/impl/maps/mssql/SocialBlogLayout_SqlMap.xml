@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="socialpack.socialblog.dao.SocialBlogLayout">
+
+	<typeAlias alias="SocialBlogLayout" type="com.lgcns.ikep4.socialpack.socialblog.model.SocialBlogLayout"/>
+  
+	<!-- IKEP4_AD_ADDRGROUP 테이블 조회 결과 -->
+	<resultMap id="resultSocialBlogLayout" class="SocialBlogLayout" groupBy="layoutId">
+		<result property="layoutId" column="LAYOUT_ID" columnIndex="1"/>
+		<result property="layoutName" column="LAYOUT_NAME" columnIndex="2"/>
+		<result property="colCount" column="COL_COUNT" columnIndex="3"/>
+		<result property="imageUrl" column="IMAGE_URL" columnIndex="4"/>
+		<result property="isDefault" column="IS_DEFAULT" columnIndex="5"/>
+		<result property="layoutEnglishName" column="LAYOUT_ENGLISH_NAME" columnIndex="6"/>
+		<result property="socialBlogLayoutColumnList" column="LAYOUT_ID" select="socialpack.socialblog.dao.SocialBlogLayoutColumn.listByLayoutId" />
+	</resultMap>
+
+	<sql id="sqlColumnList"> 
+	    LAYOUT_ID, 
+	    LAYOUT_NAME, 
+	    COL_COUNT,
+	    IMAGE_URL,
+	    IS_DEFAULT,
+	    LAYOUT_ENGLISH_NAME
+	</sql>  
+    
+    <!-- ANSI -->
+	<select id="get" parameterClass="java.lang.String" resultMap="resultSocialBlogLayout"> 
+		SELECT 
+			/* [SocialBlogLayout_SqlMap.xml] socialpack.socialblog.dao.SocialBlogLayout.get */
+			<include refid="socialpack.socialblog.dao.SocialBlogLayout.sqlColumnList" /> 
+		FROM  IKEP4_SB_LAYOUT
+    	WHERE LAYOUT_ID = #layoutId# 
+	</select>
+
+	<!-- ANSI -->
+	<select id="exists" parameterClass="java.lang.String" resultClass="int"> 
+		SELECT /* [SocialBlogLayout_SqlMap.xml] socialpack.socialblog.dao.SocialBlogLayout.exists */
+			COUNT(*)
+		FROM  IKEP4_SB_LAYOUT
+		WHERE LAYOUT_ID = #layoutId#
+	</select> 
+
+	<!-- ANSI -->  
+	<select id="listSocialBlogLayout" parameterClass="java.lang.String" resultMap="resultSocialBlogLayout">  
+		SELECT 
+			/* [SocialBlogLayout_SqlMap.xml] socialpack.socialblog.dao.SocialBlogLayout.listSocialBlogLayout */ 
+			<include refid="socialpack.socialblog.dao.SocialBlogLayout.sqlColumnList" /> 
+		FROM   IKEP4_SB_LAYOUT 
+		ORDER BY LAYOUT_ID
+	</select>   
+
+	<!-- ANSI -->
+	<select id="countSocialBlogLayout" parameterClass="java.lang.String" resultClass="int">  
+		SELECT /* [SocialBlogLayout_SqlMap.xml] socialpack.socialblog.dao.SocialBlogLayout.countSocialBlogLayout */ 
+           COUNT(*)
+		FROM   IKEP4_SB_LAYOUT 
+  	</select>
+
+	<!-- ANSI -->  	
+  	<select id="getDefaultLayout" parameterClass="java.lang.String" resultMap="resultSocialBlogLayout"> 
+		SELECT
+			/* [SocialBlogLayout_SqlMap.xml] socialpack.socialblog.dao.SocialBlogLayout.getDefaultLayout */ 
+			<include refid="socialpack.socialblog.dao.SocialBlogLayout.sqlColumnList" /> 
+		FROM IKEP4_SB_LAYOUT 
+		WHERE  IS_DEFAULT = '1' 
+	</select>
+
+	<!-- ANSI -->	
+  	<select id="isDefaultLayout" parameterClass="java.lang.String" resultClass="int"> 
+		SELECT
+			/* [SocialBlogLayout_SqlMap.xml] socialpack.socialblog.dao.SocialBlogLayout.isDefaultLayout */ 
+			COUNT(*)
+		FROM IKEP4_SB_LAYOUT 
+		WHERE  IS_DEFAULT = #isDefault# 
+	</select>
+	
+	<!-- ANSI --> 
+	<insert id="create" parameterClass="SocialBlogLayout"> 
+		INSERT INTO IKEP4_SB_LAYOUT ( 
+			/* [SocialBlogLayout_SqlMap.xml] socialpack.socialblog.dao.SocialBlogLayout.create */
+			<include refid="socialpack.socialblog.dao.SocialBlogLayout.sqlColumnList" />
+		) VALUES (
+			#layoutId#, 
+			#layoutName#, 
+			#colCount#, 
+			#imageUrl#,
+			#isDefault#,
+			#layoutEnglishName#
+    	) 
+	</insert>
+
+	<!-- ANSI -->	
+	<update id="update" parameterClass="SocialBlogLayout"> 
+		UPDATE IKEP4_SB_LAYOUT 
+			/* [SocialBlogLayout_SqlMap.xml] socialpack.socialblog.dao.SocialBlogLayout.update */
+    	SET LAYOUT_NAME     	= #layoutName#,
+    		COL_COUNT     		= #colCount#,
+    		IMAGE_URL     		= #imageUrl#,
+          	IS_DEFAULT    		= #isDefault#,
+          	LAYOUT_ENGLISH_NAME = #layoutEnglishName#
+		WHERE LAYOUT_ID = #layoutId#
+	</update>
+
+	<!-- ANSI --> 
+	<delete id="physicalDelete" parameterClass="java.lang.String"> 
+		DELETE FROM IKEP4_SB_LAYOUT 
+			/* [SocialBlogLayout_SqlMap.xml] socialpack.socialblog.dao.SocialBlogLayout.physicalDelete */
+		WHERE LAYOUT_ID = #layoutId# 
+	</delete>  
+
+</sqlMap> 

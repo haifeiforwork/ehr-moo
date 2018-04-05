@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="lightpack.planner.dao.Alarm" >
+	<typeAlias alias = "Alarm" type="com.lgcns.ikep4.lightpack.planner.model.Alarm"/>
+	<typeAlias alias = "User" type="com.lgcns.ikep4.support.user.member.model.User"/>
+	
+	<resultMap id="alarmResult" class="Alarm">
+		<result property="scheduleId" column="scheduleId"/>
+		<result property="alarmId" column="alarmId"/>
+		<result property="alarmType" column="alarmType"/>
+		<result property="alarmTime" column="alarmTime"/>		
+	</resultMap>
+   
+	<resultMap id="alarmTargetListResult" class="java.util.HashMap" groupBy="scheduleId">
+		<result property="scheduleId" column="SCHEDULEID" />
+		<result property="startDate" column="STARTDATE" javaType="java.util.Date"  />		
+		<result property="endDate" column="ENDDATE" javaType="java.util.Date"  />	
+		<result property="senderUserId" column="SENDERUSERID" />
+		<result property="sender" column="SENDER" />
+		<result property="fromMail" column="FROMMAIL" />
+		<result property="mailPassword" column="mailPassword" />
+		<result property="title" column="TITLE" />	
+		<result property="details" javaType="java.util.ArrayList" resultMap="lightpack.planner.dao.Alarm.alarmTargetListResultSub" />	
+	</resultMap>
+	
+	<resultMap id="alarmTargetListResultSub" class="java.util.HashMap">
+		<result property="atime" column="ATIME" javaType="java.util.Date" typeHandler="com.ibatis.sqlmap.engine.type.SqlTimestampTypeHandler" />
+		<result property="alarmId" column="ALARM_ID" />
+		<result property="alarmType" column="ALARM_TYPE" />
+		<result property="targetUserId" column="TARGETUSERID" />
+		<result property="targetUser" column="TARGETUSER" />	
+		<result property="toMail" column="TOMAIL" />	
+		<result property="mobile" column="MOBILE" />	
+	</resultMap>	
+
+   	<!-- ANSI -->
+	<!-- insert -->
+	<insert id="insert" parameterClass="Alarm"> 
+      <![CDATA[ 
+		Insert into IKEP4_SD_ALARM (ALARM_ID,SCHEDULE_ID,ALARM_TYPE,ALARM_TIME) 
+		VALUES (#alarmId#, #scheduleId#, #alarmType#, #alarmTime#)	
+       ]]>
+   </insert>	
+   
+   	<!-- MS SQL -->
+	<!-- insert list -->
+	<insert id="insertList" parameterClass="map"> 
+		<iterate conjunction=" " property="items">		
+		  Insert
+		  into IKEP4_SD_ALARM (ALARM_ID,SCHEDULE_ID,ALARM_TYPE,ALARM_TIME)
+		  VALUES (#items[].alarmId#, #items[].scheduleId#, #items[].alarmType#, #items[].alarmTime#)
+		</iterate>		
+   </insert>
+   
+   <!-- select -->
+	<select id="select" parameterClass="java.lang.String" resultClass="Alarm">
+	  <![CDATA[
+
+	   ]]>
+	</select>
+	
+	<!-- ANSI -->
+   <!-- select list -->
+	<select id="selectList" parameterClass="java.lang.String" resultMap="alarmResult">
+	  <![CDATA[
+		select schedule_id "scheduleId", 
+		alarm_id "alarmId", alarm_type "alarmType", alarm_time "alarmTime"
+		from ikep4_sd_alarm d
+		where schedule_id = #userId#			
+	   ]]>
+	</select>
+		
+	<!-- update -->
+	<update id="update" parameterClass="Alarm">
+	  <![CDATA[
+
+	   ]]>
+	</update>
+	
+	<!-- getList -->
+	<select id="getList" resultClass="Alarm">
+	  <![CDATA[
+
+	   ]]>
+	</select>
+	
+	<!-- ANSI -->
+   <!-- delete -->
+   <delete id="delete" parameterClass="java.lang.String">
+      <![CDATA[
+		delete from ikep4_sd_alarm
+		where schedule_id = #userId#		
+	   ]]>
+	</delete>
+	
+	<!-- ANSI -->
+	<!-- updateAlarmSent -->
+	<update id="updateAlarmSent">
+		UPDATE IKEP4_SD_ALARM SET SENT = NULL WHERE ALARM_ID IN
+	       <iterate open="(" close=")" conjunction=",">
+	       		#[]#
+	       </iterate>	
+	</update>
+	
+	<!-- ANSI -->
+	<select id="getUserInfoList"  resultClass="User">
+		select user_id "userId", user_name "userName", USER_ENGLISH_NAME "userEnglishName", mail "mail", MAIL_PASSWORD "mailPassword"
+		from ikep4_ev_user
+		where user_id in 
+	      <iterate open="(" close=")" conjunction=",">
+	      		#[]#
+	      </iterate>		
+	</select>
+</sqlMap>

@@ -1,0 +1,639 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="approval.admin.dao.ApprAdminForm" >
+	
+	<!-- class declare  -->
+	<typeAlias alias="apprForm" 					type="com.lgcns.ikep4.approval.admin.model.ApprForm" />
+	<typeAlias alias="apprFormSearchCondition"		type="com.lgcns.ikep4.approval.admin.search.ApprFormSearchCondition" />
+	
+	<!-- apprForm list  -->
+	<resultMap id="apprFormListResult" class="apprForm">
+		<result property="formId" 			column="FORM_ID" 			jdbcType="VARCHAR"/>
+		<result property="formName" 		column="FORM_NAME" 			jdbcType="VARCHAR"/>
+		<result property="formParentId" 	column="FORM_PARENT_ID" 	jdbcType="VARCHAR"/>
+		<result property="formParentName" 	column="FORM_PARENT_NAME" 	jdbcType="VARCHAR"/>
+		<result property="usage" 			column="USAGE" 				jdbcType="DECIMAL"/>
+		<result property="apprDocType" 		column="APPR_DOC_TYPE" 		jdbcType="DECIMAL"/>
+		<result property="favoriteId" 		column="FAVORITE_ID" 		jdbcType="VARCHAR"/>
+		<result property="registDate" 		column="REGIST_DATE" 		jdbcType="TIMESTAMP"/>
+	</resultMap>
+	
+	<!--apprForm detail -->
+	<resultMap id="apprFormDetailResult" class="apprForm">
+		<result property="systemId" 		column="SYSTEM_ID" 			jdbcType="VARCHAR"/>
+		<result property="formId" 			column="FORM_ID" 			jdbcType="VARCHAR"/>
+		<result property="formName" 	    column="FORM_NAME" 			jdbcType="VARCHAR"/>
+		<result property="formParentId" 	column="FORM_PARENT_ID" 	jdbcType="VARCHAR"/>
+		<result property="formParentName" 	column="FORM_PARENT_NAME" 	jdbcType="VARCHAR"/>
+		<result property="apprDocType" 		column="APPR_DOC_TYPE" 		jdbcType="DECIMAL"/>
+		<result property="formDesc" 		column="FORM_DESC" 			jdbcType="VARCHAR"/>
+		<result property="usage" 			column="USAGE" 				jdbcType="DECIMAL"/>
+		<result property="periodUsage" 		column="PERIOD_USAGE" 		jdbcType="DECIMAL"/>
+		<result property="startDate" 		column="START_DATE" 		jdbcType="TIMESTAMP"/>
+		<result property="endDate" 			column="END_DATE" 			jdbcType="TIMESTAMP"/>
+		<result property="defLineId" 		column="DEF_LINE_ID" 		jdbcType="VARCHAR"/>
+		<result property="defLineUse" 		column="DEF_LINE_USE" 		jdbcType="DECIMAL"/>
+		<result property="isDefLineUpdate" 	column="IS_DEF_LINE_UPDATE" jdbcType="DECIMAL"/>
+		<result property="isApprPeriod" 	column="IS_APPR_PERIOD" 	jdbcType="DECIMAL"/>
+		<result property="apprPeriodCd" 	column="APPR_PERIOD_CD" 	jdbcType="VARCHAR"/>
+		<result property="isApprSecurity" 	column="IS_APPR_SECURITY" 	jdbcType="DECIMAL"/>
+		<result property="apprSecurityType" column="APPR_SECURITY_TYPE" jdbcType="DECIMAL"/>
+		<result property="isApprTitle" 		column="IS_APPR_TITLE" 		jdbcType="DECIMAL"/>
+		<result property="isApprAttach" 	column="IS_APPR_ATTACH" 	jdbcType="DECIMAL"/>
+		<result property="authUse" 			column="AUTH_USE" 			jdbcType="DECIMAL"/>
+		<result property="authUserId" 		column="AUTH_USER_ID" 		jdbcType="VARCHAR"/>
+		<result property="authUserName" 	column="AUTH_USER_NAME" 	jdbcType="VARCHAR"/>
+		<result property="formVersion" 		column="FORM_VERSION" 		jdbcType="DECIMAL"/>
+		<result property="isApprEditor" 	column="IS_APPR_EDITOR" 	jdbcType="DECIMAL"/>
+		<result property="formGuide" 		column="FORM_GUIDE" 		jdbcType="VARCHAR"/>
+		<result property="formEditorData" 	column="FORM_EDITOR_DATA" 	jdbcType="VARCHAR"/>
+		<result property="formLayoutData"   column="FORM_LAYOUT_DATA" 	jdbcType="VARCHAR"/>
+		<result property="isLinkUrl" 		column="IS_LINK_URL" 		jdbcType="DECIMAL"/>
+		<result property="linkUrl" 			column="LINK_URL" 			jdbcType="VARCHAR"/>
+		<result property="linkDataType" 	column="LINK_DATA_TYPE" 	jdbcType="DECIMAL"/>
+	</resultMap>
+	
+	<!-- apprForm list  -->
+	<resultMap id="apprFormHistoryListResult" class="apprForm">
+		<result property="formId" 			column="FORM_ID" 			jdbcType="VARCHAR"/>
+		<result property="formVersion" 		column="FORM_VERSION" 		jdbcType="DECIMAL"/>
+		<result property="isApprEditor" 	column="IS_APPR_EDITOR" 	jdbcType="DECIMAL"/>
+		<result property="formGuide" 		column="FORM_GUIDE" 		jdbcType="VARCHAR"/>
+		<result property="formEditorData" 	column="FORM_EDITOR_DATA" 	jdbcType="VARCHAR"/>
+		<result property="formLayoutData" 	column="FORM_LAYOUT_DATA" 	jdbcType="VARCHAR"/>
+		<result property="changeReason" 	column="CHANGE_REASON" 		jdbcType="VARCHAR"/>
+		<result property="updaterId" 		column="UPDATER_ID" 		jdbcType="VARCHAR"/>
+		<result property="updaterName" 		column="UPDATER_NAME" 		jdbcType="VARCHAR"/>
+		<result property="updateDate"       column="UPDATE_DATE" 		jdbcType="TIMESTAMP"/>
+	</resultMap>
+	
+	<!-- apprForm reference list -->
+	<resultMap id="apprReferenceResult" class="apprForm">
+		<result property="userId"   		column="USER_ID" 			jdbcType="VARCHAR"/>
+		<result property="groupId"   		column="GROUP_ID" 			jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	<!-- apprForm system list -->
+	<resultMap id="apprSystemResult" class="apprForm">
+		<result property="systemId"   		column="SYSTEM_ID" 			jdbcType="VARCHAR"/>
+		<result property="systemName"   	column="SYSTEM_NAME" 		jdbcType="VARCHAR"/>
+		<result property="systemType"   	column="SYSTEM_TYPE" 		jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	<!-- apprForm favorite list -->
+	<resultMap id="apprFavoriteResult" class="apprForm">
+		<result property="formId" 			column="FORM_ID" 			jdbcType="VARCHAR"/>
+		<result property="formName" 		column="FORM_NAME" 			jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	<!--apprForm 카운트 -->
+	<select id="countBySearchCondition" parameterClass="apprFormSearchCondition" resultClass="int">  
+  		<![CDATA[
+  		/* [ApprAdminForm_SqlMap.xml] approval.admin.dao.ApprAdminForm.countBySearchCondition */
+		SELECT	COUNT(FORM_ID)
+		FROM 	IKEP4_APPR_FORM A
+				INNER JOIN IKEP4_APPR_CODE B
+		ON		A.FORM_PARENT_ID = B.CODE_ID
+		AND		A.PORTAL_ID = #portalId#
+		AND		B.USAGE = '1'
+		AND		A.FORM_PARENT_ID IN(SELECT CODE_ID FROM dbo.FN_APPR_CODE_LIST (#formParentId#))
+        ]]>     
+        
+        <isNotEmpty property="receive">
+			<isEqual property="receive" compareValue="0">
+			AND	APPR_DOC_TYPE = 0
+			</isEqual>
+		</isNotEmpty>
+		
+		<isEqual property="usage" compareValue="0">
+        AND		CASE WHEN A.USAGE=0 THEN 'TRUE'
+      			WHEN A.USAGE=1 AND A.START_DATE IS NOT NULL THEN
+      				CASE WHEN GETDATE() BETWEEN A.START_DATE AND DATEADD(d, 1, A.END_DATE) THEN 'FALSE'
+      				ELSE 'TRUE'
+      				END
+      			ELSE 'FALSE'
+      			END = 'TRUE'
+         </isEqual>
+		
+		<isEqual property="usage" compareValue="1">
+        AND 	A.USAGE = #usage#
+        AND		CASE WHEN A.START_DATE IS NULL THEN 'TRUE'
+        		WHEN GETDATE() BETWEEN A.START_DATE AND DATEADD(d, 1, A.END_DATE) THEN 'TRUE'
+        		ELSE 'FALSE'
+        		END = 'TRUE'
+        		
+        </isEqual>                 		
+		
+		<isNotEmpty property="searchWord">
+		AND		A.FORM_NAME LIKE '%' + #searchWord# + '%'
+		</isNotEmpty>
+		
+  	</select> 
+  	
+  	<!--apprForm 목록-->
+  	<select id="listBySearchCondition" parameterClass="apprFormSearchCondition" resultMap="apprFormListResult">
+		<![CDATA[
+  		/* [ApprAdminForm_SqlMap.xml] approval.admin.dao.ApprAdminForm.listBySearchCondition */
+		SELECT	*
+		FROM 	(
+  					SELECT	ROWNUM AS NUM,
+	     					FORM_ID,
+                            FORM_NAME,
+                            FORM_PARENT_ID,
+                            CODE_NAME FORM_PARENT_NAME,
+                            USAGE,
+                            APPR_DOC_TYPE,
+                            FAVORITE_ID,
+							REGIST_DATE
+  					FROM 	(
+								SELECT	Row_Number() OVER(ORDER BY
+		]]>								 
+								<isNotEmpty property="sortColumn">
+									<isEqual property="sortColumn" compareValue="FORM_PARENT_ID">
+										<isEqual property="sortType" compareValue="DESC">
+											C.SORT_ORDER DESC, A.FORM_NAME ASC
+										</isEqual>
+										<isEqual property="sortType" compareValue="ASC">
+											C.SORT_ORDER ASC, A.FORM_NAME ASC
+										</isEqual>
+									</isEqual>
+									
+									<isEqual property="sortColumn" compareValue="APPR_DOC_TYPE">
+										<isEqual property="sortType" compareValue="DESC">
+											A.APPR_DOC_TYPE DESC, A.FORM_NAME ASC
+										</isEqual>
+										<isEqual property="sortType" compareValue="ASC">
+											A.APPR_DOC_TYPE ASC, A.FORM_NAME ASC
+										</isEqual>
+									</isEqual>
+									
+									<isEqual property="sortColumn" compareValue="FORM_NAME">
+										<isEqual property="sortType" compareValue="DESC">
+											A.FORM_NAME DESC
+										</isEqual>
+										<isEqual property="sortType" compareValue="ASC">
+											A.FORM_NAME ASC
+										</isEqual>
+									</isEqual>  
+								
+									<isEqual property="sortColumn" compareValue="REGIST_DATE">
+										<isEqual property="sortType" compareValue="DESC">
+											A.REGIST_DATE DESC, A.FORM_NAME ASC
+										</isEqual>
+										<isEqual property="sortType" compareValue="ASC">
+											A.REGIST_DATE ASC, A.FORM_NAME ASC
+										</isEqual>
+									</isEqual>
+									
+									<isEqual property="sortColumn" compareValue="FAVORITE_ID">
+										ISNULL(D.FAVORITE_ID, '0') DESC, A.FORM_NAME ASC
+									</isEqual>
+			                  	</isNotEmpty>
+			                    <isEmpty property="sortColumn">
+			                   		A.FORM_NAME ASC
+								</isEmpty>
+		<![CDATA[						) ROWNUM,		
+										A.FORM_ID,
+					       				A.FORM_NAME,
+					      				A.FORM_PARENT_ID,
+					        			CASE #localeCode# WHEN 'ko' THEN B.CODE_KR_NAME
+										ELSE ISNULL(B.CODE_EN_NAME, B.CODE_KR_NAME)
+										END CODE_NAME,
+					       				A.USAGE,
+					       				A.APPR_DOC_TYPE,
+		]]>
+								       	<isEmpty property="userId">
+								       	'' FAVORITE_ID,
+								       	</isEmpty>
+								       	<isNotEmpty property="userId">
+								       	D.FAVORITE_ID,
+								       	</isNotEmpty>
+								       	A.REGIST_DATE
+								FROM 	IKEP4_APPR_FORM A
+										INNER JOIN IKEP4_APPR_CODE B
+								ON		A.FORM_PARENT_ID = B.CODE_ID
+								AND		A.PORTAL_ID = #portalId#
+								AND		B.USAGE = '1'
+                             	AND		A.FORM_PARENT_ID IN(SELECT CODE_ID FROM dbo.FN_APPR_CODE_LIST (#formParentId#))
+										INNER JOIN (SELECT CODE_ID, SORT_ORDER FROM dbo.FN_APPR_CODE_LIST(#formParentId#)) C
+								ON B.CODE_ID = C.CODE_ID
+								
+						        <isNotEmpty property="receive">
+									<isEqual property="receive" compareValue="0">
+									AND	APPR_DOC_TYPE = 0
+									</isEqual>
+								</isNotEmpty>
+								
+								<isEqual property="usage" compareValue="0">
+						        AND		CASE WHEN A.USAGE=0 THEN 'TRUE'
+						      			WHEN A.USAGE=1 AND A.START_DATE IS NOT NULL THEN
+						      				CASE WHEN GETDATE() BETWEEN A.START_DATE AND DATEADD(d, 1, A.END_DATE) THEN 'FALSE'
+						      				ELSE 'TRUE'
+						      				END
+						      			ELSE 'FALSE'
+						      			END = 'TRUE'
+						     	</isEqual>
+								
+								<isEqual property="usage" compareValue="1">
+								AND 	A.USAGE = #usage#
+						        AND		CASE WHEN A.START_DATE IS NULL THEN 'TRUE'
+						        		WHEN GETDATE() BETWEEN A.START_DATE AND DATEADD(d, 1, A.END_DATE) THEN 'TRUE'
+						        		ELSE 'FALSE'
+						        		END = 'TRUE'
+						        		
+						        </isEqual>         
+								
+								<isNotEmpty property="searchWord">
+			                   	AND		A.FORM_NAME LIKE '%' + #searchWord# + '%'
+			                    </isNotEmpty>
+			                                 		
+			                                 		
+			                    <isNotEmpty property="userId">
+								LEFT OUTER JOIN IKEP4_APPR_FAVORITE D
+								ON	A.PORTAL_ID = D.PORTAL_ID
+								AND	A.FORM_ID	= D.FORM_ID
+								AND	D.REGISTER_ID = #userId#
+								</isNotEmpty>
+			                  	
+					  		) X
+		<![CDATA[
+	  						WHERE ROWNUM <= #endRowIndex#		 
+				) Y
+		WHERE NUM > #startRowIndex#
+		]]>
+	</select>
+	
+	<!-- apprForm 결제정보생성 -->
+   	<insert id="create" parameterClass="apprForm"> 
+   		<![CDATA[
+    	/* [ApprAdminForm_SqlMap.xml] approval.admin.dao.ApprAdminForm.create */ 
+    	INSERT INTO IKEP4_APPR_FORM (   PORTAL_ID,
+    									SYSTEM_ID,
+    									FORM_ID, 
+		                                FORM_NAME, 
+		                                FORM_PARENT_ID, 
+		                                FORM_DESC,
+		                                APPR_DOC_TYPE,
+		                                USAGE,
+		                                DEF_LINE_ID,
+		                                DEF_LINE_USE,
+		                                IS_DEF_LINE_UPDATE,
+		                                IS_APPR_PERIOD,
+		                                APPR_PERIOD_CD,
+		                                IS_APPR_SECURITY,
+		                                APPR_SECURITY_TYPE,
+		                                IS_APPR_TITLE,
+		                                IS_APPR_ATTACH,
+		                                AUTH_USE,
+		                                AUTH_USER_ID,
+		                                REGISTER_ID,
+		                                REGISTER_NAME,
+		                                REGIST_DATE,
+		                                UPDATER_ID,
+		                                UPDATER_NAME,
+		                                UPDATE_DATE 
+		        					)
+		VALUES 						(	#portalId#,   
+										#systemId#,
+										#formId#, 
+		                                #formName#, 
+		                                #formParentId#, 
+		                                #formDesc#,
+		                                #apprDocType#,
+		                                '0',
+		                                #defLineId#,
+		                                #defLineUse#,
+		                                #isDefLineUpdate#,
+		                                #isApprPeriod#,
+		                                #apprPeriodCd#,
+		                                #isApprSecurity#,
+		                                #apprSecurityType#,
+		                                #isApprTitle#,
+		                                #isApprAttach#,
+		                                #authUse#,
+		                                #authUserId#,
+		                                #registerId#,
+		                                #registerName#,
+		                                GETDATE(),
+		                                #updaterId#,
+		                                #updaterName#,
+		                                GETDATE()  
+		        					)
+            
+       ]]>
+   </insert>
+   
+   <!--apprForm 양식정보 생성 -->
+   <insert id="createApprContent"  parameterClass="apprForm"> 
+      	<![CDATA[
+      	/* [ApprAdminForm_SqlMap.xml] approval.admin.dao.ApprAdminForm.createApprContent */ 
+      	INSERT  INTO IKEP4_APPR_FORM_DATA ( FORM_ID,
+		                                   	FORM_VERSION,
+		                                   	IS_APPR_EDITOR,
+		                                   	IS_LINK_URL,
+		                                   	LINK_URL,
+		                                   	LINK_DATA_TYPE,
+		                                   	FORM_GUIDE,
+		                                   	FORM_EDITOR_DATA,
+		                                   	FORM_LAYOUT_DATA,
+		                                   	CHANGE_REASON,
+		                                   	REGISTER_ID,
+		                                   	REGISTER_NAME,
+		                                   	REGIST_DATE,
+		                                   	UPDATER_ID,
+		                                   	UPDATER_NAME,
+		                                   	UPDATE_DATE 
+		                                   ) 
+		VALUES 
+		                                  ( #formId#,
+		                                  	(SELECT ISNULL(MAX(FORM_VERSION), 0)+1 FROM IKEP4_APPR_FORM_DATA WHERE FORM_ID = #formId#),
+		                                    #isApprEditor#,
+		                                    #isLinkUrl#,
+		                                    #linkUrl#,
+		                                    #linkDataType#,
+		                                    #formGuide#,
+		                                    #formEditorData#,
+		                                    #formLayoutData#,
+		                                    #changeReason#,
+		                                    #registerId#,
+		                                    #registerName#,
+		                                    GETDATE(),
+		                                    #updaterId#,
+		                                    #updaterName#,
+		                                    GETDATE()
+		                                  )
+    	]]>
+   	</insert>
+   
+   	<!--apprForm 결제정보 수정 -->
+    <update id="update" parameterClass="apprForm"> 
+      	<![CDATA[
+     	/* [ApprAdminForm_SqlMap.xml] approval.admin.dao.ApprAdminForm.update */ 
+      	UPDATE  IKEP4_APPR_FORM
+		SET		SYSTEM_ID			= #systemId#,
+				FORM_NAME           = #formName#,
+		        FORM_PARENT_ID      = #formParentId#,
+		        FORM_DESC           = #formDesc#,
+		        APPR_DOC_TYPE       = #apprDocType#,
+		]]>
+		        USAGE               = #usage#,
+		        <isNull property="startDateStr">
+		        START_DATE          = NULL,
+		        </isNull>
+		        <isNotNull property="startDateStr">
+		        START_DATE          = #startDateStr#,
+		        </isNotNull>
+		        <isNull property="endDateStr">
+		        END_DATE            = NULL,
+		        </isNull>
+		        <isNotNull property="endDateStr">
+		        END_DATE            = #endDateStr#,
+		        </isNotNull>
+		<![CDATA[
+		        DEF_LINE_ID         = #defLineId#,
+		        DEF_LINE_USE        = #defLineUse#,
+		        IS_DEF_LINE_UPDATE  = #isDefLineUpdate#,
+		        IS_APPR_PERIOD      = #isApprPeriod#,
+		        APPR_PERIOD_CD      = #apprPeriodCd#,
+		        IS_APPR_SECURITY    = #isApprSecurity#,
+		        APPR_SECURITY_TYPE  = #apprSecurityType#,
+		        IS_APPR_TITLE       = #isApprTitle#,
+		        IS_APPR_ATTACH      = #isApprAttach#,
+		        AUTH_USE            = #authUse#,
+		        AUTH_USER_ID        = #authUserId#,
+		        UPDATER_ID          = #updaterId#,
+		        UPDATER_NAME        = #updaterName#,
+		        UPDATE_DATE         = GETDATE()
+		WHERE	FORM_ID 			= #formId#
+       	]]>
+   </update>
+   
+   <!--apprForm 양식정보 수정 -->
+   <update id="updateApprContent" parameterClass="apprForm"> 
+     	<![CDATA[
+      	/* [ApprAdminForm_SqlMap.xml] approval.admin.dao.ApprAdminForm.updateApprContent */ 
+     	UPDATE 	IKEP4_APPR_FORM_DATA
+		SET 	IS_APPR_EDITOR 		= #isApprEditor#,
+				IS_LINK_URL 		= #isLinkUrl#,
+				LINK_URL 			= #linkUrl#,
+				LINK_DATA_TYPE 		= #linkDataType#,
+		       	FORM_GUIDE 			= #formGuide#,
+		       	FORM_EDITOR_DATA 	= #formEditorData#,
+		       	FORM_LAYOUT_DATA 	= #formLayoutData#,
+		       	UPDATER_ID 			= #updaterId#,
+		       	UPDATER_NAME 		= #updaterName#,
+		       	UPDATE_DATE 		= GETDATE()
+		 WHERE 	FORM_ID 			= #formId#
+		 AND	FORM_VERSION 		= #formVersion#
+       ]]>
+   </update>
+   
+   <!--apprForm 폼상세 -->
+   <select id="get" parameterClass="String" resultMap="apprFormDetailResult">
+		<![CDATA[
+  		/* [ApprAdminForm_SqlMap.xml] approval.admin.dao.ApprAdminForm..viewFormDetail */
+		SELECT 	A.SYSTEM_ID,
+				A.FORM_ID,
+				A.FORM_NAME, 
+				A.FORM_PARENT_ID,
+		        (SELECT CODE_KR_NAME FROM IKEP4_APPR_CODE Z WHERE Z.CODE_ID = A.FORM_PARENT_ID) FORM_PARENT_NAME,
+		        A.APPR_DOC_TYPE,
+				A.USAGE,
+				A.START_DATE,
+				A.END_DATE,
+				CASE WHEN START_DATE IS NULL THEN '0' ELSE '1' END  PERIOD_USAGE,
+				A.FORM_DESC,
+				A.DEF_LINE_ID,
+				A.DEF_LINE_USE,
+				A.IS_DEF_LINE_UPDATE,    
+				A.IS_APPR_PERIOD,
+				A.APPR_PERIOD_CD,
+		        A.IS_APPR_SECURITY,
+				A.APPR_SECURITY_TYPE,
+		        A.IS_APPR_TITLE,
+				A.IS_APPR_ATTACH,
+				A.AUTH_USE,
+				A.AUTH_USER_ID,
+				CASE ISNULL(A.AUTH_USER_ID, '') WHEN '' THEN ''
+		        ELSE
+		          (SELECT	X.USER_NAME + ' ' + Y.JOB_TITLE_NAME
+		          FROM		IKEP4_EV_USER X
+		                  	LEFT OUTER JOIN IKEP4_EV_JOB_TITLE Y 
+		          ON 		X.JOB_TITLE_CODE = Y.JOB_TITLE_CODE
+		          WHERE	X.USER_ID = A.AUTH_USER_ID)	
+		        END AUTH_USER_NAME,
+				ISNULL(B.FORM_VERSION, 0) FORM_VERSION,
+				ISNULL(B.IS_APPR_EDITOR, 0) IS_APPR_EDITOR,
+		        B.FORM_GUIDE,
+		        B.FORM_EDITOR_DATA,
+		        B.FORM_LAYOUT_DATA,
+		        ISNULL(B.IS_LINK_URL, 0) IS_LINK_URL,
+		        B.LINK_URL,
+		        ISNULL(B.LINK_DATA_TYPE, 0) LINK_DATA_TYPE
+		FROM 	IKEP4_APPR_FORM A
+				LEFT OUTER JOIN 
+		        (SELECT FORM_ID,
+		        		FORM_VERSION,
+						IS_APPR_EDITOR,
+		        		FORM_GUIDE,
+						FORM_EDITOR_DATA,
+						FORM_LAYOUT_DATA,
+						IS_LINK_URL,
+						LINK_URL,
+						LINK_DATA_TYPE
+		          FROM	IKEP4_APPR_FORM_DATA
+		          WHERE	FORM_ID = #formId#
+		          AND	FORM_VERSION = (SELECT ISNULL(MAX(FORM_VERSION), 1) FROM IKEP4_APPR_FORM_DATA WHERE FORM_ID = #formId#)
+		          ) B
+		ON		A.FORM_ID = B.FORM_ID        
+		WHERE	A.FORM_ID=#formId#
+		]]>
+	</select>
+	
+	<!--apprForm 수신참조 목록  -->
+	<select id="getApprReferenceList" parameterClass="Map" resultMap="apprReferenceResult">
+		<![CDATA[
+  		/* [ApprAdminForm_SqlMap.xml] approval.admin.dao.ApprAdminForm.getApprReferenceList */
+  		SELECT 	USER_ID,
+  				GROUP_ID 
+		FROM 	IKEP4_APPR_FORM_REFERENCE
+		WHERE	FORM_ID =  #formId#
+		]]>
+	</select>
+	
+	<!--apprForm 수신참조 목록  -->
+	<select id="getApprSystem" parameterClass="Map" resultMap="apprSystemResult">
+		<![CDATA[
+  		/* [ApprAdminForm_SqlMap.xml] approval.admin.dao.ApprAdminForm.getApprSystem */
+  		SELECT 	SYSTEM_ID,
+  				CASE #localeCode# WHEN 'ko' THEN SYSTEM_NAME
+				ELSE ISNULL(SYSTEM_EN_NAME, SYSTEM_NAME)
+        		END SYSTEM_NAME,
+  				SYSTEM_TYPE
+		FROM 	IKEP4_APPR_SYSTEM
+		WHERE	PORTAL_ID =  #portalId#
+		]]>
+	</select>
+	
+	<!--apprForm 참조자 생성 -->
+   	<insert id="createApprReference"  parameterClass="Map"> 
+   		<![CDATA[
+      	/* [ApprAdminForm_SqlMap.xml] approval.admin.dao.ApprAdminForm.createApprReference */ 
+      	INSERT INTO IKEP4_APPR_FORM_REFERENCE ( FORM_ID,
+     											USER_ID,
+     											GROUP_ID
+     										)
+     	VALUES								(	#formId#,
+     											#userId#,
+     											#groupId#
+     										)
+    	]]>
+   	</insert>
+   	
+   	<!--apprForm 수신참조 삭제 -->
+	<delete id="deleteApprReference" parameterClass="String">
+      	<![CDATA[
+      	/* [ApprAdminForm_SqlMap.xml] approval.admin.dao.ApprAdminForm..deleteApprReference */
+	    DELETE FROM IKEP4_APPR_FORM_REFERENCE WHERE FORM_ID = #formId#
+	   	]]>
+	</delete>
+	
+	<!--apprForm 버전이력  -->
+	<select id="getApprFormHistoryList" parameterClass="String" resultMap="apprFormHistoryListResult">
+		<![CDATA[
+  		/* [ApprAdminForm_SqlMap.xml] approval.admin.dao.ApprWorkDoc.getApprFormHistoryList */
+  		SELECT 	FORM_ID,
+		       	FORM_VERSION,
+		       	IS_APPR_EDITOR,
+		       	FORM_GUIDE,
+		       	FORM_EDITOR_DATA,
+		       	FORM_LAYOUT_DATA,
+		       	CHANGE_REASON,
+		       	UPDATER_ID,
+		       	UPDATER_NAME,
+		       	UPDATE_DATE
+		FROM 	IKEP4_APPR_FORM_DATA A
+		WHERE	FORM_ID = #formId#
+		ORDER BY FORM_VERSION DESC
+
+		]]>
+	</select>
+	
+	<!--apprForm 즐겨찾기 생성 -->
+   	<insert id="createApprFavorite"  parameterClass="apprForm"> 
+   		<![CDATA[
+      	/* [ApprAdminForm_SqlMap.xml] approval.admin.dao.ApprAdminForm.createApprFavorite */ 
+      	INSERT 
+		  INTO IKEP4_APPR_FAVORITE 
+		       (
+		       	   FAVORITE_ID,
+		           FORM_ID,
+		           PORTAL_ID,
+		           REGISTER_ID,
+		           REGISTER_NAME,
+		           REGIST_DATE 
+		       ) 
+		       VALUES 
+		       ( 
+		       	   #favoriteId#,
+		           #formId#, 
+		           #portalId#, 
+		           #registerId#, 
+		           #registerName#,
+		           GETDATE() 
+		       ) 
+    	]]>
+   	</insert>
+   	
+   	<!--apprForm 즐겨찾기 삭제 -->
+	<delete id="deleteApprFavorite" parameterClass="apprForm">
+      	<![CDATA[
+      	/* [ApprAdminForm_SqlMap.xml] approval.admin.dao.ApprAdminForm.deleteApprFavorite */
+	    DELETE FROM IKEP4_APPR_FAVORITE 
+	    WHERE	PORTAL_ID 	= #portalId#
+	    AND		FORM_ID 	= #formId#
+	    AND		REGISTER_ID = #registerId#
+	   	]]>
+	</delete>
+	
+	<!--apprForm 즐겨찾기 목록  -->
+	<select id="getApprFavoriteList" parameterClass="Map" resultMap="apprFavoriteResult">
+		<![CDATA[
+  		/* [ApprAdminForm_SqlMap.xml] approval.admin.dao.ApprAdminForm.getApprFavoriteList */
+  		SELECT C.* 
+	  	FROM
+	       (SELECT 	Row_number() over (ORDER BY A.FAVORITE_ID DESC ) ROWNUM,
+	       			A.FORM_ID, 
+	              	B.FORM_NAME 
+	        FROM 	IKEP4_APPR_FAVORITE A 
+	          		INNER JOIN IKEP4_APPR_FORM B 
+	        ON 		A.FORM_ID 	= B.FORM_ID 
+	        AND 	A.PORTAL_ID = #portalId#
+	        AND 	A.REGISTER_ID = #userId# 
+	       ) C 
+	 	WHERE ROWNUM<=#count# 
+		]]>
+	</select>
+	
+	<!--apprForm 최근 기안 문서 목록  -->
+	<select id="getApprRecentList" parameterClass="Map" resultMap="apprFavoriteResult">
+		<![CDATA[
+  		/* [ApprAdminForm_SqlMap.xml] approval.admin.dao.ApprAdminForm.getApprRecentList */
+  		SELECT FORM_ID, FORM_NAME
+	  	FROM
+	       (SELECT 	Row_number() over (ORDER BY MAX( A.REGIST_DATE) DESC ) ROWNUM,
+	       			A.FORM_ID, 
+	              	B.FORM_NAME,
+	              	MAX( A.REGIST_DATE) REGIST_DATE
+	        FROM 	IKEP4_APPR_DOC A 
+	          		INNER JOIN IKEP4_APPR_FORM B 
+	        ON 		A.FORM_ID 	= B.FORM_ID 
+	        AND 	A.PORTAL_ID = #portalId#
+	        AND 	A.REGISTER_ID = #userId# 
+	        GROUP BY A.FORM_ID, B.FORM_NAME
+	       ) C 
+	 	WHERE ROWNUM<=#count# 
+		]]>
+	</select>
+</sqlMap>

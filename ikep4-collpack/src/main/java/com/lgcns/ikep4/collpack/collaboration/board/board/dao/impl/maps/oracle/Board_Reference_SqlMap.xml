@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="collpack.collaboration.board.board.dao.boardReference"> 
+  <typeAlias alias="wsBoardReference"   type="com.lgcns.ikep4.collpack.collaboration.board.board.model.BoardReference"/>
+  <typeAlias alias="wsBoardReferencePK" type="com.lgcns.ikep4.collpack.collaboration.board.board.model.BoardReferencePK"/>
+  
+  <resultMap class="com.lgcns.ikep4.collpack.collaboration.board.board.model.BoardReference" id="boardReferenceResult"> 
+    <result column="ITEM_ID"     jdbcType="VARCHAR"  property="itemId" />
+    <result column="REGISTER_ID" jdbcType="VARCHAR" property="registerId" />
+    <result column="REGIST_DATE" jdbcType="DATE"    property="registDate" />
+  </resultMap>
+  
+  <insert id="create" parameterClass="wsBoardReference"> 
+    INSERT INTO IKEP4_WS_BD_REFERENCE /* [Board_Reference_SqlMap.xml] collpack.collaboration.board.board.dao.boardReference.insert */ 
+           (ITEM_ID, REGISTER_ID, REGIST_DATE)
+    VALUES (#itemId#, #registerId#, SYSDATE)
+  </insert>
+   
+ <select id="exists" parameterClass="wsBoardReferencePK" resultClass="int">
+    SELECT /* [Board_Reference_SqlMap.xml] collpack.collaboration.board.board.dao.boardReference.exists */
+           COUNT(*)
+    FROM   IKEP4_WS_BD_REFERENCE
+    WHERE  ITEM_ID = #itemId#
+    AND    REGISTER_ID = #registerId#
+  </select> 
+  
+  <select id="get" parameterClass="wsBoardReferencePK" resultMap="boardReferenceResult">
+    SELECT /* [Board_Reference_SqlMap.xml] collpack.collaboration.board.board.dao.boardReference.get */
+           ITEM_ID, 
+           REGISTER_ID, 
+           REGIST_DATE 
+    FROM   IKEP4_WS_BD_REFERENCE
+    WHERE  ITEM_ID = #itemId#
+    AND    REGISTER_ID = #registerId#
+  </select>  
+ 
+  
+  <update id="update" parameterClass="wsBoardReference"> 
+    UPDATE IKEP4_WS_BD_REFERENCE /* [Board_Reference_SqlMap.xml] collpack.collaboration.board.board.dao.boardReference.update */
+    SET REGIST_DATE = SYSDATE
+    WHERE ITEM_ID = #itemId#
+    AND REGISTER_ID = #registerId#
+  </update>
+  
+  <delete id="removeByItemId" parameterClass="string"> 
+    DELETE FROM IKEP4_WS_BD_REFERENCE /* [Board_Reference_SqlMap.xml] collpack.collaboration.board.board.dao.boardReference.removeByItemId */
+    WHERE ITEM_ID = #itemId#
+  </delete>      
+</sqlMap>

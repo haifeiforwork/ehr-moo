@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="collpack.collaboration.admin.dao.WorkspaceType">
+
+	<typeAlias alias="WorkspaceType" type="com.lgcns.ikep4.collpack.collaboration.admin.model.WorkspaceType" />
+
+	<sql id="sqlColumnList">
+		PORTAL_ID			AS portalId,
+		TYPE_ID				AS typeId,
+		TYPE_NAME			AS typeName,
+		TYPE_ENGLISH_NAME	AS typeEnglishName,
+		TYPE_DESCRIPTION	AS typeDescription,
+		TYPE_ENGLISH_DESCRIPTION	AS typeEnglishDescription,
+		IS_ORGANIZATION		AS isOrganization,
+		SORT_ORDER			AS sortOrder,
+		REGISTER_ID			AS registerId,
+		REGISTER_NAME		AS registerName,
+		REGIST_DATE			AS registDate,
+		IS_DELETE			AS isDelete	
+	</sql>
+
+	<!-- ANSI -->
+	<!-- 조직포함 -->
+	<select id="listWorkspaceTypeAll" parameterClass="java.lang.String" resultClass="WorkspaceType"> 
+		SELECT /* [WorkspaceType_SqlMap.xml] collpack.collaboration.admin.dao.WorkspaceType.listWorkspaceTypeAll */ 
+			<include refid="collpack.collaboration.admin.dao.WorkspaceType.sqlColumnList" /> 
+		FROM   
+			IKEP4_WS_TYPE A				
+		WHERE	
+			( 
+				A.PORTAL_ID			=	#portalId#
+				AND A.IS_DELETE		=	0
+			)
+			OR IS_ORGANIZATION	=	1		/*  조직 (포탈공통)  */
+    	ORDER BY IS_ORGANIZATION DESC, SORT_ORDER ASC,TYPE_NAME  ASC
+	</select>
+	
+	<!-- ANSI -->
+	<!-- Coll 메인 Type별 갯수표시 -->
+	<select id="countWorkspaceByType" parameterClass="java.lang.String" resultClass="WorkspaceType"> 
+		SELECT /* [WorkspaceType_SqlMap.xml] collpack.collaboration.admin.dao.WorkspaceType.listWorkspaceTypeAll */ 
+			PORTAL_ID			AS portalId,
+			TYPE_ID				AS typeId,
+			TYPE_NAME			AS typeName,
+			TYPE_ENGLISH_NAME	AS typeEnglishName,
+			TYPE_DESCRIPTION	AS typeDescription,
+			TYPE_ENGLISH_DESCRIPTION	AS typeEnglishDescription,
+			IS_ORGANIZATION		AS isOrganization,
+			SORT_ORDER			AS sortOrder,
+			REGISTER_ID			AS registerId,
+			REGISTER_NAME		AS registerName,
+			REGIST_DATE			AS registDate,
+			IS_DELETE			AS isDelete,
+			(SELECT COUNT(WORKSPACE_ID) FROM IKEP4_WS_WORKSPACE WHERE TYPE_ID=A.TYPE_ID AND PORTAL_ID =	#portalId# AND WORKSPACE_STATUS IN ('O','WC') ) countWorkspaceByType
+		FROM   
+			IKEP4_WS_TYPE A				
+		WHERE	
+			( 
+				A.PORTAL_ID			=	#portalId#
+				AND A.IS_DELETE		=	0
+			)
+			OR IS_ORGANIZATION	=	1		/*  조직 (포탈공통)  */
+    	ORDER BY IS_ORGANIZATION DESC, SORT_ORDER ASC,TYPE_NAME  ASC
+	</select>	
+	
+	<!-- ANSI -->
+	<!-- 조직제외 -->
+	<select id="listWorkspaceType" parameterClass="java.lang.String" resultClass="WorkspaceType"> 
+		SELECT /* [WorkspaceType_SqlMap.xml] collpack.collaboration.admin.dao.WorkspaceType.listWorkspaceType */ 
+			<include refid="collpack.collaboration.admin.dao.WorkspaceType.sqlColumnList" /> 
+		FROM   
+			IKEP4_WS_TYPE A				
+		WHERE	
+			A.PORTAL_ID	=	#portalId#
+			AND A.IS_DELETE		=	0
+    	ORDER BY IS_ORGANIZATION DESC, SORT_ORDER ASC,TYPE_NAME  ASC
+	</select>  
+
+	<!-- MS SQL -->
+	<!-- create -->	
+	<insert id="create" parameterClass="WorkspaceType"> 
+		INSERT INTO IKEP4_WS_TYPE /* [WorkspaceType_SqlMap.xml] collpack.collaboration.admin.dao.WorkspaceType.create */
+		(
+			PORTAL_ID,		TYPE_ID,		TYPE_NAME,		TYPE_ENGLISH_NAME,	IS_ORGANIZATION,	
+			SORT_ORDER,		
+			REGISTER_ID,	REGISTER_NAME,	REGIST_DATE,	IS_DELETE,	TYPE_DESCRIPTION, TYPE_ENGLISH_DESCRIPTION
+		)  
+		VALUES
+		(
+			#portalId#,		#typeId#,		#typeName#,		#typeEnglishName#,	#isOrganization#,	
+			(SELECT ISNULL(MAX(SORT_ORDER),0) FROM IKEP4_WS_TYPE WHERE PORTAL_ID = #portalId#)+1,	
+			#registerId#,	#registerName#,	CURRENT_TIMESTAMP,	0,	#typeDescription#, #typeEnglishDescription#
+		)	
+	</insert>	
+	
+	<!-- ANSI -->
+	<!-- select -->
+	<select id="get" parameterClass="WorkspaceType"  resultClass="WorkspaceType">
+		SELECT /* [WorkspaceType_SqlMap.xml] collpack.collaboration.admin.dao.WorkspaceType.get */
+    		<include refid="collpack.collaboration.admin.dao.WorkspaceType.sqlColumnList" />	
+		FROM 
+			IKEP4_WS_TYPE A 
+		WHERE 
+			(
+				PORTAL_ID		=	#portalId#
+				OR ( IS_ORGANIZATION = '1' AND PORTAL_ID='ALL' )
+			)
+			AND TYPE_ID	=	#typeId#
+	</select>
+	
+	<!-- ANSI -->
+	<select id="getTypeName" parameterClass="WorkspaceType"  resultClass="java.lang.String">
+	<![CDATA[
+		SELECT /* [WorkspaceType_SqlMap.xml] collpack.collaboration.admin.dao.WorkspaceType.getTypeName */
+    		TYPE_NAME			typeName
+		FROM 
+			IKEP4_WS_TYPE A 
+		WHERE 
+			(
+				PORTAL_ID		=	#portalId#
+				OR ( IS_ORGANIZATION = '1' AND PORTAL_ID='ALL' )
+			)
+			AND TYPE_ID	=	#typeId#
+	]]>
+	</select>
+	
+	<!-- ANSI -->
+	<select id="exists" parameterClass="WorkspaceType" resultClass="java.lang.Integer">
+	<![CDATA[
+		SELECT /* [WorkspaceType_SqlMap.xml] collpack.collaboration.admin.dao.WorkspaceType.exists */
+			COUNT(TYPE_ID) 
+		FROM 
+			IKEP4_WS_TYPE 
+		WHERE 
+			PORTAL_ID		=	#portalId#
+			AND TYPE_Id		=	#typeId#
+	]]>
+	</select>
+		
+	<!-- ANSI -->
+	<!-- update -->
+	<update id="update" parameterClass="WorkspaceType">
+	<![CDATA[
+		UPDATE 
+			IKEP4_WS_TYPE /* [WorkspaceType_SqlMap.xml] collpack.collaboration.admin.dao.WorkspaceType.update */
+		SET 
+			TYPE_NAME	=	#typeName#,
+			TYPE_ENGLISH_NAME = #typeEnglishName#,
+			TYPE_DESCRIPTION = #typeDescription#,
+			TYPE_ENGLISH_DESCRIPTION = #typeEnglishDescription#
+		WHERE 
+			PORTAL_ID	=	#portalId#
+			AND TYPE_ID	=	#typeId#
+	]]>
+	</update>
+	
+	<!-- ANSI -->
+	<update id="updateWorkspaceTypeOrder" parameterClass="WorkspaceType">
+	<![CDATA[
+		UPDATE 
+			IKEP4_WS_TYPE /* [WorkspaceType_SqlMap.xml] collpack.collaboration.admin.dao.WorkspaceType.updateWorkspaceTypeOrder */
+		SET 
+			SORT_ORDER	=	#sortOrder#
+		WHERE 
+			PORTAL_ID	=	#portalId#
+			AND TYPE_ID	=	#typeId#
+	]]>
+	</update>
+	
+	<!-- ANSI -->
+	<!-- delete -->
+	<update id="logicalDelete" parameterClass="WorkspaceType">
+	<![CDATA[
+		UPDATE 
+			IKEP4_WS_TYPE /* [WorkspaceType_SqlMap.xml] collpack.collaboration.admin.dao.WorkspaceType.logicalDelete */
+		SET    
+			IS_DELETE	=	1
+		WHERE 
+			PORTAL_ID		=	#portalId#
+			AND TYPE_ID		=	#typeId#
+	]]>
+	</update>
+
+
+</sqlMap>

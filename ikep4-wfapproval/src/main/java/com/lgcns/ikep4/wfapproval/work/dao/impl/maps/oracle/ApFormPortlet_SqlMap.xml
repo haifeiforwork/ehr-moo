@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="com.lgcns.ikep4.wfapproval.work.dao.ApFormPortlet" >
+	<typeAlias alias="ApFormPortlet" 					type="com.lgcns.ikep4.wfapproval.work.model.ApFormPortlet"/>
+	
+	<!-- 양식 마스터 테이블 조회 결과 -->
+	<resultMap id="ApFormResult" class="ApFormPortlet" groupBy="formId">
+		<result property="formId" 			column="FORM_ID" 			jdbcType="VARCHAR"/>
+		<result property="userId" 			column="USER_ID" 			jdbcType="VARCHAR"/>
+		<result property="useCount" 		column="USE_COUNT" 			jdbcType="NUMBER"/>
+		<result property="useDate" 			column="USE_DATE" 			jdbcType="DATE"/>
+	</resultMap>
+	
+	<!-- insert -->
+	<insert id="create" parameterClass="ApFormPortlet"> 
+      <![CDATA[ 
+           INSERT INTO IKEP4_AP_FORM_PORTLET 
+           		  (FORM_ID, USER_ID)
+           VALUES (#formId#, #userId#)
+       ]]>
+   </insert>
+   
+   <!-- select -->
+	<select id="ListApFormPortlet" parameterClass="ApFormPortlet" resultMap="ApFormResult">
+	  <![CDATA[
+		   	SELECT  *
+			FROM 	IKEP4_AP_FORM_PORTLET
+			WHERE 	FORM_ID = #formId#
+			AND 	USER_ID = #userId#
+			AND 	ROWNUM <= 3
+			ORDER BY USE_COUNT DESC
+	   ]]>
+	</select>
+	
+	<!-- update -->
+	<update id="update" parameterClass="ApFormPortlet">
+	  <![CDATA[
+		   	UPDATE 	IKEP4_AP_FORM_PORTLET 
+		   	SET 	USE_COUNT 	= USE_COUNT + 1
+			   	  , USE_DATE 	= SYSDATE 
+		   	WHERE 	FORM_ID = #formId#
+			AND 	USER_ID = #userId#
+	   ]]>
+	</update>
+	
+	<!-- selectCount -->
+	<select id="selectCount" parameterClass="ApFormPortlet" resultClass="java.lang.Integer">
+	  <![CDATA[
+		   	SELECT 	COUNT(FORM_ID) 
+			FROM 	IKEP4_AP_FORM_PORTLET 
+			WHERE 	FORM_ID = #formId#
+			AND 	USER_ID = #userId#
+	   ]]>
+	</select>
+	
+</sqlMap>

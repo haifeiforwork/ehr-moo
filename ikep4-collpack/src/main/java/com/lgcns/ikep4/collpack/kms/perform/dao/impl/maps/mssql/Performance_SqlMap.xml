@@ -1,0 +1,2422 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="collpack.kms.perform.dao.Performance">
+
+	<typeAlias alias="Performance"                	  		type="com.lgcns.ikep4.collpack.kms.perform.model.Performance"/>
+	<typeAlias alias="PerformanceSearchCondition"        	type="com.lgcns.ikep4.collpack.kms.perform.search.PerformanceSearchCondition"/>
+
+	<resultMap id="result"  class="com.lgcns.ikep4.collpack.kms.perform.model.Performance">
+		<result column="ROWNUM" property="rowNum" jdbcType="VARCHAR" javaType="String"/>
+		<result column="ITEM_ID" property="itemId" jdbcType="VARCHAR" javaType="String"/>
+		<result column="ATTACH_FILE_COUNT" property="attachFileCount" jdbcType="VARCHAR" javaType="String"/>
+		<result column="IS_KNOWHOW" property="isKnowHow" jdbcType="VARCHAR" javaType="String"/>
+		<result column="IS_KNOWHOW_VALUE" property="isKnowHowValue" jdbcType="VARCHAR" javaType="String"/>
+		<result column="TITLE" property="title" jdbcType="VARCHAR" javaType="String"/>
+		<result column="REGISTER_ID" property="registerId" jdbcType="VARCHAR" javaType="String"/>
+		<result column="REGISTER_NAME" property="registerName" jdbcType="VARCHAR" javaType="String"/>
+		<result column="REGIST_DATE" property="registDate" jdbcType="VARCHAR" javaType="String"/>
+		<result column="HIT_COUNT" property="hitCount" jdbcType="VARCHAR" javaType="String"/>
+		<result column="LINEREPLY_COUNT" property="lineReplyCount" jdbcType="VARCHAR" javaType="String"/>
+		<result column="RECOMMEND_COUNT" property="recommendCount" jdbcType="VARCHAR" javaType="String"/>
+		<result column="INFO_GRADE" property="infoGrade" jdbcType="VARCHAR" javaType="String"/>
+		<result column="TARGET_SOURCE" property="targetSource" jdbcType="VARCHAR" javaType="String"/>
+		<result column="MARK" property="mark" jdbcType="VARCHAR" javaType="String"/>
+		<result column="EMP_NO" property="empNo" jdbcType="VARCHAR" javaType="String"/>
+		<result column="TEAM_NAME" property="teamName" jdbcType="VARCHAR" javaType="String"/>
+		<result column="WORK_PLACE_NAME" property="workPlaceName" jdbcType="VARCHAR" javaType="String"/>
+		<result column="STATUS" property="status" jdbcType="VARCHAR" javaType="String"/>
+	</resultMap>
+	 	 	
+	 <resultMap id="resultExpert"  extends="result" class="Performance">
+		<result column="EXPERT_ID" property="expertId" jdbcType="VARCHAR" javaType="String"/>
+		<result column="EXPERT_NAME" property="expertName" jdbcType="VARCHAR" javaType="String"/>
+		<result column="EXPERT_REQ_DATE" property="expertReqDate" jdbcType="VARCHAR" javaType="String"/>
+		<result column="ASSESS_DATE" property="assessDate" jdbcType="VARCHAR" javaType="String"/>
+	</resultMap>
+	
+	<resultMap id="resultStatBase"  class="com.lgcns.ikep4.collpack.kms.perform.model.Performance">	 		 	
+		<result column="REGIST_DATE" property="registDate" jdbcType="VARCHAR" javaType="String"/>	
+		<result column="ROWNUM" property="rowNum" jdbcType="VARCHAR" javaType="String"/>
+		<result column="TEAM_NAME" property="teamName" jdbcType="VARCHAR" javaType="String"/>
+		<result column="REG_SUM" property="regSum" jdbcType="VARCHAR" javaType="String"/>
+		<result column="RECOMMEND_SUM" property="recommendSum" jdbcType="VARCHAR" javaType="String"/>
+		<result column="LINEREPLY_SUM" property="lineReplySum" jdbcType="VARCHAR" javaType="String"/>
+		<result column="MARK_SUM" property="markSum" jdbcType="VARCHAR" javaType="String"/>
+		<result column="HIT_SUM" property="hitSum" jdbcType="VARCHAR" javaType="String"/>			
+		<result column="USAGE_SUM" property="usageSum" jdbcType="VARCHAR" javaType="String"/>
+		<result column="OBLIGATION_REG_RATE" property="obligationRegRate" jdbcType="VARCHAR" javaType="String"/>
+		<result column="OBLIGATION_SUM" property="obligationSum" jdbcType="VARCHAR" javaType="String"/>		
+		<result column="CONVERSION_MARK" property="conversionMark" jdbcType="VARCHAR" javaType="String"/>
+		<result column="SCORE_SUM" property="scoreSum" jdbcType="VARCHAR" javaType="String"/>
+	</resultMap>
+		 	
+					
+	 <resultMap id="resultPrivateStat" extends="resultStatBase" class="Performance">
+	 	
+		<result column="USER_ID" property="userId" jdbcType="VARCHAR" javaType="String"/>
+		<result column="USER_NAME" property="userName" jdbcType="VARCHAR" javaType="String"/>
+		<result column="WORK_PLACE_NAME" property="workPlaceName" jdbcType="VARCHAR" javaType="String"/>
+		<result column="JOB_TITLE_NAME" property="jobTitleName" jdbcType="VARCHAR" javaType="String"/>
+		<result column="JOB_DUTY_NAME" property="jobDutyName" jdbcType="VARCHAR" javaType="String"/>
+		<result column="USER_STATUS" property="userStatus" jdbcType="VARCHAR" javaType="String"/>		
+	</resultMap>
+	
+	<resultMap id="resultPerformance"  class="com.lgcns.ikep4.collpack.kms.perform.model.Performance">
+		<result column="GROUP_ID" property="groupId" jdbcType="VARCHAR" javaType="String"/>
+	 	<result column="TEAM_NAME" property="teamName" jdbcType="VARCHAR" javaType="String"/>
+		<result column="REG_SUM" property="regSum" jdbcType="VARCHAR" javaType="String"/>	
+	</resultMap>
+	
+	<resultMap id="resultPerformanceGroup"  class="com.lgcns.ikep4.collpack.kms.perform.model.Performance">
+		<result column="GROUP_ID" property="groupId" jdbcType="VARCHAR" javaType="String"/>
+	 	<result column="TEAM_NAME" property="teamName" jdbcType="VARCHAR" javaType="String"/>
+	 	<result column="category" property="category" jdbcType="VARCHAR" javaType="String"/>
+		<result column="REG_SUM" property="regSum" jdbcType="VARCHAR" javaType="String"/>	
+	</resultMap>
+	
+	<resultMap id="resultPrivateStatLeft" extends="resultStatBase" class="Performance">
+	 	
+		<result column="USER_ID" property="userId" jdbcType="VARCHAR" javaType="String"/>
+		<result column="USER_NAME" property="userName" jdbcType="VARCHAR" javaType="String"/>
+		<result column="WORK_PLACE_NAME" property="workPlaceName" jdbcType="VARCHAR" javaType="String"/>
+		<result column="JOB_TITLE_NAME" property="jobTitleName" jdbcType="VARCHAR" javaType="String"/>
+		<result column="USER_STATUS" property="userStatus" jdbcType="VARCHAR" javaType="String"/>		
+		<result column="REG_CNT" property="regCnt" jdbcType="VARCHAR" javaType="String"/>
+	</resultMap>
+		 
+	 <resultMap id="resultTeamStat"  extends="resultStatBase" class="Performance">
+		
+		<result column="GROUP_ID" property="groupId" jdbcType="VARCHAR" javaType="String"/>				
+		<result column="MEMBER_CNT" property="memberCnt" jdbcType="VARCHAR" javaType="String"/>		
+		
+	</resultMap>
+	 
+	
+	
+	<sql id="listPrivateColumnList">
+		ROWNUM, ITEM_ID, ATTACH_FILE_COUNT, IS_KNOWHOW, IS_KNOWHOW_VALUE, TITLE, REGISTER_ID, 
+		REGISTER_NAME, REGIST_DATE, HIT_COUNT, LINEREPLY_COUNT, RECOMMEND_COUNT,
+		INFO_GRADE, TARGET_SOURCE, MARK, EMP_NO, TEAM_NAME, WORK_PLACE_NAME, STATUS	
+	</sql>
+	
+	<sql id="listPrivateDetailConditions">
+		WHERE A.STATUS > 2
+				AND A.INFO_GRADE IN ('A','B','C')
+				AND A.REGIST_DATE BETWEEN #startDate# AND #endDate#
+								
+				<isNotEmpty property="registerName">
+					AND A.REGISTER_NAME like '%' + #registerName# + '%'
+				</isNotEmpty>
+				<isNotEmpty property="userId">
+					AND A.REGISTER_ID = #userId#
+				</isNotEmpty>
+	</sql>
+	
+	<sql id="listPrivateDetailConditionsStandby">
+	<![CDATA[  
+		WHERE A.STATUS < 3
+		AND A.STATUS != 0
+				AND (A.INFO_GRADE = '' or A.INFO_GRADE is null)
+				]]> 
+				AND A.REGIST_DATE BETWEEN #startDate# AND #endDate#
+								
+				<isNotEmpty property="registerName">
+					AND A.REGISTER_NAME like '%' + #registerName# + '%'
+				</isNotEmpty>
+				<isNotEmpty property="userId">
+					AND A.REGISTER_ID = #userId#
+				</isNotEmpty>
+	</sql>
+	
+			
+	<sql id="listPrivateConditions">
+		SELECT 
+				D.* 
+			FROM 
+			( 							
+				SELECT Row_number() OVER (	
+				
+								<isNotEmpty property="sortColumn" >
+									<isEqual property="sortColumn" compareValue="REGISTER_NAME">
+ 										ORDER BY A.REGISTER_NAME
+ 									</isEqual>
+ 									<isEqual property="sortColumn" compareValue="REGIST_DATE">
+ 										ORDER BY A.REGIST_DATE
+ 									</isEqual>
+ 									<isEqual property="sortColumn" compareValue="HIT_COUNT">
+ 										ORDER BY A.HIT_COUNT
+ 									</isEqual>
+ 									<isEqual property="sortColumn" compareValue="LINEREPLY_COUNT">
+ 										ORDER BY A.LINEREPLY_COUNT
+ 									</isEqual>  
+									<isEqual property="sortColumn" compareValue="RECOMMEND_COUNT">
+ 										ORDER BY A.RECOMMEND_COUNT
+ 									</isEqual>   
+									<isEqual property="sortColumn" compareValue="MARK">
+ 										ORDER BY A.MARK
+ 									</isEqual>
+ 									<isEqual property="sortColumn" compareValue="STATUS">
+ 										ORDER BY A.STATUS
+ 									</isEqual>
+ 									<isEqual property="sortColumn" compareValue="IS_KNOWHOW">
+ 										ORDER BY B.IS_KNOWHOW
+ 									</isEqual>      																	
+
+ 									<isEqual property="sortType" compareValue="ASC">
+ 										ASC
+ 									</isEqual>
+ 									<isEqual property="sortType" compareValue="DESC">
+ 										DESC
+ 									</isEqual>   									
+ 									
+ 								</isNotEmpty>  
+ 							 	<isEmpty property="sortColumn"> ORDER BY  A.REGIST_DATE DESC </isEmpty>
+				
+				 ) AS ROWNUM,				
+					A.ITEM_ID, A.ATTACH_FILE_COUNT, B.IS_KNOWHOW,
+					CASE(IS_KNOWHOW)
+					WHEN '0' THEN
+						'업무노하우'
+					ELSE
+						'일반정보'
+					END AS IS_KNOWHOW_VALUE,   
+					A.TITLE, A.REGISTER_ID, 
+					A.REGISTER_NAME, 
+					CONVERT(NVARCHAR, A.REGIST_DATE, 102) AS REGIST_DATE, 
+					A.HIT_COUNT, 
+					A.LINEREPLY_COUNT, 
+					A.RECOMMEND_COUNT,
+					A.INFO_GRADE, 
+					A.TARGET_SOURCE, 
+					ISNULL(A.MARK, 0) AS MARK, 
+					C.EMP_NO,					 
+					A.GROUP_NAME AS TEAM_NAME, 
+					E.WORK_PLACE_NAME, 
+					A.STATUS		
+				FROM IKEP4_KMS_BD_ITEM A 
+					LEFT JOIN IKEP4_KMS_BD_BOARD B 
+						ON A.BOARD_ID = B.BOARD_ID
+					INNER JOIN IKEP4_EV_USER C
+						ON A.REGISTER_ID = C.USER_ID				
+					LEFT JOIN IKEP4_EV_WORK_PLACE E 
+						ON E.WORK_PLACE_CODE = C.WORK_PLACE_CODE
+				
+				<include refid="collpack.kms.perform.dao.Performance.listPrivateDetailConditions" />
+				
+	</sql>
+	
+	<sql id="listPrivateConditionsStandby">
+		SELECT 
+				D.* 
+			FROM 
+			( 							
+				SELECT Row_number() OVER (	
+				
+								<isNotEmpty property="sortColumn" >
+									<isEqual property="sortColumn" compareValue="REGISTER_NAME">
+ 										ORDER BY A.REGISTER_NAME
+ 									</isEqual>
+ 									<isEqual property="sortColumn" compareValue="REGIST_DATE">
+ 										ORDER BY A.REGIST_DATE
+ 									</isEqual>
+ 									<isEqual property="sortColumn" compareValue="HIT_COUNT">
+ 										ORDER BY A.HIT_COUNT
+ 									</isEqual>
+ 									<isEqual property="sortColumn" compareValue="LINEREPLY_COUNT">
+ 										ORDER BY A.LINEREPLY_COUNT
+ 									</isEqual>  
+									<isEqual property="sortColumn" compareValue="RECOMMEND_COUNT">
+ 										ORDER BY A.RECOMMEND_COUNT
+ 									</isEqual>   
+									<isEqual property="sortColumn" compareValue="MARK">
+ 										ORDER BY A.MARK
+ 									</isEqual>
+ 									<isEqual property="sortColumn" compareValue="IS_KNOWHOW">
+ 										ORDER BY B.IS_KNOWHOW
+ 									</isEqual>      																	
+
+ 									<isEqual property="sortType" compareValue="ASC">
+ 										ASC
+ 									</isEqual>
+ 									<isEqual property="sortType" compareValue="DESC">
+ 										DESC
+ 									</isEqual>   									
+ 									
+ 								</isNotEmpty>  
+ 							 	<isEmpty property="sortColumn"> ORDER BY  A.REGIST_DATE DESC </isEmpty>
+				
+				 ) AS ROWNUM,				
+					A.ITEM_ID, A.ATTACH_FILE_COUNT, B.IS_KNOWHOW,
+					CASE(IS_KNOWHOW)
+					WHEN '0' THEN
+						'업무노하우'
+					ELSE
+						'일반정보'
+					END AS IS_KNOWHOW_VALUE,   
+					A.TITLE, A.REGISTER_ID, 
+					A.REGISTER_NAME, 
+					CONVERT(NVARCHAR, A.REGIST_DATE, 102) AS REGIST_DATE, 
+					A.HIT_COUNT, 
+					A.LINEREPLY_COUNT, 
+					A.RECOMMEND_COUNT,
+					A.INFO_GRADE, 
+					A.TARGET_SOURCE, 
+					ISNULL(A.MARK, 0) AS MARK, 
+					C.EMP_NO,					 
+					A.GROUP_NAME AS TEAM_NAME, 
+					E.WORK_PLACE_NAME, 
+					A.STATUS		
+				FROM IKEP4_KMS_BD_ITEM A 
+					LEFT JOIN IKEP4_KMS_BD_BOARD B 
+						ON A.BOARD_ID = B.BOARD_ID
+					INNER JOIN IKEP4_EV_USER C
+						ON A.REGISTER_ID = C.USER_ID				
+					LEFT JOIN IKEP4_EV_WORK_PLACE E 
+						ON E.WORK_PLACE_CODE = C.WORK_PLACE_CODE
+				
+				<include refid="collpack.kms.perform.dao.Performance.listPrivateDetailConditionsStandby" />
+				
+	</sql>
+	
+	<sql id="getTeamGroupIds">
+		SELECT GROUP_ID 
+			FROM IKEP4_EV_GROUP
+		WHERE PARENT_GROUP_ID = #teamCode# 
+		UNION ALL
+		SELECT #teamCode#
+	</sql>	
+	
+	<!-- ANSI --> 
+	<select id="countBySearchCondition" parameterClass="PerformanceSearchCondition" resultClass="int">		
+		SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
+		
+		SELECT /* [Performance_SqlMap.xml] collpack.kms.perform.dao.Performance.countBySearchCondition */
+			COUNT(*)
+		FROM IKEP4_KMS_BD_ITEM A 
+			LEFT JOIN IKEP4_KMS_BD_BOARD B 
+				ON A.BOARD_ID = B.BOARD_ID
+				
+		<include refid="collpack.kms.perform.dao.Performance.listPrivateDetailConditions" />		
+
+		<isNotEmpty property="workPlaceName">			
+			AND A.GROUP_ID IN 
+		   (
+			   SELECT DISTINCT(D.GROUP_ID) 
+				FROM IKEP4_EV_USER C 
+					INNER JOIN IKEP4_EV_USER_GROUP D
+				ON C.USER_ID = D.USER_ID
+					INNER JOIN IKEP4_EV_GROUP E
+				ON D.GROUP_ID = E.GROUP_ID
+		
+				WHERE C.WORK_PLACE_CODE IN
+					   (SELECT WORK_PLACE_CODE
+						  FROM IKEP4_EV_WORK_PLACE
+						 WHERE WORK_PLACE_NAME = #workPlaceName#
+						 )
+				AND E.GROUP_TYPE_ID='G0001'    
+		   ) 
+		</isNotEmpty>
+		<isNotEmpty property="teamCode">					
+				AND A.GROUP_ID = #teamCode#
+		</isNotEmpty>	
+		<isNotEmpty property="searchIsknowhow">
+			AND B.IS_KNOWHOW = #searchIsknowhow#
+		</isNotEmpty>	
+		
+		
+	</select>  
+	
+	<select id="countBySearchConditionStandby" parameterClass="PerformanceSearchCondition" resultClass="int">		
+		SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
+		
+		SELECT /* [Performance_SqlMap.xml] collpack.kms.perform.dao.Performance.countBySearchCondition */
+			COUNT(*)
+		FROM IKEP4_KMS_BD_ITEM A 
+			LEFT JOIN IKEP4_KMS_BD_BOARD B 
+				ON A.BOARD_ID = B.BOARD_ID
+				
+		<include refid="collpack.kms.perform.dao.Performance.listPrivateDetailConditionsStandby" />		
+
+		<isNotEmpty property="workPlaceName">			
+			AND A.GROUP_ID IN 
+		   (
+			   SELECT DISTINCT(D.GROUP_ID) 
+				FROM IKEP4_EV_USER C 
+					INNER JOIN IKEP4_EV_USER_GROUP D
+				ON C.USER_ID = D.USER_ID
+					INNER JOIN IKEP4_EV_GROUP E
+				ON D.GROUP_ID = E.GROUP_ID
+		
+				WHERE C.WORK_PLACE_CODE IN
+					   (SELECT WORK_PLACE_CODE
+						  FROM IKEP4_EV_WORK_PLACE
+						 WHERE WORK_PLACE_NAME = #workPlaceName#
+						 )
+				AND E.GROUP_TYPE_ID='G0001'    
+		   ) 
+		</isNotEmpty>
+		<isNotEmpty property="teamCode">					
+				AND A.GROUP_ID = #teamCode#
+		</isNotEmpty>	
+		<isNotEmpty property="searchIsknowhow">
+			AND B.IS_KNOWHOW = #searchIsknowhow#
+		</isNotEmpty>	
+		
+		
+	</select> 	
+	
+	
+	<select id="listPrivate" parameterClass="PerformanceSearchCondition" resultMap="result">
+		SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
+	
+		SELECT /* [Performance_SqlMap.xml] collpack.kms.perform.dao.Performance.listPrivate */
+			<include refid="collpack.kms.perform.dao.Performance.listPrivateColumnList" />
+		FROM 
+		( 
+			
+			<include refid="collpack.kms.perform.dao.Performance.listPrivateConditions" />
+				<isNotEmpty property="teamCode">					
+					AND A.GROUP_ID = #teamCode#
+				</isNotEmpty>
+				<isNotEmpty property="workPlaceName">			
+					AND A.GROUP_ID IN 
+				   (
+					   SELECT DISTINCT(D.GROUP_ID) 
+						FROM IKEP4_EV_USER C 
+							INNER JOIN IKEP4_EV_USER_GROUP D
+						ON C.USER_ID = D.USER_ID
+							INNER JOIN IKEP4_EV_GROUP E
+						ON D.GROUP_ID = E.GROUP_ID
+				
+						WHERE C.WORK_PLACE_CODE IN
+							   (SELECT WORK_PLACE_CODE
+								  FROM IKEP4_EV_WORK_PLACE
+								 WHERE WORK_PLACE_NAME = #workPlaceName#
+								 )
+						AND E.GROUP_TYPE_ID='G0001'    
+				   ) 
+				</isNotEmpty>
+				<isNotEmpty property="searchIsknowhow">
+					AND B.IS_KNOWHOW = #searchIsknowhow#
+				</isNotEmpty>	
+		<![CDATA[   
+			) D
+			WHERE 
+				ROWNUM <=  #endRowIndex# /* 종료  */
+		) TBL  
+		WHERE 
+			ROWNUM >  #startRowIndex# /* 시작 */  
+		]]> 
+	
+	</select>
+	
+	<select id="listPrivateStandby" parameterClass="PerformanceSearchCondition" resultMap="result">
+		SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
+	
+		SELECT /* [Performance_SqlMap.xml] collpack.kms.perform.dao.Performance.listPrivate */
+			<include refid="collpack.kms.perform.dao.Performance.listPrivateColumnList" />
+		FROM 
+		( 
+			
+			<include refid="collpack.kms.perform.dao.Performance.listPrivateConditionsStandby" />
+				<isNotEmpty property="teamCode">					
+					AND A.GROUP_ID = #teamCode#
+				</isNotEmpty>
+				<isNotEmpty property="workPlaceName">			
+					AND A.GROUP_ID IN 
+				   (
+					   SELECT DISTINCT(D.GROUP_ID) 
+						FROM IKEP4_EV_USER C 
+							INNER JOIN IKEP4_EV_USER_GROUP D
+						ON C.USER_ID = D.USER_ID
+							INNER JOIN IKEP4_EV_GROUP E
+						ON D.GROUP_ID = E.GROUP_ID
+				
+						WHERE C.WORK_PLACE_CODE IN
+							   (SELECT WORK_PLACE_CODE
+								  FROM IKEP4_EV_WORK_PLACE
+								 WHERE WORK_PLACE_NAME = #workPlaceName#
+								 )
+						AND E.GROUP_TYPE_ID='G0001'    
+				   ) 
+				</isNotEmpty>
+				<isNotEmpty property="searchIsknowhow">
+					AND B.IS_KNOWHOW = #searchIsknowhow#
+				</isNotEmpty>	
+		<![CDATA[   
+			) D
+			WHERE 
+				ROWNUM <=  #endRowIndex# /* 종료  */
+		) TBL  
+		WHERE 
+			ROWNUM >  #startRowIndex# /* 시작 */  
+		]]> 
+	
+	</select>
+	
+	
+	
+	
+	<select id="countByIncludePartSearchCondition" parameterClass="PerformanceSearchCondition" resultClass="int">
+			SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
+			
+			SELECT /* [Performance_SqlMap.xml] collpack.kms.perform.dao.Performance.countByIncludePartSearchCondition */
+				COUNT(*)
+			FROM IKEP4_KMS_BD_ITEM A 
+				LEFT JOIN IKEP4_KMS_BD_BOARD B 
+					ON A.BOARD_ID = B.BOARD_ID
+				INNER JOIN IKEP4_EV_USER C
+					ON A.REGISTER_ID = C.USER_ID			
+			
+			<include refid="collpack.kms.perform.dao.Performance.listPrivateDetailConditions" />				
+			
+			<isNotEmpty property="teamCode">
+				AND A.GROUP_ID IN (
+					<include refid="collpack.kms.perform.dao.Performance.getTeamGroupIds" />	
+				)
+			</isNotEmpty>  
+			<isNotEmpty property="searchIsknowhow">
+				AND B.IS_KNOWHOW = #searchIsknowhow#
+			</isNotEmpty>	
+			
+	</select> 
+	
+	<select id="countByIncludePartSearchConditionStandby" parameterClass="PerformanceSearchCondition" resultClass="int">
+			SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
+			
+			SELECT /* [Performance_SqlMap.xml] collpack.kms.perform.dao.Performance.countByIncludePartSearchCondition */
+				COUNT(*)
+			FROM IKEP4_KMS_BD_ITEM A 
+				LEFT JOIN IKEP4_KMS_BD_BOARD B 
+					ON A.BOARD_ID = B.BOARD_ID
+				INNER JOIN IKEP4_EV_USER C
+					ON A.REGISTER_ID = C.USER_ID			
+			
+			<include refid="collpack.kms.perform.dao.Performance.listPrivateDetailConditionsStandby" />				
+			
+			<isNotEmpty property="teamCode">
+				AND A.GROUP_ID IN (
+					<include refid="collpack.kms.perform.dao.Performance.getTeamGroupIds" />	
+				)
+			</isNotEmpty>  
+			<isNotEmpty property="searchIsknowhow">
+				AND B.IS_KNOWHOW = #searchIsknowhow#
+			</isNotEmpty>	
+			
+	</select> 
+	
+	
+	<select id="listPrivateByIncludePart" parameterClass="PerformanceSearchCondition" resultMap="result">
+	
+		SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
+	
+		SELECT /* [Performance_SqlMap.xml] collpack.kms.perform.dao.Performance.listPrivateByIncludePart */
+		
+			<include refid="collpack.kms.perform.dao.Performance.listPrivateColumnList" />
+			
+		FROM 
+		( 
+		
+				<include refid="collpack.kms.perform.dao.Performance.listPrivateConditions" />			
+				
+				<isNotEmpty property="teamCode">
+					AND A.GROUP_ID IN (
+						<include refid="collpack.kms.perform.dao.Performance.getTeamGroupIds" />	
+					)
+				</isNotEmpty>
+				<isNotEmpty property="searchIsknowhow">
+					AND B.IS_KNOWHOW = #searchIsknowhow#
+				</isNotEmpty>	
+				 
+		<![CDATA[   
+			) D
+			WHERE 
+				ROWNUM <=  #endRowIndex# /* 종료  */
+		) TBL  
+		WHERE 
+			ROWNUM >  #startRowIndex# /* 시작 */  
+		]]> 
+	
+	
+	</select> 	
+	
+	<select id="listPrivateByIncludePartStandby" parameterClass="PerformanceSearchCondition" resultMap="result">
+	
+		SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
+	
+		SELECT /* [Performance_SqlMap.xml] collpack.kms.perform.dao.Performance.listPrivateByIncludePart */
+		
+			<include refid="collpack.kms.perform.dao.Performance.listPrivateColumnList" />
+			
+		FROM 
+		( 
+		
+				<include refid="collpack.kms.perform.dao.Performance.listPrivateConditionsStandby" />			
+				
+				<isNotEmpty property="teamCode">
+					AND A.GROUP_ID IN (
+						<include refid="collpack.kms.perform.dao.Performance.getTeamGroupIds" />	
+					)
+				</isNotEmpty>
+				<isNotEmpty property="searchIsknowhow">
+					AND B.IS_KNOWHOW = #searchIsknowhow#
+				</isNotEmpty>	
+				 
+		<![CDATA[   
+			) D
+			WHERE 
+				ROWNUM <=  #endRowIndex# /* 종료  */
+		) TBL  
+		WHERE 
+			ROWNUM >  #startRowIndex# /* 시작 */  
+		]]> 
+	
+	
+	</select> 
+	
+	
+	<sql id="listPrivateStatSubQry">
+		FROM IKEP4_EV_USER A 
+			LEFT JOIN IKEP4_KMS_CON_OBLIGATION_CNT B
+				ON A.USER_ID = B.USER_ID	
+			LEFT JOIN IKEP4_EV_JOB_TITLE C
+				ON A.JOB_TITLE_CODE = C.JOB_TITLE_CODE	
+			LEFT JOIN  IKEP4_EV_JOB_DUTY DT 
+				ON A.job_duty_code = DT.job_duty_code
+			LEFT JOIN IKEP4_EV_WORK_PLACE G
+				ON G.WORK_PLACE_CODE = A.WORK_PLACE_CODE
+			LEFT JOIN IKEP4_KMS_BD_ITEM D	
+				ON D.REGISTER_ID = A.USER_ID
+			AND D.REGIST_DATE BETWEEN #startDate# AND #endDate#
+			LEFT JOIN IKEP4_KMS_BD_LOG F
+				ON A.USER_ID = F.REGISTER_ID
+			AND D.STATUS > 2
+			AND D.INFO_GRADE IN ('A','B','C')
+			AND F.REGIST_DATE BETWEEN #startDate# AND #endDate#
+			<isNotEmpty property="teamCode">
+				INNER JOIN IKEP4_EV_USER_GROUP H
+					ON H.USER_ID = A.USER_ID
+				AND H.GROUP_ID = #teamCode#
+			</isNotEmpty>
+			
+			WHERE A.JOB_CLASS_CODE IN ('11', '12', '21', '22','24')
+			AND (A.USER_STATUS = 'C' OR (A.USER_STATUS = 'T' AND A.LEAVING_DATE BETWEEN #startDate# AND #endDate#) OR (A.USER_STATUS = 'T' AND A.LEAVING_DATE > #endDate#))
+			<isNotEmpty property="workPlaceName">			
+				AND
+				A.WORK_PLACE_CODE IN (
+					SELECT WORK_PLACE_CODE FROM IKEP4_EV_WORK_PLACE WHERE WORK_PLACE_NAME = #workPlaceName#
+				)
+			</isNotEmpty>	
+			<isNotEmpty property="registerName">
+				AND A.USER_NAME LIKE '%' + #registerName# + '%'
+			</isNotEmpty>
+			<isNotEmpty property="userId">
+				AND A.USER_ID = #userId# 
+			</isNotEmpty>				
+			
+			GROUP BY A.USER_ID, A.USER_NAME, A.USER_STATUS, A.TEAM_NAME,  C.JOB_TITLE_NAME,DT.JOB_DUTY_NAME, 
+			G.WORK_PLACE_NAME
+	</sql>
+	
+	<sql id="listPrivateStatEctSubQry">
+		<![CDATA[				
+		FROM IKEP4_EV_USER A  
+		WHERE A.USER_ID LIKE 'moorim0%'	
+		]]> 
+	</sql>
+	
+	<!-- ANSI --> 
+	<select id="countStatBySearchCondition" parameterClass="PerformanceSearchCondition" resultClass="int">
+		
+					
+		WITH TBL AS (
+			SELECT /* [Performance_SqlMap.xml] collpack.kms.perform.dao.Performance.countStatBySearchCondition */
+					COUNT(*) AS CNT
+				<include refid="collpack.kms.perform.dao.Performance.listPrivateStatSubQry" />	
+		) 
+							
+		SELECT COUNT(*) FROM TBL		
+		
+	</select>  
+	
+	<select id="countStatEctBySearchCondition" parameterClass="PerformanceSearchCondition" resultClass="int">
+		
+					
+		WITH TBL AS (
+			SELECT /* [Performance_SqlMap.xml] collpack.kms.perform.dao.Performance.countStatBySearchCondition */
+					COUNT(*) AS CNT
+				<include refid="collpack.kms.perform.dao.Performance.listPrivateStatEctSubQry" />	
+		) 
+							
+		SELECT COUNT(*) FROM TBL		
+		
+	</select>
+	
+	<sql id="obligationRegRate">
+		CASE (OBLIGATION_SUM)
+		   WHEN '0' THEN
+			'0%'
+			ELSE
+			CAST(CAST(CAST(REG_SUM AS FLOAT) / CAST(OBLIGATION_SUM AS FLOAT) * 100 AS
+	                 DECIMAL) AS NVARCHAR(5)) + '%'
+		END AS OBLIGATION_REG_RATE
+	</sql>
+	
+	<sql id="conversionMark">
+		CAST((CAST(MARK_SUM AS FLOAT) * CAST(mark_rate AS FLOAT)
+				+ CAST(REG_SUM AS FLOAT) * CAST(REG_CNT_rate AS FLOAT)
+				+ CAST(HIT_SUM AS FLOAT) * CAST(view_cnt_rate AS FLOAT)
+				+ CAST(RECOMMEND_SUM AS FLOAT) * CAST(recommend_cnt_rate AS FLOAT)
+				+ CAST(LINEREPLY_SUM AS FLOAT) * CAST(linereply_cnt_rate AS FLOAT)
+				+ CAST(USAGE_SUM AS FLOAT) * CAST(usage_cnt_rate AS FLOAT)) / 100 AS FLOAT) AS CONVERSION_MARK
+	</sql>
+	
+	
+	<select id="listPrivateStat" parameterClass="PerformanceSearchCondition" resultMap="resultPrivateStat">
+	
+			
+			
+			WITH CTE AS (					
+				SELECT Row_number() OVER (	
+				
+								/* [Performance_SqlMap.xml] collpack.kms.perform.dao.Performance.listPrivateStat */
+								<isNotEmpty property="sortColumn" >
+									<isEqual property="sortColumn" compareValue="USER_ID">
+ 										ORDER BY A.USER_ID
+ 									</isEqual>
+ 									<isEqual property="sortColumn" compareValue="USER_NAME">
+ 										ORDER BY A.USER_NAME
+ 									</isEqual>
+ 									<isEqual property="sortColumn" compareValue="TEAM_NAME">
+ 										ORDER BY A.TEAM_NAME
+ 									</isEqual>
+ 									<isEqual property="sortColumn" compareValue="USER_STATUS">
+ 										ORDER BY A.USER_STATUS
+ 									</isEqual> 							
+   																									  																	
+
+ 									<isEqual property="sortType" compareValue="ASC">
+ 										ASC
+ 									</isEqual>
+ 									<isEqual property="sortType" compareValue="DESC">
+ 										DESC
+ 									</isEqual>   									
+ 									
+ 								</isNotEmpty>  
+ 							 	<isEmpty property="sortColumn"> ORDER BY  A.USER_NAME ASC </isEmpty>
+				
+				 ) AS ROWNUM,
+				 	'' AS REGIST_DATE,				
+					A.USER_ID, 
+					A.USER_NAME,  
+					A.TEAM_NAME, G.WORK_PLACE_NAME, 
+					ISNULL(DBO.IKEP_FN_KMS_OBLIGATION_CNT_SUM(A.USER_ID, #startDate#,#endDate#),0) AS OBLIGATION_SUM, 
+					C.JOB_TITLE_NAME,	
+					DT.JOB_DUTY_NAME,
+					ISNULL(DBO.IKEP_FN_KMS_REGCNT(A.USER_ID, #startDate#, #endDate#), 0) AS REG_SUM, 
+					ISNULL(DBO.IKEP_FN_KMS_MARK_SUM(A.USER_ID, #startDate#, #endDate#), 0) AS MARK_SUM, 
+					ISNULL(DBO.IKEP_FN_KMS_BD_HIT_SUM(A.USER_ID, #startDate#, #endDate#), 0) AS HIT_SUM, 
+					ISNULL(DBO.IKEP_FN_KMS_USAGE_SUM(A.USER_ID, #startDate#, #endDate#), 0) AS USAGE_SUM,
+					ISNULL(DBO.IKEP_FN_KMS_RECOMMEND_SUM(A.USER_ID, #startDate#, #endDate#), 0) AS RECOMMEND_SUM,
+					ISNULL(DBO.IKEP_FN_KMS_LINEREPLY_SUM(A.USER_ID, #startDate#, #endDate#), 0) AS LINEREPLY_SUM,
+					CASE(A.USER_STATUS)
+						WHEN 'C' THEN '재직'
+						WHEN 'H' THEN '휴직'
+						WHEN 'T' THEN '퇴직'
+					END AS USER_STATUS	
+					
+					<include refid="collpack.kms.perform.dao.Performance.listPrivateStatSubQry" />	
+				 
+		 
+				)  
+				
+				
+				SELECT CTE.*, 
+				<include refid="collpack.kms.perform.dao.Performance.obligationRegRate" />,	
+				<include refid="collpack.kms.perform.dao.Performance.conversionMark" />	
+				,'' AS SCORE_SUM
+				FROM CTE, IKEP4_KMS_ASSESS_STANDARD	
+				WHERE 
+		<![CDATA[				
+				CTE.ROWNUM <= #endRowIndex# /* 종료  */
+				AND CTE.ROWNUM > #startRowIndex# /* 시작 */
+			
+		]]> 
+	
+	</select>	
+	
+	<select id="listPrivateStatEct" parameterClass="PerformanceSearchCondition" resultMap="resultPrivateStat">
+	
+			
+			
+			WITH CTE AS (					
+				SELECT Row_number() OVER (	
+				
+								/* [Performance_SqlMap.xml] collpack.kms.perform.dao.Performance.listPrivateStat */
+								<isNotEmpty property="sortColumn" >
+									<isEqual property="sortColumn" compareValue="USER_ID">
+ 										ORDER BY A.USER_ID
+ 									</isEqual>
+ 									<isEqual property="sortColumn" compareValue="USER_NAME">
+ 										ORDER BY A.USER_NAME
+ 									</isEqual>
+ 									<isEqual property="sortColumn" compareValue="TEAM_NAME">
+ 										ORDER BY A.TEAM_NAME
+ 									</isEqual>
+ 									<isEqual property="sortColumn" compareValue="USER_STATUS">
+ 										ORDER BY A.USER_STATUS
+ 									</isEqual> 							
+   																									  																	
+
+ 									<isEqual property="sortType" compareValue="ASC">
+ 										ASC
+ 									</isEqual>
+ 									<isEqual property="sortType" compareValue="DESC">
+ 										DESC
+ 									</isEqual>   									
+ 									
+ 								</isNotEmpty>  
+ 							 	<isEmpty property="sortColumn"> ORDER BY  A.USER_NAME ASC </isEmpty>
+				
+				 ) AS ROWNUM,
+				 	'' AS REGIST_DATE,				
+					A.USER_ID, 
+					A.USER_NAME,  
+					A.TEAM_NAME, 
+					'' AS WORK_PLACE_NAME, 
+					0 AS OBLIGATION_SUM, 
+					'' JOB_TITLE_NAME,	
+					'' JOB_DUTY_NAME,
+					0 AS REG_SUM, 
+					0 AS MARK_SUM, 
+					ISNULL(DBO.IKEP_FN_KMS_BD_MY_HIT_SUM(A.USER_ID, #startDate#, #endDate#), 0) AS HIT_SUM, 
+					0 AS USAGE_SUM,
+					0 AS RECOMMEND_SUM,
+					0 AS LINEREPLY_SUM,
+					CASE(A.USER_STATUS)
+						WHEN 'C' THEN '재직'
+						WHEN 'H' THEN '휴직'
+						WHEN 'T' THEN '퇴직'
+					END AS USER_STATUS,
+					'' AS SCORE_SUM	
+					
+					<include refid="collpack.kms.perform.dao.Performance.listPrivateStatEctSubQry" />	
+				 
+		 
+				)  
+				
+				
+				SELECT CTE.*, 
+				<include refid="collpack.kms.perform.dao.Performance.obligationRegRate" />,	
+				<include refid="collpack.kms.perform.dao.Performance.conversionMark" />	
+				
+				FROM CTE, IKEP4_KMS_ASSESS_STANDARD	
+				WHERE 
+		<![CDATA[				
+				CTE.ROWNUM <= #endRowIndex# /* 종료  */
+				AND CTE.ROWNUM > #startRowIndex# /* 시작 */
+			
+		]]> 
+	
+	</select>
+	
+	
+	<select id="countStatPersonBySearchCondition" parameterClass="PerformanceSearchCondition" resultClass="int">
+	
+				
+		
+		WITH TBL AS (
+			SELECT /* [Performance_SqlMap.xml] collpack.kms.perform.dao.Performance.countStatPersonBySearchCondition*/
+					COUNT(*)
+				FROM 
+				IKEP4_EV_USER A LEFT JOIN IKEP4_KMS_BD_ITEM B
+					ON A.USER_ID = B.REGISTER_ID
+				LEFT JOIN IKEP4_EV_WORK_PLACE C
+					ON A.WORK_PLACE_CODE = C.WORK_PLACE_CODE
+				LEFT JOIN IKEP4_KMS_CON_OBLIGATION_CNT D
+					ON A.USER_ID = D.USER_ID
+				LEFT JOIN IKEP4_EV_JOB_TITLE F
+					ON A.job_title_code = F.job_title_code	
+				WHERE 
+				<isNotEmpty property="registerName">
+					B.REGISTER_NAME = #registerName#
+					AND B.GROUP_ID = #teamCode#
+				</isNotEmpty>
+				<isEmpty property="registerName">
+					B.REGISTER_ID=#userId#
+				</isEmpty>
+				AND B.regist_date BETWEEN #startDate# AND #endDate#
+				AND B.STATUS > 2	
+				AND B.INFO_GRADE IN ('A','B','C')			
+				GROUP BY 
+				A.USER_NAME, A.USER_ID, C.WORK_PLACE_NAME, A.TEAM_NAME, F.JOB_TITLE_NAME, A.USER_STATUS, D.OBLIGATION_CNT, SUBSTRING(CONVERT(NVARCHAR, B.REGIST_DATE, 112), 1, 6)
+		) 
+							
+		SELECT COUNT(*) FROM TBL		
+		
+	</select>  
+	
+	<select id="listPrivateStatPerson" parameterClass="PerformanceSearchCondition" resultMap="resultPrivateStat">
+	
+			SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED				
+		
+			SELECT /* [Performance_SqlMap.xml] collpack.kms.perform.dao.Performance.listPrivateStatPerson */
+				'' AS ROWNUM,
+				SUBSTRING(CONVERT(NVARCHAR, B.REGIST_DATE, 112), 1, 6) AS REGIST_DATE,
+				A.USER_ID, 
+				A.USER_NAME, 
+				C.WORK_PLACE_NAME, 
+				A.TEAM_NAME, 
+				D.OBLIGATION_CNT AS OBLIGATION_SUM,
+				F.JOB_TITLE_NAME AS JOB_TITLE_NAME,
+				DT.JOB_DUTY_NAME AS JOB_DUTY_NAME,
+				COUNT(B.ITEM_ID) AS REG_SUM,
+				SUM(B.MARK) AS MARK_SUM,
+				SUM(B.HIT_COUNT) AS HIT_SUM, 
+				'' AS USAGE_SUM,				 
+				SUM(B.RECOMMEND_COUNT) AS RECOMMEND_SUM,
+				'' AS LINEREPLY_SUM,
+				CASE (D.OBLIGATION_CNT)
+			   	WHEN '0' THEN
+				'0%'
+				ELSE
+				CAST(CAST(CAST(COUNT(B.ITEM_ID) AS FLOAT)/CAST(D.OBLIGATION_CNT AS FLOAT)*100 AS DECIMAL) AS NVARCHAR(5)) + '%'
+			   	END AS OBLIGATION_REG_RATE,				
+				'' AS CONVERSION_MARK,
+				CASE(A.USER_STATUS)
+					WHEN 'C' THEN '재직'
+					WHEN 'H' THEN '휴직'
+					WHEN 'T' THEN '퇴직'
+				END AS USER_STATUS,
+				'' AS SCORE_SUM	
+			FROM 
+			IKEP4_EV_USER A LEFT JOIN IKEP4_KMS_BD_ITEM B
+				ON A.USER_ID = B.REGISTER_ID
+			LEFT JOIN IKEP4_EV_WORK_PLACE C
+				ON A.WORK_PLACE_CODE = C.WORK_PLACE_CODE
+			LEFT JOIN IKEP4_KMS_CON_OBLIGATION_CNT D
+				ON A.USER_ID = D.USER_ID
+			LEFT JOIN IKEP4_EV_JOB_TITLE F
+				ON A.job_title_code = F.job_title_code	
+			LEFT JOIN  IKEP4_EV_JOB_DUTY DT 
+				ON A.job_duty_code = DT.job_duty_code
+			WHERE			 
+			<isNotEmpty property="registerName">
+				B.REGISTER_NAME = #registerName# 
+			</isNotEmpty>
+			<isEmpty property="registerName">
+				B.REGISTER_ID=#userId#
+			</isEmpty>
+			AND B.STATUS > 2
+			AND B.INFO_GRADE IN ('A','B','C')
+			AND B.regist_date BETWEEN #startDate# AND #endDate#		
+			AND D.period = SUBSTRING(CONVERT(NVARCHAR, B.REGIST_DATE, 112), 1, 6)	
+			GROUP BY 
+			A.USER_NAME, A.USER_ID, C.WORK_PLACE_NAME, A.TEAM_NAME, F.JOB_TITLE_NAME,DT.JOB_DUTY_NAME, A.USER_STATUS, D.OBLIGATION_CNT, SUBSTRING(CONVERT(NVARCHAR, B.REGIST_DATE, 112), 1, 6)			
+	
+	</select>
+	
+	<select id="listPerformance" parameterClass="PerformanceSearchCondition" resultMap="resultPerformance">
+		WITH CTE1 AS (
+		  SELECT group_id
+		  FROM IKEP4_EV_GROUP
+		  WHERE GROUP_ID = #teamCode#
+		  and GROUP_TYPE_ID = 'G0001'
+		 
+		  UNION ALL
+		  SELECT G.group_id
+		  FROM IKEP4_EV_GROUP G, CTE1
+		  WHERE CTE1.GROUP_ID = G.PARENT_GROUP_ID
+		 ),
+		CTE2 AS (
+		 	select user_id from ikep4_ev_user_group 
+			where group_id in (select group_id from CTE1) and user_id != 'lutia98'
+		 ),
+		CTE3 AS (
+			select  
+			(select count(*)+(select count(*) from IKEP4_KMS_BD_QNA
+		where convert(varchar(6),regist_date,112) = #searchPeriod#
+		and item_id in(select item_id from IKEP4_KMS_BD_QNA_recommend)
+		and register_id in (select user_id from CTE2)) from IKEP4_KMS_BD_ITEM
+			where STATUS > 2 AND INFO_GRADE IN ('A','B','C') 
+			and register_id in (select user_id from CTE2)
+			and convert(varchar(6),regist_date,112) = #searchPeriod#) as reg_cnt,
+			(select sum(obligation_cnt) from IKEP4_KMS_CON_OBLIGATION_CNT
+			where period = #searchPeriod#
+			and user_id in (select user_id from CTE2)) as obl_cnt
+		)
+		
+		select #teamCode# as GROUP_ID, #teamName#+'^'+#category# as TEAM_NAME, cast((reg_cnt*100)/obl_cnt as char(30))+'^'+#category# as REG_SUM  from CTE3
+	</select>
+	
+	<select id="listPerformanceGroup" parameterClass="PerformanceSearchCondition" resultMap="resultPerformanceGroup">
+		select team_name AS TEAM_NAME, team_id as GROUP_ID, category as category, '' AS REG_SUM from IKEP4_KMS_PERFORMANCE_GROUP
+		order by sort_order desc
+	</select>
+	
+	<select id="leftListPrivateStatPerson" parameterClass="PerformanceSearchCondition" resultMap="resultPrivateStatLeft">
+	
+			SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED				
+		
+			SELECT /* [Performance_SqlMap.xml] collpack.kms.perform.dao.Performance.listPrivateStatPerson */
+				'' AS ROWNUM,
+				SUBSTRING(CONVERT(NVARCHAR, B.REGIST_DATE, 112), 1, 6) AS REGIST_DATE,
+				A.USER_ID, 
+				A.USER_NAME, 
+				C.WORK_PLACE_NAME, 
+				A.TEAM_NAME, 
+				D.OBLIGATION_CNT AS OBLIGATION_SUM,
+				F.JOB_TITLE_NAME AS JOB_TITLE_NAME,
+				(SELECT COUNT(*)+(select count(*) from IKEP4_KMS_BD_QNA
+				where regist_date BETWEEN #startDate# AND #endDate#
+				and item_id in(select item_id from IKEP4_KMS_BD_QNA_recommend) 
+				AND REGISTER_ID=#userId#
+				) FROM IKEP4_KMS_BD_ITEM
+					WHERE			 
+					<isNotEmpty property="registerName">
+						REGISTER_NAME = #registerName# 
+						AND GROUP_ID = #teamCode#
+					</isNotEmpty>
+					<isEmpty property="registerName">
+						REGISTER_ID=#userId#
+					</isEmpty>
+					AND STATUS > 2
+					AND INFO_GRADE IN ('A','B','C')
+					AND regist_date BETWEEN #startDate# AND #endDate#	) AS REG_SUM,
+					(SELECT SUM(SS.SCORE_SUM) FROM (
+					SELECT ITEM_ID, (CASE WHEN SUM(SCORE) > 3 THEN 3 ELSE SUM(SCORE) END) AS SCORE_SUM 
+					FROM IKEP4_KMS_SCORE WHERE ITEM_ID IN (SELECT ITEM_ID FROM IKEP4_KMS_BD_ITEM 
+					WHERE REGISTER_ID=#userId# AND regist_date BETWEEN #startDate# AND #endDate#)
+					GROUP BY ITEM_ID) SS) AS SCORE_SUM,
+				( SELECT COUNT(*)+(select count(*) from IKEP4_KMS_BD_QNA
+				where regist_date BETWEEN #startDate# AND #endDate#
+				AND REGISTER_ID=#userId#
+				) FROM IKEP4_KMS_BD_ITEM
+					WHERE STATUS > 0		 
+					AND 
+					<isNotEmpty property="registerName">
+						REGISTER_NAME = #registerName# 
+						AND GROUP_ID = #teamCode#
+					</isNotEmpty>
+					<isEmpty property="registerName">
+						REGISTER_ID=#userId#
+					</isEmpty>
+					AND regist_date BETWEEN #startDate# AND #endDate#) AS REG_CNT,
+				(SELECT SUM(MARK) FROM IKEP4_KMS_BD_ITEM
+					WHERE			 
+					<isNotEmpty property="registerName">
+						REGISTER_NAME = #registerName# 
+						AND GROUP_ID = #teamCode#
+					</isNotEmpty>
+					<isEmpty property="registerName">
+						REGISTER_ID=#userId#
+					</isEmpty>
+					AND STATUS > 2
+					AND INFO_GRADE IN ('A','B','C')
+					AND regist_date BETWEEN #startDate# AND #endDate#	) AS MARK_SUM,
+				SUM(B.HIT_COUNT) AS HIT_SUM, 
+				'' AS USAGE_SUM,				 
+				SUM(B.RECOMMEND_COUNT) AS RECOMMEND_SUM,
+				'' AS LINEREPLY_SUM,
+				CASE (D.OBLIGATION_CNT)
+			   	WHEN '0' THEN
+				'0%'
+				ELSE
+				CAST(CAST(CAST(COUNT(B.ITEM_ID) AS FLOAT)/CAST(D.OBLIGATION_CNT AS FLOAT)*100 AS DECIMAL) AS NVARCHAR(5)) + '%'
+			   	END AS OBLIGATION_REG_RATE,				
+				'' AS CONVERSION_MARK,
+				CASE(A.USER_STATUS)
+					WHEN 'C' THEN '재직'
+					WHEN 'H' THEN '휴직'
+					WHEN 'T' THEN '퇴직'
+				END AS USER_STATUS	
+			FROM 
+			IKEP4_EV_USER A LEFT JOIN IKEP4_KMS_BD_ITEM B
+				ON A.USER_ID = B.REGISTER_ID
+			LEFT JOIN IKEP4_EV_WORK_PLACE C
+				ON A.WORK_PLACE_CODE = C.WORK_PLACE_CODE
+			LEFT JOIN IKEP4_KMS_CON_OBLIGATION_CNT D
+				ON A.USER_ID = D.USER_ID
+			LEFT JOIN IKEP4_EV_JOB_TITLE F
+				ON A.job_title_code = F.job_title_code	
+			WHERE			 
+			<isNotEmpty property="registerName">
+				B.REGISTER_NAME = #registerName# 
+				AND B.GROUP_ID = #teamCode#
+			</isNotEmpty>
+			<isEmpty property="registerName">
+				B.REGISTER_ID=#userId#
+			</isEmpty>
+			AND B.STATUS > 0
+			AND B.regist_date BETWEEN #startDate# AND #endDate#			
+			GROUP BY 
+			A.USER_NAME, A.USER_ID, C.WORK_PLACE_NAME, A.TEAM_NAME, F.JOB_TITLE_NAME, A.USER_STATUS, D.OBLIGATION_CNT, SUBSTRING(CONVERT(NVARCHAR, B.REGIST_DATE, 112), 1, 6)					
+	
+	</select>
+	
+	<select id="listLineReply" parameterClass="PerformanceSearchCondition" resultClass="java.util.HashMap">
+	
+			SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
+			 
+			SELECT /* [Performance_SqlMap.xml] collpack.kms.perform.dao.Performance.listLineReply */					 
+				SUBSTRING(CONVERT(NVARCHAR, REGIST_DATE, 112), 1, 6) AS REG_DATE, 
+				CONVERT(NVARCHAR, COUNT(ITEM_ID))  AS LINEREPLY_SUM 
+			FROM IKEP4_KMS_BD_LINEREPLY
+			WHERE REGISTER_ID=#userId#
+			AND REGIST_DATE BETWEEN  #startDate# AND #endDate#
+			GROUP BY  SUBSTRING(CONVERT(NVARCHAR, REGIST_DATE, 112), 1, 6)	
+	
+	</select>	
+	
+	<select id="listTeamLineReply" parameterClass="PerformanceSearchCondition" resultClass="java.util.HashMap">
+			SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
+			 
+			SELECT /* [Performance_SqlMap.xml] collpack.kms.perform.dao.Performance.listTeamLineReply */					 
+				SUBSTRING(CONVERT(NVARCHAR, REGIST_DATE, 112), 1, 6) AS REG_DATE, 
+				CONVERT(NVARCHAR, COUNT(ITEM_ID))  AS LINEREPLY_SUM
+			FROM IKEP4_KMS_BD_LINEREPLY
+			WHERE GROUP_ID = #teamCode#
+			AND REGIST_DATE BETWEEN #startDate# AND #endDate#
+			GROUP BY  SUBSTRING(CONVERT(NVARCHAR, REGIST_DATE, 112), 1, 6)		
+	
+	</select>
+	
+	<select id="listTeamLineReplyByIncludePart" parameterClass="PerformanceSearchCondition" resultClass="java.util.HashMap">
+	
+			SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
+			 
+			SELECT /* [Performance_SqlMap.xml] collpack.kms.perform.dao.Performance.listTeamLineReplyByIncludePart */					 
+				SUBSTRING(CONVERT(NVARCHAR, REGIST_DATE, 112), 1, 6) AS REG_DATE, 
+				CONVERT(NVARCHAR, COUNT(ITEM_ID))  AS LINEREPLY_SUM
+			FROM IKEP4_KMS_BD_LINEREPLY
+			WHERE GROUP_ID IN (					
+				<include refid="collpack.kms.perform.dao.Performance.getTeamGroupIds" />
+				)
+			AND REGIST_DATE BETWEEN #startDate# AND #endDate#
+			GROUP BY  SUBSTRING(CONVERT(NVARCHAR, REGIST_DATE, 112), 1, 6)	
+	
+	</select>
+	
+	<select id="listLog" parameterClass="PerformanceSearchCondition" resultClass="java.util.HashMap">
+			SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
+			 
+			SELECT /* [Performance_SqlMap.xml] collpack.kms.perform.dao.Performance.listLog */					 
+				REPLACE(SUBSTRING(REGIST_DATE, 1, 7),'-','' ) AS REG_DATE, 
+				SUM(HIT_COUNT) AS USAGE_SUM  
+			FROM IKEP4_KMS_BD_LOG
+			WHERE REGISTER_ID=#userId#
+			AND REGIST_DATE BETWEEN #startDate# AND #endDate#
+			GROUP BY  REPLACE(SUBSTRING(REGIST_DATE, 1, 7),'-','' )			
+	
+	</select>
+	
+	<select id="listTeamLog" parameterClass="PerformanceSearchCondition" resultClass="java.util.HashMap">
+	
+			SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
+			 
+			SELECT /* [Performance_SqlMap.xml] collpack.kms.perform.dao.Performance.listLog */					 
+				REPLACE(SUBSTRING(REGIST_DATE, 1, 7),'-','' ) AS REG_DATE, 
+				SUM(HIT_COUNT) AS USAGE_SUM  
+			FROM IKEP4_KMS_BD_LOG
+			WHERE GROUP_ID = #teamCode#
+			AND REGIST_DATE BETWEEN #startDate# AND #endDate#
+			GROUP BY  REPLACE(SUBSTRING(REGIST_DATE, 1, 7),'-','' )			
+	
+	</select>
+	
+	<select id="listTeamLogByIncludePart" parameterClass="PerformanceSearchCondition" resultClass="java.util.HashMap">
+	
+			SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
+			 
+			SELECT /* [Performance_SqlMap.xml] collpack.kms.perform.dao.Performance.listTeamLogByIncludePart */					 
+				REPLACE(SUBSTRING(REGIST_DATE, 1, 7),'-','' ) AS REG_DATE, 
+				SUM(HIT_COUNT) AS USAGE_SUM  
+			FROM IKEP4_KMS_BD_LOG
+			WHERE GROUP_ID IN (
+				
+				<include refid="collpack.kms.perform.dao.Performance.getTeamGroupIds" />
+				)
+									
+			AND REGIST_DATE BETWEEN #startDate# AND #endDate#
+			GROUP BY  REPLACE(SUBSTRING(REGIST_DATE, 1, 7),'-','' )			
+	
+	</select>			
+	
+	<sql id="listTeamConditions">
+		WHERE A.STATUS > 2
+			AND A.INFO_GRADE IN ('A','B','C')
+			<isNotEmpty property="teamCode">
+			   AND A.GROUP_ID = #teamCode#
+		   	 </isNotEmpty>
+		   	 <isEmpty property="teamCode">
+			   AND A.register_id IN (
+				   ( SELECT USER_ID 
+						FROM IKEP4_EV_USER_GROUP 
+						WHERE GROUP_ID IN 
+							(SELECT UR.GROUP_ID 
+								FROM IKEP4_EV_USER_GROUP UR INNER JOIN IKEP4_EV_GROUP GR
+								ON UR.group_id = GR.group_id
+							WHERE UR.USER_ID = #userId#
+								AND GR.group_type_id ='G0001'
+							 UNION
+							 SELECT TEAM_CODE FROM IKEP4_KMS_DIVISION_PERMISSION WHERE USER_ID=#userId# AND IS_USE=0
+							) 							
+					)
+			   )
+			  </isEmpty>
+			  <isNotEmpty property="registerName">
+				AND A.REGISTER_NAME like '%' + #registerName# + '%'
+			</isNotEmpty>					
+			AND A.REGIST_DATE BETWEEN #startDate# AND #endDate#
+	</sql>	
+	
+	<sql id="listTeamConditionsStandby">
+	<![CDATA[  
+		WHERE A.STATUS < 3
+			AND (A.INFO_GRADE = '' or A.INFO_GRADE is null)
+			]]> 
+			<isNotEmpty property="teamCode">
+			   AND A.GROUP_ID = #teamCode#
+		   	 </isNotEmpty>
+		   	 <isEmpty property="teamCode">
+			   AND A.register_id IN (
+				   ( SELECT USER_ID 
+						FROM IKEP4_EV_USER_GROUP 
+						WHERE GROUP_ID IN 
+							(SELECT UR.GROUP_ID 
+								FROM IKEP4_EV_USER_GROUP UR INNER JOIN IKEP4_EV_GROUP GR
+								ON UR.group_id = GR.group_id
+							WHERE UR.USER_ID = #userId#
+								AND GR.group_type_id ='G0001'
+							 UNION
+							 SELECT TEAM_CODE FROM IKEP4_KMS_DIVISION_PERMISSION WHERE USER_ID=#userId# AND IS_USE=0
+							) 							
+					)
+			   )
+			  </isEmpty>
+			  <isNotEmpty property="registerName">
+				AND A.REGISTER_NAME like '%' + #registerName# + '%'
+			</isNotEmpty>					
+			AND A.REGIST_DATE BETWEEN #startDate# AND #endDate#
+	</sql>	
+	
+	
+	<select id="countTeamBySearchCondition" parameterClass="PerformanceSearchCondition" resultClass="int">
+	
+		SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
+		
+		SELECT /* [Performance_SqlMap.xml] collpack.kms.perform.dao.Performance.countTeamBySearchCondition*/
+			COUNT(*)
+			
+		  FROM IKEP4_KMS_BD_ITEM A
+		  LEFT JOIN IKEP4_KMS_BD_BOARD B
+		    ON A.BOARD_ID = B.BOARD_ID   
+		    
+		 <include refid="collpack.kms.perform.dao.Performance.listTeamConditions" />
+		 
+		 <isNotEmpty property="searchIsknowhow">
+			AND B.IS_KNOWHOW = #searchIsknowhow#
+		 </isNotEmpty>	
+	</select>
+	
+	<select id="countTeamBySearchConditionStandby" parameterClass="PerformanceSearchCondition" resultClass="int">
+	
+		SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
+		
+		SELECT /* [Performance_SqlMap.xml] collpack.kms.perform.dao.Performance.countTeamBySearchCondition*/
+			COUNT(*)
+			
+		  FROM IKEP4_KMS_BD_ITEM A
+		  LEFT JOIN IKEP4_KMS_BD_BOARD B
+		    ON A.BOARD_ID = B.BOARD_ID   
+		    
+		 <include refid="collpack.kms.perform.dao.Performance.listTeamConditionsStandby" />
+		 
+		 <isNotEmpty property="searchIsknowhow">
+			AND B.IS_KNOWHOW = #searchIsknowhow#
+		 </isNotEmpty>	
+	</select>
+			
+			
+	<select id="listTeam" parameterClass="PerformanceSearchCondition"  resultMap="result">
+	
+		SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED		
+		
+		SELECT  /* [Performance_SqlMap.xml] collpack.kms.perform.dao.Performance.listTeam */
+			ROWNUM, ITEM_ID, ATTACH_FILE_COUNT, IS_KNOWHOW, IS_KNOWHOW_VALUE,TITLE, REGISTER_ID, 
+					REGISTER_NAME, REGIST_DATE, HIT_COUNT, LINEREPLY_COUNT, RECOMMEND_COUNT,
+					INFO_GRADE, TARGET_SOURCE, MARK, EMP_NO, TEAM_NAME, '' WORK_PLACE_NAME, STATUS
+							
+		FROM 
+		( 
+	
+			SELECT
+				D.*  
+			FROM 
+			( 							
+				SELECT Row_number() OVER (	
+				
+								<isNotEmpty property="sortColumn" >
+									<isEqual property="sortColumn" compareValue="REGISTER_NAME">
+ 										ORDER BY A.REGISTER_NAME
+ 									</isEqual>
+ 									<isEqual property="sortColumn" compareValue="REGIST_DATE">
+ 										ORDER BY A.REGIST_DATE
+ 									</isEqual>
+ 									<isEqual property="sortColumn" compareValue="HIT_COUNT">
+ 										ORDER BY A.HIT_COUNT
+ 									</isEqual>
+ 									<isEqual property="sortColumn" compareValue="LINEREPLY_COUNT">
+ 										ORDER BY A.LINEREPLY_COUNT
+ 									</isEqual>  
+									<isEqual property="sortColumn" compareValue="RECOMMEND_COUNT">
+ 										ORDER BY A.RECOMMEND_COUNT
+ 									</isEqual>   
+									<isEqual property="sortColumn" compareValue="MARK">
+ 										ORDER BY A.MARK
+ 									</isEqual>
+ 									<isEqual property="sortColumn" compareValue="IS_KNOWHOW">
+ 										ORDER BY B.IS_KNOWHOW
+ 									</isEqual>   	   																	
+
+ 									<isEqual property="sortType" compareValue="ASC">
+ 										ASC
+ 									</isEqual>
+ 									<isEqual property="sortType" compareValue="DESC">
+ 										DESC
+ 									</isEqual>   									
+ 									
+ 								</isNotEmpty>  
+ 							 	<isEmpty property="sortColumn"> ORDER BY  A.REGIST_DATE DESC </isEmpty>
+				
+				 ) AS ROWNUM,
+						A.ITEM_ID, A.ATTACH_FILE_COUNT, B.IS_KNOWHOW,
+						CASE(B.IS_KNOWHOW)
+						WHEN '0' THEN
+							'업무노하우'
+						ELSE
+							'일반정보'
+						END AS IS_KNOWHOW_VALUE, 
+						A.TITLE, A.REGISTER_ID, 
+						A.REGISTER_NAME, CONVERT(NVARCHAR, A.REGIST_DATE, 102) AS REGIST_DATE, A.HIT_COUNT, A.LINEREPLY_COUNT, A.RECOMMEND_COUNT,
+						A.INFO_GRADE, A.TARGET_SOURCE, ISNULL(A.MARK, 0) AS MARK, C.EMP_NO, A.GROUP_NAME AS TEAM_NAME, A.STATUS	
+					FROM IKEP4_KMS_BD_ITEM A 
+						LEFT JOIN IKEP4_KMS_BD_BOARD B 
+							ON A.BOARD_ID = B.BOARD_ID
+						INNER JOIN IKEP4_EV_USER C
+							ON A.REGISTER_ID = C.USER_ID
+					
+					<include refid="collpack.kms.perform.dao.Performance.listTeamConditions" />	
+					<isNotEmpty property="searchIsknowhow">
+						AND B.IS_KNOWHOW = #searchIsknowhow#
+					</isNotEmpty>					
+					
+		<![CDATA[   
+			) D
+			WHERE 
+				ROWNUM <=  #endRowIndex# /* 종료  */
+		) TBL  
+		WHERE 
+			ROWNUM >  #startRowIndex# /* 시작 */  
+		]]> 							
+	</select>  	
+	
+	<select id="listTeamStandby" parameterClass="PerformanceSearchCondition"  resultMap="result">
+	
+		SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED		
+		
+		SELECT  /* [Performance_SqlMap.xml] collpack.kms.perform.dao.Performance.listTeam */
+			ROWNUM, ITEM_ID, ATTACH_FILE_COUNT, IS_KNOWHOW, IS_KNOWHOW_VALUE,TITLE, REGISTER_ID, 
+					REGISTER_NAME, REGIST_DATE, HIT_COUNT, LINEREPLY_COUNT, RECOMMEND_COUNT,
+					INFO_GRADE, TARGET_SOURCE, MARK, EMP_NO, TEAM_NAME, '' WORK_PLACE_NAME, STATUS
+							
+		FROM 
+		( 
+	
+			SELECT
+				D.*  
+			FROM 
+			( 							
+				SELECT Row_number() OVER (	
+				
+								<isNotEmpty property="sortColumn" >
+									<isEqual property="sortColumn" compareValue="REGISTER_NAME">
+ 										ORDER BY A.REGISTER_NAME
+ 									</isEqual>
+ 									<isEqual property="sortColumn" compareValue="REGIST_DATE">
+ 										ORDER BY A.REGIST_DATE
+ 									</isEqual>
+ 									<isEqual property="sortColumn" compareValue="HIT_COUNT">
+ 										ORDER BY A.HIT_COUNT
+ 									</isEqual>
+ 									<isEqual property="sortColumn" compareValue="LINEREPLY_COUNT">
+ 										ORDER BY A.LINEREPLY_COUNT
+ 									</isEqual>  
+									<isEqual property="sortColumn" compareValue="RECOMMEND_COUNT">
+ 										ORDER BY A.RECOMMEND_COUNT
+ 									</isEqual>   
+									<isEqual property="sortColumn" compareValue="MARK">
+ 										ORDER BY A.MARK
+ 									</isEqual>
+ 									<isEqual property="sortColumn" compareValue="IS_KNOWHOW">
+ 										ORDER BY B.IS_KNOWHOW
+ 									</isEqual>   	   																	
+
+ 									<isEqual property="sortType" compareValue="ASC">
+ 										ASC
+ 									</isEqual>
+ 									<isEqual property="sortType" compareValue="DESC">
+ 										DESC
+ 									</isEqual>   									
+ 									
+ 								</isNotEmpty>  
+ 							 	<isEmpty property="sortColumn"> ORDER BY  A.REGIST_DATE DESC </isEmpty>
+				
+				 ) AS ROWNUM,
+						A.ITEM_ID, A.ATTACH_FILE_COUNT, B.IS_KNOWHOW,
+						CASE(B.IS_KNOWHOW)
+						WHEN '0' THEN
+							'업무노하우'
+						ELSE
+							'일반정보'
+						END AS IS_KNOWHOW_VALUE, 
+						A.TITLE, A.REGISTER_ID, 
+						A.REGISTER_NAME, CONVERT(NVARCHAR, A.REGIST_DATE, 102) AS REGIST_DATE, A.HIT_COUNT, A.LINEREPLY_COUNT, A.RECOMMEND_COUNT,
+						A.INFO_GRADE, A.TARGET_SOURCE, ISNULL(A.MARK, 0) AS MARK, C.EMP_NO, A.GROUP_NAME AS TEAM_NAME, A.STATUS	
+					FROM IKEP4_KMS_BD_ITEM A 
+						LEFT JOIN IKEP4_KMS_BD_BOARD B 
+							ON A.BOARD_ID = B.BOARD_ID
+						INNER JOIN IKEP4_EV_USER C
+							ON A.REGISTER_ID = C.USER_ID
+					
+					<include refid="collpack.kms.perform.dao.Performance.listTeamConditionsStandby" />	
+					<isNotEmpty property="searchIsknowhow">
+						AND B.IS_KNOWHOW = #searchIsknowhow#
+					</isNotEmpty>					
+					
+		<![CDATA[   
+			) D
+			WHERE 
+				ROWNUM <=  #endRowIndex# /* 종료  */
+		) TBL  
+		WHERE 
+			ROWNUM >  #startRowIndex# /* 시작 */  
+		]]> 							
+	</select> 
+	
+	<sql id="listTeamStatSubQry">
+		WITH TBL AS (
+			/* [PERFORMANCE_SQLMAP.XML] COLLPACK.KMS.PERFORM.DAO.PERFORMANCE.countTeamStatBySearchCondition */
+			SELECT B.GROUP_ID, ER.GROUP_NAME,
+		                  (SELECT COUNT(TA.USER_ID) FROM IKEP4_EV_USER TA 
+						WHERE TA.JOB_CLASS_CODE IN ('11', '12', '21', '22','24')
+		            AND (TA.USER_STATUS = 'C' OR (TA.USER_STATUS = 'T' AND TA.LEAVING_DATE BETWEEN #startDate# AND #endDate#) 
+		            OR (TA.USER_STATUS = 'T' AND TA.LEAVING_DATE > #endDate#))
+						<isNotEmpty property="workPlaceName">			
+						AND TA.WORK_PLACE_CODE IN (
+							SELECT TW.WORK_PLACE_CODE FROM IKEP4_EV_WORK_PLACE TW WHERE TW.WORK_PLACE_NAME = #workPlaceName#
+						)
+					</isNotEmpty>					
+					<isNotEmpty property="teamCode">				
+						AND TA.user_id IN(SELECT TB.USER_iD FROM IKEP4_EV_USER_GROUP TB WHERE TB.group_id = #teamCode#)
+					</isNotEmpty>
+					<isEmpty property="teamCode">				
+						AND TA.user_id IN(SELECT TB.USER_iD FROM IKEP4_EV_USER_GROUP TB WHERE TB.group_id = B.GROUP_ID)
+					</isEmpty>
+						) AS MEMBER_CNT,
+		                  ISNULL(DBO.IKEP_FN_KMS_OBLIGATION_GROUP_CNT_SUM(B.GROUP_ID, #startDate#,#endDate#),0) AS OBLIGATION_SUM
+		             FROM IKEP4_EV_USER A
+		            INNER JOIN IKEP4_EV_USER_GROUP B
+		               ON A.USER_ID = B.USER_ID
+		               AND A.USER_STATUS = 'C'
+		            INNER JOIN IKEP4_EV_GROUP ER
+		               ON B.GROUP_ID = ER.GROUP_ID
+		             LEFT JOIN IKEP4_KMS_CON_OBLIGATION_CNT Z
+		               ON Z.USER_ID = A.USER_ID
+		            WHERE A.JOB_CLASS_CODE IN ('11', '12', '21', '22','24')
+		            AND (A.USER_STATUS = 'C' OR (A.USER_STATUS = 'T' AND A.LEAVING_DATE BETWEEN #startDate# AND #endDate#) OR (A.USER_STATUS = 'T' AND A.LEAVING_DATE > #endDate#))
+		              AND ER.GROUP_TYPE_ID = 'G0001'
+		              AND ER.VIEW_OPTION > 0
+		              <isNotEmpty property="workPlaceName">			
+						AND A.WORK_PLACE_CODE IN (
+							SELECT WORK_PLACE_CODE FROM IKEP4_EV_WORK_PLACE WHERE WORK_PLACE_NAME = #workPlaceName#
+						)
+					</isNotEmpty>					
+					<isNotEmpty property="teamCode">				
+						AND B.GROUP_ID = #teamCode#
+					</isNotEmpty>
+					
+		            GROUP BY B.GROUP_ID, ER.GROUP_NAME
+		),
+		TBL2 AS(
+		
+			SELECT  GROUP_ID, 
+			COUNT(ITEM_ID) AS REG_SUM,
+			SUM(RECOMMEND_COUNT) AS RECOMMEND_SUM,
+		          SUM(HIT_COUNT) AS HIT_SUM,
+		          SUM(ISNULL(MARK,0)) AS MARK_SUM,
+		          SUM(LINEREPLY_COUNT) AS LINEREPLY_SUM
+			FROM IKEP4_KMS_BD_ITEM
+			WHERE REGIST_DATE BETWEEN #startDate# AND #endDate#
+			AND STATUS > 2
+			AND INFO_GRADE IN ('A','B','C')
+			GROUP BY GROUP_ID
+		),
+		TBL3 AS (
+			SELECT A.GROUP_ID, A.GROUP_NAME AS TEAM_NAME, A.MEMBER_CNT, A.OBLIGATION_SUM, 
+			ISNULL(B.REG_SUM, 0)+(select count(*) from IKEP4_KMS_BD_QNA
+		where REGIST_DATE BETWEEN #startDate# AND #endDate#
+		and item_id in(select item_id from IKEP4_KMS_BD_QNA_recommend)
+		and register_id in (select user_id from IKEP4_EV_USER_GROUP where group_id in(A.GROUP_ID)) ) AS REG_SUM
+			, ISNULL(B.HIT_SUM, 0) AS HIT_SUM, 	
+			ISNULL(B.MARK_SUM, 0) AS MARK_SUM,
+			ISNULL(B.RECOMMEND_SUM, 0) AS RECOMMEND_SUM,
+			ISNULL(DBO.IKEP_FN_KMS_LINEREPLY_SUM_BY_TEAM(A.GROUP_ID,
+																   #startDate#,
+																   #endDate#, '1'),
+							 0) AS LINEREPLY_SUM,
+					 ISNULL(DBO.IKEP_FN_KMS_USAGE_SUM_BY_TEAM(A.GROUP_ID,
+															  #startDate#,
+															  #endDate#, '1'),
+							0) AS USAGE_SUM
+			FROM TBL A 
+				LEFT JOIN TBL2 B
+				ON A.GROUP_ID = B.GROUP_ID
+		),
+		TBL4 AS (
+			
+			SELECT ROW_NUMBER() OVER(
+				<isNotEmpty property="sortColumn" >
+									
+   									<isEqual property="sortColumn" compareValue="TEAM_NAME">
+   										ORDER BY TBL3.TEAM_NAME
+   									</isEqual>
+   									<isEqual property="sortColumn" compareValue="REG_SUM">
+   										ORDER BY TBL3.REG_SUM
+   									</isEqual>
+   									<isEqual property="sortColumn" compareValue="RECOMMEND_SUM">
+   										ORDER BY TBL3.RECOMMEND_SUM
+   									</isEqual>   
+   									<isEqual property="sortColumn" compareValue="HIT_SUM">
+   										ORDER BY TBL3.HIT_SUM
+   									</isEqual>   
+   									<isEqual property="sortColumn" compareValue="MARK_SUM">
+   										ORDER BY TBL3.MARK_SUM
+   									</isEqual>
+   									<isEqual property="sortColumn" compareValue="USAGE_SUM">
+   										ORDER BY TBL3.USAGE_SUM
+   									</isEqual>  
+   									<isEqual property="sortColumn" compareValue="LINEREPLY_SUM">
+   										ORDER BY TBL3.LINEREPLY_SUM
+   									</isEqual>           																	
+
+   									<isEqual property="sortType" compareValue="ASC">
+   										ASC
+   									</isEqual>
+   									<isEqual property="sortType" compareValue="DESC">
+   										DESC
+   									</isEqual>   									
+   									
+   								</isNotEmpty>  
+   							 	<isEmpty property="sortColumn"> ORDER BY TBL3.TEAM_NAME ASC </isEmpty>
+			
+				) AS ROWNUM,
+				TBL3.GROUP_ID, TBL3.TEAM_NAME, TBL3.MEMBER_CNT, TBL3.OBLIGATION_SUM,
+				TBL3.REG_SUM, TBL3.HIT_SUM, TBL3.MARK_SUM, TBL3.RECOMMEND_SUM, TBL3.LINEREPLY_SUM, TBL3.USAGE_SUM,
+			 
+					CASE (TBL3.OBLIGATION_SUM)
+					   WHEN '0' THEN
+						'0%'
+					   ELSE
+						CAST(CAST(CAST(TBL3.REG_SUM AS FLOAT) /
+								  CAST(TBL3.OBLIGATION_SUM AS FLOAT) * 100 AS DECIMAL) AS
+							 NVARCHAR(5)) + '%'
+					 END AS OBLIGATION_REG_RATE,
+					 CAST((CAST(TBL3.MARK_SUM AS FLOAT) * CAST(MARK_RATE AS FLOAT) +
+						  CAST(TBL3.REG_SUM AS FLOAT) * CAST(REG_CNT_RATE AS FLOAT) +
+						  CAST(TBL3.HIT_SUM AS FLOAT) * CAST(VIEW_CNT_RATE AS FLOAT) +
+						  CAST(TBL3.RECOMMEND_SUM AS FLOAT) *
+						  CAST(RECOMMEND_CNT_RATE AS FLOAT) +
+						  CAST(TBL3.LINEREPLY_SUM AS FLOAT) *
+						  CAST(LINEREPLY_CNT_RATE AS FLOAT) +
+						  CAST(TBL3.USAGE_SUM AS FLOAT) * CAST(USAGE_CNT_RATE AS FLOAT)) / 100 AS
+						  FLOAT) AS CONVERSION_MARK,
+						   '' AS SCORE_SUM
+			FROM TBL3, IKEP4_KMS_ASSESS_STANDARD	
+		)		
+	</sql>
+	
+	<select id="countTeamStatBySearchCondition" parameterClass="PerformanceSearchCondition" resultClass="int">		
+		
+		<include refid="collpack.kms.perform.dao.Performance.listTeamStatSubQry" />	
+			
+		SELECT COUNT(*) FROM 
+				TBL4 	
+		
+	</select> 
+	
+	<select id="countUserCnt" parameterClass="PerformanceSearchCondition" resultClass="int">		
+		select count(*) from IKEP4_EV_USER A
+		<isNotEmpty property="teamCode">
+			INNER JOIN IKEP4_EV_USER_GROUP B 
+			ON A.user_id = B.USER_ID
+			AND B.GROUP_ID in ( #teamCode# )  
+		</isNotEmpty>
+		<isEmpty property="teamCode">
+			WHERE A.USER_ID = #userId#
+		</isEmpty>
+		<![CDATA[	
+		AND (A.user_status = 'C' 
+		OR (REPLACE(SUBSTRING(A.leaving_date, 1, 7),'-','' ) > #searchYear# 
+		AND A.user_status='T'))
+		]]>	
+	</select>
+	
+	<select id="countQnaRecommendCnt" parameterClass="PerformanceSearchCondition" resultClass="int">		
+		select count(*) from IKEP4_KMS_BD_QNA
+		where SUBSTRING(CONVERT(NVARCHAR, REGIST_DATE, 112), 1, 6) like '%' + #searchYear# + '%' 
+		and item_id in(select item_id from IKEP4_KMS_BD_QNA_recommend)
+		<isNotEmpty property="teamCode">
+			and register_id in(
+			select user_id from IKEP4_EV_USER_GROUP 
+			where GROUP_ID in ( #teamCode# )  )
+		</isNotEmpty>
+		<isEmpty property="teamCode">
+		and register_id = #userId#
+		</isEmpty>
+	</select>
+	
+	<select id="countQnaReplyCnt" parameterClass="PerformanceSearchCondition" resultClass="int">		
+		select count(*) from IKEP4_KMS_BD_QNA
+		where SUBSTRING(CONVERT(NVARCHAR, REGIST_DATE, 112), 1, 6) like '%' + #searchYear# + '%' 
+		<isNotEmpty property="teamCode">
+			and register_id in(
+			select user_id from IKEP4_EV_USER_GROUP 
+			where GROUP_ID in ( #teamCode# )  )
+		</isNotEmpty>
+		<isEmpty property="teamCode">
+		and register_id = #userId#
+		</isEmpty>
+	</select>
+	
+	<select id="countOblCnt" parameterClass="PerformanceSearchCondition" resultClass="int">		
+		select ISNULL(SUM(OBLIGATION_CNT),0) from IKEP4_KMS_CON_OBLIGATION_CNT
+		WHERE USER_ID IN(
+		select A.user_id from IKEP4_EV_USER A
+		<isNotEmpty property="teamCode">
+			INNER JOIN IKEP4_EV_USER_GROUP B 
+			ON A.user_id = B.USER_ID
+			AND B.GROUP_ID in ( #teamCode# )  
+		</isNotEmpty>
+		<isEmpty property="teamCode">
+			WHERE A.USER_ID = #userId#
+		</isEmpty>
+		<![CDATA[
+		AND (A.user_status = 'C' OR (A.user_status='T' 
+		AND REPLACE(SUBSTRING(A.leaving_date, 1, 7),'-','' ) > #searchYear#  
+		AND REPLACE(SUBSTRING(A.leaving_date, 1, 7),'-','' ) <> #searchYear#)))
+		AND PERIOD = #searchYear#
+		]]>	
+	</select>
+	  
+	<select id="listTeamStat" parameterClass="PerformanceSearchCondition" resultMap="resultTeamStat">
+			
+		<include refid="collpack.kms.perform.dao.Performance.listTeamStatSubQry" />	
+		
+		<![CDATA[				
+				
+				SELECT TBL4.*, '' REGIST_DATE
+  				FROM TBL4 
+				WHERE
+				TBL4.ROWNUM <= #endRowIndex# /* 종료  */
+				AND TBL4.ROWNUM > #startRowIndex# /* 시작 */	
+		]]>		
+	
+	</select>
+		
+	<select id="listTeamStatPerson" parameterClass="PerformanceSearchCondition" resultMap="resultTeamStat">
+	
+		
+		WITH TBL AS
+		(
+			/* [Performance_SqlMap.xml] collpack.kms.perform.dao.Performance.listTeamStatPerson*/
+			SELECT B.GROUP_ID,
+		              COUNT(A.USER_ID) AS MEMBER_CNT,
+		              SUM(Z.OBLIGATION_CNT) AS OBLIGATION_SUM,
+		              '' AS SCORE_SUM
+		         FROM IKEP4_EV_USER A
+		        INNER JOIN IKEP4_EV_USER_GROUP B
+		           ON A.USER_ID = B.USER_ID
+		           AND A.USER_STATUS = 'C'
+		         LEFT JOIN IKEP4_KMS_CON_OBLIGATION_CNT Z
+		           ON Z.USER_ID = A.USER_ID
+		        WHERE A.JOB_CLASS_CODE IN ('11', '12', '21', '22','24')		        
+		          AND B.GROUP_ID = #teamCode#		        
+		        GROUP BY B.GROUP_ID
+		),
+		TBL2 AS (
+		
+			SELECT 
+		          COUNT(ITEM_ID) REG_SUM,
+		          SUM(ISNULL(RECOMMEND_COUNT, 0)) AS RECOMMEND_SUM,
+		          SUM(ISNULL(HIT_COUNT, 0)) AS HIT_SUM,
+		          SUM(ISNULL(MARK, 0)) AS MARK_SUM,          
+		          SUBSTRING(CONVERT(NVARCHAR, REGIST_DATE, 112), 1, 6) as REGIST_DATE
+		    FROM IKEP4_KMS_BD_ITEM
+		    WHERE status > 2
+		    AND INFO_GRADE IN ('A','B','C')
+		    AND group_id = #teamCode#
+			AND REGIST_DATE BETWEEN #startDate# AND #endDate#
+			GROUP BY SUBSTRING(CONVERT(NVARCHAR, REGIST_DATE, 112), 1, 6) 
+		   
+		)			 
+		SELECT  '' ROWNUM, TMP.GROUP_NAME AS TEAM_NAME, TBL.*, TBL2.*, '' LINEREPLY_SUM, '' USAGE_SUM,
+				CASE (TBL.OBLIGATION_SUM)
+						   WHEN '0' THEN
+							'0%'
+						   ELSE
+							CAST(CAST(CAST(TBL2.REG_SUM AS FLOAT) /
+									  CAST(TBL.OBLIGATION_SUM AS FLOAT) * 100 AS DECIMAL) AS
+								 NVARCHAR(5)) + '%'
+						 END AS OBLIGATION_REG_RATE,         
+		         '' AS CONVERSION_MARK
+		        
+		FROM 
+			TBL, TBL2, IKEP4_KMS_ASSESS_STANDARD, (SELECT GROUP_NAME FROM IKEP4_EV_GROUP WHERE group_id=#teamCode#) TMP  		
+	
+	</select>
+		
+	<select id="countExpertBySearchCondition" parameterClass="PerformanceSearchCondition" resultClass="int">		
+		
+		SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
+		
+		SELECT /* [Performance_SqlMap.xml] collpack.kms.perform.dao.Performance.countExpertBySearchCondition */
+			COUNT(*)
+		FROM IKEP4_KMS_BD_ITEM
+		WHERE 
+			EXPERT_ID IS NOT NULL AND EXPERT_ID = ASSESSOR_ID
+		<isNotEmpty property="expertName">
+			AND EXPERT_NAME LIKE '%' + #expertName# + '%'
+		</isNotEmpty>
+		AND ASSESS_DATE BETWEEN #startDate# AND #endDate#
+		AND STATUS > 2
+				
+	</select>  	
+	
+	<select id="listExpert" parameterClass="PerformanceSearchCondition" resultMap="resultExpert">
+		SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
+		
+		SELECT /* [Performance_SqlMap.xml] collpack.kms.perform.dao.Performance.listExpert */
+			ROWNUM, ITEM_ID, ATTACH_FILE_COUNT, IS_KNOWHOW, IS_KNOWHOW_VALUE, TITLE, REGISTER_ID, 
+					REGISTER_NAME, REGIST_DATE, HIT_COUNT, LINEREPLY_COUNT, RECOMMEND_COUNT,
+					INFO_GRADE, TARGET_SOURCE, MARK, EMP_NO, TEAM_NAME, WORK_PLACE_NAME, STATUS,
+					EXPERT_ID, EXPERT_NAME, EXPERT_REQ_DATE, ASSESS_DATE	
+		FROM 
+		( 
+			SELECT 
+				D.* 
+			FROM 
+			( 							
+				SELECT Row_number() OVER (	
+				
+								<isNotEmpty property="sortColumn" >
+									<isEqual property="sortColumn" compareValue="EXPERT_NAME">
+ 										ORDER BY A.EXPERT_NAME
+ 									</isEqual>
+ 									<isEqual property="sortColumn" compareValue="TEAM_NAME">
+ 										ORDER BY C.TEAM_NAME
+ 									</isEqual>
+ 									<isEqual property="sortColumn" compareValue="REGIST_DATE">
+ 										ORDER BY A.REGIST_DATE
+ 									</isEqual>
+ 									<isEqual property="sortColumn" compareValue="ASSESS_DATE">
+ 										ORDER BY A.ASSESS_DATE
+ 									</isEqual>
+ 									<isEqual property="sortColumn" compareValue="EXPERT_REQ_DATE">
+ 										ORDER BY A.EXPERT_REQ_DATE
+ 									</isEqual>
+ 									<isEqual property="sortColumn" compareValue="HIT_COUNT">
+ 										ORDER BY A.HIT_COUNT
+ 									</isEqual>
+ 									<isEqual property="sortColumn" compareValue="LINEREPLY_COUNT">
+ 										ORDER BY A.LINEREPLY_COUNT
+ 									</isEqual>  
+									<isEqual property="sortColumn" compareValue="RECOMMEND_COUNT">
+ 										ORDER BY A.RECOMMEND_COUNT
+ 									</isEqual>   
+									<isEqual property="sortColumn" compareValue="MARK">
+ 										ORDER BY A.MARK
+ 									</isEqual>
+ 									<isEqual property="sortColumn" compareValue="IS_KNOWHOW">
+ 										ORDER BY B.IS_KNOWHOW
+ 									</isEqual>   	   																	
+
+ 									<isEqual property="sortType" compareValue="ASC">
+ 										ASC
+ 									</isEqual>
+ 									<isEqual property="sortType" compareValue="DESC">
+ 										DESC
+ 									</isEqual>   									
+ 									
+ 								</isNotEmpty>  
+ 							 	<isEmpty property="sortColumn"> ORDER BY  A.REGIST_DATE DESC </isEmpty>
+				
+				 ) AS ROWNUM,				
+					A.ITEM_ID, A.ATTACH_FILE_COUNT, B.IS_KNOWHOW,
+					CASE(IS_KNOWHOW)
+					WHEN '0' THEN
+						'업무노하우'
+					ELSE
+						'일반정보'
+					END AS IS_KNOWHOW_VALUE,  
+					A.TITLE, A.REGISTER_ID, 
+					A.REGISTER_NAME, CONVERT(NVARCHAR, A.REGIST_DATE, 102) AS REGIST_DATE, A.HIT_COUNT, A.LINEREPLY_COUNT, A.RECOMMEND_COUNT,
+					C.INFO_GRADE, A.TARGET_SOURCE, ISNULL(A.MARK, 0) AS MARK, A.STATUS,
+					A.EXPERT_ID, A.EXPERT_NAME, CONVERT(NVARCHAR, A.EXPERT_REQ_DATE, 102) EXPERT_REQ_DATE, CONVERT(NVARCHAR, A.ASSESS_DATE, 102) ASSESS_DATE,
+					C.EMP_NO, C.TEAM_NAME, E.WORK_PLACE_NAME		
+				FROM IKEP4_KMS_BD_ITEM A 
+					LEFT JOIN IKEP4_KMS_BD_BOARD B 
+						ON A.BOARD_ID = B.BOARD_ID
+					INNER JOIN IKEP4_EV_USER C
+						ON A.EXPERT_ID = C.USER_ID				
+				LEFT JOIN IKEP4_EV_WORK_PLACE E 
+				ON E.WORK_PLACE_CODE = C.WORK_PLACE_CODE
+				
+				WHERE 
+				A.EXPERT_ID IS NOT NULL AND A.EXPERT_ID = A.ASSESSOR_ID
+				<isNotEmpty property="expertName">
+					AND EXPERT_NAME LIKE '%' + #expertName# + '%'
+				</isNotEmpty>
+				AND A.ASSESS_DATE BETWEEN #startDate# AND #endDate#
+				AND A.STATUS > 2				
+				 
+		<![CDATA[   
+			) D
+			WHERE 
+				ROWNUM <=  #endRowIndex# /* 종료  */
+		) TBL  
+		WHERE 
+			ROWNUM >  #startRowIndex# /* 시작 */  
+		]]> 
+	
+	</select>
+	
+	
+	<select id="countStatByIncludePartBySearchCondition" parameterClass="PerformanceSearchCondition" resultClass="int">		
+		
+		
+		
+		WITH TBL AS (
+			SELECT /* [Performance_SqlMap.xml] collpack.kms.perform.dao.Performance.countStatByIncludePartBySearchCondition */
+					COUNT(*) AS CNT
+				FROM IKEP4_EV_USER A LEFT JOIN IKEP4_KMS_CON_OBLIGATION_CNT B
+							ON A.USER_ID = B.USER_ID
+							INNER JOIN IKEP4_EV_USER_GROUP EU
+								ON A.USER_ID = EU.USER_ID
+							INNER JOIN IKEP4_EV_GROUP ER
+								ON EU.GROUP_ID = ER.GROUP_ID	
+							LEFT JOIN IKEP4_EV_JOB_TITLE C
+								ON A.JOB_TITLE_CODE = C.JOB_TITLE_CODE
+							LEFT JOIN IKEP4_EV_WORK_PLACE G
+								ON G.WORK_PLACE_CODE = A.WORK_PLACE_CODE
+							LEFT JOIN IKEP4_KMS_BD_ITEM D	
+								ON D.REGISTER_ID = A.USER_ID
+								AND D.REGIST_DATE BETWEEN #startDate# AND #endDate#
+							LEFT JOIN IKEP4_KMS_BD_LOG F
+								ON A.USER_ID = F.REGISTER_ID
+								AND D.STATUS > 2
+								AND D.INFO_GRADE IN ('A','B','C')
+								AND F.REGIST_DATE BETWEEN #startDate# AND #endDate#							
+							WHERE A.JOB_CLASS_CODE IN ('11', '12', '21', '22','24')							
+							AND (A.USER_STATUS = 'C' OR (A.USER_STATUS = 'T' AND A.LEAVING_DATE BETWEEN #startDate# AND #endDate#) OR (A.USER_STATUS = 'T' AND A.LEAVING_DATE > #endDate#))
+							<isNotEmpty property="workPlaceName">			
+								AND
+								A.WORK_PLACE_CODE IN (
+									SELECT WORK_PLACE_CODE FROM IKEP4_EV_WORK_PLACE WHERE WORK_PLACE_NAME = #workPlaceName#
+								)
+							</isNotEmpty>	
+							<isNotEmpty property="registerName">
+								AND A.USER_NAME LIKE '%' + #registerName# + '%'
+							</isNotEmpty>
+							<isNotEmpty property="userId">
+								AND A.USER_ID = #userId# 
+							</isNotEmpty>
+							<isNotEmpty property="teamCode">
+								AND (EU.GROUP_ID = #teamCode# OR ER.parent_group_id = #teamCode#)
+							</isNotEmpty>
+							
+							
+							GROUP BY A.USER_ID, A.USER_NAME, A.USER_STATUS, ER.GROUP_NAME, C.JOB_TITLE_NAME, 
+							G.WORK_PLACE_NAME
+		) 
+							
+		SELECT COUNT(*) FROM TBL		
+		
+	</select>  
+	
+	
+	<select id="listPrivateStatByIncludePart" parameterClass="PerformanceSearchCondition" resultMap="resultPrivateStat">
+		
+			
+			
+			WITH CTE AS (					
+				SELECT Row_number() OVER (	
+				
+								/* [Performance_SqlMap.xml] collpack.kms.perform.dao.Performance.listPrivateStatByIncludePart */
+								<isNotEmpty property="sortColumn" >
+									<isEqual property="sortColumn" compareValue="USER_ID">
+ 										ORDER BY A.USER_ID
+ 									</isEqual>
+ 									<isEqual property="sortColumn" compareValue="USER_NAME">
+ 										ORDER BY A.USER_NAME
+ 									</isEqual>
+ 									<isEqual property="sortColumn" compareValue="TEAM_NAME">
+ 										ORDER BY ER.GROUP_NAME
+ 									</isEqual>
+ 									<isEqual property="sortColumn" compareValue="USER_STATUS">
+ 										ORDER BY A.USER_STATUS
+ 									</isEqual> 							
+   																									  																	
+
+ 									<isEqual property="sortType" compareValue="ASC">
+ 										ASC
+ 									</isEqual>
+ 									<isEqual property="sortType" compareValue="DESC">
+ 										DESC
+ 									</isEqual>   									
+ 									
+ 								</isNotEmpty>  
+ 							 	<isEmpty property="sortColumn"> ORDER BY  A.USER_NAME ASC </isEmpty>
+				
+				 ) AS ROWNUM,
+				 	'' AS REGIST_DATE,				
+					A.USER_ID, 
+					A.USER_NAME,  
+					ER.GROUP_NAME AS TEAM_NAME, G.WORK_PLACE_NAME, 
+					ISNULL(DBO.IKEP_FN_KMS_OBLIGATION_CNT_SUM(A.USER_ID, #startDate#,#endDate#),0) AS OBLIGATION_SUM, 
+					C.JOB_TITLE_NAME,	
+					DT.JOB_DUTY_NAME,
+					ISNULL(DBO.IKEP_FN_KMS_REGCNT(A.USER_ID, #startDate#, #endDate#), 0) AS REG_SUM, 
+					ISNULL(DBO.IKEP_FN_KMS_MARK_SUM(A.USER_ID, #startDate#, #endDate#), 0) AS MARK_SUM, 
+					ISNULL(DBO.IKEP_FN_KMS_BD_HIT_SUM(A.USER_ID, #startDate#, #endDate#), 0) AS HIT_SUM, 
+					ISNULL(DBO.IKEP_FN_KMS_USAGE_SUM(A.USER_ID, #startDate#, #endDate#), 0) AS USAGE_SUM,
+					ISNULL(DBO.IKEP_FN_KMS_RECOMMEND_SUM(A.USER_ID, #startDate#, #endDate#), 0) AS RECOMMEND_SUM,
+					ISNULL(DBO.IKEP_FN_KMS_LINEREPLY_SUM(A.USER_ID, #startDate#, #endDate#), 0) AS LINEREPLY_SUM,
+					'' AS SCORE_SUM,
+					CASE(A.USER_STATUS)
+						WHEN 'C' THEN '재직'
+						WHEN 'H' THEN '휴직'
+						WHEN 'T' THEN '퇴직'
+					END AS USER_STATUS	
+					FROM IKEP4_EV_USER A 
+					LEFT JOIN IKEP4_KMS_CON_OBLIGATION_CNT B
+						ON A.USER_ID = B.USER_ID
+					INNER JOIN IKEP4_EV_USER_GROUP EU
+						ON A.USER_ID = EU.USER_ID
+					INNER JOIN IKEP4_EV_GROUP ER
+						ON EU.GROUP_ID = ER.GROUP_ID		
+					LEFT JOIN IKEP4_EV_JOB_TITLE C
+						ON A.JOB_TITLE_CODE = C.JOB_TITLE_CODE	
+					LEFT JOIN  IKEP4_EV_JOB_DUTY DT 
+						ON A.job_duty_code = DT.job_duty_code
+					LEFT JOIN IKEP4_EV_WORK_PLACE G
+						ON G.WORK_PLACE_CODE = A.WORK_PLACE_CODE
+					LEFT JOIN IKEP4_KMS_BD_ITEM D	
+						ON D.REGISTER_ID = A.USER_ID
+					AND D.REGIST_DATE BETWEEN #startDate# AND #endDate#
+					LEFT JOIN IKEP4_KMS_BD_LOG F
+						ON A.USER_ID = F.REGISTER_ID
+					AND D.STATUS > 2
+					AND D.INFO_GRADE IN ('A','B','C')
+					AND F.REGIST_DATE BETWEEN #startDate# AND #endDate#
+					WHERE A.JOB_CLASS_CODE IN ('11', '12', '21', '22','24')
+					AND (A.USER_STATUS = 'C' OR (A.USER_STATUS = 'T' AND A.LEAVING_DATE BETWEEN #startDate# AND #endDate#) OR (A.USER_STATUS = 'T' AND A.LEAVING_DATE > #endDate#))
+					<isNotEmpty property="workPlaceName">			
+						AND
+						A.WORK_PLACE_CODE IN (
+							SELECT WORK_PLACE_CODE FROM IKEP4_EV_WORK_PLACE WHERE WORK_PLACE_NAME = #workPlaceName#
+						)
+					</isNotEmpty>	
+					<isNotEmpty property="registerName">
+						AND A.USER_NAME LIKE '%' + #registerName# + '%'
+					</isNotEmpty>
+					<isNotEmpty property="userId">
+						AND A.USER_ID = #userId# 
+					</isNotEmpty>	
+					<isNotEmpty property="teamCode">
+						AND (EU.GROUP_ID = #teamCode# OR ER.parent_group_id = #teamCode#)
+					</isNotEmpty>			
+					
+					GROUP BY A.USER_ID, A.USER_NAME, A.USER_STATUS, ER.GROUP_NAME, C.JOB_TITLE_NAME, DT.JOB_DUTY_NAME, 
+					G.WORK_PLACE_NAME
+				 
+		<![CDATA[ 
+				)  				
+				
+				SELECT CTE.*, 
+				CASE (OBLIGATION_SUM)
+				   WHEN '0' THEN
+					'0%'
+					ELSE
+					CAST(CAST(CAST(REG_SUM AS FLOAT) / CAST(OBLIGATION_SUM AS FLOAT) * 100 AS
+			                 DECIMAL) AS NVARCHAR(5)) + '%'
+				END AS OBLIGATION_REG_RATE,
+				CAST((CAST(MARK_SUM AS FLOAT) * CAST(mark_rate AS FLOAT)
+				+ CAST(REG_SUM AS FLOAT) * CAST(REG_CNT_rate AS FLOAT)
+				+ CAST(HIT_SUM AS FLOAT) * CAST(view_cnt_rate AS FLOAT)
+				+ CAST(RECOMMEND_SUM AS FLOAT) * CAST(recommend_cnt_rate AS FLOAT)
+				+ CAST(LINEREPLY_SUM AS FLOAT) * CAST(linereply_cnt_rate AS FLOAT)
+				+ CAST(USAGE_SUM AS FLOAT) * CAST(usage_cnt_rate AS FLOAT)) / 100 AS FLOAT) AS CONVERSION_MARK
+				
+				FROM CTE, IKEP4_KMS_ASSESS_STANDARD	
+				WHERE 
+				CTE.ROWNUM <= #endRowIndex# /* 종료  */
+				AND CTE.ROWNUM > #startRowIndex# /* 시작 */
+			
+		]]> 
+	
+	</select>	
+	
+	
+	
+	<select id="countTeamByIncludePartBySearchCondition" parameterClass="PerformanceSearchCondition" resultClass="int">
+	
+		SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
+		
+		SELECT /* [Performance_SqlMap.xml] collpack.kms.perform.dao.Performance.countTeamByIncludePartBySearchCondition */
+			COUNT(*)
+		
+		FROM IKEP4_KMS_BD_ITEM A 
+			LEFT JOIN IKEP4_KMS_BD_BOARD B 
+				ON A.BOARD_ID = B.BOARD_ID
+			INNER JOIN IKEP4_EV_USER C
+			ON A.REGISTER_ID = C.USER_ID
+			
+		WHERE A.STATUS > 2
+		AND A.INFO_GRADE IN ('A','B','C')
+		<isNotEmpty property="teamCode">
+			AND A.GROUP_ID IN (
+				<include refid="collpack.kms.perform.dao.Performance.getTeamGroupIds" />
+			)
+		</isNotEmpty>
+			
+		
+		<isNotEmpty property="registerName">
+			AND A.REGISTER_NAME like '%' + #registerName# + '%'
+		</isNotEmpty>	
+		
+		<isNotEmpty property="searchIsknowhow">
+			AND B.IS_KNOWHOW = #searchIsknowhow#
+		</isNotEmpty>
+						
+		AND A.REGIST_DATE BETWEEN #startDate# AND #endDate#	
+		
+	</select>  	
+	
+	<select id="countTeamByIncludePartBySearchConditionStandby" parameterClass="PerformanceSearchCondition" resultClass="int">
+	
+		SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
+		
+		SELECT /* [Performance_SqlMap.xml] collpack.kms.perform.dao.Performance.countTeamByIncludePartBySearchCondition */
+			COUNT(*)
+		
+		FROM IKEP4_KMS_BD_ITEM A 
+			LEFT JOIN IKEP4_KMS_BD_BOARD B 
+				ON A.BOARD_ID = B.BOARD_ID
+			INNER JOIN IKEP4_EV_USER C
+			ON A.REGISTER_ID = C.USER_ID
+			<![CDATA[  
+		WHERE A.STATUS < 3
+		AND (A.INFO_GRADE = '' or A.INFO_GRADE is null)
+		]]> 
+		<isNotEmpty property="teamCode">
+			AND A.GROUP_ID IN (
+				<include refid="collpack.kms.perform.dao.Performance.getTeamGroupIds" />
+			)
+		</isNotEmpty>
+			
+		
+		<isNotEmpty property="registerName">
+			AND A.REGISTER_NAME like '%' + #registerName# + '%'
+		</isNotEmpty>	
+		
+		<isNotEmpty property="searchIsknowhow">
+			AND B.IS_KNOWHOW = #searchIsknowhow#
+		</isNotEmpty>
+						
+		AND A.REGIST_DATE BETWEEN #startDate# AND #endDate#	
+		
+	</select>  
+	
+	<select id="listTeamByIncludePart" parameterClass="PerformanceSearchCondition"  resultMap="result">		
+		
+		SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
+		
+		SELECT  /* [Performance_SqlMap.xml] collpack.kms.perform.dao.Performance.listTeamByIncludePart */
+			ROWNUM, ITEM_ID, ATTACH_FILE_COUNT, IS_KNOWHOW, IS_KNOWHOW_VALUE,TITLE, REGISTER_ID, 
+					REGISTER_NAME, REGIST_DATE, HIT_COUNT, LINEREPLY_COUNT, RECOMMEND_COUNT,
+					INFO_GRADE, TARGET_SOURCE, MARK, EMP_NO, TEAM_NAME, '' WORK_PLACE_NAME, STATUS
+							
+		FROM 
+		( 
+	
+			SELECT
+				D.*  
+			FROM 
+			( 							
+				SELECT Row_number() OVER (	
+				
+								<isNotEmpty property="sortColumn" >
+									<isEqual property="sortColumn" compareValue="REGISTER_NAME">
+ 										ORDER BY A.REGISTER_NAME
+ 									</isEqual>
+ 									<isEqual property="sortColumn" compareValue="REGIST_DATE">
+ 										ORDER BY A.REGIST_DATE
+ 									</isEqual>
+ 									<isEqual property="sortColumn" compareValue="HIT_COUNT">
+ 										ORDER BY A.HIT_COUNT
+ 									</isEqual>
+ 									<isEqual property="sortColumn" compareValue="LINEREPLY_COUNT">
+ 										ORDER BY A.LINEREPLY_COUNT
+ 									</isEqual>  
+									<isEqual property="sortColumn" compareValue="RECOMMEND_COUNT">
+ 										ORDER BY A.RECOMMEND_COUNT
+ 									</isEqual>   
+									<isEqual property="sortColumn" compareValue="MARK">
+ 										ORDER BY A.MARK
+ 									</isEqual>
+ 									<isEqual property="sortColumn" compareValue="IS_KNOWHOW">
+ 										ORDER BY B.IS_KNOWHOW
+ 									</isEqual>   	   																	
+
+ 									<isEqual property="sortType" compareValue="ASC">
+ 										ASC
+ 									</isEqual>
+ 									<isEqual property="sortType" compareValue="DESC">
+ 										DESC
+ 									</isEqual>   									
+ 									
+ 								</isNotEmpty>  
+ 							 	<isEmpty property="sortColumn"> ORDER BY  A.REGIST_DATE DESC </isEmpty>
+				
+				 ) AS ROWNUM,
+						A.ITEM_ID, A.ATTACH_FILE_COUNT, B.IS_KNOWHOW,
+						CASE(B.IS_KNOWHOW)
+						WHEN '0' THEN
+							'업무노하우'
+						ELSE
+							'일반정보'
+						END AS IS_KNOWHOW_VALUE, 
+						A.TITLE, A.REGISTER_ID, 
+						A.REGISTER_NAME, CONVERT(NVARCHAR, A.REGIST_DATE, 102) AS REGIST_DATE, A.HIT_COUNT, A.LINEREPLY_COUNT, A.RECOMMEND_COUNT,
+						A.INFO_GRADE, A.TARGET_SOURCE, ISNULL(A.MARK, 0) AS MARK, C.EMP_NO, A.GROUP_NAME AS TEAM_NAME,  A.STATUS
+							
+					FROM IKEP4_KMS_BD_ITEM A 
+						LEFT JOIN IKEP4_KMS_BD_BOARD B 
+							ON A.BOARD_ID = B.BOARD_ID
+						INNER JOIN IKEP4_EV_USER C
+							ON A.REGISTER_ID = C.USER_ID
+						
+					WHERE A.STATUS > 2
+					AND A.INFO_GRADE IN ('A','B','C')
+					<isNotEmpty property="teamCode">
+						AND A.GROUP_ID IN (
+							<include refid="collpack.kms.perform.dao.Performance.getTeamGroupIds" />
+						)
+					</isNotEmpty>	
+					
+					<isNotEmpty property="registerName">
+						AND A.REGISTER_NAME like '%' + #registerName# + '%'
+					</isNotEmpty>	
+					<isNotEmpty property="searchIsknowhow">
+						AND B.IS_KNOWHOW = #searchIsknowhow#
+					</isNotEmpty>
+									
+					AND A.REGIST_DATE BETWEEN #startDate# AND #endDate#					
+		<![CDATA[   
+			) D
+			WHERE 
+				ROWNUM <=  #endRowIndex# /* 종료  */
+		) TBL  
+		WHERE 
+			ROWNUM >  #startRowIndex# /* 시작 */  
+		]]> 							
+	</select>  	
+	
+	<select id="listTeamByIncludePartStandby" parameterClass="PerformanceSearchCondition"  resultMap="result">		
+		
+		SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
+		
+		SELECT  /* [Performance_SqlMap.xml] collpack.kms.perform.dao.Performance.listTeamByIncludePart */
+			ROWNUM, ITEM_ID, ATTACH_FILE_COUNT, IS_KNOWHOW, IS_KNOWHOW_VALUE,TITLE, REGISTER_ID, 
+					REGISTER_NAME, REGIST_DATE, HIT_COUNT, LINEREPLY_COUNT, RECOMMEND_COUNT,
+					INFO_GRADE, TARGET_SOURCE, MARK, EMP_NO, TEAM_NAME, '' WORK_PLACE_NAME, STATUS
+							
+		FROM 
+		( 
+	
+			SELECT
+				D.*  
+			FROM 
+			( 							
+				SELECT Row_number() OVER (	
+				
+								<isNotEmpty property="sortColumn" >
+									<isEqual property="sortColumn" compareValue="REGISTER_NAME">
+ 										ORDER BY A.REGISTER_NAME
+ 									</isEqual>
+ 									<isEqual property="sortColumn" compareValue="REGIST_DATE">
+ 										ORDER BY A.REGIST_DATE
+ 									</isEqual>
+ 									<isEqual property="sortColumn" compareValue="HIT_COUNT">
+ 										ORDER BY A.HIT_COUNT
+ 									</isEqual>
+ 									<isEqual property="sortColumn" compareValue="LINEREPLY_COUNT">
+ 										ORDER BY A.LINEREPLY_COUNT
+ 									</isEqual>  
+									<isEqual property="sortColumn" compareValue="RECOMMEND_COUNT">
+ 										ORDER BY A.RECOMMEND_COUNT
+ 									</isEqual>   
+									<isEqual property="sortColumn" compareValue="MARK">
+ 										ORDER BY A.MARK
+ 									</isEqual>
+ 									<isEqual property="sortColumn" compareValue="IS_KNOWHOW">
+ 										ORDER BY B.IS_KNOWHOW
+ 									</isEqual>   	   																	
+
+ 									<isEqual property="sortType" compareValue="ASC">
+ 										ASC
+ 									</isEqual>
+ 									<isEqual property="sortType" compareValue="DESC">
+ 										DESC
+ 									</isEqual>   									
+ 									
+ 								</isNotEmpty>  
+ 							 	<isEmpty property="sortColumn"> ORDER BY  A.REGIST_DATE DESC </isEmpty>
+				
+				 ) AS ROWNUM,
+						A.ITEM_ID, A.ATTACH_FILE_COUNT, B.IS_KNOWHOW,
+						CASE(B.IS_KNOWHOW)
+						WHEN '0' THEN
+							'업무노하우'
+						ELSE
+							'일반정보'
+						END AS IS_KNOWHOW_VALUE, 
+						A.TITLE, A.REGISTER_ID, 
+						A.REGISTER_NAME, CONVERT(NVARCHAR, A.REGIST_DATE, 102) AS REGIST_DATE, A.HIT_COUNT, A.LINEREPLY_COUNT, A.RECOMMEND_COUNT,
+						A.INFO_GRADE, A.TARGET_SOURCE, ISNULL(A.MARK, 0) AS MARK, C.EMP_NO, A.GROUP_NAME AS TEAM_NAME,  A.STATUS
+							
+					FROM IKEP4_KMS_BD_ITEM A 
+						LEFT JOIN IKEP4_KMS_BD_BOARD B 
+							ON A.BOARD_ID = B.BOARD_ID
+						INNER JOIN IKEP4_EV_USER C
+							ON A.REGISTER_ID = C.USER_ID
+						<![CDATA[   
+					WHERE A.STATUS < 3
+					AND (A.INFO_GRADE = '' or A.INFO_GRADE is null)
+					]]> 
+					<isNotEmpty property="teamCode">
+						AND A.GROUP_ID IN (
+							<include refid="collpack.kms.perform.dao.Performance.getTeamGroupIds" />
+						)
+					</isNotEmpty>	
+					
+					<isNotEmpty property="registerName">
+						AND A.REGISTER_NAME like '%' + #registerName# + '%'
+					</isNotEmpty>	
+					<isNotEmpty property="searchIsknowhow">
+						AND B.IS_KNOWHOW = #searchIsknowhow#
+					</isNotEmpty>
+									
+					AND A.REGIST_DATE BETWEEN #startDate# AND #endDate#					
+		<![CDATA[   
+			) D
+			WHERE 
+				ROWNUM <=  #endRowIndex# /* 종료  */
+		) TBL  
+		WHERE 
+			ROWNUM >  #startRowIndex# /* 시작 */  
+		]]> 							
+	</select> 
+	
+	<select id="listTeamStatPersonByIncludePart" parameterClass="PerformanceSearchCondition" resultMap="resultTeamStat">				
+		
+				
+		
+		WITH TBL AS
+		(
+			/* [Performance_SqlMap.xml] collpack.kms.perform.dao.Performance.listTeamStatPersonByIncludePart*/
+			SELECT					
+                  COUNT(A.USER_ID) AS MEMBER_CNT,
+                  SUM(Z.OBLIGATION_CNT) AS OBLIGATION_SUM,
+                  '' AS SCORE_SUM
+             FROM IKEP4_EV_USER A
+            INNER JOIN IKEP4_EV_USER_GROUP B
+               ON A.USER_ID = B.USER_ID
+            INNER JOIN IKEP4_EV_GROUP ER
+               ON B.group_id = ER.group_id
+             LEFT JOIN IKEP4_KMS_CON_OBLIGATION_CNT Z
+               ON Z.USER_ID = A.USER_ID
+            WHERE A.JOB_CLASS_CODE IN ('11', '12', '21', '22','24')
+            AND (A.USER_STATUS = 'C' OR (A.USER_STATUS = 'T' AND A.LEAVING_DATE BETWEEN #startDate# AND #endDate#) OR (A.USER_STATUS = 'T' AND A.LEAVING_DATE > #endDate#))
+              AND (B.GROUP_ID = #teamCode# OR ER.parent_group_id = #teamCode#)
+		),
+		TBL2 AS (
+		
+			SELECT 
+		          COUNT(ITEM_ID) REG_SUM,
+		          SUM(ISNULL(RECOMMEND_COUNT, 0)) AS RECOMMEND_SUM,
+		          SUM(ISNULL(HIT_COUNT, 0)) AS HIT_SUM,
+		          SUM(ISNULL(MARK, 0)) AS MARK_SUM,          
+		          SUBSTRING(CONVERT(NVARCHAR, REGIST_DATE, 112), 1, 6) as REGIST_DATE
+		    FROM IKEP4_KMS_BD_ITEM BI
+		    WHERE BI.status > 2
+		    AND BI.INFO_GRADE IN ('A','B','C')
+		    AND BI.group_id IN (
+				<include refid="collpack.kms.perform.dao.Performance.getTeamGroupIds" />
+		    )
+			AND BI.REGIST_DATE BETWEEN #startDate# AND #endDate#
+			GROUP BY SUBSTRING(CONVERT(NVARCHAR, REGIST_DATE, 112), 1, 6) 
+		   
+		)			 
+		SELECT  '' ROWNUM, #teamCode# GROUP_ID, TMP.GROUP_NAME AS TEAM_NAME, TBL.*, TBL2.*, '' LINEREPLY_SUM, '' USAGE_SUM,
+				CASE (TBL.OBLIGATION_SUM)
+						   WHEN '0' THEN
+							'0%'
+						   ELSE
+							CAST(CAST(CAST(TBL2.REG_SUM AS FLOAT) /
+									  CAST(TBL.OBLIGATION_SUM AS FLOAT) * 100 AS DECIMAL) AS
+								 NVARCHAR(5)) + '%'
+						 END AS OBLIGATION_REG_RATE,         
+		         '' AS CONVERSION_MARK
+		        
+		FROM 
+			TBL, TBL2, IKEP4_KMS_ASSESS_STANDARD, (SELECT GROUP_NAME FROM IKEP4_EV_GROUP WHERE group_id=#teamCode#) TMP 
+	
+	</select>	
+	
+	<select id="getTeamMemCntAndObligationCnt" parameterClass="PerformanceSearchCondition" resultClass="java.util.HashMap">
+		SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
+		
+		/* [Performance_SqlMap.xml] collpack.kms.perform.dao.Performance.getTeamMemCntAndObligationCnt*/
+		DECLARE @MEMBER_CNT NVARCHAR(5) , @OBLIGATION_SUM NVARCHAR(5)
+		EXEC DBO.[GET_TEAM_INFO_USEDBY_KMS] #teamCode#, '1', @MEMBER_CNT OUTPUT,@OBLIGATION_SUM OUTPUT
+		SELECT @MEMBER_CNT AS MEMBER_CNT, @OBLIGATION_SUM AS OBLIGATION_SUM
+		
+	</select>
+	
+	<select id="getTeamMemCntAndObligationCntByIncludePart" parameterClass="PerformanceSearchCondition" resultClass="java.util.HashMap">
+		SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
+		
+		/* [Performance_SqlMap.xml] collpack.kms.perform.dao.Performance.getTeamMemCntAndObligationCntByIncludePart*/
+		DECLARE @MEMBER_CNT NVARCHAR(5) , @OBLIGATION_SUM NVARCHAR(5)
+		EXEC DBO.[GET_TEAM_INFO_USEDBY_KMS] #teamCode#, '0', @MEMBER_CNT OUTPUT,@OBLIGATION_SUM OUTPUT
+		SELECT @MEMBER_CNT AS MEMBER_CNT, @OBLIGATION_SUM AS OBLIGATION_SUM
+		
+	</select>
+	
+	
+	<select id="countTeamStatByIncludePartBySearchCondition" parameterClass="PerformanceSearchCondition" resultClass="int">	
+		
+		SELECT 1 	
+		
+	</select>  
+		
+	<select id="listTeamStatByIncludePart" parameterClass="PerformanceSearchCondition" resultMap="resultTeamStat">
+	
+		
+		 
+		WITH TBL AS
+		 ( /* [PERFORMANCE_SQLMAP.XML] COLLPACK.KMS.PERFORM.DAO.PERFORMANCE.listTeamStatByIncludePart*/
+		  SELECT B.GROUP_ID,
+		          ER.GROUP_NAME,
+		          COUNT(distinct A.USER_ID) AS MEMBER_CNT,
+		          ISNULL(DBO.IKEP_FN_KMS_OBLIGATION_GROUP_CNT_SUM(B.GROUP_ID, #startDate#,#endDate#),0) AS OBLIGATION_SUM
+		    FROM IKEP4_EV_USER A
+		   INNER JOIN IKEP4_EV_USER_GROUP B
+		      ON A.USER_ID = B.USER_ID
+		   INNER JOIN IKEP4_EV_GROUP ER
+		      ON B.GROUP_ID = ER.GROUP_ID
+		    LEFT JOIN IKEP4_KMS_CON_OBLIGATION_CNT Z
+		      ON Z.USER_ID = A.USER_ID
+		   WHERE A.JOB_CLASS_CODE IN ('11', '12', '21', '22','24')
+		   AND (A.USER_STATUS = 'C' OR (A.USER_STATUS = 'T' AND A.LEAVING_DATE BETWEEN #startDate# AND #endDate#) OR (A.USER_STATUS = 'T' AND A.LEAVING_DATE > #endDate#))
+		     AND ER.GROUP_TYPE_ID = 'G0001'
+		     AND ER.VIEW_OPTION > 0
+		     AND (B.GROUP_ID = #teamCode# OR ER.PARENT_GROUP_ID = #teamCode#)
+		   GROUP BY B.GROUP_ID, ER.GROUP_NAME),
+		TBL2 AS
+		 (SELECT BI.GROUP_ID,
+		         COUNT(BI.ITEM_ID) AS REG_SUM,
+		         SUM(BI.RECOMMEND_COUNT) AS RECOMMEND_SUM,
+		         SUM(BI.HIT_COUNT) AS HIT_SUM,
+		         SUM(ISNULL(BI.MARK, 0)) AS MARK_SUM
+		         
+		    FROM IKEP4_KMS_BD_ITEM BI, TBL
+		   WHERE BI.REGIST_DATE BETWEEN #startDate# AND #endDate#
+		     AND BI.STATUS > 2
+		     AND BI.INFO_GRADE IN ('A','B','C')
+		     AND BI.GROUP_ID IN (TBL.GROUP_ID)
+		   GROUP BY BI.GROUP_ID),
+		TBL3 AS
+		 (SELECT SUM(A.MEMBER_CNT) MEMBER_CNT,
+		         SUM(A.OBLIGATION_SUM) OBLIGATION_SUM,
+		         SUM(ISNULL(B.REG_SUM, 0))+(select count(*) from IKEP4_KMS_BD_QNA
+		where REGIST_DATE BETWEEN #startDate# AND #endDate#
+		and item_id in(select item_id from IKEP4_KMS_BD_QNA_recommend)
+		and register_id in (select user_id from IKEP4_EV_USER_GROUP where group_id in(select GROUP_ID from TBL)) ) AS REG_SUM,
+		         SUM(ISNULL(B.HIT_SUM, 0)) AS HIT_SUM,
+		         SUM(ISNULL(B.MARK_SUM, 0)) AS MARK_SUM,
+		         SUM(ISNULL(B.RECOMMEND_SUM, 0)) AS RECOMMEND_SUM
+		         
+		    FROM TBL A
+		    LEFT JOIN TBL2 B
+		      ON A.GROUP_ID = B.GROUP_ID),
+		TBL4 AS
+		 (SELECT 
+		         TBL3.MEMBER_CNT,
+		         TBL3.OBLIGATION_SUM,
+		         TBL3.REG_SUM,
+		         TBL3.HIT_SUM,
+		         TBL3.MARK_SUM,
+		         TBL3.RECOMMEND_SUM,
+		         '' AS SCORE_SUM,
+		         DBO.IKEP_FN_KMS_LINEREPLY_SUM_BY_TEAM(#teamCode#,
+		                                                          #startDate#,
+		                                                          #endDate#,
+		                                                          '0')
+		                     AS LINEREPLY_SUM,
+		         DBO.IKEP_FN_KMS_USAGE_SUM_BY_TEAM(#teamCode#,
+		                                                      #startDate#,
+		                                                      #endDate#,
+		                                                      '0')
+		                                                       AS USAGE_SUM,
+		         CASE (TBL3.OBLIGATION_SUM)
+		           WHEN '0' THEN
+		            '0%'
+		           ELSE
+		            CAST(CAST(CAST(TBL3.REG_SUM AS FLOAT) /
+		                      CAST(TBL3.OBLIGATION_SUM AS FLOAT) * 100 AS DECIMAL) AS
+		                 NVARCHAR(5)) + '%'
+		         END AS OBLIGATION_REG_RATE
+		       FROM TBL3
+		)
+		SELECT '1' AS ROWNUM, #teamCode# GROUP_ID, TMP.GROUP_NAME AS TEAM_NAME, TBL4.* , 
+		         CAST((CAST(TBL4.MARK_SUM AS FLOAT) * CAST(MARK_RATE AS FLOAT) +
+		              CAST(TBL4.REG_SUM AS FLOAT) * CAST(REG_CNT_RATE AS FLOAT) +
+		              CAST(TBL4.HIT_SUM AS FLOAT) * CAST(VIEW_CNT_RATE AS FLOAT) +
+		              CAST(TBL4.RECOMMEND_SUM AS FLOAT) *
+		              CAST(RECOMMEND_CNT_RATE AS FLOAT) +
+		              CAST(TBL4.LINEREPLY_SUM AS FLOAT) *
+		              CAST(LINEREPLY_CNT_RATE AS FLOAT) +
+		              CAST(TBL4.USAGE_SUM AS FLOAT) * CAST(USAGE_CNT_RATE AS FLOAT)) / 100 AS
+		              FLOAT) AS CONVERSION_MARK,
+		         '' REGIST_DATE
+		    FROM TBL4,
+		         IKEP4_KMS_ASSESS_STANDARD,
+		         (SELECT GROUP_NAME FROM IKEP4_EV_GROUP WHERE GROUP_ID = #teamCode#) TMP
+		  	
+	</select>	
+	
+
+</sqlMap>

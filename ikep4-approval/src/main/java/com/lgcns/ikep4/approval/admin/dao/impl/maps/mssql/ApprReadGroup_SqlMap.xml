@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="approval.admin.dao.ApprReadGroup" >
+	<typeAlias alias="ApprReadGroup"					type="com.lgcns.ikep4.approval.admin.model.ApprReadGroup"/>
+	<typeAlias alias="ApprReadGroupSearchCondition"					type="com.lgcns.ikep4.approval.admin.search.ApprReadGroupSearchCondition"/>
+
+
+	<!-- insert -->
+	<insert id="createApprReadGroup" parameterClass="ApprReadGroup" >
+		<![CDATA[
+      	/* [ApprReadGroup_SqlMap.xml] approval.admin.dao.ApprReadGroup.createApprReadGroup */ 
+      	INSERT INTO IKEP4_APPR_READ_GROUP ( 	USER_ID,
+     											GROUP_ID,
+     											REGISTER_ID,
+     											REGISTER_NAME,
+     											REGIST_DATE,
+     											PORTAL_ID
+     										)
+     	VALUES								(	#userId#,
+     											#groupId#,
+     											#registerId#,
+     											#registerName#,
+     											GETDATE(),
+     											#portalId#
+     										)
+    	]]>
+	</insert>
+	
+	<delete id="deleteApprReadGroupAjax" parameterClass="Map"> 
+		<![CDATA[
+	  		/* [ApprReadGroup_SqlMap.xml] approval.admin.dao.ApprReadGroup.deleteApprReadGroupAjax */
+			DELETE 	
+			FROM 	IKEP4_APPR_READ_GROUP A
+			WHERE	A.USER_ID = #userId#
+			  AND   A.GROUP_ID = #groupId#
+			  AND   A.PORTAL_ID = #portalId#
+		]]>
+	</delete>
+
+
+	<select id="listBySearchCondition" parameterClass="ApprReadGroupSearchCondition" resultClass="ApprReadGroup"> 
+	SELECT /* [ApprReadGroup_SqlMap.xml] uapproval.admin.dao.ApprReadGroup.listBySearchCondition */ 
+		*
+	FROM 
+	( 
+			/* START========================================= */
+			SELECT 
+				Row_number() over (ORDER BY M.registDate DESC ) rnum, 
+				M.*
+			FROM (
+				SELECT DISTINCT
+						A.USER_ID  userId,
+				        E.USER_NAME userName,
+				        J.JOB_TITLE_NAME jobTitleName,
+			            (select group_name from ikep4_ev_group where group_id = a.group_id) teamName,
+			            A.REGISTER_ID registerId,
+					    A.REGISTER_NAME registerName,
+					    A.REGIST_DATE registDate,
+					    A.PORTAL_ID portalId
+				FROM  IKEP4_APPR_READ_GROUP A, IKEP4_EV_USER E, IKEP4_EV_JOB_TITLE J
+		        WHERE A.USER_ID = E.USER_ID
+		          AND E.JOB_TITLE_CODE = J.JOB_TITLE_CODE
+		          AND A.PORTAL_ID = #portalId#
+			) M
+			WHERE	
+				(1=1)				
+				<isNotEmpty property="searchColumn">
+				<isEqual property="searchColumn" compareValue="userName">
+				AND	UPPER(M.userName) LIKE '%' || UPPER(#searchWord#) || '%'
+				</isEqual>
+				<isEqual property="searchColumn" compareValue="groupName">
+				AND	UPPER(M.teamName) LIKE '%' || UPPER(#searchWord#) || '%'
+				</isEqual>
+				</isNotEmpty>
+			/* ===========================================END  */ 
+	<![CDATA[
+		) a
+     WHERE  a.rnum  > #startRowIndex#
+            AND a.rnum  <= #endRowIndex#
+	]]> 
+	</select>
+	 
+	<select id="countBySearchCondition" parameterClass="ApprReadGroupSearchCondition" resultClass="int">
+		SELECT /* [ApprReadGroup_SqlMap.xml] approval.admin.dao.ApprReadGroup.countBySearchCondition */ 
+	          COUNT(*)
+				FROM (
+					SELECT DISTINCT
+						A.USER_ID  userId,
+				        E.USER_NAME userName,
+				        J.JOB_TITLE_NAME jobTitleName,
+			            (select group_name from ikep4_ev_group where group_id = a.group_id) teamName,
+			            A.REGISTER_ID registerId,
+					    A.REGISTER_NAME registerName,
+					    A.REGIST_DATE registDate,
+					    A.PORTAL_ID portalId
+				FROM  IKEP4_APPR_READ_GROUP A, IKEP4_EV_USER E, IKEP4_EV_JOB_TITLE J
+		        WHERE A.USER_ID = E.USER_ID
+		          AND E.JOB_TITLE_CODE = J.JOB_TITLE_CODE
+		          AND A.PORTAL_ID = #portalId#
+				) M
+				WHERE	
+					(1=1)				
+					<isNotEmpty property="searchColumn">
+					<isEqual property="searchColumn" compareValue="userName">
+					AND	UPPER(M.userName) LIKE '%' || UPPER(#searchWord#) || '%'
+					</isEqual>
+					<isEqual property="searchColumn" compareValue="groupName">
+					AND	UPPER(M.teamName) LIKE '%' || UPPER(#searchWord#) || '%'
+					</isEqual>
+					</isNotEmpty>
+	</select>
+	
+	<select id="getGroupList" parameterClass="Map" resultClass="ApprReadGroup">
+		<![CDATA[
+	  		/* [ApprReadGroup_SqlMap.xml] approval.admin.dao.ApprReadGroup.getGroupList */
+			SELECT 	 A.GROUP_ID groupId,
+				     (SELECT E.GROUP_NAME FROM IKEP4_EV_GROUP E WHERE E.GROUP_ID = A.GROUP_ID) groupName
+			FROM 	IKEP4_APPR_READ_GROUP A
+			WHERE	A.USER_ID = #userId#
+			  AND   A.PORTAL_ID = #portalId#
+		]]>
+	</select>
+	
+	<select id="getBasicInfo" parameterClass="Map" resultClass="ApprReadGroup">
+		<![CDATA[
+	  		/* [ApprReadGroup_SqlMap.xml] approval.admin.dao.ApprReadGroup.getBasicInfo */
+			SELECT 	DISTINCT A.USER_ID  userId,
+			        (SELECT E.USER_NAME FROM IKEP4_EV_USER E WHERE E.USER_ID = A.USER_ID) userName,
+			        A.REGISTER_ID registerId,
+			        A.REGISTER_NAME registerName
+			FROM 	IKEP4_APPR_READ_GROUP A
+			WHERE	A.USER_ID = #userId#
+			  AND   A.PORTAL_ID = #portalId#
+		]]>
+	</select>
+	
+	<delete id="deleteApprReadGroup" parameterClass="Map">
+		<![CDATA[
+	  		/* [ApprReadGroup_SqlMap.xml] approval.admin.dao.ApprReadGroup.deleteApprReadGroup */
+			DELETE 	
+			FROM 	IKEP4_APPR_READ_GROUP A
+			WHERE	A.USER_ID = #userId#
+			  AND   A.PORTAL_ID = #portalId#
+		]]>
+	</delete>
+		
+</sqlMap>

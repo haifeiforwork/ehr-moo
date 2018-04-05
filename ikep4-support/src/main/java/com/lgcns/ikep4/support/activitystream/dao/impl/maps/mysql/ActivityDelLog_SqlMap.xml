@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="EUC-KR"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="support.activityDelLog">
+
+	<typeAlias alias="activityDelLog" type="com.lgcns.ikep4.support.activitystream.model.ActivityDelLog" />
+
+	<resultMap id="activityDelLogResult" class="activityDelLog">
+		<result property="logId" column="log_id" />
+		<result property="userId" column="user_id" />
+		<result property="success" column="success" />
+		<result property="deleteCount" column="delete_count" />
+		<result property="year" column="year" />
+		<result property="month" column="month" />
+		<result property="startTime" column="start_time" />
+		<result property="endTime" column="end_time" />
+		<result property="registDate" column="regist_date" />
+	</resultMap>
+	
+
+
+	<insert id="insert" parameterClass="activityDelLog">
+		INSERT INTO IKEP4_AS_ACTIVITY_DEL_LOG (
+		   			LOG_ID, USER_ID, SUCCESS, 
+				   DELETE_COUNT, YEAR, MONTH, 
+				   START_TIME, END_TIME, REGIST_DATE)
+		VALUES(#logId#, #userId#, #success#,
+				#deleteCount#, DATE_FORMAT(NOW(),'%Y'), DATE_FORMAT(NOW(),'%m'),
+				NOW(), NOW(), NOW())
+	</insert>
+
+	
+	<select id="select" parameterClass="activityDelLog" resultMap="activityDelLogResult">
+		SELECT 
+				LOG_ID, USER_ID, SUCCESS, 
+				   DELETE_COUNT, YEAR, MONTH, 
+				   START_TIME, END_TIME, REGIST_DATE
+			FROM IKEP4_AS_ACTIVITY_DEL_LOG
+				WHERE USER_ID = #userId#
+				<isNotEmpty property="year">
+				 	AND YEAR = #year#
+         		</isNotEmpty>
+         		<isNotEmpty property="month">
+				 	AND MONTH = #month#
+         		</isNotEmpty>
+			ORDER BY REGIST_DATE DESC
+	</select>
+	
+	<delete id="deleteBatch" parameterClass="activityDelLog" >
+		DELETE 
+		FROM				IKEP4_AS_ACTIVITY_STREAM
+      	WHERE 				ACTIVITY_STREAM_ID IN (
+      												SELECT				ACTIVITY_STREAM_ID
+                                     				FROM 				(
+                                     									SELECT				(CASE tbl1.ACTIVITY_STREAM_ID WHEN tbl1.ACTIVITY_STREAM_ID THEN @ROWNUM := @ROWNUM + 1 ELSE @ROWNUM := 1 END) AS NUM,
+                                     														tbl1.*
+                                             							FROM 				(  
+                                             												SELECT				*
+                                                       										FROM 				IKEP4_AS_ACTIVITY_STREAM
+                                                       										WHERE 				REGISTER_ID = #userId#
+                                                   											ORDER BY 			REGIST_DATE DESC
+                                                   											) tbl1,
+                                                   											(
+                                                   											SELECT				@ROWNUM := 0
+                                                   											) tbl2
+                                                   						)
+													WHERE 				NUM > #configValue#
+							)
+	</delete>
+	
+</sqlMap>

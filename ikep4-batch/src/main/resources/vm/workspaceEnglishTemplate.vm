@@ -1,0 +1,150 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ko">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>iKEP 4.00</title>
+<style>
+body {background: none repeat scroll 0 0 #FFFFFF;color: #555555;font: 75%/1.5em Tahoma,'돋움','Dotum';height: 100%;}
+.blockDetail { position:relative; margin-bottom:10px; width:100%; border-top:2px solid #919fb2; }
+.blockDetail table { width:100%; border-collapse:collapse; table-layout:fixed; }
+.blockDetail table caption { display:none; }
+.blockDetail table th { font-weight:bold; line-height:19px; text-align:right; color:#333; padding:3px 5px; border:1px solid #e0e0e0; border-top:none; background:#f3f3f3; }
+.blockDetail table th a:link, .blockDetail table th a:visited, .blockDetail table th a:active, .blockDetail table th a:hover { color:#333; text-decoration:none; }
+.blockDetail table td { line-height:19px; padding:3px 5px; word-break:break-all; border:1px solid #e0e0e0; border-top:none; background-color:#fff; }
+.blockDetail .bgSelected { background-color: #edf2f5; }
+.blockDetail table td .radio, .blockDetail table td .checkbox { vertical-align:middle; }
+.blockDetail table td .button_s { vertical-align:middle; margin:-1px 3px -2px 0; }
+* {margin: 0;padding: 0;}
+.colorBlue {color: #5F84C2;}
+.schedule_bg01 {margin: 5px;}
+.ml5 {margin-left: 5px;}
+.schedule_bg01 span {margin-right: 5px;}
+.colorPoint {color: #C50050 !important;}
+</style>
+</head>
+
+<body>
+#set ($WO = "WO")
+#set ($O = "O")
+#set ($WC = "WC")
+#set ($WR = "WR")
+#set ($C = "C")
+<!-- Modal window Start -->
+<br>
+<div class="" id="layer_p" title="Workspace Mail">
+	<!--blockDetail Start-->		
+	<div class="blockDetail">
+		<table summary="Workspace Mail">
+			<caption></caption>
+			<tbody>
+				#if($workspaceStatus == $WO)
+				<tr>
+					<th width="18%" scope="row">Contents</th>
+					<td width="82%">
+						<span class="colorBlue">*</span>
+						Creation request for a <span class="colorBlue">${workspace.workspaceName}</span> workspace was registered.<br />
+						Please approve this creation request.
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">Request Date</th>
+					<td>
+						<span>${registDate}</span>							
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">Requester</th>
+					<td>
+						<span>${sender.userName} ${sender.jobTitleName} ${sender.teamName}</span>							
+					</td>
+				</tr>				
+				#elseif($workspaceStatus == $WC)
+				<tr>
+					<th width="18%" scope="row">Contents</th>
+					<td width="82%">
+						<span class="colorBlue">*</span>
+						Closure request for the <span class="colorBlue">${workspace.workspaceName}</span> workspace was registered.<br />
+						Please approve this closure request.	
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">Request Date</th>
+					<td>
+						<span>${workspace.closeApplyDate}</span>							
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">Requester</th>
+					<td>
+						<span>${sender.userName} ${sender.jobTitleName} ${sender.teamName}</span>							
+					</td>
+				</tr>													
+				#elseif($workspaceStatus == $O)
+				<tr>
+					<th width="18%" scope="row">Contents</th>
+					<td width="82%">
+						<span class="colorBlue">*</span>
+						The creation request for a <span class="colorBlue">${workspace.workspaceName}</span> workspace was approved.	
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">Approve Date</th>
+					<td>
+						<span>${registDate}</span>							
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">Contact</th>
+					<td>
+						<span>${sender.userName} ${sender.jobTitleName} ${sender.teamName}</span>			
+					</td>
+				</tr>					
+				#elseif($workspaceStatus == $C)
+				<tr>
+					<th width="18%" scope="row">Contents</th>
+					<td width="82%">
+						<span class="colorBlue">*</span>
+						The closure of <span class="colorBlue">${workspace.workspaceName}</span> workspace was completed.		
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">Close Date</th>
+					<td>
+						<span>${registDate}</span>							
+					</td>
+				</tr>				
+				<tr>
+					<th scope="row">Contact</th>
+					<td>
+						<span>${sender.userName} ${sender.jobTitleName} ${sender.teamName}</span>		
+					</td>
+				</tr>
+				#elseif($workspaceStatus == $WR)
+				<tr>
+					<th width="18%" scope="row">Contents</th>
+					<td width="82%">
+						<span class="colorBlue">*</span>
+						The creation request for <span class="colorBlue">${workspace.workspaceName}</span> workspace was rejected.		
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">Reject Date</th>
+					<td>
+						<span>${registDate}</span>							
+					</td>
+				</tr>				
+				<tr>
+					<th scope="row">Contact</th>
+					<td>
+						<span>${sender.userName} ${sender.jobTitleName} ${sender.teamName}</span>		
+					</td>
+				</tr>						
+				#end
+			</tbody>
+		</table>
+	</div>			
+	<!--//blockDetail End-->	
+</div>	
+<!-- //Modal window End -->
+</body>
+</html>

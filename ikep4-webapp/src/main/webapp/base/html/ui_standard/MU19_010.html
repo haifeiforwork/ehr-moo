@@ -1,0 +1,308 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ko">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>iKEP 4.00</title>
+<link rel="stylesheet" type="text/css" href="../../css/theme01/jquery_ui_custom.css" />
+<link rel="stylesheet" type="text/css" href="../../css/common.css" />
+<link rel="stylesheet" type="text/css" href="../../css/theme01/theme.css" />
+<script type="text/javascript" src="../../js/jquery/jquery-1.6.2.min.js"></script>
+<script type="text/javascript" src="../../js/jquery/jquery-ui-1.8.13.min.without.datepicker.js"></script>
+<script type="text/javascript" src="../../js/langResource/ko.js"></script>
+<script type="text/javascript" src="../../js/common.pack.js"></script>
+<script type="text/javascript">
+(function($) {
+	$(document).ready(function() {
+		// left menu setting
+		 iKEP.setLeftMenu();		
+	});
+})(jQuery);
+</script>
+<script type="text/javascript">
+<!--
+(function($) {
+		 
+	var remainingDay = 20;
+	var voteDay = 11;
+	var allday = 31;
+	var persent = 0;
+	$(document).ready(function() {
+		$("#divTab1").tabs();
+		$("#date1").datepicker().next().eq(0).click(function() { $(this).prev().eq(0).datepicker("show"); });
+		$("#date2").datepicker().next().eq(0).click(function() { $(this).prev().eq(0).datepicker("show"); });
+		
+		persent = voteDay/allday*100;
+		$("#voteRange").progressbar({ 
+  			value: persent 
+ 		});
+		$( "#days" ).text( remainingDay + "일");
+		
+		$("#voteRange1").progressbar({ 
+  			value: persent 
+ 		});
+		$( "#days1" ).text( remainingDay + "일");		
+		
+	});
+	
+})(jQuery);
+-->
+</script>
+</head>
+
+<body>
+
+<!--skipNavigation Start-->
+<div id="skipNavigation">
+	<p><a href="#topInfo">헤더정보영역 바로가기</a></p>
+	<p><a href="#topMenu">탑메뉴 바로가기</a></p>	
+	<p><a href="#blockHeaderSub">퀵메뉴 바로가기</a></p>
+	<p><a href="#leftMenu">레프트메뉴 바로가기</a></p>	
+	<p><a href="#mainContents">컨텐츠영역 바로가기</a></p>	
+</div>
+<!--//skipNavigation End-->
+
+<!--wrapper Start-->
+<div id="wrapper">
+
+	<!--blockContainer Start-->
+	<div id="blockContainer">
+
+		<!--blockHeader Start-->
+		<div id="blockHeader">	
+		
+			<!--topInfo Start-->	
+			<div id="topInfo">
+				<h1 class="none">헤더정보영역</h1>
+				<div id="topLogo">
+					<a href="#a"><img src="../../images/common/logo.png" alt="iKEP Logo" /></a>
+				</div>
+			</div>
+			<!--//topInfo End-->
+						
+			<!--topMenu Start-->
+			<div id="topMenu">
+				<h1 class="none">탑메뉴</h1>			
+			</div>
+			<!--//topMenu End-->		
+
+			<!--blockHeaderSub Start-->
+			<div id="blockHeaderSub">
+				<h1 class="none">퀵메뉴</h1>		
+			</div>
+			<!--//blockHeaderSub End-->
+										
+		</div>
+		<!--//blockHeader End-->
+		
+		<!--blockMain Start-->
+		<div id="blockMain">
+
+			<!--leftMenu Start-->
+			<div id="leftMenu">
+				<h1 class="none">레프트메뉴</h1>	
+				<h2>Online Poll</h2>	
+				
+				<!--blockButton_2 Start-->
+				<div class="blockButton_2 mb10"> 				
+					<a class="button_2" href="#a"><span><img src="../../images/icon/ic_poll.gif" alt=""/> 투표등록</span></a>				
+				</div>
+				<!--//blockButton_2 End-->					
+				<div class="left_fixed">
+					<ul>			
+						<li class="liFirst no_child"><a href="#a">투표참여</a></li>
+						<li class="no_child"><a href="#a">My Online Poll</a></li>		
+						<li class="opened"><a href="#a">Administration</a>
+							<ul>
+								<li class="no_child liLast"><a href="#a">투표관리</a></li>
+							</ul>		
+						</li>							
+					</ul>
+				</div>
+			</div>	
+			<!--//leftMenu End-->
+				
+			<!--mainContents Start-->
+			<div id="mainContents" >
+				<h1 class="none">컨텐츠영역</h1>
+
+				<!--pageTitle Start-->
+				<div id="pageTitle">
+					<h2>투표참여</h2>
+				</div>
+				<!--//pageTitle End-->						
+				
+				<!--tab Start-->		
+				<div id="divTab1" class="iKEP_tab_poll">
+					<ul>
+						<li class="w50"><a href="#tabs-1">진행중인 투표</a></li>
+						<li class="w50"><a href="#tabs-2">완료된 투표</a></li>
+					</ul>			
+				</div>		
+				<!--//tab End-->			
+				
+				<!--blockButton Start-->
+				<div class="blockButton"> 
+					<ul>
+						<li><a class="button_s selected" href="#a"><span>전체</span></a></li>
+						<li><a class="button_s" href="#a"><span>참여한 투표</span></a></li>		
+						<li><a class="button_s" href="#a"><span>등록한 투표</span></a></li>												
+					</ul>
+				</div>
+				<!--//blockButton End-->	
+				
+				<!--online_poll Start-->
+				<div class="blockTableRead online_poll">
+					<h3 class="none">Question</h3>
+					<div class="qnaimg">
+						<img src="../../images/icon/ic_vote.gif" alt="" />
+					</div>				
+					<div class="blockTableRead_t">
+						<div class="online_poll_num"><span>532</span> 명 참여</div>					
+						<p>다음 문화 상품중 어떤 것을 먼저 구입하시겠습니까?</p>
+						<div class="summaryViewInfo">
+							<span class="ty1">공개투표</span>
+							<span class="summaryViewInfo_name">진행자 : <a href="#a">홍길동 과장</a></span>
+							<span>투표기간 : <strong>2011.03.12~2011.03.15</strong></span>
+						</div>
+					</div>
+					
+					<table width="100%" summary="">
+						<caption></caption>
+						<tbody>
+							<tr>
+								<td valign="top">
+									<div class="online_poll_list">						
+										<ul>
+											<li><input name="" type="checkbox" class="checkbox" title="checkbox" value="" checked="checked" /> (1) 해설있는 클래식 CD 62장 셑</li>
+											<li><input name="" class="checkbox" title="checkbox" type="checkbox" value="" /> (2) 음악/영어뉴스 위성라디오</li>
+											<li><input name="" class="checkbox" title="checkbox" type="checkbox" value="" /> (3) 유명 오케스트라 내한 공연</li>
+											<li><input name="" class="checkbox" title="checkbox" type="checkbox" value="" /> (4) 대중가수의 콘서트</li>																					
+										</ul>
+									</div>
+									
+									<!--blockButton Start-->
+									<div class="blockButton textLeft lp70"> 
+										<ul>
+											<li><a class="button" href="#a"><span>투표하기</span></a></li>
+											<li><a class="button" href="#a"><span>결과보기</span></a></li>
+											<li><a class="button" href="#a"><span>마감</span></a></li>
+										</ul>
+									</div>
+									<!--//blockButton End-->
+								</td>
+								<td width="250">	
+									<div class="online_poll_graph">
+										<div class="online_poll_balloon">
+											<span>남은 기간 : </span><span id="days" class="colorPoint"></span>
+											<div class="online_poll_balloon_r"></div>
+										</div>
+										<div id="voteRange" class="voteRange">
+											<div class="bar_l"></div>
+											<div class="bar_r"></div>
+										</div>
+										<div class="online_poll_day">
+											<span>시작일<br />2011.03.10</span><span class="lastday">종료일<br />2011.03.31</span>
+										</div>
+									</div>															
+								</td>
+							</tr>
+						</tbody>
+					</table>		
+				</div>
+				<!--//online_poll End-->
+				
+				<!--그래프_layer는 결과보기를 클릭시 생성-->
+				<!--layer start-->
+				<div class="process_layer" style="top:155px; right:30px; z-index:99; width:250px; height:200px;">
+					<div class="process_layer_t">
+						결과보기
+						<a href="#a"><img src="../../images/icon/ic_close_layer.gif" alt="닫기" /></a>
+					</div>
+					<div>
+					 그래프가 들어갑니다.
+					</div>
+				</div>		
+				<!--layer end-->		
+				
+				<!--online_poll Start-->
+				<div class="blockTableRead online_poll">
+					<h3 class="none">Question</h3>
+					<div class="qnaimg">
+						<img src="../../images/icon/ic_vote_select.gif" alt="" />
+					</div>				
+					<div class="blockTableRead_t">
+						<div class="online_poll_num"><span>532</span> 명 참여</div>					
+						<p>다음 문화 상품중 어떤 것을 먼저 구입하시겠습니까?</p>
+						<div class="summaryViewInfo">
+							<span class="ty1">공개투표</span>
+							<span class="summaryViewInfo_name">진행자 : <a href="#a">홍길동 과장</a></span>
+							<span>투표기간 : <strong>2011.03.12~2011.03.15</strong></span>
+						</div>
+					</div>
+					
+					<table width="100%" summary="">
+						<caption></caption>
+						<tbody>
+							<tr>
+								<td valign="top">	
+									<div class="online_poll_list">						
+										<ul>
+											<li>(1) 해설있는 클래식 CD 62장 셑</li>
+											<li>(2) 음악/영어뉴스 위성라디오</li>
+											<li class="selected"><em>(3) 유명 오케스트라 내한 공연</em></li>
+											<li>(4) 대중가수의 콘서트</li>																					
+										</ul>
+									</div>
+									
+									<!--blockButton Start-->
+									<div class="blockButton textLeft lp70"> 
+										<ul>
+											<li><a class="button" href="#a"><span>투표하기</span></a></li>
+											<li><a class="button" href="#a"><span>결과보기</span></a></li>
+											<li><a class="button" href="#a"><span>마감</span></a></li>
+										</ul>
+									</div>
+									<!--//blockButton End-->								
+								</td>
+								<td width="250">	
+									<div class="online_poll_graph">
+										<div class="online_poll_balloon">
+											<span>남은 기간 : </span><span id="days1" class="colorPoint"></span>
+											<div class="online_poll_balloon_r"></div>
+										</div>
+										<div id="voteRange1" class="voteRange">
+											<div class="bar_l"></div>
+											<div class="bar_r"></div>
+										</div>
+										<div class="online_poll_day">
+											<span>시작일<br />2011.03.10</span><span class="lastday">종료일<br />2011.03.31</span>
+										</div>
+									</div>								
+								</td>								
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<!--//online_poll End-->	
+				
+				<!--blockButton_3 Start-->
+				<div class="blockButton_3"> 
+					<a class="button_3" href="#a"><span>추가 10건 더보기 <img src="../../images/icon/ic_more_ar.gif" alt="" /></span></a>				
+				</div>
+				<!--//blockButton_3 End-->									
+													
+			</div>
+			<!--//mainContents End-->
+			<div class="clear"></div>
+		</div>
+		<!--//blockMain End-->
+		
+	</div>
+	<!--//blockContainer End-->
+	
+		
+</div>
+<!--//wrapper End-->
+
+</body>
+</html>

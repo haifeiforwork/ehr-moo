@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="com.lgcns.ikep4.support.searchpreprocessor.relation">
+  
+	<typeAlias alias="spRelation"       type="com.lgcns.ikep4.support.searchpreprocessor.model.Relation"/>
+  	<typeAlias alias="spRelationKey"    type="com.lgcns.ikep4.support.searchpreprocessor.model.RelationKey"/>
+  
+  	<resultMap class="spRelation" id="baseResultMap">
+	    <result column="ID" jdbcType="VARCHAR" property="id" />
+	    <result column="SEARCH_KEYWORD_ID" jdbcType="VARCHAR" property="searchKeywordId" />
+	    <result column="SEARCH_KEYWORD" jdbcType="VARCHAR" property="searchKeyword" />
+	    <result column="RELATION_KEYWORD_ID" jdbcType="VARCHAR" property="relationKeywordId" />
+	    <result column="RELATION_KEYWORD" jdbcType="VARCHAR" property="relationKeyword" />
+	    <result column="FREQUENCY_COUNT" jdbcType="DECIMAL" property="frequencyCount" />
+	    <result column="PORTAL_ID" jdbcType="VARCHAR" property="portalId" />
+	    <result column="REGISTER_ID" jdbcType="VARCHAR" property="registerId" />
+	    <result column="REGISTER_NAME" jdbcType="VARCHAR" property="registerName" />
+	    <result column="REGIST_DATE" jdbcType="DATE" property="registDate" />
+  	</resultMap>
+
+   	<sql id="sqlColumnList"> 
+		ID, 
+	  	SEARCH_KEYWORD_ID, 
+	  	SEARCH_KEYWORD, 
+	  	RELATION_KEYWORD_ID, 
+	  	RELATION_KEYWORD,
+      	FREQUENCY_COUNT, 
+      	PORTAL_ID, 
+      	REGISTER_ID, 
+      	REGISTER_NAME, 
+      	REGIST_DATE
+  	</sql> 
+  
+  	<select id="get" parameterClass="spRelationKey" resultMap="baseResultMap">
+    	SELECT				<include refid="com.lgcns.ikep4.support.searchpreprocessor.relation.sqlColumnList" />
+    	FROM				IKEP4_SP_RELATION
+    	WHERE 				SEARCH_KEYWORD_ID = #searchKeywordId#
+     	AND 				RELATION_KEYWORD_ID = #relationKeywordId#
+  	</select>
+  
+  	<select id="exists"  parameterClass="spRelationKey" resultClass="int">
+    	SELECT 				COUNT(*) 
+    	FROM 				IKEP4_SP_RELATION
+    	WHERE 				SEARCH_KEYWORD_ID = #searchKeywordId#
+     	AND 				RELATION_KEYWORD_ID = #relationKeywordId#
+  	</select>
+  
+  	<delete id="remove" parameterClass="spRelationKey">
+    	DELETE 
+    	FROM 				IKEP4_SP_RELATION
+    	WHERE 				SEARCH_KEYWORD_ID = #searchKeywordId#
+     	AND 				RELATION_KEYWORD_ID = #relationKeywordId#
+  	</delete>
+  
+  	<insert id="create" parameterClass="spRelation">
+    	INSERT INTO 		IKEP4_SP_RELATION 
+    						(
+    						<include refid="com.lgcns.ikep4.support.searchpreprocessor.relation.sqlColumnList" />
+    						)
+    	VALUES 				(
+					    	#id#, 
+					    	#searchKeywordId#, 
+					    	#searchKeyword#,
+					        #relationKeywordId#, 
+					        #relationKeyword#, 
+					        #frequencyCount#,
+					        #portalId#, 
+					        #registerId#, 
+					        #registerName#, 
+					        #registDate#
+      						)
+  	</insert>
+  
+  	<update id="update" parameterClass="spRelation">
+	    UPDATE 				IKEP4_SP_RELATION
+	    SET 				FREQUENCY_COUNT = FREQUENCY_COUNT+1
+	    WHERE 				SEARCH_KEYWORD_ID = #searchKeywordId#
+		AND 				RELATION_KEYWORD_ID = #relationKeywordId#
+  	</update>
+  	
+</sqlMap>

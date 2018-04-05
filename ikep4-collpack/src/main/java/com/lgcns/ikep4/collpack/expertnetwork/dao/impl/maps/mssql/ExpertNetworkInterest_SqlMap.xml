@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="collpack.expertnetwork.dao.ExpertNetworkInterest">
+	<typeAlias alias="ExpertNetworkInterestPK" type="com.lgcns.ikep4.collpack.expertnetwork.model.ExpertNetworkInterestPK"/>
+	<typeAlias alias="ExpertNetworkInterest" type="com.lgcns.ikep4.collpack.expertnetwork.model.ExpertNetworkInterest"/>
+	<typeAlias alias="ExpertNetworkPageCondition" type="com.lgcns.ikep4.collpack.expertnetwork.search.ExpertNetworkPageCondition"/>
+
+	<resultMap class="ExpertNetworkInterest" id="result">
+		<result column="EXPERT_USER_ID" property="expertUserId" jdbcType="VARCHAR" javaType="String"/>
+		<result column="MATCHING_SCORE" property="matchingScore" jdbcType="NUMBER" javaType="Integer"/>
+		<result column="SORT_ORDER" property="sortOrder" jdbcType="NUMBER" javaType="Integer"/>
+		<result column="EXPERT_COUNT" property="expertCount" jdbcType="NUMBER" javaType="Integer"/>
+		<result column="EXPERT_FIELD" property="expertField" jdbcType="VARCHAR" javaType="String"/>
+		<result column="USER_NAME" property="userName" jdbcType="VARCHAR" javaType="String"/>
+		<result column="USER_ENGLISH_NAME" property="userEnglishName" jdbcType="VARCHAR" javaType="String"/>
+		<result column="TEAM_NAME" property="teamName" jdbcType="VARCHAR" javaType="String"/>
+		<result column="TEAM_ENGLISH_NAME" property="teamEnglishName" jdbcType="VARCHAR" javaType="String"/>
+		<result column="JOB_TITLE_NAME" property="jobTitleName" jdbcType="VARCHAR" javaType="String"/>
+		<result column="JOB_TITLE_ENGLISH_NAME" property="jobTitleEnglishName" jdbcType="VARCHAR" javaType="String"/>
+		<result column="PICTURE_PATH" property="picturePath" jdbcType="VARCHAR" javaType="String"/>
+		<result column="PROFILE_PICTURE_PATH" property="profilePicturePath" jdbcType="VARCHAR" javaType="String"/>
+	</resultMap>
+
+<!-- 전체 레코드 개수 조회 -->
+<!-- MSSQL -->
+	<select id="countByUserId" parameterClass="String" resultClass="Integer">
+	<![CDATA[
+		SELECT /* [ExpertNetworkInterest_SqlMap.xml] collpack.expertnetwork.dao.ExpertNetworkInterest.countByUserId */
+		       CASE WHEN COUNT(A.TAG_ITEM_ID)>=20 THEN 20 ELSE COUNT(A.TAG_ITEM_ID) END AS COUNT_USER_ID
+		  FROM (
+		        SELECT TAG_ITEM_ID
+		          FROM IKEP4_TG_LINK
+		         WHERE TAG_ITEM_TYPE = 'PE'
+		           AND TAG_ID IN (SELECT TAG_ID
+		                            FROM IKEP4_TG_LINK
+		                           WHERE TAG_ITEM_TYPE = 'PI'
+		                             AND TAG_ITEM_ID = #userId#
+		                         )
+		           AND TAG_ITEM_ID != #userId#
+		         GROUP BY TAG_ITEM_ID
+		       ) A
+	]]>
+	</select>
+
+<!-- MS SQL -->
+<!-- 페이징  조회 -->
+	<select id="listByUserIdPage" parameterClass="ExpertNetworkPageCondition" resultMap="result">
+	<![CDATA[
+		/* [ExpertNetworkInterest_SqlMap.xml] collpack.expertnetwork.dao.ExpertNetworkInterest.listByUserIdPage */
+		WITH MAIN_BODY AS (
+		    SELECT Row_number() OVER (	ORDER BY EXPERT_COUNT DESC
+							            , MATCHING_SCORE DESC
+							            , (SELECT SORT_ORDER FROM IKEP4_EV_JOB_POSITION WHERE JOB_POSITION_CODE = USR.JOB_POSITION_CODE) /*직위*/
+							            , (SELECT SORT_ORDER FROM IKEP4_EV_JOB_RANK WHERE JOB_RANK_CODE = USR.JOB_RANK_CODE)             /*직급*/
+							            , USR.USER_NAME	) AS SORT_ORDER
+		    	 , USR.USER_ID EXPERT_USER_ID, TAG.MATCHING_SCORE, TAG.EXPERT_COUNT
+		         , USR.EXPERT_FIELD
+		         , USR.USER_NAME USER_NAME
+		         , USR.USER_ENGLISH_NAME USER_ENGLISH_NAME
+		         , USR.TEAM_NAME TEAM_NAME
+		         , USR.TEAM_ENGLISH_NAME TEAM_ENGLISH_NAME
+		         , USR.JOB_TITLE_NAME JOB_TITLE_NAME
+		         , USR.JOB_TITLE_ENGLISH_NAME JOB_TITLE_ENGLISH_NAME
+		         , USR.PICTURE_PATH
+		     	 , USR.PROFILE_PICTURE_PATH
+		      FROM (
+		            SELECT TAG_ITEM_ID USER_ID
+                           , CONVERT(NUMERIC, ROUND(CONVERT(DECIMAL,COUNT(TAG_ID)) / CONVERT(DECIMAL,(SELECT COUNT(TAG_ID)
+
+                                                      FROM IKEP4_TG_LINK
+                                                   WHERE TAG_ITEM_ID = #userId#
+                                                     AND TAG_ITEM_TYPE = 'PI')) * 100, 0, 1)) AS MATCHING_SCORE
+                         , (SELECT COUNT(USER_ID)
+                              FROM IKEP4_EX_EXPERT
+                             WHERE USER_ID = #userId#
+                               AND IS_AUTHORIZED != 2
+                               AND MATCHING_SCORE >= 100) EXPERT_COUNT
+                      FROM IKEP4_TG_LINK
+		             WHERE TAG_ITEM_TYPE = 'PE'
+		               AND TAG_ID IN (SELECT TAG_ID
+		                                FROM IKEP4_TG_LINK
+		                               WHERE TAG_ITEM_TYPE = 'PI'
+		                                 AND TAG_ITEM_ID = #userId#
+		                             )
+		               AND TAG_ITEM_ID != #userId#
+		             GROUP BY TAG_ITEM_ID
+		           ) TAG
+		      JOIN (
+		            SELECT USR.USER_ID USER_ID
+		                 , USR.USER_NAME USER_NAME, USR.USER_ENGLISH_NAME USER_ENGLISH_NAME
+		                 , USR.TEAM_NAME TEAM_NAME, USR.TEAM_ENGLISH_NAME TEAM_ENGLISH_NAME
+		                 , JOB.JOB_TITLE_NAME JOB_TITLE_NAME, JOB.JOB_TITLE_ENGLISH_NAME JOB_TITLE_ENGLISH_NAME
+		                 , USR.EXPERT_FIELD
+		                 , USR.JOB_POSITION_CODE
+		                 , USR.JOB_RANK_CODE
+		                 , USR.PICTURE_PATH
+		     			 , USR.PROFILE_PICTURE_PATH
+		              FROM IKEP4_EV_USER USR
+		              JOIN IKEP4_EV_JOB_TITLE JOB
+		             ON USR.JOB_TITLE_CODE = JOB.JOB_TITLE_CODE
+		           ) USR
+		     ON TAG.USER_ID=USR.USER_ID
+		)
+		SELECT EXPERT_USER_ID, MATCHING_SCORE, EXPERT_COUNT, EXPERT_FIELD
+		     , USER_NAME, USER_ENGLISH_NAME, TEAM_NAME, TEAM_ENGLISH_NAME, JOB_TITLE_NAME, JOB_TITLE_ENGLISH_NAME
+		     , SORT_ORDER, PICTURE_PATH , PROFILE_PICTURE_PATH
+		  FROM (
+		        SELECT BODY.*
+		          FROM MAIN_BODY BODY
+		         WHERE SORT_ORDER <= #endOrder#
+		       ) TBL
+		 WHERE SORT_ORDER >= #startOrder#
+	]]>
+	</select>
+
+</sqlMap>

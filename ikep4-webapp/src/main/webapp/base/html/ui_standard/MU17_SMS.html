@@ -1,0 +1,783 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ko">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>SMS | iKEP 4.00</title>
+<link rel="stylesheet" type="text/css" href="../../css/theme01/jquery_ui_custom.css" />
+<link rel="stylesheet" type="text/css" href="../../css/common.css" />
+<link rel="stylesheet" type="text/css" href="../../css/theme01/theme.css" />
+<script type="text/javascript" src="../../js/jquery/jquery-1.6.2.min.js"></script>
+<script type="text/javascript" src="../../js/jquery/jquery-ui-1.8.13.min.without.datepicker.js"></script>
+<script type="text/javascript" src="../../js/langResource/ko.js"></script>
+<script type="text/javascript" src="../../js/common.pack.js"></script>
+<script type="text/javascript" src="../../js/portlet.js"></script>
+<script type="text/javascript">
+(function($) {
+	$(document).ready(function() {
+		$("#divTab_sms").tabs();
+	});
+})(jQuery);
+</script>
+</head>
+
+<body>
+
+<!--sms Start-->
+<div id="sms">
+
+	<div class="smsLogo"><img src="../../images/common/logo_s.png" alt="LG CNS 로고" /></div>
+	
+	<!--sms_l Start-->
+	<div class="sms_l">
+		
+		<h1 class="none">SMS 입력창</h1>
+		<textarea class="sms_textarea" title="입력창" name="" cols="" rows="">여기에 내용을 입력해주세요. (80byte 이내)</textarea>
+		<div class="smsbyte"><span>0</span> / 80 byte</div>
+		
+		<h2 class="none">번호정보</h2>
+		<div class="numinfo">
+			수신자
+			<input type="text" class="smsinput" title="수신자" name="" value="" size="13" />
+			<span class="smsbtn_add"><a href="#a">추가</a></span>
+		</div>
+		
+		<div class="smslist">
+			<h2>수신번호 목록</h2>
+			<div class="smslist_btn"><span><a href="#a">주소록</a></span></div>
+			<div class="clear"></div>
+			<div class="smslist_t">
+				<table summary="수신번호 목록 테이블">
+					<caption></caption>
+					<tbody>
+						<tr>
+							<td width="15">01</td>
+							<td width="40">김연아</td>
+							<td width="80">011-9993-1122</td>
+							<td width="10"><a href="#a"><img src="../../images/icon/ic_sms_x.gif" alt="삭제" /></a></td>
+						</tr>						
+						<tr>
+							<td>02</td>
+							<td>김연아</td>
+							<td>010-9999-9999</td>
+							<td><a href="#a"><img src="../../images/icon/ic_sms_x.gif" alt="삭제" /></a></td>
+						</tr>
+						<tr>
+							<td>03</td>
+							<td>홍길동</td>
+							<td>010-9999-9999</td>
+							<td><a href="#a"><img src="../../images/icon/ic_sms_x.gif" alt="삭제" /></a></td>
+						</tr>
+						<tr>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td><a href="#a"><img src="../../images/icon/ic_sms_x.gif" alt="삭제" /></a></td>
+						</tr>
+						<tr>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td><a href="#a"><img src="../../images/icon/ic_sms_x.gif" alt="삭제" /></a></td>
+						</tr>														
+					</tbody>
+				</table>
+			</div>
+		</div>
+		
+		<div class="sendnum">
+			발신번호 <input type="text" class="smsinput readonly" readonly="readonly" title="발신번호" name="" value="" size="10" />
+			<span class="sendnum_btn"><a href="#a">발신함</a></span>
+		</div>
+
+		<h2 class="none">발송버튼</h2>
+		<div class="smsbtn">
+			<ul>
+				<li><a href="#a">취소</a></li>
+				<li><a href="#a">보내기</a></li>
+			</ul>
+		</div>		
+	</div>
+	<!--//sms_l End-->
+	
+	<!--sms_sendinglist Start-->
+	<div class="sms_sendinglist none"><!--레이어 display 설정은 none 삭제 class="sms_sendinglist"-->
+		<h2>최근 SMS 발송내역</h2>
+		<div class="sms_sendinglist_radio">
+			<label><input name="" class="radio" title="리스트" type="radio" value="" />리스트</label>&nbsp;
+			<label><input name="" class="radio" title="액정" type="radio" value="" />액정</label>
+		</div>
+		<div class="sms_sendinglist_close"><a href="#a"><img src="../../images/icon/ic_sms_layer_x.gif" alt="닫기" /></a></div>
+		<table summary="발송대상, 일시, 성공여부, 내용">
+			<thead>
+				<tr>
+					<th scope="col" width="30%">발송대상</th>
+					<th scope="col">일시</th>
+					<th scope="col">성공여부</th>
+					<th scope="col">내용</th>	
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>김포탈</td>
+					<td>2010.12.07<br />14:24:03</td>
+					<td><span class="pass">성공</span></td>
+					<td class="textLeft">금일 10시30분에 업무 회의는 어디서부터..</td><!--글자수 제한_두줄 이하-->
+				</tr>
+				<tr>
+					<td>010-3233-4455</td>
+					<td>2010.12.07<br />14:24:03</td>
+					<td><span class="fail">실패</span></td>
+					<td class="textLeft">금일 10시30분에 업무 회의..</td>
+				</tr>
+				<tr>
+					<td>김포탈</td>
+					<td>2010.12.07<br />14:24:03</td>
+					<td><span class="pass">성공</span></td>
+					<td class="textLeft">금일 10시30분에 업무 회의..</td>
+				</tr>
+				<tr>
+					<td>김포탈</td>
+					<td>2010.12.07<br />14:24:03</td>
+					<td><span class="pass">성공</span></td>
+					<td class="textLeft">금일 10시30분에 업무 회의..</td>
+				</tr>
+				<tr>
+					<td>010-3233-4455</td>
+					<td>2010.12.07<br />14:24:03</td>
+					<td><span class="fail">실패</span></td>
+					<td class="textLeft">금일 10시30분에 업무 회의..</td>
+				</tr>
+				<tr>
+					<td>김포탈</td>
+					<td>2010.12.07<br />14:24:03</td>
+					<td><span class="pass">성공</span></td>
+					<td class="textLeft">금일 10시30분에 업무 회의..</td>
+				</tr>
+				<tr>
+					<td>김포탈</td>
+					<td>2010.12.07<br />14:24:03</td>
+					<td><span class="pass">성공</span></td>
+					<td class="textLeft">금일 10시30분에 업무 회의..</td>
+				</tr>
+				<tr>
+					<td>김포탈</td>
+					<td>2010.12.07<br />14:24:03</td>
+					<td><span class="pass">성공</span></td>
+					<td class="textLeft">금일 10시30분에 업무 회의..</td>
+				</tr>
+				<tr>
+					<td>김포탈</td>
+					<td>2010.12.07<br />14:24:03</td>
+					<td><span class="pass">성공</span></td>
+					<td class="textLeft">금일 10시30분에 업무 회의..</td>
+				</tr>	
+				<tr>
+					<td class="tdLast">김포탈</td>
+					<td class="tdLast">2010.12.07<br />14:24:03</td>
+					<td class="tdLast"><span class="pass">성공</span></td>
+					<td class="tdLast textLeft">금일 10시30분에 업무 회의..</td>
+				</tr>																																					
+			</tbody>
+		</table>
+		<!--Page Numbur Start-->
+		<div class="pageNum">			
+			<ul>
+				<li><a class="btn_page_first" href="#a" onclick="doSomething(); return false;"><span>첫페이지</span></a></li>
+				<li><a class="btn_page_pre" href="#a" onclick="doSomething(); return false;"><span>이전페이지</span></a></li>
+				<li><span class="liFirst"><a href="#a" onclick="doSomething(); return false;">1</a></span></li>
+				<li><span>2</span></li>
+				<li><span><a href="#a" onclick="doSomething(); return false;">3</a></span></li>
+				<li><span><a href="#a" onclick="doSomething(); return false;">4</a></span></li>
+				<li><span class="liLast"><a href="#a" onclick="doSomething(); return false;">5</a></span></li>
+				<li><a class="btn_page_next" href="#a" onclick="doSomething(); return false;"><span>다음페이지</span></a></li>
+				<li><a class="btn_page_last" href="#a" onclick="doSomething(); return false;"><span>마지막페이지</span></a></li>
+			</ul>			
+		</div>
+		<!--//Page Numbur End-->				
+	</div>
+	<!--//sms_sendinglist End-->
+
+	<!--sms_r Start-->
+	<div class="sms_r">
+
+		<!--tab Start-->		
+		<div id="divTab_sms" class="iKEP_tab_sms">
+			<ul>
+				<li><a href="#tabs-1">이모티콘</a></li>
+				<li><a href="#tabs-2">문자서식</a></li>
+				<li><a href="#tabs-3">최근발송</a></li>
+			</ul>
+
+			<!--tabs-1 Start-->		
+			<div id="tabs-1">
+				<h2 class="none">이모티콘</h2>
+				<div class="smsbox_1">
+					<ul>
+						<li>★</li>
+						<li>☆</li>
+						<li>☎</li>
+						<li>☏</li>
+						<li>☜</li>
+						<li>☞</li>
+						<li>※</li>
+						<li>♥</li>
+						<li>♡</li>
+						<li>♣</li>
+						<li>♠</li>
+						<li>♤</li>
+						<li>♧</li>
+						<li>♨</li>
+						<li>ㆀ</li>
+						<li>♩</li>
+						<li>♪</li>
+						<li>♬</li>
+						<li>■</li>
+						<li>□</li>
+						<li>▣</li>
+						<li>▤</li>
+						<li>▦</li>
+						<li>▨</li>
+						<li>▩</li>
+						<li>▒</li>
+						<li>▲</li>
+						<li>△</li>
+						<li>▶</li>
+						<li>▷</li>
+						<li>▼</li>
+						<li>▽</li>
+						<li>◀</li>
+						<li>◁</li>
+						<li>◆</li>
+						<li>◇</li>
+						<li>◈</li>
+						<li>●</li>
+						<li>○</li>
+						<li>◎</li>
+						<li>⊙</li>
+						<li>◐</li>
+						<li>◑</li>
+						<li>←</li>
+						<li>↑</li>
+						<li>→</li>
+						<li>↓</li>
+						<li>⇒</li>
+						<li>§</li>
+						<li>Ø</li>
+						<li>∀</li>
+						<li>∃</li>
+						<li>∏</li>
+						<li>∞</li>
+						<li>∧</li>
+						<li>∪</li>
+						<li>∬</li>
+						<li>∴</li>
+						<li>∽</li>
+						<li>≠</li>
+						<li>⊃</li>
+						<li>￠</li>
+						<li>￥</li>
+					</ul>                                                          
+				</div>
+
+				<div class="smsbox_t">
+					<ul>
+						<li class="selected"><a href="#a">웃음</a></li>
+						<li><a href="#a">사랑</a></li>
+						<li><a href="#a">놀람</a></li>
+						<li><a href="#a">슬픔</a></li>
+						<li><a href="#a">피곤</a></li>
+						<li><a href="#a">화남</a></li>
+						<li><a href="#a">기타</a></li>
+					</ul>
+				</div>
+				<div class="smsbox_2">
+					<div class="">
+						<h3 class="none">웃음</h3>
+						<ul>
+							<li>n.n</li>
+							<li>^Δ^</li>
+							<li>^v^</li>
+							<li>^.^</li>
+							<li>^_^</li>
+							<li>^0^</li>
+							<li>^L^</li>
+							<li>⌒⌒</li>
+							<li>^.~</li>
+							<li>^ε^</li>
+							<li>^-^b</li>
+							<li>*^^*</li>
+							<li>^▽^</li>
+							<li>=^.^=</li>
+							<li>(^^)γ</li>
+							<li>&lt;^O^&gt;</li>
+							<li>(*^-^)</li>
+							<li>(*^o^*)</li>
+							<li>^o^~~♬</li>
+							<li>☞^.^☜</li>
+							<li>o(^-^)o S(^.^)b</li>
+							<li>(￣∇￣)</li>
+							<li>♬(^0^)~♪</li>
+							<li>s(￣▽￣)/</li>
+						</ul>
+					</div>
+					<div class="none">
+						<h3 class="none">사랑</h3>
+						<ul>
+							<li>♥.♥</li>
+							<li>♡.♡</li>
+							<li>*♥o♥*</li>
+							<li>(~.^)s</li>
+							<li>☞♡☜</li>
+							<li>γ^ε^γ</li>
+							<li>(♡.♡)</li>
+							<li>(*`0`*)</li>
+							<li>(⌒ε⌒*)</li>
+							<li>(*^}{^*)</li>
+							<li>づ^0^)づ</li>
+							<li>ⓛⓞⓥⓔ</li>
+							<li>☜(^^*)☞</li>
+							<li>(*^3(^^*)</li>
+							<li>(^*^)kiss</li>
+							<li>(つ＾з＾)つ</li>
+							<li>(*⌒.^)(^ε⌒*)</li>
+							<li>(*^-^)♡(^o^*)</li>
+						</ul>
+					</div>                              
+					<div class="none">
+						<h3 class="none">놀람</h3>
+						<ul>
+							<li>?o?</li>
+							<li>O_O</li>
+							<li>@_@</li>
+							<li>!.!</li>
+							<li>⊙⊙</li>
+							<li>(o_o)</li>
+							<li>(@.@)</li>
+							<li>('o')</li>
+							<li>★.★</li>
+							<li>☆_☆</li>
+							<li>⊙.⊙</li>
+							<li>☆_☆</li>
+							<li>☞_☜</li>
+							<li>(o)(o)</li>
+							<li>(=_=;)</li>
+							<li>⊙⊙ㆀ</li>
+							<li>ㆀ-_-ㆀ</li>
+							<li>ご,.ごㆀ</li>
+							<li>ㅡ..ㅡㆀ</li>
+						</ul>
+					</div> 
+					<div class="none">
+						<h3 class="none">슬픔</h3>
+						<ul>
+							<li>T.T</li>
+							<li>;_;</li>
+							<li>TmT</li>
+							<li>Θ_Θ</li>
+							<li>ㅠ.ㅠ</li>
+							<li>ㅜ.ㅜ</li>
+							<li>ㅡ.ㅜ</li>
+							<li>(v.v)</li>
+							<li>(∏.∏)</li>
+							<li>ご.ご</li>
+							<li>(X_X)</li>
+							<li>(>_<)</li>
+							<li>+_+;;</li>
+							<li>(づ_T)</li>
+							<li>(づ_ど)</li>
+							<li>o(T^T)o</li>
+							<li>(ㅜ.ㅜ)</li>
+							<li>(ㅠ.ㅠ)</li>
+							<li>(♨_♨)</li>
+							<li>(T(oo)T)</li>
+						</ul>
+					</div>	
+					<div class="none">
+						<h3 class="none">피곤</h3>
+						<ul>
+							<li>=.=</li>
+							<li>θ.θ</li>
+							<li>@L@</li>
+							<li>(-0-)</li>
+							<li>(@.@)</li>
+							<li>(Z_Z)</li>
+							<li>∋.∈</li>
+							<li>⊇.⊆</li>
+							<li>(u_u)</li>
+							<li>(g_g)</li>
+							<li>(づ_-)</li>
+							<li>(-_ど)</li>
+							<li>(=.&amp;=)</li>
+							<li>(-.-)Zzz..</li>
+							<li>[(￣.￣)]zZ</li>
+						</ul>
+					</div>	
+					<div class="none">
+						<h3 class="none">화남</h3>
+						<ul>
+							<li>:-<</li>
+							<li>ㅡㅡ+</li>
+							<li>(`o')</li>
+							<li>(#_-)</li>
+							<li>ㅡㅡ^</li>
+							<li>(@_@)</li>
+							<li>☞_☜</li>
+							<li>s(￣へ￣ )z</li>
+							<li>(-.￥)</li>
+							<li>(｀へ´)</li>
+							<li>o(-"-)o</li>
+							<li>(-_-メ)</li>
+							<li>(-"-メ)</li>
+							<li>(↗∇↖)</li>
+							<li>(-(oo)-)</li>
+							<li>(-.-")凸</li>
+							<li>(*｀Д´)/</li>
+							<li>(/ㅡ_-)/~</li>
+							<li>＼(*｀Д´)/</li>
+							<li>(-ヘㅡメ)</li>
+						</ul>
+					</div>						
+					<div class="none">
+						<h3 class="none">기타</h3>
+						<ul>
+							<li>(-_-)</li>
+							<li>($_$)</li>
+							<li>( ㅅ )</li>
+							<li>('⌒')</li>
+							<li>ご,,ご</li>
+							<li>o(>_<)o</li>
+							<li>('º')/)/)</li>
+							<li>( ㅅ)=333</li>
+							<li>∠(- o -)</li>
+							<li>☞(>.<)☜</li>
+							<li><(>.<ㆀ)></li>
+							<li>┌(ㆀ_ _)┐</li>
+							<li>s(ごoご)グ</li>
+							<li>(^(**)^))~</li>
+							<li>(. .)|/)/)</li>
+							<li>('' )( '')</li>
+							<li>(=`.`=)@@</li>
+						</ul>                            
+					</div>					                                                                 							                                 
+				</div>
+			</div>
+			<!--//tabs-1 End-->	
+			
+			<!--tabs-2 Start-->	
+			<div id="tabs-2">
+				<h2 class="none">문자서식</h2>
+				<div class="smssample_t">
+					<ul>
+						<li class="selected"><a href="#a">인사/축하</a></li>
+						<li><a href="#a">생일</a></li>
+						<li><a href="#a">감동의 시</a></li>
+					</ul>
+				</div>	
+				
+				<div class="">
+					<h3 class="none">인사/축하</h3>
+					<div class="smssample">
+						<div class="sample_set">
+							행운이 가득한♬<br />
+							하루 되세요<br />
+							△▷ ▲▶ △▷<br />
+							◁▽ ◀▼ ◁▽<br />
+							ノ˚ ノ。 ノ 。<br />
+						</div>
+						<div>행복한 하루</div>
+					</div>
+					<div class="smssample">
+						<div class="sample_set">
+							ㆀ(.  .)이거먹고<br />
+							┌━∥┐ㆀ활기찬<br />
+							┃  ∥┃오늘하루<br />
+							┃보약┃시작하세<br />
+							└━━┘요(^O^)/<br />
+						</div>
+						<div>활기찬 하루</div>						
+					</div>
+					<div class="smssample">
+						<div class="sample_set">
+							  q∩  ∩p ☆<br />
+							 ☆(*└─┘*)<br />
+							하루1분의웃음이<br />
+							그날을행복하게만<br />
+							든대요~스마일♬<br />
+						</div>
+						<div>웃는 하루</div>
+					</div>
+					<div class="smssample">
+						<div class="sample_set">
+							s▶◀s  ///＼＼<br />
+							(*^.^)♥(^.^*)<br />
+							★0-0★ ★0-0-★<br />
+							★ 결혼기념일<br />
+							 축하드립니다★<br />
+						</div>
+						<div>결혼기념일</div>
+					</div>
+					<div class="smssample">
+						<div class="sample_set">
+							   ┹  ＊*＊<br />
+							＼(^∇^)(^∇^)/<br />
+							여러분∽♡<br />
+							♀Zl들 결혼ㅎH여<br />
+							축ㅎrㅎH주서l요<br />
+						</div>
+						<div>결혼기념</div>						
+					</div>
+					<div class="smssample">
+						<div class="sample_set">
+							 /)/)˚。 ☆<br />
+							( . .)☆졸업。☆<br />
+							( づ♡축하해。<br />
+							새로운세상으로<br />
+							힘차게출발하자!<br />
+						</div>
+						<div>졸업축하</div>
+					</div>	
+				</div>
+
+				<div class="none">
+					<h3 class="none">생일</h3>
+					<div class="smssample">
+						<div class="sample_set">
+							:..*..★*..*..:<br />
+							ㅅH ○1 ㅊ ㅋr<br />
+							.○.*ㄹ.∏.*.*<br />
+							*˚태어나줘서˚<br />
+							   고마워요<br />
+						</div>
+						<div>생일축하</div>
+					</div>
+					<div class="smssample">
+						<div class="sample_set">
+							 /)/)    iiii<br />   
+							( . .) ┏♡♡┓<br /> 
+							( づ♡┏☆""☆┓<br />
+							♡~생일축하해~♡<br />
+							사랑하는당신이여<br />
+						</div>
+						<div>생일축하</div>						
+					</div>
+					<div class="smssample">
+						<div class="sample_set">
+							 +^생일축하해^+ <br />
+							 ())        (() <br />
+							 (.")  **  (".) <br />
+							 ( QQ__ll__QQ ) <br />
+							날선물할께^^ㅋ<br />
+						</div>
+						<div>날선물할께</div>
+					</div>
+					<div class="smssample">
+						<div class="sample_set">
+							:..*..★*..*..:<br />
+							ㅅH ○1 ㅊ ㅋr<br />
+							.○.*ㄹ.∏.*.*<br />
+							*˚태어나줘서˚<br />
+							   고마워요<br />
+						</div>
+						<div>생일축하</div>
+					</div>
+					<div class="smssample">
+						<div class="sample_set">
+							 /)/)    iiii<br />   
+							( . .) ┏♡♡┓<br /> 
+							( づ♡┏☆""☆┓<br />
+							♡~생일축하해~♡<br />
+							사랑하는당신이여<br />
+						</div>
+						<div>생일축하</div>						
+					</div>
+					<div class="smssample">
+						<div class="sample_set">
+							 +^생일축하해^+ <br />
+							 ())        (() <br />
+							 (.")  **  (".) <br />
+							 ( QQ__ll__QQ ) <br />
+							날선물할께^^ㅋ<br />
+						</div>
+						<div>날선물할께</div>
+					</div>						
+				</div>	
+				
+				<div class="none">
+					<h3 class="none">감동의 시</h3>
+					<div class="smssample">
+						<div class="sample_set">
+							.:*:이른새벽:*:.<br />   
+							당신에게 문자를<br />   
+							보냅니다☆.:': <br />    
+							꿈속에서도당신이<br />   
+							그립기때문입니다<br />   
+						</div>
+						<div>그리움</div>
+					</div>
+					<div class="smssample">
+						<div class="sample_set">
+							햇살에반하듯..당<br />
+							신에게반하고..음<br />
+							악에취하듯..당신<br />
+							에게취합니다음악<br />
+							햇살사라질때까지<br />
+						</div>
+						<div>영원히 사랑해</div>
+					</div>
+					<div class="smssample">
+						<div class="sample_set">
+							*여우에게길들여<br />
+							진어린왕자처럼**<br />
+							나도누군가에게길<br />
+							들여지고싶어**<br />
+							그게너였으면.*<br />
+						</div>
+						<div>길들여짐</div>
+					</div>
+					<div class="smssample">
+						<div class="sample_set">
+							.:*:이른새벽:*:.<br />   
+							당신에게 문자를<br />   
+							보냅니다☆.:': <br />    
+							꿈속에서도당신이<br />   
+							그립기때문입니다<br />   
+						</div>
+						<div>그리움</div>
+					</div>
+					<div class="smssample">
+						<div class="sample_set">
+							햇살에반하듯..당<br />
+							신에게반하고..음<br />
+							악에취하듯..당신<br />
+							에게취합니다음악<br />
+							햇살사라질때까지<br />
+						</div>
+						<div>영원히 사랑해</div>
+					</div>
+					<div class="smssample">
+						<div class="sample_set">
+							*여우에게길들여<br />
+							진어린왕자처럼**<br />
+							나도누군가에게길<br />
+							들여지고싶어**<br />
+							그게너였으면.*<br />
+						</div>
+						<div>길들여짐</div>
+					</div>					
+				</div>											
+																		
+			</div>
+			<!--//tabs-2 End-->	
+			
+			<!--tabs-3 Start-->	
+			<div id="tabs-3">
+				<h2 class="none">최근발송</h2>
+				<div class="smssample_t_2">최근발송내역</div>	
+				<div class="smssample">
+					<div class="sample_set">
+						디자인관련<br />
+						회의가 10:30분<br />
+						에 있습니다.<br />
+						참석바랍니다.<br />
+					</div>
+					<div>2010.02.28</div>
+				</div>
+				<div class="smssample">
+					<div class="sample_set">
+						- 모임공지 -<br />
+						2월15일 6시<br />
+						장소: 어디에서<br />
+						참석바랍니다.<br />
+					</div>
+					<div>2010.02.26</div>						
+				</div>
+				<div class="smssample">
+					<div class="sample_set">
+						♡ 결 혼 식 ♡ <br />
+						일시:10/10(일)<br />
+						시간:오전11시<br /> 
+						장소:강남예식장<br />
+					</div>
+					<div>2010.02.18</div>
+				</div>
+				<div class="smssample">
+					<div class="sample_set">
+						_l*l_  _(*)_<br />
+						@(^.^)@*(^-^)*<br />
+						 ▶*◀  /&&&＼ <br />
+						 xxx♡♥♡xxx<br />
+						결혼축하해주세요<br />
+					</div>
+					<div>2010.02.12</div>
+				</div>
+				<div class="smssample">
+					<div class="sample_set">
+							★부고★<br />
+						홍길동사원 <br />
+						모친상 LG병원<br /> 
+						장례식장<br />
+						발인 2월 30일<br />
+					</div>
+					<div>2010.02.10</div>						
+				</div>
+				<div class="smssample">
+					<div class="sample_set">
+						♬당신은사랑받기<br />
+						위해태어난사람~ <br />
+						당신에삶속에서<br />
+						그사랑받고있지요<br />
+						♪생일축하해♡<br />
+					</div>
+					<div>2010.02.01</div>
+				</div>				
+			</div>
+			<!--//tabs-3 End-->	
+			
+		</div>		
+		<!--//tab End-->
+		
+		<div class="smslatest">
+			<h2>최근내역 <span class="smslatest_num">(당월 사용건수 <span>3/100</span>건)</span></h2>
+			<div class="smsbox_3">
+				<table summary="이름, 휴대폰번호 최근내역">
+					<thead>
+						<tr>
+							<th scope="col">번호</th>
+							<th scope="col">이름</th>
+							<th scope="col">휴대폰번호</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>01</td>
+							<td>홍길동</td>
+							<td>010-3423-1122 <img src="../../images/icon/ic_s_plus.gif" alt="" /></td>
+						</tr>
+						<tr>
+							<td>02</td>
+							<td>김연아</td>
+							<td>010-3423-1122 <img src="../../images/icon/ic_s_minus.gif" alt="" /></td>
+						</tr>
+						<tr>
+							<td>03</td>
+							<td>이연아</td>
+							<td>010-1122-1122 <img src="../../images/icon/ic_s_minus.gif" alt="" /></td>
+						</tr>
+						<tr>
+							<td class="noborder">04</td>
+							<td class="noborder">김길동</td>
+							<td class="noborder">010-3423-1122 <img src="../../images/icon/ic_s_minus.gif" alt="" /></td>
+						</tr>																		
+					</tbody>
+				</table>
+			</div>			
+		</div>
+		
+	</div>
+	<!--//sms_r End-->
+	
+	<div class="clear"></div>
+</div>
+<!--//sms End-->
+</body>
+</html>

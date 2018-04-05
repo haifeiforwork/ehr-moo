@@ -1,0 +1,136 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Pie Chart</title>
+<link rel="stylesheet" type="text/css" href="../../css/theme01/jquery_ui_custom.css" />
+<link rel="stylesheet" type="text/css" href="../../css/common.css" />
+<link rel="stylesheet" type="text/css" href="../../css/theme01/theme.css" />
+<link rel="stylesheet" type="text/css" href="../../css/plot_chart/jquery.jqplot.css" />
+<script type="text/javascript" src="../../js/jquery/jquery-1.6.2.min.js"></script>
+<script type="text/javascript" src="../../js/jquery/jquery-ui-1.8.13.min.without.datepicker.js"></script>
+<script type="text/javascript" src="../../js/plot_chart/jquery.jqplot.min.js"></script>
+<script type="text/javascript" src="../../js/plot_chart/excanvas.min.js"></script>
+<script type="text/javascript" src="../../js/plot_chart/jqplot.pieRenderer.min.js"></script>
+<script type="text/javascript" src="../../js/langResource/ko.js"></script>
+<script type="text/javascript" src="../../js/common.pack.js"></script>
+
+  
+ <script type="text/javascript">
+    (function($){
+        $(document).ready(function () {
+        	var s1 = [['Sony',7], ['Samsumg',14], ['LG',18], ['Vizio',8], ['Insignia', 4]];
+            
+            var plot1 = $.jqplot('chart1', [s1], {
+                grid: {
+                    drawBorder: false, 
+                    drawGridlines: false,
+                    background: '#ffffff',
+                    shadow:false
+                },
+                seriesDefaults:{
+                    renderer:$.jqplot.PieRenderer,
+                    rendererOptions: {
+                        showDataLabels: true
+                    }
+                },
+                legend: {
+                    show: true,
+                    rendererOptions: {
+                        numberRows: 1
+                    },
+                    location: 's'
+                }
+            }); 
+            
+            var plot2 = $.jqplot('chart2', [s1], {
+                grid: {
+                    drawBorder: true, 
+                    drawGridlines: false,
+                    background: '#ffffff',
+                    shadow:true
+                },
+                title:'Poll Title',
+                seriesDefaults:{
+                    renderer:$.jqplot.PieRenderer,
+                    rendererOptions: {
+                        sliceMargin:4
+                    }
+                },
+                legend: {
+                    show: true,
+                    location: 'e'
+                }
+            }); 
+            
+            var plot3 = $.jqplot('chart3', [s1], {
+                grid: {
+                    drawBorder: true, 
+                    drawGridlines: false,
+                    background: '#ffffff',
+                    shadow:true
+                },                
+                seriesDefaults:{
+                    renderer:$.jqplot.PieRenderer,
+                    shadow:false,
+                    rendererOptions: {                        
+                        sliceMargin:3
+                    }
+                },
+                legend: {
+                    show: true,
+                    location: 'e',
+                    placement: 'outside'
+                }
+            }); 
+            
+            var s2 = [['LG',30], ['Sony',5], ['Samsumg',6] ];
+            
+            var plot4 = $.jqplot('chart4', [s2], {
+                grid: {
+                    drawBorder: true, 
+                    drawGridlines: false,
+                    background: '#ffffff',
+                    shadow:true
+                },                
+                seriesDefaults:{
+                    renderer:$.jqplot.PieRenderer,                   
+                    shadow:false,
+                    rendererOptions: {
+                    	showDataLabels: true,
+                        sliceMargin:5,
+                        startAngle: -90
+                    }
+                },
+                legend: {
+                    show: true,
+                    rendererOptions: {
+                        numberRows: 1
+                    },
+                    location: 's'
+                }
+            }); 
+            
+        });
+    })(jQuery);
+</script>
+
+</head>
+<body>
+<div style="width:60%;font-weight:bold;font-size:14px;padding-left:10px;margin-top:10px;"><span>예제1</span></div>
+<div id="chart1" style="margin-top:20px; margin-left:20px; width:300px; height:300px;"></div>
+<hr size="2" width="70%" align="left" color="#777777" style="display:block;">
+<br/>
+<div style="width:60%;font-weight:bold;font-size:14px;padding-left:10px;margin-top:10px;"><span>예제2</span></div>
+<div id="chart2" style="margin-top:20px; margin-left:20px; width:300px; height:300px;"></div>
+<hr size="2" width="70%" align="left" color="#777777" style="display:block;">
+<br/>
+<div style="width:60%;font-weight:bold;font-size:14px;padding-left:10px;margin-top:10px;"><span>예제3</span></div>
+<div id="chart3" style="margin-top:20px; margin-left:20px; width:200px; height:200px;"></div>
+<hr size="2" width="70%" align="left" color="#777777" style="display:block;">
+<br/>
+<div style="width:60%;font-weight:bold;font-size:14px;padding-left:10px;margin-top:10px;"><span>예제4</span></div>
+<div id="chart4" style="margin-top:20px; margin-left:20px; width:300px; height:300px;"></div>
+<hr size="2" width="70%" align="left" color="#777777" style="display:block;">
+</body>
+</html>

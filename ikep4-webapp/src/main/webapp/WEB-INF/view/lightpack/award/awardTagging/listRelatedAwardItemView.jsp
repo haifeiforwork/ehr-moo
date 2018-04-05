@@ -1,0 +1,64 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ include file="/base/common/taglibs.jsp"%>
+<c:set var="preDetail"  value="ui.lightpack.award.awardTagging.listRelatedAwardView.detail" /> 
+<%-- 메시지 관련 Prefix 선언 Start --%>  
+<c:set var="preList"  value="ui.lightpack.award.awardTagging.listAwardTagging" /> 
+<c:set var="preSearch"  value="ui.ikep4.common.searchCondition" /> 
+ <%-- 메시지 관련 Prefix 선언 End --%>   
+<c:if test="${not searchResult.emptyRecord}">
+<div class="blockRelated_t"><ikep4j:message pre='${preList}' key='title'/><c:if test="${searchCondition.recordCount gt 0}"><span class="comment_num"> (${searchCondition.recordCount})</span></c:if></div>
+<ul>
+	<c:forEach var="relatedAwardItem" varStatus="varStatus" items="${searchResult.entity}">
+	<li >
+		<span>  
+			<a class="${varStatus.first ? 'firstRelatedItem' : ''}" href="<c:url value='/lightpack/award/awardItem/readAwardItemView.do?awardId=${relatedAwardItem.awardId}&amp;itemId=${relatedAwardItem.itemId}&amp;searchConditionString=${searchConditionString}&amp;popupYn=${popupYn}'/>">${relatedAwardItem.title}</a>
+			<c:if test="${relatedAwardItem.linereplyCount > 0}"><span class="colorPoint">(${relatedAwardItem.linereplyCount})</span></c:if>	
+		</span>
+		<span class="summaryViewInfo"> 
+			<span class="summaryViewInfo_name"> 
+				<c:set var="user"   value="${sessionScope['ikep.user']}" />
+				<c:set var="portal" value="${sessionScope['ikep.portal']}" />
+				<c:choose>
+					<c:when test="${relatedAwardItem.award.anonymous eq 1}">
+						<span><ikep4j:message pre='${preDetail}' key='anonymous'/></span>
+					</c:when>  
+					<c:otherwise>
+						<c:choose>
+							<c:when test="${user.localeCode == portal.defaultLocaleCode}"> 
+								<a href="#a" onclick="javascript:viewPopUpProfile('${relatedAwardItem.registerId}')">
+								${relatedAwardItem.user.userName} 
+								${relatedAwardItem.user.jobTitleName}
+								</a>
+								<img src="<c:url value='/base/images/theme/theme01/basic/bar_pageNum.gif'/>" alt="" />
+								${relatedAwardItem.user.teamName}
+							</c:when>
+							<c:otherwise> 
+								<a href="#a" onclick="javascript:viewPopUpProfile('${relatedAwardItem.registerId}')">
+								${relatedAwardItem.user.userEnglishName} 
+								${relatedAwardItem.user.jobTitleEnglishName}
+								</a>
+								<img src="<c:url value='/base/images/theme/theme01/basic/bar_pageNum.gif'/>" alt="" />
+								${relatedAwardItem.user.teamEnglishName}  
+							</c:otherwise>
+						</c:choose>		
+					</c:otherwise> 
+				</c:choose> 
+			</span>   
+			<img src="<c:url value='/base/images/theme/theme01/basic/bar_pageNum.gif'/>" alt="" />
+			<span><ikep4j:timezone date="${relatedAwardItem.registDate}" pattern="yyyy.MM.dd HH:mm:ss" /></span> 
+			<img src="<c:url value='/base/images/theme/theme01/basic/bar_pageNum.gif'/>" alt="" />
+			<span><ikep4j:message pre='${preList}' key='hitCount' /> <strong>${relatedAwardItem.hitCount}</strong></span> 
+			<img src="<c:url value='/base/images/theme/theme01/basic/bar_pageNum.gif'/>" alt="" />
+			<span><ikep4j:message pre='${preList}' key='recommendCount' /> <strong>${relatedAwardItem.recommendCount}</strong></span> 
+		</span>
+	</li>		
+	</c:forEach> 							
+</ul>	
+<form id="relatedAwardItemSearchForm" method="post" onsubmit="return false;"> 
+	<spring:bind path="searchCondition.pageIndex">
+		<ikep4j:pagination searchFormId="relatedAwardItemSearchForm" ajaxEventFunctionName="loadRelatedAwardItemList" pageIndexInput="${status.expression}" searchCondition="${searchCondition}" displayYn="true"/>
+		<input name="${status.expression}" type="hidden" value="${status.value}" title="<ikep4j:message pre='${preSearch}' key='${status.expression}'/>" />
+	</spring:bind> 
+	<!--//Page Numbur End-->  
+</form>	
+</c:if>				 

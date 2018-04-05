@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE log4j:configuration PUBLIC "-//LOGGER" "log4j.dtd">
+
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/"> 
+	<!-- Appenders -->
+	<appender name="CONSOLE" class="org.apache.log4j.ConsoleAppender">
+		<param name="Threshold" value="debug" />
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="-[%d{HH:mm:ss.SSS}] %-5p %C{1}.%M(%F:%L) - %m%n" />
+		</layout>
+	</appender>
+	
+	<appender name="FILE" class="org.apache.log4j.RollingFileAppender">
+		<param name="Threshold" value="error" />
+        <param name="append" value="true"/>  
+        <param name="file" value="/ikep4/log/ikep4-batch.log"/>
+        <param name="maxFileSize" value="10MB"/>
+        <param name="maxBackupIndex" value="10"/>
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern"
+                value="%d{MMM dd hh:mm:ss aa} %p - %C{1}.%M(%L) |
+                          %m%n"/>
+       </layout>
+    </appender> 
+    
+    <!-- 3rdparty Loggers --> 
+	<logger name="org.springframework.core">
+		<level value="info" />
+		<appender-ref ref="CONSOLE" />
+		<appender-ref ref="FILE" />
+	</logger>
+
+	<logger name="org.springframework.beans">
+		<level value="info" />
+		<appender-ref ref="CONSOLE" />
+		<appender-ref ref="FILE" />
+	</logger>
+
+	<logger name="com.lgcns.ikep4.framework.support" additivity="false">
+		<level value="OFF" />
+		<appender-ref ref="CONSOLE" />
+		<appender-ref ref="FILE" />
+	</logger>
+	
+	<logger name="org.springframework.context">
+		<level value="OFF" />
+		<appender-ref ref="CONSOLE" />
+		<appender-ref ref="FILE" />
+	</logger>
+
+	<logger name="org.springframework.web">
+		<level value="info" />
+		<appender-ref ref="CONSOLE" />
+		<appender-ref ref="FILE" />
+	</logger>
+
+	<!-- log4jdbc logging -->
+	<logger name="jdbc.sqlonly" additivity="false">
+		<level value="fatal" />
+		<appender-ref ref="CONSOLE" />
+		<appender-ref ref="FILE" />
+	</logger> 
+	<logger name="jdbc.sqltiming" additivity="false">
+		<level value="info" />
+		<appender-ref ref="CONSOLE" />
+		<appender-ref ref="FILE" />
+	</logger>  
+	<logger name="jdbc.audit" additivity="false">
+		<level value="fatal" />
+		<appender-ref ref="CONSOLE" />
+		<appender-ref ref="FILE" />
+	</logger> 
+	<logger name="jdbc.resultset" additivity="false">
+		<level value="fatal" />
+		<appender-ref ref="CONSOLE" />
+		<appender-ref ref="FILE" />
+	</logger> 
+	<logger name="jdbc.connection" additivity="false">
+		<level value="fatal" />
+		<appender-ref ref="CONSOLE" />
+		<appender-ref ref="FILE" />
+	</logger> 
+	<logger name="log4jdbc.debug" additivity="false">
+		<level value="fatal" />
+		<appender-ref ref="CONSOLE" />
+		<appender-ref ref="FILE" />
+	</logger>
+	
+	<!-- ikep4 logging -->
+	<logger name="com.lgcns.ikep4">
+		<level value="debug" />
+		<appender-ref ref="CONSOLE" />
+		<appender-ref ref="FILE" />
+	</logger>
+    
+</log4j:configuration>

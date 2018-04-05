@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="collpack.knowledgehub.dao.KnowledgeMapList">
+	<typeAlias alias="KnowledgeMapListPK" type="com.lgcns.ikep4.collpack.knowledgehub.model.KnowledgeMapListPK"/>
+	<typeAlias alias="KnowledgeMapList" type="com.lgcns.ikep4.collpack.knowledgehub.model.KnowledgeMapList"/>
+	<typeAlias alias="KnowledgeMapBlockPageCondition" type="com.lgcns.ikep4.collpack.knowledgehub.search.KnowledgeMapBlockPageCondition"/>
+
+	<resultMap class="KnowledgeMapList" id="result">
+		<result column="ITEM_ID" property="itemId" jdbcType="VARCHAR" javaType="String"/>
+		<result column="ITEM_TYPE" property="itemType" jdbcType="VARCHAR" javaType="String"/>
+		<result column="TAG_ITEM_NAME" property="tagItemName" jdbcType="VARCHAR" javaType="String"/>
+		<result column="TAG_ITEM_CONTENTS" property="tagItemContents" jdbcType="VARCHAR" javaType="String"/>
+		<result column="TAG_ITEM_URL" property="tagItemUrl" jdbcType="VARCHAR" javaType="String"/>
+		<result column="REGISTER_ID" property="registerId" jdbcType="VARCHAR" javaType="String"/>
+		<result column="REGIST_DATE" property="registDate" jdbcType="DATE" javaType="Date"/>
+		<result column="USER_NAME" property="userName" jdbcType="VARCHAR" javaType="String"/>
+		<result column="USER_ENGLISH_NAME" property="userEnglishName" jdbcType="VARCHAR" javaType="String"/>
+		<result column="TEAM_NAME" property="teamName" jdbcType="VARCHAR" javaType="String"/>
+		<result column="TEAM_ENGLISH_NAME" property="teamEnglishName" jdbcType="VARCHAR" javaType="String"/>
+		<result column="JOB_TITLE_NAME" property="jobTitleName" jdbcType="VARCHAR" javaType="String"/>
+		<result column="JOB_TITLE_ENGLISH_NAME" property="jobTitleEnglishName" jdbcType="VARCHAR" javaType="String"/>
+		<result column="ITEM_TYPE_DISPLAY_NAME" property="itemTypeDisplayName" jdbcType="VARCHAR" javaType="String"/>
+		<result column="RECORD_NUMBER" property="recordNumber" jdbcType="NUMBER" javaType="Integer"/>
+	</resultMap>
+
+<!-- 카테고리별 Knowledge 전체개수 반환 -->
+	<select id="countByCategoryId" parameterClass="String" resultClass="Integer">
+	<![CDATA[
+		SELECT /* [KnowledgeMapList_SqlMap.xml] collpack.knowledgehub.dao.KnowledgeMapList.countByCategoryId */
+		       COUNT(ITEM_ID) COUNT_ITEM_ID
+		  FROM (
+		        SELECT DISTINCT KNOW.ITEM_ID, KNOW.ITEM_TYPE
+		          FROM IKEP4_KM_KNOWLEDGE KNOW
+		          JOIN IKEP4_TG_ITEM TAG
+		            ON KNOW.ITEM_ID = TAG.TAG_ITEM_ID
+		           AND KNOW.ITEM_TYPE = TAG.TAG_ITEM_TYPE
+		          JOIN IKEP4_EV_USER USR
+/*
+		          JOIN (
+		                SELECT USR.USER_ID USER_ID
+		                  FROM IKEP4_EV_USER USR
+		                  JOIN IKEP4_EV_JOB_TITLE JOB
+		                 USING (JOB_TITLE_CODE)
+		               ) USR
+*/
+		            ON TAG.REGISTER_ID = USR.USER_ID
+		         WHERE KNOW.CATEGORY_ID = #categoryId#
+		            OR KNOW.CATEGORY_ID IN (
+		                                    SELECT CATEGORY_ID
+		                                      FROM IKEP4_KM_CATEGORY
+		                                     WHERE CATEGORY_PARENT_ID = #categoryId#
+		                              )
+		       )
+	]]>
+	</select>
+
+<!-- Category별 Knowledge 조회 (페이징) -->
+	<select id="listByCategoryIdPage" parameterClass="KnowledgeMapBlockPageCondition" resultMap="result">
+	<![CDATA[
+		/* [KnowledgeMapList_SqlMap.xml] collpack.knowledgehub.dao.KnowledgeMapList.listByCategoryIdPage */
+		WITH MAIN_BODY AS (
+		    SELECT KNOW.ITEM_ID
+		         , KNOW.ITEM_TYPE
+		         , TAG.TAG_ITEM_NAME
+		         , TAG.TAG_ITEM_CONTENTS
+		         , TAG.TAG_ITEM_URL
+		         , TAG.REGISTER_ID
+		         , TAG.REGIST_DATE
+		         , USR.USER_NAME USER_NAME
+		         , USR.USER_ENGLISH_NAME USER_ENGLISH_NAME
+		         , USR.TEAM_NAME TEAM_NAME
+		         , USR.TEAM_ENGLISH_NAME TEAM_ENGLISH_NAME
+		         , USR.JOB_TITLE_NAME JOB_TITLE_NAME
+		         , USR.JOB_TITLE_ENGLISH_NAME JOB_TITLE_ENGLISH_NAME
+		      FROM (
+		            SELECT DISTINCT ITEM_ID, ITEM_TYPE
+		              FROM IKEP4_KM_KNOWLEDGE
+		             WHERE CATEGORY_ID = #categoryId#
+		                OR CATEGORY_ID IN (
+		                                   SELECT CATEGORY_ID
+		                                     FROM IKEP4_KM_CATEGORY
+		                                    WHERE CATEGORY_PARENT_ID = #categoryId#
+		                                  )
+                   ) KNOW
+              JOIN IKEP4_TG_ITEM TAG
+		        ON KNOW.ITEM_ID = TAG.TAG_ITEM_ID
+		       AND KNOW.ITEM_TYPE = TAG.TAG_ITEM_TYPE
+		      JOIN (
+		            SELECT USR.USER_ID USER_ID
+		                 , USR.USER_NAME USER_NAME, USR.USER_ENGLISH_NAME USER_ENGLISH_NAME
+		                 , USR.TEAM_NAME TEAM_NAME, USR.TEAM_ENGLISH_NAME TEAM_ENGLISH_NAME
+		                 , JOB.JOB_TITLE_NAME JOB_TITLE_NAME, JOB.JOB_TITLE_ENGLISH_NAME JOB_TITLE_ENGLISH_NAME
+		              FROM IKEP4_EV_USER USR
+		              JOIN IKEP4_EV_JOB_TITLE JOB
+		             USING (JOB_TITLE_CODE)
+		           ) USR
+		        ON TAG.REGISTER_ID = USR.USER_ID
+		     ORDER BY TAG.REGIST_DATE DESC
+		)
+		SELECT ITEM_ID, ITEM_TYPE
+		     , TAG_ITEM_NAME, TAG_ITEM_CONTENTS, TAG_ITEM_URL, REGISTER_ID, REGIST_DATE
+		     , USER_NAME, USER_ENGLISH_NAME, TEAM_NAME, TEAM_ENGLISH_NAME, JOB_TITLE_NAME, JOB_TITLE_ENGLISH_NAME
+		     , RECORD_NUMBER
+		     , (SELECT DISPLAY_NAME
+		          FROM IKEP4_EV_ITEM_TYPE ITM
+		         WHERE ITM.ITEM_TYPE_CODE = ITEM_TYPE) ITEM_TYPE_DISPLAY_NAME
+		  FROM (
+		        SELECT ROWNUM RECORD_NUMBER, BODY.*
+		          FROM MAIN_BODY BODY
+		         WHERE ROWNUM <= #endOrder#
+		       )
+		 WHERE RECORD_NUMBER >= #startOrder#
+	]]>
+	</select>
+
+<!-- 전체 삭제 -->
+	<delete id="removeAll">
+	<![CDATA[
+		DELETE /* [KnowledgeMapList_SqlMap.xml] collpack.knowledgehub.dao.KnowledgeMapList.removeAll */
+		       IKEP4_KM_KNOWLEDGE
+	]]>
+	</delete>
+
+<!-- Category별 Knowledge 입력 (배치) -->
+	<insert id="batchGatherKnowledge" parameterClass="Map">
+		INSERT /* [KnowledgeMapList_SqlMap.xml] collpack.knowledgehub.dao.KnowledgeMapList.batchGatherKnowledge */
+		       INTO IKEP4_KM_KNOWLEDGE
+		     ( CATEGORY_ID, ITEM_ID, ITEM_TYPE, COLLECT_DATE )
+		SELECT DISTINCT CAT.CATEGORY_ID, TAG.ITEM_ID, #itemType#, SYSDATE
+		  FROM (
+		        SELECT PORTAL_ID
+		             , LNK.TAG_ITEM_ID ITEM_ID
+		             , DIC.TAG_NAME TAG_NAME
+		          FROM IKEP4_TG_LINK LNK
+		          JOIN IKEP4_TG_DICTIONARY DIC
+		         USING (TAG_ID, PORTAL_ID)
+		         WHERE LNK.TAG_ITEM_TYPE = #itemType#
+		       ) TAG
+		  JOIN (
+		        SELECT CAT.PORTAL_ID PORTAL_ID
+		             , CATEGORY_ID
+		             , TAG.TAG TAG_NAME
+		          FROM IKEP4_KM_CATEGORY CAT
+		          JOIN IKEP4_KM_TAGGING TAG
+		         USING (CATEGORY_ID)
+		       <dynamic prepend="WHERE ">
+		         <isEqual property="itemType" compareValue="SB">CAT.IS_BLOG = 1</isEqual>
+		         <isEqual property="itemType" compareValue="WS">CAT.IS_COLL = 1</isEqual>
+		         <isEqual property="itemType" compareValue="WM">CAT.IS_MANUAL = 1</isEqual>
+		         <isEqual property="itemType" compareValue="QA">CAT.IS_QNA = 1</isEqual>
+		         <isEqual property="itemType" compareValue="CV">CAT.IS_DIC = 1</isEqual>
+		         <isEqual property="itemType" compareValue="CF">CAT.IS_CAFE = 1</isEqual>
+		         <isEqual property="itemType" compareValue="FR">CAT.IS_FORUM = 1</isEqual>
+		         <isEqual property="itemType" compareValue="ID">CAT.IS_IDEA = 1</isEqual>
+		         <isEqual property="itemType" compareValue="BD">CAT.IS_BBS = 1</isEqual>
+		       </dynamic>
+		       ) CAT
+		 USING(PORTAL_ID, TAG_NAME)
+	<![CDATA[
+	]]>
+	</insert>
+
+</sqlMap>

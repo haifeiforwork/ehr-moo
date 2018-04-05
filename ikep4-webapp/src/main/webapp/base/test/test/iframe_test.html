@@ -1,0 +1,133 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+
+	<title>Layout with a Frame</title>
+	
+	<script type="text/javascript" src="../../js/jquery/jquery-1.4.4.min.js"></script>
+	<script type="text/javascript" src="../../js/jquery/jquery-ui-1.8.7.custom.min.js"></script>
+	<script type="text/javascript" src="../../js/common.pack.js"></script>
+	<script type="text/javascript" src="../../js/jquery/jquery.layout-latest.js"></script>
+	
+	
+	<style type="text/css">
+	/**
+	 *	Basic Layout Theme
+	 */
+	.ui-layout-pane { /* all 'panes' */ 
+		border: 1px solid #BBB; 
+	} 
+	.ui-layout-pane-center { /* IFRAME pane */ 
+		padding: 0;
+		margin:  0;
+	} 
+	.ui-layout-pane-west { /* west pane */ 
+		padding: 0 10px; 
+		background-color: #EEE !important;
+		overflow: auto;
+	} 
+
+	.ui-layout-resizer { /* all 'resizer-bars' */ 
+		background: #DDD; 
+		} 
+		.ui-layout-resizer-open:hover { /* mouse-over */
+			background: #9D9; 
+		}
+
+	.ui-layout-toggler { /* all 'toggler-buttons' */ 
+		background: #AAA; 
+		} 
+		.ui-layout-toggler-closed { /* closed toggler-button */ 
+			background: #CCC; 
+			border-bottom: 1px solid #BBB; 
+		} 
+		.ui-layout-toggler .content { /* toggler-text */ 
+			font: 14px bold Verdana, Verdana, Arial, Helvetica, sans-serif;
+		}
+		.ui-layout-toggler:hover { /* mouse-over */ 
+			background: #DCA; 
+			} 
+			.ui-layout-toggler:hover .content { /* mouse-over */ 
+				color: #009; 
+				}
+
+	/* class to make the 'iframe mask' visible */
+	.ui-layout-mask {
+		opacity: 0.2 !important;
+		filter:	 alpha(opacity=20) !important;
+		background-color: #666 !important;
+	}
+
+
+	body {
+		background-color: black;
+		font-family: Geneva, Arial, Helvetica, sans-serif;
+	}
+
+	ul { /* basic menu styling */
+		margin:		1ex 0;
+		padding:	0;
+		list-style:	none;
+		position:	relative;
+	}
+	li {
+		padding: 0.15em 1em 0.3em 5px;
+	}
+
+	
+	
+	
+	</style>
+
+	<script type="text/javascript">
+
+		var myLayout; // a var is required because this page utilizes: myLayout.allowOverflow() method
+		(function($) {
+			
+			$(document).ready(function () {
+		
+				myLayout = $('body').layout({
+					north__spacing_open:	0
+				,	north__closable:				false
+				,	north__resizable:				false
+				,	west__size:					150
+				,	west__spacing_closed:		20
+				,	west__togglerLength_closed:	100
+				,	west__togglerAlign_closed:	"top"
+				,	west__togglerContent_closed:"M<BR>E<BR>N<BR>U"
+				,	west__togglerTip_closed:	"Open & Pin Menu"
+				,	west__sliderTip:			"Slide Open Menu"
+				,	west__slideTrigger_open:	"mouseover"
+				});
+		
+		 	});
+			
+			
+			function autoResize(){			
+				var iframe = $('#mainFrame');
+				var options = 20;	
+				var newHeight = iframe.contents().height();
+			  	iframe.height(newHeight);  
+			}
+			
+		})(jQuery);
+		</script>
+
+
+
+
+</head>
+<body>
+<div class="ui-layout-north">
+	<ul>
+		<li><a target="mainFrame" href="http://www.naver.com">Naver</a></li>
+		<li><a target="mainFrame" href="http://www.google.co.kr">Google</a></li>
+		<li><a target="mainFrame" href="http://192.168.1.80:8060/base/index.html">UI Guide</a></li>
+	</ul>
+</div>
+<div class="ui-layout-west"><span style="color:#fff;">1234567890</span></div>
+<iframe id="mainFrame" name="mainFrame" class="ui-layout-center"
+	width="100%" height="600" frameborder="0" scrolling="auto" 
+	src="http://www.daum.net"></iframe>
+</body>
+</html>

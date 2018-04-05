@@ -1,0 +1,478 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="collpack.knowledgehub.dao.KnowledgeMapPopularList">
+	<typeAlias alias="KnowledgeMapListPK" type="com.lgcns.ikep4.collpack.knowledgehub.model.KnowledgeMapListPK"/>
+	<typeAlias alias="KnowledgeMapList" type="com.lgcns.ikep4.collpack.knowledgehub.model.KnowledgeMapList"/>
+	<typeAlias alias="KnowledgeMapPopularPageCondition" type="com.lgcns.ikep4.collpack.knowledgehub.search.KnowledgeMapPopularPageCondition"/>
+
+	<resultMap class="KnowledgeMapList" id="result">
+		<result column="ITEM_ID" property="itemId" jdbcType="VARCHAR" javaType="String"/>
+		<result column="ITEM_TYPE" property="itemType" jdbcType="VARCHAR" javaType="String"/>
+		<result column="SCORE" property="score" jdbcType="NUMBER" javaType="Integer"/>
+		<result column="TAG_ITEM_NAME" property="tagItemName" jdbcType="VARCHAR" javaType="String"/>
+		<result column="TAG_ITEM_CONTENTS" property="tagItemContents" jdbcType="VARCHAR" javaType="String"/>
+		<result column="TAG_ITEM_URL" property="tagItemUrl" jdbcType="VARCHAR" javaType="String"/>
+		<result column="REGISTER_ID" property="registerId" jdbcType="VARCHAR" javaType="String"/>
+		<result column="REGIST_DATE" property="registDate" jdbcType="DATE" javaType="Date"/>
+		<result column="USER_NAME" property="userName" jdbcType="VARCHAR" javaType="String"/>
+		<result column="USER_ENGLISH_NAME" property="userEnglishName" jdbcType="VARCHAR" javaType="String"/>
+		<result column="TEAM_NAME" property="teamName" jdbcType="VARCHAR" javaType="String"/>
+		<result column="TEAM_ENGLISH_NAME" property="teamEnglishName" jdbcType="VARCHAR" javaType="String"/>
+		<result column="JOB_TITLE_NAME" property="jobTitleName" jdbcType="VARCHAR" javaType="String"/>
+		<result column="JOB_TITLE_ENGLISH_NAME" property="jobTitleEnglishName" jdbcType="VARCHAR" javaType="String"/>
+		<result column="ITEM_TYPE_DISPLAY_NAME" property="itemTypeDisplayName" jdbcType="VARCHAR" javaType="String"/>
+		<result column="PICTURE_PATH" property="picturePath" />
+		<result column="PROFILE_PICTURE_PATH"  property="profilePicturePath" />
+	</resultMap>
+
+<!-- ANSI -->
+<!-- 포털별 Knowledge 전체개수 반환 -->
+	<select id="countByPortalId" parameterClass="String" resultClass="Integer">
+	<![CDATA[
+		SELECT /* [KnowledgeMapPopularList_SqlMap.xml] collpack.knowledgehub.dao.KnowledgeMapPopularList.countByPortalId */
+		       COUNT(PPR.POPULAR_ITEM_ID) COUNT_ITEM_ID
+		  FROM IKEP4_KM_POPULAR PPR
+		  	   INNER JOIN IKEP4_TG_ITEM TAG
+				    ON PPR.POPULAR_ITEM_ID = TAG.TAG_ITEM_ID
+				   AND PPR.POPULAR_ITEM_TYPE = TAG.TAG_ITEM_TYPE
+		  	   INNER JOIN IKEP4_EV_USER USR
+/*
+		  JOIN (
+		        SELECT USR.USER_ID USER_ID
+		          FROM IKEP4_EV_USER USR
+		          JOIN IKEP4_EV_JOB_TITLE JOB
+		         USING (JOB_TITLE_CODE)
+		       ) USR
+*/
+		    		ON TAG.REGISTER_ID = USR.USER_ID
+		 WHERE PPR.PORTAL_ID = #portalId#
+	]]>
+	</select>
+
+<!-- ANSI -->
+<!-- 포털별 Knowledge 전체개수 반환 (페이징) -->
+	<select id="countByPortalIdPage" parameterClass="KnowledgeMapPopularPageCondition" resultClass="Integer">
+		SELECT /* [KnowledgeMapPopularList_SqlMap.xml] collpack.knowledgehub.dao.KnowledgeMapPopularList.countByPortalIdPage */
+		       COUNT(PPR.ITEM_ID) COUNT_ITEM_ID
+		  FROM IKEP4_KN_CVI_POINT PPR
+		  JOIN IKEP4_TG_ITEM TAG
+		    ON PPR.ITEM_ID = TAG.TAG_ITEM_ID
+		  JOIN IKEP4_EV_USER USR
+		    ON TAG.REGISTER_ID = USR.USER_ID
+		 WHERE PPR.PORTAL_ID = #portalId#
+		   AND PPR.REGIST_DATE BETWEEN CONVERT(DATETIME, #fromDate#) AND CONVERT(DATETIME, #toDate#)
+		   <isNotEmpty property="isGoodDoc">
+					AND PPR.IS_GOOD_DOC = 1	
+		   </isNotEmpty>
+	</select>
+
+<!-- MS SQL -->
+<!-- 포털별 Knowledge 조회 (페이징) -->
+	<select id="listByPortalIdPage" parameterClass="KnowledgeMapPopularPageCondition" resultMap="result">
+	SELECT /* [KnowledgeMapPopularList_SqlMap.xml] collpack.knowledgehub.dao.KnowledgeMapPopularList.listByPortalIdPage */
+		       *
+		FROM ( 
+		     SELECT ROWNUM RECORD_NUMBER, BODY.* FROM ( 
+		         /* START========================================= */
+		         
+				SELECT ITEM_ID, ITEM_TYPE, SCORE,
+					 TAG.TAG_ITEM_NAME TAG_ITEM_NAME,
+		             TAG.TAG_ITEM_CONTENTS TAG_ITEM_CONTENTS,
+		             TAG.TAG_ITEM_URL TAG_ITEM_URL,
+		             TAG.REGISTER_ID REGISTER_ID,
+		             TAG.REGIST_DATE REGIST_DATE,
+		             USR.USER_NAME USER_NAME,
+		             USR.USER_ENGLISH_NAME USER_ENGLISH_NAME,
+		             USR.TEAM_NAME TEAM_NAME,
+		             USR.TEAM_ENGLISH_NAME TEAM_ENGLISH_NAME,
+		             USR.JOB_TITLE_NAME JOB_TITLE_NAME,
+		             USR.JOB_TITLE_ENGLISH_NAME JOB_TITLE_ENGLISH_NAME,
+		             USR.PICTURE_PATH,
+					 USR.PROFILE_PICTURE_PATH,
+				     (SELECT DISPLAY_NAME
+				          FROM IKEP4_EV_ITEM_TYPE ITM
+				         WHERE ITM.ITEM_TYPE_CODE = ITEM_TYPE) ITEM_TYPE_DISPLAY_NAME
+				FROM (
+						SELECT PPR.ITEM_ID ITEM_ID,
+		                     PPR.MODULE_CODE ITEM_TYPE,
+		                     PPR.CVI_SCORE SCORE,
+		                     PPR.REGIST_DATE 
+		                FROM IKEP4_KN_CVI_POINT PPR
+				     WHERE PPR.PORTAL_ID = #portalId#
+				       AND PPR.REGIST_DATE BETWEEN TO_DATE(#fromDate#) AND TO_DATE(#toDate#)
+				       <isNotEmpty property="isGoodDoc">
+									AND PPR.IS_GOOD_DOC = 1	
+						</isNotEmpty>
+					) PPR
+				JOIN IKEP4_TG_ITEM TAG
+		          ON PPR.ITEM_ID = TAG.TAG_ITEM_ID
+		       	JOIN (SELECT USR.USER_ID USER_ID,
+		                    USR.USER_NAME USER_NAME,
+		                    USR.USER_ENGLISH_NAME
+		                       USER_ENGLISH_NAME,
+		                    USR.TEAM_NAME TEAM_NAME,
+		                    USR.TEAM_ENGLISH_NAME
+		                       TEAM_ENGLISH_NAME,
+		                    JOB.JOB_TITLE_NAME JOB_TITLE_NAME,
+		                    JOB.JOB_TITLE_ENGLISH_NAME
+		                       JOB_TITLE_ENGLISH_NAME,
+		                    USR.PICTURE_PATH,
+		             		USR.PROFILE_PICTURE_PATH
+		               FROM    IKEP4_EV_USER USR
+		                    JOIN
+		                       IKEP4_EV_JOB_TITLE JOB
+		                    USING (JOB_TITLE_CODE)) USR
+		          ON TAG.REGISTER_ID = USR.USER_ID
+		          ORDER BY PPR.REGIST_DATE DESC
+				) BODY
+		<![CDATA[  
+		
+		    WHERE ROWNUM <= #endOrder#
+		       )
+		 WHERE RECORD_NUMBER >= #startOrder#
+		]]> 
+	</select>
+
+<!-- ANSI -->
+<!-- 전체 삭제 -->
+	<delete id="removeAll">
+	<![CDATA[
+		DELETE /* [KnowledgeMapPopularList_SqlMap.xml] collpack.knowledgehub.dao.KnowledgeMapPopularList.removeAll */
+		       IKEP4_KM_POPULAR
+	]]>
+	</delete>
+
+<!-- 배치 작업 -->
+
+	<sql id="KnowledgeMapPopularColumnList">
+		   POPULAR_ITEM_ID
+		 , POPULAR_ITEM_TYPE
+		 , SCORE
+		 , PORTAL_ID
+		 , REGIST_DATE
+	</sql>
+
+<!-- ANSI -->
+<!-- BBS -->
+	<insert id="batchGatherBBS" parameterClass="String">
+		INSERT /* [KnowledgeMapPopularList_SqlMap.xml] collpack.knowledgehub.dao.KnowledgeMapPopularList.batchGatherBBS */
+		       INTO IKEP4_KM_POPULAR (<include refid="KnowledgeMapPopularColumnList"/>)
+	<![CDATA[
+		SELECT ITEM_ID, #itemType# ITEM_TYPE
+		     , HIT_SCORE + RECOMMEND_SCORE + FAVORITE_SCORE SCORE
+		     , PORTAL_ID, REGIST_DATE
+		  FROM (
+		        SELECT ITEM_ID, PORTAL_ID, REGIST_DATE
+		             , HIT_COUNT, (HIT_COUNT * HIT_WEIGHT / 100) HIT_SCORE
+		             , RECOMMEND_COUNT, (RECOMMEND_COUNT * RECOMMEND_WEIGHT / 100) RECOMMEND_SCORE
+		             , FAVORITE_COUNT, (FAVORITE_COUNT * FAVORITE_WEIGHT / 100) FAVORITE_SCORE
+		          FROM (
+		                SELECT PCY.HIT_WEIGHT HIT_WEIGHT, PCY.RECOMMEND_WEIGHT RECOMMEND_WEIGHT
+		                     , PCY.FAVORITE_WEIGHT FAVORITE_WEIGHT
+		                     , ITEM.ITEM_ID ITEM_ID, PCY.PORTAL_ID PORTAL_ID
+		                     , ITEM.REGIST_DATE REGIST_DATE
+		                     , ITEM.HIT_COUNT HIT_COUNT
+		                     , ITEM.RECOMMEND_COUNT RECOMMEND_COUNT
+		                     , (SELECT COUNT(FAVORITE_ID)
+		                          FROM IKEP4_AS_FAVORITE FAV
+		                         WHERE FAV.TYPE = 'CONTENTS'
+		                           AND FAV.TARGET_ID = ITEM.ITEM_ID) FAVORITE_COUNT
+		                  FROM IKEP4_BD_ITEM ITEM
+		                  	   INNER JOIN IKEP4_BD_BOARD BOARD
+		                  	   		ON ITEM.BOARD_ID = BOARD.BOARD_ID
+		                  	   INNER JOIN IKEP4_KM_POLICY PCY
+				                    ON PCY.PORTAL_ID = BOARD.PORTAL_ID
+				                   AND PCY.POLICY_TYPE = '0'
+		                 WHERE ITEM.ITEM_DELETE = 0
+		               ) TBL1
+		       ) TBL2
+	]]>
+	</insert>
+
+<!-- ANSI -->
+<!-- WorkSpace -->
+	<insert id="batchGatherWorkSpace" parameterClass="String">
+		INSERT /* [KnowledgeMapPopularList_SqlMap.xml] collpack.knowledgehub.dao.KnowledgeMapPopularList.batchGatherWorkSpace */
+		       INTO IKEP4_KM_POPULAR (<include refid="KnowledgeMapPopularColumnList"/>)
+	<![CDATA[
+		SELECT ITEM_ID, #itemType# ITEM_TYPE
+		     , HIT_SCORE + RECOMMEND_SCORE + FAVORITE_SCORE SCORE
+		     , PORTAL_ID, REGIST_DATE
+		  FROM (
+		        SELECT ITEM_ID, PORTAL_ID, REGIST_DATE
+		             , HIT_COUNT, (HIT_COUNT * HIT_WEIGHT / 100) HIT_SCORE
+		             , RECOMMEND_COUNT, (RECOMMEND_COUNT * RECOMMEND_WEIGHT / 100) RECOMMEND_SCORE
+		             , FAVORITE_COUNT, (FAVORITE_COUNT * FAVORITE_WEIGHT / 100) FAVORITE_SCORE
+		          FROM (
+		                SELECT PCY.HIT_WEIGHT HIT_WEIGHT, PCY.RECOMMEND_WEIGHT RECOMMEND_WEIGHT
+		                     , PCY.FAVORITE_WEIGHT FAVORITE_WEIGHT
+		                     , ITEM.ITEM_ID ITEM_ID, PCY.PORTAL_ID PORTAL_ID
+		                     , ITEM.REGIST_DATE REGIST_DATE
+		                     , ITEM.HIT_COUNT HIT_COUNT
+		                     , ITEM.RECOMMEND_COUNT RECOMMEND_COUNT
+		                     , (SELECT COUNT(FAVORITE_ID)
+		                          FROM IKEP4_AS_FAVORITE FAV
+		                         WHERE FAV.TYPE = 'CONTENTS'
+		                           AND FAV.TARGET_ID = ITEM.ITEM_ID) FAVORITE_COUNT
+		                  FROM IKEP4_WS_BD_ITEM ITEM
+		                  	   INNER JOIN IKEP4_WS_BD_BOARD BOARD
+		                  	   		ON ITEM.BOARD_ID = BOARD.BOARD_ID
+				               INNER JOIN IKEP4_KM_POLICY PCY
+				                    ON PCY.PORTAL_ID = BOARD.PORTAL_ID
+				                   AND PCY.POLICY_TYPE = '0'
+		                 WHERE ITEM.ITEM_DELETE = 0
+		               ) TBL1
+		       ) TBL2
+	]]>
+	</insert>
+
+<!-- ANSI -->
+<!-- Cafe -->
+	<insert id="batchGatherCafe" parameterClass="String">
+		INSERT /* [KnowledgeMapPopularList_SqlMap.xml] collpack.knowledgehub.dao.KnowledgeMapPopularList.batchGatherCafe */
+		       INTO IKEP4_KM_POPULAR (<include refid="KnowledgeMapPopularColumnList"/>)
+	<![CDATA[
+		SELECT ITEM_ID, #itemType# ITEM_TYPE
+		     , HIT_SCORE + RECOMMEND_SCORE + FAVORITE_SCORE SCORE
+		     , PORTAL_ID, REGIST_DATE
+		  FROM (
+		        SELECT ITEM_ID, PORTAL_ID, REGIST_DATE
+		             , HIT_COUNT, (HIT_COUNT * HIT_WEIGHT / 100) HIT_SCORE
+		             , RECOMMEND_COUNT, (RECOMMEND_COUNT * RECOMMEND_WEIGHT / 100) RECOMMEND_SCORE
+		             , FAVORITE_COUNT, (FAVORITE_COUNT * FAVORITE_WEIGHT / 100) FAVORITE_SCORE
+		          FROM (
+		                SELECT PCY.HIT_WEIGHT HIT_WEIGHT, PCY.RECOMMEND_WEIGHT RECOMMEND_WEIGHT
+		                     , PCY.FAVORITE_WEIGHT FAVORITE_WEIGHT
+		                     , ITEM.ITEM_ID ITEM_ID, PCY.PORTAL_ID PORTAL_ID
+		                     , ITEM.REGIST_DATE REGIST_DATE
+		                     , ITEM.HIT_COUNT HIT_COUNT
+		                     , ITEM.RECOMMEND_COUNT RECOMMEND_COUNT
+		                     , (SELECT COUNT(FAVORITE_ID)
+		                          FROM IKEP4_AS_FAVORITE FAV
+		                         WHERE FAV.TYPE = 'CONTENTS'
+		                           AND FAV.TARGET_ID = ITEM.ITEM_ID) FAVORITE_COUNT
+		                  FROM IKEP4_CF_BD_ITEM ITEM
+			                   INNER JOIN IKEP4_CF_BD_BOARD BOARD
+			                   		ON ITEM.BOARD_ID = BOARD.BOARD_ID
+			                   INNER JOIN IKEP4_KM_POLICY PCY
+				                    ON PCY.PORTAL_ID = BOARD.PORTAL_ID
+				                   AND PCY.POLICY_TYPE = '0'
+		                 WHERE ITEM.ITEM_DELETE = 0
+		               ) TBL1
+		       ) TBL2
+	]]>
+	</insert>
+
+<!-- ANSI -->
+<!-- WorkManual -->
+	<insert id="batchGatherWorkManual" parameterClass="String">
+		INSERT /* [KnowledgeMapPopularList_SqlMap.xml] collpack.knowledgehub.dao.KnowledgeMapPopularList.batchGatherWorkManual */
+		       INTO IKEP4_KM_POPULAR (<include refid="KnowledgeMapPopularColumnList"/>)
+	<![CDATA[
+		SELECT ITEM_ID, #itemType# ITEM_TYPE
+		     , HIT_SCORE + RECOMMEND_SCORE + FAVORITE_SCORE SCORE
+		     , PORTAL_ID, REGIST_DATE
+		  FROM (
+		        SELECT ITEM_ID, PORTAL_ID, REGIST_DATE
+		             , HIT_COUNT, (HIT_COUNT * HIT_WEIGHT / 100) HIT_SCORE
+		             , RECOMMEND_COUNT, (RECOMMEND_COUNT * RECOMMEND_WEIGHT / 100) RECOMMEND_SCORE
+		             , FAVORITE_COUNT, (FAVORITE_COUNT * FAVORITE_WEIGHT / 100) FAVORITE_SCORE
+		          FROM (
+		                SELECT PCY.HIT_WEIGHT HIT_WEIGHT, PCY.RECOMMEND_WEIGHT RECOMMEND_WEIGHT
+		                     , PCY.FAVORITE_WEIGHT FAVORITE_WEIGHT
+		                     , ITEM.MANUAL_ID ITEM_ID, PCY.PORTAL_ID PORTAL_ID
+		                     , ITEM.REGIST_DATE REGIST_DATE
+		                     , ITEM.HIT_COUNT HIT_COUNT
+		                     , 0 RECOMMEND_COUNT
+		                     , (SELECT COUNT(FAVORITE_ID)
+		                          FROM IKEP4_AS_FAVORITE FAV
+		                         WHERE FAV.TYPE = 'CONTENTS'
+		                           AND FAV.TARGET_ID = ITEM.MANUAL_ID) FAVORITE_COUNT
+		                  FROM IKEP4_WM_MANUAL ITEM
+		                  	   INNER JOIN IKEP4_WM_CATEGORY BOARD
+		                  	   		ON ITEM.CATEGORY_ID = BOARD.CATEGORY_ID
+				               INNER JOIN IKEP4_KM_POLICY PCY
+				                    ON PCY.PORTAL_ID = BOARD.PORTAL_ID
+				                   AND PCY.POLICY_TYPE = '0'
+		                 WHERE ITEM.MANUAL_TYPE != 'C'
+		               ) TBL1
+		       ) TBL2
+	]]>
+	</insert>
+
+<!-- ANSI -->
+<!-- SocialBlog -->
+	<insert id="batchGatherSocialBlog" parameterClass="String">
+		INSERT /* [KnowledgeMapPopularList_SqlMap.xml] collpack.knowledgehub.dao.KnowledgeMapPopularList.batchGatherSocialBlog */
+		       INTO IKEP4_KM_POPULAR (<include refid="KnowledgeMapPopularColumnList"/>)
+	<![CDATA[
+		SELECT ITEM_ID, #itemType# ITEM_TYPE
+		     , HIT_SCORE + RECOMMEND_SCORE + FAVORITE_SCORE SCORE
+		     , PORTAL_ID, REGIST_DATE
+		  FROM (
+		        SELECT ITEM_ID, PORTAL_ID, REGIST_DATE
+		             , HIT_COUNT, (HIT_COUNT * HIT_WEIGHT / 100) HIT_SCORE
+		             , RECOMMEND_COUNT, (RECOMMEND_COUNT * RECOMMEND_WEIGHT / 100) RECOMMEND_SCORE
+		             , FAVORITE_COUNT, (FAVORITE_COUNT * FAVORITE_WEIGHT / 100) FAVORITE_SCORE
+		          FROM (
+		                SELECT PCY.HIT_WEIGHT HIT_WEIGHT, PCY.RECOMMEND_WEIGHT RECOMMEND_WEIGHT
+		                     , PCY.FAVORITE_WEIGHT FAVORITE_WEIGHT
+		                     , ITEM.ITEM_ID ITEM_ID, PCY.PORTAL_ID PORTAL_ID
+		                     , ITEM.REGIST_DATE REGIST_DATE
+		                     , ITEM.HIT_COUNT HIT_COUNT
+		                     , ITEM.RECOMMEND_COUNT RECOMMEND_COUNT
+		                     , (SELECT COUNT(FAVORITE_ID)
+		                          FROM IKEP4_AS_FAVORITE FAV
+		                         WHERE FAV.TYPE = 'CONTENTS'
+		                           AND FAV.TARGET_ID = ITEM.ITEM_ID) FAVORITE_COUNT
+		                  FROM IKEP4_SB_BD_ITEM ITEM
+		                  	   INNER JOIN IKEP4_EV_USER BOARD
+				                    ON ITEM.REGISTER_ID = BOARD.USER_ID
+			                   INNER JOIN IKEP4_KM_POLICY PCY
+				                    ON PCY.PORTAL_ID = BOARD.PORTAL_ID
+		                   AND PCY.POLICY_TYPE = '0'
+		               ) TBL1
+		       ) TBL2
+	]]>
+	</insert>
+
+<!-- ANSI -->
+<!-- Q&A -->
+	<insert id="batchGatherQnA" parameterClass="String">
+		INSERT /* [KnowledgeMapPopularList_SqlMap.xml] collpack.knowledgehub.dao.KnowledgeMapPopularList.batchGatherQnA */
+		       INTO IKEP4_KM_POPULAR (<include refid="KnowledgeMapPopularColumnList"/>)
+	<![CDATA[
+		SELECT ITEM_ID, #itemType# ITEM_TYPE
+		     , HIT_SCORE + RECOMMEND_SCORE + FAVORITE_SCORE SCORE
+		     , PORTAL_ID, REGIST_DATE
+		  FROM (
+		        SELECT ITEM_ID, PORTAL_ID, REGIST_DATE
+		             , HIT_COUNT, (HIT_COUNT * HIT_WEIGHT / 100) HIT_SCORE
+		             , RECOMMEND_COUNT, (RECOMMEND_COUNT * RECOMMEND_WEIGHT / 100) RECOMMEND_SCORE
+		             , FAVORITE_COUNT, (FAVORITE_COUNT * FAVORITE_WEIGHT / 100) FAVORITE_SCORE
+		          FROM (
+		                SELECT PCY.HIT_WEIGHT HIT_WEIGHT, PCY.RECOMMEND_WEIGHT RECOMMEND_WEIGHT
+		                     , PCY.FAVORITE_WEIGHT FAVORITE_WEIGHT
+		                     , ITEM.QNA_ID ITEM_ID, PCY.PORTAL_ID PORTAL_ID
+		                     , ITEM.REGIST_DATE REGIST_DATE
+		                     , ITEM.HIT_COUNT HIT_COUNT
+		                     , ITEM.RECOMMEND_COUNT RECOMMEND_COUNT
+		                     , (SELECT COUNT(FAVORITE_ID)
+		                          FROM IKEP4_AS_FAVORITE FAV
+		                         WHERE FAV.TYPE = 'CONTENTS'
+		                           AND FAV.TARGET_ID = ITEM.QNA_ID) FAVORITE_COUNT
+		                  FROM IKEP4_QA_QNA ITEM
+		                  	   INNER JOIN IKEP4_KM_POLICY PCY
+				                    ON PCY.PORTAL_ID = ITEM.PORTAL_ID
+				                   AND PCY.POLICY_TYPE = '0'
+		                 WHERE ITEM.ITEM_DELETE = 0
+		               ) TBL1
+		       ) TBL2
+	]]>
+	</insert>
+
+<!-- ANSI -->
+<!-- Forum -->
+	<insert id="batchGatherForum" parameterClass="String">
+		INSERT /* [KnowledgeMapPopularList_SqlMap.xml] collpack.knowledgehub.dao.KnowledgeMapPopularList.batchGatherForum */
+		       INTO IKEP4_KM_POPULAR (<include refid="KnowledgeMapPopularColumnList"/>)
+	<![CDATA[
+		SELECT ITEM_ID, #itemType# ITEM_TYPE
+		     , HIT_SCORE + RECOMMEND_SCORE + FAVORITE_SCORE SCORE
+		     , PORTAL_ID, REGIST_DATE
+		  FROM (
+		        SELECT ITEM_ID, PORTAL_ID, REGIST_DATE
+		             , HIT_COUNT, (HIT_COUNT * HIT_WEIGHT / 100) HIT_SCORE
+		             , RECOMMEND_COUNT, (RECOMMEND_COUNT * RECOMMEND_WEIGHT / 100) RECOMMEND_SCORE
+		             , FAVORITE_COUNT, (FAVORITE_COUNT * FAVORITE_WEIGHT / 100) FAVORITE_SCORE
+		          FROM (
+		                SELECT PCY.HIT_WEIGHT HIT_WEIGHT, PCY.RECOMMEND_WEIGHT RECOMMEND_WEIGHT
+		                     , PCY.FAVORITE_WEIGHT FAVORITE_WEIGHT
+		                     , ITEM.ITEM_ID ITEM_ID, PCY.PORTAL_ID PORTAL_ID
+		                     , ITEM.REGIST_DATE REGIST_DATE
+		                     , ITEM.HIT_COUNT HIT_COUNT
+		                     , 0 RECOMMEND_COUNT
+		                     , (SELECT COUNT(FAVORITE_ID)
+		                          FROM IKEP4_AS_FAVORITE FAV
+		                         WHERE FAV.TYPE = 'CONTENTS'
+		                           AND FAV.TARGET_ID = ITEM.ITEM_ID) FAVORITE_COUNT
+		                  FROM IKEP4_FR_ITEM ITEM
+		                  	   INNER JOIN IKEP4_FR_DISCUSSION BOARD
+		                  	   		ON ITEM.DISCUSSION_ID = BOARD.DISCUSSION_ID
+		                  	   INNER JOIN IKEP4_KM_POLICY PCY
+				                    ON PCY.PORTAL_ID = ITEM.PORTAL_ID
+				                   AND PCY.POLICY_TYPE = '0'
+		               ) TBL1
+		       ) TBL2
+	]]>
+	</insert>
+
+<!-- ANSI -->
+<!-- Ideation -->
+	<insert id="batchGatherIdeation" parameterClass="String">
+		INSERT /* [KnowledgeMapPopularList_SqlMap.xml] collpack.knowledgehub.dao.KnowledgeMapPopularList.batchGatherIdeation */
+		       INTO IKEP4_KM_POPULAR (<include refid="KnowledgeMapPopularColumnList"/>)
+	<![CDATA[
+		SELECT ITEM_ID, #itemType# ITEM_TYPE
+		     , HIT_SCORE + RECOMMEND_SCORE + FAVORITE_SCORE SCORE
+		     , PORTAL_ID, REGIST_DATE
+		  FROM (
+		        SELECT ITEM_ID, PORTAL_ID, REGIST_DATE
+		             , HIT_COUNT, (HIT_COUNT * HIT_WEIGHT / 100) HIT_SCORE
+		             , RECOMMEND_COUNT, (RECOMMEND_COUNT * RECOMMEND_WEIGHT / 100) RECOMMEND_SCORE
+		             , FAVORITE_COUNT, (FAVORITE_COUNT * FAVORITE_WEIGHT / 100) FAVORITE_SCORE
+		          FROM (
+		                SELECT PCY.HIT_WEIGHT HIT_WEIGHT, PCY.RECOMMEND_WEIGHT RECOMMEND_WEIGHT
+		                     , PCY.FAVORITE_WEIGHT FAVORITE_WEIGHT
+		                     , ITEM.ITEM_ID ITEM_ID, PCY.PORTAL_ID PORTAL_ID
+		                     , ITEM.REGIST_DATE REGIST_DATE
+		                     , ITEM.HIT_COUNT HIT_COUNT
+		                     , 0 RECOMMEND_COUNT
+		                     , (SELECT COUNT(FAVORITE_ID)
+		                          FROM IKEP4_AS_FAVORITE FAV
+		                         WHERE FAV.TYPE = 'CONTENTS'
+		                           AND FAV.TARGET_ID = ITEM.ITEM_ID) FAVORITE_COUNT
+		                  FROM IKEP4_ID_IDEA ITEM
+		                  	   INNER JOIN IKEP4_KM_POLICY PCY
+				                    ON PCY.PORTAL_ID = ITEM.PORTAL_ID
+				                   AND PCY.POLICY_TYPE = '0'
+		               ) TBL1
+		       ) TBL2
+	]]>
+	</insert>
+
+<!-- ANSI -->
+<!-- CoporateVoca -->
+	<insert id="batchGatherCorVoca" parameterClass="String">
+		INSERT /* [KnowledgeMapPopularList_SqlMap.xml] collpack.knowledgehub.dao.KnowledgeMapPopularList.batchGatherCorVoca */
+		       INTO IKEP4_KM_POPULAR (<include refid="KnowledgeMapPopularColumnList"/>)
+	<![CDATA[
+		SELECT ITEM_ID, #itemType# ITEM_TYPE
+		     , HIT_SCORE + RECOMMEND_SCORE + FAVORITE_SCORE SCORE
+		     , PORTAL_ID, REGIST_DATE
+		  FROM (
+		        SELECT ITEM_ID, PORTAL_ID, REGIST_DATE
+		             , HIT_COUNT, (HIT_COUNT * HIT_WEIGHT / 100) HIT_SCORE
+		             , RECOMMEND_COUNT, (RECOMMEND_COUNT * RECOMMEND_WEIGHT / 100) RECOMMEND_SCORE
+		             , FAVORITE_COUNT, (FAVORITE_COUNT * FAVORITE_WEIGHT / 100) FAVORITE_SCORE
+		          FROM (
+		                SELECT PCY.HIT_WEIGHT HIT_WEIGHT, PCY.RECOMMEND_WEIGHT RECOMMEND_WEIGHT
+		                     , PCY.FAVORITE_WEIGHT FAVORITE_WEIGHT
+		                     , ITEM.WORD_ID ITEM_ID, PCY.PORTAL_ID PORTAL_ID
+		                     , ITEM.REGIST_DATE REGIST_DATE
+		                     , ITEM.HIT_COUNT HIT_COUNT
+		                     , 0 RECOMMEND_COUNT
+		                     , (SELECT COUNT(FAVORITE_ID)
+		                          FROM IKEP4_AS_FAVORITE FAV
+		                         WHERE FAV.TYPE = 'CONTENTS'
+		                           AND FAV.TARGET_ID = ITEM.WORD_ID) FAVORITE_COUNT
+		                  FROM IKEP4_CV_WORD ITEM
+		                  	   INNER JOIN IKEP4_KM_POLICY PCY
+				                    ON PCY.PORTAL_ID = ITEM.PORTAL_ID
+				                   AND PCY.POLICY_TYPE = '0'
+		               ) TBL1
+		       ) TBL2
+	]]>
+	</insert>
+
+</sqlMap>

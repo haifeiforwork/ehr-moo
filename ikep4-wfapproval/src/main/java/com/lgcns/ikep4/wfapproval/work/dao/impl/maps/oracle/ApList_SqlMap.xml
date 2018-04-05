@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="com.lgcns.ikep4.wfapproval.work.dao.ApList" >
+	<typeAlias alias="ApList" 								type="com.lgcns.ikep4.wfapproval.work.model.ApList"/>
+	<typeAlias alias="ApListSearchCondition" 	type="com.lgcns.ikep4.wfapproval.work.search.ApListSearchCondition"/>
+	
+	<!-- 양식 마스터 테이블 조회 결과 -->
+	<resultMap id="ApListResult" class="ApList"> <!--groupBy="formId"-->
+		<result property="apprId" 				column="APPR_ID" 					jdbcType="VARCHAR"/>
+		<result property="formId" 				column="FORM_ID" 					jdbcType="VARCHAR"/>
+		<result property="processId" 			column="PROCESS_ID" 			jdbcType="VARCHAR"/>
+		<result property="instanceId" 		column="INSTANCE_ID" 			jdbcType="VARCHAR"/>
+		<result property="apprDocNo" 			column="APPR_DOC_NO" 			jdbcType="VARCHAR"/>
+		<result property="apprTitle" 			column="APPR_TITLE" 			jdbcType="VARCHAR"/>
+		<result property="apprReqDate"		column="APPR_REQ_DATE" 		jdbcType="DATE"/>
+		<result property="apprSecurityCd"	column="APPR_SECURITY_CD"	jdbcType="VARCHAR"/>
+		<result property="apprPeriodCd" 	column="APPR_PERIOD_CD" 	jdbcType="VARCHAR"/>
+		<result property="apprTypeCd" 		column="APPR_TYPE_CD" 		jdbcType="VARCHAR"/>
+		<result property="apprTypeName" 	column="APPR_TYPE_NAME"		jdbcType="VARCHAR"/>
+		<result property="apprDocState" 	column="APPR_DOC_STATE" 	jdbcType="NUMBER"/>
+		<result property="apprDocStateNm"	column="APPR_DOC_STATE_NM" jdbcType="VARCHAR"/>
+		<result property="apprEndDate" 		column="APPR_END_DATE" 		jdbcType="DATE"/>
+		<result property="isApprReceive" 	column="IS_APPR_RECEIVE" 	jdbcType="CHAR"/>
+		<result property="registUserId" 	column="REGIST_USER_ID" 	jdbcType="VARCHAR"/>
+		<result property="registUserName" column="REGIST_USER_NAME" jdbcType="VARCHAR"/>
+	</resultMap>
+	<sql id="sqlColumnList"> 
+		ap.APPR_ID,
+		ap.FORM_ID,
+		ap.PROCESS_ID,
+		ap.INSTANCE_ID,
+		ap.APPR_DOC_NO,
+		ap.APPR_TITLE,
+		ap.APPR_REQ_DATE,
+		ap.APPR_SECURITY_CD,
+		ap.APPR_PERIOD_CD,
+		ap.APPR_TYPE_CD,
+		<!--NVL((SELECT KR_NAME FROM IKEP4_AP_CODE WHERE CODE_ID = ap.APPR_TYPE_CD),ap.APPR_TYPE_CD) AS APPR_TYPE_NAME,-->
+		IKEP4_FN_AP_CODE_NAME(ap.APPR_TYPE_CD) AS APPR_TYPE_NAME,
+		ap.APPR_DOC_STATE,
+		DECODE(ap.APPR_DOC_STATE,'0','임시저장','1','진행중','2','완료','오류') AS APPR_DOC_STATE_NM,
+		ap.APPR_END_DATE,
+		ap.IS_APPR_RECEIVE,
+		ap.REGIST_USER_ID,
+		NVL(usr.USER_NAME,'') REGIST_USER_NAME
+	</sql>
+
+	<sql id="getApListSearchSql">
+	  <isNotNull property="apprTypeCd"><isNotEmpty property="apprTypeCd">
+				AND	ap.APPR_TYPE_CD = #apprTypeCd#
+		</isNotEmpty></isNotNull>
+		<isNotNull property="apprDocState"><isNotEmpty property="apprDocState">
+				AND	ap.APPR_DOC_STATE = #apprDocState#
+		</isNotEmpty></isNotNull>
+		<isNotNull property="searchStartDate"><isNotEmpty property="searchStartDate">
+			<isNotNull property="searchEndDate"><isNotEmpty property="searchEndDate">
+				AND	ap.APPR_REQ_DATE BETWEEN #searchStartDate# and #searchEndDate#
+			</isNotEmpty></isNotNull>
+		</isNotEmpty></isNotNull>
+		<isNotNull property="apprTitle"><isNotEmpty property="apprTitle">
+				AND	ap.APPR_TITLE LIKE '%' || #apprTitle# || '%'
+		</isNotEmpty></isNotNull>
+		<isNotNull property="registUserId"><isNotEmpty property="registUserId">
+				AND	ap.REGIST_USER_ID = #registUserId#
+		</isNotEmpty></isNotNull>
+		<isNotNull property="refUserId"><isNotEmpty property="refUserId">
+				AND	ap.APPR_ID      = au.APPR_ID
+				AND	au.AUTH_USER_ID = #refUserId#
+		</isNotEmpty></isNotNull>
+	</sql>
+
+	<!-- searchApList -->
+	<select id="searchApList" parameterClass="ApListSearchCondition" resultMap="ApListResult">
+	/* [ApList_SqlMap.xml] searchApList */  
+	SELECT *
+	FROM ( 
+	     SELECT ROWNUM AS RNUM, A.* FROM ( 
+	         /* START========================================= */
+	         SELECT <include refid="sqlColumnList" /> 
+	         FROM   IKEP4_AP_DOC ap
+	               ,IKEP4_EV_USER usr
+					 <isNotNull property="refUserId"><isNotEmpty property="refUserId">
+					       ,IKEP4_AP_AUTH_USER au
+					 </isNotEmpty></isNotNull>	         
+			 WHERE ap.REGIST_USER_ID = usr.USER_ID(+)			 
+			<include refid="getApListSearchSql"/>
+			<isEmpty property="sortColumn" >ORDER BY ap.APPR_REQ_DATE desc</isEmpty>
+		  <isNotEmpty property="sortColumn" >ORDER BY $sortColumn$ $sortType$</isNotEmpty>
+			 /* ===========================================END  */ 
+	<![CDATA[  
+	
+	    ) A WHERE ROWNUM <=  #endRowIndex# /* 종료  */
+	) WHERE RNUM >  #startRowIndex# /* 시작 */
+	]]> 
+  </select>   
+  
+  <!-- countApList -->
+  <select id="countApList" parameterClass="ApListSearchCondition" resultClass="int">
+  	/* [ApList_SqlMap.xml] countApListAll */  
+	SELECT COUNT(ap.APPR_ID)
+	FROM   IKEP4_AP_DOC ap
+        ,IKEP4_EV_USER usr
+  <isNotNull property="refUserId"><isNotEmpty property="refUserId">
+       ,IKEP4_AP_AUTH_USER au
+  </isNotEmpty></isNotNull>	         
+  WHERE ap.REGIST_USER_ID = usr.USER_ID(+)			 
+	<include refid="getApListSearchSql"/>
+  </select>
+  
+  <!--select id="listApListSelect" parameterClass="ApListSearchCondition" resultMap="ApListResult">
+	/* [ApList_SqlMap.xml] listApListSelect */  
+	SELECT *
+	FROM ( 
+	     SELECT ROWNUM AS RNUM, A.* FROM ( 
+	         /* START========================================= */
+	         SELECT <include refid="sqlColumnList" /> 
+	           FROM  IKEP4_AP_DOC   iad
+			            ,IKEP4_AP_FORM_TEMPLATE iaft
+			      WHERE  iafm.form_id = iaft.form_id
+			        AND  iafm.is_use = 'Y'
+			<isNotEmpty property="searchColumn">
+				<isEqual property="searchColumn" compareValue="formName">
+					AND	iafm.FORM_NAME LIKE '%' || #searchWord# || '%'
+				</isEqual>
+			</isNotEmpty>
+		    <isNotEmpty property="sortColumn" >ORDER BY $sortColumn$ $sortType$</isNotEmpty>
+			 /* ===========================================END  */ 
+	<![CDATA[  
+	
+	    ) A WHERE ROWNUM <=  #endRowIndex# /* 종료  */
+	) WHERE RNUM >  #startRowIndex# /* 시작 */
+	]]> 
+  </select>
+  <select id="countApListSelect" parameterClass="ApListSearchCondition" resultClass="int">
+  	/* [ApList_SqlMap.xml] countApListSelect */
+	SELECT COUNT(iafm.FORM_ID)
+	FROM   IKEP4_AP_FORM_MASTER   iafm
+	     , IKEP4_AP_FORM_TEMPLATE iaft
+	WHERE  iafm.form_id = iaft.form_id
+	AND    iafm.is_use = 'Y'
+	<isNotEmpty property="searchColumn">
+		<isEqual property="searchColumn" compareValue="formName">
+			AND iafm.FORM_NAME LIKE '%' || #searchWord# || '%'
+		</isEqual>
+	</isNotEmpty> 
+  </select-->  
+
+	<!-- insert -->
+	<!--insert id="create" parameterClass="ApList"> 
+      <![CDATA[ 
+           INSERT INTO IKEP4_AP_FORM_MASTER 
+           		  (FORM_ID, FORM_NAME, FORM_CLASS_CD, FORM_TYPE_CD, FORM_DESC
+           	     , IS_USE, REGIST_USER_ID, REGIST_DATE, MODIFY_USER_ID, MODIFY_DATE)
+           VALUES (#formId#, #formName#, #formClassCd#, #formTypeCd#, #formDesc#
+           		 , #isUse#, #registUserId#, SYSDATE, #modifyUserId#, SYSDATE)
+       ]]>
+  </insert-->
+	
+	<!-- update -->
+	<!--update id="update" parameterClass="ApList">
+	  <![CDATA[
+		   	UPDATE 	IKEP4_AP_FORM_MASTER 
+		   	SET 	FORM_NAME 		= #formName#
+			   	  , FORM_DESC 		= #formDesc#
+			   	  , IS_USE 			= #isUse#
+			   	  , MODIFY_USER_ID 	= #modifyUserId# 
+			   	  , MODIFY_DATE 	= SYSDATE 
+		   	WHERE 	FORM_ID 		= #formId#
+	   ]]>
+	</update-->
+   
+  <!-- delete -->
+  <!--delete id="delete" parameterClass="java.lang.String">
+      <![CDATA[
+	       	DELETE FROM IKEP4_AP_FORM_MASTER WHERE FORM_ID = #formId#
+	   ]]>
+	</delete-->
+	
+	<!-- selectFormList -->
+	<!--select id="selectFormList" resultMap="ApListResult">
+	  <![CDATA[
+		   	SELECT iafm.* 
+			FROM   IKEP4_AP_FORM_MASTER   iafm
+			     , IKEP4_AP_FORM_TEMPLATE iaft
+			WHERE  iafm.form_id = iaft.form_id
+			AND    iafm.is_use = 'Y'
+			ORDER BY iafm.regist_date DESC
+	   ]]>
+	</select-->
+  
+</sqlMap>

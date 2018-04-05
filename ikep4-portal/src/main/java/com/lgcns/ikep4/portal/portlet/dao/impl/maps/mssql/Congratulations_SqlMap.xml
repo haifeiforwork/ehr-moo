@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="portal.portlet.congratulations">
+	<typeAlias alias="Congratulations"			type="com.lgcns.ikep4.portal.portlet.model.Congratulations" />
+	
+  	<resultMap id="configResult" class="Congratulations">
+  		<result column="PORTLET_CONFIG_ID" 		property="portletConfigId"		columnIndex="1" />
+	    <result column="PROPERTY_NAME"      	property="propertyName"      	columnIndex="2" />
+	    <result column="PROPERTY_VALUE"			property="propertyValue"		columnIndex="3" />
+	    <result column="REGISTER_ID"        	property="registerId"       	columnIndex="4" />
+  	</resultMap>
+  	
+  	<sql id="sqlColumnList">
+	    PORTLET_CONFIG_ID,
+	    PROPERTY_NAME,
+	    PROPERTY_VALUE,
+		REGISTER_ID,
+		REGISTER_NAME,
+		REGIST_DATE,
+		UPDATER_ID,
+		UPDATER_NAME,
+		UPDATE_DATE
+  	</sql>
+  	
+  	<!-- ANSI -->
+  	<insert id="createUserConfig" parameterClass="Congratulations"> 
+		<![CDATA[
+		/* [Congratulations_SqlMap.xml] portal.portlet.congratulations.createUserConfig */
+		INSERT	INTO		IKEP4_PO_PORTLET_USER_CONFIG 
+							(
+		]]>
+							<include refid="portal.portlet.congratulations.sqlColumnList" />
+		<![CDATA[
+							)
+		VALUES 				( 
+							#portletConfigId#,
+							#propertyName#,
+							#propertyValue#,
+					    	#registerId#,
+					    	#registerName#,
+					    	CURRENT_TIMESTAMP,
+					    	#updaterId#,
+					    	#updaterName#,
+					    	CURRENT_TIMESTAMP
+					    	)
+		]]>
+	</insert>
+  	
+  	<!-- ANSI -->
+  	<select id="getPortletConfigByUserId" parameterClass="java.util.Map" resultMap="configResult">  
+  		<![CDATA[
+  		/* [Congratulations_SqlMap.xml] portal.portlet.congratulations.getPortletConfigByUserId */
+		SELECT				PORTLET_CONFIG_ID,
+							PROPERTY_NAME,
+							PROPERTY_VALUE,
+							REGISTER_ID
+		FROM				IKEP4_PO_PORTLET_USER_CONFIG
+		WHERE				PORTLET_CONFIG_ID = #portletConfigId#
+		AND					PROPERTY_NAME = #propertyName#
+		AND					UPDATER_ID = #userId#
+		]]>
+  	</select>
+  	
+  	<!-- MS SQL -->
+  	<select id="list" parameterClass="java.util.Map" resultClass="Congratulations">
+  		<![CDATA[
+  		/* [Congratulations_SqlMap.xml] portal.portlet.congratulations.list */
+	  	WITH CTE AS (
+			SELECT	/*+ INDEX(IKEP4_EV_GROUP IKEP4_EV_GROUP(GROUP_TYPE_ID, GROUP_ID, PARENT_GROUP_ID,  PORTAL_ID)) */	
+					*
+			FROM	IKEP4_EV_GROUP
+			WHERE	PORTAL_ID = #portalId#
+				AND	GROUP_TYPE_ID = 'G0001'
+				AND	GROUP_ID IN (SELECT GROUP_ID FROM IKEP4_EV_USER_GROUP WHERE USER_ID = #userId#)
+			UNION ALL
+			SELECT	/*+ INDEX(IKEP4_EV_GROUP IKEP4_EV_GROUP(GROUP_TYPE_ID, GROUP_ID, PARENT_GROUP_ID,  PORTAL_ID)) */	
+					G.*
+			FROM	IKEP4_EV_GROUP G, CTE
+			WHERE	G.PORTAL_ID = #portalId#
+				AND	G.GROUP_TYPE_ID = 'G0001'
+				AND CTE.GROUP_ID = G.PARENT_GROUP_ID
+		)
+		SELECT * FROM 
+		( 
+		SELECT 
+		    '0' AS type,
+            A.USER_ID AS userId, 
+            A.USER_NAME AS userName,
+            A.USER_ENGLISH_NAME AS userEnglishName, 
+		    A.BIRTHDAY AS birthday,
+		    SUBSTRING(A.BIRTHDAY, 6, 10) AS solarBirthday,
+		    '' AS lunisolarBirthday,
+		    C.GROUP_NAME  AS groupName,
+		    C.GROUP_ENGLISH_NAME AS groupEnglishName, 
+		    CASE WHEN A.JOB_DUTY_CODE = '' THEN D.JOB_TITLE_NAME
+                 WHEN A.JOB_DUTY_CODE IS NULL THEN D.JOB_TITLE_NAME
+                 ELSE F.JOB_DUTY_NAME
+                 END AS jobPositionName,
+            CASE WHEN A.JOB_DUTY_CODE = '' THEN D.JOB_TITLE_ENGLISH_NAME
+                 WHEN A.JOB_DUTY_CODE IS NULL THEN D.JOB_TITLE_ENGLISH_NAME
+                 ELSE F.JOB_DUTY_ENGLISH_NAME
+                 END AS jobPositionEnglishName
+		FROM IKEP4_EV_USER A 
+		     INNER JOIN IKEP4_EV_USER_GROUP B ON A.USER_ID = B.USER_ID 
+		     INNER JOIN CTE C /*IKEP4_EV_GROUP C*/  ON B.GROUP_ID = C.GROUP_ID 
+		     LEFT OUTER JOIN IKEP4_EV_JOB_TITLE D ON A.JOB_TITLE_CODE = D.JOB_TITLE_CODE
+		     LEFT OUTER JOIN IKEP4_EV_JOB_DUTY F ON A.JOB_DUTY_CODE = F.JOB_DUTY_CODE 
+		WHERE A.PORTAL_ID = #portalId# 
+		      AND A.USER_STATUS IN ('H', 'C') 
+		      AND SUBSTRING(A.BIRTHDAY, 6, 10) >= #startDate# 
+		      AND SUBSTRING(A.BIRTHDAY, 6, 10) <= #endDate#
+		      AND C.VIEW_OPTION = '1' 
+		      AND A.lunisolar = 0
+		      ]]>
+		<dynamic>            
+            <isNotEmpty property="userType">
+                <isEqual property="userType" compareValue="JRM" prepend="and">
+                    A.job_duty_code in ('10','11','12','13','14','15','17','18','19','21','26','63')
+                </isEqual>
+                <isEqual property="userType" compareValue="NJRM" prepend="and">
+                    A.job_duty_code not in ('10','11','12','13','14','15','17','18','19','21','26','63')
+                </isEqual>
+            </isNotEmpty>
+        </dynamic>
+		      
+		<![CDATA[
+		UNION
+		SELECT 
+		    '1' AS type,
+		    A.USER_ID AS userId, 
+		    A.USER_NAME AS userName,
+		    A.USER_ENGLISH_NAME AS userEnglishName, 
+		    A.BIRTHDAY AS birthday,
+		    E.SOLAR_DATE AS solarBirthday,
+		    SUBSTRING(A.BIRTHDAY, 6, 10) AS lunisolarBirthday,
+		    C.GROUP_NAME  AS groupName,
+		    C.GROUP_ENGLISH_NAME AS groupEnglishName, 
+		    CASE WHEN A.JOB_DUTY_CODE = '' THEN D.JOB_TITLE_NAME
+                 WHEN A.JOB_DUTY_CODE IS NULL THEN D.JOB_TITLE_NAME
+                 ELSE F.JOB_DUTY_NAME
+                 END AS jobPositionName,
+            CASE WHEN A.JOB_DUTY_CODE = '' THEN D.JOB_TITLE_ENGLISH_NAME
+                 WHEN A.JOB_DUTY_CODE IS NULL THEN D.JOB_TITLE_ENGLISH_NAME
+                 ELSE F.JOB_DUTY_ENGLISH_NAME
+                 END AS jobPositionEnglishName
+		FROM IKEP4_EV_USER A 
+		     INNER JOIN IKEP4_EV_USER_GROUP B ON A.USER_ID = B.USER_ID 
+		     INNER JOIN CTE C /*IKEP4_EV_GROUP C*/  ON B.GROUP_ID = C.GROUP_ID  
+		     INNER JOIN 
+		     (
+		        SELECT 
+		            SUBSTRING(LUNISOLAR_DATE, 6, 10) AS LUNISOLAR_DATE, 
+		            SUBSTRING(SOLAR_DATE, 6, 10) AS SOLAR_DATE
+		        FROM  LunisolarToSolar
+		        WHERE SOLAR_DATE >= #startYearDate#
+		              AND SOLAR_DATE <= #endYearDate# 
+		      ) E ON SUBSTRING(A.birthday, 6, 10) = E.LUNISOLAR_DATE  		        
+		     LEFT OUTER JOIN IKEP4_EV_JOB_TITLE D ON A.JOB_TITLE_CODE = D.JOB_TITLE_CODE 
+		     LEFT OUTER JOIN IKEP4_EV_JOB_DUTY F ON A.JOB_DUTY_CODE = F.JOB_DUTY_CODE  
+		WHERE A.PORTAL_ID = #portalId# 
+		      AND A.USER_STATUS IN ('H', 'C') 		     
+		      AND C.VIEW_OPTION = '1' 
+		      AND A.lunisolar = 1
+		      ]]>  
+		      
+		 <dynamic>            
+            <isNotEmpty property="userType">
+                <isEqual property="userType" compareValue="JRM" prepend="and">
+                    A.job_duty_code in ('10','11','12','13','14','15','17','18','19','21','26','63')
+                </isEqual>
+                <isEqual property="userType" compareValue="NJRM" prepend="and">
+                    A.job_duty_code not in ('10','11','12','13','14','15','17','18','19','21','26','63')
+                </isEqual>
+            </isNotEmpty>
+        </dynamic>
+       
+		<![CDATA[
+		) TBL1
+		ORDER BY  solarBirthday
+		]]>
+		
+    </select>
+    
+  
+    
+    
+  	<!-- ANSI -->
+  	<update id="updateUserConfig" parameterClass="Congratulations"> 
+ 		<![CDATA[
+ 		/* [Congratulations_SqlMap.xml] portal.portlet.congratulations.updateUserConfig */
+    	UPDATE				IKEP4_PO_PORTLET_USER_CONFIG 
+    	SET					PROPERTY_VALUE = #propertyValue#,
+		    				UPDATER_ID = #updaterId#,
+		    				UPDATER_NAME = #updaterName#,
+		    				UPDATE_DATE = CURRENT_TIMESTAMP
+    	WHERE				PORTLET_CONFIG_ID = #portletConfigId#
+    	AND					PROPERTY_NAME = #propertyName#
+    	AND					REGISTER_ID = #registerId#
+    	]]>
+  	</update>
+  	  	
+</sqlMap>   

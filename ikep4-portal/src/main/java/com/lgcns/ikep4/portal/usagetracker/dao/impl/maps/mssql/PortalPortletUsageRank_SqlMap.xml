@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="portal.usagetracker.PortalPortletUsageRank">
+	<typeAlias alias="PortalPortletUsageRank" type="com.lgcns.ikep4.portal.usagetracker.model.PortalPortletUsageRank" />
+
+	<!-- ANSI -->
+	<insert id="createPortletLog" parameterClass="PortalPortletUsageRank">
+      	<![CDATA[ 
+      		/* [PortalPortletUsageRank_SqlMap.xml] portal.usagetracker.PortalPortletUsageRank.createPortletLog */
+			INSERT INTO IKEP4_UT_PORTLET_LOG
+			VALUES (#portletHistoryId#, #portletId#, #ownerId#, #action#, #portalId#, #registerId#, #registerName#, CURRENT_TIMESTAMP)
+       	]]>
+   	</insert>
+   	
+   	<!-- ANSI -->
+   	<select id="getPortletLog" parameterClass="String" resultClass="PortalPortletUsageRank">
+	  <![CDATA[
+	  		/* [PortalPortletUsageRank_SqlMap.xml] portal.usagetracker.PortalPortletUsageRank.getPortletLog */
+		   SELECT 
+		   	   PORTLET_HISTORY_ID  portletHistoryId
+		   	 FROM IKEP4_UT_PORTLET_LOG 
+		   	WHERE PORTLET_HISTORY_ID = #portletHistoryId#
+	   ]]>
+	</select>
+   	
+</sqlMap>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="com.lgcns.ikep4.workflow.engine.model.ActivityBean" >
+	<typeAlias alias = "ActivityBean" type="com.lgcns.ikep4.workflow.engine.model.ActivityBean"/>
+	
+	<!-- Activity 테이블 조회 결과 -->
+	<resultMap id="result" class="ActivityBean">
+		<result property="activityId"   column="ACTIVITY_ID"    columnIndex="1"/>
+		<result property="activityName" column="ACTIVITY_NAME"  columnIndex="2"/>
+		<result property="activityType" column="ACTIVITY_TYPE"  columnIndex="3"/>
+		<result property="gatewayType"  column="GATEWAY_TYPE"   columnIndex="4"/>
+		<result property="subType"      column="SUB_TYPE"       columnIndex="5"/>
+		<result property="loopType"     column="LOOP_TYPE"      columnIndex="6"/>
+		<result property="startMode"    column="START_MODE"     columnIndex="7"/>
+		<result property="endMode"      column="END_MODE"       columnIndex="8"/>
+		<result property="varDefine"  	column="VAR_DEFINE"     columnIndex="9"/>
+		<result property="attrExpand" 	column="ATTR_EXPAND"    columnIndex="10"/>
+		<result property="description"  column="DESCRIPTION"    columnIndex="11"/>
+		<result property="subProcessId" column="SUB_PROCESS_ID" columnIndex="12"/>
+		<result property="processId" 	column="PROCESS_ID" columnIndex="13"/>
+		<result property="processVer" 	column="PROCESS_VER" columnIndex="14"/>
+		<result property="createDate" 	column="CREATE_DATE" columnIndex="15"/>
+	</resultMap>
+	
+	<!-- MS SQL -->
+	<!-- insert -->
+	<insert id="insert" parameterClass="ActivityBean">
+      <![CDATA[ 
+      		/* [Activity_SqlMap.xml] com.lgcns.ikep4.workflow.engine.model.ActivityBean.insert */
+      
+			INSERT INTO IKEP4_WF_ACTIVITY (							
+					ACTIVITY_ID, ACTIVITY_NAME, ACTIVITY_TYPE, SUB_TYPE, LOOP_TYPE, GATEWAY_TYPE,
+					START_MODE, END_MODE, VAR_DEFINE, ATTR_EXPAND, SUB_PROCESS_ID, 	
+					DESCRIPTION, PROCESS_ID, PROCESS_VER, CREATE_DATE)				
+				VALUES ( 	#activityId#, #activityName#, #activityType#, #subType#, #loopType#, #gatewayType#,				
+						#startMode#, #endMode#, #varDefine#, #attrExpand#, #subProcessId#,					
+						#description#, #processId#, #processVer#, #createDate# )						
+       ]]>
+       <selectKey resultClass="String" keyProperty="activityId" type="pre"> 
+         <![CDATA[ 
+               SELECT #activityId# AS ACTIVITY_ID
+            ]]>
+      </selectKey>       
+   </insert>
+</sqlMap>

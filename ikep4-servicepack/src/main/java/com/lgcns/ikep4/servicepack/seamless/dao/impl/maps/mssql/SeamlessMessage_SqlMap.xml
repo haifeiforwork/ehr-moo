@@ -1,0 +1,503 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="servicepack.seamlessmessage.seamlessmessage">
+
+	<typeAlias alias="MessageBox" type="com.lgcns.ikep4.servicepack.seamless.model.MessageBox" />
+	<typeAlias alias="SeamlessmessageSearchCondition" type="com.lgcns.ikep4.servicepack.seamless.search.SeamlessmessageSearchCondition"/>
+	
+	<resultMap class="com.lgcns.ikep4.servicepack.seamless.model.MessageBox" id="receiveResult">
+		<result column="MESSAGE_ID"                property="messageId"              jdbcType="VARCHAR" />
+	    <result column="MESSAGE_TYPE"              property="messageType"            jdbcType="VARCHAR" />
+	    <result column="TITLE"                     property="title"                  jdbcType="VARCHAR" />
+	    <result column="CONTENTS"                  property="contents"               jdbcType="VARCHAR" />
+	    <result column="ATTACH_COUNT"              property="attachCount"            jdbcType="DECIMAL" />
+	    <result column="RECEIVER_COUNT"            property="receiverCount"          jdbcType="DECIMAL" />
+	    <result column="SENDER_ID"                 property="senderId"               jdbcType="VARCHAR" />
+	    <result column="SENDER_NAME"               property="senderName"             jdbcType="VARCHAR" />
+	    <result column="SENDER_ENG_NAME"           property="senderEngName"          jdbcType="VARCHAR" />
+	    <result column="SENDER_MAIL"               property="senderMail"             jdbcType="VARCHAR" />
+		<result column="SENDER_TEAM_NAME"          property="senderTeamName"         jdbcType="VARCHAR" />
+		<result column="SENDER_TEAM_ENG_NAME"      property="senderTeamEngName"      jdbcType="VARCHAR" />
+		<result column="SENDER_JOB_TITLE_NAME"     property="senderJobTitleName"     jdbcType="VARCHAR" />
+		<result column="SENDER_JOB_TITLE_ENG_NAME" property="senderJobTitleEngName"  jdbcType="VARCHAR" />
+	    <result column="SEND_DATE"                 property="sendDate"               jdbcType="TIMESTAMP" />
+	    <result column="IS_READ"                   property="isRead"                 jdbcType="DECIMAL" />
+	    <result column="IS_TODAY"                  property="isToday"                jdbcType="DECIMAL" />
+	    <result column="PICTURE_PATH"              property="picturePath"            jdbcType="VARCHAR" />
+	    <result column="PROFILE_PICTURE_PATH"      property="profilePicturePath"     jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<!-- MS SQL -->
+	<select id="receiveList" parameterClass="SeamlessmessageSearchCondition" resultMap="receiveResult">
+		<![CDATA[
+		WITH TBL AS (
+			SELECT	A.GROUP_ID
+			FROM	IKEP4_EV_GROUP A
+					INNER JOIN IKEP4_EV_USER_GROUP B
+						ON A.GROUP_ID = B.GROUP_ID
+			WHERE	A.GROUP_TYPE_ID = 'G0001'
+				AND B.USER_ID = #userId#
+		),
+		CTE AS (
+			SELECT	GROUP_ID, PARENT_GROUP_ID
+			FROM	IKEP4_EV_GROUP
+			WHERE	GROUP_ID IN (SELECT GROUP_ID FROM TBL)
+			UNION ALL
+			SELECT	G.GROUP_ID, G.PARENT_GROUP_ID
+			FROM	IKEP4_EV_GROUP G, CTE
+			WHERE	CTE.PARENT_GROUP_ID = G.GROUP_ID
+		)
+		SELECT /* [SeamlessMessage_SqlMap.xml] seamlessmessage.receiveList */
+			TOP 10 * 
+		FROM (
+			SELECT MESSAGE_ID
+				, MESSAGE_TYPE
+				, TITLE
+				, CONTENTS
+				, ATTACH_COUNT
+				, RECEIVER_COUNT
+				, SENDER_ID
+				, SENDER_NAME, SENDER_ENG_NAME
+				, SENDER_MAIL
+				, SENDER_TEAM_NAME, SENDER_TEAM_ENG_NAME
+				, SENDER_JOB_TITLE_NAME, SENDER_JOB_TITLE_ENG_NAME
+				, PICTURE_PATH
+				, PROFILE_PICTURE_PATH
+				, SEND_DATE
+				, CASE WHEN MESSAGE_TYPE = 'Message' AND RECEIVER_ID <> #userId# THEN
+                        (SELECT CASE WHEN COUNT(*) = 0 THEN 0 ELSE 1 END FROM IKEP4_ME_MESSAGE_READ sa WHERE sa.MESSAGE_ID = main.MESSAGE_ID AND sa.USER_ID = #userId#)
+                       ELSE IS_READ END AS IS_READ
+				, CASE WHEN CONVERT(DATETIME, SEND_DATE) = CONVERT(DATETIME, CURRENT_TIMESTAMP) THEN 1 ELSE 0 END IS_TODAY
+			FROM 
+			(
+			 	 SELECT A.MESSAGE_TYPE,A.MESSAGE_ID,A.TITLE,A.CONTENTS,A.ATTACH_COUNT,A.RECEIVER_COUNT
+                         , A.SENDER_ID
+                         , B.USER_NAME AS SENDER_NAME
+                         , B.USER_ENGLISH_NAME AS SENDER_ENG_NAME
+                         , A.SENDER_MAIL
+                         , B.TEAM_NAME AS SENDER_TEAM_NAME
+                         , B.TEAM_ENGLISH_NAME AS SENDER_TEAM_ENG_NAME
+                         , B.PICTURE_PATH
+						 , B.PROFILE_PICTURE_PATH
+                         , C.JOB_TITLE_NAME AS SENDER_JOB_TITLE_NAME
+                         , C.JOB_TITLE_ENGLISH_NAME AS SENDER_JOB_TITLE_ENG_NAME
+                         , A.SEND_DATE,A.IS_READ,A.RECEIVER_ID
+                  FROM
+                  (
+                    SELECT  MESSAGE_TYPE, MESSAGE_ID, TITLE, CONTENTS, ATTACH_COUNT, RECEIVER_COUNT, SENDER_ID, SENDER_NAME, SENDER_MAIL, SEND_DATE, IS_READ, OWNER_ID AS RECEIVER_ID
+                    FROM IKEP4_UM_RECEIVEBOX
+                    WHERE IS_DELETE = 0
+                    AND OWNER_ID = #userId#
+                    UNION ALL
+                    SELECT 'Message' AS MESSAGE_TYPE, A.MESSAGE_ID, '' AS TITLE, A.CONTENTS, A.ATTACH_COUNT, A.RECEIVER_COUNT, A.SENDER_ID,     A.SENDER_NAME, '' AS SENDER_MAIL, A.SEND_DATE,
+                        CASE WHEN C.READ_DATE IS NULL THEN 0 ELSE 1 END AS IS_READ, B.USER_ID AS RECEIVER_ID
+                    FROM IKEP4_ME_MESSAGE A, IKEP4_ME_RECEIVEBOX B
+                    LEFT OUTER JOIN IKEP4_ME_MESSAGE_READ C ON  (C.USER_ID = B.USER_ID AND C.MESSAGE_ID = B.MESSAGE_ID)
+                    WHERE A.MESSAGE_ID=B.MESSAGE_ID AND ISNULL(C.IS_DELETE,0) = 0
+                    AND B.USER_ID IN (SELECT GROUP_ID FROM CTE
+                                      UNION
+                                      SELECT #userId#)
+                  ) A 
+                  LEFT OUTER JOIN IKEP4_EV_USER B ON A. SENDER_ID = B.USER_ID 
+                  LEFT OUTER JOIN IKEP4_EV_JOB_TITLE C ON  B.JOB_TITLE_CODE = C.JOB_TITLE_CODE
+
+			) main
+			WHERE 1=1
+			]]>
+			<isNotEmpty property="sendDate">
+				<![CDATA[
+				AND REPLACE(CONVERT(NVARCHAR, SEND_DATE, 20), '-', '.') < #sendDate#
+				]]>
+			</isNotEmpty>
+			<isNotEmpty property="messageType">
+				AND MESSAGE_TYPE = #messageType#
+			</isNotEmpty>
+			<isNotEmpty property="searchWord">
+				<isEqual property="searchColumn" compareValue="senderName">
+					AND	(SENDER_NAME LIKE '%' + #searchWord# + '%' OR SENDER_ENG_NAME LIKE '%' + #searchWord# + '%')
+				</isEqual>
+				<isEqual property="searchColumn" compareValue="contents">
+					<![CDATA[
+					AND (TITLE LIKE '%'+ #searchWord# +'%' OR CONTENTS LIKE '%'+ #searchWord# +'%')
+					]]>
+				</isEqual>
+			</isNotEmpty>
+		) TBL 
+		ORDER BY SEND_DATE DESC
+	</select>
+	
+	<resultMap class="com.lgcns.ikep4.servicepack.seamless.model.MessageBox" id="sendResult">
+		<result column="MESSAGE_ID"                  property="messageId"               jdbcType="VARCHAR" />
+	    <result column="MESSAGE_TYPE"                property="messageType"             jdbcType="VARCHAR" />
+	    <result column="TITLE"                       property="title"                   jdbcType="VARCHAR" />
+	    <result column="CONTENTS"                    property="contents"                jdbcType="VARCHAR" />
+	    <result column="ATTACH_COUNT"                property="attachCount"             jdbcType="DECIMAL" />
+	    <result column="RECEIVER_COUNT"              property="receiverCount"           jdbcType="DECIMAL" />
+	    <result column="RECEIVER_TYPE"               property="receiverType"            jdbcType="VARCHAR" />
+	    <result column="RECEIVER_ID"                 property="receiverId"              jdbcType="VARCHAR" />
+	    <result column="RECEIVER_NAME"               property="receiverName"            jdbcType="VARCHAR" />
+	    <result column="RECEIVER_ENG_NAME"           property="receiverEngName"         jdbcType="VARCHAR" />
+	    <result column="RECEIVER_MAIL"               property="receiverMail"            jdbcType="VARCHAR" />
+		<result column="RECEIVER_TEAM_NAME"          property="receiverTeamName"        jdbcType="VARCHAR" />
+		<result column="RECEIVER_TEAM_ENG_NAME"      property="receiverTeamEngName"     jdbcType="VARCHAR" />
+		<result column="RECEIVER_JOB_TITLE_NAME"     property="receiverJobTitleName"    jdbcType="VARCHAR" />
+		<result column="RECEIVER_JOB_TITLE_ENG_NAME" property="receiverJobTitleEngName" jdbcType="VARCHAR" />
+		<result column="SENDER_ID"                   property="senderId"                jdbcType="VARCHAR" />
+	    <result column="SEND_DATE"                   property="sendDate"                jdbcType="TIMESTAMP" />
+	    <result column="IS_TODAY"                    property="isToday"                 jdbcType="DECIMAL" />
+	    <result column="PICTURE_PATH"              property="picturePath"            jdbcType="VARCHAR" />
+	    <result column="PROFILE_PICTURE_PATH"      property="profilePicturePath"     jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<!-- MS SQL -->
+	<select id="sendList" parameterClass="SeamlessmessageSearchCondition" resultMap="sendResult">
+		SELECT /* [SeamlessMessage_SqlMap.xml] seamlessmessage.sendList */
+			TOP 10 * 
+		FROM (
+			SELECT MESSAGE_ID
+				, MESSAGE_TYPE
+				, TITLE
+				, CONTENTS
+				, ATTACH_COUNT
+				, RECEIVER_COUNT
+				, RECEIVER_TYPE
+				, RECEIVER_ID
+				, RECEIVER_NAME, RECEIVER_ENG_NAME
+				, RECEIVER_MAIL
+				, RECEIVER_TEAM_NAME, RECEIVER_TEAM_ENG_NAME
+				, RECEIVER_JOB_TITLE_NAME, RECEIVER_JOB_TITLE_ENG_NAME
+				, PICTURE_PATH
+				, PROFILE_PICTURE_PATH
+				, SENDER_ID
+				, SEND_DATE
+				, CASE WHEN CONVERT(DATETIME, SEND_DATE) = CONVERT(DATETIME, CURRENT_TIMESTAMP) THEN 1 ELSE 0 END IS_TODAY
+			FROM 
+			(
+				SELECT A.MESSAGE_TYPE, 
+                       A.MESSAGE_ID,
+                       A.TITLE,
+                       CONVERT(NVARCHAR(MAX), A.CONTENTS) CONTENTS,
+                       A.ATTACH_COUNT,
+                       A.RECEIVER_COUNT,
+                       A.RECEIVER_TYPE,
+                       A.RECEIVER_ID,
+                       B.USER_NAME AS RECEIVER_NAME,
+                       B.USER_ENGLISH_NAME AS RECEIVER_ENG_NAME,
+                       A.RECEIVER_MAIL,
+                       B.TEAM_NAME AS RECEIVER_TEAM_NAME,
+                       B.TEAM_ENGLISH_NAME AS RECEIVER_TEAM_ENG_NAME,
+                       B.PICTURE_PATH,
+					   B.PROFILE_PICTURE_PATH,
+                       C.JOB_TITLE_NAME AS RECEIVER_JOB_TITLE_NAME,
+                       C.JOB_TITLE_ENGLISH_NAME AS RECEIVER_JOB_TITLE_ENG_NAME,
+                       A.SENDER_ID,
+                       A.SEND_DATE
+                FROM   (
+                
+                        SELECT * 
+                        FROM  
+                        (     SELECT S.MESSAGE_TYPE,
+                                     S.MESSAGE_ID,
+                                     S.TITLE,
+                                     S.CONTENTS AS CONTENTS,
+                                     S.ATTACH_COUNT,
+                                     S.RECEIVER_COUNT,
+                                     'O' AS RECEIVER_TYPE,
+                                    (select TOP 1 RECEIVER_ID 
+                                      from IKEP4_UM_SENDBOX_RECIPIENT R LEFT OUTER JOIN IKEP4_EV_USER U  ON R.RECEIVER_ID = U.USER_ID
+                                      where S.MESSAGE_ID = R.MESSAGE_ID
+                                       <isNotEmpty property="searchWord">
+											<isEqual property="searchColumn" compareValue="receiverName">
+												<![CDATA[
+												AND	(U.USER_NAME LIKE '%' + #searchWord# + '%' OR U.USER_ENGLISH_NAME LIKE '%' + #searchWord# + '%')
+												]]>
+											</isEqual>
+									    </isNotEmpty>
+                                     ) AS RECEIVER_ID,
+                                     (select TOP 1 RECEIVER_MAIL 
+                                      from IKEP4_UM_SENDBOX_RECIPIENT R LEFT OUTER JOIN IKEP4_EV_USER U  ON R.RECEIVER_ID = U.USER_ID
+                                      where S.MESSAGE_ID = R.MESSAGE_ID 
+                                      <isNotEmpty property="searchWord">
+											<isEqual property="searchColumn" compareValue="receiverName">
+												<![CDATA[
+												AND	(U.USER_NAME LIKE '%' + #searchWord# + '%' OR U.USER_ENGLISH_NAME LIKE '%' + #searchWord# + '%')
+												]]>
+											</isEqual>
+									  </isNotEmpty>
+                                      ) AS RECEIVER_MAIL,
+                                     S.SENDER_ID,
+                                     S.SEND_DATE
+                              FROM   IKEP4_UM_SENDBOX S
+                              WHERE  S.SENDER_ID = #userId#
+                              AND    S.IS_DELETE = 0
+                        ) SUB
+                        WHERE RECEIVER_ID IS NOT NULL
+                        <isNotEmpty property="searchWord">
+							<isEqual property="searchColumn" compareValue="contents">
+								<![CDATA[
+								AND (TITLE LIKE '%'+ #searchWord# +'%' OR CONTENTS LIKE '%'+ #searchWord# +'%')
+								]]>
+							</isEqual>
+						</isNotEmpty>
+                           
+                        UNION ALL
+                        
+                        SELECT * 
+                        FROM  
+                        (   SELECT 
+                                  'Message' AS MESSAGE_TYPE,
+                                   A.MESSAGE_ID,
+                                   '' AS TITLE,
+                                   A.CONTENTS AS CONTENTS,
+                                   A.ATTACH_COUNT,
+                                   A.RECEIVER_COUNT,
+                                   'I' AS RECEIVER_TYPE,
+                                   (SELECT TOP 1 B.USER_ID 
+                                    FROM IKEP4_ME_RECEIVEBOX B LEFT OUTER JOIN IKEP4_EV_USER U  ON B.USER_ID = U.USER_ID 
+                                    WHERE A.MESSAGE_ID = B.MESSAGE_ID 
+                                    <isNotEmpty property="searchWord">
+											<isEqual property="searchColumn" compareValue="receiverName">
+												<![CDATA[
+												AND	(U.USER_NAME LIKE '%' + #searchWord# + '%' OR U.USER_ENGLISH_NAME LIKE '%' + #searchWord# + '%')
+												]]>
+											</isEqual>
+									</isNotEmpty>
+                                    ) AS RECEIVER_ID,
+                                    '' AS RECEIVER_MAIL,
+                                   A.SENDER_ID,
+                                   A.SEND_DATE
+                            FROM   IKEP4_ME_MESSAGE A
+                                   INNER JOIN IKEP4_ME_SENDBOX C
+                            			ON A.MESSAGE_ID = C.MESSAGE_ID
+                            WHERE    A.SENDER_ID  = #userId#
+                        ) SUB 
+                        WHERE RECEIVER_ID IS NOT NULL
+                        <isNotEmpty property="searchWord">
+							<isEqual property="searchColumn" compareValue="contents">
+								<![CDATA[
+								AND (CONTENTS LIKE '%'+ #searchWord# +'%')
+								]]>
+							</isEqual>
+						</isNotEmpty>
+
+                        UNION ALL
+                        
+                        SELECT 'SMS' AS MESSAGE_TYPE,
+                               S.SMS_ID AS MESSAGE_ID,
+                               CONTENTS AS TITLE,
+                               NULL AS CONTENTS,
+                               0 AS ATTACH_COUNT,
+                               1 AS RECEIVER_COUNT,
+                               'I' AS RECEIVER_TYPE,
+                               S.RECEIVER_ID,
+                                '' AS RECEIVER_MAIL,
+                               S.REGISTER_ID AS SENDER_ID,
+                               S.REGIST_DATE AS SEND_DATE
+                        FROM   IKEP4_SM_SMS S LEFT OUTER JOIN IKEP4_EV_USER U  ON S.RECEIVER_ID = U.USER_ID 
+                        WHERE S.REGISTER_ID = #userId#
+                        <isNotEmpty property="searchWord">
+							<isEqual property="searchColumn" compareValue="receiverName">
+								<![CDATA[
+								AND	(U.USER_NAME LIKE '%' + #searchWord# + '%' OR U.USER_ENGLISH_NAME LIKE '%' + #searchWord# + '%')
+								]]>
+							</isEqual>
+							<isEqual property="searchColumn" compareValue="contents">
+								<![CDATA[
+								AND (CONTENTS LIKE '%'+ #searchWord# +'%')
+								]]>
+							</isEqual>
+						</isNotEmpty>
+                 ) A 
+                 LEFT OUTER JOIN IKEP4_EV_USER B ON A.RECEIVER_ID = B.USER_ID 
+                 LEFT OUTER JOIN IKEP4_EV_JOB_TITLE C ON B.JOB_TITLE_CODE = C.JOB_TITLE_CODE 
+			
+			) main
+			WHERE 1=1
+			<isNotEmpty property="sendDate">
+				<![CDATA[
+				AND REPLACE(CONVERT(NVARCHAR, SEND_DATE, 20), '-', '.') < #sendDate#
+				]]>
+			</isNotEmpty>
+			<isNotEmpty property="messageType">
+				AND MESSAGE_TYPE = #messageType#
+			</isNotEmpty>
+		) TBL
+		ORDER BY SEND_DATE DESC
+	</select>
+	
+	<resultMap class="com.lgcns.ikep4.servicepack.seamless.model.MessageBox" id="historyResult">
+		<result column="MESSAGE_ID"     property="messageId"     jdbcType="VARCHAR" />
+	    <result column="MESSAGE_TYPE"   property="messageType"   jdbcType="VARCHAR" />
+	    <result column="TITLE"          property="title"         jdbcType="VARCHAR" />
+	    <result column="CONTENTS"       property="contents"      jdbcType="VARCHAR" />
+	    <result column="ATTACH_COUNT"   property="attachCount"   jdbcType="DECIMAL" />	    
+	    <result column="SEND_DATE"      property="sendDate"      jdbcType="TIMESTAMP" />
+	    <result column="IS_READ"        property="isRead"        jdbcType="DECIMAL" />
+	    <result column="BOX_TYPE"       property="boxType"       jdbcType="VARCHAR" />
+	    <result column="IS_TODAY"       property="isToday"       jdbcType="DECIMAL" />
+	    <result column="STRING_DATE"    property="stringDate"    jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<!-- MS SQL -->
+	<select id="contactHistoryList" parameterClass="SeamlessmessageSearchCondition" resultMap="historyResult">
+		SELECT * /* [SeamlessMessage_SqlMap.xml] seamlessmessage.contactHistoryList */
+		FROM (
+		    SELECT	Row_number() OVER (ORDER BY SEND_DATE ASC) AS RNUM
+		    	, MESSAGE_ID
+		        , MESSAGE_TYPE
+		        , TITLE
+		        , CONTENTS
+		        , ATTACH_COUNT
+		        , SEND_DATE
+		        , IS_READ
+		        , BOX_TYPE
+		        , (CASE WHEN CONVERT(NVARCHAR, SEND_DATE, 23) = CONVERT(NVARCHAR, CURRENT_TIMESTAMP, 23) THEN 1 ELSE 0 END) IS_TODAY
+		        , CONVERT(NVARCHAR, SEND_DATE, 112) STRING_DATE
+		    FROM
+		        (
+		            SELECT MESSAGE_TYPE, MESSAGE_ID, TITLE, CONTENTS, ATTACH_COUNT, SEND_DATE, IS_READ, 'R' AS BOX_TYPE
+		            FROM IKEP4_VW_MESSAGE_RECEIVE
+		            WHERE RECEIVER_ID = #userId#
+		            AND SENDER_ID = #guestId#
+		            UNION ALL
+		            SELECT MESSAGE_TYPE, MESSAGE_ID, TITLE, CONTENTS, ATTACH_COUNT, SEND_DATE, 1 AS IS_READ, 'S' AS BOX_TYPE
+		            FROM IKEP4_VW_MESSAGE_SEND
+		            WHERE SENDER_ID = #userId#
+		            AND RECEIVER_ID = #guestId#
+		        ) TBL
+		    WHERE 1=1
+		    <isNotEmpty property="messageId">
+		    	AND MESSAGE_ID = #messageId#
+		    </isNotEmpty>
+		    <isNotEmpty property="messageType">
+		    	AND MESSAGE_TYPE = #messageType#
+		    </isNotEmpty>
+		    <isNotEmpty property="searchColumn">
+		    	<isEqual property="searchColumn" compareValue="before">
+		    	<![CDATA[
+				    AND REPLACE(CONVERT(NVARCHAR, SEND_DATE, 20), '-', '.') < #sendDate#
+				]]>
+		    	</isEqual>
+		    	<isEqual property="searchColumn" compareValue="after">
+		    	<![CDATA[
+					AND REPLACE(CONVERT(NVARCHAR, SEND_DATE, 20), '-', '.') > #sendDate#				    
+				]]>
+				</isEqual>
+		    </isNotEmpty>
+		) TBL2
+		<![CDATA[
+		WHERE RNUM <= #rowNum#
+		]]>
+	</select>
+	
+	<!-- ANSI -->
+	<select id="lastContactDate" parameterClass="SeamlessmessageSearchCondition" resultClass="Date">
+		SELECT MAX(SEND_DATE) AS LAST_CONTACT_DATE /* [SeamlessMessage_SqlMap.xml] seamlessmessage.lastContactDate */
+		FROM (
+		    SELECT MAX(SEND_DATE) AS SEND_DATE
+		    FROM IKEP4_VW_MESSAGE_RECEIVE
+		    WHERE RECEIVER_ID = #userId#
+		    AND SENDER_ID = #guestId#
+		    UNION ALL
+		    SELECT MAX(SEND_DATE) AS SEND_DATE
+		    FROM IKEP4_VW_MESSAGE_SEND
+		    WHERE SENDER_ID = #userId#
+		    AND RECEIVER_ID = #guestId#
+		) TBL
+	</select>
+	
+	<!-- MS SQL -->
+	<typeAlias alias="MailSynchronize" type="com.lgcns.ikep4.servicepack.seamless.model.MailSynchronize" />
+	<select id="getSyncDate" parameterClass="MailSynchronize" resultClass="Date">
+		SELECT /* [SeamlessMessage_SqlMap.xml] seamlessmessage.syncDate */
+			ISNULL(MAX(REGIST_DATE)
+		        ,	DATEADD(DD, -1 * ISNULL((SELECT MAX(KEEP_DAYS)
+		                              FROM IKEP4_UM_SETTING sa, IKEP4_EV_USER sb
+		                             WHERE sa.PORTAL_ID = sb.PORTAL_ID
+		                               AND sb.USER_ID = #ownerId#), 90), CURRENT_TIMESTAMP) )
+		FROM IKEP4_UM_SYNCHRONIZE main
+		WHERE OWNER_ID = #ownerId#
+		AND MESSAGE_TYPE = #messageType#
+		AND RESULT = 1
+		AND FOLDER_TYPE = #folderType#
+	</select>
+	
+	<!-- ANSI -->
+	<insert id="createSynchronize" parameterClass="MailSynchronize">
+		INSERT INTO IKEP4_UM_SYNCHRONIZE /* [SeamlessMessage_SqlMap.xml] seamlessmessage.createSynchronize */
+			( OWNER_ID
+			, REGIST_DATE
+			, FOLDER_TYPE
+			, MESSAGE_TYPE
+			, RESULT
+			, RESULT_DESCRIPTION )
+	    VALUES 
+	    	( #ownerId#
+	    	, #registDate#
+	    	, #folderType#
+	    	, #messageType#
+	    	, #result#
+	    	, #resultDescription# )
+	</insert>
+	
+	<resultMap class="com.lgcns.ikep4.servicepack.seamless.model.ContacUser" id="contacUserResult">
+		<result column="USER_ID"                property="userId"              jdbcType="VARCHAR" />
+	    <result column="USER_NAME"              property="userName"            jdbcType="VARCHAR" />
+	    <result column="USER_ENGLISH_NAME"      property="userEnglishName"     jdbcType="VARCHAR" />
+	    <result column="MAIL"                   property="mail"                jdbcType="VARCHAR" />
+	    <result column="TEAM_NAME"              property="teamName"            jdbcType="VARCHAR" />
+	    <result column="TEAM_ENGLISH_NAME"      property="teamEnglishName"     jdbcType="VARCHAR" />
+	    <result column="MOBILE"                 property="mobile"              jdbcType="VARCHAR" />	    
+	    <result column="OFFICE_PHONE_NO"        property="officePhoneNo"       jdbcType="VARCHAR" />
+	    <result column="JOB_TITLE_NAME"         property="jobTitleName"        jdbcType="VARCHAR" />
+	    <result column="JOB_TITLE_ENGLISH_NAME" property="jobTitleEnglishName" jdbcType="VARCHAR" />
+	    <result column="FAVORITE_YN"            property="favoriteYn"          jdbcType="DECIMAL" />
+	    <result column="FOLLOW_YN"              property="followYn"            jdbcType="DECIMAL" />
+	    <result column="PICTURE_PATH"              property="picturePath"            jdbcType="VARCHAR" />
+	    <result column="PROFILE_PICTURE_PATH"      property="profilePicturePath"     jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<!-- MS SQL -->
+	<select id="contactUserList" parameterClass="SeamlessmessageSearchCondition" resultMap="contacUserResult">
+		<![CDATA[
+		SELECT /* [SeamlessMessage_SqlMap.xml] seamlessmessage.contactUserList */
+			USER_ID, USER_NAME, USER_ENGLISH_NAME, MAIL, TEAM_NAME, TEAM_ENGLISH_NAME, MOBILE, OFFICE_PHONE_NO
+			, PICTURE_PATH, PROFILE_PICTURE_PATH
+		    , (SELECT JOB_TITLE_NAME FROM IKEP4_EV_JOB_TITLE sa WHERE sa.JOB_TITLE_CODE = AA.JOB_TITLE_CODE) AS JOB_TITLE_NAME
+            , (SELECT JOB_TITLE_ENGLISH_NAME FROM IKEP4_EV_JOB_TITLE sa WHERE sa.JOB_TITLE_CODE = AA.JOB_TITLE_CODE) AS JOB_TITLE_ENGLISH_NAME
+		    , (SELECT (CASE WHEN COUNT(*) = 0 THEN 0 ELSE 1 END) FROM IKEP4_AS_FAVORITE sb WHERE TYPE = 'PEOPLE' AND REGISTER_ID = #userId# AND TARGET_ID = AA.USER_ID) AS FAVORITE_YN
+		    , (SELECT (CASE WHEN COUNT(*) = 0 THEN 0 ELSE 1 END) FROM IKEP4_MB_FOLLOW sc WHERE sc.USER_ID = #userId# AND sc.FOLLOWING_USER_ID = AA.USER_ID) AS FOLLOW_YN
+		FROM (
+		    SELECT ta.*
+		    FROM (
+		        SELECT  Row_number() OVER (ORDER BY sub.CONTACT DESC) AS RNUM,
+		        		/*+ INDEX(MAIN IDX_EV_USER_PK) */ sub.CONTACT, main.*
+		        FROM IKEP4_EV_USER main, 
+		            (
+		            SELECT A.*
+		            FROM (
+		                SELECT GUEST_ID, COUNT(*) AS CONTACT
+		                FROM (
+		                    SELECT SENDER_ID AS GUEST_ID, 'R' AS BOX_TYPE
+		                    FROM IKEP4_VW_MESSAGE_RECEIVE
+		                    WHERE RECEIVER_ID = #userIdR#
+		                    AND SENDER_ID <>  #userIdR#
+		                    UNION ALL
+		                    SELECT RECEIVER_ID AS GUEST_ID, 'S' AS BOX_TYPE
+		                    FROM IKEP4_VW_MESSAGE_SEND
+		                    WHERE SENDER_ID = #userIdS#
+		                    AND RECEIVER_ID <> #userIdS#
+		                    ) TBL
+		                GROUP BY GUEST_ID
+		            ) A
+		            ) sub
+		        WHERE main.USER_ID = sub.GUEST_ID
+		    ) ta
+		) AA
+		WHERE RNUM <= #endRnum#
+		AND RNUM > #startRnum#
+		]]>
+	</select>
+	
+</sqlMap>

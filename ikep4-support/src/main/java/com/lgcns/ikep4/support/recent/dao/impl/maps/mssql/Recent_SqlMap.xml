@@ -1,0 +1,441 @@
+<?xml version="1.0" encoding="EUC-KR"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="support.recent">
+
+	<typeAlias alias="recent" type="com.lgcns.ikep4.support.recent.model.Recent" />
+	<typeAlias alias="recentSearchCondition" type="com.lgcns.ikep4.support.recent.model.RecentSearchCondition"/>
+
+	<resultMap id="recentDocumentResult" class="recent">
+		<result property="targetId" column="target_id" />
+		<result property="subId" column="sub_id" />
+		<result property="registerId" column="register_id" />
+		<result property="registerName" column="register_name" />
+		<result property="registerEnglishName" column="register_english_name" />
+		<result property="registDate" column="regist_date" />
+		<result property="module" column="module" />
+		<result property="moduleEn" column="module_en" />
+		<result property="type" column="type" />
+		<result property="title" column="title" />
+		<result property="hitCount" column="hit_count" />
+		<result property="recommendCount" column="recommend_count" />
+		<result property="linereplyCount" column="linereply_count" />
+		<result property="referenceId" column="reference_id" />
+		<result property="referenceDate" column="reference_date" />
+	</resultMap>
+	
+	
+	<resultMap id="recentPeopleResult" class="recent">
+		<result property="targetId" column="target_id" />
+		<result property="registerId" column="register_id" />
+		<result property="registerName" column="register_name" />
+		<result property="registDate" column="regist_date" />
+		<result property="title" column="title" />
+		<result property="englishTitle" column="english_title" />
+		<result property="teamName" column="team_name" />
+		<result property="teamEnglishName" column="team_english_name" />
+		<result property="mobile" column="mobile" />
+		<result property="mail" column="mail" />
+		<result property="officePhoneNo" column="office_phone_no" />
+		<result property="jobTitleName" column="job_title_name" />
+		<result property="jobTitleEnglishName" column="job_title_english_name" />
+		<result property="picturePath" column="picture_path" />
+		<result property="profilePicturePath" column="profile_picture_path" />
+		<result property="empNo" column="emp_no" />
+		<result property="followId" column="follow_id" />
+		<result property="favoriteId" column="favorite_id" />
+	</resultMap>
+	
+	<resultMap id="recentGroupResult" class="recent">
+		<result property="targetId" column="target_id" />
+		<result property="title" column="title" />
+	</resultMap>
+	
+  	
+  	<!-- MS SQL -->
+  	<select id="listBySearchConditionForDocument" parameterClass="recentSearchCondition" resultMap="recentDocumentResult">  
+  		<![CDATA[
+		SELECT			/* [Recent_SqlMap.xml] listBySearchConditionForDocument */
+						*
+		FROM 			(
+	     				SELECT			 
+	     					Row_number() OVER (ORDER BY AA.REFERENCE_DATE DESC) AS RNUM, AA.* 
+	     				FROM 			(
+					         			SELECT			A.ITEM_ID TARGET_ID, 
+					         							A.SUB_ID, 
+														A.REGISTER_ID, 
+														A.REGISTER_NAME, 
+														C.USER_ENGLISH_NAME REGISTER_ENGLISH_NAME, 
+														A.REGIST_DATE,
+														A.MODULE,
+														A.MODULE_EN,
+														A.TYPE,
+														A.TITLE,
+														A.HIT_COUNT,
+														A.RECOMMEND_COUNT,
+														A.LINEREPLY_COUNT,
+														A.REFERENCE_ID, 
+														A.REFERENCE_DATE
+										FROM   			IKEP4_VW_CONTENT A
+											INNER JOIN		IKEP4_EV_USER C
+					         					ON				A.REGISTER_ID = C.USER_ID
+							 			WHERE  			A.REFERENCE_ID  = #registerId#
+		]]>
+										<isNotEmpty property="searchWord">
+											<isEqual property="searchColumn" compareValue="title">
+												AND	UPPER(A.TITLE) LIKE UPPER('%' + #searchWord# + '%')
+											</isEqual>
+										</isNotEmpty>
+										<isNotEmpty property="moduleCodeList">
+								 			<iterate property="moduleCodeList" prepend="AND A.MODULE_EN IN" open="(" close=")" conjunction="," >  
+												#moduleCodeList[]#   
+											</iterate>  
+										</isNotEmpty>
+		<![CDATA[
+	    								) AA
+						) C
+		WHERE 			C.RNUM > #startRowIndex# AND C.RNUM <= #endRowIndex#	
+		]]>
+  	</select>   
+  	
+  	<!-- MS SQL -->
+  	<select id="countBySearchConditionForDocument" parameterClass="recentSearchCondition" resultClass="int">  
+  		<![CDATA[
+		SELECT 			/* [Recent_SqlMap.xml] countBySearchConditionForDocument */ 
+           				COUNT(*)
+										FROM   			IKEP4_VW_CONTENT A
+											INNER JOIN		IKEP4_EV_USER C
+					         					ON				A.REGISTER_ID = C.USER_ID
+							 			WHERE  			A.REFERENCE_ID  = #registerId#
+		]]>
+										<isNotEmpty property="searchWord">
+											<isEqual property="searchColumn" compareValue="title">
+												AND	UPPER(A.TITLE) LIKE UPPER('%' + #searchWord# + '%')
+											</isEqual>
+										</isNotEmpty>
+										<isNotEmpty property="moduleCodeList">
+											<iterate property="moduleCodeList" prepend="AND A.MODULE_EN IN" open="(" close=")" conjunction="," >  
+												#moduleCodeList[]#   
+											</iterate>
+										</isNotEmpty>
+  	</select> 
+  	
+  	<!-- MS SQL -->
+  	<select id="listBySearchConditionForPeople" parameterClass="recentSearchCondition" resultMap="recentPeopleResult">  
+  		<![CDATA[
+		SELECT			/* [Recent_SqlMap.xml] listBySearchConditionForPeople */
+						*
+		FROM 			(
+	     				SELECT			 
+	     					Row_number() OVER(ORDER BY AA.REGIST_DATE DESC) AS RNUM, AA.* 
+	     				FROM 			(
+					         			SELECT			/*+ index ( B IDX_EV_USER_PK) */
+					         							A.USER_ID TARGET_ID, 
+														B.USER_NAME TITLE,
+														B.USER_ENGLISH_NAME ENGLISH_TITLE,
+														B.REGISTER_ID, 
+														B.REGISTER_NAME, 
+														A.REGIST_DATE,
+														B.TEAM_NAME,
+														B.TEAM_ENGLISH_NAME,
+														B.MAIL,
+														B.MOBILE,
+														B.OFFICE_PHONE_NO,
+														B.PICTURE_PATH,	
+														CASE WHEN B.PROFILE_PICTURE_PATH = '' THEN B.SAP_PROFILE_PICTURE_PATH
+                                                        WHEN B.PROFILE_PICTURE_PATH IS NULL THEN B.SAP_PROFILE_PICTURE_PATH
+                                                        ELSE B.PROFILE_PICTURE_PATH
+                                                        END AS PROFILE_PICTURE_PATH, 
+														B.EMP_NO,
+														ISNULL(G.job_duty_name, C.JOB_TITLE_NAME) AS JOB_TITLE_NAME,                                                        
+                                                        ISNULL(G.job_duty_ENGLISH_name, C.JOB_TITLE_ENGLISH_NAME) AS JOB_TITLE_ENGLISH_NAME,
+														D.USER_ID FOLLOW_ID,
+														F.FAVORITE_ID
+										FROM   			(SELECT REGISTER_ID, USER_ID, MAX(REGIST_DATE) REGIST_DATE
+															FROM IKEP4_VW_PEOPLE
+															GROUP BY REGISTER_ID, USER_ID) A
+					         				INNER JOIN		IKEP4_EV_USER B
+					         					ON				A.USER_ID = B.USER_ID
+					         				INNER JOIN		IKEP4_EV_JOB_TITLE C
+					         					ON				B.JOB_TITLE_CODE = C.JOB_TITLE_CODE
+					         				LEFT OUTER JOIN        IKEP4_MB_FOLLOW D
+                                            	ON                (A.USER_ID = D.FOLLOWING_USER_ID  AND D.USER_ID  = #registerId#)
+                                            LEFT OUTER JOIN        IKEP4_AS_FAVORITE F
+                                            	ON                (A.USER_ID = F.TARGET_ID  AND F.REGISTER_ID  = #registerId#)
+                                            LEFT OUTER JOIN        IKEP4_EV_JOB_DUTY G
+                                                ON                B.JOB_DUTY_CODE = G.JOB_DUTY_CODE
+							 			WHERE  			A.REGISTER_ID  = #registerId#
+		]]>
+										<isNotEmpty property="searchWord">
+											<isEqual property="searchColumn" compareValue="title">
+												AND	UPPER(B.USER_NAME) LIKE UPPER('%' + #searchWord# + '%')
+											</isEqual>
+										</isNotEmpty>
+		<![CDATA[
+	    								) AA
+						) C
+		WHERE 			C.RNUM > #startRowIndex# AND C.RNUM <= #endRowIndex#
+		]]>
+  	</select>   
+  	
+  	<!-- MS SQL -->
+  	<select id="countBySearchConditionForPeople" parameterClass="recentSearchCondition" resultClass="int">  
+  		<![CDATA[
+		SELECT 			/* [Recent_SqlMap.xml] countBySearchConditionForPeople */ 
+           				COUNT(*)
+										FROM   			(SELECT DISTINCT REGISTER_ID, USER_ID FROM IKEP4_VW_PEOPLE) A
+					         				INNER JOIN		IKEP4_EV_USER B
+					         					ON				A.USER_ID = B.USER_ID
+					         				INNER JOIN		IKEP4_EV_JOB_TITLE C
+					         					ON				B.JOB_TITLE_CODE = C.JOB_TITLE_CODE
+					         				LEFT OUTER JOIN        IKEP4_MB_FOLLOW D
+                                            	ON                (A.USER_ID = D.FOLLOWING_USER_ID  AND D.USER_ID  = #registerId#)
+                							LEFT OUTER JOIN        IKEP4_AS_FAVORITE F
+                                            	ON                (A.USER_ID = F.TARGET_ID  AND F.REGISTER_ID  = #registerId#)
+							 			WHERE  			A.REGISTER_ID  = #registerId#
+		]]>
+										<isNotEmpty property="searchWord">
+											<isEqual property="searchColumn" compareValue="title">
+												AND	UPPER(B.USER_NAME) LIKE UPPER('%' + #searchWord# + '%')
+											</isEqual>
+										</isNotEmpty>
+  	</select> 
+  	
+  	<!-- ANSI -->
+  	<select id="selectCollaboration" parameterClass="java.util.Map" resultMap="recentGroupResult">  
+  		<![CDATA[
+			SELECT B.WORKSPACE_ID TARGET_ID, WORKSPACE_NAME TITLE
+			 FROM IKEP4_WS_MEMBER A
+			 INNER JOIN IKEP4_WS_WORKSPACE B
+			 ON A.WORKSPACE_ID=B.WORKSPACE_ID
+			WHERE 
+				A.MEMBER_LEVEL <=4
+				AND B.WORKSPACE_STATUS IN ('O','WC')
+				AND A.MEMBER_ID=#userId#
+			ORDER BY WORKSPACE_NAME
+		]]>
+  	</select>   
+  	
+  	<!-- ANSI -->
+  	<select id="selectCafe" parameterClass="java.util.Map" resultMap="recentGroupResult">  
+  		<![CDATA[
+			SELECT B.CAFE_ID TARGET_ID, CAFE_NAME TITLE
+			  FROM IKEP4_CF_MEMBER A
+			  INNER JOIN IKEP4_CF_CAFE B
+			  ON A.CAFE_ID = B.CAFE_ID
+			 WHERE     
+			       A.MEMBER_LEVEL <= 4
+			       AND B.CAFE_STATUS IN ('O', 'WC')
+			       AND A.MEMBER_ID = #userId#	
+			 ORDER BY CAFE_NAME
+		]]>
+  	</select>   
+  	
+  	<!-- ANSI -->
+  	<select id="selectMicroblog" parameterClass="java.util.Map" resultMap="recentGroupResult">  
+  		<![CDATA[
+			SELECT B.MBGROUP_ID TARGET_ID, MBGROUP_NAME TITLE
+			FROM IKEP4_MB_MBGROUP_MEMBER A
+			INNER JOIN IKEP4_MB_MBGROUP B
+			ON A.MBGROUP_ID=B.MBGROUP_ID
+			WHERE 
+				A.STATUS=1
+				AND B.IS_DELETE=0
+				AND A.MEMBER_ID= #userId#
+			ORDER BY MBGROUP_NAME
+		]]>
+  	</select>   
+  	
+  	<resultMap id="selectFollowResult" class="recent">
+		<result property="targetId" column="target_id" />
+		<result property="title" column="title" />
+		<result property="englishTitle" column="english_title" />
+		<result property="teamName" column="team_name" />
+		<result property="teamEnglishName" column="team_english_name" />
+		<result property="mobile" column="mobile" />
+		<result property="mail" column="mail" />
+		<result property="officePhoneNo" column="office_phone_no" />
+		<result property="jobTitleName" column="job_title_name" />
+		<result property="jobTitleEnglishName" column="job_title_english_name" />
+		<result property="pictureId" column="picture_id" />
+		<result property="empNo" column="emp_no" />
+	</resultMap>
+  	
+  	<!-- MS SQL -->
+  	<select id="selectFollower" parameterClass="recentSearchCondition" resultMap="selectFollowResult">  
+  		<![CDATA[
+	   SELECT			/* [Recent_SqlMap.xml] selectFollower */
+						*
+		FROM 			(
+	     				SELECT			 
+	     					A.* 
+	     				FROM (
+									SELECT 	Row_number() OVER (ORDER BY A.REGIST_DATE DESC) AS RNUM,
+											B.USER_ID TARGET_ID, 
+											B.USER_NAME TITLE,
+											B.USER_ENGLISH_NAME ENGLISH_TITLE,
+											B.TEAM_NAME,
+											B.TEAM_ENGLISH_NAME,
+											B.MAIL,
+											B.MOBILE,
+											B.OFFICE_PHONE_NO,
+											B.PICTURE_ID,
+											B.EMP_NO,
+											C.JOB_TITLE_NAME,
+											C.JOB_TITLE_ENGLISH_NAME
+									FROM IKEP4_MB_FOLLOW A INNER JOIN IKEP4_EV_USER B
+																ON A.USER_ID = B.USER_ID
+															INNER JOIN IKEP4_EV_JOB_TITLE C
+																ON	B.JOB_TITLE_CODE = C.JOB_TITLE_CODE
+									WHERE A.FOLLOWING_USER_ID  = #registerId#
+		 								) A
+	    				WHERE 			RNUM <= #endRowIndex#		 
+						) TBL
+		WHERE 			RNUM > #startRowIndex#
+		]]>
+  	</select>   
+  	
+  	<!-- MS SQL -->
+  	<select id="selectFollowing" parameterClass="recentSearchCondition" resultMap="selectFollowResult">  
+  		<![CDATA[
+	    SELECT			/* [Recent_SqlMap.xml] selectFollowing */
+						*
+		FROM 			(
+	     				SELECT			 
+	     					A.* 
+	     				FROM (
+									SELECT 	Row_number() OVER (ORDER BY A.REGIST_DATE DESC) AS RNUM,
+											B.USER_ID TARGET_ID, 
+											B.USER_NAME TITLE,
+											B.USER_ENGLISH_NAME ENGLISH_TITLE,
+											B.TEAM_NAME,
+											B.TEAM_ENGLISH_NAME,
+											B.MAIL,
+											B.MOBILE,
+											B.OFFICE_PHONE_NO,
+											B.PICTURE_ID,
+											B.EMP_NO,
+											C.JOB_TITLE_NAME,
+											C.JOB_TITLE_ENGLISH_NAME
+									FROM IKEP4_MB_FOLLOW A INNER JOIN IKEP4_EV_USER B
+																ON A.FOLLOWING_USER_ID = B.USER_ID
+															INNER JOIN IKEP4_EV_JOB_TITLE C
+																ON	B.JOB_TITLE_CODE = C.JOB_TITLE_CODE
+									WHERE A.USER_ID  = #registerId#
+										) A
+	    				WHERE 			RNUM <= #endRowIndex#		 
+						) TBL
+		WHERE 			RNUM > #startRowIndex#
+		]]>
+  	</select>   
+  	
+  	<resultMap id="selectIntimateResult" class="recent">
+		<result property="targetId" column="target_id" />
+		<result property="title" column="title" />
+		<result property="englishTitle" column="english_title" />
+		<result property="teamName" column="team_name" />
+		<result property="teamEnglishName" column="team_english_name" />
+		<result property="mobile" column="mobile" />
+		<result property="mail" column="mail" />
+		<result property="officePhoneNo" column="office_phone_no" />
+		<result property="jobTitleName" column="job_title_name" />
+		<result property="jobTitleEnglishName" column="job_title_english_name" />
+		<result property="pictureId" column="picture_id" />
+		<result property="empNo" column="emp_no" />
+	</resultMap>
+  	
+  	<!-- MS SQL -->
+  	<select id="selectIntimate" parameterClass="recentSearchCondition" resultMap="selectIntimateResult">  
+  		<![CDATA[
+	    SELECT			/* [Recent_SqlMap.xml] selectIntimate */
+						*
+		FROM 			(
+	     				SELECT			 
+	     					   A.* 
+	     				FROM (
+									SELECT 	Row_number() OVER (ORDER BY INDEX_OVERALL DESC) AS RNUM,
+											B.USER_ID TARGET_ID, 
+											B.USER_NAME TITLE,
+											B.USER_ENGLISH_NAME ENGLISH_TITLE,
+											B.TEAM_NAME,
+											B.TEAM_ENGLISH_NAME,
+											B.MAIL,
+											B.MOBILE,
+											B.OFFICE_PHONE_NO,
+											B.PICTURE_ID,
+											B.EMP_NO,
+											C.JOB_TITLE_NAME,
+											C.JOB_TITLE_ENGLISH_NAME
+									FROM IKEP4_SN_RELATION A INNER JOIN IKEP4_EV_USER B
+																	ON A.TARGET_USER_ID = B.USER_ID
+																INNER JOIN IKEP4_EV_JOB_TITLE C
+																	ON	B.JOB_TITLE_CODE = C.JOB_TITLE_CODE
+									WHERE A.SOURCE_USER_ID  = #registerId#
+										) A
+	    				WHERE 			RNUM <= #endRowIndex#		 
+						) TBL
+		WHERE 			RNUM > #startRowIndex#
+		]]>
+  	</select>   
+  	
+  	<resultMap id="selectCollaborationMemberResult" class="recent">
+		<result property="targetId" column="target_id" />
+		<result property="title" column="title" />
+		<result property="englishTitle" column="english_title" />
+		<result property="teamName" column="team_name" />
+		<result property="teamEnglishName" column="team_english_name" />
+		<result property="mobile" column="mobile" />
+		<result property="mail" column="mail" />
+		<result property="officePhoneNo" column="office_phone_no" />
+		<result property="jobTitleName" column="job_title_name" />
+		<result property="jobTitleEnglishName" column="job_title_english_name" />
+		<result property="pictureId" column="picture_id" />
+		<result property="empNo" column="emp_no" />
+		<result property="followId" column="follow_id" />
+	</resultMap>
+  	
+  	<!-- MS SQL -->
+  	<select id="selectCollaborationMember" parameterClass="recentSearchCondition" resultMap="selectCollaborationMemberResult">  
+  		<![CDATA[
+	    SELECT			/* [Recent_SqlMap.xml] selectCollaborationMember */
+						*
+		FROM 			(
+	     				SELECT			 
+	     					Row_number() OVER(ORDER BY A.TITLE) AS RNUM, A.* 
+	     				FROM (
+									SELECT 	B.USER_ID TARGET_ID, 
+											B.USER_NAME TITLE,
+											B.USER_ENGLISH_NAME ENGLISH_TITLE,
+											B.TEAM_NAME,
+											B.TEAM_ENGLISH_NAME,
+											B.MAIL,
+											B.MOBILE,
+											B.OFFICE_PHONE_NO,
+											B.PICTURE_ID,
+											B.EMP_NO,
+											C.JOB_TITLE_NAME,
+											C.JOB_TITLE_ENGLISH_NAME,
+											A.WORKSPACE_ID FOLLOW_ID
+									FROM IKEP4_WS_MEMBER A INNER JOIN IKEP4_EV_USER B
+																ON A.MEMBER_ID = B.USER_ID
+															INNER JOIN IKEP4_EV_JOB_TITLE C
+																ON	B.JOB_TITLE_CODE = C.JOB_TITLE_CODE
+									WHERE  A.WORKSPACE_ID IN
+										(
+										SELECT B.WORKSPACE_ID
+											 FROM IKEP4_WS_MEMBER A, IKEP4_WS_WORKSPACE B
+											WHERE A.WORKSPACE_ID=B.WORKSPACE_ID
+												AND A.MEMBER_LEVEL <=4
+												AND B.WORKSPACE_STATUS IN ('O','WC')
+												AND A.MEMBER_ID=#registerId#
+										) 
+		 								) A
+						) C
+		WHERE 			C.RNUM > #startRowIndex# AND C.RNUM <= #endRowIndex#	
+		]]>
+  	</select>   
+  	
+
+    
+</sqlMap>
+

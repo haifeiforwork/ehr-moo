@@ -1,0 +1,1167 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="approval.work.dao.ApprLine" >
+	<typeAlias alias="ApprLine"					type="com.lgcns.ikep4.approval.work.model.ApprLine"/>
+	<typeAlias alias="ApprLineVersion"			type="com.lgcns.ikep4.approval.work.model.ApprLineVersion"/>
+	<typeAlias alias="ApprLineSearchCondition"	type="com.lgcns.ikep4.approval.work.search.ApprLineSearchCondition"/>
+	
+	<resultMap id="ApprLineResult" class="ApprLine"> 
+		<result property="apprId" 				column="APPR_ID" 				jdbcType="VARCHAR"/>
+		<result property="apprType" 			column="APPR_TYPE" 				jdbcType="DECIMAL"/>
+		<result property="approverId" 			column="APPROVER_ID" 			jdbcType="VARCHAR"/>
+		<result property="approverName" 		column="APPROVER_NAME" 			jdbcType="VARCHAR"/>
+		<result property="approverGroupName"	column="APPROVER_GROUP_NAME" 	jdbcType="VARCHAR"/>
+		<result property="approverJobTitle"		column="APPROVER_JOB_TITLE" 	jdbcType="VARCHAR"/>
+		<result property="approverType"			column="APPROVER_TYPE" 			jdbcType="DECIMAL"/>
+		<result property="apprOrder" 			column="APPR_ORDER" 			jdbcType="DECIMAL"/>
+		<result property="apprStatus" 			column="APPR_STATUS"			jdbcType="DECIMAL"/>
+		<result property="apprMessage" 		    column="APPR_MESSAGE" 			jdbcType="VARCHAR"/>
+		<result property="lineModifyAuth" 		column="LINE_MODIFY_AUTH" 	    jdbcType="DECIMAL"/>
+		<result property="docModifyAuth" 		column="DOC_MODIFY_AUTH" 		jdbcType="DECIMAL"/>
+		<result property="readModifyAuth" 		column="READ_MODIFY_AUTH" 		jdbcType="DECIMAL"/>
+		<result property="entrustUserId" 		column="ENTRUST_USER_ID" 		jdbcType="VARCHAR"/>
+		<result property="entrustUserName" 		column="ENTRUST_USER_NAME" 		jdbcType="VARCHAR"/>
+		<result property="entrustGroupName" 	column="ENTRUST_GROUP_NAME" 	jdbcType="VARCHAR"/>
+		<result property="entrustJobTitle" 		column="ENTRUST_JOB_TITLE" 	    jdbcType="VARCHAR"/>
+		<result property="viewDate" 			column="VIEW_DATE" 				jdbcType="TIMESTAMP"/>
+		<result property="apprDate" 			column="APPR_DATE" 	    		jdbcType="TIMESTAMP"/>
+		<result property="signFileId" 			column="SIGN_FILE_ID" 	    	jdbcType="VARCHAR"/>
+		<result property="entrustId" 			column="ENTRUST_ID" 	    	jdbcType="VARCHAR"/>				
+	</resultMap>
+
+	<resultMap id="ApprLineVerResult" class="ApprLineVersion"> 
+		<result property="version" 				column="VERSION" 				jdbcType="FLOAT"/>
+		<result property="apprId" 				column="APPR_ID" 				jdbcType="VARCHAR"/>
+		<result property="apprType" 			column="APPR_TYPE" 				jdbcType="DECIMAL"/>
+		<result property="approverId" 			column="APPROVER_ID" 			jdbcType="VARCHAR"/>
+		<result property="approverName" 		column="APPROVER_NAME" 			jdbcType="VARCHAR"/>
+		<result property="approverGroupName"	column="APPROVER_GROUP_NAME" 	jdbcType="VARCHAR"/>
+		<result property="approverJobTitle"		column="APPROVER_JOB_TITLE" 	jdbcType="VARCHAR"/>
+		<result property="approverType"			column="APPROVER_TYPE" 			jdbcType="DECIMAL"/>
+		<result property="apprOrder" 			column="APPR_ORDER" 			jdbcType="DECIMAL"/>
+		<result property="lineModifyAuth" 		column="LINE_MODIFY_AUTH" 	    jdbcType="DECIMAL"/>
+		<result property="docModifyAuth" 		column="DOC_MODIFY_AUTH" 		jdbcType="DECIMAL"/>
+		<result property="readModifyAuth" 		column="READ_MODIFY_AUTH" 		jdbcType="DECIMAL"/>
+		<result property="registerId" 			column="REGISTER_ID" 			jdbcType="VARCHAR"/>
+		<result property="registerName" 		column="REGISTER_NAME" 			jdbcType="VARCHAR"/>
+		<result property="registDate" 			column="REGIST_DATE" 			jdbcType="TIMESTAMP"/>
+		<result property="registerGroupId" 		column="REGISTER_GROUP_ID"	 	jdbcType="VARCHAR"/>		
+		<result property="registerGroupName" 	column="REGISTER_GROUP_NAME" 	jdbcType="VARCHAR"/>
+		<result property="registerJobTitle" 	column="REGISTER_JOB_TITLE"     jdbcType="VARCHAR"/>
+		<result property="modifyReason" 		column="MODIFY_REASON"			jdbcType="TIMESTAMP"/>
+		<result property="cnt" 					column="CNT"					jdbcType="DECIMAL"/>		
+	</resultMap>
+
+	<resultMap id="resultSendAlarm" class="java.util.HashMap">
+		<result property="userId"			column="USER_ID" />
+		<result property="userName"			column="USER_NAME" />
+		<result property="userEnglishName"	column="USER_ENGLISH_NAME" />
+		<result property="mail"				column="MAIL" />
+		<result property="mobile"			column="MOBILE" />
+		<result property="noticeMethod"		column="NOTICE_METHOD" />
+		<result property="noticeArrival"	column="NOTICE_ARRIVAL" />
+		<result property="noticeFinish"		column="NOTICE_FINISH" />
+		<result property="noticeReject"		column="NOTICE_REJECT" />
+		<result property="noticeReturn"		column="NOTICE_RETURN" />
+	</resultMap>
+		
+	<sql id="sqlColumnList">
+		APPR_ID				,
+		APPR_TYPE			,
+		APPROVER_ID			,
+		APPROVER_NAME		,
+		APPROVER_GROUP_NAME	,
+		APPROVER_JOB_TITLE	,
+		APPROVER_TYPE		,
+		APPR_ORDER			,
+		APPR_STATUS			,
+		APPR_MESSAGE		,
+		LINE_MODIFY_AUTH	,
+		DOC_MODIFY_AUTH		,
+		READ_MODIFY_AUTH	,
+		ENTRUST_USER_ID		,
+		ENTRUST_USER_NAME	,
+		ENTRUST_GROUP_NAME	,
+		ENTRUST_JOB_TITLE	,
+		VIEW_DATE			,
+		APPR_DATE			,
+		SIGN_FILE_ID		,
+		ENTRUST_ID
+	</sql>	
+
+	
+
+	<!-- Line Insert -->
+	<insert id="create" parameterClass="ApprLine">
+	/* [ApprLine_SqlMap.xml] approval.work.dao.ApprLine.insert */
+	<![CDATA[ 
+		INSERT INTO IKEP4_APPR_LINE
+		(
+			APPR_ID,
+			APPR_TYPE,
+			APPROVER_ID,
+			APPROVER_NAME,
+			APPROVER_GROUP_NAME,
+			APPROVER_JOB_TITLE,
+			APPROVER_TYPE,
+			APPR_ORDER,
+			APPR_STATUS,
+			APPR_MESSAGE,
+			LINE_MODIFY_AUTH,
+			DOC_MODIFY_AUTH,
+			READ_MODIFY_AUTH,
+			ENTRUST_USER_ID,
+			ENTRUST_USER_NAME,
+			ENTRUST_GROUP_NAME,
+			ENTRUST_JOB_TITLE
+		)
+		VALUES 
+		(
+			#apprId#,
+			#apprType#,
+			#approverId#,
+			#approverName#,
+			#approverGroupName#,
+			#approverJobTitle#,
+			#approverType#,
+			#apprOrder#,
+			#apprStatus#,
+			#apprMessage#,
+			#lineModifyAuth#,
+			#docModifyAuth#,
+			#readModifyAuth#,
+			#entrustUserId#,
+			#entrustUserName#,
+			#entrustGroupName#,
+			#entrustJobTitle#
+		)
+	]]>
+	</insert>
+	
+	<!-- 접수자 전결처리  -->
+	<insert id="createRecEnd" parameterClass="ApprLine">
+	/* [ApprLine_SqlMap.xml] approval.work.dao.ApprLine.insert */
+	<![CDATA[ 
+		INSERT INTO IKEP4_APPR_LINE
+		(
+			APPR_ID,
+			APPR_TYPE,
+			APPROVER_ID,
+			APPROVER_NAME,
+			APPROVER_GROUP_NAME,
+			APPROVER_JOB_TITLE,
+			APPROVER_TYPE,
+			APPR_ORDER,
+			APPR_STATUS,
+			APPR_MESSAGE,
+			ENTRUST_USER_ID,
+			ENTRUST_USER_NAME,
+			ENTRUST_GROUP_NAME,
+			ENTRUST_JOB_TITLE,
+			VIEW_DATE,
+			APPR_DATE,
+			SIGN_FILE_ID,
+			ENTRUST_ID
+		)
+		VALUES 
+		(
+			#apprId#,
+			#apprType#,
+			#approverId#,
+			#approverName#,
+			#approverGroupName#,
+			#approverJobTitle#,
+			#approverType#,
+			#apprOrder#,
+			#apprStatus#,
+			#apprMessage#,
+			#entrustUserId#,
+			#entrustUserName#,
+			#entrustGroupName#,
+			#entrustJobTitle#,
+			now(),
+			now(),
+			#signFileId#,
+			#entrustId#
+		)
+	]]>
+	</insert>	
+
+	<!-- 결재선 변경 버전관리  -->
+	<insert id="createLineVersion" parameterClass="java.util.Map"> 
+	INSERT INTO /* [ApprLine_SqlMap.xml] approval.work.dao.ApprLine.createLineVersion */
+	IKEP4_APPR_LINE_VERSION 
+	( 
+		VERSION,
+		APPR_ID,
+		APPR_TYPE,
+		APPROVER_ID,
+		APPROVER_NAME,
+		APPROVER_GROUP_NAME,
+		APPROVER_JOB_TITLE,
+		APPROVER_TYPE,
+		APPR_ORDER,
+		LINE_MODIFY_AUTH,
+		DOC_MODIFY_AUTH,
+		READ_MODIFY_AUTH,
+		REGISTER_ID,
+		REGISTER_NAME,
+		REGIST_DATE,
+		REGISTER_GROUP_ID,
+		REGISTER_GROUP_NAME,
+		REGISTER_JOB_TITLE,
+		MODIFY_REASON
+	) 
+	SELECT 
+		(SELECT IFNULL(MAX(VERSION+0.1), 1.0) FROM IKEP4_APPR_LINE_VERSION WHERE APPR_ID = #apprId#),
+		APPR_ID,
+		APPR_TYPE,
+		APPROVER_ID,
+		APPROVER_NAME,
+		APPROVER_GROUP_NAME,
+		APPROVER_JOB_TITLE,
+		APPROVER_TYPE,
+		APPR_ORDER,
+		LINE_MODIFY_AUTH,
+		DOC_MODIFY_AUTH,
+		READ_MODIFY_AUTH,
+		#registerId#,
+		#registerName#,
+		now(),
+		#registerGroupId#,
+		#registerGroupName#,
+		#registerJobTitle#,
+		#modifyReason#
+	FROM
+		 IKEP4_APPR_LINE
+	WHERE
+		APPR_ID	=	#apprId#
+		AND APPR_TYPE IN (0,1,2)
+	ORDER BY
+		APPR_ORDER,APPR_ID
+	</insert>
+
+	<!-- Default 결재선 연계 결재선 정보 목록 -->
+	<select id="listApprLineDef" parameterClass="java.util.Map" resultClass="ApprLine"> 
+	/* [ApprLine_SqlMap.xml] approval.work.dao.ApprLine.listApprLineDef */ 
+	SELECT * FROM
+	(	
+		/** User/Dept **/
+		SELECT 
+			''						AS  apprId,
+			B.APPR_TYPE				AS  apprType,    
+			B.APPROVER_ID			AS  approverId,
+			U.USER_NAME				AS  approverName,
+			CASE WHEN B.APPROVER_TYPE=0 THEN U.TEAM_NAME
+			WHEN B.APPROVER_TYPE=1 THEN G.GROUP_NAME
+			END					
+									AS	approverGroupName,
+			CASE WHEN  B.JOB_TYPE = 0 THEN JT.JOB_TITLE_NAME 
+			ELSE JD.JOB_DUTY_NAME
+			END
+									AS	approverJobTitle,    
+			B.APPROVER_JOB_TITLE	AS	approverJobTitleCode,    
+			B.APPROVER_TYPE			AS  approverType,
+			B.APPR_ORDER			AS  apprOrder,
+			0						AS  apprStatus,
+			''						AS  apprMessage,
+			B.LINE_MODIFY_AUTH		AS  lineModifyAuth,
+			B.DOC_MODIFY_AUTH		AS  docModifyAuth,
+			B.READ_MODIFY_AUTH		AS  readModifyAuth,
+			''						AS  entrustUserId,
+			''						AS  entrustUserName,
+			''						AS  entrustGroupName,
+			''						AS  entrustJobTitle,
+			now()					AS  viewDate,
+			now()					AS	apprDate  
+		FROM   
+			IKEP4_APPR_DEF_LINE A
+			INNER JOIN IKEP4_APPR_DEF_LINE_INFO B ON (A.DEF_LINE_ID=B.DEF_LINE_ID)
+			LEFT OUTER JOIN IKEP4_EV_USER U ON (B.APPROVER_ID=U.USER_ID)
+			LEFT OUTER JOIN IKEP4_EV_GROUP G ON (B.APPROVER_ID=G.GROUP_ID)
+			LEFT OUTER JOIN IKEP4_EV_JOB_TITLE JT ON (B.APPROVER_JOB_TITLE=JT.JOB_TITLE_CODE)
+			LEFT OUTER JOIN IKEP4_EV_JOB_DUTY JD ON (B.APPROVER_JOB_TITLE=JD.JOB_DUTY_CODE)
+		WHERE
+			A.DEF_LINE_ID	=	#defLineId#
+			<isEqual property="apprType" compareValue="3">
+			AND	B.APPR_TYPE	=	#apprType#
+			</isEqual>
+			<isNotEqual property="apprType" compareValue="3">
+			AND	B.APPR_TYPE	IN	(0,1,2)
+			</isNotEqual>	
+			AND B.APPROVER_WAY=0
+			
+		UNION
+
+		/** Role **/
+		SELECT 
+			''						AS  apprId,
+			B.APPR_TYPE				AS  apprType,    
+			AR.USER_ID				AS  approverId,
+			CASE WHEN AR.USER_NAME IS NULL THEN  '' 
+			ELSE    AR.USER_NAME END    
+									AS	approverName,
+			AR.GROUP_NAME			AS	approverGroupName,
+			AR.JOB_DUTY_NAME		AS  approverJobTitle,    
+			AR.JOB_DUTY_CODE		AS  approverJobTitleCode,    
+			B.APPROVER_TYPE			AS  approverType,
+			B.APPR_ORDER			AS  apprOrder,
+			0						AS  apprStatus,
+			''						AS  apprMessage,
+			B.LINE_MODIFY_AUTH		AS  lineModifyAuth,
+			B.DOC_MODIFY_AUTH		AS  docModifyAuth,
+			B.READ_MODIFY_AUTH		AS  readModifyAuth,
+			''						AS  entrustUserId,
+			''						AS  entrustUserName,
+			''						AS  entrustGroupName,
+			''						AS  entrustJobTitle,
+			now()					AS  viewDate,
+			now()					AS	apprDate  
+		FROM   
+			IKEP4_APPR_DEF_LINE A
+			INNER JOIN IKEP4_APPR_DEF_LINE_INFO B ON (A.DEF_LINE_ID=B.DEF_LINE_ID)
+			LEFT OUTER JOIN 
+			(
+				SELECT 
+					U.USER_ID,U.USER_NAME,U.USER_ENGLISH_NAME,
+					G.GROUP_ID,G.GROUP_NAME,G.GROUP_ENGLISH_NAME,
+					D.JOB_DUTY_CODE,D.JOB_DUTY_NAME,D.JOB_DUTY_ENGLISH_NAME
+				FROM
+					IKEP4_EV_USER U
+					INNER JOIN Ikep4_Ev_User_Group UG ON U.user_id=UG.user_id
+					INNER JOIN IKEP4_EV_GROUP G ON 
+					( 
+						UG.Group_Id=G.Group_Id 
+						AND G.GROUP_TYPE_ID='G0001'
+					)			
+					INNER JOIN 
+					(
+						SELECT
+							MIN(U.USER_ID) AS USER_ID 
+						FROM 
+							IKEP4_EV_USER U
+							INNER JOIN IKEP4_EV_USER_GROUP UG ON (
+								U.USER_ID=UG.USER_ID
+								AND UG.GROUP_ID IN 
+								(
+									SELECT   B.GROUP_ID
+									from (
+										SELECT tbl3._group_id, @lv2 := @lv2 + 1 AS level
+										FROM (SELECT @r AS _group_id, (SELECT @r := parent_group_id  FROM ikep4_ev_group  WHERE group_id = _group_id ) AS parent, @l := @l +1 AS lv
+												FROM (SELECT @r := #groupId#, @l := 0) tbl1, ikep4_ev_group
+												WHERE @r is not null
+												ORDER BY lv DESC
+										) tbl3 inner join (SELECT @lv2 := 0 ) tbl2
+									) A inner join ikep4_ev_group B on A._group_id = B.group_id								
+								)
+							)
+						GROUP BY JOB_DUTY_CODE          
+					) UX ON (UX.USER_ID=U.USER_ID)
+					INNER JOIN IKEP4_EV_JOB_DUTY D ON (U.JOB_DUTY_CODE=D.JOB_DUTY_CODE)
+			) AR ON ( B.APPROVER_ID=AR.JOB_DUTY_CODE )
+		WHERE
+			A.DEF_LINE_ID	=	#defLineId#
+			<isEqual property="apprType" compareValue="3">
+			AND	B.APPR_TYPE	=	#apprType#
+			</isEqual>
+			<isNotEqual property="apprType" compareValue="3">
+			AND	B.APPR_TYPE	IN	(0,1,2)
+			</isNotEqual>			
+			AND B.APPROVER_WAY=1
+			AND	B.APPROVER_TYPE=2
+			
+		UNION
+
+
+		/** Leader **/
+		SELECT 
+			''						AS  apprId,
+			B.APPR_TYPE				AS  apprType,    
+			U.USER_ID				AS  approverId,
+			CASE WHEN U.USER_NAME IS NULL THEN  '' 
+			ELSE    U.USER_NAME END    
+									AS  approverName,
+			G.GROUP_NAME			AS	approverGroupName,
+			UT.JOB_TITLE_NAME		AS  approverJobTitle,    
+			UT.JOB_TITLE_CODE		AS  approverJobTitleCode,    
+			B.APPROVER_TYPE			AS  approverType,
+			B.APPR_ORDER			AS  apprOrder,
+			0						AS  apprStatus,
+			''						AS  apprMessage,
+			B.LINE_MODIFY_AUTH		AS  lineModifyAuth,
+			B.DOC_MODIFY_AUTH		AS  docModifyAuth,
+			B.READ_MODIFY_AUTH		AS  readModifyAuth,
+			''						AS  entrustUserId,
+			''						AS  entrustUserName,
+			''						AS  entrustGroupName,
+			''						AS  entrustJobTitle,
+			now()					AS  viewDate,
+			now()					AS	apprDate  
+		FROM   
+			IKEP4_APPR_DEF_LINE A
+			INNER JOIN IKEP4_APPR_DEF_LINE_INFO B ON (A.DEF_LINE_ID=B.DEF_LINE_ID)
+    		LEFT OUTER JOIN IKEP4_EV_GROUP G ON (B.APPROVER_ID=G.GROUP_ID)
+    		LEFT OUTER JOIN IKEP4_EV_USER U ON (G.LEADER_ID=U.USER_ID)
+    		LEFT OUTER JOIN IKEP4_EV_JOB_DUTY D ON (U.JOB_DUTY_CODE=D.JOB_DUTY_CODE)
+    		LEFT OUTER JOIN IKEP4_EV_JOB_TITLE UT ON (U.JOB_TITLE_CODE=UT.JOB_TITLE_CODE)
+		WHERE
+			A.DEF_LINE_ID	=	#defLineId#
+			<isEqual property="apprType" compareValue="3">
+			AND	B.APPR_TYPE	=	#apprType#
+			</isEqual>
+			<isNotEqual property="apprType" compareValue="3">
+			AND	B.APPR_TYPE	IN	(0,1,2)
+			</isNotEqual>			
+			AND B.APPROVER_WAY=1
+			AND	B.APPROVER_TYPE=3			
+    )	A		
+	ORDER BY 
+		apprOrder ASC
+	</select>
+
+	<!-- 결재선정보 -->
+	<select id="listApprLine" parameterClass="java.util.Map" resultMap="ApprLineResult"> 
+	SELECT /* [ApprLine_SqlMap.xml] approval.work.dao.ApprLine.listApprLine */ 
+			<include refid="approval.work.dao.ApprLine.sqlColumnList" /> 
+	FROM   
+		IKEP4_APPR_LINE
+	WHERE
+		APPR_ID		=	#apprId#
+
+    	<isNotEmpty property="apprType">
+		<isEqual property="apprType" compareValue="3">
+		AND	APPR_TYPE	=	#apprType#
+		</isEqual>
+		<isNotEqual property="apprType" compareValue="3">
+		AND	APPR_TYPE	IN	(0,1,2)
+		</isNotEqual>
+		</isNotEmpty>
+		
+		<isNotEmpty property="approverId">
+		AND APPROVER_ID	=	#approverId#
+		</isNotEmpty>
+		
+		<isNotEmpty property="apprStatus">
+		AND APPR_STATUS	=	#apprStatus#
+		</isNotEmpty>	
+			
+		<isNotEmpty property="apprOrder">
+		AND APPR_ORDER	=	#apprOrder#
+		</isNotEmpty>	
+			
+	ORDER BY 
+		<isEqual property="orderBy" compareValue="DESC">
+		APPR_ORDER DESC,
+		APPROVER_TYPE DESC,
+		APPROVER_ID DESC
+		</isEqual>
+		<isNotEqual property="orderBy" compareValue="DESC">
+		APPR_ORDER ASC,
+		APPROVER_TYPE ASC,
+		APPROVER_ID ASC
+		</isNotEqual>
+	</select>
+	
+	<!-- Child 결재선 정보 -->
+ 	<select id="childListApprLine" parameterClass="java.util.Map" resultMap="ApprLineResult"> 
+	SELECT /* [ApprLine_SqlMap.xml] approval.work.dao.ApprLine.childListApprLine */ 
+		<include refid="approval.work.dao.ApprLine.sqlColumnList" /> 
+	FROM   
+		IKEP4_APPR_LINE
+	WHERE
+		APPR_ID IN 
+		(
+			SELECT 
+				APPR_ID 
+			FROM 
+				IKEP4_APPR_DOC 
+			WHERE 
+				PARENT_APPR_ID 	=	#apprId#
+				AND APPROVER_ID IN 
+				(
+				<isNotEmpty property="apprType">
+				<isNotEqual property="apprType" compareValue="3">				
+					SELECT 
+						APPROVER_ID 
+					FROM 
+						IKEP4_APPR_LINE 
+					WHERE 
+						APPR_ID = #apprId#
+						AND APPR_TYPE IN (1,2) 
+						AND APPROVER_TYPE=1			
+				</isNotEqual>						
+				</isNotEmpty>
+				
+				<isNotEmpty property="apprType">
+				<isEqual property="apprType" compareValue="3">							
+					SELECT 
+						APPROVER_ID
+					FROM 
+						IKEP4_APPR_LINE A
+					WHERE 
+						APPR_ID 		= #apprId#
+						AND	APPR_TYPE	= #apprType#
+				</isEqual>						
+				</isNotEmpty>	
+				)			
+		)		
+	ORDER BY 
+		APPR_ID ASC,	APPR_ORDER ASC	  
+	</select>
+	
+ 	<select id="getReceiveApprLine" parameterClass="java.lang.String" resultMap="ApprLineResult"> 
+	/* [ApprLine_SqlMap.xml] approval.work.dao.ApprLine.getReceiveApprLine */
+	SELECT 
+		<include refid="approval.work.dao.ApprLine.sqlColumnList" /> 
+	FROM   
+		IKEP4_APPR_LINE A
+	WHERE
+    	APPR_ID 		=	#apprId#
+		AND APPR_STATUS	=	0
+		AND	APPR_TYPE	=	3
+ 	</select>
+ 	
+	<!-- 최종결재자 정보 -->
+	<select id="lastApprLine" parameterClass="java.lang.String" resultMap="ApprLineResult"> 
+	/* [ApprLine_SqlMap.xml] approval.work.dao.ApprLine.lastApprLine */
+	SELECT 
+		<include refid="approval.work.dao.ApprLine.sqlColumnList" />
+	FROM   
+		IKEP4_APPR_LINE
+	WHERE
+    	APPR_ID = #apprId#
+    	AND APPR_ORDER  IN 
+    	(
+    		SELECT MAX(APPR_ORDER) FROM IKEP4_APPR_LINE WHERE APPR_ID 	=	#apprId# AND  APPR_STATUS &gt; 0
+    	)			  	
+ 	</select>
+	
+	<!-- 결재자 정보 -->
+ 	<select id="readLine" parameterClass="ApprLine" resultMap="ApprLineResult"> 
+	/* [ApprLine_SqlMap.xml] approval.work.dao.ApprLine.readLine */
+	SELECT 
+		<include refid="approval.work.dao.ApprLine.sqlColumnList" />
+	FROM   
+		IKEP4_APPR_LINE A
+	WHERE
+    	APPR_ID 		=	#apprId#
+    	AND	APPROVER_ID	=	#approverId#
+		<isNotEmpty property="apprType">
+		<isNotEqual property="apprType" compareValue="3">
+		AND APPR_TYPE IN (0,1,2) 
+		</isNotEqual>
+		<isEqual property="apprType" compareValue="3">
+		AND	APPR_TYPE	=#apprType#
+		</isEqual>						
+		</isNotEmpty>
+		<isNotEmpty property="apprOrder">
+		<isEqual property="apprOrder" compareValue="1">
+		AND	APPR_ORDER	=1
+		</isEqual>
+		</isNotEmpty> 	
+ 	</select>
+
+	<!-- Alarm 결재문서 알림 대상 정보 -->
+	<select id="targetListAlarm" parameterClass="java.util.Map" resultMap="resultSendAlarm"> 
+		SELECT /* [ApprLine_SqlMap.xml] approval.work.dao.ApprLine.targetListAlarm */
+		    A.USER_ID,
+		    A.USER_NAME,
+		    A.USER_ENGLISH_NAME,
+		    A.MAIL,
+		    A.MOBILE,
+		    C.NOTICE_METHOD,
+		    C.NOTICE_ARRIVAL,
+		    C.NOTICE_FINISH,
+		    C.NOTICE_REJECT,
+		    C.NOTICE_RETURN
+		FROM 
+			IKEP4_EV_USER A
+		    INNER JOIN IKEP4_APPR_LINE B	ON A.USER_ID	=	B.APPROVER_ID
+		    INNER JOIN IKEP4_APPR_NOTICE C	ON B.APPROVER_ID=	C.USER_ID
+		WHERE
+			B.APPR_ID 				=	#apprId#
+			AND B.APPR_TYPE			IN	(0,1,2)
+			AND C.USAGE				=	1
+			
+			<isNotEmpty property="noticeArrival">
+			<isEqual property="noticeArrival" compareValue="1">
+			AND	B.APPR_STATUS		=	1	
+			AND C.NOTICE_ARRIVAL	=	1
+			</isEqual>
+			</isNotEmpty>	
+								
+			<isNotEmpty property="noticeFinish">
+			<isEqual property="noticeFinish" compareValue="1">
+			AND C.NOTICE_FINISH		=	1
+			</isEqual>
+			</isNotEmpty>					
+									
+			<isNotEmpty property="sendTarget">
+			<isEqual property="sendTarget" compareValue="mail">
+			AND C.NOTICE_METHOD		IN	(0,3,4,6)
+			</isEqual>
+			<isEqual property="sendTarget" compareValue="sms">
+			AND C.NOTICE_METHOD		IN	(1,3,5,6)
+			</isEqual>		
+			<isEqual property="sendTarget" compareValue="notice">
+			AND C.NOTICE_METHOD		IN	(2,4,5,6)
+			</isEqual>
+			</isNotEmpty>
+			
+		<isNotEmpty property="noticeFinish">
+		<isEqual property="noticeFinish" compareValue="1">			
+		UNION
+			SELECT 
+			    A.USER_ID,
+			    A.USER_NAME,
+			    A.USER_ENGLISH_NAME,
+			    A.MAIL,
+			    A.MOBILE,
+			    C.NOTICE_METHOD,
+			    C.NOTICE_ARRIVAL,
+			    C.NOTICE_FINISH,
+			    C.NOTICE_REJECT,
+			    C.NOTICE_RETURN
+			FROM 
+				IKEP4_EV_USER A
+			    INNER JOIN IKEP4_APPR_REFERENCE B	ON A.USER_ID	=	B.USER_ID
+			    INNER JOIN IKEP4_APPR_NOTICE C		ON B.USER_ID	=	C.USER_ID
+			WHERE
+				B.APPR_ID 				=	#apprId#
+				AND C.USAGE				=	1
+				AND C.NOTICE_FINISH		=	1
+									
+				<isNotEmpty property="sendTarget">
+				<isEqual property="sendTarget" compareValue="mail">
+				AND C.NOTICE_METHOD		IN	(0,3,4,6)
+				</isEqual>
+				<isEqual property="sendTarget" compareValue="sms">
+				AND C.NOTICE_METHOD		IN	(1,3,5,6)
+				</isEqual>		
+				<isEqual property="sendTarget" compareValue="notice">
+				AND C.NOTICE_METHOD		IN	(2,4,5,6)
+				</isEqual>
+				</isNotEmpty>	
+		</isEqual>
+		</isNotEmpty>				
+	</select>
+	
+ 	<!-- Alarm 결재문서 반려 알림 대상 정보 -->
+	<select id="targetListAlarmReject" parameterClass="java.util.Map" resultMap="resultSendAlarm"> 
+		SELECT /* [ApprLine_SqlMap.xml] approval.work.dao.ApprLine.targetListAlarmReject */
+		    A.USER_ID,
+		    A.USER_NAME,
+		    A.USER_ENGLISH_NAME,
+		    A.MAIL,
+		    A.MOBILE,
+		    C.NOTICE_METHOD,
+		    C.NOTICE_ARRIVAL,
+		    C.NOTICE_FINISH,
+		    C.NOTICE_REJECT,
+		    C.NOTICE_RETURN
+		FROM 
+			IKEP4_EV_USER A
+		    INNER JOIN IKEP4_APPR_DOC B		ON A.USER_ID	=	B.REGISTER_ID
+		    INNER JOIN IKEP4_APPR_NOTICE C	ON B.REGISTER_ID	=	C.USER_ID
+		WHERE
+			B.APPR_ID 			=	#apprId#
+			AND C.USAGE			=	1
+			AND C.NOTICE_REJECT	=	1
+
+			<isNotEmpty property="sendTarget">
+			<isEqual property="sendTarget" compareValue="mail">
+			AND C.NOTICE_METHOD		IN	(0,3,4,6)
+			</isEqual>
+			<isEqual property="sendTarget" compareValue="sms">
+			AND C.NOTICE_METHOD		IN	(1,3,5,6)
+			</isEqual>		
+			<isEqual property="sendTarget" compareValue="notice">
+			AND C.NOTICE_METHOD		IN	(2,4,5,6)
+			</isEqual>				
+			</isNotEmpty>
+	</select>
+	
+	
+ 	<!-- 현재진행중인 결재선 Order -->
+ 	<select id="ApprOrderInProgress" parameterClass="java.lang.String" resultClass="java.lang.Integer"> 
+	/* [ApprLine_SqlMap.xml] approval.work.dao.ApprLine.ApprOrderInProgress */
+	SELECT 
+		APPR_ORDER	AS apprOrder
+	FROM   
+		IKEP4_APPR_LINE A
+	WHERE
+    	APPR_ID 		=	#apprId#
+		AND APPR_TYPE IN (0,1,2) 
+		AND APPR_STATUS	=	1
+	GROUP BY APPR_ORDER	
+ 	</select> 	
+
+	<!-- 결재정보 존재유무 -->
+ 	<select id="exists" parameterClass="java.util.Map" resultClass="java.lang.Integer"> 
+	/* [ApprLine_SqlMap.xml] approval.work.dao.ApprLine.exists */
+	SELECT 
+		count(A.APPR_ID)
+	FROM   
+		IKEP4_APPR_LINE A
+	WHERE
+    	APPR_ID 		=	#apprId#
+
+		<isNotEmpty property="apprOrder">
+		AND APPR_ORDER	=	#apprOrder#
+		AND APPR_STATUS	=	1				
+		</isNotEmpty>
+
+ 	</select>
+ 	
+ 	<select id="getNext" parameterClass="java.util.Map" resultClass="java.lang.Integer"> 
+	/* [ApprLine_SqlMap.xml] approval.work.dao.ApprLine.getNext */
+	SELECT 
+		count(A.APPR_ID)
+	FROM   
+		IKEP4_APPR_LINE A
+	WHERE
+    	APPR_ID 		=	#apprId#
+		AND APPR_ORDER  =	#apprOrder#
+		AND APPR_TYPE IN (0,1,2) 
+ 	</select>
+ 	
+	<!-- 결재취소 가능여부 확인 -->
+	<!-- 원본 문서의 다음 결재자가 승인 -->
+	<!-- Child 문서의 진행 갯수 -->
+ 	<select id="existsNextApprProgress" parameterClass="java.util.Map" resultClass="java.lang.Integer"> 
+	/* [ApprLine_SqlMap.xml] approval.work.dao.ApprLine.existsNextApprProgress */	
+	SELECT SUM(CNT) 
+	FROM 
+	(
+		/** 원본 문서 진행여부 **/
+		SELECT 
+			count(A.APPR_ID) CNT
+		FROM   
+			IKEP4_APPR_LINE A
+		WHERE
+	    	APPR_ID 		=	#apprId#
+			AND APPR_STATUS	&gt; 1
+			AND APPR_ORDER =
+			(
+				SELECT APPR_ORDER + 1 FROM IKEP4_APPR_LINE 
+				WHERE 
+					APPR_ID 			=	#apprId# 
+					AND  APPROVER_ID	=	#approverId#
+					AND APPR_ORDER IN (0,1,2)	
+			)
+		UNION
+		
+		/** Child 문서 진행여부 **/
+		SELECT 
+			COUNT(A.APPR_ID) CNT
+		FROM   
+			IKEP4_APPR_LINE A
+		WHERE
+			APPR_ID  IN 
+			(
+				SELECT APPR_ID FROM IKEP4_APPR_DOC WHERE PARENT_APPR_ID=	#apprId# AND APPR_DOC_STATUS IN (0,1)
+			)
+			AND APPR_STATUS	&gt; 0
+	)	A		
+ 	</select>
+
+ 	<select id="getNextApprLine" parameterClass="java.util.Map" resultMap="ApprLineResult"> 
+	/* [ApprLine_SqlMap.xml] approval.work.dao.ApprLine.getNextApprLine */
+	SELECT 
+		<include refid="approval.work.dao.ApprLine.sqlColumnList" /> 
+	FROM   
+		IKEP4_APPR_LINE A
+	WHERE
+    	APPR_ID 			=	#apprId#
+    	AND APPROVER_TYPE	=	1
+    	AND APPR_TYPE IN (0,1,2)
+		AND APPR_ORDER 		=	#apprOrder#
+ 	</select>
+
+ 	<select id="beforeAppr" parameterClass="java.lang.String" resultClass="java.lang.Integer"> 
+	/* [ApprLine_SqlMap.xml] approval.work.dao.ApprLine.beforeAppr */
+	SELECT SUM(CNT) 
+	FROM 
+	(
+		/** 원본 문서 진행여부 **/
+		SELECT 
+			count(A.APPR_ID) CNT
+		FROM   
+			IKEP4_APPR_LINE A
+		WHERE
+	    	APPR_ID 		=	#apprId#
+	    	AND APPR_ORDER	=	1
+			AND APPR_STATUS	IN (2,3,4)
+		UNION
+		/** Child 문서 진행여부 **/
+		SELECT 
+			COUNT(A.APPR_ID) CNT
+		FROM   
+			IKEP4_APPR_LINE A
+		WHERE
+			APPR_ID  IN 
+			(
+				SELECT APPR_ID FROM IKEP4_APPR_DOC WHERE PARENT_APPR_ID=	#apprId#
+			)
+			AND APPR_ORDER	=	1
+			AND APPR_STATUS	IN (1,2,3,4)
+	)	A
+ 	</select>
+ 	
+ 	<!-- 결재가 진행중인경우 -->
+ 	<select id="countProgress" parameterClass="java.lang.String" resultClass="java.lang.Integer"> 
+	/* [ApprLine_SqlMap.xml] approval.work.dao.ApprLine.countProgress */
+	SELECT SUM(CNT) 
+	FROM 
+	(
+		/** 원본 문서 진행여부 **/
+		SELECT 
+			count(A.APPR_ID) CNT
+		FROM   
+			IKEP4_APPR_LINE A
+		WHERE
+	    	APPR_ID 		=	#apprId#
+			AND APPR_STATUS	&gt; 1
+		UNION
+		/** Child 문서 진행여부 **/
+		SELECT 
+			COUNT(A.APPR_ID) CNT
+		FROM   
+			IKEP4_APPR_LINE A
+		WHERE
+			APPR_ID  IN 
+			(
+				SELECT APPR_ID FROM IKEP4_APPR_DOC WHERE PARENT_APPR_ID=	#apprId#
+			)
+			AND APPR_STATUS	&gt; 1
+	)	A
+ 	</select>
+ 	
+	<select id="countApprLine" parameterClass="ApprLine" resultClass="java.lang.Integer"> 
+	/* [ApprLine_SqlMap.xml] approval.work.dao.ApprLine.countApprLine */
+	SELECT 
+		count(A.APPR_ID)
+	FROM   
+		IKEP4_APPR_LINE A
+	WHERE
+    	APPR_ID 		=	#apprId#
+    	    	
+    	<isNotEmpty property="apprType">
+		<isEqual property="apprType" compareValue="3">
+		AND	APPR_TYPE	=	#apprType#
+		</isEqual>
+		<isNotEqual property="apprType" compareValue="3">
+		AND	APPR_TYPE	IN	(0,1,2)
+		</isNotEqual>
+		</isNotEmpty>
+		
+		<isNotEmpty property="approverId">
+		AND APPROVER_ID	=	#approverId#
+		</isNotEmpty>
+		
+		<isNotEmpty property="apprOrder">
+		<isNotEqual property="apprOrder" compareValue="9">
+		AND APPR_ORDER	= #apprOrder#
+		</isNotEqual>
+		</isNotEmpty>
+				
+		<isNotEmpty property="apprStatus">
+		<isNotEqual property="apprStatus" compareValue="9">
+		AND APPR_STATUS	= #apprStatus#
+		</isNotEqual>
+		</isNotEmpty>		
+			  	
+ 	</select>
+
+	<update id="updateRead" parameterClass="ApprLine"> 
+	/* [ApprLine_SqlMap.xml] approval.work.dao.ApprLine.updateRead */
+   	UPDATE				
+   		IKEP4_APPR_LINE 
+   	SET	
+		VIEW_DATE		=	now()
+   	WHERE
+		APPR_ID 		=	#apprId#
+		AND APPROVER_ID	=	#approverId#		
+  	</update>
+
+	<update id="updateApproval" parameterClass="ApprLine"> 
+	/* [ApprLine_SqlMap.xml] approval.work.dao.ApprLine.updateApproval */
+   	UPDATE				
+   		IKEP4_APPR_LINE 
+   	SET	
+		APPR_STATUS			=	#apprStatus#,
+		APPR_MESSAGE		=	#apprMessage#,
+		VIEW_DATE			=	CASE WHEN VIEW_DATE IS NULL THEN now() ELSE VIEW_DATE END,		
+		APPR_DATE			=	now(),		
+		<isNotEmpty property="entrustUserId">
+		ENTRUST_USER_ID		=	#entrustUserId#,
+		ENTRUST_USER_NAME	=	#entrustUserName#,
+		ENTRUST_GROUP_NAME	=	#entrustGroupName#,
+		ENTRUST_JOB_TITLE	=	#entrustJobTitle#,	
+		ENTRUST_ID			=	#entrustId#,	
+		</isNotEmpty>
+		SIGN_FILE_ID		=	#signFileId#
+   	WHERE
+		APPR_ID 		=	#apprId#
+		AND APPROVER_ID	=	#approverId#
+		AND	APPR_TYPE	IN	(0,1,2)
+  	</update>
+  	
+	<update id="update" parameterClass="ApprLine"> 
+	/* [ApprLine_SqlMap.xml] approval.work.dao.ApprLine.update */
+   	UPDATE				
+   		IKEP4_APPR_LINE 
+   	SET			
+		APPR_STATUS		=	#apprStatus#
+   	WHERE
+		APPR_ID 		=	#apprId#
+		AND APPR_ORDER	=	#apprOrder#
+  	</update>
+
+	<update id="updateRecoveryAppr" parameterClass="java.lang.String"> 
+	/* [ApprLine_SqlMap.xml] approval.work.dao.ApprLine.updateRecoveryAppr */
+   	UPDATE				
+   		IKEP4_APPR_LINE 
+   	SET			
+		APPR_STATUS			=	0,
+		APPR_MESSAGE		=	'',
+		ENTRUST_USER_ID		=	'',
+		ENTRUST_USER_NAME	=	'',
+		ENTRUST_GROUP_NAME	=	'',
+		ENTRUST_JOB_TITLE	=	'',		
+		VIEW_DATE		=	null,
+		APPR_DATE		=	null,
+		SIGN_FILE_ID	=	''		
+   	WHERE
+		APPR_ID 		=	#apprId#
+  	</update>
+
+
+ 	<!-- 결재자의 결재취소 처리 -->		
+	<update id="updateApprovalLineCancel" parameterClass="java.util.Map"> 
+	/* [ApprLine_SqlMap.xml] approval.work.dao.ApprLine.updateApprLineCancel */
+   	UPDATE				
+   		IKEP4_APPR_LINE 
+   	SET	
+		APPR_STATUS			=	1,
+		APPR_MESSAGE		=	'',
+		ENTRUST_USER_ID		=	'',
+		ENTRUST_USER_NAME	=	'',
+		ENTRUST_GROUP_NAME	=	'',
+		ENTRUST_JOB_TITLE	=	'',		
+		VIEW_DATE		=	null,
+		APPR_DATE		=	null,
+		SIGN_FILE_ID	=	''
+   	WHERE
+		APPR_ID 		=	#apprId#
+		AND APPROVER_ID	=	#approverId#
+  	</update>
+  	
+ 	<!-- 다음 결재자의 대기상태 처리 -->		
+	<update id="updateInitNextApprLine" parameterClass="java.util.Map"> 
+	/* [ApprLine_SqlMap.xml] approval.work.dao.ApprLine.updateInitNextApprLine */
+   	UPDATE				
+   		IKEP4_APPR_LINE 
+   	SET	
+		APPR_STATUS			=	0,
+		APPR_MESSAGE		=	'',
+		ENTRUST_USER_ID		=	'',
+		ENTRUST_USER_NAME	=	'',
+		ENTRUST_GROUP_NAME	=	'',
+		ENTRUST_JOB_TITLE	=	'',		
+		VIEW_DATE		=	null,
+		APPR_DATE		=	null,
+		SIGN_FILE_ID	=	''
+   	WHERE
+		APPR_ID 		=	#apprId#
+		AND APPR_ORDER IN
+		(
+			SELECT APPR_ORDER + 1 FROM IKEP4_APPR_LINE WHERE APPR_ID 	=	#apprId# AND  APPROVER_ID = #approverId#	
+		)
+  	</update> 
+
+	<update id="updateRejectApprLine" parameterClass="ApprLine"> 
+	/* [ApprLine_SqlMap.xml] approval.work.dao.ApprLine.updateRejectApprLine */
+	UPDATE IKEP4_APPR_LINE 
+	SET
+		APPR_STATUS		=	0,
+		VIEW_DATE		=	null,
+		APPR_DATE		=	null
+		<isNotEmpty property="apprMessage">
+		,APPR_MESSAGE	= #apprMessage#
+		</isNotEmpty>		
+	WHERE
+    	APPR_ID 		=	#apprId#
+		AND	APPR_TYPE	IN	(0,1,2)
+		<isNotEmpty property="apprOrder">
+		AND APPR_ORDER	= #apprOrder#
+		</isNotEmpty>
+		AND APPR_STATUS	= 1	
+		<isNotEmpty property="approverType">
+		AND APPROVER_TYPE	= #approverType#
+		</isNotEmpty>		  	
+ 	</update>
+ 	
+	<update id="updateReceiveOrder" parameterClass="java.util.Map"> 
+	/* [ApprLine_SqlMap.xml] approval.work.dao.ApprLine.updateReceiveOrder */
+	UPDATE IKEP4_APPR_LINE 
+	SET
+		APPR_ORDER		=	#apprOrder#	
+	WHERE
+    	APPR_ID 		=	#apprId#
+		AND	APPR_TYPE	=	3		  	
+ 	</update>
+ 	 	
+
+	<delete id="delete" parameterClass="java.lang.String"> 
+	<![CDATA[
+		/* [ApprLine_SqlMap.xml] approval.work.dao.ApprLine.delete */
+		DELETE 
+		FROM 
+			IKEP4_APPR_LINE
+		WHERE
+			APPR_ID	=	#apprId#
+    	]]>
+	</delete>
+	
+	<delete id="removeVersion" parameterClass="java.lang.String"> 
+	<![CDATA[
+		/* [ApprLine_SqlMap.xml] approval.work.dao.ApprLine.removeVersion */
+		DELETE 
+		FROM 
+			IKEP4_APPR_LINE_VERSION
+		WHERE
+			APPR_ID	=	#apprId#
+    	]]>
+	</delete>
+	
+	<delete id="removeNotProgress" parameterClass="java.lang.String"> 
+	<![CDATA[
+		/* [ApprLine_SqlMap.xml] approval.work.dao.ApprLine.removeNotProgress */
+		DELETE 
+		FROM 
+			IKEP4_APPR_LINE
+		WHERE
+			APPR_ID	=	#apprId#
+			AND	APPR_STATUS	=	0
+			AND	APPR_DATE	IS NULL
+			AND	APPR_TYPE	IN	(0,1,2)
+    	]]>
+	</delete>
+
+
+	<delete id="removeApprReceiveLine" parameterClass="java.lang.String"> 
+	<![CDATA[
+		/* [ApprLine_SqlMap.xml] approval.work.dao.ApprLine.removeNotProgress */
+		DELETE 
+		FROM 
+			IKEP4_APPR_LINE
+		WHERE
+			APPR_ID			=	#apprId#
+			AND	APPR_TYPE	=	3
+    	]]>
+	</delete>
+
+ 
+ 	<select id="listVersion" parameterClass="java.lang.String" resultMap="ApprLineVerResult"> 
+	SELECT /* [ApprLine_SqlMap.xml] approval.work.dao.ApprLine.listVersion */ 
+		VERSION ,
+		APPR_ID,
+		APPR_TYPE,
+		APPROVER_ID,
+		APPROVER_NAME,
+		APPROVER_GROUP_NAME,
+		APPROVER_JOB_TITLE,
+		APPROVER_TYPE,
+		APPR_ORDER,
+		LINE_MODIFY_AUTH,
+		DOC_MODIFY_AUTH,
+		READ_MODIFY_AUTH,
+		REGISTER_ID,
+		REGISTER_NAME,
+		REGIST_DATE,
+		REGISTER_GROUP_ID,
+		REGISTER_GROUP_NAME,
+		REGISTER_JOB_TITLE,
+		MODIFY_REASON,
+		0 CNT
+	FROM   
+		IKEP4_APPR_LINE_VERSION
+	WHERE
+		APPR_ID		=	#apprId#		
+	ORDER BY 
+		VERSION ASC,APPR_ORDER ASC	  
+	</select>
+	
+	<select id="groupByVersion" parameterClass="java.lang.String" resultMap="ApprLineVerResult"> 
+	SELECT /* [ApprLine_SqlMap.xml] approval.work.dao.ApprLine.groupByVersion */ 
+		A.VERSION ,
+		A.APPR_ID,
+		APPR_TYPE,
+		APPROVER_ID,
+		APPROVER_NAME,
+		APPROVER_GROUP_NAME,
+		APPROVER_JOB_TITLE,
+		APPROVER_TYPE,
+		APPR_ORDER,
+		LINE_MODIFY_AUTH,
+		DOC_MODIFY_AUTH,
+		READ_MODIFY_AUTH,
+		REGISTER_ID,
+		REGISTER_NAME,
+		REGIST_DATE,
+		REGISTER_GROUP_ID,
+		REGISTER_GROUP_NAME,
+		REGISTER_JOB_TITLE,
+		MODIFY_REASON,
+		(SELECT count(APPR_ID) FROM IKEP4_APPR_LINE_VERSION WHERE APPR_ID=#apprId# AND VERSION=A.VERSION) CNT
+	FROM
+		( 
+			SELECT 
+				VERSION ,
+				APPR_ID,
+				APPR_TYPE,
+				APPROVER_ID,
+				APPROVER_NAME,
+				APPROVER_GROUP_NAME,
+				APPROVER_JOB_TITLE,
+				APPROVER_TYPE,
+				APPR_ORDER,
+				LINE_MODIFY_AUTH,
+				DOC_MODIFY_AUTH,
+				READ_MODIFY_AUTH,
+				REGISTER_ID,
+				REGISTER_NAME,
+				REGIST_DATE,
+				REGISTER_GROUP_ID,
+				REGISTER_GROUP_NAME,
+				REGISTER_JOB_TITLE,
+				MODIFY_REASON
+			FROM 
+				IKEP4_APPR_LINE_VERSION 
+			WHERE 
+				APPR_ID=#apprId#
+				AND APPR_ORDER=1
+		) A
+		INNER JOIN 
+		(
+			SELECT 
+				APPR_ID,
+				VERSION
+			FROM 
+				IKEP4_APPR_LINE_VERSION 
+			WHERE 
+				APPR_ID=#apprId#
+				AND APPR_ORDER=1
+			GROUP BY 
+				APPR_ID,VERSION 
+		) B ON (A.APPR_ID=B.APPR_ID AND A.VERSION=B.VERSION)
+	WHERE 
+		A.APPR_ID=#apprId# 
+	ORDER BY A.VERSION
+	</select>
+
+ 	
+			
+</sqlMap>

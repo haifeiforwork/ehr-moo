@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="EUC-KR"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="collpack.knowledgestreaming">
+
+	<typeAlias alias="knowledgeUse" type="com.lgcns.ikep4.collpack.knowledgestreaming.model.KnowledgeUse" />
+	
+    <select id="selectWeekly" parameterClass="java.util.Map" resultClass="knowledgeUse">    	
+    	<![CDATA[	
+    	SELECT  CONVERT(VARCHAR, b.registDate, 23) dd,
+		         ISNULL (fileDownloadCount, 0) fileDownloadCount,
+		         ISNULL (searchCount, 0) searchCount
+		    FROM    (  SELECT TRUNC (REGIST_DATE, 'day') registDate,
+		                      SUM (FILE_DOWNLOAD_COUNT) fileDownloadCount,
+		                      SUM (SEARCH_COUNT) searchCount
+		                 FROM IKEP4_KS_KNOWLEDGE_USE
+		                WHERE REGIST_DATE > CURRENT_TIMESTAMP - 36
+		                AND PORTAL_ID = #portalId#
+		             GROUP BY TRUNC (REGIST_DATE, 'day')) a
+		         RIGHT JOIN
+		            (    SELECT TRUNC (CURRENT_TIMESTAMP - LEVEL, 'day') registDate
+		                   FROM DUAL
+		             CONNECT BY LEVEL < 36
+		               GROUP BY TRUNC (CURRENT_TIMESTAMP - LEVEL, 'day')) b
+		         ON a.registDate = b.registDate
+		ORDER BY b.registDate
+		]]>
+	</select>
+	
+	<insert id="batchInsert">
+	<![CDATA[
+		INSERT INTO IKEP4_KS_KNOWLEDGE_USE (ID,
+                                    FILE_DOWNLOAD_COUNT,
+                                    SEARCH_COUNT,
+                                    REGIST_DATE,
+                                    PORTAL_ID,
+                                    REGISTER_ID)
+		   SELECT SEQ_IKEP4.NEXTVAL,
+		          DOWNLOAD_COUNT,
+		          SEARCH_COUNT,
+		          DATEPART (day, DD),
+		          PORTAL_ID,
+		          REGISTER_ID
+		     FROM (  SELECT SUM (DOWNLOAD_COUNT) DOWNLOAD_COUNT,
+		                    SUM (SEARCH_COUNT) SEARCH_COUNT,
+		                    DD,
+		                    PORTAL_ID,
+		                    REGISTER_ID
+		               FROM (  SELECT CONVERT(VARCHAR, DOWNLOAD_DATE, 23) DD,
+		                              PORTAL_ID,
+		                              USER_ID REGISTER_ID,
+		                              COUNT (*) DOWNLOAD_COUNT,
+		                              0 SEARCH_COUNT
+		                         FROM IKEP4_DM_FILE_DOWNLOAD_HISTORY
+		                        WHERE DOWNLOAD_DATE BETWEEN CURRENT_TIMESTAMP - 30 AND CURRENT_TIMESTAMP
+		                     GROUP BY CONVERT(VARCHAR, DOWNLOAD_DATE, 23), 
+		                     		  PORTAL_ID,
+		                     		  USER_ID
+		                     UNION ALL
+		                       SELECT CONVERT(VARCHAR, REGIST_DATE, 23) DD,
+		                              PORTAL_ID,
+		                              REGISTER_ID,
+		                              0 DOWNLOAD_COUNT,
+		                              COUNT (*) SEARCH_COUNT
+		                         FROM IKEP4_SP_HISTORY
+		                        WHERE REGIST_DATE BETWEEN CURRENT_TIMESTAMP - 30 AND CURRENT_TIMESTAMP
+		                     GROUP BY CONVERT(VARCHAR, REGIST_DATE, 23),
+		                              PORTAL_ID,
+		                              REGISTER_ID)
+		           GROUP BY DD, PORTAL_ID, REGISTER_ID)
+	]]>
+	</insert>
+	
+	<delete id="batchDelete">
+	<![CDATA[
+		DELETE FROM IKEP4_KS_KNOWLEDGE_USE
+      		WHERE REGIST_DATE BETWEEN CURRENT_TIMESTAMP - 30 AND CURRENT_TIMESTAMP
+	]]>
+	</delete>
+	
+    
+
+</sqlMap>
+

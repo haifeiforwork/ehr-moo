@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="com.lgcns.ikep4.servicepack.usagetracker.utConfig" >
+
+  <typeAlias alias="utConfig"                type="com.lgcns.ikep4.servicepack.usagetracker.model.UtConfig"/>
+  <typeAlias alias="utConfigKey"             type="com.lgcns.ikep4.servicepack.usagetracker.model.UtConfigKey"/>
+  <typeAlias alias="utSearchUtil"             type="com.lgcns.ikep4.servicepack.usagetracker.util.SearchUtil"/>
+  
+  <resultMap id="result" class="utConfig" >
+    <result column="LOG_TARGET" jdbcType="VARCHAR" property="logTarget" />
+    <result column="PORTAL_ID" jdbcType="VARCHAR" property="portalId" />
+    <result column="USAGE" jdbcType="DECIMAL" property="usage" />
+  </resultMap>
+  
+  <sql id="whereClause">
+    <iterate conjunction="or" prepend="where" property="oredCriteria" removeFirstPrepend="iterate">
+      <isEqual compareValue="true" property="oredCriteria[].valid">
+        (
+        <iterate conjunction="and" prepend="and" property="oredCriteria[].criteriaWithoutValue">
+          $oredCriteria[].criteriaWithoutValue[]$
+        </iterate>
+        <iterate conjunction="and" prepend="and" property="oredCriteria[].criteriaWithSingleValue">
+          $oredCriteria[].criteriaWithSingleValue[].condition$
+            #oredCriteria[].criteriaWithSingleValue[].value#
+        </iterate>
+        <iterate conjunction="and" prepend="and" property="oredCriteria[].criteriaWithListValue">
+          $oredCriteria[].criteriaWithListValue[].condition$
+          <iterate close=")" conjunction="," open="(" property="oredCriteria[].criteriaWithListValue[].values">
+            #oredCriteria[].criteriaWithListValue[].values[]#
+          </iterate>
+        </iterate>
+        <iterate conjunction="and" prepend="and" property="oredCriteria[].criteriaWithBetweenValue">
+          $oredCriteria[].criteriaWithBetweenValue[].condition$
+          #oredCriteria[].criteriaWithBetweenValue[].values[0]# and
+          #oredCriteria[].criteriaWithBetweenValue[].values[1]#
+        </iterate>
+        )
+      </isEqual>
+    </iterate>
+  </sql>
+      
+  <sql id="sqlColumnList"> 
+	  LOG_TARGET, 
+	  PORTAL_ID, 
+	  USAGE
+  </sql> 
+
+	<!-- ANSI -->  
+ <select id="get" parameterClass="utConfigKey" resultMap="result"> 
+    SELECT /* [utConfig_SqlMap.xml] utConfig.get */
+    	<include refid="com.lgcns.ikep4.servicepack.usagetracker.utConfig.sqlColumnList" />
+    FROM  IKEP4_UT_CONFIG
+    where LOG_TARGET = #logTarget#
+      	  and PORTAL_ID = #portalId#
+  </select>
+  
+  	<!-- ANSI -->
+  <select id="exists" parameterClass="utConfigKey" resultClass="int"> 
+    SELECT COUNT(*) /* [utConfig_SqlMap.xml] utConfig.exists */
+    FROM  IKEP4_UT_CONFIG
+    where LOG_TARGET = #logTarget#
+      	  and PORTAL_ID = #portalId#
+  </select> 
+
+	<!-- ANSI -->  
+  <insert id="create" parameterClass="utConfig"> 
+     insert into IKEP4_UT_CONFIG( /* [utConfig_SqlMap.xml] utConfig.create */
+        LOG_TARGET,
+        PORTAL_ID,
+        USAGE
+      )
+    values(
+        #logTarget#,
+        #portalId#,
+        #usage#
+    )    
+  </insert>
+  
+  	<!-- ANSI -->
+  <update id="update" parameterClass="utConfig"> 
+    update IKEP4_UT_CONFIG /* [utConfig_SqlMap.xml] utConfig.update */
+    set USAGE = #usage#
+    where LOG_TARGET = #logTarget#
+      and PORTAL_ID = #portalId#
+  </update>
+  
+	<!-- ANSI -->
+  <delete id="remove" parameterClass="utConfigKey"> 
+    delete from IKEP4_UT_CONFIG /* [utConfig_SqlMap.xml] utConfig.remove */
+    where LOG_TARGET = #logTarget#
+      and PORTAL_ID = #portalId#
+  </delete>  
+
+	<!-- ANSI -->  
+   <select id="selectUtConfigList" parameterClass="utSearchUtil" resultMap="result"> 
+    SELECT /* [utConfig_SqlMap.xml] utConfig.selectUtConfigList */
+    	<include refid="com.lgcns.ikep4.servicepack.usagetracker.utConfig.sqlColumnList" />
+    FROM  IKEP4_UT_CONFIG
+    where PORTAL_ID = #portalId#
+  </select>
+  
+</sqlMap>

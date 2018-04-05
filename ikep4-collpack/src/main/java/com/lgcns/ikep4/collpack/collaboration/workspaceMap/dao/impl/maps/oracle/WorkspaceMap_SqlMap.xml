@@ -1,0 +1,371 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="collpack.collaboration.workspaceMap.dao.WorkspaceMap">
+
+	<typeAlias alias="WorkspaceMap" type="com.lgcns.ikep4.collpack.collaboration.workspaceMap.model.WorkspaceMap" />
+	<typeAlias alias="MapBlockPageCondition" type="com.lgcns.ikep4.collpack.collaboration.workspaceMap.search.MapBlockPageCondition"/>
+	<typeAlias alias="MapSortOrderModel" type="com.lgcns.ikep4.collpack.collaboration.workspaceMap.model.MapSortOrderModel"/>
+
+	<sql id="sqlColumnList">
+		A.MAP_ID 			AS mapId,
+		A.WORKSPACE_ID 	AS workspaceId,
+		A.MAP_PARENT_ID 	AS mapParentId,
+		A.MAP_NAME 		AS mapName,
+		A.MAP_DESCRIPTION AS mapDescription,
+		A.SORT_ORDER 		AS sortOrder,
+		A.REGISTER_ID 	AS registerId,
+		U.USER_NAME 	AS registerName,
+		U.USER_ENGLISH_NAME AS registerEnglishName,
+		A.REGIST_DATE 	AS registDate,
+		A.UPDATER_ID 		AS updaterId,
+		A.UPDATER_NAME 	AS updaterName,
+		A.UPDATE_DATE		AS updateDate
+	</sql>
+
+	<select id="getRootMap" parameterClass="string" resultClass="WorkspaceMap">
+		SELECT 	/* [WorkspaceMap_SqlMap.xml] collpack.collaboration.workspaceMap.dao.WorkspaceMap.getRootId */
+			<include refid="collpack.collaboration.workspaceMap.dao.WorkspaceMap.sqlColumnList" />
+		FROM 	
+			IKEP4_WS_MAP A
+			INNER JOIN IKEP4_EV_USER U ON A.REGISTER_ID = U.USER_ID
+		WHERE
+			A.WORKSPACE_ID		= #workspaceId#
+			AND A.MAP_PARENT_ID	= A.MAP_ID
+	</select>
+
+	<select id="listByWorkspaceMapRootId" parameterClass="java.util.Map" resultClass="WorkspaceMap">
+		SELECT 	/* [WorkspaceMap_SqlMap.xml] collpack.collaboration.workspaceMap.dao.WorkspaceMap.listByWorkspaceMapRootId */
+			<include refid="collpack.collaboration.workspaceMap.dao.WorkspaceMap.sqlColumnList" />
+			, (SELECT COUNT(MAP_ID) FROM IKEP4_WS_MAP B WHERE B.MAP_PARENT_ID = A.MAP_ID AND B.WORKSPACE_ID = #workspaceId#) AS childCount
+		FROM 
+			IKEP4_WS_MAP  A
+			INNER JOIN IKEP4_EV_USER U ON A.REGISTER_ID = U.USER_ID
+		WHERE
+			A.WORKSPACE_ID		= #workspaceId#
+			AND A.MAP_PARENT_ID	= #mapParentId#
+			AND A.MAP_PARENT_ID	!= A.MAP_ID
+		ORDER BY 
+			A.SORT_ORDER ASC
+	</select>
+
+
+	<select id="getTagInfo" parameterClass="string" resultClass="WorkspaceMap">
+		SELECT 	/* [WorkspaceMap_SqlMap.xml] collpack.collaboration.workspaceMap.dao.WorkspaceMap.getTagInfo*/
+			TAG
+		FROM 	
+			IKEP4_WS_MAP_TAG
+		WHERE
+			MAP_ID = #mapId#
+		ORDER BY
+			SORT_ORDER ASC
+	</select>
+
+	<select id="getAddedNode" parameterClass="java.util.Map" resultClass="WorkspaceMap">
+		SELECT 	/* [WorkspaceMap_SqlMap.xml] collpack.collaboration.workspaceMap.dao.WorkspaceMap.getCreatedNode*/
+			<include refid="collpack.collaboration.workspaceMap.dao.WorkspaceMap.sqlColumnList" />
+			, (SELECT COUNT(MAP_ID) FROM IKEP4_WS_MAP B WHERE B.MAP_PARENT_ID = A.MAP_ID AND B.WORKSPACE_ID = #workspaceId#) AS childCount
+		FROM 
+			IKEP4_WS_MAP  A
+			INNER JOIN IKEP4_EV_USER U ON A.REGISTER_ID = U.USER_ID
+		WHERE
+			A.MAP_ID				= #mapId#
+			AND A.WORKSPACE_ID	= #workspaceId#
+		ORDER BY
+			A.SORT_ORDER ASC
+	</select>
+	
+	<select id="countItemByTag" parameterClass="MapBlockPageCondition" resultClass="Integer">
+		SELECT /* [WorkspaceMap_SqlMap.xml] collpack.collaboration.workspaceMap.dao.countItemByTag */
+			COUNT(D.TAG_ITEM_ID) COUNT_ITEM_ID
+		FROM 
+			(
+				SELECT
+					TAG,MAP_ID
+				FROM
+					IKEP4_WS_MAP_TAG
+				WHERE
+					TAG = #tag# AND MAP_ID = #mapId#
+			) A
+			INNER JOIN IKEP4_TG_DICTIONARY B ON A.TAG = B.TAG_NAME
+			INNER JOIN IKEP4_TG_LINK C ON ( B.TAG_ID =  C.TAG_ID AND C.TAG_ITEM_TYPE = 'WS' )
+			INNER JOIN IKEP4_TG_ITEM D ON ( C.TAG_ITEM_ID = D.TAG_ITEM_ID AND D.TAG_ITEM_TYPE = 'WS' AND D.TAG_ITEM_SUB_TYPE= #workspaceId# )
+			INNER JOIN IKEP4_WS_MAP E ON A.MAP_ID = E.MAP_ID AND E.WORKSPACE_ID = #workspaceId#
+		ORDER BY 
+			D.REGIST_DATE DESC
+	</select>
+	
+	<select id="listItemByTag" parameterClass="MapBlockPageCondition" resultClass="WorkspaceMap">
+		SELECT /* [WorkspaceMap_SqlMap.xml] collpack.collaboration.workspaceMap.dao.listItemByTag */
+			TAG_ITEM_ID			as tagItemId,
+			TAG_ITEM_NAME		as tagItemName,
+			TAG_ITEM_CONTENTS	as tagItemContents,
+			TAG_ITEM_URL		as tagItemUrl,
+			REGISTER_ID			as registerId,
+			REGISTER_NAME		as registerName,
+			REGISTER_ENGLISH_NAME as registerEnglishName,
+			REGIST_DATE			as registDate,
+			RECORD_NUMBER		as recordNumber
+		FROM 
+		(
+			SELECT
+				ROWNUM RECORD_NUMBER,
+				A.*
+			FROM 
+			(
+				SELECT 
+					D.TAG_ITEM_ID,
+					D.TAG_ITEM_NAME,
+					D.TAG_ITEM_CONTENTS,
+					D.TAG_ITEM_URL,
+					D.REGISTER_ID,
+					U.USER_NAME AS REGISTER_NAME,
+					U.USER_ENGLISH_NAME AS REGISTER_ENGLISH_NAME,
+					D.REGIST_DATE
+				FROM 
+					(
+						SELECT TAG,MAP_ID 
+						FROM IKEP4_WS_MAP_TAG 
+						WHERE 
+							MAP_ID = #mapId# AND TAG = #tag#
+					
+					) A
+					INNER JOIN IKEP4_TG_DICTIONARY B ON A.TAG = B.TAG_NAME
+					INNER JOIN IKEP4_TG_LINK C ON ( B.TAG_ID =  C.TAG_ID AND  C.TAG_ITEM_TYPE = 'WS' )
+					INNER JOIN IKEP4_TG_ITEM D ON ( C.TAG_ITEM_ID = D.TAG_ITEM_ID AND D.TAG_ITEM_TYPE = 'WS' AND D.TAG_ITEM_SUB_TYPE= #workspaceId#)
+					INNER JOIN IKEP4_EV_USER U ON D.REGISTER_ID = U.USER_ID
+					INNER JOIN IKEP4_WS_MAP E ON A.MAP_ID = E.MAP_ID AND E.WORKSPACE_ID = #workspaceId#
+				ORDER BY
+					D.REGIST_DATE DESC
+			)  A
+		)
+		<![CDATA[
+		WHERE 
+			RECORD_NUMBER >= #startOrder#
+			AND ROWNUM <= #countOfPage#
+		]]>
+	</select>
+	
+	
+	<select id="getTagList" parameterClass="java.util.Map" resultClass="WorkspaceMap">
+		SELECT /* [WorkspaceMap_SqlMap.xml] collpack.collaboration.workspaceMap.dao.getTagList */
+				TAG
+		FROM		IKEP4_WS_MAP A 
+		INNER JOIN 	IKEP4_WS_MAP_TAG B 
+		ON A.MAP_ID = B.MAP_ID
+		WHERE 	B.MAP_ID = #mapId#
+		AND		A.WORKSPACE_ID = #workspaceId#					
+	</select>
+
+	<select id="getLowRankGroup" parameterClass="string" resultClass="Integer">
+		SELECT /* [WorkspaceMap_SqlMap.xml] collpack.collaboration.workspaceMap.dao.WorkspaceMap.getLowRankGroup*/
+					COUNT(A.GROUP_ID)
+		FROM IKEP4_EV_GROUP A INNER JOIN IKEP4_WS_WORKSPACE B ON (A.GROUP_ID= B.TEAM_ID)
+		WHERE PARENT_GROUP_ID IN (
+			SELECT 	TEAM_ID
+			FROM	IKEP4_WS_WORKSPACE
+			WHERE	WORKSPACE_ID = #workspaceId#
+			AND		TEAM_ID IS NOT NULL
+		)
+	</select>
+
+	<insert id="createMap" parameterClass="WorkspaceMap" >
+		INSERT INTO IKEP4_WS_MAP
+		(
+			MAP_ID,
+			WORKSPACE_ID,
+			MAP_PARENT_ID,
+			MAP_NAME,
+			MAP_DESCRIPTION,
+			SORT_ORDER,
+			REGISTER_ID,
+			REGISTER_NAME,
+			REGIST_DATE,
+			UPDATER_ID,
+			UPDATER_NAME,
+			UPDATE_DATE
+		)
+		VALUES
+		(
+			#mapId#,
+			#workspaceId#,
+			#mapParentId#,
+			#mapName#,
+			#mapDescription#,
+			(SELECT CASE WHEN MAX(SORT_ORDER)+1 IS NULL THEN 0 ELSE  MAX(SORT_ORDER)+1 END FROM IKEP4_WS_MAP WHERE MAP_PARENT_ID = #mapParentId#),
+			#registerId#,
+			#registerName#,
+			SYSDATE,
+			#updaterId#,
+			#updaterName#,
+			SYSDATE
+		)
+	</insert>
+
+	<insert id="createMapRoot" parameterClass="WorkspaceMap" >
+		INSERT INTO IKEP4_WS_MAP
+		(
+			MAP_ID,
+			WORKSPACE_ID,
+			MAP_PARENT_ID,
+			MAP_NAME,
+			MAP_DESCRIPTION,
+			SORT_ORDER,
+			REGISTER_ID,
+			REGISTER_NAME,
+			REGIST_DATE,
+			UPDATER_ID,
+			UPDATER_NAME,
+			UPDATE_DATE
+		)
+		VALUES
+		(
+			#mapId#,
+			#workspaceId#,
+			#mapParentId#,
+			#mapName#,
+			#mapDescription#,
+			(SELECT CASE WHEN MAX(SORT_ORDER)+1 IS NULL THEN 0 ELSE  MAX(SORT_ORDER)+1 END FROM IKEP4_WS_MAP WHERE MAP_PARENT_ID = #mapParentId#),
+			#registerId#,
+			#registerName#,
+			SYSDATE,
+			#updaterId#,
+			#updaterName#,
+			SYSDATE
+		)
+	</insert>	
+
+	<insert id="createMapTag" parameterClass="java.util.Map">
+		INSERT INTO IKEP4_WS_MAP_TAG
+		(
+			TAG,
+			MAP_ID,
+			SORT_ORDER
+		)
+		VALUES
+		(
+			#tag#,
+			#mapId#,
+			(SELECT CASE WHEN MAX(SORT_ORDER)+1 IS NULL THEN 0 ELSE  MAX(SORT_ORDER)+1 END FROM IKEP4_WS_MAP_TAG WHERE MAP_ID = #mapId#)
+		)
+	</insert>
+
+	<update id="update" parameterClass="WorkspaceMap">
+		UPDATE	/* [WorkspaceMap_SqlMap.xml] collpack.collaboration.workspaceMap.dao.WorkspaceMap.update */ 	
+			IKEP4_WS_MAP 
+		SET	
+			MAP_NAME		= #mapName#,
+			MAP_DESCRIPTION = #mapDescription#,
+			UPDATER_ID		= #updaterId#,
+			UPDATER_NAME	= #updaterName#,
+			UPDATE_DATE		= SYSDATE
+		WHERE
+			MAP_ID			= #mapId# 
+			AND	WORKSPACE_ID= #workspaceId#
+	</update>
+
+	<update id="updateSortOrder" parameterClass="MapSortOrderModel">
+		<![CDATA[
+		UPDATE /* [WorkspaceMap_SqlMap.xml] collpack.collaboration.workspaceMap.dao.WorkspaceMap.updateSortOrder */
+			IKEP4_WS_MAP
+		SET 
+			SORT_ORDER	= #sortOrder#
+		WHERE
+			MAP_ID		= #mapId#
+		]]>
+	</update>
+
+	<update id="updateSortOrderPlus" parameterClass="MapSortOrderModel">
+		<![CDATA[
+		UPDATE /* [WorkspaceMap_SqlMap.xml] collpack.collaboration.workspaceMap.dao.WorkspaceMap.updateSortOrderPlus */
+			IKEP4_WS_MAP
+		SET 
+			SORT_ORDER		= SORT_ORDER + 1
+		WHERE
+			MAP_PARENT_ID	= #mapParentId#
+		]]>
+		<isEqual property="sortOrderTo" compareValue="0">
+		<![CDATA[
+			AND SORT_ORDER >= #sortOrderFrom#
+		]]>
+		</isEqual>
+		<isNotEqual property="sortOrderTo" compareValue="0">
+		<![CDATA[
+			AND SORT_ORDER BETWEEN #sortOrderFrom# AND #sortOrderTo#
+		]]>
+		</isNotEqual>
+	</update>
+
+	<update id="updateSortOrderMinus" parameterClass="MapSortOrderModel">
+		<![CDATA[
+		UPDATE /* [WorkspaceMap_SqlMap.xml] collpack.collaboration.workspaceMap.dao.WorkspaceMap.updateSortOrderMinus */
+			IKEP4_WS_MAP
+		SET 
+			SORT_ORDER		= SORT_ORDER - 1
+		WHERE
+			MAP_PARENT_ID	= #mapParentId#
+			AND SORT_ORDER	> #sortOrder#
+		]]>
+	</update>
+
+	<update id="updateSortOrderMapParentId" parameterClass="MapSortOrderModel">
+		<![CDATA[
+		UPDATE /* [WorkspaceMap_SqlMap.xml] collpack.collaboration.workspaceMap.dao.WorkspaceMap.updateMove */
+			IKEP4_WS_MAP
+		SET 
+			MAP_PARENT_ID	= #mapParentId#,
+			SORT_ORDER		= #sortOrder#
+		WHERE 
+			MAP_ID			= #mapId#
+		]]>
+	</update>
+
+	<delete id="deleteTagAll" parameterClass="string">
+		DELETE FROM 
+			IKEP4_WS_MAP_TAG 
+		WHERE
+			MAP_ID = #mapId#
+	</delete>
+
+	<delete id="removeByMapIdTagHierarchy" parameterClass="java.util.Map">
+		<![CDATA[
+		DELETE /* [WorkspaceMap_SqlMap.xml] collpack.collaboration.workspaceMap.dao.WorkspaceMap.removeByMapIdTagHierarchy */
+			IKEP4_WS_MAP_TAG
+		WHERE
+			MAP_ID IN
+			(
+				SELECT
+					MAP_ID
+				FROM
+					IKEP4_WS_MAP
+				WHERE
+					WORKSPACE_ID = #workspaceId#
+				START WITH
+					MAP_ID = #mapId#
+				CONNECT BY PRIOR
+					MAP_ID = MAP_PARENT_ID
+			)
+		]]>
+	</delete>
+
+	<delete id="removeByMapIdHierarchy" parameterClass="java.util.Map">
+		<![CDATA[
+		DELETE /* [WorkspaceMap_SqlMap.xml] collpack.collaboration.workspaceMap.dao.WorkspaceMap.removeByMapIdHierarchy */
+			IKEP4_WS_MAP
+		WHERE 
+			MAP_ID IN 
+			(
+				SELECT
+					MAP_ID
+				FROM
+					IKEP4_WS_MAP
+				WHERE
+					WORKSPACE_ID = #workspaceId#
+				START WITH
+					MAP_ID = #mapId#
+				CONNECT BY PRIOR
+					MAP_ID = MAP_PARENT_ID
+			)
+		]]>
+	</delete>
+</sqlMap>

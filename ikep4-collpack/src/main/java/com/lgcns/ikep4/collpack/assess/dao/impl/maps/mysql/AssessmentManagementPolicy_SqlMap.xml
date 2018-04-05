@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="collpack.assess.dao.AssessmentManagementPolicy">
+	<typeAlias alias="AssessmentManagementPolicyPK" type="com.lgcns.ikep4.collpack.assess.model.AssessmentManagementPolicyPK"/>
+	<typeAlias alias="AssessmentManagementPolicy" type="com.lgcns.ikep4.collpack.assess.model.AssessmentManagementPolicy"/>
+
+	<resultMap class="AssessmentManagementPolicy" id="result">
+		<result column="CONTRIBUTION_MAX" property="contributionMax" jdbcType="NUMBER" javaType="Integer"/>
+		<result column="CONTRIBUTION_WEIGHT" property="contributionWeight" jdbcType="NUMBER" javaType="Integer"/>
+		<result column="PARTICIPATION_MAX" property="participationMax" jdbcType="NUMBER" javaType="Integer"/>
+		<result column="PARTICIPATION_WEIGHT" property="participationWeight" jdbcType="NUMBER" javaType="Integer"/>
+		<result column="APPLICATION_MAX" property="applicationMax" jdbcType="NUMBER" javaType="Integer"/>
+		<result column="APPLICATION_WEIGHT" property="applicationWeight" jdbcType="NUMBER" javaType="Integer"/>
+		<result column="FRIENDSHIP_MAX" property="friendshipMax" jdbcType="NUMBER" javaType="Integer"/>
+		<result column="FRIENDSHIP_WEIGHT" property="friendshipWeight" jdbcType="NUMBER" javaType="Integer"/>
+		<result column="LEADERSHIP_MAX" property="leadershipMax" jdbcType="NUMBER" javaType="Integer"/>
+		<result column="LEADERSHIP_WEIGHT" property="leadershipWeight" jdbcType="NUMBER" javaType="Integer"/>
+		<result column="EVALUATION_START_DATE" property="evaluationStartDate" jdbcType="DATE" javaType="Date"/>
+		<result column="ITEM_REGIST_SCORE" property="itemRegistScore" jdbcType="NUMBER" javaType="Integer"/>
+		<result column="BEST_ITEM_SCORE" property="bestItemScore" jdbcType="NUMBER" javaType="Integer"/>
+		<result column="ANSWER_SCORE" property="answerScore" jdbcType="NUMBER" javaType="Integer"/>
+		<result column="BEST_ANSWER_SCORE" property="bestAnswerScore" jdbcType="NUMBER" javaType="Integer"/>
+		<result column="LINEREPLY_SCORE" property="linereplyScore" jdbcType="NUMBER" javaType="Integer"/>
+		<result column="RECOMMEND_SCORE" property="recommendScore" jdbcType="NUMBER" javaType="Integer"/>
+		<result column="HIT_SCORE" property="hitScore" jdbcType="NUMBER" javaType="Integer"/>
+		<result column="SEARCH_SCORE" property="searchScore" jdbcType="NUMBER" javaType="Integer"/>
+		<result column="FOLLOW_SCORE" property="followScore" jdbcType="NUMBER" javaType="Integer"/>
+		<result column="FOLLOWING_SCORE" property="followingScore" jdbcType="NUMBER" javaType="Integer"/>
+		<result column="CROSS_FOLLOWING_SCORE" property="crossFollowingScore" jdbcType="NUMBER" javaType="Integer"/>
+		<result column="MBLOG_GROUP_SCORE" property="mblogGroupScore" jdbcType="NUMBER" javaType="Integer"/>
+		<result column="GUESTBOOK_ITEM_SCORE" property="guestbookItemScore" jdbcType="NUMBER" javaType="Integer"/>
+		<result column="TWEET_SCORE" property="tweetScore" jdbcType="NUMBER" javaType="Integer"/>
+		<result column="RETWEET_SCORE" property="retweetScore" jdbcType="NUMBER" javaType="Integer"/>
+		<result column="PROFILE_VISIT_SCORE" property="profileVisitScore" jdbcType="NUMBER" javaType="Integer"/>
+	</resultMap>
+
+<!-- Policy 입력 -->
+	<insert id="create" parameterClass="AssessmentManagementPolicy">
+	<![CDATA[
+		INSERT /* [AssessmentManagementPolicy_SqlMap.xml] collpack.assess.dao.AssessmentManagementPolicy.create */
+		       INTO IKEP4_AM_POLICY (
+		       PORTAL_ID
+		     , CONTRIBUTION_MAX
+		     , CONTRIBUTION_WEIGHT
+		     , PARTICIPATION_MAX
+		     , PARTICIPATION_WEIGHT
+		     , APPLICATION_MAX
+		     , APPLICATION_WEIGHT
+		     , FRIENDSHIP_MAX
+		     , FRIENDSHIP_WEIGHT
+		     , LEADERSHIP_MAX
+		     , LEADERSHIP_WEIGHT
+		     , EVALUATION_START_DATE
+		     , ITEM_REGIST_SCORE
+		     , BEST_ITEM_SCORE
+		     , ANSWER_SCORE
+		     , BEST_ANSWER_SCORE
+		     , LINEREPLY_SCORE
+		     , RECOMMEND_SCORE
+		     , HIT_SCORE
+		     , SEARCH_SCORE
+		     , FOLLOW_SCORE
+		     , FOLLOWING_SCORE
+		     , CROSS_FOLLOWING_SCORE
+		     , MBLOG_GROUP_SCORE
+		     , GUESTBOOK_ITEM_SCORE
+		     , TWEET_SCORE
+		     , RETWEET_SCORE
+		     , PROFILE_VISIT_SCORE
+		     , REGISTER_ID
+		     , REGIST_DATE
+		       )
+		VALUES (
+		       #portalId#
+		     , #contributionMax#
+		     , #contributionWeight#
+		     , #participationMax#
+		     , #participationWeight#
+		     , #applicationMax#
+		     , #applicationWeight#
+		     , #friendshipMax#
+		     , #friendshipWeight#
+		     , #leadershipMax#
+		     , #leadershipWeight#
+		     , TO_DATE(#evaluationStartDateString#, 'yyyy.mm.dd')
+		     , #itemRegistScore#
+		     , #bestItemScore#
+		     , #answerScore#
+		     , #bestAnswerScore#
+		     , #linereplyScore#
+		     , #recommendScore#
+		     , #hitScore#
+		     , #searchScore#
+		     , #followScore#
+		     , #followingScore#
+		     , #crossFollowingScore#
+		     , #mblogGroupScore#
+		     , #guestbookItemScore#
+		     , #tweetScore#
+		     , #retweetScore#
+		     , #profileVisitScore#
+		     , #registerId#
+		     , NOW()
+		       )
+	]]>
+	</insert>
+
+<!-- Policy 수정 -->
+	<update id="update" parameterClass="AssessmentManagementPolicy">
+	<![CDATA[
+		UPDATE /* [AssessmentManagementPolicy_SqlMap.xml] collpack.assess.dao.AssessmentManagementPolicy.update */
+		       IKEP4_AM_POLICY
+		   SET CONTRIBUTION_MAX = #contributionMax#
+		     , CONTRIBUTION_WEIGHT = #contributionWeight#
+		     , PARTICIPATION_MAX = #participationMax#
+		     , PARTICIPATION_WEIGHT = #participationWeight#
+		     , APPLICATION_MAX = #applicationMax#
+		     , APPLICATION_WEIGHT = #applicationWeight#
+		     , FRIENDSHIP_MAX = #friendshipMax#
+		     , FRIENDSHIP_WEIGHT = #friendshipWeight#
+		     , LEADERSHIP_MAX = #leadershipMax#
+		     , LEADERSHIP_WEIGHT = #leadershipWeight#
+		     , ITEM_REGIST_SCORE = #itemRegistScore#
+		     , BEST_ITEM_SCORE = #bestItemScore#
+		     , ANSWER_SCORE = #answerScore#
+		     , BEST_ANSWER_SCORE = #bestAnswerScore#
+		     , LINEREPLY_SCORE = #linereplyScore#
+		     , RECOMMEND_SCORE = #recommendScore#
+		     , HIT_SCORE = #hitScore#
+		     , SEARCH_SCORE = #searchScore#
+		     , FOLLOW_SCORE = #followScore#
+		     , FOLLOWING_SCORE = #followingScore#
+		     , CROSS_FOLLOWING_SCORE = #crossFollowingScore#
+		     , MBLOG_GROUP_SCORE = #mblogGroupScore#
+		     , GUESTBOOK_ITEM_SCORE = #guestbookItemScore#
+		     , TWEET_SCORE = #tweetScore#
+		     , RETWEET_SCORE = #retweetScore#
+		     , PROFILE_VISIT_SCORE = #profileVisitScore#
+		     , REGISTER_ID = #registerId#
+		     , REGIST_DATE = NOW()
+		 WHERE PORTAL_ID = #portalId#
+	]]>
+	</update>
+
+<!-- Policy 조회 -->
+	<select id="get" parameterClass="AssessmentManagementPolicyPK" resultMap="result">
+	<![CDATA[
+		SELECT /* [AssessmentManagementPolicy_SqlMap.xml] collpack.assess.dao.AssessmentManagementPolicy.get */
+		       CONTRIBUTION_MAX
+		     , CONTRIBUTION_WEIGHT
+		     , PARTICIPATION_MAX
+		     , PARTICIPATION_WEIGHT
+		     , APPLICATION_MAX
+		     , APPLICATION_WEIGHT
+		     , FRIENDSHIP_MAX
+		     , FRIENDSHIP_WEIGHT
+		     , LEADERSHIP_MAX
+		     , LEADERSHIP_WEIGHT
+		     , EVALUATION_START_DATE
+		     , ITEM_REGIST_SCORE
+		     , BEST_ITEM_SCORE
+		     , ANSWER_SCORE
+		     , BEST_ANSWER_SCORE
+		     , LINEREPLY_SCORE
+		     , RECOMMEND_SCORE
+		     , HIT_SCORE
+		     , SEARCH_SCORE
+		     , FOLLOW_SCORE
+		     , FOLLOWING_SCORE
+		     , CROSS_FOLLOWING_SCORE
+		     , MBLOG_GROUP_SCORE
+		     , GUESTBOOK_ITEM_SCORE
+		     , TWEET_SCORE
+		     , RETWEET_SCORE
+		     , PROFILE_VISIT_SCORE
+		  FROM IKEP4_AM_POLICY
+		 WHERE PORTAL_ID = #portalId#
+	]]>
+	</select>
+
+<!-- 평가점수 산정 게시일 수정 -->
+	<update id="updateEvaluationStartDateByPortalId" parameterClass="Map">
+	<![CDATA[
+		UPDATE /* [AssessmentManagementPolicy_SqlMap.xml] collpack.assess.dao.AssessmentManagementPolicy.update */
+		       IKEP4_AM_POLICY
+		   SET EVALUATION_START_DATE = CURDATE()
+		     , REGISTER_ID = #registerId#
+		     , REGIST_DATE = NOW()
+		 WHERE PORTAL_ID = #portalId#
+	]]>
+	</update>
+
+</sqlMap>

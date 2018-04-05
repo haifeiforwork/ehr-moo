@@ -1,0 +1,127 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ko">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Home</title>
+<link rel="stylesheet" type="text/css" href="../../css/guide.css" />
+<link rel="stylesheet" type="text/css" href="../../css/theme01/jquery_ui_custom.css" />
+<link rel="stylesheet" type="text/css" href="../../css/common.css" />
+<link rel="stylesheet" type="text/css" href="../../css/theme01/theme.css" />
+<link type="text/css" rel="stylesheet" href="../../css/syntaxhighlighter_3.0.83/shCoreDefault.css"/>
+<script type="text/javascript" src="../../js/jquery/jquery-1.6.2.min.js"></script>
+<script type="text/javascript" src="../../js/jquery/jquery-ui-1.8.13.min.without.datepicker.js"></script>
+<script type="text/javascript" src="../../js/syntaxhighlighter_3.0.83/shCore.js"></script>
+<script type="text/javascript" src="../../js/syntaxhighlighter_3.0.83/shBrushJScript.js"></script>
+<script type="text/javascript" src="../../js/syntaxhighlighter_3.0.83/shBrushXml.js"></script>
+<script type="text/javascript" src="../../js/langResource/ko.js"></script>
+<script type="text/javascript" src="../../js/common.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$(document).ready(function() {
+		//SyntaxHighlighter.all();
+		SyntaxHighlighter.highlight();
+	
+		//iKEP.initDynamicCombo();
+	});
+})(jQuery);
+</script>
+</head>
+
+<body>
+<!--guideWrapper Start-->
+<div id="guideConFrame">
+
+	<div class="guideConTitle"><h2>Combobox</h2><a class="refer" target="_blank" href="#">reference</a></div>
+	
+	<!--UI_sample_area Start-->
+	<h4>UI sample</h4>
+	<a target="_blank" href="combobox_pop.html">New Window</a>
+	<div class="UI_sample">
+		
+		<!--UI_sample Start-->
+		<div>
+			<form>
+				<label>combo 1 : <select name="sel1"><option value="00">item 1</option><option value="01">item 2</option></select></label><br/>
+				<label>combo 2 : <select name="sel2" url="dynamic_combo_items.json" ref="sel1"></select></label><br/>
+			</form>
+			<br/><br/>
+			<form>
+				<label>combo 3 : <select name="sel1"><option value="00">item 1</option><option value="01">item 2</option></select></label><br/>
+				<label>combo 4 : <select name="sel2" url="dynamic_combo_items.json" ref="sel1"></select></label><br/>
+				<label>combo 5 : <select name="sel3" url="dynamic_combo_items.json" ref="sel2"></select></label><br/>
+			</form>
+		</div>
+		<!--//UI_sample End-->
+		
+		<div class="UI_sum">
+			&lt;select&gt; 선택시 관련되는 서브항목의 자동 설정 :<br/>
+			html의 select 태그의 옵션 설정으로 자동 설정 된다.
+		</div>
+	</div>
+	<!--//UI_sample_area End-->
+
+	<!--UI_source Start-->
+	<h4>View source</h4>
+	<div class="UI_source">
+		<h5>HTML</h5>
+		<pre class="brush: html;">
+	// html
+	&lt;form&gt;
+		&lt;label&gt;combo 1 : 
+			&lt;select name="sel1"&gt;
+				&lt;option value="00"&gt;item 1&lt;/option&gt;
+				&lt;option value="01"&gt;item 2&lt;/option&gt;
+			&lt;/select&gt;
+		&lt;/label&gt;
+		&lt;label&gt;combo 2 : 
+			&lt;select name="sel2" url="dynamic_combo_items.json" ref="sel1"&gt;&lt;/select&gt;
+		&lt;/label&gt;
+	&lt;/form&gt;
+	
+	&lt;form&gt;
+		&lt;label&gt;combo 3 : 
+			&lt;select name="sel1"&gt;
+				&lt;option value="00"&gt;item 1&lt;/option&gt;
+				&lt;option value="01"&gt;item 2&lt;/option&gt;
+			&lt;/select&gt;
+		&lt;/label&gt;
+		&lt;label&gt;combo 4 : 
+			&lt;select name="sel2" url="dynamic_combo_items.json" ref="sel1"&gt;&lt;/select&gt;
+		&lt;/label&gt;
+		&lt;label&gt;combo 5 : 
+			&lt;select name="sel3" url="dynamic_combo_items.json" ref="sel2"&gt;&lt;/select&gt;
+		&lt;/label&gt;
+	&lt;/form&gt;
+		</pre>
+		
+		<h5 style="margin-top:20px;">JavaScript</h5>
+		<pre class="brush: js;">
+		// javascript
+		$(document).ready(function() {
+			//iKEP.initDynamicCombo();	// 페이지 로딩시 자동 실행되므로 코딩할 필요 없음.
+			// * 만일 페이지 로딩 후 동적으로 생성된 경우가 있으면 수행해 주어야 한다.
+		});
+		</pre>
+	</div>	
+	<!--UI_source End-->	
+
+	<!--Method Start-->	
+	<h4>Method & Properties</h4>
+	<div class="UI_method">
+		<ul>
+			<li>url : 동적으로 가져올 경로</li>
+			<li>ref : 연관되는 select 엘리먼트, name이나 id 사용 - id의 경우 "#"을 붙혀 사용함.</li>
+		</ul>
+		<p>* 해당 경로로 요청시 ref에 지정한 엘리먼트의 값을 파라미터로 전송하며 파라미터 이름은 ref에 지정한 이름이 된다(id의 경우 "#"은 배제됨)</p>
+	</div>
+	<!--//Method End-->
+	
+	<!-- //Event Start -->
+	<h4>Event</h4>
+	<div class="UI_event"></div>
+	<!-- //Event End -->
+	
+</div>
+<!--//guideWrapper End-->
+</body>
+</html>

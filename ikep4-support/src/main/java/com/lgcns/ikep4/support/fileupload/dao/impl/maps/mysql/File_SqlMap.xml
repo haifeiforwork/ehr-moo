@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="EUC-KR"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="support.fileupload.file">
+
+	<typeAlias alias="file"
+		type="com.lgcns.ikep4.support.fileupload.model.FileData" />
+
+	<resultMap id="fileResult" class="file">
+		<result property="fileId" column="file_id" />
+		<result property="filePath" column="file_path" />
+		<result property="fileName" column="file_name" />
+		<result property="fileRealName" column="file_real_name" />
+		<result property="fileContentsType" column="file_contents_type" />
+		<result property="fileExtension" column="file_extension" />
+		<result property="fileSize" column="file_size" />
+		<result property="editorAttach" column="editor_attach" />
+		<result property="registerId" column="register_id" />
+		<result property="registerName" column="register_name" />
+		<result property="registDate" column="regist_date" />
+		<result property="updaterId" column="updater_id" />
+		<result property="updaterName" column="updater_name" />
+		<result property="updateDate" column="update_date" />
+		<result property="itemId" column="item_id" />
+		<result property="itemTypeCode" column="item_type_code" />
+	</resultMap>
+	
+	<resultMap id="thunmbanilBatchResult" class="file" extends="fileResult">
+		<result property="thumbnailWidthSize" column="THUMBNAIL_WIDTH_SIZE"/>
+		<result property="thumbnailHeightSize" column="THUMBNAIL_HEIGHT_SIZE"/>
+	</resultMap>
+
+	
+
+	<insert id="insert" parameterClass="file">
+		INSERT INTO IKEP4_DM_FILE (
+			FILE_ID, FILE_PATH, FILE_NAME,
+			FILE_REAL_NAME, FILE_CONTENTS_TYPE, FILE_EXTENSION, FILE_SIZE, EDITOR_ATTACH,
+			REGISTER_ID, REGISTER_NAME, REGIST_DATE,
+			UPDATER_ID, UPDATER_NAME, UPDATE_DATE)
+		values(#fileId#, #filePath#, #fileName#
+		, #fileRealName#, #fileContentsType#, #fileExtension#, #fileSize#, #editorAttach#
+		, #registerId#, #registerName#, NOW()
+		, #updaterId#, #updaterName#, NOW())
+	</insert>
+
+	<delete id="delete" parameterClass="String">
+		DELETE FROM IKEP4_DM_FILE
+		WHERE FILE_ID = #fileId#
+    </delete>
+
+	<select id="select" parameterClass="String" resultMap="fileResult">
+		SELECT
+			A.FILE_ID, A.FILE_PATH, A.FILE_NAME,
+			A.FILE_REAL_NAME, A.FILE_CONTENTS_TYPE, A.FILE_EXTENSION, A.FILE_SIZE, A.EDITOR_ATTACH,
+			A.REGISTER_ID, A.REGISTER_NAME, A.REGIST_DATE,
+			A.UPDATER_ID, A.UPDATER_NAME, A.UPDATE_DATE,
+			B.ITEM_ID, B.ITEM_TYPE_CODE
+		FROM IKEP4_DM_FILE A LEFT OUTER JOIN IKEP4_DM_FILE_LINK B
+								ON A.FILE_ID = B.FILE_ID
+		WHERE A.FILE_ID = #fileId#
+		LIMIT 1
+    </select>
+    
+    <select id="selectProfileImage" parameterClass="String" resultMap="fileResult">
+		SELECT
+			A.FILE_ID, A.FILE_PATH, A.FILE_NAME,
+			A.FILE_REAL_NAME, A.FILE_CONTENTS_TYPE, A.FILE_EXTENSION, A.FILE_SIZE, A.EDITOR_ATTACH,
+			A.REGISTER_ID, A.REGISTER_NAME, A.REGIST_DATE,
+			A.UPDATER_ID, A.UPDATER_NAME, A.UPDATE_DATE,
+			B.ITEM_ID, B.ITEM_TYPE_CODE
+		FROM IKEP4_DM_FILE A LEFT OUTER JOIN IKEP4_DM_FILE_LINK B
+								ON A.FILE_ID = B.FILE_ID
+							INNER JOIN IKEP4_EV_USER C
+								ON A.FILE_ID = C.PICTURE_ID
+		WHERE C.USER_ID = #userId#
+		LIMIT 1
+    </select>
+
+	<select id="selectItemFile" parameterClass="java.util.Map" resultMap="fileResult">
+		SELECT
+			A.FILE_ID, A.FILE_PATH, A.FILE_NAME,
+			A.FILE_REAL_NAME, A.FILE_CONTENTS_TYPE, A.FILE_EXTENSION, A.FILE_SIZE, A.EDITOR_ATTACH,
+			A.REGISTER_ID, A.REGISTER_NAME, A.REGIST_DATE,
+			A.UPDATER_ID, A.UPDATER_NAME, A.UPDATE_DATE,
+			'' ITEM_ID, '' ITEM_TYPE_CODE
+		FROM IKEP4_DM_FILE A INNER JOIN IKEP4_DM_FILE_LINK B
+								ON A.FILE_ID = B.FILE_ID
+		WHERE B.ITEM_ID = #itemId#
+		<isNotEmpty property="editorYn"> 
+			AND A.EDITOR_ATTACH = #editorYn#
+		</isNotEmpty>
+    </select>
+
+	<select id="selectAllForThumbnailBatch" parameterClass="String"
+		resultMap="thunmbanilBatchResult">
+		SELECT
+			A.FILE_ID, A.FILE_PATH, A.FILE_NAME,
+			A.FILE_REAL_NAME, A.FILE_CONTENTS_TYPE, A.FILE_EXTENSION, A.FILE_SIZE, A.EDITOR_ATTACH,
+			A.REGISTER_ID, A.REGISTER_NAME, A.REGIST_DATE,
+			A.UPDATER_ID, A.UPDATER_NAME, A.UPDATE_DATE,
+			'' ITEM_ID, '' ITEM_TYPE_CODE,
+			C.THUMBNAIL_WIDTH_SIZE, C.THUMBNAIL_HEIGHT_SIZE
+		FROM IKEP4_DM_FILE A INNER JOIN IKEP4_DM_FILE_LINK B 
+            					ON A.FILE_ID = B.FILE_ID  
+            				INNER JOIN  IKEP4_EV_ITEM_TYPE C
+            					ON B.ITEM_TYPE_CODE = C.ITEM_TYPE_CODE
+		WHERE UPPER(A.FILE_EXTENSION) IN ('JPG','JPEG','PNG','GIF','BMP')
+		AND A.FILE_ID NOT IN (SELECT PARENT_FILE_ID 
+								FROM IKEP4_DM_THUMBNAIL
+								WHERE PARENT_FILE_ID IS NOT NULL)
+		ORDER BY A.REGIST_DATE DESC
+    </select>
+    
+    <select id="selectAllForFileDeleteBatch" parameterClass="String"
+		resultMap="fileResult">
+		SELECT
+			A.FILE_ID, A.FILE_PATH, A.FILE_NAME,
+			A.FILE_REAL_NAME, A.FILE_CONTENTS_TYPE, A.FILE_EXTENSION, A.FILE_SIZE, A.EDITOR_ATTACH,
+			A.REGISTER_ID, A.REGISTER_NAME, A.REGIST_DATE,
+			A.UPDATER_ID, A.UPDATER_NAME, A.UPDATE_DATE,
+			'' ITEM_ID, '' ITEM_TYPE_CODE
+		FROM IKEP4_DM_FILE A
+		WHERE A.FILE_ID NOT IN (SELECT FILE_ID 
+									FROM IKEP4_DM_FILE_LINK 
+										WHERE FILE_ID IS NOT NULL)
+    </select>
+    
+    
+    <insert id="insertDownloadHistory" parameterClass="file">
+		INSERT INTO IKEP4_DM_FILE_DOWNLOAD_HISTORY (
+			DOWNLOAD_HISTORY_ID, FILE_ID, USER_ID, 
+   			DOWNLOAD_IP, DOWNLOAD_DATE, PORTAL_ID)
+		values(#downloadHistoryId#, #fileId#, #registerId#, 
+			#downloadIp#, NOW(), #portalId#)
+	</insert>
+	
+	<update id="updateProfileImage" parameterClass="file">
+		UPDATE IKEP4_EV_USER
+			<isEqual property="targetId" compareValue="picture">
+				SET PICTURE_PATH = #filePath#
+			</isEqual>
+			<isEqual property="targetId" compareValue="pf_picture">
+				SET PROFILE_PICTURE_PATH = #filePath#
+			</isEqual>
+		WHERE USER_ID = #registerId#
+	</update>
+
+
+</sqlMap>
+

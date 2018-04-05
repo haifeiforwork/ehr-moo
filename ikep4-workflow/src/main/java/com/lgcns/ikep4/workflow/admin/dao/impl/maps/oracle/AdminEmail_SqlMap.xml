@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="com.lgcns.ikep4.workflow.admin.dao.AdminEmail" >
+	<typeAlias alias="AdminEmailLog" type="com.lgcns.ikep4.workflow.admin.model.AdminEmailLog"/>
+	<typeAlias alias="AdminEmailLogSearchCondition" 	type="com.lgcns.ikep4.workflow.admin.model.AdminEmailLogSearchCondition"/>	
+	
+	<!--코드관리 테이블 조회 결과 -->
+	<resultMap id="AdminEmailLogResult" class="AdminEmailLog">
+		<result property="logId" 					column="LOG_ID" 				jdbcType="NUMBER"/>
+		<result property="senderId" 			column="SENDER_ID" 			jdbcType="VARCHAR"/>
+		<result property="senderEmail" 		column="SENDER_EMAIL" 	jdbcType="VARCHAR"/>
+		<result property="receiver" 			column="RECEIVER" 			jdbcType="VARCHAR"/>
+		<result property="receiverEmail" 	column="RECEIVER_EMAIL" jdbcType="VARCHAR"/>
+		<result property="emailTitle" 		column="EMAIL_TITLE" 		jdbcType="VARCHAR"/>
+		<result property="emailContent" 	column="EMAIL_CONTENT" 	jdbcType="VARCHAR"/>
+		<result property="sendDate"				column="SEND_DATE" 			jdbcType="DATE"/>
+		<result property="createDate"			column="CREATE_DATE" 		jdbcType="DATE"/>
+		<result property="isSuccess"			column="IS_SUCCESS" 		jdbcType="CHAR"/>
+		<result property="receiveType" 		column="RECEIVE_TYPE" 	jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	<sql id="sqlColumnList">
+		  LOG_ID
+		, SENDER_ID
+		, SENDER_EMAIL
+		, RECEIVER
+		, RECEIVER_EMAIL
+		, EMAIL_TITLE
+		, EMAIL_CONTENT
+		, TO_CHAR(SEND_DATE,'YYYY.MM.DD HH24:MI:SS') AS SEND_DATE
+		, TO_CHAR(CREATE_DATE,'YYYY.MM.DD HH24:MI:SS') AS CREATE_DATE
+		, IS_SUCCESS
+		, RECEIVE_TYPE
+	</sql>
+
+	<sql id="getEmailLogSearchSql">
+		<isNotNull property="emailTitle"><isNotEmpty property="emailTitle">
+				AND	el.EMAIL_TITLE LIKE '%' || #emailTitle# || '%'
+		</isNotEmpty></isNotNull>
+		<isNotNull property="userValue"><isNotEmpty property="userValue">
+			<isEqual prepend="AND" property="userType" compareValue="SENDER">
+	      	el.SENDER like '%' || #userValue# || '%'
+	    </isEqual>
+			<isEqual prepend="AND" property="userType" compareValue="SENDER_EMAIL">
+	      	el.SENDER_EMAIL like '%' || #userValue# || '%'
+	    </isEqual>
+			<isEqual prepend="AND" property="userType" compareValue="RECEIVER">
+	        el.RECEIVER like '%' || #userValue# || '%'
+	    </isEqual>
+			<isEqual prepend="AND" property="userType" compareValue="RECEIVER_EMAIL">
+	        el.RECEIVER_EMAIL like '%' || #userValue# || '%'
+	    </isEqual>
+		</isNotEmpty></isNotNull>
+		<isNotNull property="searchStartDate"><isNotEmpty property="searchStartDate">
+			<isNotNull property="searchEndDate"><isNotEmpty property="searchEndDate">
+				<isEqual prepend="AND" property="dateType" compareValue="SEND_DATE">
+					el.SEND_DATE BETWEEN to_date(#searchStartDate# || ' 00:00:00','yyyy-mm-dd hh24:mi:ss') and to_date(#searchEndDate# || ' 23:59:59','yyyy-mm-dd hh24:mi:ss')
+		    </isEqual>
+				<isEqual prepend="AND" property="dateType" compareValue="CREATE_DATE">
+					el.CREATE_DATE BETWEEN to_date(#searchStartDate# || ' 00:00:00','yyyy-mm-dd hh24:mi:ss') and to_date(#searchEndDate# || ' 23:59:59','yyyy-mm-dd hh24:mi:ss')
+		    </isEqual>
+			</isNotEmpty></isNotNull>
+		</isNotEmpty></isNotNull>
+	</sql>
+
+	<select id="selectCount" parameterClass="String" resultClass="Integer">
+		/* [AdminEmailLog_SqlMap.xml] selectCount */
+		
+	  	<![CDATA[
+		   	SELECT COUNT(LOG_ID) FROM IKEP4_WF_EMAIL_LOG WHERE LOG_ID = #logId#
+	   	]]>
+	</select>
+	
+	<select id="selectOne" parameterClass="String" resultMap="AdminEmailLogResult">
+		/* [AdminEmailLog_SqlMap.xml] selectOne */
+
+		SELECT <include refid="sqlColumnList" />
+		FROM 	 IKEP4_WF_EMAIL_LOG 
+		WHERE  LOG_ID = #logId#
+	</select>
+	
+  <!-- countEmailLogList -->
+  <select id="countEmailLogList" parameterClass="AdminEmailLogSearchCondition" resultClass="Integer">
+		/* [AdminEmailLog_SqlMap.xml] selectCount */
+		  
+		SELECT	COUNT(el.LOG_ID)
+		FROM		IKEP4_WF_EMAIL_LOG el
+		WHERE		1=1
+			<include refid="getEmailLogSearchSql"/>
+  </select>
+
+	<!-- searchEmailLogList -->
+	<select id="searchEmailLogList" parameterClass="AdminEmailLogSearchCondition" resultMap="AdminEmailLogResult">
+		/* [AdminEmailLog_SqlMap.xml] searchEmailLogList */  
+		SELECT *
+		FROM ( 
+					SELECT ROWNUM AS RNUM, A.* FROM ( 
+						/* START========================================= */
+						SELECT	<include refid="sqlColumnList" /> 
+						FROM		IKEP4_WF_EMAIL_LOG el
+						WHERE		1=1
+							<include refid="getEmailLogSearchSql"/>
+							<isEmpty property="sortColumn" >ORDER BY el.LOG_ID DESC</isEmpty>
+			  			<isNotEmpty property="sortColumn" >ORDER BY $sortColumn$ $sortType$</isNotEmpty>
+						/* ===========================================END  */ 
+		<![CDATA[  
+		    	) A WHERE ROWNUM <=  #endRowIndex# /* 종료  */
+		) WHERE RNUM >  #startRowIndex# /* 시작 */
+		]]> 
+  </select>  
+
+	<insert id="create" parameterClass="AdminEmailLog">
+		/* [AdminEmailLog_SqlMap.xml] create */
+		<![CDATA[ 
+			INSERT 	INTO IKEP4_WF_EMAIL_LOG 
+										( LOG_ID, SENDER_ID, SENDER_EMAIL, RECEIVER, RECEIVER_EMAIL
+										 ,EMAIL_TITLE, EMAIL_CONTENT, SEND_DATE, CREATE_DATE, IS_SUCCESS, RECEIVE_TYPE )
+							VALUES ( #logId#, #senderId#, #senderEmail#, #receiver#, #receiverEmail#
+											,#emailTitle#, #emailContent#, to_date(#sendDate#,'yyyy-mm-dd hh24:mi:ss'), SYSDATE, #isSuccess#, #receiveType#)
+		]]>
+	</insert>
+   
+	<delete id="delete" parameterClass="String">
+		/* [AdminEmailLog_SqlMap.xml] delete */
+
+		DELETE FROM IKEP4_WF_EMAIL_LOG 
+		WHERE  LOG_ID = #logId#
+	</delete>
+	
+	<delete id="deleteMulti" parameterClass="java.util.List">
+		/* [AdminEmailLog_SqlMap.xml] deleteMilti */
+
+		DELETE FROM IKEP4_WF_EMAIL_LOG 
+		WHERE  LOG_ID
+		<dynamic prepend="IN">
+			<iterate open="(" conjunction="," close=")">	
+				#[]#
+			</iterate>
+		</dynamic>
+	</delete>	
+	
+</sqlMap>

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="workflow.admin.dao.AdminPartitionDao">
+	<typeAlias alias = "AdminPartition" type="com.lgcns.ikep4.workflow.admin.model.AdminPartition"/>
+
+	<resultMap id="AdminPartitionResult" class="AdminPartition">
+		<result property="partitionId" column="PARTITION_ID" columnIndex="1"/>
+		<result property="partitionName" column="PARTITION_NAME" columnIndex="2"/>
+		<result property="description" column="DESCRIPTION" columnIndex="3"/>
+		<result property="createDate" column="CREATE_DATE" columnIndex="4"/>
+		<result property="updateDate" column="UPDATE_DATE" columnIndex="5"/>
+	</resultMap>
+	
+	<!-- MS SQL -->
+	<!-- insert -->
+	<insert id="insert" parameterClass="AdminPartition"> 
+      <![CDATA[ 
+      		/* [AdminPartition_SqlMap.xml] workflow.admin.dao.AdminPartitionDao.insert */
+          INSERT INTO IKEP4_WF_PARTITION (PARTITION_ID, PARTITION_NAME, DESCRIPTION, CREATE_DATE, UPDATE_DATE)  
+          VALUES (#partitionId#, #partitionName#, #description#, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+       ]]>
+      <selectKey resultClass="String" keyProperty="partitionId" type="pre"> 
+         <![CDATA[ 
+               SELECT #partitionId# AS PARTITION_ID
+            ]]>
+      </selectKey>
+   </insert>
+   
+   <!-- ANSI -->
+   <!-- select -->
+	<select id="select" parameterClass="String" resultMap="AdminPartitionResult">
+	  <![CDATA[
+	  /* [AdminPartition_SqlMap.xml] workflow.admin.dao.AdminPartitionDao.select */
+		   SELECT * FROM IKEP4_WF_PARTITION WHERE PARTITION_ID = #partitionId#
+	   ]]>
+	</select>
+	
+	 <!-- ANSI -->
+	<!-- update -->
+	<update id="update" parameterClass="AdminPartition">
+	  <![CDATA[
+	  /* [AdminPartition_SqlMap.xml] workflow.admin.dao.AdminPartitionDao.update */
+		   UPDATE IKEP4_WF_PARTITION 
+		   SET PARTITION_NAME = #partitionName# 
+		   WHERE PARTITION_ID = #partitionId#
+	   ]]>
+	</update>
+   
+    <!-- ANSI -->
+   <!-- delete -->
+   <delete id="delete" parameterClass="String">
+      <![CDATA[
+      	   /* [AdminPartition_SqlMap.xml] workflow.admin.dao.AdminPartitionDao.delete */
+	       DELETE FROM IKEP4_WF_PARTITION WHERE PARTITION_ID = #partitionId#
+	   ]]>
+	</delete>
+	
+	 <!-- ANSI -->
+	<!-- selectCount -->
+	<select id="selectCount" parameterClass="String" resultClass="java.lang.Integer">
+	  <![CDATA[
+	  	   /* [AdminPartition_SqlMap.xml] workflow.admin.dao.AdminPartitionDao.selectCount */
+		   SELECT COUNT(*) FROM IKEP4_WF_PARTITION WHERE PARTITION_ID = #partitionId#
+	   ]]>
+	</select>
+	
+	 <!-- ANSI -->
+	<!-- 워크플로우 - 현황관리 - 파티션 조회(ComboBox) -->
+	<select id="selectAll" resultMap="AdminPartitionResult">
+	<![CDATA[	
+	  SELECT   /* [AdminPartition_SqlMap.xml] workflow.admin.dao.AdminPartitionDao.selectAll */
+	  *
+	  FROM IKEP4_WF_PARTITION
+	  ORDER BY CREATE_DATE
+	]]>
+	</select>
+	
+	 <!-- ANSI -->
+	<!-- 워크플로우 - 현황관리 - 데시보드  - 파티션  전체건수 조회 -->
+	<select id="partitionCount" resultClass="java.lang.Integer">
+	<![CDATA[
+		/* [AdminPartition_SqlMap.xml] workflow.admin.dao.AdminPartitionDao.partitionCount */
+		SELECT COUNT(*) FROM IKEP4_WF_PARTITION
+	]]>
+	</select>
+</sqlMap>

@@ -1,0 +1,469 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="portal.admin.screen.portalSystem" >
+	<typeAlias alias="PortalSystem" type="com.lgcns.ikep4.portal.admin.screen.model.PortalSystem"/>
+	
+	<resultMap id="result" class="PortalSystem">
+		<result column="SYSTEM_CODE" 		property="systemCode" 		columnIndex="1"/>
+		<result column="PORTAL_ID" 			property="portalId" 		columnIndex="2"/>
+		<result column="SYSTEM_NAME"		property="systemName" 		columnIndex="3"/>
+		<result column="DESCRIPTION"		property="description"		columnIndex="4"/>
+		<result column="PARENT_SYSTEM_CODE"	property="parentSystemCode"	columnIndex="5"/>
+		<result column="SYSTEM_TYPE"		property="systemType"		columnIndex="6"/>
+		<result column="MAIN_VIEW"			property="mainView"			columnIndex="7"/>
+		<result column="URL"				property="url"				columnIndex="8"/>
+		<result column="SORT_ORDER"			property="sortOrder"		columnIndex="9"/>
+		<result column="TARGET"				property="target"			columnIndex="10"/>
+		<result column="OWNER_ID"			property="ownerId"			columnIndex="11"/>
+		<result column="REGISTER_ID"		property="registerId"		columnIndex="12"/>
+		<result column="REGISTER_NAME"		property="registerName"		columnIndex="13"/>
+		<result column="REGIST_DATE"		property="registDate"		columnIndex="14"/>
+		<result column="UPDATER_ID"			property="updaterId"		columnIndex="15"/>
+		<result column="UPDATER_NAME"		property="updaterName"		columnIndex="16"/>
+		<result column="UPDATE_DATE"		property="updateDate"		columnIndex="17"/>
+		<result column="URL_TYPE"			property="urlType"			columnIndex="18"/>
+		<result column="CLASS_NAME"			property="className"		columnIndex="19"/>
+	</resultMap>
+	
+	<resultMap id="listResult" class="PortalSystem">
+		<result column="DEPTH_LEVEL" 		property="depthLevel" 		columnIndex="1"/>
+		<result column="SYSTEM_CODE" 		property="systemCode" 		columnIndex="2"/>
+		<result column="PORTAL_ID" 			property="portalId" 		columnIndex="3"/>
+		<result column="SYSTEM_NAME"		property="systemName" 		columnIndex="4"/>
+		<result column="DESCRIPTION"		property="description"		columnIndex="5"/>
+		<result column="PARENT_SYSTEM_CODE"	property="parentSystemCode"	columnIndex="6"/>
+		<result column="SYSTEM_TYPE"		property="systemType"		columnIndex="7"/>
+		<result column="MAIN_VIEW"			property="mainView"			columnIndex="8"/>
+		<result column="URL"				property="url"				columnIndex="9"/>
+		<result column="SORT_ORDER"			property="sortOrder"		columnIndex="10"/>
+		<result column="TARGET"				property="target"			columnIndex="11"/>
+		<result column="OWNER_ID"			property="ownerId"			columnIndex="12"/>
+		<result column="REGISTER_ID"		property="registerId"		columnIndex="13"/>
+		<result column="REGISTER_NAME"		property="registerName"		columnIndex="14"/>
+		<result column="REGIST_DATE"		property="registDate"		columnIndex="15"/>
+		<result column="UPDATER_ID"			property="updaterId"		columnIndex="16"/>
+		<result column="UPDATER_NAME"		property="updaterName"		columnIndex="17"/>
+		<result column="UPDATE_DATE"		property="updateDate"		columnIndex="18"/>
+		<result column="URL_TYPE"			property="urlType"			columnIndex="19"/>
+		<result column="CLASS_NAME"			property="className"		columnIndex="20"/>
+	</resultMap>
+	
+	<resultMap id="linkResult" class="PortalSystem">
+		<result column="NUM" 				property="num" 				columnIndex="1"/>
+		<result column="DEPTH_LEVEL" 		property="depthLevel" 		columnIndex="2"/>
+		<result column="SYSTEM_CODE" 		property="systemCode" 		columnIndex="3"/>
+		<result column="SYSTEM_NAME"		property="systemName" 		columnIndex="4"/>
+		<result column="DESCRIPTION"		property="description"		columnIndex="5"/>
+		<result column="PARENT_SYSTEM_CODE"	property="parentSystemCode"	columnIndex="6"/>
+		<result column="SYSTEM_TYPE"		property="systemType"		columnIndex="7"/>
+		<result column="MAIN_VIEW"			property="mainView"			columnIndex="8"/>
+		<result column="URL"				property="url"				columnIndex="9"/>
+		<result column="SORT_ORDER"			property="sortOrder"		columnIndex="10"/>
+		<result column="TARGET"				property="target"			columnIndex="11"/>
+		<result column="URL_TYPE"			property="urlType"			columnIndex="12"/>
+		<result column="CLASS_NAME"			property="className"		columnIndex="13"/>
+	</resultMap>
+	
+	<sql id="sqlColumnList">
+		SYSTEM_CODE,
+		PORTAL_ID,
+		SYSTEM_NAME,
+		DESCRIPTION,
+		PARENT_SYSTEM_CODE,
+		SYSTEM_TYPE,
+		MAIN_VIEW,
+		URL,
+		SORT_ORDER,
+		TARGET,
+		OWNER_ID,
+		REGISTER_ID,
+		REGISTER_NAME,
+		REGIST_DATE,
+		UPDATER_ID,
+		UPDATER_NAME,
+		UPDATE_DATE,
+		URL_TYPE,
+		CLASS_NAME
+	</sql>
+	
+	<!-- MS SQL -->
+	<insert id="create" parameterClass="PortalSystem"> 
+		<selectKey resultClass="string" keyProperty="sortOrder" >
+		<![CDATA[
+		SELECT				CASE 
+							WHEN MAX(ISNULL(CONVERT(INT, SORT_ORDER), 100000)) IS NULL THEN '0000000000001'
+              				ELSE dbo.IKEP4_UFN_LPAD(MAX(ISNULL(CONVERT(INT, SORT_ORDER), 100000))+1, 13,'0') 
+              				END  
+    	FROM         		IKEP4_PO_SYSTEM
+		]]>
+		</selectKey>
+	
+		<![CDATA[
+		/* [PortalSystem_SqlMap.xml] portal.admin.screen.portalSystem.create */
+		INSERT	INTO		IKEP4_PO_SYSTEM 
+							(
+		]]>
+							<include refid="portal.admin.screen.portalSystem.sqlColumnList" />
+		<![CDATA[
+							)
+		VALUES	 			( 
+							#systemCode#,
+							#portalId#,
+							#systemName#,
+							#description#,
+							#parentSystemCode#,
+							#systemType#,
+							#mainView#,
+							#url#,
+							#sortOrder#,
+							#target#,
+							#ownerId#,
+							#registerId#,
+						    #registerName#,
+						    CURRENT_TIMESTAMP,
+						    #updaterId#,
+						    #updaterName#,
+						    CURRENT_TIMESTAMP,
+						    #urlType#,
+						    #className#
+						    )
+		]]>
+	</insert>
+	
+	<!-- MS SQL -->
+	<select id="portalSystemListView" parameterClass="java.lang.String" resultMap="result">
+		<![CDATA[
+		/* [PortalSystem_SqlMap.xml] portal.admin.screen.portalSystem.portalSystemListView */
+		SELECT				SYSTEM_CODE, 
+						    PORTAL_ID, 
+						    SYSTEM_NAME, 
+						    DESCRIPTION, 
+						    PARENT_SYSTEM_CODE, 
+						    SYSTEM_TYPE, 
+						    MAIN_VIEW, 
+						    URL, 
+						    SORT_ORDER, 
+						    TARGET, 
+						    OWNER_ID, 
+						    REGISTER_ID, 
+						    REGISTER_NAME, 
+						    CONVERT(NVARCHAR, REGIST_DATE, 23) AS REGIST_DATE,
+						    UPDATER_ID, 
+						    UPDATER_NAME,
+						    CONVERT(NVARCHAR, UPDATE_DATE, 23) AS UPDATE_DATE,
+						    URL_TYPE,
+						    CLASS_NAME
+		FROM 				IKEP4_PO_SYSTEM
+		WHERE 				SYSTEM_CODE <> 'S000000'
+		AND 				portal_id = #portalId#
+		ORDER	BY 			regist_date ASC
+		]]>
+	</select>
+	
+	<!-- MS SQL -->
+	<select id="treeList" parameterClass="java.util.Map" resultMap="result">
+		<![CDATA[
+		/* [PortalSystem_SqlMap.xml] portal.admin.screen.portalSystem.treeList */
+		SELECT        		A.SYSTEM_CODE,
+	                      	A.PORTAL_ID,
+	                      	CASE        
+	                      	WHEN  B.ITEM_MESSAGE IS NOT NULL THEN B.ITEM_MESSAGE
+	                      	ELSE  A.SYSTEM_NAME END AS SYSTEM_NAME,
+	                      	A.DESCRIPTION,
+	                      	A.PARENT_SYSTEM_CODE,
+	                      	A.SYSTEM_TYPE,
+	                      	A.MAIN_VIEW,
+	                      	A.URL,
+	                      	A.SORT_ORDER,
+	                      	A.TARGET,
+	                      	A.OWNER_ID,
+	                      	A.REGISTER_ID,
+	                      	A.REGISTER_NAME,
+	                      	CONVERT(NVARCHAR, A.REGIST_DATE, 23) AS REGIST_DATE,
+	                      	A.UPDATER_ID,
+                       		A.UPDATER_NAME,
+                       		CONVERT(NVARCHAR, A.UPDATE_DATE, 23) AS UPDATE_DATE,
+                      		A.URL_TYPE,
+                      		A.CLASS_NAME
+    	FROM           		IKEP4_PO_SYSTEM A 
+    	LEFT JOIN          	IKEP4_I18N_MESSAGE B
+    	ON                	A.SYSTEM_CODE = B.ITEM_ID
+      	]]>
+      	<dynamic>
+		<isNull property="parentSystemCode">
+		<![CDATA[
+      	WHERE               A.SYSTEM_CODE = 'S000000'
+        AND                 A.PARENT_SYSTEM_CODE IS NULL
+      	AND             	B.FIELD_NAME = #fieldName#
+      	AND             	B.LOCALE_CODE = #localeCode#
+      	]]>
+      	</isNull>
+      	<isNotNull property="parentSystemCode">
+      	<![CDATA[
+      	WHERE        		A.SYSTEM_CODE <> 'S000000'
+ 		AND             	A.PARENT_SYSTEM_CODE = #parentSystemCode#
+ 		AND					A.PORTAL_ID = #portalId#
+        AND             	B.FIELD_NAME = #fieldName#
+      	AND             	B.LOCALE_CODE = #localeCode#
+ 		]]>
+ 		</isNotNull>
+      	</dynamic>		
+      	<![CDATA[
+ 		ORDER BY 			SORT_ORDER, SYSTEM_NAME
+      	]]>    	
+	</select>
+	
+	<!-- MS SQL -->
+	<select id="linkList" parameterClass="java.util.Map" resultMap="linkResult">
+		<![CDATA[
+		/* [PortalSystem_SqlMap.xml] portal.admin.screen.portalSystem.linkList */
+		WITH CTE AS (
+			SELECT	1 DEPTH_LEVEL,
+					SYSTEM_CODE, 
+					SYSTEM_NAME, 
+					DESCRIPTION, 
+					PARENT_SYSTEM_CODE, 
+					SYSTEM_TYPE, 
+					MAIN_VIEW, 
+					URL, 
+					SORT_ORDER, 
+					TARGET, 
+					URL_TYPE,
+					CLASS_NAME,
+					CONVERT(NVARCHAR, '/' + SORT_ORDER) PATH_ORDER
+			FROM	IKEP4_PO_SYSTEM
+			WHERE	SYSTEM_CODE = 'S000000'
+				AND MAIN_VIEW = '1'
+			UNION ALL
+			SELECT	DEPTH_LEVEL + 1,
+					S.SYSTEM_CODE, 
+					S.SYSTEM_NAME, 
+					S.DESCRIPTION, 
+					S.PARENT_SYSTEM_CODE, 
+					S.SYSTEM_TYPE, 
+					S.MAIN_VIEW, 
+					S.URL, 
+					S.SORT_ORDER, 
+					S.TARGET, 
+					S.URL_TYPE,
+					S.CLASS_NAME,
+					CONVERT(NVARCHAR, CTE.PATH_ORDER + '/' + S.SORT_ORDER) PATH_ORDER
+			FROM	IKEP4_PO_SYSTEM S, CTE
+			WHERE	S.PORTAL_ID = #portalId#
+				AND	S.MAIN_VIEW = '1'
+				AND CTE.SYSTEM_CODE = S.PARENT_SYSTEM_CODE
+		)
+		SELECT 				B.NUM,
+							B.DEPTH_LEVEL, 
+							B.SYSTEM_CODE, 
+							C.ITEM_MESSAGE AS SYSTEM_NAME, 
+							B.DESCRIPTION, 
+							B.PARENT_SYSTEM_CODE, 
+							B.SYSTEM_TYPE, 
+							B.MAIN_VIEW, 
+							B.URL, 
+							B.SORT_ORDER, 
+							B.TARGET, 
+							B.URL_TYPE,
+							B.CLASS_NAME
+		FROM 				IKEP4_VW_PERMIT_SYS_RESOURCE A 
+		INNER JOIN 			(SELECT	Row_number() OVER (ORDER BY PATH_ORDER) AS NUM, * 
+							 FROM 	CTE 
+							 WHERE	SYSTEM_CODE <> 'S000000') B
+		ON 					A.RESOURCE_NAME = B.SYSTEM_CODE 
+		AND 				A.OPERATION_NAME = #operationName#
+		AND 				A.CLASS_NAME = #className#
+		AND 				A.USER_ID IN (#userId#, 'OPEN')
+		INNER JOIN 			IKEP4_I18N_MESSAGE C 
+		ON 					B.SYSTEM_CODE = C.ITEM_ID 
+		AND 				C.FIELD_NAME = #fieldName#
+		AND 				C.LOCALE_CODE = #localeCode#
+		ORDER BY			B.NUM ASC
+ 		]]>
+	</select>
+	
+	<!-- MS SQL -->
+ 	<select id="get" parameterClass="string" resultMap="result"> 
+		<![CDATA[
+		/* [PortalSystem_SqlMap.xml] portal.admin.screen.portalSystem.get */
+    	SELECT				SYSTEM_CODE,
+							PORTAL_ID,
+							SYSTEM_NAME,
+							DESCRIPTION,
+							PARENT_SYSTEM_CODE,
+							SYSTEM_TYPE,
+							MAIN_VIEW,
+							URL,
+							SORT_ORDER,
+							TARGET,
+							OWNER_ID,
+							REGISTER_ID,
+							REGISTER_NAME,
+							CONVERT(NVARCHAR, REGIST_DATE, 23) AS REGIST_DATE,
+							UPDATER_ID,
+							UPDATER_NAME,
+							CONVERT(NVARCHAR, UPDATE_DATE, 23) AS UPDATE_DATE,
+							URL_TYPE,
+							CLASS_NAME
+    	FROM  				IKEP4_PO_SYSTEM
+    	WHERE 				SYSTEM_CODE = #systemCode# 
+    	]]>
+ 	</select>
+ 	
+ 	<!-- ANSI -->
+ 	<select id="exists" parameterClass="string" resultClass="int">
+		<![CDATA[
+		/* [PortalSystem_SqlMap.xml] portal.admin.screen.portalSystem.exists */
+		SELECT				COUNT(SYSTEM_CODE) AS CNT
+		FROM				IKEP4_PO_SYSTEM
+		WHERE				SYSTEM_CODE = #systemCode#	
+		]]>
+	</select>
+	
+	<!-- ANSI -->
+	<select id="getChildCount" parameterClass="java.util.Map" resultClass="int">
+		<![CDATA[
+		/* [PortalSystem_SqlMap.xml] portal.admin.screen.portalSystem.getChildCount */
+		SELECT				COUNT(SYSTEM_CODE) AS CNT
+		FROM				IKEP4_PO_SYSTEM
+		WHERE				SYSTEM_CODE <> 'S000000'
+		AND					PARENT_SYSTEM_CODE = #systemCode#
+		AND					PORTAL_ID = #portalId#
+		]]>
+	</select>
+	
+	<!-- MS SQL -->
+	<select id="getMaxSortOrder" resultClass="string">
+		<![CDATA[
+		/* [PortalSystem_SqlMap.xml] portal.admin.screen.portalSystem.getMaxSortOrder */		
+		SELECT				dbo.IKEP4_UFN_LPAD(MAX(ISNULL(CONVERT(INT, SORT_ORDER), 100000))+1, 13, '0')
+    	FROM         		IKEP4_PO_SYSTEM
+		]]>
+	</select>
+	
+	
+	<!-- ANSI -->
+	<update id="update" parameterClass="PortalSystem"> 
+ 		<![CDATA[
+ 		/* [PortalSystem_SqlMap.xml] portal.admin.screen.portalSystem.update */
+    	UPDATE				IKEP4_PO_SYSTEM 
+    	SET					SYSTEM_CODE = #systemCode#,
+    						PORTAL_ID = #portalId#,
+							SYSTEM_NAME = #systemName#,
+							DESCRIPTION = #description#,
+							PARENT_SYSTEM_CODE = #parentSystemCode#,
+							SYSTEM_TYPE = #systemType#,
+							MAIN_VIEW = #mainView#,
+							URL = #url#,
+							SORT_ORDER = #sortOrder#,
+							TARGET = #target#,
+			    			UPDATER_ID = #updaterId#,
+			    			UPDATER_NAME = #updaterName#,
+			    			UPDATE_DATE = CURRENT_TIMESTAMP,
+			    			URL_TYPE = #urlType#,
+			    			CLASS_NAME = #className#
+    	WHERE				SYSTEM_CODE = #oldSystemCode# 
+    	]]>
+  	</update>
+  	
+  	<!-- ANSI -->
+  	<delete id="delete" parameterClass="string"> 
+  		<![CDATA[
+  		/* [PortalSystem_SqlMap.xml] portal.admin.screen.portalSystem.delete */
+    	DELETE 
+    	FROM 				IKEP4_PO_SYSTEM
+    	WHERE 				SYSTEM_CODE = #systemCode# 
+    	]]>
+  	</delete>
+  	
+  	<!-- ANSI -->
+  	<select id="getSystemCode" parameterClass="java.util.HashMap" resultClass="String">
+		<![CDATA[
+		/* [PortalSystem_SqlMap.xml] portal.admin.screen.portalSystem.getSystemCode */
+		SELECT				SYSTEM_CODE
+		FROM				IKEP4_PO_SYSTEM
+		WHERE				PORTAL_ID = #portalId#
+		AND					SYSTEM_NAME = #systemName# 
+		]]>
+	</select>
+	
+	<select id="listSystemAll" parameterClass="string" resultMap="result">
+		<![CDATA[
+		/* [PortalSystem_SqlMap.xml] portal.admin.screen.portalSystem.listSystemAll */
+		WITH CTE AS (
+			SELECT	1 DEPTH_LEVEL,
+					SYSTEM_CODE,
+					PORTAL_ID, 
+					SYSTEM_NAME, 
+					DESCRIPTION, 
+					PARENT_SYSTEM_CODE, 
+					SYSTEM_TYPE, 
+					MAIN_VIEW, 
+					URL, 
+					SORT_ORDER, 
+					TARGET,
+					OWNER_ID,
+					REGISTER_ID,
+					REGISTER_NAME,
+					REGIST_DATE,
+					UPDATER_ID,
+					UPDATER_NAME,
+					UPDATE_DATE, 
+					URL_TYPE,
+					CLASS_NAME,
+					CONVERT(NVARCHAR, '/' + SORT_ORDER) PATH_ORDER
+			FROM	IKEP4_PO_SYSTEM
+			WHERE	SYSTEM_CODE = 'S000000'
+			UNION ALL
+			SELECT	DEPTH_LEVEL + 1,
+					S.SYSTEM_CODE,
+					S.PORTAL_ID, 
+					S.SYSTEM_NAME, 
+					S.DESCRIPTION, 
+					S.PARENT_SYSTEM_CODE, 
+					S.SYSTEM_TYPE, 
+					S.MAIN_VIEW, 
+					S.URL, 
+					S.SORT_ORDER, 
+					S.TARGET,
+					S.OWNER_ID,
+					S.REGISTER_ID,
+					S.REGISTER_NAME,
+					S.REGIST_DATE,
+					S.UPDATER_ID,
+					S.UPDATER_NAME,
+					S.UPDATE_DATE, 
+					S.URL_TYPE,
+					S.CLASS_NAME,
+					CONVERT(NVARCHAR, CTE.PATH_ORDER + '/' + S.SORT_ORDER) PATH_ORDER
+			FROM	IKEP4_PO_SYSTEM S, CTE
+			WHERE	S.PORTAL_ID = #portalId#
+			  AND   CTE.SYSTEM_CODE = S.PARENT_SYSTEM_CODE
+		)
+		SELECT 				
+				B.SYSTEM_CODE,
+				B.PORTAL_ID,
+				B.SYSTEM_NAME,
+				B.DESCRIPTION,
+				B.PARENT_SYSTEM_CODE,
+				B.SYSTEM_TYPE,
+				B.MAIN_VIEW,
+				B.URL,
+				B.SORT_ORDER,
+				B.TARGET,
+				B.OWNER_ID,
+				B.REGISTER_ID,
+				B.REGISTER_NAME,
+				CONVERT(NVARCHAR, B.REGIST_DATE, 23) AS REGIST_DATE,
+				B.UPDATER_ID,
+				B.UPDATER_NAME,
+				CONVERT(NVARCHAR, B.UPDATE_DATE, 23) AS UPDATE_DATE,
+				B.URL_TYPE,
+				B.CLASS_NAME
+		FROM 	CTE B
+		WHERE	SYSTEM_CODE <> 'S000000'
+		ORDER BY PATH_ORDER
+ 		]]>
+	</select>
+</sqlMap>

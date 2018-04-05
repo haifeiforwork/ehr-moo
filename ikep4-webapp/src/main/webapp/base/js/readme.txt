@@ -1,0 +1,1 @@
+공통으로 사용하는 Javascript 및 Library 성격의 Javascript(ex. jQuery) 파일 디렉토리

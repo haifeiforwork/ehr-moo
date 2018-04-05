@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="collpack.qna.dao.QnaStatistics" >
+
+	<typeAlias alias = "QnaStatistics" type="com.lgcns.ikep4.collpack.qna.model.QnaStatistics"/>
+
+  <resultMap id="QnaStatisticsResult" class="QnaStatistics" >
+    <result column="AVERAGE_ANSWER_TIME" property="averageAnswerTime" />
+    <result column="ANSWER_RATIO" property="answerRatio" />
+  </resultMap>
+  
+  <!-- ANSI -->
+  <select id="select" resultMap="QnaStatisticsResult" parameterClass="String">
+    SELECT						/* [QnaStatistics_SqlMap.xml] qnaStatistics.select */
+    	AVERAGE_ANSWER_TIME, 
+    	ANSWER_RATIO
+    FROM IKEP4_QA_STATISTICS
+    WHERE PORTAL_ID = #portalId#
+  </select>
+  
+    <!-- ANSI -->
+  <insert id="insert" parameterClass="QnaStatistics" >
+    INSERT INTO IKEP4_QA_STATISTICS (		/* [QnaStatistics_SqlMap.xml] qnaStatistics.insert */
+    	AVERAGE_ANSWER_TIME, 
+    	ANSWER_RATIO,
+    	PORTAL_ID
+    ) VALUES (
+	    #averageAnswerTime#, 
+	    #answerRatio#,
+	    #portalId#
+    )
+  </insert>
+  
+    <!-- ANSI -->
+   <update id="update" parameterClass="QnaStatistics" >
+    UPDATE IKEP4_QA_STATISTICS				/* [QnaStatistics_SqlMap.xml] qnaStatistics.update */
+    SET AVERAGE_ANSWER_TIME = #averageAnswerTime#, 
+    	ANSWER_RATIO = #answerRatio#
+  </update>
+  
+    <!-- ANSI -->
+  <delete id="delete" parameterClass="String">
+	  DELETE 				/* [QnaStatistics_SqlMap.xml] qnaStatistics.delete */
+	  FROM IKEP4_QA_STATISTICS 
+	  WHERE PORTAL_ID = #portalId#
+  </delete>
+  
+  
+</sqlMap>

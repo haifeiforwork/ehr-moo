@@ -1,0 +1,443 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ko">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>iKEP 4.00</title>
+<link rel="stylesheet" type="text/css" href="../../css/theme01/jquery_ui_custom.css" />
+<link rel="stylesheet" type="text/css" href="../../css/common_profile_type2.css" />
+<link rel="stylesheet" type="text/css" href="../../css/theme01/theme.css" />
+<script type="text/javascript" src="../../js/jquery/jquery-1.6.2.min.js"></script>
+<script type="text/javascript" src="../../js/jquery/jquery-ui-1.8.13.min.without.datepicker.js"></script>
+<script type="text/javascript" src="../../js/jquery/jquery.jstree.pack.js"></script>
+<script type="text/javascript" src="../../js/langResource/ko.js"></script>
+<script type="text/javascript">var contextRoot = "/ikep4-webapp";</script>
+<script type="text/javascript" src="../../js/common.pack.js"></script>
+<script type="text/javascript">
+<!--
+var isExtendTree = false;
+(function($) {
+	$(document).ready(function() {
+		/* 페이지 로딩시 Tree 영역 윈도우 높이로 조절 */
+		resizeTreeContentHeight();
+		
+		/* 윈도우 resize 이벤트 발생 시 tree 영역 window 높이로 조절 */
+		$(window).bind("resize", resizeTreeContentHeight);	
+		
+		/* tree 영역 넓히기 */
+		$("#btnDivSize").click(
+			function(){
+				extendTreeContent();
+			}
+		);	
+		
+		$("#categoryTree").jstree({
+			plugins:["themes", "ui", "json_data"],			
+			json_data:{data:[
+				{data:{title:"Database", icon:"dept", attr:{id:"category01", tag:"00001"}}},             
+				{data:{title:"하이테크 미래사업본부"}, icon:"dept", attr:{id:"category02", tag:"00002"}, children:[
+   					{data:{title:"스마트 소프트웨어관리부문팀", icon:"dept"}, attr:{data:'{"id":"category03", "tag":"00021"}'}, children:[ 
+	{data:{title:"사용자10273 부장(팀장)", icon:"dept"}, attr:{data:'{"id":"category04", "tag":"00022"}'}},
+	{data:{title:"사용자10273 차장", icon:"dept"}, attr:{data:'{"id":"category05", "tag":"00023"}'}},
+	{data:{title:"사용자10274 대리", icon:"dept"}, attr:{data:'{"id":"category03", "tag":"00021"}'}},
+	{data:{title:"사용자10275 과장", icon:"dept"}, attr:{data:'{"id":"category04", "tag":"00022"}'}},
+	{data:{title:"사용자10276 차장", icon:"dept"}, attr:{data:'{"id":"category05", "tag":"00023"}'}},
+	{data:{title:"사용자10277 대리", icon:"dept"}, attr:{data:'{"id":"category03", "tag":"00021"}'}},
+	{data:{title:"사용자10278 사원", icon:"dept"}, attr:{data:'{"id":"category04", "tag":"00022"}'}},
+	{data:{title:"사용자10279 사원", icon:"dept"}, attr:{data:'{"id":"category05", "tag":"00023"}'}},
+	{data:{title:"사용자10273 사원", icon:"dept"}, attr:{data:'{"id":"category03", "tag":"00021"}'}},
+	{data:{title:"사용자10273 사원", icon:"dept"}, attr:{data:'{"id":"category04", "tag":"00022"}'}},
+	{data:{title:"사용자10273 사원", icon:"dept"}, attr:{data:'{"id":"category05", "tag":"00023"}'}},
+	{data:{title:"사용자10273 사원", icon:"dept"}, attr:{data:'{"id":"category03", "tag":"00021"}'}},
+	{data:{title:"사용자10273 사원", icon:"dept"}, attr:{data:'{"id":"category04", "tag":"00022"}'}},
+	{data:{title:"사용자10273 사원", icon:"dept"}, attr:{data:'{"id":"category05", "tag":"00023"}'}},
+	{data:{title:"사용자10273 사원", icon:"dept"}, attr:{data:'{"id":"category03", "tag":"00021"}'}},
+	{data:{title:"사용자10273 사원", icon:"dept"}, attr:{data:'{"id":"category04", "tag":"00022"}'}}
+   					
+   					]},
+   					{data:{title:"Spring", icon:"dept"}, attr:{data:'{"id":"category04", "tag":"00022"}'}
+   					, children:[ 
+   					     	{data:{title:"Spring", icon:"dept"}, attr:{data:'{"id":"category04", "tag":"00022"}'}},
+   					     	{data:{title:"Jquery", icon:"dept"}, attr:{data:'{"id":"category05", "tag":"00023"}'}},
+   					     	{data:{title:"Java", icon:"dept"}, attr:{data:'{"id":"category03", "tag":"00021"}'}},
+   					     	{data:{title:"Spring", icon:"dept"}, attr:{data:'{"id":"category04", "tag":"00022"}'}},
+   					     	{data:{title:"Jquery", icon:"dept"}, attr:{data:'{"id":"category05", "tag":"00023"}'}},
+   					     	{data:{title:"Java", icon:"dept"}, attr:{data:'{"id":"category03", "tag":"00021"}'}},
+   					     	{data:{title:"Spring", icon:"dept"}, attr:{data:'{"id":"category04", "tag":"00022"}'}},
+   					     	{data:{title:"Jquery", icon:"dept"}, attr:{data:'{"id":"category05", "tag":"00023"}'}},
+   					     	{data:{title:"Java", icon:"dept"}, attr:{data:'{"id":"category03", "tag":"00021"}'}},
+   					     	{data:{title:"Spring", icon:"dept"}, attr:{data:'{"id":"category04", "tag":"00022"}'}},
+   					     	{data:{title:"Jquery", icon:"dept"}, attr:{data:'{"id":"category05", "tag":"00023"}'}},
+   					     	{data:{title:"Java", icon:"dept"}, attr:{data:'{"id":"category03", "tag":"00021"}'}},
+   					     	{data:{title:"Spring", icon:"dept"}, attr:{data:'{"id":"category04", "tag":"00022"}'}},
+   					     	{data:{title:"Jquery", icon:"dept"}, attr:{data:'{"id":"category05", "tag":"00023"}'}},
+   					     	{data:{title:"Java", icon:"dept"}, attr:{data:'{"id":"category03", "tag":"00021"}'}},
+   					     	{data:{title:"Spring", icon:"dept"}, attr:{data:'{"id":"category04", "tag":"00022"}'}}
+   					        					
+   					        					]
+   					},
+   					{data:{title:"Jquery", icon:"dept"}, attr:{data:'{"id":"category05", "tag":"00023"}'}
+   					, children:[ 
+   					     	{data:{title:"Spring", icon:"dept"}, attr:{data:'{"id":"category04", "tag":"00022"}'}},
+   					     	{data:{title:"Jquery", icon:"dept"}, attr:{data:'{"id":"category05", "tag":"00023"}'}},
+   					     	{data:{title:"Java", icon:"dept"}, attr:{data:'{"id":"category03", "tag":"00021"}'}},
+   					     	{data:{title:"Spring", icon:"dept"}, attr:{data:'{"id":"category04", "tag":"00022"}'}},
+   					     	{data:{title:"Jquery", icon:"dept"}, attr:{data:'{"id":"category05", "tag":"00023"}'}},
+   					     	{data:{title:"Java", icon:"dept"}, attr:{data:'{"id":"category03", "tag":"00021"}'}},
+   					     	{data:{title:"Spring", icon:"dept"}, attr:{data:'{"id":"category04", "tag":"00022"}'}},
+   					     	{data:{title:"Jquery", icon:"dept"}, attr:{data:'{"id":"category05", "tag":"00023"}'}},
+   					     	{data:{title:"Java", icon:"dept"}, attr:{data:'{"id":"category03", "tag":"00021"}'}},
+   					     	{data:{title:"Spring", icon:"dept"}, attr:{data:'{"id":"category04", "tag":"00022"}'}},
+   					     	{data:{title:"Jquery", icon:"dept"}, attr:{data:'{"id":"category05", "tag":"00023"}'}},
+   					     	{data:{title:"Java", icon:"dept"}, attr:{data:'{"id":"category03", "tag":"00021"}'}},
+   					     	{data:{title:"Spring", icon:"dept"}, attr:{data:'{"id":"category04", "tag":"00022"}'}},
+   					     	{data:{title:"Jquery", icon:"dept"}, attr:{data:'{"id":"category05", "tag":"00023"}'}},
+   					     	{data:{title:"Java", icon:"dept"}, attr:{data:'{"id":"category03", "tag":"00021"}'}},
+   					     	{data:{title:"Spring", icon:"dept"}, attr:{data:'{"id":"category04", "tag":"00022"}'}}
+   					        					
+   					        					]
+   					},
+   					{data:{title:"Java", icon:"dept"}, attr:{data:'{"id":"category03", "tag":"00021"}'}
+   					, children:[ 
+   					     	{data:{title:"Spring", icon:"dept"}, attr:{data:'{"id":"category04", "tag":"00022"}'}},
+   					     	{data:{title:"Jquery", icon:"dept"}, attr:{data:'{"id":"category05", "tag":"00023"}'}},
+   					     	{data:{title:"Java", icon:"dept"}, attr:{data:'{"id":"category03", "tag":"00021"}'}},
+   					     	{data:{title:"Spring", icon:"dept"}, attr:{data:'{"id":"category04", "tag":"00022"}'}},
+   					     	{data:{title:"Jquery", icon:"dept"}, attr:{data:'{"id":"category05", "tag":"00023"}'}},
+   					     	{data:{title:"Java", icon:"dept"}, attr:{data:'{"id":"category03", "tag":"00021"}'}},
+   					     	{data:{title:"Spring", icon:"dept"}, attr:{data:'{"id":"category04", "tag":"00022"}'}},
+   					     	{data:{title:"Jquery", icon:"dept"}, attr:{data:'{"id":"category05", "tag":"00023"}'}},
+   					     	{data:{title:"Java", icon:"dept"}, attr:{data:'{"id":"category03", "tag":"00021"}'}},
+   					     	{data:{title:"Spring", icon:"dept"}, attr:{data:'{"id":"category04", "tag":"00022"}'}},
+   					     	{data:{title:"Jquery", icon:"dept"}, attr:{data:'{"id":"category05", "tag":"00023"}'}},
+   					     	{data:{title:"Java", icon:"dept"}, attr:{data:'{"id":"category03", "tag":"00021"}'}},
+   					     	{data:{title:"Spring", icon:"dept"}, attr:{data:'{"id":"category04", "tag":"00022"}'}},
+   					     	{data:{title:"Jquery", icon:"dept"}, attr:{data:'{"id":"category05", "tag":"00023"}'}},
+   					     	{data:{title:"Java", icon:"dept"}, attr:{data:'{"id":"category03", "tag":"00021"}'}},
+   					     	{data:{title:"Spring", icon:"dept"}, attr:{data:'{"id":"category04", "tag":"00022"}'}}
+   					        					
+   					        					]
+   					},
+   					{data:{title:"Spring", icon:"dept"}, attr:{data:'{"id":"category04", "tag":"00022"}'}
+   					, children:[ 
+   					     	{data:{title:"Spring", icon:"dept"}, attr:{data:'{"id":"category04", "tag":"00022"}'}},
+   					     	{data:{title:"Jquery", icon:"dept"}, attr:{data:'{"id":"category05", "tag":"00023"}'}},
+   					     	{data:{title:"Java", icon:"dept"}, attr:{data:'{"id":"category03", "tag":"00021"}'}},
+   					     	{data:{title:"Spring", icon:"dept"}, attr:{data:'{"id":"category04", "tag":"00022"}'}},
+   					     	{data:{title:"Jquery", icon:"dept"}, attr:{data:'{"id":"category05", "tag":"00023"}'}},
+   					     	{data:{title:"Java", icon:"dept"}, attr:{data:'{"id":"category03", "tag":"00021"}'}},
+   					     	{data:{title:"Spring", icon:"dept"}, attr:{data:'{"id":"category04", "tag":"00022"}'}},
+   					     	{data:{title:"Jquery", icon:"dept"}, attr:{data:'{"id":"category05", "tag":"00023"}'}},
+   					     	{data:{title:"Java", icon:"dept"}, attr:{data:'{"id":"category03", "tag":"00021"}'}},
+   					     	{data:{title:"Spring", icon:"dept"}, attr:{data:'{"id":"category04", "tag":"00022"}'}},
+   					     	{data:{title:"Jquery", icon:"dept"}, attr:{data:'{"id":"category05", "tag":"00023"}'}},
+   					     	{data:{title:"Java", icon:"dept"}, attr:{data:'{"id":"category03", "tag":"00021"}'}},
+   					     	{data:{title:"Spring", icon:"dept"}, attr:{data:'{"id":"category04", "tag":"00022"}'}},
+   					     	{data:{title:"Jquery", icon:"dept"}, attr:{data:'{"id":"category05", "tag":"00023"}'}},
+   					     	{data:{title:"Java", icon:"dept"}, attr:{data:'{"id":"category03", "tag":"00021"}'}},
+   					     	{data:{title:"Spring", icon:"dept"}, attr:{data:'{"id":"category04", "tag":"00022"}'}}
+   					        					
+   					        					]
+   					},
+   					{data:{title:"Jquery", icon:"dept"}, attr:{data:'{"id":"category05", "tag":"00023"}'}
+   					, children:[ 
+   					     	{data:{title:"Spring", icon:"dept"}, attr:{data:'{"id":"category04", "tag":"00022"}'}},
+   					     	{data:{title:"Jquery", icon:"dept"}, attr:{data:'{"id":"category05", "tag":"00023"}'}},
+   					     	{data:{title:"Java", icon:"dept"}, attr:{data:'{"id":"category03", "tag":"00021"}'}},
+   					     	{data:{title:"Spring", icon:"dept"}, attr:{data:'{"id":"category04", "tag":"00022"}'}},
+   					     	{data:{title:"Jquery", icon:"dept"}, attr:{data:'{"id":"category05", "tag":"00023"}'}},
+   					     	{data:{title:"Java", icon:"dept"}, attr:{data:'{"id":"category03", "tag":"00021"}'}},
+   					     	{data:{title:"Spring", icon:"dept"}, attr:{data:'{"id":"category04", "tag":"00022"}'}},
+   					     	{data:{title:"Jquery", icon:"dept"}, attr:{data:'{"id":"category05", "tag":"00023"}'}},
+   					     	{data:{title:"Java", icon:"dept"}, attr:{data:'{"id":"category03", "tag":"00021"}'}},
+   					     	{data:{title:"Spring", icon:"dept"}, attr:{data:'{"id":"category04", "tag":"00022"}'}},
+   					     	{data:{title:"Jquery", icon:"dept"}, attr:{data:'{"id":"category05", "tag":"00023"}'}},
+   					     	{data:{title:"Java", icon:"dept"}, attr:{data:'{"id":"category03", "tag":"00021"}'}},
+   					     	{data:{title:"Spring", icon:"dept"}, attr:{data:'{"id":"category04", "tag":"00022"}'}},
+   					     	{data:{title:"Jquery", icon:"dept"}, attr:{data:'{"id":"category05", "tag":"00023"}'}},
+   					     	{data:{title:"Java", icon:"dept"}, attr:{data:'{"id":"category03", "tag":"00021"}'}},
+   					     	{data:{title:"Spring", icon:"dept"}, attr:{data:'{"id":"category04", "tag":"00022"}'}}
+   					        					
+   					        					]
+   					},
+   					{data:{title:"Java", icon:"dept"}, attr:{data:'{"id":"category03", "tag":"00021"}'}},
+   					{data:{title:"Spring", icon:"dept"}, attr:{data:'{"id":"category04", "tag":"00022"}'}},
+   					{data:{title:"Jquery", icon:"dept"}, attr:{data:'{"id":"category05", "tag":"00023"}'}},
+   					{data:{title:"Java", icon:"dept"}, attr:{data:'{"id":"category03", "tag":"00021"}'}},
+   					{data:{title:"Spring", icon:"dept"}, attr:{data:'{"id":"category04", "tag":"00022"}'}},
+   					{data:{title:"Jquery", icon:"dept"}, attr:{data:'{"id":"category05", "tag":"00023"}'}},
+   					{data:{title:"Java", icon:"dept"}, attr:{data:'{"id":"category03", "tag":"00021"}'}},
+   					{data:{title:"Spring", icon:"dept"}, attr:{data:'{"id":"category04", "tag":"00022"}'}},
+   					{data:{title:"Jquery", icon:"dept"}, attr:{data:'{"id":"category05", "tag":"00023"}'}},
+   					{data:{title:"Java", icon:"dept"}, attr:{data:'{"id":"category03", "tag":"00021"}'}},
+   					{data:{title:"Spring", icon:"dept"}, attr:{data:'{"id":"category04", "tag":"00022"}'}},
+   					{data:{title:"Jquery", icon:"dept"}, attr:{data:'{"id":"category05", "tag":"00023"}'}},
+   					{data:{title:"Java", icon:"dept"}, attr:{data:'{"id":"category03", "tag":"00021"}'}},
+   					{data:{title:"Spring", icon:"dept"}, attr:{data:'{"id":"category04", "tag":"00022"}'}},
+   					{data:{title:"Jquery", icon:"dept"}, attr:{data:'{"id":"category05", "tag":"00023"}'}},
+   					{data:{title:"Java", icon:"dept"}, attr:{data:'{"id":"category03", "tag":"00021"}'}},
+   					{data:{title:"Spring", icon:"dept"}, attr:{data:'{"id":"category04", "tag":"00022"}'}},
+   					{data:{title:"Jquery", icon:"dept"}, attr:{data:'{"id":"category05", "tag":"00023"}'}}
+   				]},
+   				{data:{title:"비지니스, 경제"}, icon:"dept", attr:{id:"category06", tag:"00003"}, children:[
+					{data:{title:"금융", icon:"dept"}, attr:{data:'{"id":"category07", "tag":"00031"}'}},
+					{data:{title:"전자", icon:"dept"}, attr:{data:'{"id":"category08", "tag":"00032"}'}},
+					{data:{title:"제조", icon:"dept"}, attr:{data:'{"id":"category09", "tag":"00033"}'}},
+					{data:{title:"금융", icon:"dept"}, attr:{data:'{"id":"category07", "tag":"00031"}'}},
+					{data:{title:"전자", icon:"dept"}, attr:{data:'{"id":"category08", "tag":"00032"}'}},
+					{data:{title:"제조", icon:"dept"}, attr:{data:'{"id":"category09", "tag":"00033"}'}},
+					{data:{title:"금융", icon:"dept"}, attr:{data:'{"id":"category07", "tag":"00031"}'}},
+					{data:{title:"전자", icon:"dept"}, attr:{data:'{"id":"category08", "tag":"00032"}'}},
+					{data:{title:"제조", icon:"dept"}, attr:{data:'{"id":"category09", "tag":"00033"}'}},
+					{data:{title:"금융", icon:"dept"}, attr:{data:'{"id":"category07", "tag":"00031"}'}},
+					{data:{title:"전자", icon:"dept"}, attr:{data:'{"id":"category08", "tag":"00032"}'}},
+					{data:{title:"제조", icon:"dept"}, attr:{data:'{"id":"category09", "tag":"00033"}'}},
+					{data:{title:"금융", icon:"dept"}, attr:{data:'{"id":"category07", "tag":"00031"}'}},
+					{data:{title:"전자", icon:"dept"}, attr:{data:'{"id":"category08", "tag":"00032"}'}},
+					{data:{title:"제조", icon:"dept"}, attr:{data:'{"id":"category09", "tag":"00033"}'}},
+					{data:{title:"금융", icon:"dept"}, attr:{data:'{"id":"category07", "tag":"00031"}'}},
+					{data:{title:"전자", icon:"dept"}, attr:{data:'{"id":"category08", "tag":"00032"}'}},
+					{data:{title:"제조", icon:"dept"}, attr:{data:'{"id":"category09", "tag":"00033"}'}}
+				]},
+				{data:{title:"사회, 문화"}, icon:"dept", attr:{id:"category10", tag:"00004"}, children:[
+					{data:{title:"해외여행", icon:"dept"}, attr:{data:'{"id":"category11", "tag":"00041"}'}},
+					{data:{title:"일본여행", icon:"dept"}, attr:{data:'{"id":"category12", "tag":"00042"}'}},
+					{data:{title:"유럽여행", icon:"dept"}, attr:{data:'{"id":"category13", "tag":"00043"}'}},
+					{data:{title:"해외여행", icon:"dept"}, attr:{data:'{"id":"category11", "tag":"00041"}'}},
+					{data:{title:"일본여행", icon:"dept"}, attr:{data:'{"id":"category12", "tag":"00042"}'}},
+					{data:{title:"유럽여행", icon:"dept"}, attr:{data:'{"id":"category13", "tag":"00043"}'}},
+					{data:{title:"해외여행", icon:"dept"}, attr:{data:'{"id":"category11", "tag":"00041"}'}},
+					{data:{title:"일본여행", icon:"dept"}, attr:{data:'{"id":"category12", "tag":"00042"}'}},
+					{data:{title:"유럽여행", icon:"dept"}, attr:{data:'{"id":"category13", "tag":"00043"}'}},
+					{data:{title:"해외여행", icon:"dept"}, attr:{data:'{"id":"category11", "tag":"00041"}'}},
+					{data:{title:"일본여행", icon:"dept"}, attr:{data:'{"id":"category12", "tag":"00042"}'}},
+					{data:{title:"유럽여행", icon:"dept"}, attr:{data:'{"id":"category13", "tag":"00043"}'}},
+					{data:{title:"해외여행", icon:"dept"}, attr:{data:'{"id":"category11", "tag":"00041"}'}},
+					{data:{title:"일본여행", icon:"dept"}, attr:{data:'{"id":"category12", "tag":"00042"}'}},
+					{data:{title:"유럽여행", icon:"dept"}, attr:{data:'{"id":"category13", "tag":"00043"}'}}
+				]},
+				{data:{title:"컴퓨터, 통신"}, icon:"dept", attr:{id:"category14", tag:"00005"}, children:[
+					{data:{title:"트위터", icon:"dept"}, attr:{data:'{"id":"category15", "tag":"00051"}'}},
+					{data:{title:"소셜네트워크", icon:"dept"}, attr:{data:'{"id":"category16", "tag":"00052"}'}},
+				    {data:{title:"iPhone", icon:"dept"}, attr:{data:'{"id":"category17", "tag":"00053"}'}},
+				    {data:{title:"갤럭시탭", icon:"dept"}, attr:{data:'{"id":"category18", "tag":"00054"}'}},
+				    {data:{title:"LG전자", icon:"dept"}, attr:{data:'{"id":"category19", "tag":"00055"}'}},
+				    {data:{title:"트위터", icon:"dept"}, attr:{data:'{"id":"category15", "tag":"00051"}'}},
+					{data:{title:"소셜네트워크", icon:"dept"}, attr:{data:'{"id":"category16", "tag":"00052"}'}},
+				    {data:{title:"iPhone", icon:"dept"}, attr:{data:'{"id":"category17", "tag":"00053"}'}},
+				    {data:{title:"갤럭시탭", icon:"dept"}, attr:{data:'{"id":"category18", "tag":"00054"}'}},
+				    {data:{title:"LG전자", icon:"dept"}, attr:{data:'{"id":"category19", "tag":"00055"}'}},
+				    {data:{title:"트위터", icon:"dept"}, attr:{data:'{"id":"category15", "tag":"00051"}'}},
+					{data:{title:"소셜네트워크", icon:"dept"}, attr:{data:'{"id":"category16", "tag":"00052"}'}},
+				    {data:{title:"iPhone", icon:"dept"}, attr:{data:'{"id":"category17", "tag":"00053"}'}},
+				    {data:{title:"갤럭시탭", icon:"dept"}, attr:{data:'{"id":"category18", "tag":"00054"}'}},
+				    {data:{title:"LG전자", icon:"dept"}, attr:{data:'{"id":"category19", "tag":"00055"}'}},
+				    {data:{title:"트위터", icon:"dept"}, attr:{data:'{"id":"category15", "tag":"00051"}'}},
+					{data:{title:"소셜네트워크", icon:"dept"}, attr:{data:'{"id":"category16", "tag":"00052"}'}},
+				    {data:{title:"iPhone", icon:"dept"}, attr:{data:'{"id":"category17", "tag":"00053"}'}},
+				    {data:{title:"갤럭시탭", icon:"dept"}, attr:{data:'{"id":"category18", "tag":"00054"}'}},
+				    {data:{title:"LG전자", icon:"dept"}, attr:{data:'{"id":"category19", "tag":"00055"}'}},
+				    {data:{title:"트위터", icon:"dept"}, attr:{data:'{"id":"category15", "tag":"00051"}'}},
+					{data:{title:"소셜네트워크", icon:"dept"}, attr:{data:'{"id":"category16", "tag":"00052"}'}},
+				    {data:{title:"iPhone", icon:"dept"}, attr:{data:'{"id":"category17", "tag":"00053"}'}},
+				    {data:{title:"갤럭시탭", icon:"dept"}, attr:{data:'{"id":"category18", "tag":"00054"}'}},
+				    {data:{title:"LG전자", icon:"dept"}, attr:{data:'{"id":"category19", "tag":"00055"}'}}
+				]},
+				{data:{title:"가정, 생활"}, icon:"dept", attr:{id:"category20", tag:"00006"}, children:[
+				     {data:{title:"물가대란", icon:"dept"}, attr:{data:'{"id":"category21", "tag":"00061"}'}},
+				     {data:{title:"스마트워킹", icon:"dept"}, attr:{data:'{"id":"category22", "tag":"00062"}'}},
+				     {data:{title:"교육제도", icon:"dept"}, attr:{data:'{"id":"category23", "tag":"00063"}'}},
+				     {data:{title:"쇼핑생활", icon:"dept"}, attr:{data:'{"id":"category24", "tag":"00064"}'}},
+				     {data:{title:"물가대란", icon:"dept"}, attr:{data:'{"id":"category21", "tag":"00061"}'}},
+				     {data:{title:"스마트워킹", icon:"dept"}, attr:{data:'{"id":"category22", "tag":"00062"}'}},
+				     {data:{title:"교육제도", icon:"dept"}, attr:{data:'{"id":"category23", "tag":"00063"}'}},
+				     {data:{title:"쇼핑생활", icon:"dept"}, attr:{data:'{"id":"category24", "tag":"00064"}'}},
+				     {data:{title:"물가대란", icon:"dept"}, attr:{data:'{"id":"category21", "tag":"00061"}'}},
+				     {data:{title:"스마트워킹", icon:"dept"}, attr:{data:'{"id":"category22", "tag":"00062"}'}},
+				     {data:{title:"교육제도", icon:"dept"}, attr:{data:'{"id":"category23", "tag":"00063"}'}},
+				     {data:{title:"쇼핑생활", icon:"dept"}, attr:{data:'{"id":"category24", "tag":"00064"}'}},
+				     {data:{title:"물가대란", icon:"dept"}, attr:{data:'{"id":"category21", "tag":"00061"}'}},
+				     {data:{title:"스마트워킹", icon:"dept"}, attr:{data:'{"id":"category22", "tag":"00062"}'}},
+				     {data:{title:"교육제도", icon:"dept"}, attr:{data:'{"id":"category23", "tag":"00063"}'}},
+				     {data:{title:"쇼핑생활", icon:"dept"}, attr:{data:'{"id":"category24", "tag":"00064"}'}},
+				     {data:{title:"물가대란", icon:"dept"}, attr:{data:'{"id":"category21", "tag":"00061"}'}},
+				     {data:{title:"스마트워킹", icon:"dept"}, attr:{data:'{"id":"category22", "tag":"00062"}'}},
+				     {data:{title:"교육제도", icon:"dept"}, attr:{data:'{"id":"category23", "tag":"00063"}'}},
+				     {data:{title:"쇼핑생활", icon:"dept"}, attr:{data:'{"id":"category24", "tag":"00064"}'}}
+				]},
+				{data:{title:"비지니스, 경제"}, icon:"dept", attr:{id:"category06", tag:"00003"}, children:[
+				                                                                                  	{data:{title:"금융", icon:"dept"}, attr:{data:'{"id":"category07", "tag":"00031"}'}},
+				                                                                                  	{data:{title:"전자", icon:"dept"}, attr:{data:'{"id":"category08", "tag":"00032"}'}},
+				                                                                                  	{data:{title:"제조", icon:"dept"}, attr:{data:'{"id":"category09", "tag":"00033"}'}},
+				                                                                                  	{data:{title:"금융", icon:"dept"}, attr:{data:'{"id":"category07", "tag":"00031"}'}},
+				                                                                                  	{data:{title:"전자", icon:"dept"}, attr:{data:'{"id":"category08", "tag":"00032"}'}},
+				                                                                                  	{data:{title:"제조", icon:"dept"}, attr:{data:'{"id":"category09", "tag":"00033"}'}},
+				                                                                                  	{data:{title:"금융", icon:"dept"}, attr:{data:'{"id":"category07", "tag":"00031"}'}},
+				                                                                                  	{data:{title:"전자", icon:"dept"}, attr:{data:'{"id":"category08", "tag":"00032"}'}},
+				                                                                                  	{data:{title:"제조", icon:"dept"}, attr:{data:'{"id":"category09", "tag":"00033"}'}},
+				                                                                                  	{data:{title:"금융", icon:"dept"}, attr:{data:'{"id":"category07", "tag":"00031"}'}},
+				                                                                                  	{data:{title:"전자", icon:"dept"}, attr:{data:'{"id":"category08", "tag":"00032"}'}},
+				                                                                                  	{data:{title:"제조", icon:"dept"}, attr:{data:'{"id":"category09", "tag":"00033"}'}},
+				                                                                                  	{data:{title:"금융", icon:"dept"}, attr:{data:'{"id":"category07", "tag":"00031"}'}},
+				                                                                                  	{data:{title:"전자", icon:"dept"}, attr:{data:'{"id":"category08", "tag":"00032"}'}},
+				                                                                                  	{data:{title:"제조", icon:"dept"}, attr:{data:'{"id":"category09", "tag":"00033"}'}},
+				                                                                                  	{data:{title:"금융", icon:"dept"}, attr:{data:'{"id":"category07", "tag":"00031"}'}},
+				                                                                                  	{data:{title:"전자", icon:"dept"}, attr:{data:'{"id":"category08", "tag":"00032"}'}},
+				                                                                                  	{data:{title:"제조", icon:"dept"}, attr:{data:'{"id":"category09", "tag":"00033"}'}}
+				                                                                                  ]},
+				                                                                                  {data:{title:"사회, 문화"}, icon:"dept", attr:{id:"category10", tag:"00004"}, children:[
+				                                                                                  	{data:{title:"해외여행", icon:"dept"}, attr:{data:'{"id":"category11", "tag":"00041"}'}},
+				                                                                                  	{data:{title:"일본여행", icon:"dept"}, attr:{data:'{"id":"category12", "tag":"00042"}'}},
+				                                                                                  	{data:{title:"유럽여행", icon:"dept"}, attr:{data:'{"id":"category13", "tag":"00043"}'}},
+				                                                                                  	{data:{title:"해외여행", icon:"dept"}, attr:{data:'{"id":"category11", "tag":"00041"}'}},
+				                                                                                  	{data:{title:"일본여행", icon:"dept"}, attr:{data:'{"id":"category12", "tag":"00042"}'}},
+				                                                                                  	{data:{title:"유럽여행", icon:"dept"}, attr:{data:'{"id":"category13", "tag":"00043"}'}},
+				                                                                                  	{data:{title:"해외여행", icon:"dept"}, attr:{data:'{"id":"category11", "tag":"00041"}'}},
+				                                                                                  	{data:{title:"일본여행", icon:"dept"}, attr:{data:'{"id":"category12", "tag":"00042"}'}},
+				                                                                                  	{data:{title:"유럽여행", icon:"dept"}, attr:{data:'{"id":"category13", "tag":"00043"}'}},
+				                                                                                  	{data:{title:"해외여행", icon:"dept"}, attr:{data:'{"id":"category11", "tag":"00041"}'}},
+				                                                                                  	{data:{title:"일본여행", icon:"dept"}, attr:{data:'{"id":"category12", "tag":"00042"}'}},
+				                                                                                  	{data:{title:"유럽여행", icon:"dept"}, attr:{data:'{"id":"category13", "tag":"00043"}'}},
+				                                                                                  	{data:{title:"해외여행", icon:"dept"}, attr:{data:'{"id":"category11", "tag":"00041"}'}},
+				                                                                                  	{data:{title:"일본여행", icon:"dept"}, attr:{data:'{"id":"category12", "tag":"00042"}'}},
+				                                                                                  	{data:{title:"유럽여행", icon:"dept"}, attr:{data:'{"id":"category13", "tag":"00043"}'}}
+				                                                                                  ]},
+				                                                                                  {data:{title:"컴퓨터, 통신"}, icon:"dept", attr:{id:"category14", tag:"00005"}, children:[
+				                                                                                  	{data:{title:"트위터", icon:"dept"}, attr:{data:'{"id":"category15", "tag":"00051"}'}},
+				                                                                                  	{data:{title:"소셜네트워크", icon:"dept"}, attr:{data:'{"id":"category16", "tag":"00052"}'}},
+				                                                                                      {data:{title:"iPhone", icon:"dept"}, attr:{data:'{"id":"category17", "tag":"00053"}'}},
+				                                                                                      {data:{title:"갤럭시탭", icon:"dept"}, attr:{data:'{"id":"category18", "tag":"00054"}'}},
+				                                                                                      {data:{title:"LG전자", icon:"dept"}, attr:{data:'{"id":"category19", "tag":"00055"}'}},
+				                                                                                      {data:{title:"트위터", icon:"dept"}, attr:{data:'{"id":"category15", "tag":"00051"}'}},
+				                                                                                  	{data:{title:"소셜네트워크", icon:"dept"}, attr:{data:'{"id":"category16", "tag":"00052"}'}},
+				                                                                                      {data:{title:"iPhone", icon:"dept"}, attr:{data:'{"id":"category17", "tag":"00053"}'}},
+				                                                                                      {data:{title:"갤럭시탭", icon:"dept"}, attr:{data:'{"id":"category18", "tag":"00054"}'}},
+				                                                                                      {data:{title:"LG전자", icon:"dept"}, attr:{data:'{"id":"category19", "tag":"00055"}'}},
+				                                                                                      {data:{title:"트위터", icon:"dept"}, attr:{data:'{"id":"category15", "tag":"00051"}'}},
+				                                                                                  	{data:{title:"소셜네트워크", icon:"dept"}, attr:{data:'{"id":"category16", "tag":"00052"}'}},
+				                                                                                      {data:{title:"iPhone", icon:"dept"}, attr:{data:'{"id":"category17", "tag":"00053"}'}},
+				                                                                                      {data:{title:"갤럭시탭", icon:"dept"}, attr:{data:'{"id":"category18", "tag":"00054"}'}},
+				                                                                                      {data:{title:"LG전자", icon:"dept"}, attr:{data:'{"id":"category19", "tag":"00055"}'}},
+				                                                                                      {data:{title:"트위터", icon:"dept"}, attr:{data:'{"id":"category15", "tag":"00051"}'}},
+				                                                                                  	{data:{title:"소셜네트워크", icon:"dept"}, attr:{data:'{"id":"category16", "tag":"00052"}'}},
+				                                                                                      {data:{title:"iPhone", icon:"dept"}, attr:{data:'{"id":"category17", "tag":"00053"}'}},
+				                                                                                      {data:{title:"갤럭시탭", icon:"dept"}, attr:{data:'{"id":"category18", "tag":"00054"}'}},
+				                                                                                      {data:{title:"LG전자", icon:"dept"}, attr:{data:'{"id":"category19", "tag":"00055"}'}},
+				                                                                                      {data:{title:"트위터", icon:"dept"}, attr:{data:'{"id":"category15", "tag":"00051"}'}},
+				                                                                                  	{data:{title:"소셜네트워크", icon:"dept"}, attr:{data:'{"id":"category16", "tag":"00052"}'}},
+				                                                                                      {data:{title:"iPhone", icon:"dept"}, attr:{data:'{"id":"category17", "tag":"00053"}'}},
+				                                                                                      {data:{title:"갤럭시탭", icon:"dept"}, attr:{data:'{"id":"category18", "tag":"00054"}'}},
+				                                                                                      {data:{title:"LG전자", icon:"dept"}, attr:{data:'{"id":"category19", "tag":"00055"}'}}
+				                                                                                  ]},
+				                                                                                  {data:{title:"가정, 생활"}, icon:"dept", attr:{id:"category20", tag:"00006"}, children:[
+				                                                                                       {data:{title:"물가대란", icon:"dept"}, attr:{data:'{"id":"category21", "tag":"00061"}'}},
+				                                                                                       {data:{title:"스마트워킹", icon:"dept"}, attr:{data:'{"id":"category22", "tag":"00062"}'}},
+				                                                                                       {data:{title:"교육제도", icon:"dept"}, attr:{data:'{"id":"category23", "tag":"00063"}'}},
+				                                                                                       {data:{title:"쇼핑생활", icon:"dept"}, attr:{data:'{"id":"category24", "tag":"00064"}'}},
+				                                                                                       {data:{title:"물가대란", icon:"dept"}, attr:{data:'{"id":"category21", "tag":"00061"}'}},
+				                                                                                       {data:{title:"스마트워킹", icon:"dept"}, attr:{data:'{"id":"category22", "tag":"00062"}'}},
+				                                                                                       {data:{title:"교육제도", icon:"dept"}, attr:{data:'{"id":"category23", "tag":"00063"}'}},
+				                                                                                       {data:{title:"쇼핑생활", icon:"dept"}, attr:{data:'{"id":"category24", "tag":"00064"}'}},
+				                                                                                       {data:{title:"물가대란", icon:"dept"}, attr:{data:'{"id":"category21", "tag":"00061"}'}},
+				                                                                                       {data:{title:"스마트워킹", icon:"dept"}, attr:{data:'{"id":"category22", "tag":"00062"}'}},
+				                                                                                       {data:{title:"교육제도", icon:"dept"}, attr:{data:'{"id":"category23", "tag":"00063"}'}},
+				                                                                                       {data:{title:"쇼핑생활", icon:"dept"}, attr:{data:'{"id":"category24", "tag":"00064"}'}},
+				                                                                                       {data:{title:"물가대란", icon:"dept"}, attr:{data:'{"id":"category21", "tag":"00061"}'}},
+				                                                                                       {data:{title:"스마트워킹", icon:"dept"}, attr:{data:'{"id":"category22", "tag":"00062"}'}},
+				                                                                                       {data:{title:"교육제도", icon:"dept"}, attr:{data:'{"id":"category23", "tag":"00063"}'}},
+				                                                                                       {data:{title:"쇼핑생활", icon:"dept"}, attr:{data:'{"id":"category24", "tag":"00064"}'}},
+				                                                                                       {data:{title:"물가대란", icon:"dept"}, attr:{data:'{"id":"category21", "tag":"00061"}'}},
+				                                                                                       {data:{title:"스마트워킹", icon:"dept"}, attr:{data:'{"id":"category22", "tag":"00062"}'}},
+				                                                                                       {data:{title:"교육제도", icon:"dept"}, attr:{data:'{"id":"category23", "tag":"00063"}'}},
+				                                                                                       {data:{title:"쇼핑생활", icon:"dept"}, attr:{data:'{"id":"category24", "tag":"00064"}'}}
+				                                                                                  ]},
+
+   			]}
+		});
+				
+	});
+	
+	/* window risize 시 Tree 윈도우높이로 조절 */
+	resizeTreeContentHeight = function(){	
+		var $treeOutDiv = $(".leftTree_2"); // Tree out div
+		var paddingHeight = 10;
+		$treeOutDiv.height( $(window).height()- $treeOutDiv.position().top - paddingHeight);
+	}
+	
+	/* tree 영역 넓히기 */
+	extendTreeContent = function(){
+		if(isExtendTree){ // tree 영역이 넓혀져 있는 경우
+			$("#btnDivSize").removeClass("btn_tr_reduce");
+			$("#btnDivSize").addClass("btn_tr_enlarge");
+			$("#sizeAction").html("<span>Enlarge</span>");
+			$(".leftTree_2").width(185);
+			$("#mainContents").css("margin-left",205);
+			isExtendTree = false;
+		}else{  // tree 영역이 기본으로 있는 경우
+			$("#btnDivSize").removeClass("btn_tr_enlarge");
+			$("#btnDivSize").addClass("btn_tr_reduce");
+			$("#sizeAction").html("<span>Reduce</span>");
+			var leftMargin = 205;
+			var tWidth = $(".leftTree_2")[0].scrollWidth;
+			if(tWidth-20 > 185){
+				$(".leftTree_2").width(tWidth);
+				leftMargin = tWidth+20;
+				$("#mainContents").css("margin-left",leftMargin);
+			}		    
+		    isExtendTree = true;
+		}
+	}
+	
+})(jQuery);
+-->
+</script>
+</head>
+
+<body class="bg_lefttree">
+
+<!--skipNavigation Start-->
+<div id="skipNavigation">
+	<p><a href="#topInfo">헤더정보영역 바로가기</a></p>
+	<p><a href="#topMenu">탑메뉴 바로가기</a></p>	
+	<p><a href="#blockHeaderSub">퀵메뉴 바로가기</a></p>
+	<p><a href="#leftMenu">레프트메뉴 바로가기</a></p>	
+	<p><a href="#mainContents">컨텐츠영역 바로가기</a></p>	
+</div>
+<!--//skipNavigation End-->
+
+<!--wrapper Start-->
+<div id="wrapper">
+
+	<!--blockContainer Start-->
+	<div id="blockContainer">
+		
+		<!--blockMain Start-->
+		<div id="blockMain">
+		
+			<h1 class="none">트리메뉴영역</h1>	
+			<h2 class="treeTitle">Organization</h2>
+			<div class="btn_tr_enlarge" id="btnDivSize"><a href="#a" id="sizeAction"><span>Enlarge</span></a></div>
+			<!--<div class="btn_tr_reduce"><a href="#a"><span>Reduce</span></a></div>-->
+			<div class="leftTree_2" style="background:;"><!--height값 조절. enlarge시 width값 조절-->
+				<div id="categoryTree"></div>
+			</div>
+				
+			<!--mainContents Start-->
+			<div id="mainContents" style="margin:0 0 0 205px;background:#fff;">
+				<h1 class="none">컨텐츠영역</h1>
+				<div class="mainCon_tree_sub">
+					<iframe src="MU01_010_iframe_2.html" title="contents" name="" width="100%" height="2000" frameborder="0" scrolling="auto"></iframe>
+				</div>
+			</div>
+			<!--//mainContents End-->
+			<div class="clear"></div>
+		</div>
+		<!--//blockMain End-->
+		
+	</div>
+	<!--//blockContainer End-->
+	
+		
+</div>
+<!--//wrapper End-->
+</body>
+</html>

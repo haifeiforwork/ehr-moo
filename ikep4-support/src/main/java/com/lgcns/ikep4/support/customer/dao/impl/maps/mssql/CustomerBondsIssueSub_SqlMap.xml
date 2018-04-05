@@ -1,0 +1,330 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="support.customer.dao.customerBondsIssueSub">
+
+<typeAlias alias="CustomerBondsIssueSub" type="com.lgcns.ikep4.support.customer.model.CustomerBondsIssueSub" />
+<typeAlias alias="CustomerBondsIssueSubSearchCondition" type="com.lgcns.ikep4.support.customer.search.CustomerBondsIssueSubSearchCondition" />
+ 
+   <resultMap id="CustomerBondsIssueSubResult" class="CustomerBondsIssueSub" >
+    <result column="LINEREPLY_ID" 			property="linereplyId" 			/>
+    <result column="ITEM_TYPE" 				property="itemType" 				/>
+    <result column="ITEM_ID" 				property="itemId" 				/>
+    <result column="LINEREPLY_GROUP_ID" 	property="linereplyGroupId" 	/>
+    <result column="LINEREPLY_PARENT_ID" 	property="linereplyParentId" 	/>
+    <result column="STEP" 					property="step" 				/>
+    <result column="INDENTATION" 			property="indentation" 			/>
+    <result column="CONTENTS"				property="contents" 			/>
+    <result column="RECOMMEND_COUNT" 		property="recommendCount" 		/>
+    <result column="LINEREPLY_DELETE" 		property="linereplyDelete" 		/>
+    <result column="UPDATER_ID" 			property="updaterId" 			/>
+    <result column="UPDATER_NAME" 			property="updaterName" 			/>
+    <result column="UPDATE_DATE" 			property="updateDate" 			/>
+    <result column="REGISTER_ID" 			property="registerId" 			/>
+    <result column="REGISTER_NAME" 			property="registerName" 		/>
+    <result column="REGIST_DATE" 			property="registDate" 			/>
+    <result column="COUNSEL_SUB_DATE" 		property="counselDateSub" 			/>
+    <result column="COUNSELOR_SUB" 			property="counselorSub" 			/>
+    <result column="JIJONG_SUB" 			property="jijongSub" 			/>
+    <result column="FACTORY_SUB" 			property="factorySub" 			/>
+    <result column="FACTORY_SUB_NAME" 		property="factorySubName" 			/>
+    <result column="CLAIM_GUBUN_SUB" 		property="claimGubunSub" 			/>
+    <result column="CLAIM_GUBUN_SUB_NAME" 	property="claimGubunSubName" 			/>
+    <result column="SUBJECT_SUB" 			property="subjectSub" 			/>
+    <result column="MASTER_SUB" 			property="masterSub" 			/>
+  </resultMap>
+ 
+ <sql id="CustomerBondsIssueSub_Column_List" >
+     A.LINEREPLY_ID
+    ,A.ITEM_TYPE 
+    ,A.ITEM_ID
+    ,A.LINEREPLY_GROUP_ID
+    ,A.LINEREPLY_PARENT_ID
+    ,A.STEP
+    ,A.INDENTATION
+    ,A.CONTENTS
+    ,A.RECOMMEND_COUNT
+    ,A.LINEREPLY_DELETE 
+    ,A.UPDATER_ID
+    ,A.UPDATER_NAME
+    ,A.UPDATE_DATE   
+    ,A.REGISTER_ID
+    ,A.REGISTER_NAME
+    ,A.REGIST_DATE
+    ,C.TEAM_NAME
+	,D.JOB_TITLE_NAME
+	,C.USER_ENGLISH_NAME
+  	,C.TEAM_ENGLISH_NAME
+  	,D.JOB_TITLE_ENGLISH_NAME
+  	,C.PICTURE_PATH
+	,C.PROFILE_PICTURE_PATH
+  </sql>
+  
+    <sql id="sqlExtendColumnList"> 
+    linereply.LINEREPLY_ID        AS LINEREPLY_ID,
+    linereply.ITEM_TYPE           AS ITEM_TYPE,         
+    linereply.ITEM_ID             AS ITEM_ID,            
+    linereply.LINEREPLY_GROUP_ID  AS LINEREPLY_GROUP_ID, 
+    linereply.LINEREPLY_PARENT_ID AS LINEREPLY_PARENT_ID,
+    linereply.STEP                AS STEP,               
+    linereply.INDENTATION         AS INDENTATION,        
+    linereply.CONTENTS            AS CONTENTS,           
+    linereply.RECOMMEND_COUNT     AS RECOMMEND_COUNT,           
+    linereply.LINEREPLY_DELETE    AS LINEREPLY_DELETE,          
+    linereply.UPDATER_ID          AS UPDATER_ID,         
+    linereply.UPDATER_NAME        AS UPDATER_NAME,       
+    linereply.UPDATE_DATE         AS UPDATE_DATE,
+    linereply.REGISTER_ID         AS REGISTER_ID,        
+    linereply.REGISTER_NAME       AS REGISTER_NAME,      
+    linereply.REGIST_DATE         AS REGIST_DATE,    
+    linereply.COUNSEL_SUB_DATE    AS COUNSEL_SUB_DATE,
+    linereply.COUNSELOR_SUB       AS COUNSELOR_SUB,
+    linereply.JIJONG_SUB          AS JIJONG_SUB,
+    linereply.FACTORY_SUB         AS FACTORY_SUB,
+    linereply.FACTORY_SUB_NAME    AS FACTORY_SUB_NAME,
+    linereply.CLAIM_GUBUN_SUB				  AS CLAIM_GUBUN_SUB,
+	linereply.CLAIM_GUBUN_SUB_NAME 		  AS CLAIM_GUBUN_SUB_NAME,
+	linereply.SUBJECT_SUB 		  AS SUBJECT_SUB,
+	linereply.MASTER_SUB 		  AS MASTER_SUB
+  </sql>  
+
+ <!-- ANSI -->
+ <select id="get" parameterClass="string" resultMap="CustomerBondsIssueSubResult"> 
+   SELECT /*  [CustomerBondsIssueSub_SqlMap.xml] support.customer.customerBondsIssueSub.get */
+   <include refid="support.customer.dao.customerBondsIssueSub.sqlExtendColumnList" />
+	FROM  CUSTOMER_BONDSISSUE_SUB linereply WITH (NOLOCK) 
+    WHERE linereply.LINEREPLY_ID = #linereplyId# 
+ </select>
+
+
+<insert id="create" parameterClass="CustomerBondsIssueSub" > 
+
+	INSERT INTO  /* [CustomerBondsIssueSub_SqlMap.xml] support.customer.customerBondsIssueSub.create  */
+		CUSTOMER_BONDSISSUE_SUB(
+		  LINEREPLY_ID,
+		  ITEM_TYPE,
+		  ITEM_ID,
+		  LINEREPLY_GROUP_ID,    
+	      LINEREPLY_PARENT_ID, 
+	      STEP, 
+	      INDENTATION,
+	      CONTENTS, 
+	      RECOMMEND_COUNT,
+	      LINEREPLY_DELETE,	      
+	      UPDATER_ID, 
+	      UPDATER_NAME, 
+	      UPDATE_DATE, 
+	      REGISTER_ID, 
+	      REGISTER_NAME, 
+	      REGIST_DATE,
+	      COUNSEL_SUB_DATE,
+	      COUNSELOR_SUB,
+	      JIJONG_SUB,
+	      FACTORY_SUB,
+	      FACTORY_SUB_NAME,
+	      CLAIM_GUBUN_SUB,
+	      CLAIM_GUBUN_SUB_NAME,
+	      SUBJECT_SUB,
+	      MASTER_SUB		  
+		)VALUES(
+		#linereplyId#,
+		#itemType#,
+		#itemId#,
+		#linereplyGroupId#,
+		#linereplyParentId#,
+		#step#,
+		#indentation#,
+		#contents#,
+		0,
+		#linereplyDelete#,
+		#updaterId#,
+		#updaterName#,
+		<isNotEmpty property="updateDate">
+			#updateDate#,
+		</isNotEmpty>
+		<isEmpty property="updateDate">
+			CURRENT_TIMESTAMP,
+		</isEmpty>		
+		#registerId#,
+		#registerName#,
+		<isNotEmpty property="registDate">
+			#registDate#,
+		</isNotEmpty>
+		<isEmpty property="registDate">
+			CURRENT_TIMESTAMP,
+		</isEmpty>	
+		#counselDateSub#,
+		#counselorSub#,
+		#jijongSub#,
+		#factorySub#,
+		#factorySubName#,
+		#claimGubunSub#,
+		#claimGubunSubName#,
+		#subjectSub#,
+		#masterSub#
+		)
+
+</insert>
+
+
+
+  <!-- MS SQL -->
+  <select id="listBySearchCondition" parameterClass="CustomerBondsIssueSubSearchCondition" resultMap="CustomerBondsIssueSubResult">  
+	SELECT /* * [CustomerBondsIssueSub_SqlMap.xml] support.customer.customerBondsIssueSub.listBySearchCondition */ 
+	       *
+	FROM ( 
+	     SELECT A.* FROM ( 
+	         /* START========================================= */
+	         SELECT <include refid="support.customer.dao.customerBondsIssueSub.sqlExtendColumnList" />
+	         		, Row_number() OVER (ORDER BY linereply.COUNSEL_SUB_DATE DESC, linereply.UPDATE_DATE DESC) AS RNUM
+	         FROM (
+		         SELECT *
+				 FROM  CUSTOMER_BONDSISSUE_SUB WITH (NOLOCK) 
+				 WHERE ITEM_ID = #itemId# 
+				 AND   ITEM_TYPE = #itemType#
+			 ) linereply 
+			 /* ===========================================END  */ 
+	<![CDATA[   
+	    ) A WHERE RNUM <=  #endRowIndex# /* 종료  */
+	) TBL WHERE RNUM >  #startRowIndex# /* 시작 */
+	]]> 
+  </select>  
+
+   <!-- ANSI -->
+  <select id="countBySearchCondition" parameterClass="CustomerBondsIssueSubSearchCondition" resultClass="int">  
+	SELECT /* [CustomerBondsIssueSub_SqlMap.xml] support.customer.customerBondsIssueSub.countBySearchCondition */ COUNT(*) 
+    FROM (
+	    SELECT *
+		FROM  CUSTOMER_BONDSISSUE_SUB WITH (NOLOCK)
+		WHERE ITEM_ID = #itemId#
+		AND   ITEM_TYPE = #itemType# 
+	) linereply INNER JOIN IKEP4_EV_USER usr 
+	ON    linereply.REGISTER_ID = usr.USER_ID
+  </select> 
+
+
+  <!-- ANSI -->
+  <update id="updateStep" parameterClass="CustomerBondsIssueSub"> 
+    UPDATE CUSTOMER_BONDSISSUE_SUB /* [CustomerBondsIssueSub_SqlMap.xml] support.customer.customerBondsIssueSub.updateStep */
+    SET   STEP = STEP + 1 
+    WHERE LINEREPLY_GROUP_ID = #linereplyGroupId#
+    AND   STEP >= #step#  
+  </update>
+
+<!-- ANSI -->
+  <update id="update" parameterClass="CustomerBondsIssueSub"> 
+    UPDATE CUSTOMER_BONDSISSUE_SUB /* [CustomerBondsIssueSub_SqlMap.xml] support.customer.customerBondsIssueSub.update */
+    SET   LINEREPLY_ID        = #linereplyId#,       
+          ITEM_ID             = #itemId#,   
+          LINEREPLY_GROUP_ID  = #linereplyGroupId#,
+          LINEREPLY_PARENT_ID = #linereplyParentId#,
+          STEP                = #step#,  
+          INDENTATION         = #indentation#,
+          CONTENTS            = #contents#,
+          LINEREPLY_DELETE    = #linereplyDelete#,
+          UPDATER_ID          = #updaterId#,
+          UPDATER_NAME        = #updaterName#,
+          UPDATE_DATE         = CURRENT_TIMESTAMP,
+          COUNSEL_SUB_DATE	  = #counselDateSub#,
+          COUNSELOR_SUB		  = #counselorSub#,
+          JIJONG_SUB 		  = #jijongSub#,
+          FACTORY_SUB		  = #factorySub#,
+          FACTORY_SUB_NAME	  = #factorySubName#,
+          CLAIM_GUBUN_SUB	  = #claimGubunSub#,
+	      CLAIM_GUBUN_SUB_NAME= #claimGubunSubName#,
+	      SUBJECT_SUB		  = #subjectSub#
+    WHERE LINEREPLY_ID = #linereplyId# 
+  </update>
+  
+  <update id="updateSubMaster" parameterClass="CustomerBondsIssueSub"> 
+    UPDATE CUSTOMER_BONDSISSUE_SUB /* [CustomerBondsIssueSub_SqlMap.xml] support.customer.customerBondsIssueSub.updateSubMaster */
+    SET   CONTENTS            = #contents#,
+          UPDATER_ID          = #updaterId#,
+          UPDATER_NAME        = #updaterName#,
+          UPDATE_DATE         = CURRENT_TIMESTAMP,
+          COUNSEL_SUB_DATE	  = #counselDateSub#,
+          COUNSELOR_SUB		  = #counselorSub#,
+          JIJONG_SUB 		  = #jijongSub#,
+          FACTORY_SUB		  = #factorySub#,
+          FACTORY_SUB_NAME	  = #factorySubName#,
+          CLAIM_GUBUN_SUB	  = #claimGubunSub#,
+	      CLAIM_GUBUN_SUB_NAME= #claimGubunSubName#,
+	      SUBJECT_SUB		  = #subjectSub#
+    WHERE ITEM_ID = #itemId#
+    AND MASTER_SUB = 'Y'
+  </update>
+
+
+  <!-- ANSI -->
+  <update id="logicalDelete" parameterClass="CustomerBondsIssueSub">  
+    UPDATE CUSTOMER_BONDSISSUE_SUB /* [CustomerBondsIssueSub_SqlMap.xml] support.customer.customerBondsIssueSub.logicalDelete */
+    SET   LINEREPLY_DELETE    = 1,
+          UPDATER_ID          = #updaterId#,
+          UPDATER_NAME        = #updaterName#,
+          UPDATE_DATE         = CURRENT_TIMESTAMP  
+    WHERE LINEREPLY_ID = #linereplyId# 
+  </update>  
+
+
+  <!-- ANSI -->
+  <select id="countChildren" parameterClass="String" resultClass="int">  
+	SELECT /* [CustomerBondsIssueSub_SqlMap.xml] support.customer.customerBondsIssueSub.countBySearchCondition */ 
+           COUNT(*)
+	FROM   CUSTOMER_BONDSISSUE_SUB WITH (NOLOCK)
+    WHERE  LINEREPLY_PARENT_ID = #linereplyId#  
+  </select> 
+
+
+
+  
+  <!-- ANSI -->
+  <delete id="physicalDelete" parameterClass="string"> 
+    DELETE FROM CUSTOMER_BONDSISSUE_SUB /* [CustomerBondsIssueSub_SqlMap.xml] support.customer.customerBondsIssueSub.physicalDelete */
+    WHERE LINEREPLY_ID = #linereplyId# 
+  </delete>    
+
+  <!-- MS SQL -->
+  <delete id="physicalDeleteThreadByBondsIssueSubId" parameterClass="string">  
+  	WITH CTE AS (
+  		SELECT	LINEREPLY_ID 
+	    FROM 	CUSTOMER_BONDSISSUE_SUB
+        WHERE	LINEREPLY_ID =  #linereplyId# 
+        UNION ALL
+        SELECT	TBL.LINEREPLY_ID 
+	    FROM 	CUSTOMER_BONDSISSUE_SUB TBL, CTE
+	    WHERE	CTE.LINEREPLY_ID = TBL.LINEREPLY_PARENT_ID 
+  	)
+ 	DELETE FROM  CUSTOMER_BONDSISSUE_SUB /* [CustomerBondsIssueSub_SqlMap.xml] support.customer.customerBondsIssueSub.physicalDeleteThread */
+ 	WHERE  LINEREPLY_ID IN ( 
+	      	SELECT LINEREPLY_ID 
+		    FROM CTE
+	)   
+  </delete>  
+
+
+	<select id="listHistorysMemo" resultClass="java.util.HashMap">
+		SELECT  
+			/* [CustomerBondsIssueSub_SqlMap.xml] support.customer.customerBondsIssueSub.listHistorysMemo */
+			CASE(FLAG)
+			WHEN 'Counsel' THEN
+				'CH'
+			ELSE
+				'QC'
+			END AS FLAG, CONVERT(NVARCHAR, A.SEQNUM) SEQNUM, A.MEMO_CONTENT, B.USER_ID,
+			B.USER_NAME, CONVERT(NVARCHAR, A.CREATEDATE) AS CREATEDATE
+				
+			FROM HISTORYS_MEMO A WITH (NOLOCK) INNER JOIN IKEP4_EV_USER B WITH (NOLOCK)
+			ON A.EPUSERID = B.user_id
+	</select>
+
+
+
+
+
+
+
+
+
+
+
+
+</sqlMap>

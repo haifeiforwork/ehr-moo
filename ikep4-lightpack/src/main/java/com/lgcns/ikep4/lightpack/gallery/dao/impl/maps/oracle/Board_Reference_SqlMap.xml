@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="lightpack.gallery.dao.boardReference"> 
+  <typeAlias alias="pfBoardReference"   type="com.lgcns.ikep4.lightpack.gallery.model.BoardReference"/>
+  <typeAlias alias="pfBoardReferencePK" type="com.lgcns.ikep4.lightpack.gallery.model.BoardReferencePK"/>
+  
+  <resultMap class="com.lgcns.ikep4.lightpack.gallery.model.BoardReference" id="boardReferenceResult"> 
+    <result column="ITEM_ID"     jdbcType="VARCHAR"  property="itemId" />
+    <result column="REGISTER_ID" jdbcType="VARCHAR" property="registerId" />
+    <result column="REGIST_DATE" jdbcType="DATE"    property="registDate" />
+  </resultMap>
+  
+  <insert id="create" parameterClass="pfBoardReference"> 
+    INSERT INTO IKEP4_PF_BD_REFERENCE /* [Board_Reference_SqlMap.xml] lightpack.gallery.dao.boardReference.insert */ 
+           (ITEM_ID, REGISTER_ID, REGIST_DATE)
+    VALUES (#itemId#, #registerId#, SYSDATE)
+  </insert>
+   
+ <select id="exists" parameterClass="pfBoardReferencePK" resultClass="int">
+    SELECT /* [Board_Reference_SqlMap.xml] lightpack.gallery.dao.boardReference.exists */
+           COUNT(*)
+    FROM   IKEP4_PF_BD_REFERENCE
+    WHERE  ITEM_ID = #itemId#
+    AND    REGISTER_ID = #registerId#
+  </select> 
+  
+  <select id="get" parameterClass="pfBoardReferencePK" resultMap="boardReferenceResult">
+    SELECT /* [Board_Reference_SqlMap.xml] lightpack.gallery.dao.boardLinereply.get */
+           ITEM_ID, 
+           REGISTER_ID, 
+           REGIST_DATE 
+    FROM   IKEP4_PF_BD_REFERENCE
+    WHERE  ITEM_ID = #itemId#
+    AND    REGISTER_ID = #registerId#
+  </select>  
+ 
+  
+  <update id="update" parameterClass="pfBoardReference"> 
+    UPDATE IKEP4_PF_BD_REFERENCE /* [Board_Reference_SqlMap.xml] lightpack.gallery.dao.boardReference.update */
+    SET REGIST_DATE = SYSDATE
+    WHERE ITEM_ID = #itemId#
+    AND REGISTER_ID = #registerId#
+  </update>
+  
+  <delete id="removeByItemId" parameterClass="string"> 
+    DELETE FROM IKEP4_PF_BD_REFERENCE /* [Board_Reference_SqlMap.xml] lightpack.gallery.dao.boardReference.removeByItemId */
+    WHERE ITEM_ID = #itemId#
+  </delete>      
+</sqlMap>

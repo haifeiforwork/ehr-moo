@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="socialpack.peopleconnection.dao.peopleConnection" >
+	<typeAlias alias = "ExternalExpert" type="com.lgcns.ikep4.socialpack.peopleconnection.model.ExternalExpert"/>
+	
+	<!-- PROFILE 테이블 조회 결과 -->
+	<resultMap id="result" class="ExternalExpert">
+		<result property="profileId" 	column="PROFILE_ID" />
+		<result property="name" 		column="NAME" />
+		<result property="companyName" 	column="COMPANY_NAME" />
+		<result property="teamName" 	column="TEAM_NAME" />
+		<result property="jobRankName" 	column="JOB_RANK_NAME" />
+		<result property="fileId" 		column="FILE_ID" />
+	</resultMap>
+	
+	<!-- ANSI -->
+   <!-- select -->
+	<select id="select" parameterClass="java.lang.String" resultMap="result">
+	  SELECT PROFILE_ID,
+           NAME,
+           COMPANY_NAME,
+           TEAM_NAME,
+           JOB_RANK_NAME,       
+           '' AS FILE_ID
+      FROM IKEP4_WW_PROFILE profile
+      WHERE PROFILE_ID = #profileId#  
+	</select>
+</sqlMap>

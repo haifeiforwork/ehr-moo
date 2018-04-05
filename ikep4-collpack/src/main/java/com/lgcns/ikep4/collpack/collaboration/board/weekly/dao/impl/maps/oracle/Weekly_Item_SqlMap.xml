@@ -1,0 +1,430 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="collpack.collaboration.board.weekly.dao.weeklyItem">
+
+	<typeAlias alias="WeeklyItem"                type="com.lgcns.ikep4.collpack.collaboration.board.weekly.model.WeeklyItem"/>
+	<typeAlias alias="WeeklyItemSearchCondition" type="com.lgcns.ikep4.collpack.collaboration.board.weekly.search.WeeklyItemSearchCondition"/>
+
+	<resultMap id="weeklyItemResult" class="com.lgcns.ikep4.collpack.collaboration.board.weekly.model.WeeklyItem">
+		<result column="ITEM_ID"           	property="itemId"			jdbcType="VARCHAR" />
+		<result column="TITLE"       		property="title"          	jdbcType="VARCHAR" />
+		<result column="CONTENTS"       	property="contents"         jdbcType="CLOB" />
+		<result column="HIT_COUNT"       	property="hitCount"         jdbcType="DECIMAL" />
+		<result column="ATTACH_FILE_COUNT"  property="attachFileCount"  jdbcType="DECIMAL" />
+		<result column="WEEKLY_TERM"		property="weeklyTerm"      	jdbcType="VARCHAR" />
+		<result column="ITEM_DELETE"       	property="itemDelete"       jdbcType="DECIMAL" /> 
+		<result column="REGISTER_ID"      	property="registerId"       jdbcType="VARCHAR" />
+		<result column="REGISTER_NAME"     	property="registerName"     jdbcType="VARCHAR" />
+		<result column="REGISTER_ENGLISH_NAME"     	property="registerEnglishName"     jdbcType="VARCHAR" />
+		<result column="REGIST_DATE"       	property="registDate"       jdbcType="DATE" />
+		<result column="UPDATER_ID"        	property="updaterId"        jdbcType="VARCHAR" />
+		<result column="UPDATER_NAME"      	property="updaterName"      jdbcType="VARCHAR" />
+		<result column="UPDATE_DATE"       	property="updateDate"       jdbcType="DATE" />
+		<result column="IS_SUMMARY"       	property="isSummary"        jdbcType="DECIMAL" />
+		<result column="WORKSPACE_ID"       property="workspaceId"      jdbcType="VARCHAR" />
+	</resultMap>
+
+	<resultMap id="weeklyItemResultExtend" extends="weeklyItemResult"  class="com.lgcns.ikep4.collpack.collaboration.board.weekly.model.WeeklyItem" > 
+		<result column="MEMBER_ID"     		property="memberId"        	jdbcType="VARCHAR" />
+		<result column="USER_NAME"       	property="userName"      	jdbcType="VARCHAR" />
+		<result column="USER_ENGLISH_NAME"  property="userEnglishName"      	jdbcType="VARCHAR" />
+		<result column="MEMBER_LEVEL"       property="memberLevel"      jdbcType="VARCHAR" />
+		<result column="WORKSPACE_NAME"     property="workspaceName"    jdbcType="VARCHAR" />
+		<result column="JOB_TITLE_NAME"     property="jobTitleName"         jdbcType="VARCHAR" />
+		<result column="JOB_TITLE_ENGLISH_NAME"     property="jobTitleEnglishName"         jdbcType="VARCHAR" />
+	</resultMap> 
+
+	<select id="countBySearchCondition" parameterClass="WeeklyItemSearchCondition" resultClass="Integer">
+		SELECT	/* [WeeklyItem_SqlMap.xml] collpack.collaboration.board.weekly.dao.weeklyItem.countBySearchCondition */
+			COUNT(B.MEMBER_ID)
+		FROM
+			IKEP4_WS_WORKSPACE A
+			INNER JOIN IKEP4_WS_MEMBER B ON (A.WORKSPACE_ID = B.WORKSPACE_ID AND B.MEMBER_LEVEL IN ('1','2','3'))
+			INNER JOIN IKEP4_EV_USER D ON (B.MEMBER_ID = D.USER_ID)
+			LEFT OUTER JOIN IKEP4_EV_JOB_TITLE F ON (D.JOB_TITLE_CODE = F.JOB_TITLE_CODE)
+		WHERE
+			A.WORKSPACE_ID = #workspaceId#
+	</select>
+
+	<select id="countLowRankBySearchCondition" parameterClass="WeeklyItemSearchCondition" resultClass="Integer">
+		SELECT /* [WeeklyItem_SqlMap.xml]collpack.collaboration.board.weekly.dao.weeklyItem.countLowRankBySearchCondition */
+			COUNT(C.ITEM_ID) 
+		FROM
+			IKEP4_WS_BD_WEEKLY C
+			INNER JOIN
+			(
+				SELECT
+					A.WORKSPACE_ID
+				FROM
+					IKEP4_WS_WORKSPACE A
+				WHERE
+					A.TEAM_ID IN 
+					(
+						SELECT 
+							GROUP_ID
+						FROM
+							IKEP4_EV_GROUP
+						START WITH
+							GROUP_ID = #teamId#
+						CONNECT BY PRIOR
+							GROUP_ID = PARENT_GROUP_ID
+					)
+					AND WORKSPACE_ID != #workspaceId#
+			) D ON (C.WORKSPACE_ID = D.WORKSPACE_ID AND C.WEEKLY_TERM = #weeklyTerm# AND C.IS_SUMMARY = 1)
+	</select>
+
+	<select id="listBySearchCondition" parameterClass="WeeklyItemSearchCondition" resultMap="weeklyItemResultExtend">
+		SELECT	/* [WeeklyItem_SqlMap.xml] collpack.collaboration.board.weekly.dao.weeklyItem.listBySearchCondition */
+			B.MEMBER_ID 		AS MEMBER_ID,
+			D.USER_NAME 		AS USER_NAME,
+			D.USER_ENGLISH_NAME AS USER_ENGLISH_NAME,
+			B.MEMBER_LEVEL 		AS MEMBER_LEVEL,
+			C.ITEM_ID 			AS ITEM_ID, 
+			C.TITLE 			AS TITLE,
+			C.CONTENTS 			AS CONTENTS,
+			C.HIT_COUNT 		AS HIT_COUNT,
+			C.ATTACH_FILE_COUNT AS ATTACH_FILE_COUNT,
+			C.ITEM_DELETE 		AS ITEM_DELETE,
+			C.REGISTER_ID 		AS REGISTER_ID,
+			D.USER_NAME 		AS REGISTER_NAME,
+			D.USER_ENGLISH_NAME AS REGISTER_ENGLISH_NAME,
+			C.REGIST_DATE 		AS REGIST_DATE,
+			C.UPDATER_ID 		AS UPDATER_ID,
+			C.UPDATER_NAME 		AS UPDATER_NAME,
+			C.UPDATE_DATE 		AS UPDATE_DATE,
+			(CASE WHEN C.TITLE IS NULL THEN 0 ELSE  C.IS_SUMMARY END) AS IS_SUMMARY,
+			C.WORKSPACE_ID 		AS WORKSPACE_ID,
+			C.WEEKLY_TERM 		AS WEEKLY_TERM,
+			A.WORKSPACE_NAME    AS WORKSPACE_NAME,
+			F.JOB_TITLE_NAME    AS JOB_TITLE_NAME,
+			F.JOB_TITLE_ENGLISH_NAME    AS JOB_TITLE_ENGLISH_NAME
+		FROM 
+			IKEP4_WS_WORKSPACE A
+			INNER JOIN IKEP4_WS_MEMBER B ON (A.WORKSPACE_ID = B.WORKSPACE_ID AND B.MEMBER_LEVEL IN ('1','2','3'))
+			LEFT OUTER JOIN IKEP4_WS_BD_WEEKLY C ON (A.WORKSPACE_ID = C.WORKSPACE_ID AND B.MEMBER_ID = C.REGISTER_ID AND C.WEEKLY_TERM = #weeklyTerm#)
+			INNER JOIN IKEP4_EV_USER D ON (B.MEMBER_ID=D.USER_ID)
+			LEFT OUTER JOIN	IKEP4_EV_JOB_TITLE F ON (D.JOB_TITLE_CODE = F.JOB_TITLE_CODE)
+		WHERE
+			A.WORKSPACE_ID = #workspaceId#
+		ORDER BY
+			IS_SUMMARY DESC, F.SORT_ORDER ASC
+	</select>
+
+	<select id="listLowRankBySearchCondition" parameterClass="WeeklyItemSearchCondition" resultClass="weeklyItem">
+		SELECT /* [WeeklyItem_SqlMap.xml]collpack.collaboration.board.weekly.dao.weeklyItem.listLowRankBySearchCondition */
+			ITEM_ID 			AS itemId, 
+			TITLE 				AS title,
+			CONTENTS 			AS contents,
+			HIT_COUNT 			AS hitCount,
+			ATTACH_FILE_COUNT 	AS attachFileCount,
+			ITEM_DELETE 		AS itemDelete,
+			REGISTER_ID 		AS registerId,
+			REGISTER_NAME 		AS registerName,
+			REGISTER_ENGLISH_NAME AS registerEnglishName,
+			REGIST_DATE 		AS registDate,
+			UPDATER_ID 			AS updaterId,
+			UPDATER_NAME 		AS updaterName,
+			UPDATE_DATE 		AS updateDate,
+			IS_SUMMARY 			AS isSummary,
+			WORKSPACE_ID 		AS workspaceId,
+			WEEKLY_TERM 		AS weeklyTerm,
+			WORKSPACE_NAME 		AS workspaceName
+		FROM 
+		( 
+			SELECT 
+				ROWNUM AS RNUM, 
+				C.ITEM_ID, 
+				C.TITLE,
+				C.CONTENTS,
+				C.HIT_COUNT,
+				C.ATTACH_FILE_COUNT,
+				C.ITEM_DELETE,
+				C.REGISTER_ID,
+				C.REGISTER_NAME,
+				C.REGISTER_ENGLISH_NAME,
+				C.REGIST_DATE,
+				C.UPDATER_ID,
+				C.UPDATER_NAME,
+				C.UPDATE_DATE,
+				C.IS_SUMMARY,
+				C.WORKSPACE_ID,
+				C.WEEKLY_TERM,
+				C.WORKSPACE_NAME
+			FROM
+			( 
+				SELECT 
+					A.ITEM_ID, 
+					A.TITLE,
+					A.CONTENTS,
+					A.HIT_COUNT,
+					A.ATTACH_FILE_COUNT,
+					A.ITEM_DELETE,
+					A.REGISTER_ID,
+					U.USER_NAME AS REGISTER_NAME,
+					U.USER_ENGLISH_NAME AS REGISTER_ENGLISH_NAME,
+					A.REGIST_DATE,
+					A.UPDATER_ID,
+					A.UPDATER_NAME,
+					A.UPDATE_DATE,
+					A.IS_SUMMARY,
+					A.WORKSPACE_ID,
+					A.WEEKLY_TERM,
+					B.WORKSPACE_NAME
+				FROM
+					IKEP4_WS_BD_WEEKLY A
+					INNER JOIN 
+					(
+						SELECT 
+							WORKSPACE_ID,
+							WORKSPACE_NAME
+						FROM
+							IKEP4_WS_WORKSPACE
+						WHERE
+							TEAM_ID IN 
+							(
+								SELECT
+									GROUP_ID
+								FROM
+									IKEP4_EV_GROUP
+								START WITH
+									GROUP_ID = #teamId#
+								CONNECT BY PRIOR
+									GROUP_ID = PARENT_GROUP_ID
+							)
+							AND WORKSPACE_ID != #workspaceId#
+					) B ON (A.WORKSPACE_ID = B.WORKSPACE_ID AND A.WEEKLY_TERM = #weeklyTerm# AND A.IS_SUMMARY = 1)
+					INNER JOIN IKEP4_EV_USER U ON A.REGISTER_ID=U.USER_ID
+					<isNotEmpty property="sortColumn" >
+						ORDER BY $sortColumn$ $sortType$
+					</isNotEmpty>
+		<![CDATA[   
+			) C 
+			WHERE
+				ROWNUM <=  #endRowIndex# /* 종료  */
+		) 
+		WHERE 
+			RNUM >  #startRowIndex# /* 시작 */
+		]]> 
+	</select>
+
+	<select id="getWeeklyItem" parameterClass="java.util.Map" resultClass="weeklyItem">
+		SELECT  /* [WeeklyItem_SqlMap.xml] collpack.collaboration.board.weekly.dao.weeklyItem.getWeeklyItem */
+			A.ITEM_ID as itemId, 
+			A.TITLE as title,
+			A.CONTENTS as contents,
+			A.HIT_COUNT as hitCount,
+			A.ATTACH_FILE_COUNT as attachFileCount,
+			A.ITEM_DELETE as itemDelete,
+			A.REGISTER_ID as registerId,
+			U.USER_NAME AS registerName,
+			U.USER_ENGLISH_NAME AS registerEnglishName,
+			A.REGIST_DATE as registDate,
+			A.UPDATER_ID as updaterId,
+			A.UPDATER_NAME as updaterName,
+			A.UPDATE_DATE as updaterDate,
+			A.IS_SUMMARY as isSummary,
+			A.WORKSPACE_ID as workspaceId,
+			A.WEEKLY_TERM as weeklyTerm,
+			J.JOB_TITLE_NAME as jobTitleName,
+			J.JOB_TITLE_ENGLISH_NAME as jobTitleEnglishName
+		FROM
+		IKEP4_WS_BD_WEEKLY A
+		INNER JOIN IKEP4_EV_USER U ON ( 
+			A.REGISTER_ID = U.USER_ID
+			<isNotEmpty property="workspaceId" >
+				AND A.WORKSPACE_ID = #workspaceId#
+			</isNotEmpty>
+			AND A.ITEM_ID = #itemId#)
+		INNER JOIN IKEP4_EV_JOB_TITLE J ON (U.JOB_TITLE_CODE = J.JOB_TITLE_CODE )
+	</select>
+	
+	<select id="getWeeklyItemContents" parameterClass="WeeklyItem" resultClass="weeklyItem">
+		SELECT /* [WeeklyItem_SqlMap.xml] collpack.collaboration.board.weekly.dao.weeklyItem.getWeeklyItemContents*/
+			A.ITEM_ID as itemId, 
+			A.TITLE as title,
+			A.CONTENTS as contents,
+			A.HIT_COUNT as hitCount,
+			A.ATTACH_FILE_COUNT as attachFileCount,
+			A.ITEM_DELETE as itemDelete,
+			A.REGISTER_ID as registerId,
+			U.USER_NAME AS registerName,
+			U.USER_ENGLISH_NAME AS registerEnglishName,
+			A.REGIST_DATE as registDate,
+			A.UPDATER_ID as updaterId,
+			A.UPDATER_NAME as updaterName,
+			A.UPDATE_DATE as updaterDate,
+			A.IS_SUMMARY as isSummary,
+			A.WORKSPACE_ID as workspaceId,
+			A.WEEKLY_TERM as weeklyTerm,
+			J.JOB_TITLE_NAME as jobTitleName,
+			J.JOB_TITLE_ENGLISH_NAME as jobTitleEnglishName
+		FROM
+			IKEP4_WS_BD_WEEKLY A
+			INNER JOIN IKEP4_EV_USER U ON ( 
+				A.REGISTER_ID = U.USER_ID AND A.WORKSPACE_ID = #workspaceId#
+				AND A.WEEKLY_TERM = #weeklyTerm#
+				AND A.IS_SUMMARY = 0)
+			INNER JOIN IKEP4_EV_JOB_TITLE J ON (U.JOB_TITLE_CODE = J.JOB_TITLE_CODE )
+	</select>
+
+	<select id="getSummaryWeeklyItems" parameterClass="java.util.Map" resultClass="weeklyItem">
+		SELECT /* [WeeklyItem_SqlMap.xml] WeeklyItem.getSummaryWeeklyItems*/
+			A.ITEM_ID as itemId, 
+			A.TITLE as title,
+			A.CONTENTS as contents,
+			A.HIT_COUNT as hitCount,
+			A.ATTACH_FILE_COUNT as attachFileCount,
+			A.ITEM_DELETE as itemDelete,
+			A.REGISTER_ID as registerId,
+			U.USER_NAME AS registerName,
+			U.USER_ENGLISH_NAME AS registerEnglishName,
+			A.REGIST_DATE as registDate,
+			A.UPDATER_ID as updaterId,
+			A.UPDATER_NAME as updaterName,
+			A.UPDATE_DATE as updaterDate,
+			A.IS_SUMMARY as isSummary,
+			A.WORKSPACE_ID as workspaceId,
+			A.WEEKLY_TERM as weeklyTerm,
+			J.JOB_TITLE_NAME as jobTitleName,
+			J.JOB_TITLE_ENGLISH_NAME as jobTitleEnglishName
+		FROM 
+			IKEP4_WS_BD_WEEKLY A
+			INNER JOIN IKEP4_EV_USER U ON ( 
+				A.REGISTER_ID = U.USER_ID AND A.WORKSPACE_ID = #workspaceId#
+				AND A.WEEKLY_TERM = #weeklyTerm#
+				AND A.IS_SUMMARY = 1)
+			INNER JOIN IKEP4_EV_JOB_TITLE J ON (U.JOB_TITLE_CODE = J.JOB_TITLE_CODE )
+	</select>
+
+	<select id="countWeeklyReference" parameterClass="java.util.Map" resultClass="Integer">
+		SELECT 
+			COUNT(REGISTER_ID) 
+		FROM
+			IKEP4_WS_BD_WEEKLY_REFERENCE 
+		WHERE
+			ITEM_ID = #itemId# 
+			AND REGISTER_ID = #userId#
+	</select>
+	
+	<select id="checkWeeklyTerm" parameterClass="java.util.Map" resultClass="string">
+		SELECT /* [WeeklyItem_SqlMap.xml]collpack.collaboration.board.weekly.dao.weeklyItem.checkWeeklyTerm */
+			A.ITEM_ID AS itemId
+		FROM
+			IKEP4_WS_BD_WEEKLY A
+		WHERE 
+			A.WORKSPACE_ID = #workspaceId#
+			AND A.IS_SUMMARY = 0
+			AND A.WEEKLY_TERM = #weeklyTerm# 
+			AND A.REGISTER_ID = #registerId#
+	</select>
+	
+	
+	
+	<insert id="create" parameterClass="weeklyItem"> 
+		INSERT INTO IKEP4_WS_BD_WEEKLY /* [WeeklyItem_SqlMap.xml] WeeklyItem.insert */
+		(	
+			ITEM_ID, 
+			TITLE,
+			CONTENTS,
+			HIT_COUNT,
+			ATTACH_FILE_COUNT,
+			ITEM_DELETE,
+			REGISTER_ID,
+			REGISTER_NAME,
+			REGIST_DATE,
+			UPDATER_ID,
+			UPDATER_NAME,
+			UPDATE_DATE,
+			IS_SUMMARY,
+			WORKSPACE_ID,
+			WEEKLY_TERM
+		)
+		VALUES
+		(
+			#itemId#, 
+			#title#, 
+			#contents#,
+			#hitCount#, 
+			#attachFileCount#,
+			#itemDelete#,
+			#registerId#, 
+			#registerName#, 
+			SYSDATE, 
+			#updaterId#, 
+			#updaterName#, 
+			SYSDATE,
+			#isSummary#,
+			#workspaceId#,
+			#weeklyTerm#
+		)
+	</insert>
+
+	<insert id="createWeeklyReference" parameterClass="java.util.Map"> 
+		INSERT INTO IKEP4_WS_BD_WEEKLY_REFERENCE /* [WeeklyItem_SqlMap.xml] WeeklyItem.createWeeklyReference*/
+		(
+			REGISTER_ID,
+			ITEM_ID,
+			REGIST_DATE
+		) 
+		VALUES
+		(
+			#userId#, 
+			#itemId#,
+			SYSDATE
+		)
+	</insert>
+
+	<update id="updateWeeklyHitCount" parameterClass="String">
+		UPDATE 	/* [WeeklyItem_SqlMap.xml] WeeklyItem.updateWeeklyHitCount */ 
+			IKEP4_WS_BD_WEEKLY
+		SET 
+			HIT_COUNT = HIT_COUNT + 1
+		WHERE
+			ITEM_ID = #itemId#
+	</update>
+
+	<update id="update" parameterClass="WeeklyItem"> 
+		UPDATE /* [WeeklyItem_SqlMap.xml] WeeklyItem.update */
+			IKEP4_WS_BD_WEEKLY
+		SET	
+			TITLE             = #title#,
+			CONTENTS          = #contents#,
+			ATTACH_FILE_COUNT = #attachFileCount#,
+			WEEKLY_TERM       = #weeklyTerm#,
+			UPDATER_ID        = #updaterId#,
+			UPDATER_NAME      = #updaterName#,
+			UPDATE_DATE       = SYSDATE
+		WHERE
+			ITEM_ID = #itemId# 
+	</update>
+
+	<delete id="removeWeeklyItem" parameterClass="string"> 
+		DELETE /* [WeeklyItem_SqlMap.xml] WeeklyItem.removeWeeklyItem */
+		FROM
+			IKEP4_WS_BD_WEEKLY
+		WHERE
+			ITEM_ID = #itemId# 
+	</delete>
+
+	<delete id="removeWeeklyReference" parameterClass="string"> 
+		DELETE /* [WeeklyItem_SqlMap.xml] WeeklyItem.removeWeeklyReference*/
+		FROM
+			IKEP4_WS_BD_WEEKLY_REFERENCE 
+		WHERE 
+			ITEM_ID = #itemId# 
+	</delete>
+	<!-- delete WeeklyItem Attach List Query -->
+	<select id="listDeleteWeeklyItemByWorkspace" parameterClass="String" resultClass="WeeklyItem">
+	<![CDATA[ 
+		SELECT	/* [WeeklyItem_SqlMap.xml] collpack.collaboration.board.weekly.dao.weeklyItem.listDeleteWeeklyItemByWorkspace */
+			ITEM_ID 		AS itemId, 
+			TITLE 			AS title,
+			ATTACH_FILE_COUNT AS attachFileCount
+		FROM 
+			IKEP4_WS_BD_WEEKLY 
+		WHERE
+			WORKSPACE_ID = #workspaceId#
+			AND ATTACH_FILE_COUNT >0
+	]]>			
+	</select>	
+</sqlMap> 

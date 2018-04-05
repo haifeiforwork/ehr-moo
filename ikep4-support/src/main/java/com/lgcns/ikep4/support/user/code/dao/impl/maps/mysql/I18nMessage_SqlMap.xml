@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="support.user.code.dao.I18nMessage" >
+	<typeAlias alias = "I18nMessage" type="com.lgcns.ikep4.support.user.code.model.I18nMessage"/>
+	<typeAlias alias = "LocaleCode" type="com.lgcns.ikep4.support.user.code.model.LocaleCode"/>
+	<typeAlias alias = "ItemType" type="com.lgcns.ikep4.support.user.code.model.ItemType"/>
+
+	<resultMap id="result" class="I18nMessage">
+		<result property="messageId" column="MESSAGE_ID" columnIndex="1"/>
+		<result property="itemTypeCode" column="ITEM_TYPE_CODE" columnIndex="2"/>
+		<result property="itemId" column="ITEM_ID" columnIndex="3"/>
+		<result property="fieldName" column="FIELD_NAME" columnIndex="4"/>
+		<result property="localeCode" column="LOCALE_CODE" columnIndex="5"/>
+		<result property="itemMessage" column="ITEM_MESSAGE" columnIndex="6"/>
+		<result property="registerId" column="REGISTER_ID" columnIndex="7"/>
+		<result property="registerName" column="REGISTER_NAME" columnIndex="8"/>
+		<result property="updaterId" column="UPDATER_ID" columnIndex="9"/>
+		<result property="updaterName" column="UPDATER_NAME" columnIndex="10"/>
+		<result property="registDate" column="REGIST_DATE" columnIndex="11"/>
+		<result property="updateDate" column="UPDATE_DATE" columnIndex="12"/>
+	</resultMap>
+	
+	<!-- 신규 등록 -->
+	<insert id="insert" parameterClass="I18nMessage"> 
+	<![CDATA[
+		INSERT INTO /* [I18nMessage_SqlMap.xml] support.user.code.dao.I18nMessage.insert */
+			IKEP4_I18N_MESSAGE (
+			MESSAGE_ID,
+			ITEM_TYPE_CODE,
+			ITEM_ID,
+			FIELD_NAME,
+			LOCALE_CODE,
+			ITEM_MESSAGE,
+			REGISTER_ID, 
+			REGISTER_NAME,
+			UPDATER_ID,
+			UPDATER_NAME,
+			REGIST_DATE,
+			UPDATE_DATE)
+		VALUES ( 
+			#messageId#,
+			#itemTypeCode#,
+			#itemId#,
+			#fieldName#,
+			#localeCode#,
+			#itemMessage#,
+		    #registerId#, #registerName#,
+		    #updaterId#, #updaterName#,
+		    NOW(), NOW())
+	]]>
+	</insert>
+   
+   <!-- 상세정보 -->
+	<select id="select" parameterClass="I18nMessage" resultMap="result">
+	<![CDATA[
+		SELECT /* [I18nMessage_SqlMap.xml] support.user.code.dao.I18nMessage.select */
+			MESSAGE_ID,
+		    ITEM_TYPE_CODE,
+		    ITEM_ID,
+		    FIELD_NAME,
+		    LOCALE_CODE,
+		    ITEM_MESSAGE,
+		    REGISTER_ID,
+		    REGISTER_NAME,
+		    UPDATER_ID,
+		    UPDATER_NAME,
+		    DATE_FORMAT(REGIST_DATE, '%Y-%m-%d') AS REGIST_DATE,
+		    DATE_FORMAT(UPDATE_DATE, '%Y-%m-%d') AS UPDATE_DATE
+		FROM 
+		    IKEP4_I18N_MESSAGE
+		WHERE
+			ITEM_TYPE_CODE = #itemTypeCode# AND
+			FIELD_NAME = #fieldName# AND
+			ITEM_ID = #itemId#
+	]]>
+	</select>
+	
+	<!-- 기존 정보 수정 -->
+	<update id="update" parameterClass="I18nMessage">
+	<![CDATA[
+		UPDATE /* [I18nMessage_SqlMap.xml] support.user.code.dao.I18nMessage.update */
+			IKEP4_I18N_MESSAGE
+		SET
+			LOCALE_CODE = #localeCode#,
+			ITEM_MESSAGE = #itemMessage#,
+			UPDATER_ID = #updaterId#,
+			UPDATER_NAME = #updaterName#,
+			UPDATE_DATE = NOW()
+		WHERE
+			MESSAGE_ID = #messageId#
+	]]>
+	</update>
+   
+	<!-- 삭제 -->
+	<delete id="deleteMessage" parameterClass="java.lang.String">
+	<![CDATA[
+		DELETE /* [I18nMessage_SqlMap.xml] support.user.code.dao.I18nMessage.delete */ 
+		FROM IKEP4_I18N_MESSAGE
+		WHERE
+			MESSAGE_ID = #messageId#
+	]]>
+	</delete>
+	
+	<delete id="deleteMessagesByItemId" parameterClass="java.util.Map">
+	<![CDATA[
+		DELETE /* [I18nMessage_SqlMap.xml] support.user.code.dao.I18nMessage.deleteMessagesByItemId */ 
+		FROM IKEP4_I18N_MESSAGE
+		WHERE
+			ITEM_TYPE_CODE = #itemTypeCode#
+		AND ITEM_ID = #itemId#
+	]]>
+	</delete>
+	
+	<delete id="deleteLocaleCode" parameterClass="java.lang.String">
+	<![CDATA[
+		DELETE /* [I18nMessage_SqlMap.xml] support.user.code.dao.I18nMessage.deleteLocaleCode */ 
+		FROM IKEP4_I18N_MESSAGE
+		WHERE
+			LOCALE_CODE = #localeCode#
+	]]>
+	</delete>
+	
+	<!-- 목록 가져오기 -->
+	<select id="selectMessagesByItemIdFieldName" parameterClass="java.util.Map" resultMap="result">
+	<![CDATA[
+		/* [I18nMessage_SqlMap.xml] support.user.code.dao.I18nMessage.selectMessagesByItemIdFieldName */
+	    SELECT 
+			MESSAGE_ID,
+		    ITEM_TYPE_CODE,
+		    ITEM_ID,
+		    FIELD_NAME,
+		    LOCALE_CODE,
+		    ITEM_MESSAGE,
+		    REGISTER_ID,
+		    REGISTER_NAME,
+		    UPDATER_ID,
+		    UPDATER_NAME,
+		    DATE_FORMAT(REGIST_DATE, '%Y-%m-%d') AS REGIST_DATE,
+		    DATE_FORMAT(UPDATE_DATE, '%Y-%m-%d') AS UPDATE_DATE
+	    FROM 
+	    	IKEP4_I18N_MESSAGE
+	    WHERE
+	    	ITEM_ID = #itemId#
+	    	AND ITEM_TYPE_CODE = #itemTypeCode#
+	    	AND FIELD_NAME = #fieldName#
+	]]>
+	</select>
+	
+	<!-- 목록 가져오기 -->
+	<select id="selectMessageByItemId" parameterClass="java.util.Map" resultMap="result">
+	<![CDATA[
+		SELECT /* [I18nMessage_SqlMap.xml] support.user.code.dao.I18nMessage.selectMessageByItemId */
+		    C.*
+		FROM 
+		(
+		     SELECT 
+				A.MESSAGE_ID,
+			    A.ITEM_TYPE_CODE,
+			    A.ITEM_ID,
+			    A.FIELD_NAME,
+			    A.LOCALE_CODE,
+			    A.ITEM_MESSAGE,
+			    A.REGISTER_ID,
+			    A.REGISTER_NAME,
+			    A.UPDATER_ID,
+			    A.UPDATER_NAME,
+			    DATE_FORMAT(A.REGIST_DATE, '%Y-%m-%d') AS REGIST_DATE,
+			    DATE_FORMAT(A.UPDATE_DATE, '%Y-%m-%d') AS UPDATE_DATE
+		    FROM 
+		    	IKEP4_I18N_MESSAGE A inner join IKEP4_EV_LOCALE B 
+		    	on A.LOCALE_CODE = B.LOCALE_CODE
+		    WHERE
+		    	A.ITEM_ID = #itemId#
+		    	AND A.ITEM_TYPE_CODE = #itemTypeCode#
+			ORDER BY B.SORT_ORDER ASC
+		) C
+	]]>
+	</select>
+	
+	<!-- ITEM_TYPE 목록 가져오기 -->
+	<select id="selectItemTypeAll" resultClass="ItemType">
+	<![CDATA[
+		SELECT /* [I18nMessage_SqlMap.xml] support.user.code.dao.I18nMessage.selectItemTypeAll */
+		    ITEM_TYPE_CODE AS ITEMTYPECODE,
+		    ITEM_TYPE_NAME AS ITEMTYPENAME
+		FROM 
+		    IKEP4_EV_ITEM_TYPE
+	]]>
+	</select>
+	
+	<!-- LOCALE CODE 목록 가져오기 -->
+	<select id="selectLocaleAll" resultClass="LocaleCode">
+	<![CDATA[
+		SELECT /* [I18nMessage_SqlMap.xml] support.user.code.dao.I18nMessage.selectLocaleAll */
+		    LOCALE_CODE AS LOCALECODE, 
+		    LOCALE_NAME AS LOCALENAME,
+		    SORT_ORDER AS SORTORDER
+		FROM 
+		    IKEP4_EV_LOCALE
+		ORDER BY SORT_ORDER
+	]]>
+	</select>
+
+	<select id="checkId" parameterClass="java.lang.String" resultClass="java.lang.String">
+	<![CDATA[
+		SELECT /* [I18nMessage_SqlMap.xml] support.user.code.dao.I18nMessage.checkId */
+			COUNT(MESSAGE_ID)
+		FROM
+			IKEP4_I18N_MESSAGE
+		WHERE
+			MESSAGE_ID = #messageId#
+	]]>
+	</select>
+	
+	<select id="getMessagesId" parameterClass="java.util.HashMap" resultClass="java.lang.String">
+	<![CDATA[
+		SELECT /* [I18nMessage_SqlMap.xml] support.user.code.dao.I18nMessage.getMessagesId */
+			message_id 
+  		  from IKEP4_I18N_MESSAGE
+ 		 where item_id = #itemId#
+   		   and field_name = #fieldName#
+   		   and item_type_code = #itemTypeCode#
+   		   and locale_code = #localeCode#
+	]]>
+	</select>
+</sqlMap>

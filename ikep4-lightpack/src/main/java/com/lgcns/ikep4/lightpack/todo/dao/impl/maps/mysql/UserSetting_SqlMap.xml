@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="lightpack.todo.dao.userSetting">
+	<typeAlias alias = "UserSetting" type="com.lgcns.ikep4.lightpack.todo.model.UserSetting"/>
+	
+	<!-- 테이블 조회 결과 -->
+	<resultMap id="userSettingResult" class="UserSetting">
+		<result property="userId"           column="USER_ID"             />
+		<result property="pageViewNum"      column="PAGE_VIEW_NUM"       />
+		<result property="taskEndNotiType"  column="TASK_END_NOTI_TYPE"  />
+	</resultMap>
+	
+	<insert id="create" parameterClass="UserSetting"> 
+      <![CDATA[ 
+           INSERT INTO IKEP4_TD_USERSETTING /* [UserSetting_SqlMap.xml] UserSetting.create */
+                  (USER_ID, PAGE_VIEW_NUM, TASK_END_NOTI_TYPE)  
+           VALUES (#userId#, #pageViewNum#, #taskEndNotiType#)
+       ]]>
+   </insert>
+   
+	<select id="get" parameterClass="java.lang.String" resultMap="userSettingResult">
+	  <![CDATA[
+		   SELECT * /* [UserSetting_SqlMap.xml] UserSetting.get */
+		     FROM IKEP4_TD_USERSETTING 
+		    WHERE USER_ID = #userId#
+	   ]]>
+	</select>
+	
+	<update id="update" parameterClass="UserSetting">
+	  <![CDATA[
+		   UPDATE IKEP4_TD_USERSETTING /* [UserSetting_SqlMap.xml] UserSetting.update */
+		      SET PAGE_VIEW_NUM = #pageViewNum#,
+				  TASK_END_NOTI_TYPE = #taskEndNotiType#
+		    WHERE USER_ID = #userId#
+	   ]]>
+	</update>
+   
+   <delete id="remove" parameterClass="java.lang.String">
+      <![CDATA[
+	       DELETE FROM IKEP4_TD_USERSETTING /* [UserSetting_SqlMap.xml] UserSetting.remove */
+	        WHERE USER_ID = #userId#
+	   ]]>
+	</delete>
+	
+	<select id="count" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+	  <![CDATA[
+		   SELECT COUNT(1) /* [UserSetting_SqlMap.xml] UserSetting.count */
+		     FROM IKEP4_TD_USERSETTING 
+		    WHERE USER_ID = #userId#
+	   ]]>
+	</select>
+</sqlMap>

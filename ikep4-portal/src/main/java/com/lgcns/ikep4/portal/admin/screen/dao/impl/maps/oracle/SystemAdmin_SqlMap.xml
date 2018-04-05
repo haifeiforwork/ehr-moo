@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="portal.admin.screen.systemAdmin" >
+	<typeAlias alias = "SystemAdmin" type="com.lgcns.ikep4.portal.admin.screen.model.SystemAdmin"/>
+	<typeAlias alias = "SystemAdminSearchCondition" type="com.lgcns.ikep4.portal.admin.screen.model.SystemAdminSearchCondition"/>
+	
+	<select id="countSystemAdmin" parameterClass="SystemAdminSearchCondition" resultClass="int">  
+  		<![CDATA[
+  		/* [SystemAdminSqlMap.xml] portal.admin.screen.systemAdmin.countSystemAdmin */ 
+		SELECT
+			 count(*)
+		  FROM IKEP4_EV_CLASS a INNER JOIN
+			   IKEP4_EV_SYS_RESOURCE b ON a.CLASS_NAME = b.RESOURCE_NAME AND a.CLASS_ID = b.CLASS_ID INNER JOIN
+           	   IKEP4_PO_SYSTEM c on c.CLASS_NAME = a.CLASS_NAME
+		 WHERE c.PORTAL_ID = #portalId#  			
+		]]>
+		<isNotEmpty property="searchColumn">
+		<isNotEmpty property="searchWord">
+		<isEqual property="searchColumn" compareValue="SYSTEM_NAME">
+		AND				UPPER(b.RESOURCE_NAME) LIKE UPPER('%' || #searchWord# || '%')
+		</isEqual>
+		</isNotEmpty>
+		</isNotEmpty>
+  	</select>
+
+	<select id="listSystemAdmin" parameterClass="SystemAdminSearchCondition" resultClass="SystemAdmin">
+	 	<![CDATA[
+  		/* [SystemAdminSqlMap.xml] portal.admin.screen.systemAdmin.listSystemAdmin */
+		SELECT			
+				*
+		  FROM 		
+		  		(
+					SELECT
+							ROWNUM AS NUM,
+							C.*
+					  FROM
+							(
+			         			SELECT
+								    b.resource_id  resourceId,
+								    b.resource_name  resourceName
+								 FROM IKEP4_EV_CLASS a INNER JOIN
+								      IKEP4_EV_SYS_RESOURCE b ON a.CLASS_NAME = b.RESOURCE_NAME AND a.CLASS_ID = b.CLASS_ID INNER JOIN
+           	   						  IKEP4_PO_SYSTEM c on c.CLASS_NAME = a.CLASS_NAME
+			         	        WHERE c.PORTAL_ID = #portalId#  	 
+		]]>								         	       
+	       	       				<isNotEmpty property="searchColumn">
+					 				<isNotEmpty property="searchWord">
+										<isEqual property="searchColumn" compareValue="SYSTEM_NAME">
+											AND UPPER(b.RESOURCE_NAME) LIKE UPPER('%' || #searchWord# || '%')
+										</isEqual>
+									</isNotEmpty>
+								</isNotEmpty>
+						   		<isNotEmpty property="sortColumn">
+						   			<isEqual property="sortColumn" compareValue="SYSTEM_NAME">
+							    		<isEqual property="sortType" compareValue="ASC">
+							    			ORDER BY B.RESOURCE_NAME ASC
+							    		</isEqual>
+							    		<isEqual property="sortType" compareValue="DESC">
+							    			ORDER BY B.RESOURCE_NAME DESC
+							    		</isEqual>
+							    	</isEqual>
+						   		</isNotEmpty>
+						   		<isEmpty property="sortColumn">
+						   			ORDER BY a.CLASS_ID
+						   		</isEmpty>
+		<![CDATA[
+							) C
+					  WHERE ROWNUM <= #endRowIndex#	
+	    		)		
+  		 WHERE NUM > #startRowIndex#					 
+		]]>
+	</select>
+</sqlMap>

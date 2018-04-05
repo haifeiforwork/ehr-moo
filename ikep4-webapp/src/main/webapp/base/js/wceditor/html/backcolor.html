@@ -1,0 +1,49 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="stylesheet" type="text/css" href="../css/html.css">
+<script type="text/javascript" src="/ikep4-webapp/base/js/jquery/jquery-1.6.2.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function(){
+		$("#backcolorDiv > div")
+		.css("cursor", "pointer")
+		.bind("mouseover", function() {
+			$(this).css("border-color", "#888888");
+		})
+		.bind("mouseout", function() {
+			$(this).css("border-color", "#ffffff");
+		})
+		.bind("click", function() {
+			parent.WCEditor.setFont("backcolor", $(this).css("background-color"));
+		});
+		
+		if(parent.WCEditor.config.miniMode){
+		    $("#backcolorDiv").hide();
+		}
+	}); 
+</script>
+</head>
+<body>
+<div id="ifrmMainDiv">
+	<div id="ifrmLayoutDiv" style="padding:2px;">
+	    <div id="backcolorDiv">
+			<div style="background-color:#000000;">가나다라마바</div>
+			<div style="background-color:#ff3300;">가나다라마바</div>
+			<div style="background-color:#ff0099;">가나다라마바</div>
+			<div style="background-color:#ff6600;">가나다라마바</div>
+			<div style="background-color:#cc00ff;">가나다라마바</div>
+			<div style="background-color:#cc9900;">가나다라마바</div>
+			<div style="background-color:#0000ff;">가나다라마바</div>
+			<div style="background-color:#33cc00;">가나다라마바</div>
+			<div style="background-color:#0099ff;">가나다라마바</div>
+			<div style="background-color:#009999;">가나다라마바</div>
+		</div>
+		<div class="clear"></div>
+		<script type="text/javascript">
+			document.write(parent.WCEditor.printColorPlate('backcolor', parent.WCEditor.config.miniMode));
+		</script>
+    </div>
+</div>	
+</body>
+</html>

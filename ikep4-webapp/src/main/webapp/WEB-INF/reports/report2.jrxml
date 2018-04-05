@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isIgnorePagination="true">
+	<property name="ireport.scriptlethandling" value="0"/>
+	<property name="ireport.encoding" value="UTF-8"/>
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<import value="net.sf.jasperreports.engine.*"/>
+	<import value="java.util.*"/>
+	<import value="net.sf.jasperreports.engine.data.*"/>
+	<field name="userName" class="java.lang.String"/>
+	<field name="teamName" class="java.lang.String"/>
+	<field name="jobTitleName" class="java.lang.String"/>
+	<field name="accessDate" class="java.util.Date"/>
+    <field name="menuName" class="java.lang.String"/>
+	<title>
+		<band height="72">
+			<frame>
+				<reportElement mode="Opaque" x="-20" y="-20" width="595" height="92" forecolor="#FFFFFF" backcolor="#006699"/>
+				<staticText>
+					<reportElement x="220" y="63" width="355" height="20" forecolor="#FFFFFF"/>
+					<textElement textAlignment="Right">
+						<font size="14" isBold="false"/>
+					</textElement>
+					<text><![CDATA[메뉴 현황 목록은 최근 3개월까지 조회가능합니다.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="40" y="10" width="273" height="43" forecolor="#FFFFFF"/>
+					<textElement textAlignment="Justified">
+						<font size="26"/>
+					</textElement>
+					<text><![CDATA[메뉴 사용량 통계]]></text>
+				</staticText>
+			</frame>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="23">
+			<staticText>
+				<reportElement x="366" y="0" width="189" height="23" isPrintInFirstWholeBand="true" forecolor="#006699" backcolor="#E6E6E6"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[사용 시각]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="193" y="0" width="173" height="23" isPrintInFirstWholeBand="true" forecolor="#006699" backcolor="#E6E6E6"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[사용자]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="0" width="193" height="23" isPrintInFirstWholeBand="true" forecolor="#006699" backcolor="#E6E6E6"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[메뉴명]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<detail>
+		<band height="21">
+			<textField isStretchWithOverflow="true">
+				<reportElement x="193" y="0" width="173" height="21"/>
+				<textElement>
+					<font size="14"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{userName}.concat( $F{teamName}  ).concat($F{jobTitleName})]]></textFieldExpression>
+			</textField>
+			<textField pattern="yyyy.MM.dd hh:mm:ss" isBlankWhenNull="true">
+				<reportElement x="366" y="0" width="189" height="21"/>
+				<textElement/>
+				<textFieldExpression class="java.util.Date"><![CDATA[$F{accessDate}]]></textFieldExpression>
+			</textField>
+			<textField pattern="yyyy.MM.dd hh:mm:ss" isBlankWhenNull="true">
+				<reportElement x="0" y="0" width="193" height="21"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{menuName}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

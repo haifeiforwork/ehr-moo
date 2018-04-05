@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="portal.admin.screen.portalTheme" >
+	<typeAlias alias="PortalTheme" 					type="com.lgcns.ikep4.portal.admin.screen.model.PortalTheme"/>
+	<typeAlias alias="PortalThemeSearchCondition"	type="com.lgcns.ikep4.framework.web.SearchCondition" />
+	
+	<!-- 테마 테이블 조회 결과 -->
+	<resultMap id="themeResult" class="PortalTheme">
+		<result property="themeId" column="THEME_ID" columnIndex="1"/>
+		<result property="themeName" column="THEME_NAME" columnIndex="2"/>
+		<result property="description" column="DESCRIPTION" columnIndex="3"/>
+		<result property="portalId" column="PORTAL_ID" columnIndex="4"/>
+		<result property="defaultOption" column="DEFAULT_OPTION" columnIndex="5"/>
+		<result property="cssPath" column="CSS_PATH" columnIndex="6"/>
+		<result property="previewImageId" column="PREVIEW_IMAGE_ID" columnIndex="7"/>
+		<result property="registerId" column="REGISTER_ID" columnIndex="8"/>
+		<result property="registerName" column="REGISTER_NAME" columnIndex="9"/>
+		<result property="registDate" column="REGIST_DATE" columnIndex="10"/>
+		<result property="updaterId" column="UPDATER_ID" columnIndex="11"/>
+		<result property="updaterName" column="UPDATER_NAME" columnIndex="12"/>
+		<result property="updateDate" column="UPDATE_DATE" columnIndex="13"/>
+	</resultMap>
+	<resultMap id="searchResult" class="PortalTheme">
+		<result property="num" column="NUM" columnIndex="1"/>
+		<result property="themeId" column="THEME_ID" columnIndex="2"/>
+		<result property="themeName" column="THEME_NAME" columnIndex="3"/>
+		<result property="description" column="DESCRIPTION" columnIndex="4"/>
+		<result property="portalId" column="PORTAL_ID" columnIndex="5"/>
+		<result property="defaultOption" column="DEFAULT_OPTION" columnIndex="6"/>
+		<result property="cssPath" column="CSS_PATH" columnIndex="7"/>
+		<result property="previewImageId" column="PREVIEW_IMAGE_ID" columnIndex="8"/>
+		<result property="registerId" column="REGISTER_ID" columnIndex="9"/>
+		<result property="registerName" column="REGISTER_NAME" columnIndex="10"/>
+		<result property="registDate" column="REGIST_DATE" columnIndex="11"/>
+		<result property="updaterId" column="UPDATER_ID" columnIndex="12"/>
+		<result property="updaterName" column="UPDATER_NAME" columnIndex="13"/>
+		<result property="updateDate" column="UPDATE_DATE" columnIndex="14"/>
+	</resultMap>
+	
+	<insert id="createTheme" parameterClass="PortalTheme"> 
+      <![CDATA[
+      		/* [PortalTheme_SqlMap.xml] portal.admin.screen.portalTheme.createTheme */ 
+           INSERT INTO IKEP4_PO_THEME (THEME_ID, THEME_NAME, DESCRIPTION, PORTAL_ID, DEFAULT_OPTION, CSS_PATH, PREVIEW_IMAGE_ID, REGISTER_ID, REGISTER_NAME, REGIST_DATE, UPDATER_ID, UPDATER_NAME, UPDATE_DATE)  
+           VALUES (#themeId#, #themeName#, #description#, #portalId#, #defaultOption#, #cssPath#, #previewImageId#, #registerId#, #registerName#, NOW(), #updaterId#, #updaterName#, NOW())
+       ]]>
+   </insert>
+   
+   <select id="getTheme" parameterClass="String" resultMap="themeResult">
+	  <![CDATA[
+	  		/* [PortalTheme_SqlMap.xml] portal.admin.screen.portalTheme.getTheme */
+		   SELECT 
+		   	   THEME_ID, 
+		   	   THEME_NAME, 
+		   	   DESCRIPTION, 
+		   	   PORTAL_ID, 
+		   	   DEFAULT_OPTION, 
+		   	   CSS_PATH, 
+		   	   PREVIEW_IMAGE_ID, 
+		   	   REGISTER_ID, 
+		   	   REGISTER_NAME, 
+		   	   DATE_FORMAT( REGIST_DATE,'%Y-%m-%d') AS REGIST_DATE, 
+		   	   UPDATER_ID, 
+		   	   UPDATER_NAME, 
+		   	   DATE_FORMAT( UPDATE_DATE,'%Y-%m-%d') AS UPDATE_DATE
+		   	 FROM IKEP4_PO_THEME 
+		   	WHERE THEME_ID = #themeId#
+	   ]]>
+	</select>
+	
+	<select id="listTheme" parameterClass="PortalTheme" resultMap="themeResult">
+	  <![CDATA[
+	  		/* [PortalTheme_SqlMap.xml] portal.admin.screen.portalTheme.listTheme */
+		   SELECT 
+		   	   THEME_ID, 
+		   	   THEME_NAME, 
+		   	   DESCRIPTION, 
+		   	   PORTAL_ID, 
+		   	   DEFAULT_OPTION, 
+		   	   CSS_PATH, 
+		   	   PREVIEW_IMAGE_ID, 
+		   	   REGISTER_ID, 
+		   	   REGISTER_NAME, 
+		   	   DATE_FORMAT( REGIST_DATE,'%Y-%m-%d') AS REGIST_DATE, 
+		   	   UPDATER_ID, 
+		   	   UPDATER_NAME, 
+		   	   DATE_FORMAT( UPDATE_DATE,'%Y-%m-%d') AS UPDATE_DATE
+		   	 FROM IKEP4_PO_THEME
+		   	 WHERE PORTAL_ID = #portalId#
+	  ]]>
+		    <dynamic prepend="and">
+	 			<isEqual property="searchType" compareValue="themeName">
+	 				<![CDATA[
+	 				THEME_NAME like CONCAT( '%' , #searchText# , '%')
+	 				]]>
+	 			</isEqual>
+	 		</dynamic>
+	 	<![CDATA[ 
+		    ORDER BY regist_date ASC
+		]]>
+	</select>
+	
+	<select id="listBySearchCondition" parameterClass="PortalThemeSearchCondition" resultMap="searchResult">
+	<![CDATA[
+  		/* [PortalTheme_SqlMap.xml] portal.admin.screen.portalTheme.listBySearchCondition */
+		SELECT				T.*
+		FROM 				(
+	     					SELECT				@RNUM:=@RNUM+1 AS NUM,
+					     						C.THEME_ID, 
+									            C.THEME_NAME, 
+									            C.DESCRIPTION, 
+									            C.PORTAL_ID, 
+									            C.DEFAULT_OPTION, 
+									            C.CSS_PATH, 
+									            C.PREVIEW_IMAGE_ID,
+												C.REGISTER_ID,
+												C.REGISTER_NAME,
+												DATE_FORMAT( C.REGIST_DATE,'%Y-%m-%d') AS REGIST_DATE,
+												C.UPDATER_ID,
+												C.UPDATER_NAME,
+												DATE_FORMAT( C.UPDATE_DATE,'%Y-%m-%d') AS UPDATE_DATE
+	     					FROM 				
+	     										( SELECT @RNUM:=0 ) R,
+	     										(
+	     										SELECT				THEME_ID, 
+														            THEME_NAME, 
+														            DESCRIPTION, 
+														            PORTAL_ID, 
+														            DEFAULT_OPTION, 
+														            CSS_PATH, 
+														            PREVIEW_IMAGE_ID, 
+														            REGISTER_ID, 
+														            REGISTER_NAME, 
+														            REGIST_DATE, 
+														            UPDATER_ID, 
+														            UPDATER_NAME, 
+														            UPDATE_DATE
+	     										FROM				IKEP4_PO_THEME
+	     										WHERE				1 = 1
+	     										AND					PORTAL_ID = #portalId#
+		]]>
+												<isNotEmpty property="searchColumn">
+												<isEqual prepend="AND" property="searchColumn" compareValue="themeName">
+																	UPPER(THEME_NAME) LIKE UPPER( CONCAT( '%' , #searchWord# , '%'))
+												</isEqual>
+												</isNotEmpty>
+									    		<isNotEmpty property="sortColumn">
+									    		<isEqual property="sortColumn" compareValue="THEME_NAME">
+									    		<isEqual property="sortType" compareValue="ASC">
+												ORDER BY 			THEME_NAME ASC
+												</isEqual>
+												<isEqual property="sortType" compareValue="DESC">
+												ORDER BY 			THEME_NAME DESC
+												</isEqual>
+												</isEqual>
+									    		<isEqual property="sortColumn" compareValue="DEFAULT_OPTION">
+									    		<isEqual property="sortType" compareValue="ASC">
+												ORDER BY 			DEFAULT_OPTION ASC
+												</isEqual>
+												<isEqual property="sortType" compareValue="DESC">
+												ORDER BY 			DEFAULT_OPTION DESC
+												</isEqual>
+												</isEqual>
+									    		</isNotEmpty>
+									    		<isEmpty property="sortColumn">
+									    		ORDER BY 			REGIST_DATE DESC
+									    		</isEmpty>
+									    		) C
+		<![CDATA[
+	    					LIMIT #endRowIndex#		 
+							) T
+		WHERE 				T.NUM > #startRowIndex#
+		]]>
+	</select>
+	
+	<select id="countBySearchCondition" parameterClass="PortalThemeSearchCondition" resultClass="int">  
+  		<![CDATA[
+  		/* [PortalTheme_SqlMap.xml] portal.admin.screen.portalTheme.countBySearchCondition */
+		SELECT 				COUNT(THEME_ID)
+		FROM   				IKEP4_PO_THEME
+		WHERE				1 = 1
+		AND					PORTAL_ID = #portalId#
+		]]>
+		<isNotEmpty property="searchColumn">
+		<isEqual prepend="AND" property="searchColumn" compareValue="themeName">
+							UPPER(THEME_NAME) LIKE UPPER( CONCAT( '%' , #searchWord# , '%'))
+		</isEqual>
+		</isNotEmpty>
+  	</select> 
+	
+	<update id="updateTheme" parameterClass="PortalTheme">
+	  <![CDATA[
+	  		/* [PortalTheme_SqlMap.xml] portal.admin.screen.portalTheme.updateTheme */
+		   UPDATE IKEP4_PO_THEME
+		   SET THEME_NAME = #themeName#,
+		   	   DESCRIPTION = #description#,	 
+			   CSS_PATH = #cssPath#,
+			   PREVIEW_IMAGE_ID = #previewImageId#,
+			   DEFAULT_OPTION = #defaultOption#,
+			   UPDATER_ID = #updaterId#, 
+		   	   UPDATER_NAME = #updaterName#,  
+			   UPDATE_DATE = NOW() 
+		   WHERE THEME_ID = #themeId#
+	   ]]>
+	</update>
+	
+   <delete id="removeTheme" parameterClass="java.lang.String">
+      <![CDATA[
+      		/* [PortalTheme_SqlMap.xml] portal.admin.screen.portalTheme.removeTheme */
+	       DELETE FROM IKEP4_PO_THEME 
+	        WHERE THEME_ID = #themeId#
+	   ]]>
+	</delete>
+	
+	<select id="getDefaultTheme" resultMap="themeResult">
+	  <![CDATA[
+	  		/* [PortalTheme_SqlMap.xml] portal.admin.screen.portalTheme.getDefaultTheme */
+		   SELECT 
+		   	   THEME_ID, 
+		   	   THEME_NAME, 
+		   	   DESCRIPTION, 
+		   	   PORTAL_ID, 
+		   	   DEFAULT_OPTION, 
+		   	   CSS_PATH, 
+		   	   PREVIEW_IMAGE_ID, 
+		   	   REGISTER_ID, 
+		   	   REGISTER_NAME, 
+		   	   DATE_FORMAT( REGIST_DATE,'%Y-%m-%d') AS REGIST_DATE, 
+		   	   UPDATER_ID, 
+		   	   UPDATER_NAME, 
+		   	   DATE_FORMAT( UPDATE_DATE,'%Y-%m-%d') AS UPDATE_DATE
+		   	 FROM IKEP4_PO_THEME 
+		   	WHERE DEFAULT_OPTION = 1
+		   	LIMIT 1
+	   ]]>
+	</select>
+	
+	<update id="clearDefaultTheme" parameterClass="String">
+		UPDATE IKEP4_PO_THEME
+		SET DEFAULT_OPTION = 0
+		WHERE PORTAL_ID = #portalId#
+	</update>
+	
+	<update id="resetDefaultTheme" parameterClass="PortalTheme">
+		UPDATE IKEP4_PO_THEME
+		SET DEFAULT_OPTION = 1
+		WHERE THEME_ID = (
+			SELECT THEME_ID
+			FROM (
+				SELECT THEME_ID
+				FROM IKEP4_PO_THEME
+				WHERE PORTAL_ID = #portalId# AND THEME_ID != #themeId#
+				LIMIT 1
+			) TBL
+		)
+	</update>
+</sqlMap>

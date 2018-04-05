@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="workflow.modeler.dao.InstanceTrackingData" >
+	<typeAlias alias = "InstanceTrackingData" type="com.lgcns.ikep4.workflow.modeler.model.InstanceTrackingData"/>
+	<resultMap class="InstanceTrackingData" id="instanceTrackingDataResult">
+	  <result column="PARTITION_ID"      property="partitionId"		jdbcType="VARCHAR" columnIndex="1"/>
+	  <result column="PROCESS_ID"        property="processId"		jdbcType="VARCHAR" columnIndex="2"/>
+	  <result column="PROCESS_NAME"      property="processName"		jdbcType="VARCHAR" columnIndex="3"/>
+	  <result column="PROCESS_VER" 	     property="processVersion" 	jdbcType="VARCHAR" columnIndex="4"/>
+	  <result column="INSTANCE_ID"       property="instanceId"    	jdbcType="VARCHAR" columnIndex="5"/>
+	  <result column="CREATE_DATE"       property="createDate"    	jdbcType="DATE"    columnIndex="6"/>
+	  <result column="FINISHED_DATE"     property="finishedDate"   	jdbcType="DATE"    columnIndex="7"/>
+	  <result column="STATE"    	     property="state"   		jdbcType="VARCHAR" columnIndex="8"/>
+	  <result column="TITLE"             property="title"        	jdbcType="VARCHAR" columnIndex="9"/>
+	  <result column="PARENT_INS_ID"     property="parentInsId"  	jdbcType="VARCHAR" columnIndex="10"/>
+	  <result column="ACTIVITY_ID"       property="activityId"     	jdbcType="VARCHAR" columnIndex="11"/>
+	  <result column="ACTIVITY_NAME"     property="activityName"   	jdbcType="VARCHAR" columnIndex="12"/>
+	  <result column="ACTIVITY_TYPE"     property="activityType"   	jdbcType="VARCHAR" columnIndex="13"/>
+	  <result column="AT_CREATE_DATE"    property="atCreateDate"    jdbcType="DATE"    columnIndex="14"/>
+	  <result column="AT_FINISHED_DATE"  property="atFinishedDate"  jdbcType="DATE"    columnIndex="15"/>
+	  <result column="AT_STATE"          property="atState"        	jdbcType="VARCHAR" columnIndex="16"/>
+	  <result column="AT_SUB_STATE"      property="atSubState"      jdbcType="VARCHAR" columnIndex="17"/>
+	  <result column="PERFORMER_ID"      property="performerId"     jdbcType="VARCHAR" columnIndex="18"/>
+	  <result column="PERFORMER_ORG"     property="performerOrg"    jdbcType="VARCHAR" columnIndex="19"/>
+	  <result column="OUTCOME"           property="outcome"        	jdbcType="VARCHAR" columnIndex="20"/>
+	  <result column="LEADTIME"          property="leadTime"        jdbcType="INTEGER" columnIndex="21"/>
+	  <result column="AT_LEADTIME"       property="atLeadTime"      jdbcType="INTEGER" columnIndex="22"/>
+	</resultMap> 
+  
+	<!-- selectAll -->
+	<select id="listInstanceTrackingData" resultMap="instanceTrackingDataResult">
+	  <![CDATA[
+		   SELECT WFP.PARTITION_ID AS PARTITION_ID
+			     , WFP.PROCESS_ID AS PROCESS_ID
+			     , WFP.PROCESS_NAME AS PROCESS_NAME
+			     , WFP.PROCESS_VER AS PROCESS_VER
+			     , WFI.INSTANCE_ID AS INSTANCE_ID
+			     , TO_CHAR(WFI.CREATE_DATE, 'YYYY-MM-DD HH:MI:SS') AS CREATE_DATE
+			     , TO_CHAR(WFI.FINISHED_DATE, 'YYYY-MM-DD HH:MI:SS') AS FINISHED_DATE
+			     , WFI.STATE AS STATE
+			     , WFI.TITLE AS TITLE
+			     , WFI.PARENT_INS_ID AS PARENT_INS_ID
+			     , WFIL.ACTIVITY_ID||NVL(WFIL.INDEX_NO, '') AS ACTIVITY_ID
+			     , WFA.ACTIVITY_NAME AS ACTIVITY_NAME
+			     , WFA.ACTIVITY_TYPE AS ACTIVITY_TYPE
+			     , TO_CHAR(WFIL.CREATE_DATE, 'YYYY-MM-DD HH:MI:SS') AS AT_CREATE_DATE
+			     , TO_CHAR(WFIL.FINISHED_DATE, 'YYYY-MM-DD HH:MI:SS') AS AT_FINISHED_DATE
+			     , WFIL.STATE AS AT_STATE
+			     , '' AS AT_SUB_STATE
+			     , WFIL.PERFORMER_ID AS PERFORMER_ID
+			     , WFIL.PERFORMER_ORG AS PERFORMER_ORG
+			     , '' AS OUTCOME
+			     , '' AS LEADTIME
+			     , '' AS AT_LEADTIME
+			FROM IKEP4_WF_PROCESS WFP, IKEP4_WF_INSTANCE WFI, IKEP4_WF_ACTIVITY WFA, IKEP4_WF_INSTANCE_LOG WFIL
+			WHERE WFP.PROCESS_ID = WFI.PROCESS_ID
+			AND WFP.PROCESS_VER = WFI.PROCESS_VER
+			AND WFP.PROCESS_ID = WFA.PROCESS_ID
+			AND WFP.PROCESS_VER = WFA.PROCESS_VER
+			AND WFIL.ACTIVITY_ID = WFA.ACTIVITY_ID
+			AND WFI.INSTANCE_ID = WFIL.INSTANCE_ID
+			AND WFI.INSTANCE_ID = #instanceId#
+			ORDER BY WFIL.LOG_ID
+	   ]]>
+	</select>
+	
+</sqlMap>
+	

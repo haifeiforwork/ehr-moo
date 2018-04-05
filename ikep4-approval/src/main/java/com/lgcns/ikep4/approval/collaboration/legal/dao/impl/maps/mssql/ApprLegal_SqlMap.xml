@@ -1,0 +1,1226 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="approval.collaboration.legal.dao.ApprLegal" >
+	<typeAlias alias="apprLegal" type="com.lgcns.ikep4.approval.collaboration.legal.model.ApprLegal"/>
+	<typeAlias alias="ApprContractListSearchCondition" type="com.lgcns.ikep4.approval.collaboration.legal.search.ApprContractListSearchCondition"/>
+	
+	<resultMap class="apprLegal" id="apprLegalResult2" >
+		<result column="CONTRACT_MGNT_NO"       property="contractMgntNo"     jdbcType="VARCHAR" />
+		<result column="USER_ID"             	property="userId"             jdbcType="VARCHAR" />
+		<result column="REQ_USER_NAME"          property="reqUserName"        jdbcType="VARCHAR" />
+		<result column="CONTRACT_TITLE"         property="contractTitle"      jdbcType="VARCHAR" />
+		<result column="REQ_DRAFT_EMP_NO"       property="reqDraftEmpNo"      jdbcType="VARCHAR" />
+		<result column="REQ_REVIEW_EMP_NO"      property="reqReviewEmpNo"     jdbcType="VARCHAR" />
+		<result column="REQ_APPR_EMP_NO"        property="reqApprEmpNo"       jdbcType="VARCHAR" />
+		<result column="RCV_DRAFT_EMP_NO"       property="rcvDraftEmpNo"      jdbcType="VARCHAR" />
+		<result column="RCV_REVIEW_EMP_NO"      property="rcvReviewEmpNo"     jdbcType="VARCHAR" />
+		<result column="RCV_APPR_EMP_NO"        property="rcvApprEmpNo"       jdbcType="VARCHAR" />
+		<result column="APPR_REQ_DATE"       	property="apprReqDate"        jdbcType="DATE" />
+		<result column="MANAGER_NAME"       	property="managerName"        jdbcType="VARCHAR" />
+		<result column="PROCESS_STATUS"       	property="processStatus"      jdbcType="VARCHAR" />
+		<result column="PROCESS_STATUS_NAME"   	property="processStatusName"  jdbcType="VARCHAR" />
+		<result column="APPR_STS_CD"   			property="apprStsCd"  		  jdbcType="VARCHAR" />
+		<result column="CNT"                	property="cnt"                jdbcType="DECIMAL" />
+	</resultMap>
+	
+	<resultMap class="apprLegal" id="apprLegalResult" >
+		<result column="CONTRACT_MGNT_NO"       property="contractMgntNo"     jdbcType="VARCHAR" />
+		<result column="APPR_REQ_DATE"       	property="apprReqDate"        jdbcType="DATE" />
+		<result column="CONTRACT_TITLE"         property="contractTitle"      jdbcType="VARCHAR" />
+		<result column="REQ_EMP_NO"             property="reqEmpNo"           jdbcType="VARCHAR" />
+		<result column="REQ_EMP_NAME"      		property="reqEmpName"     	  jdbcType="VARCHAR" />
+		<result column="RCV_DRAFT_EMP_NO"       property="rcvDraftEmpNo"      jdbcType="VARCHAR" />
+		<result column="RCV_DRAFT_EMP_NAME"     property="rcvDraftEmpNo"      jdbcType="VARCHAR" />
+		<result column="PROCESS_STATUS"       	property="processStatus"      jdbcType="VARCHAR" />
+		<result column="PROCESS_STATUS_NAME"   	property="processStatusName"  jdbcType="VARCHAR" />
+		<result column="HISTORY_CNT"            property="cnt"                jdbcType="DECIMAL" />
+		<result column="APPR_STS_CD"   			property="apprStsCd"  		  jdbcType="VARCHAR" />
+		<result column="APPR_DATE"              property="apprDate"           jdbcType="DATE" />
+	</resultMap>
+	
+	<resultMap class="java.util.HashMap" id="apprLegalResultAll" >
+		<result column="CONTRACT_MGNT_NO"       property="contractMgntNo"     jdbcType="VARCHAR" />
+		<result column="CONTRACT_TITLE"         property="contractTitle"      jdbcType="VARCHAR" />
+		<result column="REQ_EMP_NO"             property="reqEmpNo"           jdbcType="VARCHAR" />
+		<result column="REQ_EMP_NAME"           property="reqEmpName"         jdbcType="VARCHAR" />
+		<result column="REQ_DEPT_ID"            property="reqDeptId"          jdbcType="VARCHAR" />
+		<result column="REQ_DEPT_NAME"          property="reqDeptName"        jdbcType="VARCHAR" />
+		<result column="REQ_CONTACT_NO"         property="reqContactNo"       jdbcType="VARCHAR" />
+		<result column="CONTRACT_PARTY"         property="contractParty"      jdbcType="VARCHAR" />
+		<result column="REVIEW_END_DATE"        property="reviewEndDate"      jdbcType="DATE" />
+		<result column="CONTRACT_PURPOSE"       property="contractPurpose"    jdbcType="VARCHAR" />
+		<result column="RIGHTS_TXT"             property="rightsTxt"          jdbcType="VARCHAR" />
+		<result column="DUTY_TXT"               property="dutyTxt"            jdbcType="VARCHAR" />
+		<result column="KEY_ISSUE"              property="keyIssue"           jdbcType="VARCHAR" />
+		<result column="ENG_CONTRACT_ETC_TXT"   property="engContractEtcTxt"  jdbcType="VARCHAR" />
+		<result column="ETC_REQ_TXT"            property="etcReqTxt"          jdbcType="VARCHAR" />
+		<result column="LEGAL_OPINION"          property="legalOpinion"       jdbcType="VARCHAR" />
+		<result column="PROCESS_STATUS"         property="processStatus"      jdbcType="VARCHAR" />
+		<result column="APPR_STS_CD"            property="apprStsCd"          jdbcType="VARCHAR" />
+		<result column="APPR_REQ_DATE"          property="apprReqDate"        jdbcType="VARCHAR" />
+		<result column="APPR_DATE"              property="apprDate"           jdbcType="DATE" />
+		<result column="FILE_ITEM_ID"           property="fileItemId"         jdbcType="VARCHAR" />
+		<result column="REJECT_REASON"          property="rejectReason"       jdbcType="VARCHAR" />
+		<result column="REQ_DRAFT_EMP_NO"       property="reqDraftEmpNo"      jdbcType="VARCHAR" />
+		<result column="REQ_DRAFT_STS_CD"       property="reqDraftStsCd"      jdbcType="VARCHAR" />
+		<result column="REQ_DRAFT_DATE"         property="reqDraftDate"       jdbcType="VARCHAR" />
+		<result column="REQ_DRAFT_STS_NAME"     property="reqDraftStsName"    jdbcType="VARCHAR" />
+		<result column="REQ_DRAFT_EMP_NAME"     property="reqDraftEmpName"    jdbcType="VARCHAR" />
+		<result column="REQ_REVIEW_EMP_NO"      property="reqReviewEmpNo"     jdbcType="VARCHAR" />
+		<result column="REQ_REVIEW_STS_CD"      property="reqReviewStsCd"     jdbcType="VARCHAR" />
+		<result column="REQ_REVIEW_DATE"        property="reqReviewDate"      jdbcType="VARCHAR" />
+		<result column="REQ_REVIEW_STS_NAME"    property="reqReviewStsName"   jdbcType="VARCHAR" />
+		<result column="REQ_REVIEW_EMP_NAME"    property="reqReviewEmpName"   jdbcType="VARCHAR" />
+		<result column="REQ_APPR_EMP_NO"        property="reqApprEmpNo"       jdbcType="VARCHAR" />
+		<result column="REQ_APPR_STS_CD"        property="reqApprStsCd"       jdbcType="VARCHAR" />
+		<result column="REQ_APPR_DATE"          property="reqApprDate"        jdbcType="VARCHAR" />
+		<result column="REQ_APPR_STS_NAME"      property="reqApprStsName"     jdbcType="VARCHAR" />
+		<result column="REQ_APPR_EMP_NAME"      property="reqApprEmpName"     jdbcType="VARCHAR" />
+		<result column="RCV_DRAFT_EMP_NO"       property="rcvDraftEmpNo"      jdbcType="VARCHAR" />
+		<result column="RCV_DRAFT_STS_CD"       property="rcvDraftStsCd"      jdbcType="VARCHAR" />
+		<result column="RCV_DRAFT_DATE"         property="rcvDraftDate"       jdbcType="VARCHAR" />
+		<result column="RCV_DRAFT_STS_NAME"     property="rcvDraftStsName"    jdbcType="VARCHAR" />
+		<result column="RCV_DRAFT_EMP_NAME"     property="rcvDraftEmpName"    jdbcType="VARCHAR" />
+		<result column="RCV_REVIEW_EMP_NO"      property="rcvReviewEmpNo"     jdbcType="VARCHAR" />
+		<result column="RCV_REVIEW_STS_CD"      property="rcvReviewStsCd"     jdbcType="VARCHAR" />
+		<result column="RCV_REVIEW_DATE"        property="rcvReviewDate"      jdbcType="VARCHAR" />
+		<result column="RCV_REVIEW_STS_NAME"    property="rcvReviewStsName"   jdbcType="VARCHAR" />
+		<result column="RCV_REVIEW_EMP_NAME"    property="rcvReviewEmpName"   jdbcType="VARCHAR" />
+		<result column="RCV_APPR_EMP_NO"        property="rcvApprEmpNo"       jdbcType="VARCHAR" />
+		<result column="RCV_APPR_STS_CD"        property="rcvApprStsCd"       jdbcType="VARCHAR" />
+		<result column="RCV_APPR_DATE"          property="rcvApprDate"        jdbcType="VARCHAR" />
+		<result column="RCV_APPR_STS_NAME"      property="rcvApprStsName"     jdbcType="VARCHAR" />
+		<result column="RCV_APPR_EMP_NAME"      property="rcvApprEmpName"     jdbcType="VARCHAR" />
+		<result column="APPR_YN"      			property="apprYn"     		  jdbcType="VARCHAR" />
+		<result column="SAVE_YN"      			property="saveYn"     		  jdbcType="VARCHAR" />
+		<result column="REQ_YN"      			property="reqYn"     		  jdbcType="VARCHAR" />
+		<result column="AGREEMENT_EMP_NO_YN"    property="agreementEmpNoYn"   jdbcType="VARCHAR" />
+		<result column="EMP_NO_YN"    			property="empNoYn"   		  jdbcType="VARCHAR" />
+		<result column="RESUlT_CNT"      		property="resultCnt"     	  jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<resultMap class="apprLegal" id="apprLegalHistoryList" >
+		<result column="CONTRACT_MGNT_NO"      	property="contractMgntNo"     jdbcType="VARCHAR" />
+		<result column="HISTORY_SEQNO"   		property="historySeqno"       jdbcType="VARCHAR" />
+		<result column="WRITE_EMP_NO"     		property="writeEmpNo"         jdbcType="VARCHAR" />
+		<result column="WRITE_EMP_NAME"     	property="writeEmpName"       jdbcType="VARCHAR" />
+		<result column="WRITE_DATE" 			property="writeDate"     	  jdbcType="DATE"    />
+		<result column="HISTORY_TXT"    		property="historyTxt"     	  jdbcType="VARCHAR" />
+		<result column="FILE_ITEM_ID"    		property="fileItemId"         jdbcType="VARCHAR" />
+		<result column="CNT"    				property="cnt"         jdbcType="VARCHAR" />
+	</resultMap>
+
+	<resultMap class="apprLegal" id="apprLegalHistoryDetail" >
+		<result column="CONTRACT_MGNT_NO"      	property="contractMgntNo"     jdbcType="VARCHAR" />
+		<result column="HISTORY_SEQNO"   		property="historySeqno"       jdbcType="VARCHAR" />
+		<result column="HISTORY_TXT"    		property="historyTxt"     	  jdbcType="VARCHAR" />
+		<result column="FILE_ITEM_ID"    		property="fileItemId"         jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<resultMap class="apprLegal" id="apprLegalResultDetail" >
+		<result column="REVIEW_OPINION"      	property="reviewOpinion"      jdbcType="VARCHAR" />
+		<result column="APPR_STS_CD"      		property="apprStsCd"     	  jdbcType="VARCHAR" />
+		<result column="APPR_REQ_DATE"      	property="apprReqDate"     	  jdbcType="DATE"    />
+		<result column="APPR_DATE"      		property="apprDate"     	  jdbcType="DATE"    />
+		<result column="FILE_ITEM_ID"      		property="fileItemId"     	  jdbcType="VARCHAR" />
+		<result column="REQ_EMP_NAME"      		property="reqEmpName"     	  jdbcType="VARCHAR" />
+		<result column="CONTRACT_TITLE"      	property="contractTitle"      jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<resultMap class="java.util.HashMap" id="apprLegalApprLv">
+		<result column="APPR_LV"      	property="apprLv"      jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<resultMap class="java.util.HashMap" id="contractMgntNoResult" >
+		<result column="contractMgntNo"	 		property="contractMgntNo"	  jdbcType="java.lang.String"/>
+	</resultMap>
+	<resultMap class="apprLegal" id="apprLegalDetailInfo" >
+		<result column="CONTRACT_MGNT_NO"			property="contractMgntNo"	 jdbcType="java.lang.String" />
+		<result column="PROCESS_STATUS"         	property="processStatus"     jdbcType="java.lang.String" />
+		<result column="CONTRACT_TITLE"        		property="contractTitle"     jdbcType="java.lang.String" />
+		<result column="REQ_DRAFT_EMP_NO"		    property="reqDraftEmpNo"	 jdbcType="java.lang.String" />
+		<result column="REQ_REVIEW_EMP_NO"		    property="reqReviewEmpNo"	 jdbcType="java.lang.String" />
+		<result column="REQ_APPR_EMP_NO"		    property="reqApprEmpNo"		 jdbcType="java.lang.String" />
+		<result column="RCV_DRAFT_EMP_NO"		    property="rcvDraftEmpNo"	 jdbcType="java.lang.String" />
+		<result column="RCV_REVIEW_EMP_NO"		    property="rcvReviewEmpNo"	 jdbcType="java.lang.String" />
+		<result column="RCV_APPR_EMP_NO"		    property="rcvApprEmpNo"		 jdbcType="java.lang.String" />
+		<result column="REQ_DEPT_NAME"		        property="reqDeptName"		 jdbcType="java.lang.String" />
+	</resultMap>
+	
+	<resultMap class="String" id="getFileId" >
+		<result column="FILE_ITEM_ID"      		property="fileItemId"     	  	 jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<resultMap class="apprLegal" id="legalEmpNoList" >
+		<result column="EMP_NO"      			property="emailEmpNo"     	  		 jdbcType="VARCHAR" />
+	</resultMap>
+	<resultMap class="java.util.HashMap" id="legalReject" >
+		<result column="REJECT_REASON"      	property="rejectReason"    	  		 jdbcType="VARCHAR" />
+	</resultMap>
+	                                
+	<!-- 법무관리자 여부 -->
+	<select id="userAuthMgntYn" parameterClass="String" resultClass="int">
+	/* approval.legal.dao.ApprLegal.userAuthMgntYn */                          
+		
+		SELECT                                            
+			COUNT(*)                                 
+		FROM 
+			TB_USER_AUTH_MGNT 
+		WHERE WORK_GBN_CD = '30'
+		  AND EMP_NO = #userId#
+	</select>
+	
+	<!-- 계약서 검토 요청 목록 갯수 -->
+	<select id="apprContractCount2" parameterClass="ApprContractListSearchCondition" resultClass="int">
+	/* approval.legal.dao.ApprLegal.apprContractCount */                          
+		
+		SELECT                                            
+			COUNT(*)                                     
+		from                                                               
+			TB_CONTRACT_REVIEW A 
+				LEFT OUTER JOIN TB_CONTRACT_APPR_LINE B 
+					ON A.CONTRACT_MGNT_NO = B.CONTRACT_MGNT_NO
+				JOIN IKEP4_EV_USER C 
+					ON A.REQ_EMP_NO = C.EMP_NO
+				LEFT OUTER JOIN IKEP4_EV_USER D
+					ON B.RCV_DRAFT_EMP_NO = D.EMP_NO
+				JOIN TB_COMMON_CODE E
+					ON A.PROCESS_STATUS = E.COM_CD 
+					AND E.GRP_CD = 'C00008'
+		WHERE 1=1
+			<isNotEmpty property="searchStartRegDate1">
+				<isNotEmpty property="searchEndRegDate1">
+					AND A.APPR_REQ_DATE BETWEEN CONVERT(DATETIME, #searchStartRegDate1# + ' 00:00:00', 121) AND CONVERT(DATETIME, #searchEndRegDate1# + ' 23:59:59', 121)
+				</isNotEmpty>
+			</isNotEmpty> 
+			<isNotEmpty property="userName">
+				AND C.USER_NAME LIKE '%' + #userName# + '%'
+			</isNotEmpty> 
+			<isNotEmpty property="managerName">
+				AND D.USER_NAME LIKE '%' + #managerName# + '%'
+			</isNotEmpty> 
+			<isNotEmpty property="processStatus">
+				AND E.COM_CD = #processStatus#
+			</isNotEmpty>   
+	</select>
+	
+	<!-- 계약서 검토 요청 목록 -->
+	<select id="apprContractList2" parameterClass="ApprContractListSearchCondition" resultMap="apprLegalResult">
+	/* [ApprLegal_SqlMap.xml] apprContractList */
+		
+		SELECT TBL.*
+  		FROM (
+  			SELECT AA.*
+          		FROM (
+          			SELECT 
+						ROW_NUMBER() OVER( ORDER BY
+						<isNotEmpty property="sortColumn">
+							<isEqual property="sortColumn" compareValue="REQ_DRAFT_DATE">
+								<isEqual property="sortType" compareValue="DESC">
+									B.REQ_DRAFT_DATE DESC
+								</isEqual>
+								<isEqual property="sortType" compareValue="ASC">
+									B.REQ_DRAFT_DATE ASC
+								</isEqual>
+							</isEqual>
+							<isEqual property="sortColumn" compareValue="CONTRACT_TITLE">
+								<isEqual property="sortType" compareValue="DESC">
+									A.CONTRACT_TITLE DESC
+								</isEqual>
+								<isEqual property="sortType" compareValue="ASC">
+									A.CONTRACT_TITLE ASC
+								</isEqual>
+							</isEqual>
+							<isEqual property="sortColumn" compareValue="REQ_USER_NAME">
+								<isEqual property="sortType" compareValue="DESC">
+									C.USER_NAME DESC
+								</isEqual>
+								<isEqual property="sortType" compareValue="ASC">
+									C.USER_NAME ASC
+								</isEqual>
+							</isEqual>
+							<isEqual property="sortColumn" compareValue="MANAGER_NAME">
+								<isEqual property="sortType" compareValue="DESC">
+									D.USER_NAME DESC
+								</isEqual>
+								<isEqual property="sortType" compareValue="ASC">
+									D.USER_NAME ASC
+								</isEqual>
+							</isEqual>
+							<isEqual property="sortColumn" compareValue="PROCESS_STATUS_NAME">
+								<isEqual property="sortType" compareValue="DESC">
+									E.COM_NM DESC
+								</isEqual>
+								<isEqual property="sortType" compareValue="ASC">
+									E.COM_NM ASC
+								</isEqual>
+							</isEqual>
+						</isNotEmpty>
+						<isEmpty property="sortColumn">  
+							B.REQ_DRAFT_DATE DESC
+						</isEmpty>	) AS RNUM ,
+						A.CONTRACT_MGNT_NO, 
+						A.APPR_REQ_DATE, 
+						A.CONTRACT_TITLE, 
+						A.APPR_STS_CD,
+						B.REQ_DRAFT_EMP_NO,
+						B.REQ_REVIEW_EMP_NO,
+						B.REQ_APPR_EMP_NO,
+						B.RCV_DRAFT_EMP_NO,
+						B.RCV_REVIEW_EMP_NO,
+						B.RCV_APPR_EMP_NO,
+						C.USER_ID,
+						C.USER_NAME AS REQ_USER_NAME,
+						D.USER_NAME AS MANAGER_NAME,
+						A.PROCESS_STATUS,
+						E.COM_CD,
+						E.COM_NM AS PROCESS_STATUS_NAME,
+						(SELECT 
+							COUNT(*) 
+						 FROM 
+						 	TB_CONTRACT_HISTORY Z 
+						 WHERE 
+						 	Z.CONTRACT_MGNT_NO = A.CONTRACT_MGNT_NO) AS CNT
+					FROM
+						TB_CONTRACT_REVIEW A 
+							LEFT OUTER JOIN TB_CONTRACT_APPR_LINE B 
+								ON A.CONTRACT_MGNT_NO = B.CONTRACT_MGNT_NO
+							JOIN IKEP4_EV_USER C 
+								ON A.REQ_EMP_NO = C.EMP_NO
+							LEFT OUTER JOIN IKEP4_EV_USER D
+								ON B.RCV_DRAFT_EMP_NO = D.EMP_NO
+							JOIN TB_COMMON_CODE E
+								ON A.PROCESS_STATUS = E.COM_CD 
+								AND E.GRP_CD = 'C00008'
+					WHERE 1=1
+					<isNotEmpty property="searchStartRegDate1">
+						<isNotEmpty property="searchEndRegDate1">
+							AND A.APPR_REQ_DATE BETWEEN CONVERT(DATETIME, #searchStartRegDate1# + ' 00:00:00', 121) AND CONVERT(DATETIME, #searchEndRegDate1# + ' 23:59:59', 121)
+						</isNotEmpty>
+					</isNotEmpty> 
+					<isNotEmpty property="userName">
+						AND C.USER_NAME LIKE '%' + #userName# + '%'
+					</isNotEmpty> 
+					<isNotEmpty property="managerName">
+						AND D.USER_NAME LIKE '%' + #managerName# + '%'
+					</isNotEmpty> 
+					<isNotEmpty property="processStatus">
+						AND E.COM_CD = #processStatus#
+					</isNotEmpty> 
+				)AA
+			WHERE RNUM <![CDATA[ <= ]]> #endRowIndex# /* 종료  */
+        ) TBL
+		 WHERE RNUM <![CDATA[ > ]]> #startRowIndex# /* 시작 */ 
+	</select>
+	
+	
+		<!-- 계약서 검토 요청 목록 갯수 -->
+	<select id="apprContractCount" parameterClass="ApprContractListSearchCondition" resultClass="int">
+	/* approval.legal.dao.ApprLegal.apprContractCount */                          
+		
+		select count(*) 
+			from (
+				SELECT A.CONTRACT_MGNT_NO
+					 , A.APPR_REQ_DATE
+					 , A.CONTRACT_TITLE
+					 , A.REQ_EMP_NO
+					 , C.USER_NAME                                       AS REQ_EMP_NM
+					 , B.RCV_DRAFT_EMP_NO
+					 , D.USER_NAME                                       AS RCV_DRAFT_EMP_NM
+					 , A.PROCESS_STATUS
+					 , E.COM_NM                                          AS PROCESS_STATUS_NM
+					 , (SELECT COUNT(*)
+						  FROM TB_CONTRACT_HISTORY
+						 WHERE CONTRACT_MGNT_NO = A.CONTRACT_MGNT_NO)    AS HISTORY_CNT
+					 , A.APPR_STS_CD
+					 , A.APPR_DATE
+				  FROM TB_CONTRACT_REVIEW A
+					   LEFT OUTER JOIN TB_CONTRACT_APPR_LINE B
+						  ON B.CONTRACT_MGNT_NO = A.CONTRACT_MGNT_NO
+					   INNER JOIN IKEP4_EV_USER C
+						  ON C.EMP_NO = A.REQ_EMP_NO
+					   LEFT OUTER JOIN IKEP4_EV_USER D
+						  ON D.EMP_NO = B.RCV_DRAFT_EMP_NO
+					   LEFT OUTER JOIN TB_COMMON_CODE E
+						  ON E.GRP_CD = 'C00008'
+						 AND E.COM_CD = A.PROCESS_STATUS
+				  WHERE 1=1
+				   AND (A.REQ_EMP_NO = #loginEmpNo# OR    /* 로그인사번이 의뢰부서 결제선에 존재 체크 */
+				        (B.REQ_REVIEW_EMP_NO = #loginEmpNo# AND B.REQ_DRAFT_STS_CD = '03') OR
+						(B.REQ_APPR_EMP_NO = #loginEmpNo# AND ((B.REQ_DRAFT_STS_CD = '03' AND (B.REQ_REVIEW_EMP_NO IS NULL OR B.REQ_REVIEW_EMP_NO = '')) OR B.REQ_REVIEW_STS_CD = '03')))
+				UNION ALL
+				SELECT A.CONTRACT_MGNT_NO
+					 , A.APPR_REQ_DATE
+					 , A.CONTRACT_TITLE
+					 , A.REQ_EMP_NO
+					 , C.USER_NAME                                       AS REQ_EMP_NM
+					 , B.RCV_DRAFT_EMP_NO
+					 , D.USER_NAME                                       AS RCV_DRAFT_EMP_NM
+					 , A.PROCESS_STATUS
+					 , E.COM_NM                                          AS PROCESS_STATUS_NM
+					 , (SELECT COUNT(*)
+						  FROM TB_CONTRACT_HISTORY
+						 WHERE CONTRACT_MGNT_NO = A.CONTRACT_MGNT_NO)    AS HISTORY_CNT
+					 , A.APPR_STS_CD
+					 , A.APPR_DATE
+				  FROM TB_CONTRACT_REVIEW A
+					   LEFT OUTER JOIN TB_CONTRACT_APPR_LINE B
+						  ON B.CONTRACT_MGNT_NO = A.CONTRACT_MGNT_NO
+					   INNER JOIN IKEP4_EV_USER C
+						  ON C.EMP_NO = A.REQ_EMP_NO
+					   LEFT OUTER JOIN IKEP4_EV_USER D
+						  ON D.EMP_NO = B.RCV_DRAFT_EMP_NO
+					   LEFT OUTER JOIN TB_COMMON_CODE E
+						  ON E.GRP_CD = 'C00008'
+						 AND E.COM_CD = A.PROCESS_STATUS
+				 <![CDATA[ 
+				  WHERE 1=1
+					   AND A.PROCESS_STATUS    >= '12'
+					   AND A.PROCESS_STATUS    <> '13'
+					   AND A.REQ_EMP_NO        <> #loginEmpNo#
+					   AND ISNULL(B.REQ_REVIEW_EMP_NO, '*') <> #loginEmpNo#
+                          AND ISNULL(B.REQ_APPR_EMP_NO, '*')   <> #loginEmpNo# 
+					   AND EXISTS (SELECT 'Y'
+					                 FROM TB_USER_AUTH_MGNT
+									WHERE WORK_GBN_CD = '30'
+									  AND EMP_NO      = #loginEmpNo#
+									  AND USE_YN      = 'Y')
+					   AND ((#loginEmpNo# NOT IN (ISNULL(B.RCV_REVIEW_EMP_NO, '*'), ISNULL(B.RCV_APPR_EMP_NO, '*'))) OR
+					        (B.RCV_REVIEW_EMP_NO = #loginEmpNo# AND B.RCV_DRAFT_STS_CD = '03') OR
+							(B.RCV_APPR_EMP_NO = #loginEmpNo# AND ((B.RCV_DRAFT_STS_CD = '03' AND (B.RCV_REVIEW_EMP_NO IS NULL OR B.RCV_REVIEW_EMP_NO = '')) OR B.RCV_REVIEW_STS_CD = '03'))) ) A
+							 ]]>
+			 WHERE 1=1
+		 <isNotEmpty property="searchStartRegDate1">
+		 	<isNotEmpty property="searchEndRegDate1">
+				AND A.APPR_REQ_DATE BETWEEN CONVERT(DATETIME, #searchStartRegDate1# + ' 00:00:00', 121) AND CONVERT(DATETIME, #searchEndRegDate1# + ' 23:59:59', 121)
+			</isNotEmpty>
+			<isNotEmpty property="userName">
+				AND A.REQ_EMP_NM LIKE '%' + #userName# + '%'
+			</isNotEmpty> 
+			<isNotEmpty property="managerName">
+				AND A.RCV_DRAFT_EMP_NM LIKE '%' + #managerName# + '%'
+			</isNotEmpty> 
+			<isNotEmpty property="processStatus">
+				AND A.PROCESS_STATUS = #processStatus#
+			</isNotEmpty>
+		 </isNotEmpty>
+	</select>
+	
+	<!-- 계약서 검토 요청 목록 -->
+	<select id="apprContractList" parameterClass="ApprContractListSearchCondition" resultMap="apprLegalResult">
+	/* approval.legal.dao.ApprLegal.apprContractList */
+		SELECT 
+			TBL.*
+  		FROM (
+  			SELECT 
+  				AA.* , 
+  				ROW_NUMBER() OVER( ORDER BY
+					<isNotEmpty property="sortColumn">
+						<isEqual property="sortColumn" compareValue="APPR_REQ_DATE">
+							<isEqual property="sortType" compareValue="DESC">
+								AA.APPR_REQ_DATE DESC
+							</isEqual>
+							<isEqual property="sortType" compareValue="ASC">
+								AA.APPR_REQ_DATE ASC
+							</isEqual>
+						</isEqual>
+						<isEqual property="sortColumn" compareValue="CONTRACT_TITLE">
+							<isEqual property="sortType" compareValue="DESC">
+								AA.CONTRACT_TITLE DESC
+							</isEqual>
+							<isEqual property="sortType" compareValue="ASC">
+								AA.CONTRACT_TITLE ASC
+							</isEqual>
+						</isEqual>
+						<isEqual property="sortColumn" compareValue="REQ_EMP_NAME">
+							<isEqual property="sortType" compareValue="DESC">
+								AA.REQ_EMP_NAME DESC
+							</isEqual>
+							<isEqual property="sortType" compareValue="ASC">
+								AA.REQ_EMP_NAME ASC
+							</isEqual>
+						</isEqual>
+						<isEqual property="sortColumn" compareValue="RCV_DRAFT_EMP_NAME">
+							<isEqual property="sortType" compareValue="DESC">
+								AA.RCV_DRAFT_EMP_NAME DESC
+							</isEqual>
+							<isEqual property="sortType" compareValue="ASC">
+								AA.RCV_DRAFT_EMP_NAME ASC
+							</isEqual>
+						</isEqual>
+						<isEqual property="sortColumn" compareValue="PROCESS_STATUS_NAME">
+							<isEqual property="sortType" compareValue="DESC">
+								AA.PROCESS_STATUS_NAME DESC
+							</isEqual>
+							<isEqual property="sortType" compareValue="ASC">
+								AA.PROCESS_STATUS_NAME ASC
+							</isEqual>
+						</isEqual>
+					</isNotEmpty>
+					<isEmpty property="sortColumn">  
+						AA.APPR_REQ_DATE DESC
+					</isEmpty>	) AS RNUM
+			  FROM (
+				SELECT A.CONTRACT_MGNT_NO
+				     , MAX(A.APPR_REQ_DATE)        AS APPR_REQ_DATE
+				     , MAX(A.CONTRACT_TITLE)       AS CONTRACT_TITLE
+					 , MAX(A.REQ_EMP_NO)           AS REQ_EMP_NO
+					 , MAX(A.REQ_EMP_NM)           AS REQ_EMP_NAME
+					 , MAX(A.RCV_DRAFT_EMP_NO)     AS RCV_DRAFT_EMP_NO
+					 , MAX(A.RCV_DRAFT_EMP_NM)     AS RCV_DRAFT_EMP_NAME
+					 , MAX(A.PROCESS_STATUS)       AS PROCESS_STATUS
+					 , MAX(A.PROCESS_STATUS_NM)    AS PROCESS_STATUS_NAME
+					 , MAX(A.HISTORY_CNT)          AS HISTORY_CNT
+					 , MAX(A.APPR_STS_CD)          AS APPR_STS_CD
+				     , MAX(A.APPR_DATE)            AS APPR_DATE
+				  FROM (
+						SELECT A.CONTRACT_MGNT_NO
+							 , A.APPR_REQ_DATE
+							 , A.CONTRACT_TITLE
+							 , A.REQ_EMP_NO
+							 , C.USER_NAME                                       AS REQ_EMP_NM
+							 , B.RCV_DRAFT_EMP_NO
+							 , D.USER_NAME                                       AS RCV_DRAFT_EMP_NM
+							 , A.PROCESS_STATUS
+							 , E.COM_NM                                          AS PROCESS_STATUS_NM
+							 , (SELECT COUNT(*)
+								  FROM TB_CONTRACT_HISTORY
+								 WHERE CONTRACT_MGNT_NO = A.CONTRACT_MGNT_NO)    AS HISTORY_CNT
+							 , A.APPR_STS_CD
+							 , A.APPR_DATE
+						  FROM TB_CONTRACT_REVIEW A
+							   LEFT OUTER JOIN TB_CONTRACT_APPR_LINE B
+								  ON B.CONTRACT_MGNT_NO = A.CONTRACT_MGNT_NO
+							   INNER JOIN IKEP4_EV_USER C
+								  ON C.EMP_NO = A.REQ_EMP_NO
+							   LEFT OUTER JOIN IKEP4_EV_USER D
+								  ON D.EMP_NO = B.RCV_DRAFT_EMP_NO
+							   LEFT OUTER JOIN TB_COMMON_CODE E
+								  ON E.GRP_CD = 'C00008'
+								 AND E.COM_CD = A.PROCESS_STATUS
+						  WHERE 1=1
+						   AND (A.REQ_EMP_NO = #loginEmpNo# OR    /* 로그인사번이 의뢰부서 결제선에 존재 체크 */
+						        (B.REQ_REVIEW_EMP_NO = #loginEmpNo# AND B.REQ_DRAFT_STS_CD = '03') OR
+								(B.REQ_APPR_EMP_NO = #loginEmpNo# AND ((B.REQ_DRAFT_STS_CD = '03' AND (B.REQ_REVIEW_EMP_NO IS NULL OR B.REQ_REVIEW_EMP_NO = '')) OR B.REQ_REVIEW_STS_CD = '03')))
+						UNION ALL
+						SELECT A.CONTRACT_MGNT_NO
+							 , A.APPR_REQ_DATE
+							 , A.CONTRACT_TITLE
+							 , A.REQ_EMP_NO
+							 , C.USER_NAME                                       AS REQ_EMP_NM
+							 , B.RCV_DRAFT_EMP_NO
+							 , D.USER_NAME                                       AS RCV_DRAFT_EMP_NM
+							 , A.PROCESS_STATUS
+							 , E.COM_NM                                          AS PROCESS_STATUS_NM
+							 , (SELECT COUNT(*)
+								  FROM TB_CONTRACT_HISTORY
+								 WHERE CONTRACT_MGNT_NO = A.CONTRACT_MGNT_NO)    AS HISTORY_CNT
+							 , A.APPR_STS_CD
+							 , A.APPR_DATE
+						  FROM TB_CONTRACT_REVIEW A
+							   LEFT OUTER JOIN TB_CONTRACT_APPR_LINE B
+								  ON B.CONTRACT_MGNT_NO = A.CONTRACT_MGNT_NO
+							   INNER JOIN IKEP4_EV_USER C
+								  ON C.EMP_NO = A.REQ_EMP_NO
+							   LEFT OUTER JOIN IKEP4_EV_USER D
+								  ON D.EMP_NO = B.RCV_DRAFT_EMP_NO
+							   LEFT OUTER JOIN TB_COMMON_CODE E
+								  ON E.GRP_CD = 'C00008'
+								 AND E.COM_CD = A.PROCESS_STATUS
+						 <![CDATA[ 
+						 WHERE 1=1
+						   AND A.PROCESS_STATUS    >= '12'
+						   AND A.PROCESS_STATUS    <> '13'
+						   AND A.REQ_EMP_NO        <> #loginEmpNo#
+						   AND ISNULL(B.REQ_REVIEW_EMP_NO, '*') <> #loginEmpNo#
+                           AND ISNULL(B.REQ_APPR_EMP_NO, '*')   <> #loginEmpNo# 
+						   AND EXISTS (SELECT 'Y'
+						                 FROM TB_USER_AUTH_MGNT
+										WHERE WORK_GBN_CD = '30'
+										  AND EMP_NO      = #loginEmpNo#
+										  AND USE_YN      = 'Y')
+						   AND ((#loginEmpNo# NOT IN (ISNULL(B.RCV_REVIEW_EMP_NO, '*'), ISNULL(B.RCV_APPR_EMP_NO, '*'))) OR
+						        (B.RCV_REVIEW_EMP_NO = #loginEmpNo# AND B.RCV_DRAFT_STS_CD = '03') OR
+								(B.RCV_APPR_EMP_NO = #loginEmpNo# AND ((B.RCV_DRAFT_STS_CD = '03' AND (B.RCV_REVIEW_EMP_NO IS NULL OR B.RCV_REVIEW_EMP_NO = '')) OR B.RCV_REVIEW_STS_CD = '03'))) ) A
+								 ]]>
+				 WHERE 1=1
+				 <isNotEmpty property="searchStartRegDate1">
+				 	<isNotEmpty property="searchEndRegDate1">
+						AND A.APPR_REQ_DATE BETWEEN CONVERT(DATETIME, #searchStartRegDate1# + ' 00:00:00', 121) AND CONVERT(DATETIME, #searchEndRegDate1# + ' 23:59:59', 121)
+					</isNotEmpty>
+					<isNotEmpty property="userName">
+						AND A.REQ_EMP_NM LIKE '%' + #userName# + '%'
+					</isNotEmpty> 
+					<isNotEmpty property="managerName">
+						AND A.RCV_DRAFT_EMP_NM LIKE '%' + #managerName# + '%'
+					</isNotEmpty> 
+					<isNotEmpty property="processStatus">
+						AND A.PROCESS_STATUS = #processStatus#
+					</isNotEmpty>
+				 </isNotEmpty>
+				 GROUP BY A.CONTRACT_MGNT_NO  ) AA
+			) TBL
+		 WHERE TBL.RNUM <![CDATA[ <= ]]> #endRowIndex# /* 종료  */
+		   AND TBL.RNUM <![CDATA[ > ]]> #startRowIndex# /* 시작 */ 
+	</select>
+	
+	<!-- 계약서 검토 이력 List -->
+	<select id="apprContractHistoryList" parameterClass="String" resultMap="apprLegalHistoryList" >
+	/* [ApprLegal_SqlMap.xml] apprContractHistoryList */
+		
+		SELECT 
+			CONTRACT_MGNT_NO
+			, HISTORY_SEQNO
+			, WRITE_EMP_NO
+			, dbo.FN_GET_EMPNO_EMP_NAME(WRITE_EMP_NO) AS WRITE_EMP_NAME
+			, WRITE_DATE
+			, HISTORY_TXT
+			, FILE_ITEM_ID
+			, (SELECT count(*) from IKEP4_DM_FILE_LINK_ECM where ITEM_ID = A.FILE_ITEM_ID ) AS CNT
+		FROM 
+			TB_CONTRACT_HISTORY A
+		WHERE CONTRACT_MGNT_NO = #contractMgntNo#
+		ORDER BY WRITE_DATE DESC
+	</select>
+	
+	<!-- 계약서 검토 이력 상세 Detail -->
+	<select id="apprContractHistoryDetail" parameterClass="java.util.Map" resultMap="apprLegalHistoryDetail" >
+	/* [ApprLegal_SqlMap.xml] apprContractHistoryDetail */
+		
+		SELECT 
+			CONTRACT_MGNT_NO
+			, HISTORY_SEQNO
+			, HISTORY_TXT
+			, FILE_ITEM_ID
+		FROM 
+			TB_CONTRACT_HISTORY 
+		WHERE CONTRACT_MGNT_NO = #contractMgntNo#
+		  AND HISTORY_SEQNO = #historySeqno#
+		ORDER BY WRITE_DATE DESC
+	</select>
+	
+	<!-- 검토 이력 등록 -->
+	<insert id="historySave" parameterClass="apprLegal"> 
+		<selectKey keyProperty="historySeqno" resultClass="int">
+			SELECT ISNULL(MAX( HISTORY_SEQNO ), 0) + 1 from TB_CONTRACT_HISTORY
+		</selectKey>
+	
+	/* approval.legal.dao.ApprLegal.historySave */
+	
+		INSERT INTO TB_CONTRACT_HISTORY (
+			CONTRACT_MGNT_NO,
+			HISTORY_SEQNO,
+			WRITE_EMP_NO,
+			WRITE_DATE,
+			HISTORY_TXT,
+			FILE_ITEM_ID
+		) VALUES (
+			#contractMgntNo#
+			, #historySeqno#
+			, #writeEmpNo#
+			, getdate()
+			, #historyTxt#
+			, #fileItemId#
+		)
+	</insert>
+	
+	<!-- 진행단계 세팅 정보 -->
+	<select id="getApprLv" parameterClass="java.util.Map" resultMap="apprLegalApprLv">
+	/* approval.legal.dao.ApprLegal.getApprLv */
+		SELECT
+		 	CASE WHEN #processStatus# = '10' THEN '1'
+				 WHEN #processStatus# = '11' AND B.REQ_DRAFT_STS_CD = '03' 
+	               	 AND B.REQ_REVIEW_EMP_NO != ''
+	                 AND B.REQ_REVIEW_STS_CD is null  THEN '2'
+				 WHEN #processStatus# = '11'  
+				 	AND ( B.REQ_REVIEW_EMP_NO = '' OR B.REQ_REVIEW_EMP_NO is null OR B.REQ_REVIEW_STS_CD in('03'))
+                    THEN  '3'
+				 WHEN #processStatus# = '12' OR #processStatus# = '20' THEN '4'
+				 WHEN #processStatus# = '21' AND B.RCV_DRAFT_STS_CD = '03' 
+	               	 AND B.RCV_REVIEW_EMP_NO != ''
+	                 AND B.RCV_REVIEW_STS_CD is null THEN '5'
+				 WHEN #processStatus# = '21' AND ( B.RCV_REVIEW_EMP_NO = '' OR B.RCV_REVIEW_EMP_NO is null OR B.RCV_REVIEW_STS_CD in('03'))  THEN  '6'
+				 WHEN #processStatus# = '22' THEN '6'
+			ELSE '7' 
+			END AS APPR_LV
+		FROM
+			 dbo.TB_CONTRACT_REVIEW A 
+	   			LEFT OUTER JOIN dbo.TB_CONTRACT_APPR_LINE B 
+	       		ON A.CONTRACT_MGNT_NO = B.CONTRACT_MGNT_NO 
+	    WHERE A.CONTRACT_MGNT_NO = #contractMgntNo#
+	</select>
+	
+	<!-- 계약서 검토 요청 상세 정보 -->
+	<select id="apprContractDetail" parameterClass="java.util.Map" resultMap="apprLegalResultAll">
+	/* approval.legal.dao.ApprLegal.apprContractDetail */                          
+		
+		SELECT 
+			A.*,
+			dbo.FN_GET_EMPNO_EMP_NAME(A.REQ_EMP_NO) AS REQ_EMP_NAME,
+			dbo.FN_GET_DEPT_NAME(A.REQ_DEPT_ID) AS REQ_DEPT_NAME, 
+			B.REQ_DRAFT_EMP_NO,
+			B.REQ_DRAFT_STS_CD,
+			B.REQ_DRAFT_DATE,
+			CASE when REQ_DRAFT_STS_CD = '01' then '작성'
+				 when REQ_DRAFT_STS_CD = '02' then '진행중'
+				 when REQ_DRAFT_STS_CD = '03' then '상신'
+				 when REQ_DRAFT_STS_CD = '04' then '반려'
+				 end AS REQ_DRAFT_STS_NAME,
+			dbo.FN_GET_EMPNO_EMP_NAME(B.REQ_DRAFT_EMP_NO) AS REQ_DRAFT_EMP_NAME, 
+			B.REQ_REVIEW_EMP_NO,
+			B.REQ_REVIEW_STS_CD,
+			B.REQ_REVIEW_DATE,
+			CASE when REQ_REVIEW_STS_CD = '01' then '작성'
+				 when REQ_REVIEW_STS_CD = '02' then '진행중'
+				 when REQ_REVIEW_STS_CD = '03' then '승인'
+				 when REQ_REVIEW_STS_CD = '04' then '반려'
+				 end AS REQ_REVIEW_STS_NAME,
+			dbo.FN_GET_EMPNO_EMP_NAME(B.REQ_REVIEW_EMP_NO) AS REQ_REVIEW_EMP_NAME,
+			B.REQ_APPR_EMP_NO,
+			B.REQ_APPR_STS_CD,
+			B.REQ_APPR_DATE,
+			CASE when REQ_APPR_STS_CD = '01' then '작성'
+				 when REQ_APPR_STS_CD = '02' then '진행중'
+				 when REQ_APPR_STS_CD = '03' then '승인'
+				 when REQ_APPR_STS_CD = '04' then '반려'
+				 end AS REQ_APPR_STS_NAME,
+			dbo.FN_GET_EMPNO_EMP_NAME(B.REQ_APPR_EMP_NO) AS REQ_APPR_EMP_NAME,
+			B.RCV_DRAFT_EMP_NO,
+			B.RCV_DRAFT_STS_CD,
+			B.RCV_DRAFT_DATE,
+			CASE when RCV_DRAFT_STS_CD = '01' then '작성'
+				 when RCV_DRAFT_STS_CD = '02' then '진행중'
+				 when RCV_DRAFT_STS_CD = '03' then '상신'
+				 when RCV_DRAFT_STS_CD = '04' then '반려'
+				 end AS RCV_DRAFT_STS_NAME,
+			dbo.FN_GET_EMPNO_EMP_NAME(B.RCV_DRAFT_EMP_NO) AS RCV_DRAFT_EMP_NAME,
+			B.RCV_REVIEW_EMP_NO,
+			B.RCV_REVIEW_STS_CD,
+			B.RCV_REVIEW_DATE,
+			CASE when RCV_REVIEW_STS_CD = '01' then '작성'
+				 when RCV_REVIEW_STS_CD = '02' then '진행중'
+				 when RCV_REVIEW_STS_CD = '03' then '승인'
+				 when RCV_REVIEW_STS_CD = '04' then '반려'
+				 end AS RCV_REVIEW_STS_NAME,
+			dbo.FN_GET_EMPNO_EMP_NAME(B.RCV_REVIEW_EMP_NO) AS RCV_REVIEW_EMP_NAME,
+			B.RCV_APPR_EMP_NO,
+			B.RCV_APPR_STS_CD,
+			B.RCV_APPR_DATE,
+			CASE when RCV_APPR_STS_CD = '01' then '작성'
+				 when RCV_APPR_STS_CD = '02' then '진행중'
+				 when RCV_APPR_STS_CD = '03' then '승인'
+				 when RCV_APPR_STS_CD = '04' then '반려'
+				 end AS RCV_APPR_STS_NAME,
+			dbo.FN_GET_EMPNO_EMP_NAME(B.RCV_APPR_EMP_NO) AS RCV_APPR_EMP_NAME
+			<isEmpty property="apprLv">
+				, 'N' AS APPR_YN
+			</isEmpty>
+			<isNotEmpty property="apprLv">
+					, CASE
+				<isEqual property="apprLv" compareValue="1">
+					WHEN B.REQ_DRAFT_EMP_NO  = #empNo# AND B.REQ_DRAFT_STS_CD not in('03', '04') THEN 'Y'
+				</isEqual>
+				<isEqual property="apprLv" compareValue="2">
+					WHEN B.REQ_REVIEW_EMP_NO = #empNo# AND (B.REQ_REVIEW_STS_CD not in('03', '04') OR B.REQ_REVIEW_STS_CD is null) THEN 'Y'
+				</isEqual>
+				<isEqual property="apprLv" compareValue="3">
+					WHEN B.REQ_APPR_EMP_NO   = #empNo# AND (B.REQ_APPR_STS_CD not in('03', '04') OR B.REQ_APPR_STS_CD is null) THEN 'Y'
+				</isEqual>
+				<isEqual property="apprLv" compareValue="4">
+					WHEN B.RCV_DRAFT_EMP_NO  = #empNo# AND (B.RCV_DRAFT_STS_CD not in('03', '04') OR B.RCV_DRAFT_STS_CD is null) THEN 'Y'
+				</isEqual>
+				<isEqual property="apprLv" compareValue="5">
+					WHEN B.RCV_REVIEW_EMP_NO = #empNo# AND (B.RCV_REVIEW_STS_CD not in('03', '04') OR B.RCV_REVIEW_STS_CD is null) THEN 'Y'
+				</isEqual>
+				<isEqual property="apprLv" compareValue="6">
+					WHEN B.RCV_APPR_EMP_NO   = #empNo# AND (B.RCV_APPR_STS_CD not in('03', '04') OR B.RCV_APPR_STS_CD is null) THEN 'Y'
+				</isEqual>
+				<isEqual property="apprLv" compareValue="7">
+					WHEN 1=1 THEN 'N'
+				</isEqual>
+					ELSE 'N'
+					END AS APPR_YN
+			</isNotEmpty>
+			<isEmpty property="apprLv"> 	
+				, 'N' AS SAVE_YN
+				, 'Y' AS REQ_YN 
+				, 'N' AS AGREEMENT_EMP_NO_YN
+			</isEmpty>
+			<isNotEmpty property="apprLv">
+				<isEqual property="apprLv" compareValue="1">
+					, CASE  WHEN B.REQ_DRAFT_EMP_NO = #empNo# 
+					   		OR (B.REQ_REVIEW_STS_CD is not null AND B.REQ_REVIEW_STS_CD not in('03', '04'))
+			                OR (B.REQ_APPR_STS_CD is not null AND B.REQ_APPR_STS_CD not in('03', '04') )
+			           THEN 'Y' 
+			           ELSE 'N'  END AS SAVE_YN
+					, 'Y' AS REQ_YN 
+					, CASE WHEN B.REQ_DRAFT_EMP_NO = #empNo# THEN 'Y' ELSE 'N'  END AS AGREEMENT_EMP_NO_YN
+				</isEqual>
+				<isEqual property="apprLv" compareValue="2">
+					, CASE WHEN A.PROCESS_STATUS != '10'
+						  OR (B.REQ_REVIEW_STS_CD is null AND B.REQ_REVIEW_EMP_NO = #empNo#)
+						  OR (B.REQ_REVIEW_STS_CD not in('03', '04') 
+						  AND B.REQ_APPR_STS_CD not in('03', '04') 
+						  AND B.REQ_DRAFT_EMP_NO = #empNo#)
+					  THEN 'Y' else 'N' END AS SAVE_YN
+					, 'Y' AS REQ_YN 
+					, CASE WHEN B.REQ_REVIEW_EMP_NO = #empNo# THEN 'Y' ELSE 'N'  END AS AGREEMENT_EMP_NO_YN
+				</isEqual>
+				<isEqual property="apprLv" compareValue="3">
+					, CASE  WHEN A.PROCESS_STATUS != '10' 
+			               OR (B.REQ_APPR_STS_CD is null AND B.REQ_APPR_EMP_NO = #empNo#)
+			               OR (B.REQ_REVIEW_STS_CD not in('03', '04') 
+			               AND B.REQ_APPR_STS_CD not in('03', '04') 
+			               AND B.REQ_DRAFT_EMP_NO = #empNo#)
+					  THEN 'Y' else 'N' END AS SAVE_YN
+					, 'Y' AS REQ_YN 
+					, CASE WHEN B.REQ_APPR_EMP_NO = #empNo# THEN 'Y' ELSE 'N'  END AS AGREEMENT_EMP_NO_YN
+				</isEqual>
+				<isEqual property="apprLv" compareValue="4">
+					, CASE WHEN B.RCV_DRAFT_STS_CD not in('03', '04') AND B.RCV_DRAFT_EMP_NO = #empNo# THEN 'Y' ELSE 'N' END AS SAVE_YN
+					, 'N' AS REQ_YN 
+					, CASE WHEN B.RCV_DRAFT_EMP_NO = #empNo# THEN 'Y' ELSE 'N'  END AS AGREEMENT_EMP_NO_YN
+				</isEqual>
+				<isEqual property="apprLv" compareValue="5">
+					, 'N' AS SAVE_YN
+					, 'N' AS REQ_YN 
+					, CASE WHEN B.RCV_REVIEW_EMP_NO = #empNo# THEN 'Y' ELSE 'N'  END AS AGREEMENT_EMP_NO_YN
+				</isEqual>
+				<isEqual property="apprLv" compareValue="6">
+					, 'N' AS SAVE_YN
+					, 'N' AS REQ_YN 
+					, CASE WHEN B.RCV_APPR_EMP_NO = #empNo# THEN 'Y' ELSE 'N'  END AS AGREEMENT_EMP_NO_YN
+				</isEqual>
+				<isEqual property="apprLv" compareValue="7">
+					, 'N' AS SAVE_YN
+					, 'N' AS REQ_YN 
+					, 'N' AS AGREEMENT_EMP_NO_YN
+				</isEqual>
+			</isNotEmpty>
+		  , CASE WHEN B.REQ_DRAFT_EMP_NO = #empNo#  THEN 'Y'
+				 WHEN B.REQ_REVIEW_EMP_NO = #empNo# THEN 'Y'
+				 WHEN B.REQ_APPR_EMP_NO = #empNo#   THEN 'Y'
+				 WHEN B.RCV_DRAFT_EMP_NO = #empNo#  THEN 'Y'
+				 WHEN B.RCV_REVIEW_EMP_NO = #empNo# THEN 'Y'
+				 WHEN B.RCV_APPR_EMP_NO = #empNo#   THEN 'Y'
+		 	ELSE 'N' END AS EMP_NO_YN
+			, (SELECT COUNT(*)
+				 FROM dbo.TB_CONTRACT_RESULT
+				 WHERE CONTRACT_MGNT_NO = A.CONTRACT_MGNT_NO) AS RESUlT_CNT
+		FROM 
+			dbo.TB_CONTRACT_REVIEW A 
+				LEFT OUTER JOIN dbo.TB_CONTRACT_APPR_LINE B 
+				ON A.CONTRACT_MGNT_NO = B.CONTRACT_MGNT_NO
+		WHERE 
+			A.CONTRACT_MGNT_NO = #contractMgntNo#
+	</select>
+	
+	<!-- 검토 결과 등록 -->
+	<insert id="apprContractResultSave" parameterClass="apprLegal"> 
+
+	/* approval.legal.dao.ApprLegal.apprContractResultSave */
+	
+		INSERT INTO dbo.TB_CONTRACT_RESULT (
+			CONTRACT_MGNT_NO
+			, REVIEW_OPINION
+			, APPR_STS_CD
+			, APPR_REQ_DATE
+			, APPR_DATE
+			, FILE_ITEM_ID
+		) VALUES (
+			#contractMgntNo#
+			, #reviewOpinion#
+			, #apprStsCd#
+			, #apprReqDate#
+			, #apprDate#
+			, #fileItemId#
+		)
+	</insert>
+	
+	<!-- 검토 결과 수정 -->
+	<update id="apprContractResultModify" parameterClass="apprLegal">
+	/* [ApprLegal_SqlMap.xml] apprContractResultModify */
+	
+		UPDATE
+			dbo.TB_CONTRACT_RESULT
+	    SET 
+	    	REVIEW_OPINION = #reviewOpinion#
+	    WHERE
+	    	CONTRACT_MGNT_NO = #contractMgntNo#
+	</update>
+	
+	<!-- 검토 결과 상세 정보 -->
+	<select id="apprContractResultDetail" parameterClass="Map" resultMap="apprLegalResultDetail">
+	/* approval.legal.dao.ApprLegal.apprContractResultDetail */                          
+		
+		SELECT
+			A.CONTRACT_MGNT_NO
+			, A.REVIEW_OPINION
+			, A.APPR_STS_CD
+			, A.APPR_REQ_DATE
+			, A.APPR_DATE
+			, A.FILE_ITEM_ID
+			, B.CONTRACT_TITLE AS CONTRACT_TITLE
+			, dbo.FN_GET_DEPT_NAME(#reqDeptId#) AS REQ_EMP_NAME
+		FROM dbo.TB_CONTRACT_RESULT A
+		INNER JOIN dbo.TB_CONTRACT_REVIEW B ON A.CONTRACT_MGNT_NO = B.CONTRACT_MGNT_NO
+		WHERE 
+			A.CONTRACT_MGNT_NO = #contractMgntNo#
+	</select>
+	
+	<select id="contractMgntNoInfo" parameterClass="String" resultMap="contractMgntNoResult">
+		select dbo.FN_GET_PK_NEXTVAL('40', #dateNo#) AS contractMgntNo
+	</select>
+	
+	<!-- 계약서 검토 요청 등록시 요청서 메인테이블 insert -->
+	<insert id="contractSaveReview" parameterClass="apprLegal"> 
+	/* approval.legal.dao.ApprLegal.contractSaveReview */
+	
+		INSERT INTO TB_CONTRACT_REVIEW (
+			CONTRACT_MGNT_NO
+			, CONTRACT_TITLE
+			, REQ_EMP_NO
+			, REQ_DEPT_ID
+			, REQ_CONTACT_NO
+			, CONTRACT_PARTY
+			, REVIEW_END_DATE
+			, CONTRACT_PURPOSE
+			, RIGHTS_TXT
+			, DUTY_TXT
+			, KEY_ISSUE
+			, ENG_CONTRACT_ETC_TXT
+			, ETC_REQ_TXT
+			, APPR_STS_CD
+			, APPR_REQ_DATE
+			, FILE_ITEM_ID
+		) values (
+			#contractMgntNo#
+			, #contractTitle#
+			, #reqEmpNo#
+			, #reqDeptId#
+			, #reqContactNo#
+			, #contractParty#
+			, #reviewEndDate#
+			, #contractPurpose#
+			, #rightsTxt#
+			, #dutyTxt#
+			, #keyIssue#
+			, #engContractEtcTxt#
+			, #etcReqTxt#
+			, #apprStsCd#
+			, getdate()
+			, #fileItemId#
+		)
+	</insert> 
+	
+	<!-- 계약서 검토 요청 등록시 결제선 insert -->
+	<insert id="contractSaveApprLine" parameterClass="apprLegal">
+	/* approval.legal.dao.ApprLegal.contractSaveApprLine */   
+		
+		insert into TB_CONTRACT_APPR_LINE(
+			CONTRACT_MGNT_NO
+			, REQ_DRAFT_EMP_NO
+			, REQ_DRAFT_STS_CD
+			, REQ_DRAFT_DATE
+			, REQ_REVIEW_EMP_NO
+			, REQ_REVIEW_STS_CD
+			, REQ_APPR_EMP_NO
+			, REQ_APPR_STS_CD
+		) values (
+			#contractMgntNo#
+			, #reqEmpNo#
+			, #reqDraftStsCd#
+			, getdate()
+			, #reqReviewEmpNo#
+			, #reqReviewStsCd#
+			, #reqApprEmpNo#
+			, #reqApprStsCd#
+		)                
+	</insert> 
+	
+	<!-- 계약서 검토 요청 상세페이지 메인테이블 update -->
+	<update id="contractModifyReview" parameterClass="apprLegal">
+	/* approval.legal.dao.ApprLegal.contractModifyReview */  
+		
+		UPDATE 
+			TB_CONTRACT_REVIEW 
+		SET 
+			CONTRACT_TITLE = #contractTitle#
+			, CONTRACT_PARTY = #contractParty#
+			, CONTRACT_PURPOSE = #contractPurpose#
+			, REVIEW_END_DATE = #reviewEndDate#
+			, RIGHTS_TXT = #rightsTxt#
+			, DUTY_TXT = #dutyTxt#
+			, KEY_ISSUE = #keyIssue#
+			, ENG_CONTRACT_ETC_TXT = #engContractEtcTxt#
+			, ETC_REQ_TXT = #etcReqTxt#
+			, LEGAL_OPINION = #legalOpinion#
+			, FILE_ITEM_ID = #fileItemId#
+		WHERE 
+			CONTRACT_MGNT_NO = #contractMgntNo#
+	</update>
+	
+	<!-- 계약서 검토 요청 상세페이지 결제라인 테이블 update -->
+	<update id="contractModifyApprLine" parameterClass="apprLegal">
+	/* approval.legal.dao.ApprLegal.contractModifyApprLine */  
+		
+		UPDATE 
+			TB_CONTRACT_APPR_LINE 
+		SET
+			REQ_REVIEW_EMP_NO = #reqReviewEmpNo#
+			, REQ_APPR_EMP_NO = #reqApprEmpNo#
+			, RCV_REVIEW_EMP_NO = #rcvReviewEmpNo#
+			, RCV_APPR_EMP_NO = #rcvApprEmpNo#
+		WHERE 
+			CONTRACT_MGNT_NO = #contractMgntNo#
+	</update>
+	
+	<!-- 계약서 삭제 메인 테이블 update -->
+	<delete id="contractDeleteReview" parameterClass="String">
+	/* [ApprLegal_SqlMap.xml] contractDeleteReview */
+		 
+		DELETE 
+			TB_CONTRACT_REVIEW 
+		WHERE 
+			CONTRACT_MGNT_NO = #contractMgntNo#
+	</delete>
+	
+	<!-- 계약서 삭제 결제라인 테이블 update -->
+	<delete id="contractDeleteApprLine" parameterClass="String">
+	/* [ApprLegal_SqlMap.xml] contractDeleteApprLine */
+		
+		DELETE 
+			TB_CONTRACT_APPR_LINE 
+		WHERE 
+		 	CONTRACT_MGNT_NO = #contractMgntNo#
+	</delete>
+	
+	<!-- 검토이력 삭제 -->
+	<delete id="contractDeleteHistory" parameterClass="String">
+	/* [ApprLegal_SqlMap.xml] contractDeleteHistory */
+		 
+		DELETE 
+			TB_CONTRACT_HISTORY 
+		WHERE 
+			CONTRACT_MGNT_NO = #contractMgntNo#
+	</delete>
+	
+	<!-- 검토결과 삭제 -->
+	<delete id="contractDeleteResult" parameterClass="String">
+	/* [ApprLegal_SqlMap.xml] contractDeleteResult */
+		 
+		DELETE 
+			dbo.TB_CONTRACT_RESULT 
+		WHERE 
+			CONTRACT_MGNT_NO = #contractMgntNo#
+	</delete>
+	
+	<!-- 계약서 승인 메인테이블 update -->
+	<update id="contractApprReview" parameterClass="apprLegal">
+	/* approval.legal.dao.ApprLegal.contractApprReview */  
+		
+		UPDATE 
+			TB_CONTRACT_REVIEW 
+		SET 
+			PROCESS_STATUS = #processStatus#
+		<isNotEmpty property="apprStsCd">
+			, APPR_STS_CD = #apprStsCd#
+		</isNotEmpty>
+		<isNotEmpty property="rejectReason">
+			, REJECT_REASON = #rejectReason#
+		</isNotEmpty>
+		<isNotEmpty property="apprDate">
+			, APPR_DATE = #apprDate#
+		</isNotEmpty>
+		WHERE 
+			CONTRACT_MGNT_NO = #contractMgntNo#
+	</update>
+	
+	<!-- 계약서 승인 결제라인 테이블 update -->
+	<update id="contractApprLine" parameterClass="apprLegal">
+	/* approval.legal.dao.ApprLegal.contractApprApprLine */  
+		<isNotEmpty property="apprLv">
+			UPDATE 
+				TB_CONTRACT_APPR_LINE 
+			SET 
+			<isEqual property="apprLv" compareValue="1">
+				REQ_DRAFT_STS_CD = #reqDraftStsCd#
+				, REQ_DRAFT_DATE = getdate()
+			</isEqual>
+			<isEqual property="apprLv" compareValue="2">
+				REQ_REVIEW_STS_CD = #reqReviewStsCd#
+				, REQ_REVIEW_DATE = getdate()
+			</isEqual>
+			<isEqual property="apprLv" compareValue="3">
+				REQ_APPR_STS_CD = #reqApprStsCd#
+				, REQ_APPR_DATE = getdate()
+			</isEqual>
+			<isEqual property="apprLv" compareValue="4">
+				RCV_DRAFT_STS_CD = #rcvDraftStsCd#
+				, RCV_DRAFT_DATE = getdate()
+			</isEqual> 
+			<isEqual property="apprLv" compareValue="5">
+				RCV_REVIEW_STS_CD = #rcvReviewStsCd#
+				, RCV_REVIEW_DATE = getdate()
+			</isEqual>
+			<isEqual property="apprLv" compareValue="6">
+				RCV_APPR_STS_CD = #rcvApprStsCd#
+				, RCV_APPR_DATE = getdate()
+			</isEqual>
+			WHERE 
+				CONTRACT_MGNT_NO = #contractMgntNo#
+		</isNotEmpty>
+	</update>
+	
+	<!-- 기안부서 접수시 -->
+	<update id="contractReqReceiptReview" parameterClass="apprLegal">
+	/* [ApprLegal_SqlMap.xml] contractReqReceiptReview */
+		
+		UPDATE 
+			TB_CONTRACT_REVIEW 
+ 		SET 
+ 			PROCESS_STATUS = '10', 
+ 			APPR_STS_CD = '01', 
+ 			APPR_REQ_DATE = getdate()
+ 		WHERE CONTRACT_MGNT_NO = #contractMgntNo#
+	</update>
+	
+	<!-- 기안부서 접수시 결제선 -->
+	<update id="contractReqReceiptLine" parameterClass="apprLegal">
+	/* [ApprLegal_SqlMap.xml] contractReqReceiptLine */
+	
+		UPDATE 
+			TB_CONTRACT_APPR_LINE 
+		SET 
+			REQ_DRAFT_STS_CD = '01', 
+			REQ_DRAFT_DATE = getdate(), 
+			REQ_REVIEW_STS_CD = NULL,
+			REQ_REVIEW_DATE = NULL,
+			REQ_APPR_STS_CD = NULL,
+			REQ_APPR_DATE = NULL,
+			RCV_DRAFT_EMP_NO = NULL,
+			RCV_DRAFT_STS_CD = NULL,
+			RCV_DRAFT_DATE = NULL,
+			RCV_REVIEW_EMP_NO = NULL,
+			RCV_REVIEW_STS_CD = NULL,
+			RCV_REVIEW_DATE = NULL,
+			RCV_APPR_EMP_NO = NULL,
+			RCV_APPR_STS_CD = NULL,
+			RCV_APPR_DATE = NULL,
+			APPR_COMMENT = NULL
+		WHERE CONTRACT_MGNT_NO = #contractMgntNo#
+	</update>
+	
+	<!-- 주관부서 접수시 main update -->
+	<update id="contractRcvReceiptReview" parameterClass="apprLegal">
+	/* [ApprLegal_SqlMap.xml] contractReceiptReview */
+		
+		UPDATE 
+		 	TB_CONTRACT_REVIEW 
+    	SET 
+    		PROCESS_STATUS = #processStatus#
+    	WHERE 
+    		CONTRACT_MGNT_NO = #contractMgntNo#
+	</update>
+	
+	<!-- 주관부서 접수시 결제선 update -->
+	<update id="contractRcvReceiptLine" parameterClass="apprLegal">
+	/* [ApprLegal_SqlMap.xml] contractReceiptLine */
+	
+		UPDATE
+			TB_CONTRACT_APPR_LINE 
+	    SET 
+	    	RCV_DRAFT_EMP_NO = #rcvDraftEmpNo#
+	    	, RCV_DRAFT_STS_CD = #rcvDraftStsCd#
+	    	, RCV_APPR_EMP_NO = #rcvApprEmpNo#
+	    WHERE
+	    	CONTRACT_MGNT_NO = #contractMgntNo#
+	</update>
+	
+	<!-- 계약서 상세 정보(이메일용) -->
+	<select id="getContractDetailInfo" parameterClass="String" resultMap="apprLegalDetailInfo" >
+	/* [ApprLegal_SqlMap.xml] getContractDetailInfo */
+	
+		SELECT
+			A.CONTRACT_MGNT_NO, 
+			A.PROCESS_STATUS, 
+			A.CONTRACT_TITLE, 
+			B.REQ_DRAFT_EMP_NO, 
+			B.REQ_REVIEW_EMP_NO, 
+			B.REQ_APPR_EMP_NO, 
+			B.RCV_DRAFT_EMP_NO, 
+			B.RCV_REVIEW_EMP_NO, 
+			B.RCV_APPR_EMP_NO,
+			DBO.FN_GET_DEPT_NAME(A.REQ_DEPT_ID) AS REQ_DEPT_NAME
+		FROM 
+			dbo.TB_CONTRACT_REVIEW A 
+			LEFT OUTER JOIN dbo.TB_CONTRACT_APPR_LINE B 
+				ON A.CONTRACT_MGNT_NO = B.CONTRACT_MGNT_NO
+			WHERE 
+				A.CONTRACT_MGNT_NO = #contractMgntNo#
+	</select>
+	
+	<!-- 계약서 파일 아이디 -->
+	<select id="getFileId" parameterClass="String" resultMap="getFileId" >
+	/* [ApprLegal_SqlMap.xml] getFileId */
+	
+		SELECT 
+			FILE_ITEM_ID 
+		FROM 
+			dbo.TB_CONTRACT_REVIEW 
+		WHERE 
+			CONTRACT_MGNT_NO = #contractMgntNo#
+	</select>
+	<!-- 계약서 파일 아이디(검토이력) -->
+	<select id="getHistoryFileId" parameterClass="String" resultMap="getFileId" >
+	/* [ApprLegal_SqlMap.xml] getHistoryFileId */
+	
+		SELECT 
+			FILE_ITEM_ID 
+		FROM 
+			dbo.TB_CONTRACT_RESULT
+		WHERE 
+			CONTRACT_MGNT_NO = #contractMgntNo#
+	</select>
+	
+	<!-- 계약서 파일 아이디 수정 -->
+	<update id="updateFileId" parameterClass="apprLegal">
+		/* [ApprLegal_SqlMap.xml] updateFileId */
+		UPDATE TB_CONTRACT_REVIEW 
+		   SET FILE_ITEM_ID =#fileItemId#
+		 WHERE CONTRACT_MGNT_NO = #contractMgntNo#
+	</update>
+	
+	<!-- 계약서 파일 아이디 수정(검토이력) -->
+	<update id="updateHistoryFileId" parameterClass="apprLegal">
+		/* [ApprLegal_SqlMap.xml] updateHistoryFileId */
+		UPDATE dbo.TB_CONTRACT_RESULT 
+		   SET FILE_ITEM_ID =#fileItemId#
+		 WHERE CONTRACT_MGNT_NO = #contractMgntNo#
+	</update>
+	
+	<!-- 사용자 관리 권한에 법무팀 사원번호 가져오기 -->
+	<select id="getLegalEmpNo" parameterClass="String" resultMap="legalEmpNoList" >
+	/* [ApprLegal_SqlMap.xml] getLegalEmpNo */
+	
+		SELECT 
+			EMP_NO 
+		FROM 
+			TB_USER_AUTH_MGNT 
+		WHERE WORK_GBN_CD = #workGbnCd#
+	</select>
+	
+<!-- 	반려사유가져오기 -->
+	<select id="getReject" parameterClass="String" resultMap="legalReject" >
+	/* [ApprLegal_SqlMap.xml] getReject */
+	
+		SELECT  
+			REJECT_REASON  
+		FROM 
+			dbo.TB_CONTRACT_REVIEW 
+		WHERE  
+			CONTRACT_MGNT_NO = #contractMgntNo#
+	</select>
+	
+</sqlMap>

@@ -1,0 +1,361 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ko">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>iKEP 4.00</title>
+<link rel="stylesheet" type="text/css" href="../../css/theme01/jquery_ui_custom.css" />
+<link rel="stylesheet" type="text/css" href="../../css/common.css" />
+<link rel="stylesheet" type="text/css" href="../../css/theme01/theme.css" />
+<script type="text/javascript" src="../../js/jquery/jquery-1.6.2.min.js"></script>
+<script type="text/javascript" src="../../js/jquery/jquery-ui-1.8.13.min.without.datepicker.js"></script>
+<script type="text/javascript" src="../../js/jquery/splitter.js"></script>
+<script type="text/javascript" src="../../js/langResource/ko.js"></script>
+<script type="text/javascript" src="../../js/common.pack.js"></script>
+<!-- General page styles (not critical to the demos) -->
+
+<script type="text/javascript">
+<!--
+(function($){
+	var splitBoxTop = 0;
+	$(document).ready(function() {
+		
+		var objSplit = null;
+		
+		$("#btnLayoutNormal").click(function() {
+			if(objSplit) {
+				objSplit.destroy();
+				objSplit = null;
+			}
+		});
+		
+		$("#btnLayoutVertical, #btnLayoutHorizental").click(function(event) {
+			if(objSplit == null) {
+				var options = {
+					type : "v",
+					callback:function($divContent) {
+						getContents($divContent);
+						//$divContent.html("여기에 해당 영역의 컨텐츠를 구성하면 됩니다.");
+				}};
+				switch($(this).attr("id")) {
+					case "btnLayoutVertical" : options.type = "v"; break;
+					case "btnLayoutHorizental" : options.type = "h"; break;
+				}
+				
+				objSplit = new iKEP.Splitter("#splitterBox", options);
+			} else {
+				switch(objSplit.getType()) {
+					case "v":
+						if($(event.target).attr("id") != "btnLayoutVertical") {
+							objSplit.destroy();
+							objSplit = null;
+							$(this).trigger("click");
+						}
+						break;
+					case "h":
+						if($(event.target).attr("id") != "btnLayoutHorizental") {
+							objSplit.destroy();
+							objSplit = null;
+							$(this).trigger("click");
+						}
+						break;
+				}
+			}
+			
+		});
+					
+		
+		$("#btnChangeLayout").click(function() {
+			if(objSplit == null) {
+				objSplit = new iKEP.Splitter("#splitterBox", {type:"v", callback:function($divContent) {
+					getContents($divContent);
+					//$divContent.html("여기에 해당 영역의 컨텐츠를 구성하면 됩니다.");
+				}});
+				
+				//iKEP.debug(objSplit.getContentArea());
+			} else {
+				objSplit.destroy();
+				objSplit = null
+			} 
+		});		
+		
+	});
+	
+	
+	/* 개인영역 펼치기 */
+	getContents = function($divContent){
+		iKEP.debug($divContent);
+		$divContent.empty();
+		var url = "./u03_01.html";
+		var parms = "";
+		$.ajax({
+			url : url,
+			data : "",
+			type : "post",
+			success : function(result) {
+				$divContent.html(result);
+			},
+			error : function(event, request, settings) { 
+				alert("error");	
+			}
+		});	
+	}
+	
+	goView = function(){
+		var $divContent = $("#RightPane");
+		iKEP.debug($divContent);
+		$divContent.empty();
+		var url = "./u03_01.html";
+		var parms = "";
+		$.ajax({
+			url : url,
+			data : "",
+			type : "post",
+			success : function(result) {
+				$divContent.html(result);
+				iKEP.iFrameContentResize();
+			},
+			error : function(event, request, settings) { 
+				alert("error");	
+			}
+		});
+	}
+	
+	
+})(jQuery);
+-->
+</script>
+</head>
+
+<body>	
+				
+	<!--tableTop Start-->
+	<div class="tableTop">
+		<div class="tableTop_bgR"></div>
+		<h2>자유게시판</h2>
+		<div class="listInfo">
+			<select title="페이지당 건수">
+				<option selected="selected">10</option>
+				<option>15</option>
+				<option>20</option>
+				<option>30</option>
+				<option>40</option>
+				<option>50</option>
+			</select>
+			<div class="totalNum">(전체 <span>35</span>)</div>
+		</div>					
+		<div class="listView_1">							
+			<div class="none">보기방식 선택버튼</div>
+			<ul>
+				<li><a href="#a"><img src="../../images/icon/ic_view_list_on.gif" alt="" title="목록보기[on]" /></a></li>
+				<li><a href="#a"><img src="../../images/icon/ic_view_summary.gif" alt="" title="요약보기" /></a></li>
+				<li><a href="#a"><img src="../../images/icon/ic_view_sumlist.gif" alt="" title="간단목록보기" /></a></li>
+				<li><a href="#a"><img src="../../images/icon/ic_view_gallery.gif" alt="" title="갤러리보기" /></a></li>
+			</ul>
+		</div>											
+		<div class="listView_2">
+			<div class="none">레이아웃 토글버튼</div>
+			<ul>
+				<li><a id="btnLayoutNormal" href="#a"><img src="../../images/icon/ic_splitter_d.gif" alt="" title="목록보기" /></a></li>
+				<li><a id="btnLayoutVertical" href="#a"><img src="../../images/icon/ic_splitter_v.gif" alt="" title="가로보기" /></a></li>
+				<li><a id="btnLayoutHorizental" href="#a"><img src="../../images/icon/ic_splitter_h.gif" alt="" title="세로보기" /></a></li>
+			</ul>
+		</div>			
+		<div class="tableSearch">
+			<select title="검색조건" name="tablesch_01">
+				<option value="">제목</option>
+			</select>													
+			<input type="text" class="inputbox" title="inputbox" name="" value="" size="20" />
+			<a href="#a" class="ic_search"><span>검색</span></a>
+		</div>	
+		<div class="clear"></div>
+	</div>
+	<!--//tableTop End-->
+	
+	<!--splitterBox Start-->
+	<div id="splitterBox">
+		<div>
+			<!--blockListTable Start-->
+			<div class="blockListTable">					
+				<table summary="자유게시판">
+					<caption></caption>
+					<thead>
+						<tr>
+							<th scope="col" width="5%"><input name="" class="checkbox" title="checkbox" type="checkbox" value="" /></th>
+							<th scope="col" width="5%">번호</th>
+							<th scope="col" width="5%">첨부</th>
+							<th scope="col" width="50%">제목 <a href="#a"><img src="../../images/icon/ic_tablesort_down.gif" alt="내림차순" /></a></th>
+							<th scope="col" width="10%">등록자</th>
+							<th scope="col" width="15%">등록일 <a href="#a"><img src="../../images/icon/ic_tablesort_up.gif" alt="오름차순" /></a></th>
+							<th scope="col" width="10%">조회</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td><input name="" class="checkbox" title="checkbox" type="checkbox" value="" /></td>
+							<td>10</td>
+							<td><a href="#a"><img src="../../images/icon/ic_attach.gif" alt="첨부" /></a></td>
+							<td class="textLeft"><span class="notice"><a href="#a" onclick="goView();">반도체 클린룸 교육자료</a></span></td>
+							<td>홍길동</td>
+							<td>2011.02.10</td>
+							<td>318</td>
+						</tr>
+						<tr class="bgSelected">
+							<td><input name="" class="checkbox" title="checkbox" type="checkbox" value="" /></td>
+							<td>9</td>
+							<td><a href="#a"><img src="../../images/icon/ic_attach.gif" alt="첨부" /></a></td>
+							<td class="textLeft"><a href="#a">신 Dbins.net 오류정리 - 금일 중 확인</a></td>
+							<td>홍길동</td>
+							<td>2011.02.10</td>
+							<td>210</td>
+						</tr>
+						<tr>
+							<td><input name="" class="checkbox" title="checkbox" type="checkbox" value="" /></td>
+							<td>8</td>
+							<td><a href="#a"><img src="../../images/icon/ic_attach.gif" alt="첨부" /></a></td>
+							<td class="textLeft"><span class="indent_1"><a href="#a">신 Dbins.net 오류정리 - 금일 중 확인</a></span></td>
+							<td>홍길동</td>
+							<td>2011.02.10</td>
+							<td>318</td>
+						</tr>
+						<tr>
+							<td><input name="" class="checkbox" title="checkbox" type="checkbox" value="" /></td>
+							<td>7</td>
+							<td><a href="#a"><img src="../../images/icon/ic_attach.gif" alt="첨부" /></a></td>
+							<td class="textLeft"><span class="indent_2"><a href="#a">신 Dbins.net 오류정리 - 금일 중 확인</a></span></td>
+							<td>홍길동</td>
+							<td>2011.02.10</td>
+							<td>210</td>
+						</tr>
+						<tr>
+							<td><input name="" class="checkbox" title="checkbox" type="checkbox" value="" /></td>
+							<td>6</td>
+							<td><a href="#a"><img src="../../images/icon/ic_attach.gif" alt="첨부" /></a></td>
+							<td class="textLeft"><span class="indent_3"><a href="#a">신 Dbins.net 오류정리 - 금일 중 확인</a></span></td>
+							<td>홍길동</td>
+							<td>2011.02.10</td>
+							<td>318</td>
+						</tr>
+						<tr>
+							<td><input name="" class="checkbox" title="checkbox" type="checkbox" value="" /></td>
+							<td>5</td>
+							<td><a href="#a"><img src="../../images/icon/ic_attach.gif" alt="첨부" /></a></td>
+							<td class="textLeft"><span class="indent_4"><a href="#a">신 Dbins.net 오류정리 - 금일 중 확인</a></span></td>
+							<td>홍길동</td>
+							<td>2011.02.10</td>
+							<td>210</td>
+						</tr>
+						<tr>
+							<td><input name="" class="checkbox" title="checkbox" type="checkbox" value="" /></td>
+							<td>4</td>
+							<td><a href="#a"><img src="../../images/icon/ic_attach.gif" alt="첨부" /></a></td>
+							<td class="textLeft"><span class="indent_5"><a href="#a">신 Dbins.net 오류정리 - 금일 중 확인</a></span></td>
+							<td>홍길동</td>
+							<td>2011.02.10</td>
+							<td>318</td>
+						</tr>
+						<tr>
+							<td><input name="" class="checkbox" title="checkbox" type="checkbox" value="" /></td>
+							<td>8</td>
+							<td><a href="#a"><img src="../../images/icon/ic_attach.gif" alt="첨부" /></a></td>
+							<td class="textLeft"><span class="indent_1"><a href="#a">신 Dbins.net 오류정리 - 금일 중 확인</a></span></td>
+							<td>홍길동</td>
+							<td>2011.02.10</td>
+							<td>318</td>
+						</tr>
+						<tr>
+							<td><input name="" class="checkbox" title="checkbox" type="checkbox" value="" /></td>
+							<td>7</td>
+							<td><a href="#a"><img src="../../images/icon/ic_attach.gif" alt="첨부" /></a></td>
+							<td class="textLeft"><span class="indent_2"><a href="#a">신 Dbins.net 오류정리 - 금일 중 확인</a></span></td>
+							<td>홍길동</td>
+							<td>2011.02.10</td>
+							<td>210</td>
+						</tr>
+						<tr>
+							<td><input name="" class="checkbox" title="checkbox" type="checkbox" value="" /></td>
+							<td>6</td>
+							<td><a href="#a"><img src="../../images/icon/ic_attach.gif" alt="첨부" /></a></td>
+							<td class="textLeft"><span class="indent_3"><a href="#a">신 Dbins.net 오류정리 - 금일 중 확인</a></span></td>
+							<td>홍길동</td>
+							<td>2011.02.10</td>
+							<td>318</td>
+						</tr>
+						<tr>
+							<td><input name="" class="checkbox" title="checkbox" type="checkbox" value="" /></td>
+							<td>5</td>
+							<td><a href="#a"><img src="../../images/icon/ic_attach.gif" alt="첨부" /></a></td>
+							<td class="textLeft"><span class="indent_4"><a href="#a">신 Dbins.net 오류정리 - 금일 중 확인</a></span></td>
+							<td>홍길동</td>
+							<td>2011.02.10</td>
+							<td>210</td>
+						</tr>
+						<tr>
+							<td><input name="" class="checkbox" title="checkbox" type="checkbox" value="" /></td>
+							<td>4</td>
+							<td><a href="#a"><img src="../../images/icon/ic_attach.gif" alt="첨부" /></a></td>
+							<td class="textLeft"><span class="indent_5"><a href="#a">신 Dbins.net 오류정리 - 금일 중 확인</a></span></td>
+							<td>홍길동</td>
+							<td>2011.02.10</td>
+							<td>318</td>
+						</tr>
+						<tr>
+							<td><input name="" class="checkbox" title="checkbox" type="checkbox" value="" /></td>
+							<td>3</td>
+							<td><a href="#a"><img src="../../images/icon/ic_attach.gif" alt="첨부" /></a></td>
+							<td class="textLeft"><span class="deletedItem">삭제된 글입니다</span></td>
+							<td>홍길동</td>
+							<td>2011.02.10</td>
+							<td>210</td>
+						</tr>
+						<tr>
+							<td><input name="" class="checkbox" title="checkbox" type="checkbox" value="" /></td>
+							<td>2</td>
+							<td><a href="#a"><img src="../../images/icon/ic_attach.gif" alt="첨부" /></a></td>
+							<td class="textLeft"><a href="#a">진행사항 업데이트 요망</a></td>
+							<td>홍길동</td>
+							<td>2011.02.10</td>
+							<td>318</td>
+						</tr>																																
+					</tbody>
+				</table>
+				<!--Page Numbur Start-->
+				<div class="pageNum">			
+					<ul>
+						<li><a class="btn_page_first" href="#a" onclick="doSomething(); return false;"><span>첫페이지</span></a></li>
+						<li><a class="btn_page_pre" href="#a" onclick="doSomething(); return false;"><span>이전페이지</span></a></li>
+						<li><span class="liFirst"><a href="#a" onclick="doSomething(); return false;">1</a></span></li>
+						<li><span><a href="#a" onclick="doSomething(); return false;">2</a></span></li>
+						<li><span><a href="#a" onclick="doSomething(); return false;">3</a></span></li>
+						<li><span><a href="#a" onclick="doSomething(); return false;">4</a></span></li>
+						<li><span>5</span></li>
+						<li><span><a href="#a" onclick="doSomething(); return false;">6</a></span></li>
+						<li><span><a href="#a" onclick="doSomething(); return false;">7</a></span></li>
+						<li><span><a href="#a" onclick="doSomething(); return false;">8</a></span></li>
+						<li><span><a href="#a" onclick="doSomething(); return false;">9</a></span></li>
+						<li><span class="liLast"><a href="#a" onclick="doSomething(); return false;">10</a></span></li>
+						<li><a class="btn_page_next" href="#a" onclick="doSomething(); return false;"><span>다음페이지</span></a></li>
+						<li><a class="btn_page_last" href="#a" onclick="doSomething(); return false;"><span>마지막페이지</span></a></li>
+					</ul>
+				</div>
+				<!--//Page Numbur End-->						
+			</div>
+			<!--//blockListTable End-->	
+						
+			<!--blockButton Start-->
+			<div class="blockButton"> 
+				<div class="buttonicon">
+					<a href="#a"><img src="../../images/icon/ic_rss.gif" alt="rss" /></a>
+					<a href="#a"><img src="../../images/icon/ic_atom.gif" alt="atom" /></a>						
+				</div>				
+				<ul>
+					<li><a class="button" href="#a"><span>등록</span></a></li>
+					<li><a class="button" href="#a"><span>삭제</span></a></li>
+				</ul>
+			</div>
+			<!--//blockButton End-->
+		</div>
+		
+	</div>			
+	<!--//splitterBox End-->							
+</body>
+</html>

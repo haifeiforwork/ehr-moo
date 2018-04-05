@@ -1,0 +1,498 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="com.lgcns.ikep4.servicepack.usagetracker.model.utStatistics" >
+  <typeAlias alias="utStatistics"    		  type="com.lgcns.ikep4.servicepack.usagetracker.model.UtStatistics"/>
+  <typeAlias alias="utSearchCondition"        type="com.lgcns.ikep4.servicepack.usagetracker.search.UtSearchCondition"/>
+  <typeAlias alias="utSearchUtil"             type="com.lgcns.ikep4.servicepack.usagetracker.util.SearchUtil"/>
+  
+  <resultMap id="result" class="utStatistics" >
+    <result column="ID" property="id" jdbcType="VARCHAR" />
+    <result column="MODULE_TYPE" property="moduleType" jdbcType="VARCHAR" />
+    <result column="MODULE_ID" property="moduleId" jdbcType="VARCHAR" />
+   <result column="MODULE_DATE" property="moduleDate" jdbcType="TIMESTAMP"/>
+    <result column="USAGE_COUNT" property="usageCount" jdbcType="DECIMAL" />
+    <result column="PORTAL_ID" property="portalId" jdbcType="VARCHAR" />
+    <result column="REGIST_DATE" property="registDate" jdbcType="TIMESTAMP"/>
+  </resultMap>
+  
+   <resultMap id="resultMain" class="utStatistics" >
+    <result column="MODULE_ID" property="moduleId" jdbcType="VARCHAR" />
+    <result column="USAGE_COUNT" property="usageCount" jdbcType="DECIMAL" />
+  </resultMap>
+  
+  
+   <resultMap id="resultUserBatchReadItems" class="utStatistics" >
+    <result column="MODULE_TYPE" property="moduleType" jdbcType="VARCHAR" />
+    <result column="MODULE_ID" property="moduleId" jdbcType="VARCHAR" />
+    <result column="MODULE_DATE" property="moduleDate" jdbcType="TIMESTAMP" />
+    <result column="USAGE_COUNT" property="usageCount" jdbcType="DECIMAL" />
+    <result column="PORTAL_ID" property="portalId" jdbcType="VARCHAR" />
+   </resultMap>
+
+  <sql id="whereClause">
+    <iterate conjunction="or" prepend="where" property="oredCriteria" removeFirstPrepend="iterate">
+      <isEqual compareValue="true" property="oredCriteria[].valid">
+        (
+        <iterate conjunction="and" prepend="and" property="oredCriteria[].criteriaWithoutValue">
+          $oredCriteria[].criteriaWithoutValue[]$
+        </iterate>
+        <iterate conjunction="and" prepend="and" property="oredCriteria[].criteriaWithSingleValue">
+          $oredCriteria[].criteriaWithSingleValue[].condition$
+            #oredCriteria[].criteriaWithSingleValue[].value#
+        </iterate>
+        <iterate conjunction="and" prepend="and" property="oredCriteria[].criteriaWithListValue">
+          $oredCriteria[].criteriaWithListValue[].condition$
+          <iterate close=")" conjunction="," open="(" property="oredCriteria[].criteriaWithListValue[].values">
+            #oredCriteria[].criteriaWithListValue[].values[]#
+          </iterate>
+        </iterate>
+        <iterate conjunction="and" prepend="and" property="oredCriteria[].criteriaWithBetweenValue">
+          $oredCriteria[].criteriaWithBetweenValue[].condition$
+          #oredCriteria[].criteriaWithBetweenValue[].values[0]# and
+          #oredCriteria[].criteriaWithBetweenValue[].values[1]#
+        </iterate>
+        )
+      </isEqual>
+    </iterate>
+  </sql>
+    
+    <sql id="sqlColumnList"> 
+	 ID, MODULE_TYPE, MODULE_ID, MODULE_DATE, USAGE_COUNT, PORTAL_ID, REGIST_DATE
+    </sql> 
+  
+  <!-- read -->
+	 <select id="get" parameterClass="string" resultMap="result"> 
+	    SELECT  /* [utStatistics_SqlMap.xml] utStatistics.get */
+	    <include refid="com.lgcns.ikep4.servicepack.usagetracker.model.utStatistics.sqlColumnList" />
+	    FROM IKEP4_UT_STATISTICS
+	    WHERE ID = #id#
+	 </select>
+  
+  
+  <!-- 존재여부 -->
+	  <select id="exists" parameterClass="string" resultClass="int"> 
+	    SELECT COUNT(*)  /* [utStatistics_SqlMap.xml] utStatistics.exists */
+	    FROM IKEP4_UT_STATISTICS
+		WHERE ID = #id#
+	  </select> 
+	  
+	  
+	  <!-- 생성 -->
+	  <insert id="create" parameterClass="utStatistics"> 
+	    insert into IKEP4_UT_STATISTICS   /* [utStatistics_SqlMap.xml] utStatistics.create */
+	    ( 
+	    	<include refid="com.lgcns.ikep4.servicepack.usagetracker.model.utStatistics.sqlColumnList" />
+	    )
+	    values (
+	    	#id#, 
+	    	#moduleType#, 
+	    	#moduleId#, 
+	    	#moduleDate#,
+	    	#usageCount#, 
+	    	#portalId#, 
+	    	#registDate#)
+	  </insert>
+	  
+	  <!-- 수정 -->
+	   <update id="update" parameterClass="utStatistics" >
+	    update IKEP4_UT_STATISTICS  /* [utStatistics_SqlMap.xml] utStatistics.update */
+	    set MODULE_TYPE = #moduleType#,
+	        MODULE_ID = #moduleId#,
+	        MODULE_DATE = #moduleDate#,
+	        USAGE_COUNT = #usageCount#,
+	        PORTAL_ID = #portalId#,
+	        REGIST_DATE = #registDate#
+	    where ID = #id#
+	  </update>
+	  
+	  <!-- 삭제 -->
+	  <delete id="remove" parameterClass="string"> 
+	    delete   /* [utStatistics_SqlMap.xml] utStatistics.remove */
+	    from IKEP4_UT_STATISTICS  
+	    WHERE ID = #id#
+	  </delete>   
+	  
+	  <!-- ikep4_ut_login_log batch read items -->
+	  	<select id="selectUserBatchReadItems"  resultMap="resultUserBatchReadItems"> 
+		  select MODULE_TYPE,  /* [utStatistics_SqlMap.xml] utStatistics.selectUserBatchReadItems */
+			     MODULE_ID,
+			     PORTAL_ID,
+			     to_date(MODULE_DATE,'yyyy-mm-dd hh24') MODULE_DATE,
+			     USAGE_COUNT 
+		  from
+		  ( 
+			    select 0   MODULE_TYPE,
+				       'L' MODULE_ID,
+				       PORTAL_ID,
+				       to_char(login_date,'yyyy-mm-dd hh24') MODULE_DATE,
+				       count(*) USAGE_COUNT
+				from IKEP4_UT_LOGIN_LOG
+				where trunc(LOGIN_DATE) = trunc(sysdate-1)
+				group by to_char(login_date,'yyyy-mm-dd hh24'),PORTAL_ID
+		  )	
+		</select> 
+		
+		 
+		
+		<!-- 메뉴별 -->
+		<select id="selectMenuBatchReadItems"  resultMap="resultUserBatchReadItems"> 
+		  select MODULE_TYPE,  /* [utStatistics_SqlMap.xml] utStatistics.selectMenuBatchReadItems */
+			     MODULE_ID,
+			     PORTAL_ID,
+			     to_date(MODULE_DATE,'yyyy-mm-dd hh24') MODULE_DATE,
+			     USAGE_COUNT 
+		  from
+		  ( 	
+			select 1 MODULE_TYPE,
+			       MENU_ID MODULE_ID,
+			       PORTAL_ID,
+			       to_char(ACCESS_DATE,'yyyy-mm-dd hh24') MODULE_DATE,
+			       count(*) USAGE_COUNT
+			from IKEP4_UT_MENU_LOG
+			where trunc(ACCESS_DATE) = trunc(sysdate-1)
+			group by to_char(ACCESS_DATE,'yyyy-mm-dd hh24'),MENU_ID,PORTAL_ID
+		  )		
+		</select>
+		
+		<!-- 브라우즈별 -->	
+		<select id="selectBrowserBatchReadItems"  resultMap="resultUserBatchReadItems"> 	
+			select 2   MODULE_TYPE,  /* [utStatistics_SqlMap.xml] utStatistics.selectBrowserBatchReadItems */
+			       BROWSER MODULE_ID,
+			       PORTAL_ID,
+			       trunc(login_date) MODULE_DATE,
+			       count(*) USAGE_COUNT
+			from IKEP4_UT_LOGIN_LOG
+			where trunc(LOGIN_DATE) = trunc(sysdate-1)
+			group by trunc(login_date),BROWSER,PORTAL_ID
+		</select> 
+			
+		<!-- 포틀릿 -->	
+		<select id="selectPortletBatchReadItems"  resultMap="resultUserBatchReadItems"> 	
+			select 3 MODULE_TYPE,  /* [utStatistics_SqlMap.xml] utStatistics.selectPortletBatchReadItems */
+			       PORTLET_ID MODULE_ID,
+			       PORTAL_ID,
+			       trunc(REGIST_DATE) MODULE_DATE,
+			       count(*) USAGE_COUNT
+			from IKEP4_UT_PORTLET_LOG
+			where trunc(REGIST_DATE) = trunc(sysdate-1)
+			group by trunc(REGIST_DATE),PORTLET_ID,PORTAL_ID
+		</select> 
+		
+		<delete id="removeBatchStatisticsByDate" parameterClass="java.util.Date"> 
+		    DELETE   /* [utStatistics_SqlMap.xml] utStatistics.removeBatchStatisticsByDate */
+		    FROM IKEP4_UT_STATISTICS  
+		    WHERE TRUNC(MODULE_DATE) = TRUNC(#moduleDate#)
+		 </delete> 
+			
+		<insert id="moveToUserBatchItems"> 
+	 	insert into IKEP4_UT_LOGIN_BACKUP  /* [utStatistics_SqlMap.xml] utStatistics.moveToUserBatchItems */
+		select *
+		from IKEP4_UT_LOGIN_LOG
+		where trunc(LOGIN_DATE)<![CDATA[<=]]> trunc(ADD_MONTHS(sysdate-1, -3))
+	 </insert>
+	
+	 <insert id="moveToMenuBatchItems"> 
+		insert into IKEP4_UT_MENU_BACKUP  /* [utStatistics_SqlMap.xml] utStatistics.moveToMenuBatchItems */
+		select *
+		from IKEP4_UT_MENU_LOG
+		where trunc(ACCESS_DATE) <![CDATA[<=]]> trunc(ADD_MONTHS(sysdate-1, -3))
+	 </insert>
+		
+	 <insert id="moveToPortletBatchItems"> 	
+		insert into IKEP4_UT_PORTLET_BACKUP  /* [utStatistics_SqlMap.xml] utStatistics.moveToPortletBatchItems */
+		select *
+		from IKEP4_UT_PORTLET_LOG
+		where trunc(REGIST_DATE) <![CDATA[<=]]> trunc(ADD_MONTHS(sysdate-1, -3))
+	 </insert>
+	 
+	 <insert id="removeUserBatchItems"> 
+	 	delete from  IKEP4_UT_LOGIN_LOG  /* [utStatistics_SqlMap.xml] utStatistics.removeUserBatchItems */
+		where trunc(LOGIN_DATE) <![CDATA[<=]]> trunc(ADD_MONTHS(sysdate-1, -3))
+	 </insert>
+	
+	 <insert id="removeMenuBatchItems"> 
+		delete from  IKEP4_UT_MENU_LOG  /* [utStatistics_SqlMap.xml] utStatistics.removeMenuBatchItems */
+		where trunc(ACCESS_DATE) <![CDATA[<=]]> trunc(ADD_MONTHS(sysdate-1, -3))
+	 </insert>
+		
+	 <insert id="removePortletBatchItems"> 	
+		delete from IKEP4_UT_PORTLET_LOG  /* [utStatistics_SqlMap.xml] utStatistics.removePortletBatchItems */
+		where trunc(REGIST_DATE) <![CDATA[<=]]> trunc(ADD_MONTHS(sysdate-1, -3))
+	 </insert> 
+	 
+	 
+	  <!-- 메인 로그인 현황 -->
+  <select id="loginMainStastic" parameterClass="utSearchUtil" resultMap="resultMain">   
+    select MODULE_ID,sum(usage_count) usage_count  /* [utStatistics_SqlMap.xml] utStatistics.loginMainStastic */
+	from
+	(
+	    select to_char(MODULE_DATE,'d') MODULE_ID ,usage_count
+	    from IKEP4_UT_STATISTICS s
+	    <isParameterPresent>
+      		<include refid="com.lgcns.ikep4.servicepack.usagetracker.model.utStatistics.whereClause" />
+    	</isParameterPresent>
+	)
+	group by MODULE_ID 
+	order by MODULE_ID asc
+  </select>
+  
+    <!-- 메인 브라우즈,메뉴,포틀릿 현황 -->
+  <select id="browseMainStastic" parameterClass="utSearchUtil" resultMap="resultMain">   
+    select MODULE_ID,sum(usage_count) usage_count  /* [utStatistics_SqlMap.xml] utStatistics.browseMainStastic */
+    from IKEP4_UT_STATISTICS s
+    <isParameterPresent>
+     		<include refid="com.lgcns.ikep4.servicepack.usagetracker.model.utStatistics.whereClause" />
+   	</isParameterPresent>
+	group by MODULE_ID 
+	order by MODULE_ID asc,usage_count desc
+  </select>
+  
+    <!-- 메인 브라우즈,메뉴,포틀릿 현황 -->
+  <select id="portletMainStastic" parameterClass="utSearchUtil" resultMap="resultMain">
+	SELECT B.ITEM_MESSAGE as MODULE_ID, USAGE_COUNT from (
+	    select PORTLET_ID, sum(USAGE_COUNT) USAGE_COUNT  /* [utStatistics_SqlMap.xml] utStatistics.portletMainStastic */
+	    from IKEP4_UT_STATISTICS s inner join IKEP4_PO_PORTLET p on s.MODULE_ID = p.portlet_id and p.STATUS = 1
+	    <isParameterPresent>
+	     		<include refid="com.lgcns.ikep4.servicepack.usagetracker.model.utStatistics.whereClause" />
+	   	</isParameterPresent>
+		group by PORTLET_ID
+	) A INNER JOIN IKEP4_I18N_MESSAGE B ON A.PORTLET_ID = B.ITEM_ID AND B.ITEM_TYPE_CODE = 'PO' AND B.FIELD_NAME = 'portletName'
+		<isNotEmpty property="searchConditionString"> and B.LOCALE_CODE = #searchConditionString#</isNotEmpty>
+		<isEmpty property="searchConditionString"> and B.LOCALE_CODE = 'en'</isEmpty>
+	ORDER BY USAGE_COUNT DESC, MODULE_ID ASC
+  </select>
+  
+   <select id="menuMainStastic" parameterClass="utSearchUtil" resultMap="resultMain">
+	    select menu_NAME as MODULE_ID,sum(usage_count) usage_count  /* [utStatistics_SqlMap.xml] utStatistics.menuMainStastic */
+	    from IKEP4_UT_STATISTICS s,IKEP4_UT_MENU m
+	    <isParameterPresent>
+	     		<include refid="com.lgcns.ikep4.servicepack.usagetracker.model.utStatistics.whereClause" />
+	     		and s.MODULE_ID = m.menu_id
+	     		and m.usage=0
+	   	</isParameterPresent>
+		group by menu_NAME 
+		order by usage_count desc,menu_NAME asc
+  </select>
+  
+
+  <!--  로그인 통계 현황 -->
+  <select id="publicStastic0" parameterClass="utSearchUtil" resultMap="resultMain">   
+    select MODULE_ID,sum(usage_count) usage_count  /* [utStatistics_SqlMap.xml] utStatistics.publicStastic0 */
+	from
+	(
+		select to_char(MODULE_DATE,'hh24') MODULE_ID ,usage_count
+	    from IKEP4_UT_STATISTICS s
+	    <isParameterPresent>
+      		<include refid="com.lgcns.ikep4.servicepack.usagetracker.model.utStatistics.whereClause" />
+    	</isParameterPresent>
+	)
+	group by MODULE_ID 
+	order by MODULE_ID asc
+  </select>
+  
+  <select id="publicStastic1" parameterClass="utSearchUtil" resultMap="resultMain">   
+    select MODULE_ID,sum(usage_count) usage_count  /* [utStatistics_SqlMap.xml] utStatistics.publicStastic1 */
+	from
+	(
+		select to_char(MODULE_DATE,'hh24') MODULE_ID ,usage_count
+	    from IKEP4_UT_STATISTICS s
+	    <isParameterPresent>
+      		<include refid="com.lgcns.ikep4.servicepack.usagetracker.model.utStatistics.whereClause" />
+    	</isParameterPresent>
+	)
+	group by MODULE_ID 
+	order by MODULE_ID asc
+  </select>
+  
+  
+    <select id="publicStastic2" parameterClass="utSearchUtil" resultMap="resultMain">   
+    select MODULE_ID,sum(usage_count) usage_count  /* [utStatistics_SqlMap.xml] utStatistics.publicStastic2 */
+	from
+	(   select to_char(MODULE_DATE,'dd') MODULE_ID ,usage_count
+	    from IKEP4_UT_STATISTICS s
+	    <isParameterPresent>
+      		<include refid="com.lgcns.ikep4.servicepack.usagetracker.model.utStatistics.whereClause" />
+    	</isParameterPresent>
+	)
+	group by MODULE_ID 
+	order by MODULE_ID asc
+  </select>
+  
+   <select id="publicStastic3" parameterClass="utSearchUtil" resultMap="resultMain">   
+    select MODULE_ID,sum(usage_count) usage_count  /* [utStatistics_SqlMap.xml] utStatistics.publicStastic3 */
+	from
+	(   select to_char(MODULE_DATE,'dd') MODULE_ID ,usage_count
+	    from IKEP4_UT_STATISTICS s
+	    <isParameterPresent>
+      		<include refid="com.lgcns.ikep4.servicepack.usagetracker.model.utStatistics.whereClause" />
+    	</isParameterPresent>
+	)
+	group by MODULE_ID 
+	order by MODULE_ID asc
+  </select>
+  
+    <select id="publicStastic4" parameterClass="utSearchUtil" resultMap="resultMain">   
+    select MODULE_ID,sum(usage_count) usage_count  /* [utStatistics_SqlMap.xml] utStatistics.publicStastic4 */
+	from
+	(
+		select to_char(MODULE_DATE,'MM') MODULE_ID ,usage_count
+	    from IKEP4_UT_STATISTICS s
+	    <isParameterPresent>
+      		<include refid="com.lgcns.ikep4.servicepack.usagetracker.model.utStatistics.whereClause" />
+    	</isParameterPresent>
+	)
+	group by MODULE_ID 
+	order by MODULE_ID asc
+  </select>
+  
+  <select id="publicStastic5" parameterClass="utSearchUtil" resultMap="resultMain">   
+    select MODULE_ID,sum(usage_count) usage_count  /* [utStatistics_SqlMap.xml] utStatistics.publicStastic5 */
+	from
+	(
+		select to_char(MODULE_DATE,'MM') MODULE_ID ,usage_count
+	    from IKEP4_UT_STATISTICS s
+	    <isParameterPresent>
+      		<include refid="com.lgcns.ikep4.servicepack.usagetracker.model.utStatistics.whereClause" />
+    	</isParameterPresent>
+	)
+	group by MODULE_ID 
+	order by MODULE_ID asc
+  </select>
+  
+     <!-- 브라우즈 -->
+  <select id="browseStastic" parameterClass="utSearchUtil" resultMap="resultMain">   
+    select MODULE_ID,sum(usage_count) usage_count  /* [utStatistics_SqlMap.xml] utStatistics.browseStastic */
+    from IKEP4_UT_STATISTICS s
+    <isParameterPresent>
+     		<include refid="com.lgcns.ikep4.servicepack.usagetracker.model.utStatistics.whereClause" />
+   	</isParameterPresent>
+	group by MODULE_ID 
+	order by MODULE_ID asc,usage_count desc
+  </select>
+  
+  <!-- 포틀릿 -->
+    <select id="listBySearchCondition3" parameterClass="utSearchCondition" resultMap="resultMain">  
+	SELECT *  /* [utStatistics_SqlMap.xml] utStatistics.listBySearchCondition3 */
+	FROM ( 
+	     SELECT  ROWNUM AS RNUM, A.*
+	     FROM ( 
+				SELECT B.ITEM_MESSAGE as MODULE_ID, USAGE_COUNT from (
+				    select PORTLET_ID, sum(USAGE_COUNT) USAGE_COUNT  /* [utStatistics_SqlMap.xml] utStatistics.portletMainStastic */
+				    from IKEP4_UT_STATISTICS s inner join IKEP4_PO_PORTLET p on s.MODULE_ID = p.portlet_id and p.STATUS = 1
+				    <isParameterPresent>
+				     		<include refid="com.lgcns.ikep4.servicepack.usagetracker.model.utStatistics.whereClause" />
+				   	</isParameterPresent>
+					group by PORTLET_ID
+				) A INNER JOIN IKEP4_I18N_MESSAGE B ON A.PORTLET_ID = B.ITEM_ID AND B.ITEM_TYPE_CODE = 'PO' AND B.FIELD_NAME = 'portletName'
+					<isNotEmpty property="searchConditionString"> and B.LOCALE_CODE = #searchConditionString#</isNotEmpty>
+					<isEmpty property="searchConditionString"> and B.LOCALE_CODE = 'en'</isEmpty>
+				ORDER BY USAGE_COUNT DESC, MODULE_ID ASC
+	    	) A WHERE ROWNUM <![CDATA[<=]]>   #endRowIndex# /* 종료  */
+	) WHERE RNUM <![CDATA[>]]>   #startRowIndex# /* 시작 */
+  </select>   
+  
+  <select id="countBySearchCondition3" parameterClass="utSearchCondition" resultClass="int">  
+	SELECT COUNT(*)  /* [utStatistics_SqlMap.xml] utStatistics.countBySearchCondition3 */
+	FROM   
+	(
+		 select PORTLET_NAME as MODULE_ID
+	     from IKEP4_UT_STATISTICS s,IKEP4_PO_PORTLET p
+	     <isParameterPresent>
+	     		<include refid="com.lgcns.ikep4.servicepack.usagetracker.model.utStatistics.whereClause" />
+	     		and s.MODULE_ID = p.portlet_id
+	     		and p.STATUS=1
+	   	</isParameterPresent>
+		group by PORTLET_NAME 
+	)
+  </select> 
+  
+  <select id="sumBySearchCondition3" parameterClass="utSearchCondition" resultClass="int">  
+	 select nvl(sum(usage_count),0) usage_count  /* [utStatistics_SqlMap.xml] utStatistics.sumBySearchCondition3 */
+     from IKEP4_UT_STATISTICS s,IKEP4_PO_PORTLET p
+     <isParameterPresent>
+     		<include refid="com.lgcns.ikep4.servicepack.usagetracker.model.utStatistics.whereClause" />
+     		and s.MODULE_ID = p.portlet_id
+     		and p.STATUS=1
+   	</isParameterPresent>
+  </select> 
+  
+  
+  
+   <select id="minBySearchCondition3" parameterClass="utSearchCondition" resultClass="string">  
+	select MODULE_ID  /* [utStatistics_SqlMap.xml] utStatistics.minBySearchCondition3 */
+	from
+	(
+			select PORTLET_NAME as MODULE_ID,sum(usage_count) usage_count
+		     from IKEP4_UT_STATISTICS s,IKEP4_PO_PORTLET p
+		     <isParameterPresent>
+		     		<include refid="com.lgcns.ikep4.servicepack.usagetracker.model.utStatistics.whereClause" />
+		     		and s.MODULE_ID = p.portlet_id
+		     		and p.STATUS=1
+		   	</isParameterPresent>
+			group by PORTLET_NAME 
+			order by usage_count asc,MODULE_ID asc
+   	)where rownum <![CDATA[<=]]> 1
+  </select> 
+  
+  <!-- 메뉴 -->
+  <select id="listBySearchCondition1" parameterClass="utSearchCondition" resultMap="resultMain">  
+	SELECT *  /* [utStatistics_SqlMap.xml] utStatistics.listBySearchCondition1 */
+	FROM ( 
+	     SELECT  ROWNUM AS RNUM, A.*
+	     FROM ( 
+		            select menu_NAME as MODULE_ID,sum(usage_count) usage_count
+				    from IKEP4_UT_STATISTICS s,IKEP4_UT_MENU m
+				    <isParameterPresent>
+				     		<include refid="com.lgcns.ikep4.servicepack.usagetracker.model.utStatistics.whereClause" />
+				     		and s.MODULE_ID = m.menu_id
+				     		and m.usage=0
+				   	</isParameterPresent>
+					group by menu_NAME 
+					order by usage_count desc,menu_NAME asc
+	    	) A WHERE ROWNUM <![CDATA[<=]]>   #endRowIndex# /* 종료  */
+	) WHERE RNUM <![CDATA[>]]>   #startRowIndex# /* 시작 */
+  </select>   
+  
+  <select id="countBySearchCondition1" parameterClass="utSearchCondition" resultClass="int">  
+	SELECT COUNT(*)  /* [utStatistics_SqlMap.xml] utStatistics.countBySearchCondition1 */
+	FROM   
+	(
+		 select menu_NAME as MODULE_ID
+	     from IKEP4_UT_STATISTICS s,IKEP4_UT_MENU m
+	    <isParameterPresent>
+	     		<include refid="com.lgcns.ikep4.servicepack.usagetracker.model.utStatistics.whereClause" />
+	     		and s.MODULE_ID = m.menu_id
+	     		and m.usage=0
+	   	</isParameterPresent>
+		group by menu_NAME 
+	)
+  </select> 
+  
+  <select id="sumBySearchCondition1" parameterClass="utSearchCondition" resultClass="int">  
+	 select nvl(sum(usage_count),0) usage_count  /* [utStatistics_SqlMap.xml] utStatistics.sumBySearchCondition1 */
+     from IKEP4_UT_STATISTICS s,IKEP4_UT_MENU m
+    <isParameterPresent>
+     		<include refid="com.lgcns.ikep4.servicepack.usagetracker.model.utStatistics.whereClause" />
+     		and s.MODULE_ID = m.menu_id
+     		and m.usage=0
+   	</isParameterPresent>
+  </select> 
+  
+  
+   <select id="minBySearchCondition1" parameterClass="utSearchCondition" resultClass="string">  
+	select *  /* [utStatistics_SqlMap.xml] utStatistics.minBySearchCondition1 */
+	from
+	(
+		select menu_NAME as MODULE_ID,sum(usage_count) usage_count
+	     from IKEP4_UT_STATISTICS s,IKEP4_UT_MENU m
+	    <isParameterPresent>
+	     		<include refid="com.lgcns.ikep4.servicepack.usagetracker.model.utStatistics.whereClause" />
+	     		and s.MODULE_ID = m.menu_id
+	     		and m.usage=0
+	   	</isParameterPresent>
+		group by menu_NAME 
+		order by usage_count asc
+   	)where rownum <![CDATA[<=]]> 1
+  </select> 
+  
+</sqlMap>

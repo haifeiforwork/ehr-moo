@@ -1,0 +1,313 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="com.lgcns.ikep4.workflow.engine.model.WorkItemBean" >
+	<typeAlias alias = "WorkItemBean" type="com.lgcns.ikep4.workflow.engine.model.WorkItemBean"/>
+	
+	<!-- ANSI -->
+	<select	id="com.lgcns.ikep4.workflow.engine.model.WorkItemBean.isDelegate" parameterClass="WorkItemBean" resultClass="int">
+		<![CDATA[
+			/* [DelegateWorkList_SqlMap.xml] com.lgcns.ikep4.workflow.engine.model.WorkItemBean.isDelegate */
+			
+			SELECT	COUNT(*)
+			  FROM	IKEP4_WF_DELEGATE
+			 WHERE	MANDATOR_ID = #userId#
+			   AND	START_DATE <= #finishedDate#
+			   AND	#finishedDate# <= END_DATE
+		]]>
+	</select>
+	
+	<!-- ANSI -->
+	<!-- insert -->
+	<insert id="com.lgcns.ikep4.workflow.engine.model.WorkItemBean.insertDelegate" parameterClass="WorkItemBean">
+      <![CDATA[ 
+      		/* [DelegateWorkList_SqlMap.xml] com.lgcns.ikep4.workflow.engine.model.WorkItemBean.insert */
+      		
+			INSERT INTO IKEP4_WF_DELEGATE_DONE_LIST						
+			(LOG_ID, INSTANCE_ID, PROCESS_ID, PROCESS_VER, MI_SEQ, MI_BLOCK, ACTIVITY_ID, ACTIVITY_NAME, TITLE, PERFORMER_ID, DELEGATOR_ID, STATE, CREATE_DATE)     					
+			VALUES ( #insLogId#, #instanceId#, #processId#, #processVer#, #miSeq#, #miBlock#, #activityId#, #activityName#, #title#, #userId#, #delegatorId#, #state#, #createDate# )       			
+       ]]>
+   	</insert>
+   
+   
+	<select id="com.lgcns.ikep4.workflow.engine.model.WorkItemBean.delegatorDoneList" parameterClass="java.lang.String" resultClass="WorkItemBean">
+      <![CDATA[ 
+      		/* [DelegateWorkList_SqlMap.xml] com.lgcns.ikep4.workflow.engine.model.WorkItemBean.todoList */
+		      			
+	        SELECT 	insLogId, instanceId, partitionId, partitionName
+	                , processId, processVer, processName, activityId, activityName
+	                , title, performerId, performerName, state, stateName
+	                , createDate, assignDate, selectDate, dueDate
+	                , varSchema, procStartDate, procEndDate, instanceAuthor, instanceAuthorName    
+	                , appKey01, appKey02, appKey03, appKey04, appKey05
+	                , appKey06, appKey07, appKey08, appKey09, appKey10 
+	                , openDate
+	            FROM (
+					SELECT 	insLogId, instanceId, partitionId, partitionName
+			                , processId, processVer, processName, activityId, activityName
+			                , title, performerId, performerName, state, stateName
+			                , createDate, assignDate, selectDate, dueDate
+			                , varSchema, procStartDate, procEndDate, instanceAuthor, USR.USER_NAME AS instanceAuthorName    
+			                , appKey01, appKey02, appKey03, appKey04, appKey05
+			                , appKey06, appKey07, appKey08, appKey09, appKey10 
+			                , openDate
+	                        , ( SELECT count(*)
+	                              FROM IKEP4_WF_DELEGATE DELE
+	                             WHERE USER_ID = #userId#
+	                               AND IS_SETUP = 'Y'
+	                               AND START_DATE <= CURRENT_TIMESTAMP
+	                               AND CURRENT_TIMESTAMP < END_DATE
+	                          ) DELE_FLAG                        
+			          FROM (                  
+			              /* 사용자 직접 지정 퍼포머 To-do를 가져오는 쿼리 */
+			            SELECT  TODO.LOG_ID AS insLogId, TODO.INSTANCE_ID AS instanceId, PROC.PARTITION_ID AS partitionId, PARTI.PARTITION_NAME AS partitionName
+			                , PROC.PROCESS_ID AS processId, PROC.PROCESS_VER AS processVer, PROC.PROCESS_NAME AS processName, TODO.ACTIVITY_ID AS activityId, TODO.ACTIVITY_NAME AS activityName
+                            , TODO.TITLE, TODO.PERFORMER_ID AS performerId, '' AS performerName, TODO.STATE AS STATE, '' AS stateName
+                            , TODO.CREATE_DATE AS createDate, TODO.ASSIGN_DATE AS assignDate, TODO.SELECT_DATE AS selectDate, TODO.DUE_DATE AS dueDate
+                            , '' AS varSchema, INS.CREATE_DATE AS procStartDate, INS.FINISHED_DATE AS procEndDate, INS.PERFORMER_ID AS instanceAuthor    
+                            , INS.APP_KEY01 AS appKey01, INS.APP_KEY02 AS appKey02, INS.APP_KEY03 AS appKey03, INS.APP_KEY04 AS appKey04, INS.APP_KEY05 AS appKey05
+                            , INS.APP_KEY06 AS appKey06, INS.APP_KEY07 AS appKey07, INS.APP_KEY08 AS appKey08, INS.APP_KEY09 AS appKey09, INS.APP_KEY05 AS appKey10
+                            , INS.OPEN_DATE AS openDate                        
+                          FROM  IKEP4_WF_TODO_LIST TODO,                                                                
+                            IKEP4_WF_INSTANCE INS,
+                            IKEP4_WF_PROCESS PROC 
+                             left join IKEP4_WF_PARTITION PARTI
+         					   ON PROC.PARTITION_ID = PARTI.PARTITION_ID,
+                            (SELECT PROCESS_ID, PROCESS_VER, ACTIVITY_ID
+                               FROM IKEP4_WF_PARTICIPANT
+                              WHERE PARTICIPANT_SEQ IS NOT NULL
+                                AND (PARTICIPANT_TYPE = 'HUMAN' 
+                                AND (PERFORMER_ID IN (
+                                        /* 위임처리 쿼리 */
+                                        SELECT USR.USER_ID AS PERFORMER_ID
+                                          FROM   IKEP4_WF_DELEGATE DELE
+									       right join IKEP4_EV_USER USR
+									         ON USR.USER_ID = DELE.USER_ID 
+                                           AND ((DELE.MANDATOR_ID = #userId# 
+                                                 AND DELE.IS_SETUP = 'Y' 
+                                                 AND START_DATE <= CURRENT_TIMESTAMP 
+                                                 AND CURRENT_TIMESTAMP <= END_DATE) OR USR.USER_ID = #userId#)                 
+                                    )
+                                OR PERFORMER_ID IS NULL))
+                             ) ASGN
+                         WHERE  TODO.PROCESS_ID = PROC.PROCESS_ID 
+                           AND  TODO.PROCESS_VER = PROC.PROCESS_VER
+                           AND  TODO.PROCESS_ID = ASGN.PROCESS_ID
+                           AND  TODO.PROCESS_VER = ASGN.PROCESS_VER
+                           AND  TODO.ACTIVITY_ID = ASGN.ACTIVITY_ID
+                           AND  TODO.INSTANCE_ID = INS.INSTANCE_ID
+                           AND  (TODO.PERFORMER_ID = #userId# OR TODO.PERFORMER_ID is NULL)
+                           AND  PROC.PROCESS_STATE = 'ACTIVE'
+                        UNION
+                        /* 사용자 조직 지정 퍼포머 To-do를 가져오는 쿼리 */
+                       SELECT  TODO.LOG_ID AS insLogId, TODO.INSTANCE_ID AS instanceId, PROC.PARTITION_ID AS partitionId, PARTI.PARTITION_NAME AS partitionName
+                            , PROC.PROCESS_ID AS processId, PROC.PROCESS_VER AS processVer, PROC.PROCESS_NAME AS processName, TODO.ACTIVITY_ID AS activityId, TODO.ACTIVITY_NAME AS activityName
+                            , TODO.TITLE, TODO.PERFORMER_ID AS performerId, '' AS performerName, TODO.STATE AS STATE, '' AS stateName
+                            , TODO.CREATE_DATE AS createDate, TODO.ASSIGN_DATE AS assignDate, TODO.SELECT_DATE AS selectDate, TODO.DUE_DATE AS dueDate
+                            , '' AS varSchema, INS.CREATE_DATE AS procStartDate, INS.FINISHED_DATE AS procEndDate, INS.PERFORMER_ID AS instanceAuthor    
+                            , INS.APP_KEY01 AS appKey01, INS.APP_KEY02 AS appKey02, INS.APP_KEY03 AS appKey03, INS.APP_KEY04 AS appKey04, INS.APP_KEY05 AS appKey05
+                            , INS.APP_KEY06 AS appKey06, INS.APP_KEY07 AS appKey07, INS.APP_KEY08 AS appKey08, INS.APP_KEY09 AS appKey09, INS.APP_KEY10 AS appKey10
+                            , INS.OPEN_DATE AS openDate                     
+                        FROM      IKEP4_WF_TODO_LIST TODO,                                                                
+                                IKEP4_WF_INSTANCE INS,
+                                IKEP4_WF_PROCESS PROC
+                                  left join IKEP4_WF_PARTITION PARTI
+         					   		ON PROC.PARTITION_ID = PARTI.PARTITION_ID,
+                                IKEP4_EV_USER_GROUP GRP,
+                                (SELECT PROCESS_ID, PROCESS_VER, ACTIVITY_ID, PERFORMER_ID 
+                                   FROM IKEP4_WF_PARTICIPANT
+                                  WHERE PARTICIPANT_SEQ IS NOT NULL
+                                    AND (PARTICIPANT_TYPE = 'ORGANIZATIONAL_UNIT' AND PERFORMER_ID IS NOT NULL)
+                                 ) ASGN
+                        WHERE  TODO.PROCESS_ID = PROC.PROCESS_ID 
+                               AND  TODO.PROCESS_VER = PROC.PROCESS_VER
+                               AND  TODO.PROCESS_ID = ASGN.PROCESS_ID
+                               AND  TODO.PROCESS_VER = ASGN.PROCESS_VER
+                               AND  TODO.ACTIVITY_ID = ASGN.ACTIVITY_ID
+                               AND  GRP.GROUP_ID = ASGN.PERFORMER_ID 
+                               AND  TODO.INSTANCE_ID = INS.INSTANCE_ID
+                               AND  GRP.USER_ID IN (
+                                        /* 위임처리 쿼리 */
+                                        SELECT USR.USER_ID AS PERFORMER_ID
+                                          FROM   IKEP4_WF_DELEGATE DELE
+									       right join IKEP4_EV_USER USR
+									         ON USR.USER_ID = DELE.USER_ID 
+                                           WHERE ((DELE.MANDATOR_ID = #userId# 
+                                                 AND DELE.IS_SETUP = 'Y' 
+                                                 AND START_DATE <= CURRENT_TIMESTAMP 
+                                                 AND CURRENT_TIMESTAMP <= END_DATE) OR USR.USER_ID = #userId#)                 
+                                    )           
+                               AND  PROC.PROCESS_STATE = 'ACTIVE'
+                       UNION 
+                        /* 사용자 ROLE 지정 퍼포머 To-do를 가져오는 쿼리 */
+                       SELECT  TODO.LOG_ID AS insLogId, TODO.INSTANCE_ID AS instanceId, PROC.PARTITION_ID AS partitionId, PARTI.PARTITION_NAME AS partitionName
+                            , PROC.PROCESS_ID AS processId, PROC.PROCESS_VER AS processVer, PROC.PROCESS_NAME AS processName, TODO.ACTIVITY_ID AS activityId, TODO.ACTIVITY_NAME AS activityName
+                            , TODO.TITLE, TODO.PERFORMER_ID AS performerId, '' AS performerName, TODO.STATE AS STATE, '' AS stateName
+                            , TODO.CREATE_DATE AS createDate, TODO.ASSIGN_DATE AS assignDate, TODO.SELECT_DATE AS selectDate, TODO.DUE_DATE AS dueDate
+                            , '' AS varSchema, INS.CREATE_DATE AS procStartDate, INS.FINISHED_DATE AS procEndDate, INS.PERFORMER_ID AS instanceAuthor    
+                            , INS.APP_KEY01 AS appKey01, INS.APP_KEY02 AS appKey02, INS.APP_KEY03 AS appKey03, INS.APP_KEY04 AS appKey04, INS.APP_KEY05 AS appKey05
+                            , INS.APP_KEY06 AS appKey06, INS.APP_KEY07 AS appKey07, INS.APP_KEY08 AS appKey08, INS.APP_KEY09 AS appKey09, INS.APP_KEY05 AS appKey10
+                            , INS.OPEN_DATE AS openDate                         
+                          FROM  IKEP4_WF_TODO_LIST TODO,                                                                
+                            IKEP4_WF_PROCESS PROC
+                                  left join IKEP4_WF_PARTITION PARTI
+         					   		ON PROC.PARTITION_ID = PARTI.PARTITION_ID,
+                            IKEP4_WF_INSTANCE INS,
+                            IKEP4_EV_USER_ROLE RLE,
+                            (SELECT PROCESS_ID, PROCESS_VER, ACTIVITY_ID, PERFORMER_ID 
+                               FROM IKEP4_WF_PARTICIPANT
+                              WHERE PARTICIPANT_SEQ IS NOT NULL
+                                AND (PARTICIPANT_TYPE = 'ROLE' AND ( PERFORMER_ID IS NOT NULL))
+                             ) ASGN
+                         WHERE  TODO.PROCESS_ID = PROC.PROCESS_ID 
+                           AND  TODO.PROCESS_VER = PROC.PROCESS_VER
+                           AND  TODO.PROCESS_ID = ASGN.PROCESS_ID
+                           AND  TODO.PROCESS_VER = ASGN.PROCESS_VER
+                           AND  TODO.ACTIVITY_ID = ASGN.ACTIVITY_ID
+                           AND  RLE.ROLE_ID = ASGN.PERFORMER_ID
+                           AND  RLE.USER_ID IN (
+                                    SELECT USR.USER_ID AS PERFORMER_ID
+                                      FROM   IKEP4_WF_DELEGATE DELE
+								       right join IKEP4_EV_USER USR
+								         ON USR.USER_ID = DELE.USER_ID 
+                                    WHERE ((DELE.MANDATOR_ID = #userId# 
+                                             AND DELE.IS_SETUP = 'Y' 
+                                             AND START_DATE <= CURRENT_TIMESTAMP 
+                                             AND CURRENT_TIMESTAMP <= END_DATE) OR USR.USER_ID = #userId#)                 
+                                )
+                           AND  TODO.INSTANCE_ID = INS.INSTANCE_ID
+                           AND  (TODO.PERFORMER_ID = #userId# OR TODO.PERFORMER_ID is NULL) 
+                           AND  PROC.PROCESS_STATE = 'ACTIVE'       
+                        UNION
+                        /* 사용자 변수 지정 퍼포머 To-do를 가져오는 쿼리 */
+                        SELECT  TODO.LOG_ID AS insLogId, TODO.INSTANCE_ID AS instanceId, PROC.PARTITION_ID AS partitionId, PARTI.PARTITION_NAME AS partitionName
+                            , PROC.PROCESS_ID AS processId, PROC.PROCESS_VER AS processVer, PROC.PROCESS_NAME AS processName, TODO.ACTIVITY_ID AS activityId, TODO.ACTIVITY_NAME AS activityName
+                            , TODO.TITLE, TODO.PERFORMER_ID AS performerId, '' AS performerName, TODO.STATE AS STATE, '' AS stateName
+                            , TODO.CREATE_DATE AS createDate, TODO.ASSIGN_DATE AS assignDate, TODO.SELECT_DATE AS selectDate, TODO.DUE_DATE AS dueDate
+                            , '' AS varSchema, INS.CREATE_DATE AS procStartDate, INS.FINISHED_DATE AS procEndDate, INS.PERFORMER_ID AS instanceAuthor    
+                            , INS.APP_KEY01 AS appKey01, INS.APP_KEY02 AS appKey02, INS.APP_KEY03 AS appKey03, INS.APP_KEY04 AS appKey04, INS.APP_KEY05 AS appKey05
+                            , INS.APP_KEY06 AS appKey06, INS.APP_KEY07 AS appKey07, INS.APP_KEY08 AS appKey08, INS.APP_KEY09 AS appKey09, INS.APP_KEY05 AS appKey10
+                            , INS.OPEN_DATE AS openDate                         
+                          FROM  IKEP4_WF_TODO_LIST TODO,                                                                
+                            IKEP4_WF_PROCESS PROC
+                              left join IKEP4_WF_PARTITION PARTI
+         					  	ON PROC.PARTITION_ID = PARTI.PARTITION_ID,
+                            IKEP4_WF_INSTANCE INS,
+                            (
+                                        /* 사용자 변수 지정 퍼포머 To-do를 가져오는 쿼리 (단일변수)*/    
+                                      SELECT DISTINCT VAR_VALUE.PROCESS_ID, VAR_VALUE.PROCESS_VER, VAR_VALUE.ACTIVITY_ID, VAR_VALUE.VAR_ID, '' AS VAR_KEY1, VAR_VALUE.VAR_KEY, VAR_VALUE.VAR_VALUE, VAR_VALUE.PERFORMER_ID, VAR_VALUE.INSTANCE_ID, VAR_VALUE.INDEX_VAR 
+                                        FROM 
+                                            ( 
+                                             SELECT  PAR.PROCESS_ID, PAR.PROCESS_VER, PAR.ACTIVITY_ID, VAR.VAR_ID, VAR.VAR_KEY, VAR.VAR_VALUE, PAR.PERFORMER_ID, VAR.INSTANCE_ID, PAR.INDEX_VAR   
+                                               FROM IKEP4_WF_PARTICIPANT PAR, IKEP4_WF_INSTANCE_VAR VAR
+                                              WHERE PAR.PARTICIPANT_SEQ IS NOT NULL
+                                                AND PAR.PROCESS_ID = VAR.PROCESS_ID
+                                                AND PAR.PROCESS_VER = VAR.PROCESS_VER
+                                                AND PAR.PERFORMER_ID = VAR.VAR_ID
+                                                AND VAR.VAR_VALUE IN (
+                                                        /* 위임처리 쿼리 */
+                                                        SELECT USR.USER_ID AS PERFORMER_ID
+                                                          FROM   IKEP4_WF_DELEGATE DELE
+													       right join IKEP4_EV_USER USR
+													         ON USR.USER_ID = DELE.USER_ID 
+                                                           WHERE ((DELE.MANDATOR_ID = #userId# 
+                                                                 AND DELE.IS_SETUP = 'Y' 
+                                                                 AND START_DATE <= CURRENT_TIMESTAMP 
+                                                                 AND CURRENT_TIMESTAMP <= END_DATE) OR USR.USER_ID = #userId#)                 
+                                                    )
+                                                AND ( ( PAR.PARTICIPANT_TYPE = 'SYSTEM' AND VAR.VAR_VALUE IS NOT NULL ) )
+                                                AND PAR.INDEX_VAR IS NULL
+                                            ) VAR_VALUE
+                                   UNION      
+                                           /* 사용자 변수 지정 퍼포머 To-do를 가져오는 쿼리 (배열변수)*/                     
+                                      SELECT DISTINCT VAR_VALUE.PROCESS_ID, VAR_VALUE.PROCESS_VER, VAR_VALUE.ACTIVITY_ID, VAR_VALUE.VAR_ID, IDNX_VAR.VAR_KEY  AS VAR_KEY1, VAR_VALUE.VAR_KEY, VAR_VALUE.VAR_VALUE, VAR_VALUE.PERFORMER_ID, VAR_VALUE.INSTANCE_ID, VAR_VALUE.INDEX_VAR 
+                                        FROM 
+                                            ( 
+                                             SELECT  PAR.PROCESS_ID, PAR.PROCESS_VER, PAR.ACTIVITY_ID, VAR.VAR_ID, VAR.VAR_KEY, VAR.VAR_VALUE, PAR.PERFORMER_ID, VAR.INSTANCE_ID, PAR.INDEX_VAR   
+                                               FROM IKEP4_WF_PARTICIPANT PAR, IKEP4_WF_INSTANCE_VAR VAR
+                                              WHERE PAR.PARTICIPANT_SEQ IS NOT NULL
+                                                AND PAR.PROCESS_ID = VAR.PROCESS_ID
+                                                AND PAR.PROCESS_VER = VAR.PROCESS_VER
+                                                AND PAR.INDEX_VAR = VAR.VAR_ID
+                                                AND ( ( PAR.PARTICIPANT_TYPE = 'SYSTEM' AND VAR.VAR_VALUE IS NOT NULL ) )
+                                            ) IDNX_VAR,
+                                            (
+                                             SELECT  PAR.PROCESS_ID, PAR.PROCESS_VER, PAR.ACTIVITY_ID, VAR.VAR_ID, VAR.VAR_KEY, VAR.VAR_VALUE, PAR.PERFORMER_ID, VAR.INSTANCE_ID, PAR.INDEX_VAR   
+                                               FROM IKEP4_WF_PARTICIPANT PAR, IKEP4_WF_INSTANCE_VAR VAR
+                                              WHERE PAR.PARTICIPANT_SEQ IS NOT NULL
+                                                AND PAR.PROCESS_ID = VAR.PROCESS_ID
+                                                AND PAR.PROCESS_VER = VAR.PROCESS_VER
+                                                AND PAR.PERFORMER_ID = VAR.VAR_ID
+                                                AND VAR.VAR_VALUE IN (
+                                                        /* 위임처리 쿼리 */
+                                                        SELECT USR.USER_ID AS PERFORMER_ID
+                                                          FROM   IKEP4_WF_DELEGATE DELE
+													       right join IKEP4_EV_USER USR
+													         ON USR.USER_ID = DELE.USER_ID 
+                                                           WHERE ((DELE.MANDATOR_ID = #userId# 
+                                                                 AND DELE.IS_SETUP = 'Y' 
+                                                                 AND START_DATE <= CURRENT_TIMESTAMP 
+                                                                 AND CURRENT_TIMESTAMP <= END_DATE) OR USR.USER_ID = #userId#)                
+                                                    )
+                                                AND ( ( PAR.PARTICIPANT_TYPE = 'SYSTEM' AND VAR.VAR_KEY IS NOT NULL ) )
+                                            ) VAR_VALUE
+                                       WHERE IDNX_VAR.INSTANCE_ID = VAR_VALUE.INSTANCE_ID
+                                         AND IDNX_VAR.VAR_VALUE = VAR_VALUE.VAR_KEY
+                                         AND IDNX_VAR.PERFORMER_ID = VAR_VALUE.PERFORMER_ID   
+                                UNION
+                                        /* 단일변수에 조직ID로 지정되고 조직의 manager로 지정일 될 경우*/    
+                                      SELECT DISTINCT VAR_VALUE.PROCESS_ID, VAR_VALUE.PROCESS_VER, VAR_VALUE.ACTIVITY_ID, VAR_VALUE.VAR_ID, '' AS VAR_KEY1, VAR_VALUE.VAR_KEY, VAR_VALUE.VAR_VALUE, VAR_VALUE.PERFORMER_ID, VAR_VALUE.INSTANCE_ID, VAR_VALUE.INDEX_VAR 
+                                        FROM 
+                                            ( 
+                                             SELECT PAR.PROCESS_ID, PAR.PROCESS_VER, PAR.ACTIVITY_ID, VAR.VAR_ID, VAR.VAR_KEY, VAR.VAR_VALUE, GRP.LEADER_ID AS PERFORMER_ID, VAR.INSTANCE_ID, PAR.INDEX_VAR 
+                                               FROM IKEP4_WF_PARTICIPANT PAR, IKEP4_WF_INSTANCE_VAR VAR, IKEP4_EV_GROUP GRP
+                                              WHERE PAR.RULE_CONSTRAINT = 'MANAGER_OF'
+                                                AND PAR.PROCESS_ID = VAR.PROCESS_ID
+                                                AND PAR.PROCESS_VER = VAR.PROCESS_VER
+                                                AND PAR.PERFORMER_ID = VAR.VAR_ID
+                                                AND GRP.GROUP_ID = VAR.VAR_VALUE
+                                                AND GRP.LEADER_ID = #userId#
+                                            ) VAR_VALUE 
+                               )  ASGN
+                         WHERE  TODO.PROCESS_ID = PROC.PROCESS_ID 
+                           AND  TODO.PROCESS_VER = PROC.PROCESS_VER
+                           AND  TODO.PROCESS_ID = ASGN.PROCESS_ID
+                           AND  TODO.PROCESS_VER = ASGN.PROCESS_VER
+                           AND  TODO.ACTIVITY_ID = ASGN.ACTIVITY_ID
+                           AND TODO.INSTANCE_ID = ASGN.INSTANCE_ID
+                           AND  TODO.INSTANCE_ID = INS.INSTANCE_ID
+                           AND  (TODO.PERFORMER_ID = #userId# OR TODO.PERFORMER_ID is NULL)
+                           AND  PROC.PROCESS_STATE = 'ACTIVE'
+                        ) LST,
+                        IKEP4_EV_USER USR
+                  WHERE LST.INSTANCEAUTHOR = USR.USER_ID
+                    AND (CURRENT_TIMESTAMP <= LST.openDate OR LST.openDate IS NULL)
+                  ) TBL
+            WHERE DELE_FLAG = '1'
+        UNION
+        /* 위임되어 완료처리된 리스트를 가져오는 쿼리 */
+        SELECT    DELEG.LOG_ID AS insLogId, DELEG.INSTANCE_ID AS instanceId, PROC.PARTITION_ID AS partitionId, PARTI.PARTITION_NAME AS partitionName
+            , PROC.PROCESS_ID AS processId, PROC.PROCESS_VER AS processVer, PROC.PROCESS_NAME AS processName, DELEG.ACTIVITY_ID AS activityId, DELEG.ACTIVITY_NAME AS activityName
+            , DELEG.TITLE, DELEG.PERFORMER_ID AS performerId, '' AS performerName, DELEG.STATE AS STATE, '' AS stateName
+            , DELEG.CREATE_DATE AS createDate, DELEG.ASSIGN_DATE AS assignDate, DELEG.SELECT_DATE AS selectDate, DELEG.DUE_DATE AS dueDate
+            , '' AS varSchema, INS.CREATE_DATE AS procStartDate, INS.FINISHED_DATE AS procEndDate, INS.PERFORMER_ID AS instanceAuthor, '' AS instanceAuthorName    
+            , INS.APP_KEY01 AS appKey01, INS.APP_KEY02 AS appKey02, INS.APP_KEY03 AS appKey03, INS.APP_KEY04 AS appKey04, INS.APP_KEY05 AS appKey05
+            , INS.APP_KEY06 AS appKey06, INS.APP_KEY07 AS appKey07, INS.APP_KEY08 AS appKey08, INS.APP_KEY09 AS appKey09, INS.APP_KEY05 AS appKey10
+            , INS.OPEN_DATE AS openDate  
+          FROM     IKEP4_WF_PROCESS PROC
+          			left join IKEP4_WF_PARTITION PARTI
+			  			ON PROC.PARTITION_ID = PARTI.PARTITION_ID,
+            IKEP4_WF_INSTANCE INS,
+            IKEP4_WF_DELEGATE_DONE_LIST DELEG
+         WHERE    PROC.PROCESS_ID = INS.PROCESS_ID
+           AND    PROC.PROCESS_VER = INS.PROCESS_VER
+           AND    INS.INSTANCE_ID = DELEG.INSTANCE_ID 
+           AND    DELEG.DELEGATOR_ID = #userId#
+	        
+	       ORDER BY createDate desc
+            
+       ]]>
+   </select>  
+   
+   
+</sqlMap>

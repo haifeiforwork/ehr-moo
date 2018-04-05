@@ -1,0 +1,585 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="collpack.fourm.dao.FrLinereply" >
+ 
+	<typeAlias alias = "FrLinereply" type="com.lgcns.ikep4.collpack.forum.model.FrLinereply"/>
+	
+	<typeAlias alias = "FrSearch" type="com.lgcns.ikep4.collpack.forum.model.FrSearch"/>
+	
+	<typeAlias alias = "FrItem" type="com.lgcns.ikep4.collpack.forum.model.FrItem"/>
+	
+	<typeAlias alias = "FrDiscussion" type="com.lgcns.ikep4.collpack.forum.model.FrDiscussion"/>
+    
+  <resultMap id="FrLinereplyResult" class="FrLinereply" >
+    <result column="LINEREPLY_ID" 			property="linereplyId" 			/>
+    <result column="ITEM_ID" 				property="itemId" 				/>
+    <result column="LINEREPLY_PARENT_ID" 	property="linereplyParentId" 	/>
+    <result column="CONTENTS"				property="contents" 			/>
+    <result column="REGISTER_ID" 			property="registerId" 			/>
+    <result column="REGISTER_NAME" 			property="registerName" 		/>
+    <result column="REGIST_DATE" 			property="registDate" 			/>
+    <result column="UPDATER_ID" 			property="updaterId" 			/>
+    <result column="UPDATER_NAME" 			property="updaterName" 			/>
+    <result column="UPDATE_DATE" 			property="updateDate" 			/>
+    <result column="LINEREPLY_GROUP_ID" 	property="linereplyGroupId" 	/>
+    <result column="STEP" 					property="step" 				/>
+    <result column="INDENTATION" 			property="indentation" 			/>
+    <result column="LINEREPLY_DELETE" 		property="linereplyDelete" 		/>
+    <result column="BEST_LINEREPLY" 		property="bestLinereply" 		/>
+    <result column="RECOMMEND_COUNT" 		property="recommendCount" 		/>
+    <result column="TEAM_NAME" 				property="teamName" 		/>
+    <result column="JOB_TITLE_NAME" 			property="jobTitleName" 		/>
+    <result column="USER_ENGLISH_NAME" 		property="userEnglishName" 		/>
+	<result column="TEAM_ENGLISH_NAME" 		property="teamEnglishName" 		/>
+	<result column="JOB_TITLE_ENGLISH_NAME" property="jobTitleEnglishName" 	/>
+	<result column="PICTURE_PATH" property="picturePath" 	/>
+	<result column="PROFILE_PICTURE_PATH" property="profilePicturePath" 	/>
+  </resultMap>
+  
+ 
+  
+  <resultMap id="FrLinereplyResultWithItemAndDiscussion" extends="FrLinereplyResult" class="FrLinereply" groupBy="ITEM_ID" >
+    <result resultMap="collpack.fourm.dao.FrLinereply.FrItemResult" 			property="frItem"/>
+  </resultMap>
+  
+   <resultMap id="FrItemResult" class="FrItem" groupBy="DISCUSSION_ID">
+    <result column="ITEM_TEAM_NAME" 			property="teamName" />
+     <result column="ITEM_JOB_TITLE_NAME" 		property="jobTitleName" />
+     <result column="ITEM_TITLE" 				property="title" />
+     <result column="ITEM_LINEREPLY_COUNT" 		property="linereplyCount" />
+     <result column="ITEM_REGISTER_NAME" 		property="registerName" />
+     <result column="ITEM_REGISTER_ID" 			property="registerId" />
+     <result column="ITEM_UPDATE_DATE" 			property="updateDate" />
+     <result column="ITEM_ID" 					property="itemId" />
+     <result column="BEST_ITEM" 			    property="bestItem" />
+     
+     <result column="ITEM_USER_ENGLISH_NAME" 		property="userEnglishName" 		/>
+	<result column="ITEM_TEAM_ENGLISH_NAME" 		property="teamEnglishName" 		/>
+	<result column="ITEM_JOB_TITLE_ENGLISH_NAME" property="jobTitleEnglishName" 	/>
+	
+     <result resultMap="collpack.fourm.dao.FrLinereply.FrDiscussionResult" 		property="frDiscussion"/>
+  </resultMap>
+  
+   <resultMap id="FrDiscussionResult" class="FrDiscussion" >
+    <result column="DISCUSSION_TEAM_NAME" 		property="teamName" />
+    <result column="DISCUSSION_JOB_TITLE_NAME" 	property="jobTitleName" />
+    <result column="DISCUSSION_TITLE" 			property="title" />
+    <result column="DISCUSSION_ITEM_COUNT" 		property="itemCount" />
+    <result column="DISCUSSION_REGISTER_NAME" 	property="registerName" />
+    <result column="DISCUSSION_UPDATE_DATE" 	property="updateDate" />
+    <result column="CATEGORY_NAME" 				property="categoryName" />
+    <result column="DISCUSSION_ID" 				property="discussionId" />
+    <result column="DISCUSSION_USER_ENG_NAME" 		property="userEnglishName" 		/>
+	<result column="DISCUSSION_TEAM_ENG_NAME" 		property="teamEnglishName" 		/>
+	<result column="DISCUSSION_JOB_TITLE_ENG_NAME" property="jobTitleEnglishName" 	/>
+	
+  </resultMap>
+  
+   <resultMap id="FrLinereplyCountResult" class="FrLinereply" >
+    <result column="COUNT" 				property="count" />
+    <result column="BEST_COUNT" 		property="bestCount" />
+    <result column="RECOMMEND_COUNT" 	property="recommendCount" />
+  </resultMap>
+  
+   <resultMap id="FrLinereplyWithDiscussionIdResult" class="FrLinereply" extends="FrLinereplyResult">
+    <result column="DISCUSSION_ID" 				property="discussionId" />
+  </resultMap>
+  
+  <sql id="FrLinereply_Column_List" >
+    A.LINEREPLY_ID
+    ,A.ITEM_ID
+    ,A.LINEREPLY_PARENT_ID
+    ,A.CONTENTS
+    ,A.REGISTER_ID
+    ,A.REGISTER_NAME
+    ,A.REGIST_DATE
+    ,A.UPDATER_ID
+    ,A.UPDATER_NAME
+    ,A.UPDATE_DATE
+    ,A.LINEREPLY_GROUP_ID
+    ,A.STEP
+    ,A.INDENTATION
+    ,A.LINEREPLY_DELETE
+    ,A.BEST_LINEREPLY
+    ,A.RECOMMEND_COUNT
+    ,C.TEAM_NAME
+	,D.JOB_TITLE_NAME
+	,C.USER_ENGLISH_NAME
+  	,C.TEAM_ENGLISH_NAME
+  	,D.JOB_TITLE_ENGLISH_NAME
+  	,C.PICTURE_PATH
+  	,C.PROFILE_PICTURE_PATH
+  </sql>
+  
+   <insert id="create" parameterClass="FrLinereply" >
+    INSERT INTO 				/* [FrLinereply_SqlMap.xml] FrLinereply.create */
+	     IKEP4_FR_LINEREPLY (
+	      ITEM_ID, 
+	      LINEREPLY_ID,
+	      LINEREPLY_PARENT_ID, 
+	      CONTENTS, 
+	      REGISTER_ID, 
+	      REGISTER_NAME, 
+	      REGIST_DATE, 
+	      UPDATER_ID, 
+	      UPDATER_NAME, 
+	      UPDATE_DATE, 
+	      LINEREPLY_GROUP_ID,
+	      STEP, 
+	      INDENTATION, 
+	      LINEREPLY_DELETE,
+	      BEST_LINEREPLY,
+	      RECOMMEND_COUNT,
+	      PORTAL_ID
+      ) VALUES (
+      	  #itemId#, 
+      	  #linereplyId#, 
+	      #linereplyParentId#, 
+      	  #contents#, 
+          #registerId#, 
+          #registerName#, 
+          sysdate,
+          #updaterId#, 
+          #updaterName#, 
+          sysdate, 
+          #linereplyGroupId#, 
+          #step#, 
+          #indentation#, 
+	      0,
+	      0,
+	      0,
+	      #portalId#
+       )
+  </insert>
+  
+  
+  <select id="get" parameterClass="String" resultMap="FrLinereplyWithDiscussionIdResult">
+	   SELECT 									/* [FrLinereply_SqlMap.xml] FrLinereply.get */  
+	   		<include refid="FrLinereply_Column_List" />
+	   		, B.DISCUSSION_ID
+	   FROM	   IKEP4_FR_LINEREPLY A, IKEP4_FR_ITEM M, IKEP4_FR_DISCUSSION B, IKEP4_EV_USER C, IKEP4_EV_JOB_TITLE D
+		 WHERE LINEREPLY_ID = #linereplyId#
+		 AND A.ITEM_ID = M.ITEM_ID
+	    AND M.DISCUSSION_ID = B.DISCUSSION_ID
+	    AND A.REGISTER_ID = C.USER_ID
+		AND C.JOB_TITLE_CODE = D.JOB_TITLE_CODE
+		 
+	</select>
+   
+  <select id="getCountByParentId" parameterClass="String" resultClass="int">
+	   SELECT 									/* [FrLinereply_SqlMap.xml] FrLinereply.getCountByParentId */  
+	   		COUNT(LINEREPLY_ID)
+	   FROM	   IKEP4_FR_LINEREPLY
+		 WHERE LINEREPLY_PARENT_ID = #linereplyParentId#
+	</select>
+	
+	
+   <select id="getCountes" resultMap="FrLinereplyCountResult" parameterClass="FrSearch" >
+	    SELECT								/* [FrLinereply_SqlMap.xml] FrLinereply.getCountes */	
+			COUNT(LINEREPLY_ID)		COUNT
+			, NVL(SUM(BEST_LINEREPLY),0)	BEST_COUNT
+			, NVL(SUM(RECOMMEND_COUNT),0)	 RECOMMEND_COUNT   
+	    FROM IKEP4_FR_LINEREPLY
+	    <dynamic prepend="WHERE">
+		    <isNotEmpty property="userId" prepend="registerId">
+		    	 REGISTER_ID = #userId#
+		    </isNotEmpty>
+		    <isNotEmpty property="isBest" prepend="AND">
+		    	BEST_LINEREPLY = 1
+		    </isNotEmpty>
+		    <isNotEmpty property="discussionId" prepend="AND">
+		    	ITEM_ID IN (
+				    	SELECT  ITEM_ID					
+					    FROM IKEP4_FR_ITEM		
+					    WHERE DISCUSSION_ID = #discussionId#
+					   )
+		    </isNotEmpty>
+	    </dynamic>
+  </select>
+  
+  
+   <select id="listUserId" resultClass="String" parameterClass="String" >
+	    SELECT								/* [FrLinereply_SqlMap.xml] FrLinereply.listUserId */	
+			DISTINCT(REGISTER_ID)  
+	    FROM IKEP4_FR_LINEREPLY
+	    WHERE ITEM_ID = #itemId#
+  </select>
+  
+   <select id="listUserIdByDiscussionId" resultClass="String" parameterClass="String" >
+	    SELECT 					/* [FrLinereply_SqlMap.xml] FrLinereply.listUserIdByDiscussionId */
+	    	DISTINCT(REGISTER_ID)  
+	    FROM IKEP4_FR_LINEREPLY
+	    WHERE 
+	    	ITEM_ID IN (
+				    	SELECT  ITEM_ID					
+					    FROM IKEP4_FR_ITEM		
+					    WHERE DISCUSSION_ID = #discussionId#
+					   )
+   </select>
+   
+	
+  
+  <select id="list" resultMap="FrLinereplyResult" parameterClass="FrSearch" >
+    SELECT  					/* [FrLinereply_SqlMap.xml] FrLinereply.list */  
+    		*
+	      FROM    (
+	                SELECT  ROWNUM NUM, F.*
+	                FROM
+                        (
+                          SELECT  
+                          
+                          		<include refid="FrLinereply_Column_List" />
+                          		
+                         FROM    IKEP4_FR_LINEREPLY A, IKEP4_EV_USER C, IKEP4_EV_JOB_TITLE D
+                         WHERE  A.REGISTER_ID = C.USER_ID
+								AND C.JOB_TITLE_CODE = D.JOB_TITLE_CODE
+						    <isNotEmpty prepend="AND" property="itemId">
+						    	A.ITEM_ID = #itemId#
+						    </isNotEmpty>
+					    	 <isNotEmpty prepend="AND" property="itemDelete">
+						    	A.LINEREPLY_DELETE = #itemDelete#
+						     </isNotEmpty>
+					     	<isNotEmpty prepend="AND" property="isBest">
+						    	A.BEST_LINEREPLY = 1
+						    </isNotEmpty>
+						    <isNotEmpty prepend="AND" property="userId">
+								A.REGISTER_ID = #userId#
+							</isNotEmpty>
+							<isNotEmpty prepend="AND" property="portalId">
+								A.PORTAL_ID = #portalId#
+							</isNotEmpty>
+						    ORDER BY 
+							<isEmpty property="orderType" >
+								A.LINEREPLY_GROUP_ID DESC, A.STEP ASC
+							</isEmpty>
+							<isEqual property="orderType" compareValue="best">
+								A.RECOMMEND_COUNT DESC
+							</isEqual>
+					         
+	                  ) F
+	                WHERE   ROWNUM &lt;= #endRowIndex#
+	              )
+	      WHERE   NUM &gt; #startRowIndex#
+  </select>
+  
+  <select id="getCountList" resultClass="int" parameterClass="FrSearch" >
+       SELECT  			/* [FrLinereply_SqlMap.xml] FrLinereply.getListCount */
+       		COUNT(A.LINEREPLY_ID) 
+         FROM    IKEP4_FR_LINEREPLY A
+         WHERE A.ITEM_ID = #itemId#
+    	  <isNotEmpty prepend="AND" property="itemDelete">
+	    	A.LINEREPLY_DELETE = #itemDelete#
+	     </isNotEmpty>
+     	<isNotEmpty prepend="AND" property="isBest">
+	    	A.BEST_LINEREPLY = 1
+	    </isNotEmpty>
+	    <isNotEmpty prepend="AND" property="userId">
+			A.REGISTER_ID = #userId#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="portalId">
+			A.PORTAL_ID = #portalId#
+		</isNotEmpty>
+  </select>
+  
+   <select id="listWithItemDiscussion" resultMap="FrLinereplyResultWithItemAndDiscussion" parameterClass="FrSearch" >
+     SELECT 							/* [FrLinereply_SqlMap.xml] FrLinereply.listWithItemDiscussion */
+     	O.* 
+     	, P.TEAM_NAME 				DISCUSSION_TEAM_NAME
+     	, Q.JOB_TITLE_NAME 			DISCUSSION_JOB_TITLE_NAME
+     	,P.USER_ENGLISH_NAME		DISCUSSION_USER_ENG_NAME
+  	  	,P.TEAM_ENGLISH_NAME		DISCUSSION_TEAM_ENG_NAME
+  	  	,Q.JOB_TITLE_ENGLISH_NAME	DISCUSSION_JOB_TITLE_ENG_NAME
+     FROM (
+	     SELECT  									
+	          		R.*
+	          		, X.TEAM_NAME 				ITEM_TEAM_NAME
+	          		, Y.JOB_TITLE_NAME 			ITEM_JOB_TITLE_NAME
+	          		, X.USER_ENGLISH_NAME		ITEM_USER_ENGLISH_NAME
+				  	, X.TEAM_ENGLISH_NAME		ITEM_TEAM_ENGLISH_NAME
+				  	,Y.JOB_TITLE_ENGLISH_NAME	ITEM_JOB_TITLE_ENGLISH_NAME
+		      FROM    (
+		                SELECT  ROWNUM NUM, F.*
+		                FROM
+		                    (
+		                      SELECT
+							   <include refid="FrLinereply_Column_List" />
+							    ,B.TITLE  			DISCUSSION_TITLE
+							    ,B.ITEM_COUNT 		DISCUSSION_ITEM_COUNT 
+							    ,B.REGISTER_NAME 	DISCUSSION_REGISTER_NAME 
+							    ,B.REGISTER_ID 		DISCUSSION_REGISTER_ID 
+							    ,B.UPDATE_DATE 		DISCUSSION_UPDATE_DATE 
+							    ,B.DISCUSSION_ID 	 
+							    ,M.TITLE 			ITEM_TITLE
+							    ,M.LINEREPLY_COUNT 	ITEM_LINEREPLY_COUNT
+							    ,M.REGISTER_NAME 	ITEM_REGISTER_NAME 
+							    ,M.REGISTER_ID 		ITEM_REGISTER_ID 
+							    ,M.UPDATE_DATE 		ITEM_UPDATE_DATE 
+							    ,M.BEST_ITEM 		BEST_ITEM
+								,E.CATEGORY_NAME
+						    FROM IKEP4_FR_LINEREPLY A, IKEP4_FR_ITEM M, IKEP4_FR_DISCUSSION B, IKEP4_EV_USER C, IKEP4_EV_JOB_TITLE D, IKEP4_FR_CATEGORY E
+						    WHERE E.PORTAL_ID = #portalId#
+						    <isNotEmpty prepend="AND" property="isBest">
+						    	A.BEST_LINEREPLY = 1
+						    </isNotEmpty>
+						    <isNotEmpty prepend="AND" property="userId">
+						    	 A.REGISTER_ID = #userId#
+						    </isNotEmpty>
+						    <isNotEmpty prepend="AND" property="itemDelete">
+						    	A.LINEREPLY_DELETE = #itemDelete#
+						    </isNotEmpty>
+						    <isNotEmpty prepend="AND" property="limitDate" >
+							    B.REGIST_DATE &gt; SYSDATE - #limitDate#
+							</isNotEmpty>
+							<isNotEmpty prepend="AND" property="categoryId" >
+							    E.CATEGORY_ID = #categoryId#
+							</isNotEmpty>
+						    AND A.ITEM_ID = M.ITEM_ID
+						    AND M.DISCUSSION_ID = B.DISCUSSION_ID
+						    AND A.REGISTER_ID = C.USER_ID
+							AND C.JOB_TITLE_CODE = D.JOB_TITLE_CODE
+							AND B.CATEGORY_ID = E.CATEGORY_ID
+						    ORDER BY B.DISCUSSION_ID DESC, A.ITEM_ID DESC, A.LINEREPLY_ID DESC
+						    
+						  ) F
+	                WHERE   ROWNUM &lt;= #endRowIndex#
+	                	
+	        ) R, IKEP4_EV_USER X, IKEP4_EV_JOB_TITLE Y
+	        WHERE R.ITEM_REGISTER_ID = X.USER_ID
+				AND X.JOB_TITLE_CODE = Y.JOB_TITLE_CODE
+	      		AND   NUM &gt; #startRowIndex#
+    ) O, IKEP4_EV_USER P, IKEP4_EV_JOB_TITLE Q
+     WHERE  O.DISCUSSION_REGISTER_ID = P.USER_ID
+	AND P.JOB_TITLE_CODE = Q.JOB_TITLE_CODE
+  </select>
+  
+  
+  
+  
+  
+  
+  <select id="getCountListWithItemDiscussion" resultClass="int" parameterClass="FrSearch" >
+       SELECT  			/* [FrLinereply_SqlMap.xml] FrLinereply.getCountListWithItemDiscussion */
+       		COUNT(A.LINEREPLY_ID) 
+    FROM IKEP4_FR_LINEREPLY A, IKEP4_FR_ITEM M, IKEP4_FR_DISCUSSION B, IKEP4_FR_CATEGORY E
+    WHERE E.PORTAL_ID = #portalId#
+    <isNotEmpty prepend="AND" property="isBest">
+    	A.BEST_LINEREPLY = 1
+    </isNotEmpty>
+    <isNotEmpty prepend="AND" property="userId">
+    	 A.REGISTER_ID = #userId#
+    </isNotEmpty>
+    <isNotEmpty prepend="AND" property="itemDelete">
+    	A.LINEREPLY_DELETE = #itemDelete#
+    </isNotEmpty>
+    <isNotEmpty prepend="AND" property="limitDate" >
+	    B.REGIST_DATE &gt; SYSDATE - #limitDate#
+	</isNotEmpty>
+	<isNotEmpty prepend="AND" property="categoryId" >
+	    E.CATEGORY_ID = #categoryId#
+	</isNotEmpty>
+		AND A.ITEM_ID = M.ITEM_ID
+	    AND M.DISCUSSION_ID = B.DISCUSSION_ID
+		AND B.CATEGORY_ID = E.CATEGORY_ID				    
+  </select>
+  
+  
+  
+  
+  
+  
+   <select id="listLastWithItemDiscussion" resultMap="FrLinereplyResultWithItemAndDiscussion" parameterClass="FrSearch" >
+     SELECT 							/* [FrLinereply_SqlMap.xml] FrLinereply.listLastWithItemDiscussion */
+     	O.* 
+     	, P.TEAM_NAME DISCUSSION_TEAM_NAME
+     	, Q.JOB_TITLE_NAME DISCUSSION_JOB_TITLE_NAME
+     	,P.USER_ENGLISH_NAME		DISCUSSION_USER_ENG_NAME
+  	  	,P.TEAM_ENGLISH_NAME		DISCUSSION_TEAM_ENG_NAME
+  	  	,Q.JOB_TITLE_ENGLISH_NAME	DISCUSSION_JOB_TITLE_ENG_NAME
+     FROM (
+	     	SELECT  									
+	          		F.*
+	          		, X.TEAM_NAME 				ITEM_TEAM_NAME
+	          		, Y.JOB_TITLE_NAME 			ITEM_JOB_TITLE_NAME
+	          		, X.USER_ENGLISH_NAME		ITEM_USER_ENGLISH_NAME
+				  	, X.TEAM_ENGLISH_NAME		ITEM_TEAM_ENGLISH_NAME
+				  	, Y.JOB_TITLE_ENGLISH_NAME	ITEM_JOB_TITLE_ENGLISH_NAME
+		    FROM  (
+                      SELECT
+					   <include refid="FrLinereply_Column_List" />
+					    ,M.TITLE 			ITEM_TITLE
+					    ,M.LINEREPLY_COUNT 	ITEM_LINEREPLY_COUNT
+					    ,M.REGISTER_NAME 	ITEM_REGISTER_NAME 
+					    ,M.REGISTER_ID 		ITEM_REGISTER_ID 
+					    ,M.UPDATE_DATE 		ITEM_UPDATE_DATE 
+						,E.CATEGORY_NAME
+						,B.DISCUSSION_TITLE
+						,B.DISCUSSION_ITEM_COUNT 
+						,B.DISCUSSION_REGISTER_NAME 
+						,B.DISCUSSION_REGISTER_ID 
+						,B.DISCUSSION_UPDATE_DATE 
+				      FROM IKEP4_FR_LINEREPLY A, IKEP4_FR_ITEM M, IKEP4_EV_USER C, IKEP4_EV_JOB_TITLE D, IKEP4_FR_CATEGORY E,
+					    	(
+					    	SELECT  									
+				          		*
+					      	FROM    (
+						    	 SELECT  ROWNUM NUM, AF.*
+				                 FROM
+				                    (
+							    		SELECT  
+								    	TITLE  				DISCUSSION_TITLE
+									    ,ITEM_COUNT 		DISCUSSION_ITEM_COUNT 
+									    ,REGISTER_NAME 		DISCUSSION_REGISTER_NAME 
+									    ,REGISTER_ID 		DISCUSSION_REGISTER_ID 
+									    ,UPDATE_DATE 		DISCUSSION_UPDATE_DATE 
+									    ,DISCUSSION_ID 	 
+									    ,CATEGORY_ID
+							    		FROM IKEP4_FR_DISCUSSION
+							    		WHERE PORTAL_ID = #portalId#
+								    		<isNotEmpty prepend="AND" property="limitDate" >
+											    REGIST_DATE &gt; SYSDATE - #limitDate#
+											</isNotEmpty>
+											<isNotEmpty prepend="AND" property="userId">
+										    	 REGISTER_ID = #userId#
+										    </isNotEmpty>
+										    <isNotEmpty prepend="AND" property="categoryId" >
+											    CATEGORY_ID = #categoryId#
+											</isNotEmpty>
+										ORDER BY 
+						    				DISCUSSION_ID DESC
+									) AF
+									WHERE   ROWNUM &lt;= #endRowIndex#
+								)
+								WHERE NUM &gt; #startRowIndex#
+					    	)B
+				    WHERE 
+					    A.ITEM_ID = M.ITEM_ID
+					    AND M.DISCUSSION_ID = B.DISCUSSION_ID
+					    AND A.REGISTER_ID = C.USER_ID
+						AND C.JOB_TITLE_CODE = D.JOB_TITLE_CODE
+						AND B.CATEGORY_ID = E.CATEGORY_ID
+						<isNotEmpty prepend="AND" property="itemDelete">
+					    	A.LINEREPLY_DELETE = #itemDelete#
+					    </isNotEmpty>
+					    <isNotEmpty prepend="AND" property="isBest">
+					    	A.BEST_LINEREPLY = 1
+					    </isNotEmpty>
+				    ORDER BY 
+				    	B.DISCUSSION_ID DESC, A.ITEM_ID DESC, A.LINEREPLY_ID DESC
+					    
+			  ) F, IKEP4_EV_USER X, IKEP4_EV_JOB_TITLE Y
+			 WHERE 
+			  	F.ITEM_REGISTER_ID = X.USER_ID
+				AND X.JOB_TITLE_CODE = Y.JOB_TITLE_CODE
+	                	
+    ) O, IKEP4_EV_USER P, IKEP4_EV_JOB_TITLE Q
+     WHERE  
+     	O.DISCUSSION_REGISTER_ID = P.USER_ID
+		AND P.JOB_TITLE_CODE = Q.JOB_TITLE_CODE
+  </select>
+  
+  
+  <select id="getCountListLastWithItemDiscussion" resultClass="int" parameterClass="FrSearch" >
+      SELECT				/* [FrLinereply_SqlMap.xml] FrLinereply.getCountListLastWithItemDiscussion */
+		  COUNT(B.DISCUSSION_ID)
+      FROM IKEP4_FR_LINEREPLY A, IKEP4_FR_ITEM M,
+	    	(
+	    	SELECT  
+			    DISCUSSION_ID 	 
+	    	FROM IKEP4_FR_DISCUSSION
+	    	WHERE PORTAL_ID = #portalId#
+	    		<isNotEmpty prepend="AND" property="limitDate" >
+				    REGIST_DATE &gt; SYSDATE - #limitDate#
+				</isNotEmpty>
+				<isNotEmpty prepend="AND" property="userId">
+			    	 REGISTER_ID = #userId#
+			    </isNotEmpty>
+			    <isNotEmpty prepend="AND" property="categoryId" >
+				    CATEGORY_ID = #categoryId#
+				</isNotEmpty>
+			ORDER BY 
+   				DISCUSSION_ID DESC
+	    	)B
+    WHERE 
+	    A.ITEM_ID = M.ITEM_ID
+	    AND M.DISCUSSION_ID = B.DISCUSSION_ID
+		<isNotEmpty prepend="AND" property="itemDelete">
+	    	A.LINEREPLY_DELETE = #itemDelete#
+	    </isNotEmpty>
+	    <isNotEmpty prepend="AND" property="isBest">
+	    	A.BEST_LINEREPLY = 1
+	    </isNotEmpty>
+			 
+  </select>
+ 	
+  <update id="update" parameterClass="FrLinereply" >
+    UPDATE IKEP4_FR_LINEREPLY			/* [FrLinereply_SqlMap.xml] FrLinereply.update */
+    SET 
+      	CONTENTS = #contents#,
+      	UPDATER_ID = #updaterId#,
+      	UPDATER_NAME = #updaterName#,
+      	UPDATE_DATE = sysdate
+    WHERE 
+    	LINEREPLY_ID = #linereplyId#
+  </update>
+  
+	<update id="updateStep" parameterClass="FrLinereply">
+		   UPDATE IKEP4_FR_LINEREPLY 		/* [FrLinereply_SqlMap.xml] FrLinereply.updateStep */
+		   SET STEP = STEP +1 
+		   WHERE LINEREPLY_GROUP_ID = #linereplyGroupId#
+		   	AND STEP &gt;= #step#
+	</update>
+  
+	<update id="updateLinereplyDelete" parameterClass="FrLinereply">
+		   UPDATE IKEP4_FR_LINEREPLY 			/* [FrLinereply_SqlMap.xml] FrLinereply.updateLinereplyDelete */
+		   SET LINEREPLY_DELETE = #linereplyDelete# 
+		   WHERE LINEREPLY_ID = #linereplyId#
+	</update>
+	
+	<update id="updateBestLinereply" parameterClass="String">
+		   UPDATE IKEP4_FR_LINEREPLY 		/* [FrLinereply_SqlMap.xml] FrLinereply.updateBestLinereply */
+		   SET BEST_LINEREPLY = 1 
+		   WHERE LINEREPLY_ID = #linereplyId#
+	</update>
+	
+	<update id="updateBestLinereplyInit" >
+		   UPDATE IKEP4_FR_LINEREPLY 		/* [FrLinereply_SqlMap.xml] FrLinereply.updateBestLinereplyInit */
+		   SET BEST_LINEREPLY = 0 
+	</update>
+	
+	<update id="updateRecommendCount" parameterClass="String">
+		   UPDATE IKEP4_FR_LINEREPLY 		/* [FrLinereply_SqlMap.xml] FrLinereply.updateRecommendCount */
+		   SET RECOMMEND_COUNT = (SELECT COUNT(LINEREPLY_ID) FROM IKEP4_FR_RECOMMEND WHERE LINEREPLY_ID = #linereplyId#) 
+		   WHERE LINEREPLY_ID = #linereplyId#
+	</update>
+  
+   <delete id="remove" parameterClass="String" >
+	    DELETE 								/* [FrLinereply_SqlMap.xml] FrLinereply.remove */
+	    FROM IKEP4_FR_LINEREPLY
+	    WHERE 
+	    	LINEREPLY_ID IN(
+	      	SELECT LINEREPLY_ID
+			 FROM IKEP4_FR_LINEREPLY
+            START WITH LINEREPLY_ID =  #linereplyId# 
+            CONNECT BY PRIOR LINEREPLY_ID = LINEREPLY_PARENT_ID
+	       ) 
+   </delete>
+   
+    <delete id="removeByItemId" parameterClass="String" >
+	    DELETE 					/* [FrLinereply_SqlMap.xml] FrLinereply.removeByItemId */
+	    FROM IKEP4_FR_LINEREPLY
+	    WHERE 
+	    	ITEM_ID = #itemId#
+   </delete>
+   
+   <delete id="removeByDiscussionId" parameterClass="String" >
+	    DELETE 					/* [FrLinereply_SqlMap.xml] FrLinereply.removeByDiscussionId */
+	    FROM IKEP4_FR_LINEREPLY
+	    WHERE 
+	    	ITEM_ID IN (
+				    	SELECT  ITEM_ID					
+					    FROM IKEP4_FR_ITEM		
+					    WHERE DISCUSSION_ID = #discussionId#
+					   )
+   </delete>
+   
+</sqlMap>

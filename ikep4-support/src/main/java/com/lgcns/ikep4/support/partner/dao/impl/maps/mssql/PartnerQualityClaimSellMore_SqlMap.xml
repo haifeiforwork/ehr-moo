@@ -1,0 +1,457 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="support.partner.dao.partnerQualityClaimSellMore">
+
+<typeAlias alias="PartnerQualitySub" type="com.lgcns.ikep4.support.partner.model.PartnerQualitySub" />
+<typeAlias alias="PartnerQualityClaimSellMoreSearchCondition" type="com.lgcns.ikep4.support.partner.search.PartnerQualityClaimSellMoreSearchCondition" />
+ 
+   <resultMap id="PartnerQualityClaimSellMoreResult" class="PartnerQualitySub" >
+   	<result column="RNUM" 		property="rowNum" 			jdbcType="VARCHAR" />
+    <result column="LINEREPLY_ID" 			property="linereplyId" 			/>
+    <result column="ITEM_TYPE" 				property="itemType" 				/>
+    <result column="ITEM_ID" 				property="itemId" 				/>
+    <result column="LINEREPLY_GROUP_ID" 	property="linereplyGroupId" 	/>
+    <result column="LINEREPLY_PARENT_ID" 	property="linereplyParentId" 	/>
+    <result column="STEP" 					property="step" 				/>
+    <result column="INDENTATION" 			property="indentation" 			/>
+    <result column="COUNSEL_CONTENTS"				property="counselContents" 			/>
+    <result column="RECOMMEND_COUNT" 		property="recommendCount" 		/>
+    <result column="LINEREPLY_DELETE" 		property="linereplyDelete" 		/>
+    <result column="UPDATER_ID" 			property="updaterId" 			/>
+    <result column="UPDATER_NAME" 			property="updaterName" 			/>
+    <result column="UPDATE_DATE" 			property="updateDate" 			/>
+    <result column="REGISTER_ID" 			property="registerId" 			/>
+    <result column="REGISTER_NAME" 			property="registerName" 		/>
+    <result column="REGIST_DATE" 			property="registDate" 			/>
+    <result column="COUNSEL_DATE" 		property="counselDate" 			/>
+    <result column="COUNSELOR" 			property="counselor" 			/>
+    <result column="REQUESTOR" 			property="requestor" 			/>
+    <result column="COUNSEL_TITLE" 			property="counselTitle" 			/>
+    <result column="COUNSEL_TYPE" 			property="counselType" 			/>
+    <result column="COMMENT1" 			property="comment1" 			/>
+    <result column="COMMENT2" 			property="comment2" 			/>
+    <result column="COMMENT_REGISTER_ID1" 			property="commentRegisterId1" 			/>
+    <result column="COMMENT_REGIST_DATE1" 			property="commentRegistDate1" 			/>
+    <result column="COMMENT_REGISTER_ID2" 			property="commentRegisterId2" 			/>
+    <result column="COMMENT_REGIST_DATE2" 			property="commentRegistDate2" 			/>
+    <result column="COMMENTUSER1" 			property="commentuser1" 			/>
+    <result column="COMMENTUSER2" 			property="commentuser2" 			/>
+    <result column="COMMENTUSERTEAM1" 			property="commentuserTeam1" 			/>
+    <result column="COMMENTUSERTEAM2" 			property="commentuserTeam2" 			/>
+    <result column="PARTNER_NAME" 			property="partnerName" 			/>
+    <result column="COMMENTAUTHUSER1" 			property="commentAuthUser1" 			/>
+    <result column="COMMENTAUTHUSER2" 			property="commentAuthUser2" 			/>
+    <result column="SUB_PARTNER_NAME" 			property="subPartnerName" 			/>
+  </resultMap>
+ 
+ <sql id="PartnerQualityClaimSellMore_Column_List" >
+     A.LINEREPLY_ID
+    ,A.ITEM_TYPE 
+    ,A.ITEM_ID
+    ,A.LINEREPLY_GROUP_ID
+    ,A.LINEREPLY_PARENT_ID
+    ,A.STEP
+    ,A.INDENTATION
+    ,A.CONTENTS
+    ,A.RECOMMEND_COUNT
+    ,A.LINEREPLY_DELETE 
+    ,A.UPDATER_ID
+    ,A.UPDATER_NAME
+    ,A.UPDATE_DATE   
+    ,A.REGISTER_ID
+    ,A.REGISTER_NAME
+    ,A.REGIST_DATE
+    ,C.TEAM_NAME
+	,D.JOB_TITLE_NAME
+	,C.USER_ENGLISH_NAME
+  	,C.TEAM_ENGLISH_NAME
+  	,D.JOB_TITLE_ENGLISH_NAME
+  	,C.PICTURE_PATH
+	,C.PROFILE_PICTURE_PATH
+  </sql>
+  
+    <sql id="sqlExtendColumnList"> 
+    linereply.LINEREPLY_ID        AS LINEREPLY_ID,
+    linereply.ITEM_TYPE           AS ITEM_TYPE,         
+    linereply.ITEM_ID             AS ITEM_ID,            
+    linereply.LINEREPLY_GROUP_ID  AS LINEREPLY_GROUP_ID, 
+    linereply.LINEREPLY_PARENT_ID AS LINEREPLY_PARENT_ID,
+    linereply.STEP                AS STEP,               
+    linereply.INDENTATION         AS INDENTATION,        
+    linereply.COUNSEL_CONTENTS            AS COUNSEL_CONTENTS,           
+    linereply.RECOMMEND_COUNT     AS RECOMMEND_COUNT,           
+    linereply.LINEREPLY_DELETE    AS LINEREPLY_DELETE,          
+    linereply.UPDATER_ID          AS UPDATER_ID,         
+    linereply.UPDATER_NAME        AS UPDATER_NAME,       
+    linereply.UPDATE_DATE         AS UPDATE_DATE,
+    linereply.REGISTER_ID         AS REGISTER_ID,        
+    linereply.REGISTER_NAME       AS REGISTER_NAME,      
+    linereply.REGIST_DATE         AS REGIST_DATE,    
+    linereply.COUNSEL_DATE    AS COUNSEL_DATE,
+    linereply.COUNSELOR      AS COUNSELOR,
+    linereply.REQUESTOR          AS REQUESTOR,
+	linereply.COUNSEL_TITLE		  AS COUNSEL_TITLE,
+	linereply.COUNSEL_TYPE 		  AS COUNSEL_TYPE,
+	linereply.COMMENT1 		  AS COMMENT1, 
+	linereply.COMMENT2 		  AS COMMENT2,  
+	linereply.COMMENT_REGISTER_ID1 		  AS COMMENT_REGISTER_ID1, 
+	linereply.COMMENT_REGIST_DATE1 		  AS COMMENT_REGIST_DATE1, 
+	linereply.COMMENT_REGISTER_ID2 		  AS COMMENT_REGISTER_ID2, 
+	linereply.COMMENT_REGIST_DATE2 		  AS COMMENT_REGIST_DATE2    	
+  </sql>  
+
+ <!-- ANSI -->
+ <select id="get" parameterClass="string" resultMap="PartnerQualityClaimSellMoreResult"> 
+   SELECT /*  [PartnerQualityClaimSellMore_SqlMap.xml] support.partner.partnerQualityClaimSellMore.get */
+   <include refid="support.partner.dao.partnerQualityClaimSellMore.sqlExtendColumnList" />
+   , '' AS COMMENTUSER1
+   , '' AS COMMENTUSER2
+   , '' AS COMMENTUSERTEAM1
+   , '' AS COMMENTUSERTEAM2
+   , '' AS RNUM
+   ,'' AS COMMENTAUTHUSER1
+   ,'' AS COMMENTAUTHUSER2
+   ,'' AS SUB_PARTNER_NAME
+   , mst.PARTNER_NAME AS PARTNER_NAME
+	FROM  PARTNER_COUNSEL_HISTORY_SUB linereply 
+	inner join PARTNER_COUNSEL_HISTORY mst
+	on mst.seqnum = linereply.item_id
+    WHERE linereply.LINEREPLY_ID = #linereplyId# 
+ </select>
+
+
+<insert id="create" parameterClass="PartnerQualitySub" > 
+
+	INSERT INTO  /* [PartnerQualityClaimSellMore_SqlMap.xml] support.partner.partnerQualityClaimSellMore.create  */
+		PARTNER_COUNSEL_HISTORY_SUB(
+		    LINEREPLY_ID,
+			ITEM_TYPE,
+			ITEM_ID,
+			LINEREPLY_GROUP_ID,
+			LINEREPLY_PARENT_ID,
+			STEP,
+			INDENTATION,
+			COUNSEL_CONTENTS,
+			RECOMMEND_COUNT,
+			LINEREPLY_DELETE,
+			UPDATER_ID,
+			UPDATER_NAME,
+			UPDATE_DATE,
+			REGISTER_ID,
+			REGISTER_NAME,
+			REGIST_DATE,
+			COUNSEL_DATE,
+			COUNSELOR,
+			REQUESTOR,
+			COUNSEL_TITLE,
+			COUNSEL_TYPE,
+			COMMENT1,
+			COMMENT2,
+			COMMENT_REGISTER_ID1,
+			COMMENT_REGIST_DATE1,
+			COMMENT_REGISTER_ID2,
+			COMMENT_REGIST_DATE2	
+		)VALUES(
+		#linereplyId#,
+		#itemType#,
+		#itemId#,
+		#linereplyGroupId#,
+		#linereplyParentId#,
+		#step#,
+		#indentation#,
+		#counselContents#,
+		#recommendCount#,
+		#linereplyDelete#,
+		#updaterId#,
+		#updaterName#,
+		<isNotEmpty property="updateDate">
+			#updateDate#,
+		</isNotEmpty>
+		<isEmpty property="updateDate">
+			CURRENT_TIMESTAMP,
+		</isEmpty>	
+		#registerId#,
+		#registerName#,
+		<isNotEmpty property="registDate">
+			#registDate#,
+		</isNotEmpty>
+		<isEmpty property="registDate">
+			CURRENT_TIMESTAMP,
+		</isEmpty>	
+		#counselDate#,
+		#counselor#,
+		#requestor#,
+		#counselTitle#,
+		#counselType#,
+		#comment1#,
+		#comment2#,
+		#commentRegisterId1#,
+		#commentRegistDate1#,
+		#commentRegisterId2#,
+		#commentRegistDate2#
+		)
+
+</insert>
+
+
+
+  <!-- MS SQL -->
+  <select id="listBySearchCondition" parameterClass="PartnerQualityClaimSellMoreSearchCondition" resultMap="PartnerQualityClaimSellMoreResult">  
+	SELECT /* * [PartnerQualityClaimSellMore_SqlMap.xml] support.partner.partnerQualityClaimSellMore.listBySearchCondition */ 
+	       *
+	FROM ( 
+	     SELECT A.*, 
+	     (SELECT ISNULL(U.user_name+' '+J.JOB_DUTY_NAME, '') 
+		 FROM IKEP4_EV_USER U INNER JOIN IKEP4_EV_JOB_DUTY J ON U.JOB_DUTY_CODE = J.JOB_DUTY_CODE AND U.USER_ID = A.COMMENT_REGISTER_ID1 ) AS COMMENTUSER1,
+		 (SELECT ISNULL(U.TEAM_NAME, '') 
+		 FROM IKEP4_EV_USER U WHERE U.USER_ID = A.COMMENT_REGISTER_ID1 ) AS COMMENTUSERTEAM1,
+		 (SELECT ISNULL(U.user_name+' '+J.JOB_DUTY_NAME, '') 
+		 FROM IKEP4_EV_USER U INNER JOIN IKEP4_EV_JOB_DUTY J ON U.JOB_DUTY_CODE = J.JOB_DUTY_CODE AND U.USER_ID = A.COMMENT_REGISTER_ID2 ) AS COMMENTUSER2,
+		 (SELECT ISNULL(U.TEAM_NAME, '') 
+		 FROM IKEP4_EV_USER U WHERE U.USER_ID = A.COMMENT_REGISTER_ID2 ) AS COMMENTUSERTEAM2,
+		 '' AS PARTNER_NAME,
+		 (select U.user_id from IKEP4_EV_USER U
+			where U.user_id in(
+			select UUG.user_id from IKEP4_EV_USER_GROUP UUG
+			where UUG.group_id = (
+			select UG.group_id from IKEP4_EV_USER_GROUP UG
+			where UG.user_id = A.REGISTER_ID
+			and UG.group_id in (select G.group_id from IKEP4_EV_GROUP G
+			where  G.group_type_id = 'G0001'
+			and G.view_option = '1')))
+			and U.user_status = 'C'
+			and U.leader = '1'
+			and U.job_duty_code in ('18','68')) AS COMMENTAUTHUSER1,  
+		 (select U.user_id from IKEP4_EV_USER U
+			where U.user_id in(
+			select UUG.user_id from IKEP4_EV_USER_GROUP UUG
+			where UUG.group_id = (
+			select GG.parent_group_id from IKEP4_EV_GROUP GG
+			where GG.group_id = (
+			select UG.group_id from IKEP4_EV_USER_GROUP UG
+			where UG.user_id = A.REGISTER_ID
+			and UG.group_id in (select G.group_id from IKEP4_EV_GROUP G
+			where  G.group_type_id = 'G0001'
+			and G.view_option = '1'))))
+			and U.user_status = 'C'
+			and U.leader = '1'
+			and U.job_duty_code in ('12', '13', '14', '20', '27', '67','31','32','61')) AS COMMENTAUTHUSER2,
+			(select C.PARTNER_NAME from PARTNER_COUNSEL_HISTORY C WHERE C.SEQNUM = ITEM_ID) AS SUB_PARTNER_NAME
+	     FROM ( 
+	         /* START========================================= */
+	         SELECT <include refid="support.partner.dao.partnerQualityClaimSellMore.sqlExtendColumnList" />
+	         		, Row_number() OVER (ORDER BY linereply.COUNSEL_DATE DESC, linereply.UPDATE_DATE DESC) AS RNUM
+	         FROM (
+		         SELECT *
+				 FROM  PARTNER_COUNSEL_HISTORY_SUB WITH (NOLOCK) 
+				 WHERE ITEM_ID = #itemId# 
+				 AND   ITEM_TYPE = #itemType#
+			 ) linereply 
+			 /* ===========================================END  */ 
+	<![CDATA[   
+	    ) A WHERE RNUM <=  #endRowIndex# /* 종료  */
+	) TBL WHERE RNUM >  #startRowIndex# /* 시작 */
+	]]> 
+  </select>  
+
+   <!-- ANSI -->
+  <select id="countBySearchCondition" parameterClass="PartnerQualityClaimSellMoreSearchCondition" resultClass="int">  
+	SELECT /* [PartnerQualityClaimSellMore_SqlMap.xml] support.partner.partnerQualityClaimSellMore.countBySearchCondition */ COUNT(*) 
+    FROM (
+	    SELECT *
+		FROM  PARTNER_COUNSEL_HISTORY_SUB WITH (NOLOCK)
+		WHERE ITEM_ID = #itemId#
+		AND   ITEM_TYPE = #itemType# 
+	) linereply INNER JOIN IKEP4_EV_USER usr 
+	ON    linereply.REGISTER_ID = usr.USER_ID
+  </select> 
+
+
+  <!-- ANSI -->
+  <update id="updateStep" parameterClass="PartnerQualitySub"> 
+    UPDATE PARTNER_COUNSEL_HISTORY_SUB /* [PartnerQualityClaimSellMore_SqlMap.xml] support.partner.partnerQualityClaimSellMore.updateStep */
+    SET   STEP = STEP + 1 
+    WHERE LINEREPLY_GROUP_ID = #linereplyGroupId#
+    AND   STEP >= #step#  
+  </update>
+
+<!-- ANSI -->
+  <update id="update" parameterClass="PartnerQualitySub"> 
+    UPDATE PARTNER_COUNSEL_HISTORY_SUB /* [PartnerQualityClaimSellMore_SqlMap.xml] support.partner.partnerQualityClaimSellMore.update */
+    SET   
+          COUNSEL_CONTENTS            = #counselContents#,
+          UPDATER_ID          = #updaterId#,
+          UPDATER_NAME        = #updaterName#,
+          UPDATE_DATE         = CURRENT_TIMESTAMP,
+          COUNSEL_DATE		  = #counselDate#,
+          COUNSELOR	  = #counselor#,
+	      REQUESTOR= #requestor#,
+	      COUNSEL_TITLE		  = #counselTitle#,
+	      COUNSEL_TYPE		  = #counselType#
+    WHERE LINEREPLY_ID = #linereplyId# 
+  </update>
+  
+  <update id="updateTlComment" parameterClass="PartnerQualitySub"> 
+    UPDATE PARTNER_COUNSEL_HISTORY_SUB /* [PartnerQualityClaimSellMore_SqlMap.xml] support.partner.partnerQualityClaimSellMore.update */
+    SET   
+	      COMMENT1		  = #comment1#,
+	      COMMENT_REGISTER_ID1		  = #commentRegisterId1#,
+	      COMMENT_REGIST_DATE1		  = CURRENT_TIMESTAMP
+    WHERE LINEREPLY_ID = #linereplyId# 
+  </update>
+  
+  <update id="updateOfComment" parameterClass="PartnerQualitySub"> 
+    UPDATE PARTNER_COUNSEL_HISTORY_SUB /* [PartnerQualityClaimSellMore_SqlMap.xml] support.partner.partnerQualityClaimSellMore.update */
+    SET   
+	      COMMENT2		  = #comment2#,
+	      COMMENT_REGISTER_ID2		  = #commentRegisterId2#,
+	      COMMENT_REGIST_DATE2		  = CURRENT_TIMESTAMP
+    WHERE LINEREPLY_ID = #linereplyId# 
+  </update>
+
+  <update id="updateSubMaster" parameterClass="PartnerQualitySub"> 
+    UPDATE PARTNER_COUNSEL_HISTORY_SUB /* [PartnerQualityClaimSellMore_SqlMap.xml] support.partner.partnerQualityClaimSellMore.updateSubMaster */
+    SET   CONTENTS            = #contents#,
+          UPDATER_ID          = #updaterId#,
+          UPDATER_NAME        = #updaterName#,
+          UPDATE_DATE         = CURRENT_TIMESTAMP,
+          COUNSEL_SUB_DATE	  = #counselDateSub#,
+          COUNSELOR_SUB		  = #counselorSub#,
+          JIJONG_SUB 		  = #jijongSub#,
+          FACTORY_SUB		  = #factorySub#,
+          FACTORY_SUB_NAME		  = #factorySubName#,
+          CLAIM_GUBUN_SUB	  = #claimGubunSub#,
+	      CLAIM_GUBUN_SUB_NAME= #claimGubunSubName#,
+	      WEIGHT_SUB		  = #weightSub#,
+	      SUBJECT_SUB		  = #subjectSub#
+    WHERE ITEM_ID = #itemId#
+    AND MASTER_SUB = 'Y'
+  </update>
+
+  <!-- ANSI -->
+  <update id="logicalDelete" parameterClass="PartnerQualitySub">  
+    UPDATE PARTNER_COUNSEL_HISTORY_SUB /* [PartnerQualityClaimSellMore_SqlMap.xml] support.partner.partnerQualityClaimSellMore.logicalDelete */
+    SET   LINEREPLY_DELETE    = 1,
+          UPDATER_ID          = #updaterId#,
+          UPDATER_NAME        = #updaterName#,
+          UPDATE_DATE         = CURRENT_TIMESTAMP  
+    WHERE LINEREPLY_ID = #linereplyId# 
+  </update>  
+
+
+  <!-- ANSI -->
+  <select id="countChildren" parameterClass="String" resultClass="int">  
+	SELECT /* [PartnerQualityClaimSellMore_SqlMap.xml] support.partner.partnerQualityClaimSellMore.countBySearchCondition */ 
+           COUNT(*)
+	FROM   PARTNER_COUNSEL_HISTORY_SUB WITH (NOLOCK)
+    WHERE  LINEREPLY_PARENT_ID = #linereplyId#  
+  </select> 
+
+
+
+  
+  <!-- ANSI -->
+  <delete id="physicalDelete" parameterClass="string"> 
+    DELETE FROM PARTNER_COUNSEL_HISTORY_SUB /* [PartnerQualityClaimSellMore_SqlMap.xml] support.partner.partnerQualityClaimSellMore.physicalDelete */
+    WHERE LINEREPLY_ID = #linereplyId# 
+  </delete>    
+
+  <!-- MS SQL -->
+  <delete id="physicalDeleteThreadByQualityClaimSellMoreId" parameterClass="string">  
+  	WITH CTE AS (
+  		SELECT	LINEREPLY_ID 
+	    FROM 	PARTNER_COUNSEL_HISTORY_SUB
+        WHERE	LINEREPLY_ID =  #linereplyId# 
+        UNION ALL
+        SELECT	TBL.LINEREPLY_ID 
+	    FROM 	PARTNER_COUNSEL_HISTORY_SUB TBL, CTE
+	    WHERE	CTE.LINEREPLY_ID = TBL.LINEREPLY_PARENT_ID 
+  	)
+ 	DELETE FROM  PARTNER_COUNSEL_HISTORY_SUB /* [PartnerQualityClaimSellMore_SqlMap.xml] support.partner.partnerQualityClaimSellMore.physicalDeleteThread */
+ 	WHERE  LINEREPLY_ID IN ( 
+	      	SELECT LINEREPLY_ID 
+		    FROM CTE
+	)   
+  </delete>  
+
+
+	<select id="listHistorysMemo" resultClass="java.util.HashMap">
+		SELECT  
+			/* [PartnerQualityClaimSellMore_SqlMap.xml] support.partner.partnerQualityClaimSellMore.listHistorysMemo */
+			CASE(FLAG)
+			WHEN 'Counsel' THEN
+				'CH'
+			ELSE
+				'CL'
+			END AS FLAG, CONVERT(NVARCHAR, A.SEQNUM) SEQNUM, A.MEMO_CONTENT, B.USER_ID,
+			B.USER_NAME, CONVERT(NVARCHAR, A.CREATEDATE) AS CREATEDATE
+				
+			FROM HISTORYS_MEMO A WITH (NOLOCK) INNER JOIN IKEP4_EV_USER B WITH (NOLOCK)
+			ON A.EPUSERID = B.user_id
+	</select>
+
+	<select id="getUserInfoList"  resultClass="User">
+		select user_id "userId", user_name "userName", USER_ENGLISH_NAME "userEnglishName", mail "mail", MAIL_PASSWORD "mailPassword"
+		from ikep4_ev_user
+		where user_id in (select user_id from IKEP4_EV_USER
+		where user_id in(
+		select user_id from IKEP4_EV_USER_GROUP
+		where group_id = (
+		select group_id from IKEP4_EV_USER_GROUP
+		where user_id = #userId#
+		and group_id in (select group_id from IKEP4_EV_GROUP
+		where  group_type_id = 'G0001'
+		and view_option = '1')))
+		and user_status = 'C'
+		and leader = '1'
+		and job_duty_code in ('18','68')
+		union all
+		select user_id from IKEP4_EV_USER
+		where user_id in(
+		select user_id from IKEP4_EV_USER_GROUP
+		where group_id = (
+		select parent_group_id from IKEP4_EV_GROUP
+		where group_id = (
+		select group_id from IKEP4_EV_USER_GROUP
+		where user_id = #userId#
+		and group_id in (select group_id from IKEP4_EV_GROUP
+		where  group_type_id = 'G0001'
+		and view_option = '1'))))
+		and user_status = 'C'
+		and leader = '1'
+		and job_duty_code in ('12', '13', '14', '20', '27', '67','31','32','61'))
+	</select>
+	
+	<select id="getUserInfoList2"  resultClass="User" parameterClass="string">
+		select user_id "userId", user_name "userName", USER_ENGLISH_NAME "userEnglishName", mail "mail", MAIL_PASSWORD "mailPassword"
+		from ikep4_ev_user
+		where user_id in (select register_id from PARTNER_COUNSEL_HISTORY_SUB
+		where linereply_id = #id#)
+	</select>
+
+	<select id="getUserInfoList3"  resultClass="User" parameterClass="string">
+		select user_id "userId", user_name "userName", USER_ENGLISH_NAME "userEnglishName", mail "mail", MAIL_PASSWORD "mailPassword"
+		from ikep4_ev_user
+		where user_id in (select user_id from IKEP4_EV_USER
+		where user_id in(
+		select user_id from IKEP4_EV_USER_GROUP
+		where group_id = (
+		select group_id from IKEP4_EV_USER_GROUP
+		where user_id = (select register_id from PARTNER_COUNSEL_HISTORY_SUB
+		where linereply_id = #id#)
+		and group_id in (select group_id from IKEP4_EV_GROUP
+		where  group_type_id = 'G0001'
+		and view_option = '1')))
+		and user_status = 'C'
+		and leader = '1'
+		and job_duty_code in ('18','68'))
+	</select>
+
+
+
+
+
+
+
+
+</sqlMap>

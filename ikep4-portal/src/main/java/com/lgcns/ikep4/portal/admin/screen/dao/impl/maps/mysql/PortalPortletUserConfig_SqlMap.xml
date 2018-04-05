@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="portal.admin.screen.portalPortletUserConfig" >
+	<typeAlias alias="PortalPortletUserConfig" type="com.lgcns.ikep4.portal.admin.screen.model.PortalPortletUserConfig"/>
+	
+	<resultMap id="result" class="PortalPortletUserConfig">
+		<result column="PORTLET_CONFIG_ID" 	property="portletConfigId" 	columnIndex="1"/>
+		<result column="PROPERTY_NAME" 		property="propertyName" 	columnIndex="2"/>
+		<result column="PROPERTY_VALUE"		property="propertyValue" 	columnIndex="3"/>
+		<result column="REGISTER_ID"		property="registerId"		columnIndex="4"/>
+		<result column="REGISTER_NAME"		property="registerName"		columnIndex="5"/>
+		<result column="REGIST_DATE"		property="registDate"		columnIndex="6"/>
+		<result column="UPDATER_ID"			property="updaterId"		columnIndex="7"/>
+		<result column="UPDATER_NAME"		property="updaterName"		columnIndex="8"/>
+		<result column="UPDATE_DATE"		property="updateDate"		columnIndex="9"/>
+	</resultMap>
+
+	<select id="read" parameterClass="java.util.HashMap" resultMap="result"> 
+		<![CDATA[
+		/* [PortalPortletUser_SqlMap.xml] portal.admin.screen.portalPortletUserConfig.get */
+    	SELECT				PORTLET_CONFIG_ID,
+							PROPERTY_NAME,
+							PROPERTY_VALUE,
+							REGISTER_ID,
+							REGISTER_NAME,
+							DATE_FORMAT(REGIST_DATE, '%Y-%m-%d') AS REGIST_DATE,
+							UPDATER_ID,
+							UPDATER_NAME,
+							DATE_FORMAT(UPDATE_DATE, '%Y-%m-%d') AS UPDATE_DATE
+    	FROM  				IKEP4_PO_PORTLET_USER_CONFIG
+    	WHERE 				PORTLET_CONFIG_ID = #portletConfigId# 
+    	AND					PROPERTY_NAME = #propertyName#
+    	]]>
+ 	</select>
+ 	
+ 	<select id="count" parameterClass="java.util.HashMap" resultClass="java.lang.String"> 
+		<![CDATA[
+		/* [PortalPortletUser_SqlMap.xml] portal.admin.screen.portalPortletUserConfig.count */
+    	SELECT				COUNT(PORTLET_CONFIG_ID)
+    	FROM  				IKEP4_PO_PORTLET_USER_CONFIG
+    	WHERE 				PORTLET_CONFIG_ID = #portletConfigId# 
+    	AND					PROPERTY_NAME = #propertyName#
+    	]]>
+ 	</select>
+	
+	<insert id="create" parameterClass="PortalPortletUserConfig"> 
+	<![CDATA[
+	/* [PortalPortletUser_SqlMap.xml] portal.admin.screen.portalPortletUserConfig.create */
+		INSERT INTO IKEP4_PO_PORTLET_USER_CONFIG
+		(PORTLET_CONFIG_ID,
+		PROPERTY_NAME,
+		PROPERTY_VALUE,
+		REGISTER_ID,
+		REGISTER_NAME,
+		REGIST_DATE,
+		UPDATER_ID,
+		UPDATER_NAME,
+		UPDATE_DATE
+		)
+		VALUES
+		(
+		#portletConfigId#,
+		#propertyName#,
+		#propertyValue#,
+		#registerId#,
+		#registerName#,
+		now(),
+		#updaterId#,
+		#updaterName#,
+		now()
+		)
+	]]>
+	</insert>
+	
+	<update id="update" parameterClass="PortalPortletUserConfig"> 
+ 		<![CDATA[
+ 		/* [PortalPortletUser_SqlMap.xml] portal.admin.screen.portalPortletUserConfig.update */
+		UPDATE IKEP4_PO_PORTLET_USER_CONFIG
+		SET
+			PORTLET_CONFIG_ID	=#portletConfigId#
+			,PROPERTY_NAME		=#propertyName#
+			,PROPERTY_VALUE		=#propertyValue#
+			,UPDATER_ID			=#updaterId#
+			,UPDATER_NAME		=#updaterName#
+			,UPDATE_DATE		=now()
+		WHERE 				PORTLET_CONFIG_ID = #portletConfigId# 
+    	AND					PROPERTY_NAME = #propertyName# 
+	]]>
+  	</update>
+	
+	<delete id="remove" parameterClass="java.util.HashMap"> 
+  		<![CDATA[
+  		/* [PortalPortletUser_SqlMap.xml] portal.admin.screen.portalPortletUserConfig.remove */
+    	DELETE 
+    	FROM 				IKEP4_PO_PORTLET_USER_CONFIG 
+    	WHERE 				PORTLET_CONFIG_ID = #portletConfigId# 
+    	AND					PROPERTY_NAME = #propertyName#
+    	]]>
+  	</delete> 
+</sqlMap>

@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="com.lgcns.ikep4.approval.collaboration.common.dao.CommonCode" >
+
+	<typeAlias alias="commonCode" type="com.lgcns.ikep4.approval.collaboration.common.model.CommonCode"/>
+	
+	<resultMap id="commonCodeResultMap" class="commonCode">  
+		<result property="comCd"		column="COM_CD"		jdbcType="VARCHAR"/>
+		<result property="comNm"		column="COM_NM"		jdbcType="VARCHAR"/>
+		<result property="charCol1"		column="CHAR_COL1"	jdbcType="VARCHAR"/>
+		<result property="charCol2"		column="CHAR_COL2"	jdbcType="VARCHAR"/>
+		<result property="charCol3"		column="CHAR_COL3"	jdbcType="VARCHAR"/>
+		<result property="charCol4"		column="CHAR_COL4"	jdbcType="VARCHAR"/>
+		<result property="charCol5"		column="CHAR_COL5"	jdbcType="VARCHAR"/>
+		<result property="numCol1" 		column="NUM_COL1" 	jdbcType="NUMERIC" />
+		<result property="numCol2" 		column="NUM_COL2" 	jdbcType="NUMERIC" />
+		<result property="numCol3" 		column="NUM_COL3" 	jdbcType="NUMERIC" />
+		<result property="numCol4" 		column="NUM_COL4" 	jdbcType="NUMERIC" />
+		<result property="numCol5" 		column="NUM_COL5" 	jdbcType="NUMERIC" />
+	</resultMap>
+	<resultMap id="leaderInfoMap" class="java.util.HashMap">
+		<result property="empNo"		column="EMP_NO"		    jdbcType="java.lang.String"/>
+		<result property="userName"		column="USER_NAME"		jdbcType="java.lang.String"/>
+	</resultMap>
+	
+	<select id="getCommonCodeList" parameterClass="java.util.Map" resultMap="commonCodeResultMap">
+		/* [CommonCode_SqlMap.xml] commonCode.getCommonCodeList */
+		SELECT B.COM_CD		AS COM_CD		/* 공통코드 */
+		     , B.COM_NM		AS COM_NM		/* 공통코드명 */
+		     , B.CHAR_COL1	AS CHAR_COL1	/* 문자형 컬럼1 */
+		     , B.CHAR_COL2	AS CHAR_COL2	/* 문자형 컬럼2 */
+		     , B.CHAR_COL3	AS CHAR_COL3	/* 문자형 컬럼3 */
+		     , B.CHAR_COL4	AS CHAR_COL4	/* 문자형 컬럼4 */
+		     , B.CHAR_COL5	AS CHAR_COL5	/* 문자형 컬럼5 */
+		     , ISNULL( B.NUM_COL1, 0)	AS NUM_COL1		/* 넘버형 컬럼1 */
+		     , ISNULL( B.NUM_COL2, 0)	AS NUM_COL2		/* 넘버형 컬럼2 */
+		     , ISNULL( B.NUM_COL3, 0)	AS NUM_COL3		/* 넘버형 컬럼3 */
+		     , ISNULL( B.NUM_COL4, 0)	AS NUM_COL4		/* 넘버형 컬럼4 */
+		     , ISNULL( B.NUM_COL5, 0)	AS NUM_COL5		/* 넘버형 컬럼5 */
+		  FROM TB_COMMON_GROUP A
+	INNER JOIN TB_COMMON_CODE B
+	        ON A.GRP_CD = B.GRP_CD
+		 WHERE 1 = 1
+		   AND A.GRP_CD = #grpCd#
+	  ORDER BY B.SORT_ORD
+		<isNotEmpty property="sortType">
+			<isEqual property="sortType" compareValue="DESC">
+			DESC
+			</isEqual>
+			<isEqual property="sortType" compareValue="ASC">
+			ASC
+			</isEqual>
+		</isNotEmpty>
+	</select>
+	
+<!-- 	해당 사원의 팀장 정보 -->
+	<select id="getTeamLeaderInfo" parameterClass="String" resultMap="leaderInfoMap">
+		/* [CommonCode_SqlMap.xml] commonCode.getTeamLeaderInfo */
+		
+        SELECT TOP 1 X.EMP_NO
+		     , X.USER_NAME
+		  FROM (
+				SELECT TOP 1 A.EMP_NO
+					 , A.USER_NAME
+					 , 1    AS ORD_SEQ
+				  FROM IKEP4_EV_USER A
+					   INNER JOIN IKEP4_EV_USER_GROUP B
+						  ON B.USER_ID = A.USER_ID
+					   INNER JOIN IKEP4_EV_GROUP C
+						  ON C.GROUP_ID      = B.GROUP_ID
+						 AND C.GROUP_TYPE_ID = 'G0001'
+						 AND C.VIEW_OPTION   = '1'
+						 AND EXISTS (SELECT 'Y'
+									   FROM IKEP4_EV_USER A1
+											INNER JOIN IKEP4_EV_USER_GROUP B1
+											   ON B1.USER_ID = A1.USER_ID
+											INNER JOIN IKEP4_EV_GROUP C1
+											   ON C1.GROUP_ID      = B1.GROUP_ID
+											  AND C1.GROUP_TYPE_ID = 'G0001'
+											  AND C1.VIEW_OPTION   = '1'
+											  AND C1.GROUP_ID      = C.GROUP_ID
+									  WHERE A1.EMP_NO = #empNo#)
+				 WHERE A.USER_STATUS = 'C'
+				   AND A.LEADER      = '1'
+				UNION ALL
+				SELECT TOP 1 A.EMP_NO
+					 , A.USER_NAME
+					 , 2    AS ORD_SEQ
+				  FROM IKEP4_EV_USER A
+					   INNER JOIN IKEP4_EV_USER_GROUP B
+						  ON B.USER_ID = A.USER_ID
+					   INNER JOIN IKEP4_EV_GROUP C
+						  ON C.GROUP_ID      = B.GROUP_ID
+						 AND C.GROUP_TYPE_ID = 'G0001'
+						 AND C.VIEW_OPTION   = '1'
+						 AND EXISTS (SELECT 'Y'
+									   FROM IKEP4_EV_USER A2
+											INNER JOIN IKEP4_EV_USER_GROUP B2
+											   ON B2.USER_ID = A2.USER_ID
+											INNER JOIN IKEP4_EV_GROUP C2
+											   ON C2.GROUP_ID        = B2.GROUP_ID
+											  AND C2.GROUP_TYPE_ID   = 'G0001'
+											  AND C2.VIEW_OPTION     = '1'
+											  AND C2.PARENT_GROUP_ID = C.GROUP_ID
+									  WHERE A2.EMP_NO = #empNo#)
+				 WHERE A.USER_STATUS = 'C'
+				   AND A.LEADER      = '1') X
+	  ORDER BY X.ORD_SEQ 
+	</select>
+	
+<!-- 	해당 사원의 팀장 정보2 -->
+	<select id="getTeamLeaderInfo2" parameterClass="Map" resultMap="leaderInfoMap">
+		/* [CommonCode_SqlMap.xml] commonCode.getTeamLeaderInfo */
+		SELECT TOP 1 A.EMP_NO
+		     , A.USER_NAME
+		  FROM IKEP4_EV_USER A
+		       INNER JOIN IKEP4_EV_USER_GROUP B
+			      ON B.USER_ID = A.USER_ID
+		       INNER JOIN IKEP4_EV_GROUP C
+			      ON C.GROUP_ID      = B.GROUP_ID
+				 AND C.GROUP_TYPE_ID = 'G0001'
+				 AND C.VIEW_OPTION   = '1'
+				 AND EXISTS (SELECT 'Y'
+		                       FROM IKEP4_EV_USER A1
+		                            INNER JOIN IKEP4_EV_USER_GROUP B1
+		                               ON B1.USER_ID = A1.USER_ID
+		                            INNER JOIN IKEP4_EV_GROUP C1
+		                               ON C1.GROUP_ID      = B1.GROUP_ID
+		                              AND C1.GROUP_TYPE_ID = 'G0001'
+		                              AND C1.VIEW_OPTION   = '1'
+									  AND C1.GROUP_ID      = C.GROUP_ID
+		                      WHERE A1.EMP_NO = #empNo#)
+		 WHERE A.USER_STATUS = 'C'
+		   AND A.LEADER      = '1'
+		UNION ALL
+		SELECT TOP 1 A.EMP_NO
+		     , A.USER_NAME
+		  FROM IKEP4_EV_USER A
+		       INNER JOIN IKEP4_EV_USER_GROUP B
+			      ON B.USER_ID = A.USER_ID
+		       INNER JOIN IKEP4_EV_GROUP C
+			      ON C.GROUP_ID      = B.GROUP_ID
+				 AND C.GROUP_TYPE_ID = 'G0001'
+				 AND C.VIEW_OPTION   = '1'
+				 AND EXISTS (SELECT 'Y'
+		                       FROM IKEP4_EV_USER A2
+		                            INNER JOIN IKEP4_EV_USER_GROUP B2
+		                               ON B2.USER_ID = A2.USER_ID
+		                            INNER JOIN IKEP4_EV_GROUP C2
+		                               ON C2.GROUP_ID        = B2.GROUP_ID
+		                              AND C2.GROUP_TYPE_ID   = 'G0001'
+		                              AND C2.VIEW_OPTION     = '1'
+		                              AND C2.PARENT_GROUP_ID = C.GROUP_ID
+									  AND NOT EXISTS (SELECT 'X'
+		                                                FROM IKEP4_EV_USER A3
+		                                                     INNER JOIN IKEP4_EV_USER_GROUP B3
+		                                                        ON B3.USER_ID = A3.USER_ID
+		                                                     INNER JOIN IKEP4_EV_GROUP C3
+		                                                        ON C3.GROUP_ID      = B3.GROUP_ID
+		                                                       AND C3.GROUP_TYPE_ID = 'G0001'
+		                                                       AND C3.VIEW_OPTION   = '1'
+		                                                       AND C3.GROUP_ID      = C2.GROUP_ID
+		                                               WHERE A3.EMP_NO = #empNo#)
+		                      WHERE A2.EMP_NO = #empNo#)
+		 WHERE A.USER_STATUS = 'C'
+		   AND A.LEADER      = '1'
+	</select>
+</sqlMap>

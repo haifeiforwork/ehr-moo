@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="collpack.fourm.dao.FrReference" >
+
+<typeAlias alias = "FrReference" type="com.lgcns.ikep4.collpack.forum.model.FrReference"/>
+
+  <resultMap id="FrReferenceResult" class="FrReference" >
+    <result column="REGISTER_ID" property="registerId" />
+    <result column="REGIST_DATE" property="registDate" />
+    <result column="ITEM_ID" property="itemId"  />
+  </resultMap>
+   
+   <insert id="create" parameterClass="FrReference" >
+    INSERT 						/* [FrReference_SqlMap.xml] Frference.create */
+    INTO IKEP4_FR_REFERENCE (
+	    REGISTER_ID
+	    , REGIST_DATE
+	    , ITEM_ID
+    ) VALUES (
+	    #registerId#
+	    , sysdate
+	    , #itemId#
+    )
+  </insert>
+  
+   <select id="exists" resultClass="int" parameterClass="FrReference" >
+    SELECT 					/* [FrReference_SqlMap.xml] Frference.getCount */
+	   	 COUNT(ITEM_ID)
+    FROM IKEP4_FR_REFERENCE
+    WHERE REGISTER_ID = #registerId#
+    	AND ITEM_ID = #itemId#
+  </select>
+  
+  <select id="list" resultMap="FrReferenceResult" parameterClass="String" >
+    SELECT					/* [FrReference_SqlMap.xml] Frference.list */
+   	 REGISTER_ID
+   	 , REGIST_DATE
+   	 , ITEM_ID
+    FROM IKEP4_FR_REFERENCE
+    where ITEM_ID = #itemId#
+  </select>
+  
+  
+  <select id="listUserId" resultClass="String" parameterClass="String" >
+    SELECT					/* [FrReference_SqlMap.xml] Frference.listUserId */
+   	 REGISTER_ID
+    FROM IKEP4_FR_REFERENCE
+    where ITEM_ID = #itemId#
+  </select>
+  
+  <select id="listUserIdByDiscussionId" parameterClass="String" resultClass="String">
+	    SELECT 					/* [FrReference_SqlMap.xml] Frference.listUserIdByDiscussionId */
+	   		DISTINCT(REGISTER_ID)
+	    FROM IKEP4_FR_REFERENCE
+	    WHERE 
+	    	ITEM_ID IN (
+				    	SELECT  ITEM_ID					
+					    FROM IKEP4_FR_ITEM		
+					    WHERE DISCUSSION_ID = #discussionId#
+					   )
+   </select>
+  
+  <delete id="remove" parameterClass="FrReference" >
+    DELETE 					/* [FrReference_SqlMap.xml] Frference.remove */
+    FROM IKEP4_FR_REFERENCE
+    WHERE REGISTER_ID = #registerId#
+     	AND ITEM_ID = #itemId#
+  </delete>
+  
+   <delete id="removebyItemId" parameterClass="String" >
+    DELETE 					/* [FrReference_SqlMap.xml] Frference.removebyItemId */
+    FROM IKEP4_FR_REFERENCE
+    WHERE ITEM_ID = #itemId#
+  </delete>
+  
+  
+  
+   <delete id="removeByDiscussionId" parameterClass="String" >
+	    DELETE 					/* [FrReference_SqlMap.xml] Frference.removeByDiscussionId */
+	    FROM IKEP4_FR_REFERENCE
+	    WHERE 
+	    	ITEM_ID IN (
+				    	SELECT  ITEM_ID					
+					    FROM IKEP4_FR_ITEM		
+					    WHERE DISCUSSION_ID = #discussionId#
+					   )
+   </delete>
+  
+</sqlMap>

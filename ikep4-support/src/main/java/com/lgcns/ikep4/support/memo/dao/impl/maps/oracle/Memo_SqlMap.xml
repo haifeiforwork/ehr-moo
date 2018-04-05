@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="support.memo.dao.Memo" >
+	<typeAlias alias = "Memo" type="com.lgcns.ikep4.support.memo.model.Memo"/>
+    <typeAlias alias = "MemoSearchCondition"  type="com.lgcns.ikep4.support.memo.search.MemoSearchCondition"/>
+
+	
+   
+	<!-- insert -->
+	<insert id="create" parameterClass="Memo"> 
+      <![CDATA[ 
+		INSERT INTO IKEP4_MM_MEMO
+		           (ITEM_ID
+		           ,CONTENTS
+		           ,PORTAL_ID
+		           ,REGISTER_ID
+		           ,REGISTER_NAME
+		           ,REGIST_DATE)
+		     VALUES
+		           (#itemId#
+		           ,#contents#
+		           ,#portalId#
+		           ,#registerId#
+		           ,#registerName#
+		           ,sysdate)
+     ]]>
+   </insert>	
+   
+  
+
+	  <select id="countMemoList" parameterClass="MemoSearchCondition" resultClass="int">
+			SELECT
+					COUNT(*)
+			FROM
+		    	IKEP4_MM_MEMO	
+			where REGISTER_ID= #registerId#
+			<isNotEmpty property="searchWord">
+				and  CONTENTS like '%' || #searchWord# || '%' 
+			</isNotEmpty>	                      																			
+	  </select> 
+	  
+	<select id="getMemoList" parameterClass="MemoSearchCondition" resultClass="Memo">
+	  SELECT A.* FROM (
+		SELECT 
+		    ROW_NUMBER() OVER(ORDER BY REGIST_DATE DESC) AS RNUM , 
+		    ITEM_ID as itemId,
+		    CONTENTS,
+		 	REGIST_DATE as registDate
+		FROM
+		     IKEP4_MM_MEMO	
+		 where REGISTER_ID= #registerId#    
+			<isNotEmpty property="searchWord">
+				and  CONTENTS like '%' || #searchWord# || '%' 
+			</isNotEmpty>	   
+			 <![CDATA[ 		                        
+		) A WHERE A.RNUM <=  #endRowIndex# AND A.RNUM >  #startRowIndex# 
+	 		  ]]>
+	</select>
+	
+			
+	<!-- update -->
+	<update id="update" parameterClass="Memo">
+	  <![CDATA[
+		UPDATE IKEP4_MM_MEMO
+		   SET 
+		      CONTENTS = #contents#
+		      ,REGIST_DATE = CURRENT_TIMESTAMP
+		 WHERE ITEM_ID = #itemId#
+	   ]]>
+	</update>
+	
+	<!-- get -->
+	<select id="get" parameterClass="java.lang.String" resultClass="Memo">
+	  <![CDATA[
+		SELECT ITEM_ID as itemId
+		      ,CONTENTS      
+		      ,REGISTER_ID as registerId
+		      ,REGISTER_NAME as registerName
+		      ,REGIST_DATE as registDate
+		FROM IKEP4_MM_MEMO
+		where ITEM_ID = #itemId#
+	   ]]>
+	</select>
+	
+	
+	
+   <!-- delete -->
+   <delete id="remove" parameterClass="java.lang.String">
+      <![CDATA[
+     DELETE FROM IKEP4_MM_MEMO
+      WHERE ITEM_ID = #itemId#
+	   ]]>
+	</delete>
+	
+
+   <!-- exists -->
+  <select id="exists" parameterClass="string" resultClass="int"> 
+      <![CDATA[
+
+	   ]]>
+	</select>	
+	
+	
+</sqlMap>

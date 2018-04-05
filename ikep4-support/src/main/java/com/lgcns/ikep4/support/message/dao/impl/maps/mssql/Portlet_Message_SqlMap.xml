@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="support.message.portletMessage">
+	<typeAlias alias="PortletMessage" type="com.lgcns.ikep4.support.message.model.PortletMessage" />
+    <resultMap class="com.lgcns.ikep4.support.message.model.PortletMessage" id="result">		
+		<result column="REGISTER_ID"   property="registerId"   jdbcType="VARCHAR" />
+	    <result column="LIST_NUM"      property="listNum"      jdbcType="DECIMAL" />
+	    <result column="REGISTER_NAME" property="registerName" jdbcType="VARCHAR" />
+	    <result column="REGIST_DATE"   property="registDate"   jdbcType="TIMESTAMP" />
+	    <result column="UPDATER_ID"    property="updaterId"    jdbcType="VARCHAR" />
+	    <result column="UPDATER_NAME"  property="updaterName"  jdbcType="VARCHAR" />
+	    <result column="UPDATE_DATE"   property="updateDate"   jdbcType="TIMESTAMP" />
+	 </resultMap>
+	 
+	 <!-- ANSI -->
+	<select id="get" parameterClass="String" resultMap="result">
+    	SELECT /* [Portlet_Message_SqlMap.xml] portletMessage.get */
+    		REGISTER_ID
+    		, LIST_NUM
+    		, REGISTER_NAME
+    		, REGIST_DATE
+    		, UPDATER_ID
+    		, UPDATER_NAME
+    		, UPDATE_DATE
+    	FROM IKEP4_ME_PORTLET_MESSAGE
+    	WHERE REGISTER_ID = #registerId#
+    </select>
+    
+    <!-- ANSI -->
+    <select id="exists" parameterClass="string" resultClass="int">
+    	SELECT /* [Portlet_Message_SqlMap.xml] portletMessage.exists */
+	    	  COUNT(*)
+	    FROM IKEP4_ME_PORTLET_MESSAGE
+    	WHERE REGISTER_ID = #registerId#
+	</select> 
+	
+	<!-- ANSI -->
+	<insert id="create" parameterClass="PortletMessage">
+	    INSERT INTO IKEP4_ME_PORTLET_MESSAGE ( /* [Portlet_Message_SqlMap.xml] portletMessage.create */ 
+	    	REGISTER_ID
+	    	, LIST_NUM
+	    	, REGISTER_NAME
+	    	, REGIST_DATE
+	    	, UPDATER_ID
+	    	, UPDATER_NAME
+	    	, UPDATE_DATE
+	    ) VALUES (
+			#registerId#
+			, #listNum#
+			, #registerName#
+			, CURRENT_TIMESTAMP 
+			, #updaterId#
+			, #updaterName#
+			, CURRENT_TIMESTAMP 
+		)
+	</insert>
+	
+	<!-- ANSI -->
+	<update id="update" parameterClass="PortletMessage">
+		UPDATE IKEP4_ME_PORTLET_MESSAGE /* [Portlet_Message_SqlMap.xml] portletMessage.update */
+	    	SET LIST_NUM = #listNum#
+	        , UPDATER_ID = #updaterId#
+	        , UPDATER_NAME = #updaterName#
+	        , UPDATE_DATE = CURRENT_TIMESTAMP 
+	    WHERE REGISTER_ID = #registerId#
+	</update>
+	
+	<!-- ANSI -->
+	<delete id="remove" parameterClass="string">
+		DELETE FROM IKEP4_ME_PORTLET_MESSAGE /* [Portlet_Message_SqlMap.xml] portletMessage.remove */
+    	WHERE REGISTER_ID = #registerId#
+	</delete> 
+
+
+</sqlMap>

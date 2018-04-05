@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="EUC-KR"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="support.rss.meta">
+
+	<typeAlias alias="channel" type="com.lgcns.ikep4.support.rss.model.Channel" />
+	<typeAlias alias="channelItem" type="com.lgcns.ikep4.support.rss.model.ChannelItem" />
+	
+	<!-- ANSI -->
+	<select id="getBoard" parameterClass="string" resultClass="channel">
+	    SELECT /* [Meta_SqlMap.xml] getBoard */
+		    BOARD_ID channelId,          
+		    BOARD_NAME channelTitle, 
+		    REGISTER_NAME ownerId
+	    FROM  IKEP4_BD_BOARD
+	    WHERE BOARD_ID = #id#
+	</select>
+	
+	<!-- MS SQL -->
+	<select id="getBoardItemList" parameterClass="java.util.Map" resultClass="channelItem">  
+		<![CDATA[ 
+		SELECT /* [Meta_SqlMap.xml] getBoardItemList */
+			TOP 20 channelId, itemId, itemTitle, itemDescription, itemRegister, itemPublishDate 
+			FROM (
+				SELECT
+					channelId, itemId, itemTitle, itemDescription, itemRegister, itemPublishDate 
+					FROM (
+						SELECT /* [Meta_SqlMap.xml] getBoardItemList */
+							A.ITEM_ID itemId, 
+						    A.BOARD_ID channelId, 
+						    A.TITLE itemTitle,
+						    A.CONTENTS itemDescription,
+						    B.USER_NAME itemRegister, 
+						    B.USER_ENGLISH_NAME itemRegisterEnglish, 
+						    A.REGIST_DATE itemPublishDate 
+					    FROM  IKEP4_BD_ITEM A INNER JOIN IKEP4_EV_USER B
+					    						ON A.REGISTER_ID = B.USER_ID
+					    WHERE A.BOARD_ID = #boardId#
+					    AND A.ITEM_DELETE = 0
+					 ) TBL
+				) TBL2			 
+			ORDER BY itemId DESC
+		]]> 
+  	</select>   
+  	
+  	<!-- ANSI -->
+  	<select id="getQna" parameterClass="string" resultClass="channel">
+	    SELECT /* [Meta_SqlMap.xml] getBoard */
+		    CATEGORY_ID channelId,          
+		    CATEGORY_NAME channelTitle
+	    FROM  IKEP4_QA_CATEGORY
+	    WHERE CATEGORY_ID = #id#
+	</select>
+	
+	<!-- MS SQL -->
+	<select id="getQnaItemList" parameterClass="java.util.Map" resultClass="channelItem">  
+		<![CDATA[ 
+		SELECT /* [Meta_SqlMap.xml] getBoardItemList */
+			TOP 20 channelId, itemId, itemTitle, itemDescription, itemRegister, itemPublishDate 
+			FROM (
+				SELECT
+					channelId, itemId, itemTitle, itemDescription, itemRegister, itemPublishDate, qnaId
+					FROM (
+						SELECT /* [Meta_SqlMap.xml] getBoardItemList */
+							A.QNA_GROUP_ID itemId, 
+						    A.CATEGORY_ID channelId, 
+						    A.TITLE itemTitle,
+						    A.CONTENTS itemDescription,
+						    C.USER_NAME itemRegister, 
+						    C.USER_ENGLISH_NAME itemRegisterEnglish, 
+						    A.REGIST_DATE itemPublishDate,
+						    A.QNA_ID qnaId
+					    FROM  IKEP4_QA_QNA A 
+   	 					INNER JOIN IKEP4_EV_USER C
+   							ON A.REGISTER_ID = C.USER_ID
+					    WHERE 1=1
+		]]>
+								 <isNotEmpty  property="itemDelete" prepend="AND" >
+							    	A.ITEM_DELETE = #itemDelete#
+							     </isNotEmpty>
+		                         <isNotEmpty prepend="AND" property="portalId" >
+							    	 A.PORTAL_ID = #portalId#
+							     </isNotEmpty>
+							     <isNotEmpty prepend="AND" property="categoryId" >
+							    	A.CATEGORY_ID = #categoryId#
+							     </isNotEmpty>
+							     <isNotEmpty prepend="AND" property="urgent" >
+							    	A.URGENT = #urgent#
+							     </isNotEmpty>
+							     <isNotEmpty prepend="AND" property="newDate" >
+							    	 A.REGIST_DATE &gt; CURRENT_TIMESTAMP - #newDate#
+							     </isNotEmpty>
+							     <isNotEmpty prepend="AND" property="registerId" >
+							    	A.REGISTER_ID = #registerId#
+							     </isNotEmpty>
+							     <isNotEmpty prepend="AND" property="answerAdopt">
+							    	A.ANSWER_ADOPT = #answerAdopt#
+							     </isNotEmpty>
+							     <isEqual prepend="AND" property="qnaType" compareValue="0">
+							    	 A.QNA_TYPE = 0
+							     </isEqual>
+							     <isEqual prepend="AND" property="qnaType" compareValue="1">
+							    	 A.QNA_TYPE = 1
+							     </isEqual>
+							     <isNotEmpty prepend="AND" property="status">
+							    	 A.STATUS = #status#
+							     </isNotEmpty>
+							     <isNotEmpty prepend="AND" property="isNotAdopt">
+							    	 A.STATUS IN (0,1)
+							     </isNotEmpty>
+							     <isNotEmpty prepend="AND" property="bestQna">
+							    	 A.BEST_QNA = #bestQna#
+							     </isNotEmpty>
+		<![CDATA[ 			    
+					 ) TBL
+				) TBL2 
+			ORDER BY qnaId DESC
+		]]> 
+  	</select>   
+  	
+  	<!-- ANSI -->
+  	<select id="getWorkspace" parameterClass="string" resultClass="channel">
+	    SELECT /* [Meta_SqlMap.xml] getWorkspace */
+		    BOARD_ID channelId,          
+		    BOARD_NAME channelTitle, 
+		    REGISTER_NAME ownerId
+	    FROM  IKEP4_WS_BD_BOARD
+	    WHERE BOARD_ID = #id#
+	</select>
+	
+	<!-- MS SQL -->
+	<select id="getWorkspaceItemList" parameterClass="java.util.Map" resultClass="channelItem">  
+		<![CDATA[ 
+		SELECT /* [Meta_SqlMap.xml] "getWorkspaceItemList" */
+			TOP 20 channelId, itemId, itemTitle, itemDescription, itemRegister, itemPublishDate 
+			FROM (
+				SELECT
+					channelId, itemId, itemTitle, itemDescription, itemRegister, itemPublishDate 
+					FROM (
+						SELECT /* [Meta_SqlMap.xml] getBoardItemList */
+							A.ITEM_ID itemId, 
+						    A.BOARD_ID channelId, 
+						    A.TITLE itemTitle,
+						    A.CONTENTS itemDescription,
+						    B.USER_NAME itemRegister, 
+						    B.USER_ENGLISH_NAME itemRegisterEnglish, 
+						    A.REGIST_DATE itemPublishDate 
+					    FROM  IKEP4_WS_BD_ITEM A INNER JOIN IKEP4_EV_USER B
+					    						ON A.REGISTER_ID = B.USER_ID
+					    WHERE A.BOARD_ID = #boardId#
+					    AND A.ITEM_DELETE = 0
+					 ) TBL
+				) TBL2 
+			ORDER BY itemId DESC
+		]]> 
+  	</select>   
+  	
+  	<!-- ANSI -->
+  	<select id="getBlog" parameterClass="string" resultClass="channel">
+	    SELECT /* [Meta_SqlMap.xml] getBlog */
+		    BLOG_ID channelId,          
+		    INTRODUCTION channelTitle, 
+		    OWNER_ID ownerId
+	    FROM  IKEP4_SB_BLOG
+	    WHERE OWNER_ID = #id#
+	</select>
+	
+	<!-- MS SQL -->
+	<select id="getBlogItemList" parameterClass="java.util.Map" resultClass="channelItem">  
+		<![CDATA[ 
+		SELECT /* [Meta_SqlMap.xml] "getBlogItemList" */
+			TOP 20 channelId, itemId, itemTitle, itemDescription, itemRegister, itemPublishDate 
+			FROM (
+				SELECT
+					channelId, itemId, itemTitle, itemDescription, itemRegister, itemPublishDate 
+					FROM (
+						SELECT /* [Meta_SqlMap.xml] getBoardItemList */
+							A.ITEM_ID itemId, 
+						    A.REGISTER_ID channelId, 
+						    A.TITLE itemTitle,
+						    A.CONTENTS itemDescription,
+						    B.USER_NAME itemRegister, 
+						    B.USER_ENGLISH_NAME itemRegisterEnglish, 
+						    A.REGIST_DATE itemPublishDate 
+					    FROM  IKEP4_SB_BD_ITEM A INNER JOIN IKEP4_EV_USER B
+					    						ON A.REGISTER_ID = B.USER_ID
+					    WHERE A.REGISTER_ID = #boardId#
+					    AND A.READ_PERMISSION = '0'
+					 ) TBL
+				) TBL2 
+			ORDER BY itemId DESC
+		]]> 
+  	</select>   
+  	
+  	<!-- ANSI -->
+  	<select id="getCafeBoard" parameterClass="string" resultClass="channel">
+	    SELECT /* [Meta_SqlMap.xml] getCafeBoard */
+		    BOARD_ID channelId,          
+		    BOARD_NAME channelTitle, 
+		    REGISTER_NAME ownerId
+	    FROM  IKEP4_CF_BD_BOARD
+	    WHERE BOARD_ID = #id#
+	</select>
+	
+	<!-- MS SQL -->
+	<select id="getCafeBoardItemList" parameterClass="java.util.Map" resultClass="channelItem">  
+		<![CDATA[ 
+		SELECT /* [Meta_SqlMap.xml] getCafeBoardItemList */
+			channelId, itemId, itemTitle, itemDescription, itemRegister, itemPublishDate 
+			FROM (
+				SELECT
+					Row_number() OVER (ORDER BY ITEM_ID DESC) AS RNUM, 
+					channelId, itemId, itemTitle, itemDescription, itemRegister, itemPublishDate 
+					FROM (
+						SELECT /* [Meta_SqlMap.xml] getBoardItemList */
+							A.ITEM_ID itemId, 
+						    A.BOARD_ID channelId, 
+						    A.TITLE itemTitle,
+						    A.CONTENTS itemDescription,
+						    B.USER_NAME itemRegister, 
+						    B.USER_ENGLISH_NAME itemRegisterEnglish, 
+						    A.REGIST_DATE itemPublishDate 
+					    FROM  IKEP4_CF_BD_ITEM A INNER JOIN IKEP4_EV_USER B
+					    						ON A.REGISTER_ID = B.USER_ID
+					    WHERE A.BOARD_ID = #boardId#
+					    AND A.ITEM_DELETE = 0
+					 ) TBL1
+				) TBL2			 
+			WHERE RNUM < 21
+		]]> 
+  	</select>   
+  	
+
+</sqlMap>
+

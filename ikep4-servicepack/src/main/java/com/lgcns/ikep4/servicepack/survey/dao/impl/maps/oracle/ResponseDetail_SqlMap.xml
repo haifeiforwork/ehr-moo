@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="com.lgcns.ikep4.servicepack.survey.svResponseDetail" >
+  <typeAlias alias="svResponseDetail"                type="com.lgcns.ikep4.servicepack.survey.model.ResponseDetail"/>
+  <typeAlias alias="svResponseDetailKey"                type="com.lgcns.ikep4.servicepack.survey.model.ResponseDetailKey"/>
+  
+  <resultMap id="result" class="svResponseDetail" >
+    <result column="ANSWER_ID" property="answerId" jdbcType="VARCHAR" />
+    <result column="QUESTION_ID" property="questionId" jdbcType="VARCHAR" />
+    <result column="RESPONSE_ID" property="responseId" jdbcType="VARCHAR" />
+    <result column="RESPONSE_TYPE" property="responseType" jdbcType="VARCHAR" />
+    <result column="RESPONSE_SEQ" property="responseSeq" jdbcType="DECIMAL" />
+    <result column="RESPONSE1" property="response1" jdbcType="DECIMAL" />
+    <result column="RESPONSE2" property="response2" jdbcType="DECIMAL" />
+  </resultMap>
+  
+  <resultMap id="resultExcel" class="svResponseDetail" >
+    <result column="EMP_NO" property="empNo" jdbcType="VARCHAR" />
+    <result column="USER_NAME" property="userName" jdbcType="VARCHAR" />
+    <result column="USER_ENGLISH_NAME" property="userEnglishName" jdbcType="VARCHAR" />
+    <result column="TEAM_NAME" property="teamName" jdbcType="VARCHAR" />
+    <result column="TEAM_ENGLISH_NAME" property="teamEnglishName" jdbcType="VARCHAR" />
+    <result column="QUESTION_ID" property="questionId" jdbcType="VARCHAR" />
+    <result column="QUESTION_TYPE" property="questionType" jdbcType="VARCHAR" />
+    <result column="ANSWER_ID" property="answerId" jdbcType="VARCHAR" />
+    <result column="ANSWER_SEQ" property="answerSeq" jdbcType="VARCHAR" />
+    <result column="TITLE" property="title" jdbcType="VARCHAR" />
+    <result column="RESPONSE_DATE" property="responseDate" jdbcType="DECIMAL" />
+    <result column="RESPONSE1" property="response1" jdbcType="DECIMAL" />
+    <result column="RESPONSE2" property="response2" jdbcType="DECIMAL" />
+    <result property="jobTitleName" column="JOB_TITLE_NAME"/>
+	<result property="jobTitleEnglishName" column="JOB_TITLE_ENGLISH_NAME"/>
+  </resultMap>
+  
+  
+    <sql id="sqlColumnList"> 
+	   RESPONSE_ID, 
+	   QUESTION_ID, 
+	   ANSWER_ID, 
+	   RESPONSE_TYPE, 
+	   RESPONSE_SEQ, 
+	   RESPONSE1, 
+	   RESPONSE2
+  </sql> 
+  
+  
+  <select id="getReportDetailAllBySurveyId" parameterClass="string" resultMap="resultExcel"> 
+	      select EU.USER_NAME,
+		        EU.EMP_NO,
+		        EU.USER_ENGLISH_NAME,
+		        EU.TEAM_ENGLISH_NAME,
+		        EU.TEAM_NAME,
+		        RP.QUESTION_ID,
+		        RP.QUESTION_TYPE,
+		        RP.ANSWER_ID,
+		        RP.ANSWER_SEQ,
+		        RP.TITLE,
+		        rp.RESPONSE_DATE,
+		        RP.RESPONSE1 response1, 
+		        RP.RESPONSE2 response2,
+		        ejt.JOB_TITLE_NAME, 
+       			ejt.JOB_TITLE_ENGLISH_NAME
+		 from
+		 (       
+		        select org.*,
+		               srd.RESPONSE_USER_ID,
+		               srd.RESPONSE_DATE,
+		               srd.RESPONSE1, 
+		               srd.RESPONSE2
+		        from        
+		        (
+		            select 
+		               SG.SURVEY_ID,
+		               sg.QUESTION_GROUP_ID,
+		               sg.QUESTION_GROUP_seq,
+		               sq.QUESTION_ID, 
+		               sq.QUESTION_SEQ, 
+		               sq.TITLE question_title, 
+		               sq.QUESTION_TYPE,
+		               sa.ANSWER_ID,
+		               sa.ANSWER_SEQ, 
+		               sa.TITLE
+		            from  IKEP4_SV_GROUP sg,IKEP4_SV_QUESTION sq,IKEP4_SV_ANSWER sa
+		            where  SG.QUESTION_GROUP_ID = SQ.QUESTION_GROUP_ID
+		                  and SQ.QUESTION_ID = SA.QUESTION_ID
+		                  and sg.survey_id =#surveyId#
+		        )org left outer join
+		        ( 
+		            select srd.*,sr.RESPONSE_USER_ID,sr.survey_id,SR.RESPONSE_DATE
+		            from IKEP4_SV_RESPONSE sr,IKEP4_SV_RESPONSE_DETAIL srd
+		            where SR.RESPONSE_ID = SRD.RESPONSE_ID
+		                  and SR.RESPONSE=0   
+		                  and RESPONSE_USER_ID is not null
+		                  and sr.survey_id=#surveyId#
+		        )srd
+		        on( org.survey_id = srd.survey_id and org.QUESTION_ID = srd.QUESTION_ID and org.ANSWER_ID = srd.ANSWER_ID)
+		        order by QUESTION_SEQ,ANSWER_SEQ,RESPONSE_USER_ID
+		)rp, IKEP4_EV_USER eu,IKEP4_EV_JOB_TITLE ejt
+		where   eu.job_title_code =ejt.job_title_code
+				and rp.response_user_id = eu.user_id
+		order by EMP_NO asc, QUESTION_GROUP_seq asc,QUESTION_SEQ asc,ANSWER_SEQ asc
+	</select>
+  
+ <select id="get" parameterClass="svResponseDetailKey" resultMap="result"> 
+    SELECT /* [svResponseDetail_SqlMap.xml] svResponseDetail.get */
+    <include refid="com.lgcns.ikep4.servicepack.survey.svResponseDetail.sqlColumnList" />
+    FROM  IKEP4_SV_RESPONSE_DETAIL
+    WHERE ANSWER_ID = #answerId#
+	      and QUESTION_ID = #questionId#
+	      and RESPONSE_ID = #responseId#
+  </select>
+  
+  <select id="exists" parameterClass="svResponseDetailKey" resultClass="int"> 
+    SELECT /* [svResponseDetail_SqlMap.xml] svResponseDetail.exists */
+    	  COUNT(*)
+    FROM  IKEP4_SV_RESPONSE_DETAIL
+    WHERE ANSWER_ID = #answerId#
+	      and QUESTION_ID = #questionId#
+	      and RESPONSE_ID = #responseId#
+  </select> 
+  
+  <select id="getAllByAnswerId" parameterClass="String" resultMap="result"> 
+    SELECT /* [svQuestionGroup_SqlMap.xml] svQuestionGroup.get */
+    <include refid="com.lgcns.ikep4.servicepack.survey.svResponseDetail.sqlColumnList" />
+    FROM  IKEP4_SV_RESPONSE_DETAIL
+    WHERE ANSWER_ID = #answerId#
+  </select>
+  
+  <insert id="create" parameterClass="svResponseDetail"> 
+    INSERT INTO IKEP4_SV_RESPONSE_DETAIL ( /* [svResponseDetail_SqlMap.xml] svResponseDetail.insert */
+       RESPONSE_ID, 
+	   QUESTION_ID, 
+	   ANSWER_ID, 
+	   RESPONSE_TYPE, 
+	   RESPONSE_SEQ, 
+	   RESPONSE1, 
+	   RESPONSE2
+     ) VALUES (
+        #responseId#, 
+		#questionId#, 
+		#answerId#,
+		#responseType#,
+        #responseSeq#, 
+	    #response1#, 
+	    #response2#
+    )
+  </insert>
+  
+  <update id="update" parameterClass="svResponseDetail"> 
+   update IKEP4_SV_RESPONSE_DETAIL
+    set RESPONSE_TYPE = #responseType#,
+      RESPONSE1 = #response1#,
+      RESPONSE2 = #response2#
+    where ANSWER_ID = #answerId#
+      and QUESTION_ID = #questionId#
+      and RESPONSE_ID = #responseId#
+  </update>
+  
+  <delete id="remove" parameterClass="svResponseDetailKey"> 
+    delete from IKEP4_SV_RESPONSE_DETAIL  /* [svResponseDetail_SqlMap.xml] svResponseDetail.remove */
+    where ANSWER_ID = #answerId#
+	      and QUESTION_ID = #questionId#
+	      and RESPONSE_ID = #responseId#
+  </delete>    
+  
+  <delete id="removeAllByResponseId" parameterClass="String"> 
+    delete from IKEP4_SV_RESPONSE_DETAIL  /* [svResponseDetail_SqlMap.xml] svResponseDetail.remove */
+    where RESPONSE_ID = #responseId#
+  </delete>  
+  
+  
+  <delete id="removeAllBySurveyId" parameterClass="string">
+    delete from IKEP4_SV_RESPONSE_DETAIL  /* [svResponseDetail_SqlMap.xml] svResponseDetail.remove */
+    where RESPONSE_ID in( 
+    					select RESPONSE_ID 
+    					from IKEP4_SV_RESPONSE  /* [svResponse_SqlMap.xml] svResponse.remove */
+    					where  survey_id = #surveyId#
+    		)		
+  </delete>  
+  
+  <select id="maxResponseSeq" parameterClass="String" resultClass="int"> 
+    SELECT /* [svQuestion_SqlMap.xml] svQuestion.exists */
+    	  nvl(MAX(RESPONSE_SEQ),0)
+    FROM  IKEP4_SV_RESPONSE_DETAIL
+    WHERE RESPONSE_ID = #responseId#
+  </select> 
+  
+</sqlMap>

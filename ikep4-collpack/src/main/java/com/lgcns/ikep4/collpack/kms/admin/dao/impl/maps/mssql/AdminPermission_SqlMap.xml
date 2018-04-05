@@ -1,0 +1,1122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="collpack.kms.admin.dao.AdminPermission">
+
+	<typeAlias alias="AdminPermission"                type="com.lgcns.ikep4.collpack.kms.admin.model.AdminPermission"/>
+	<typeAlias alias="AdminTeamLeader"                type="com.lgcns.ikep4.collpack.kms.admin.model.AdminTeamLeader"/>
+	<typeAlias alias="KmsAdminSearchCondition"        type="com.lgcns.ikep4.collpack.kms.admin.search.KmsAdminSearchCondition"/>
+	<typeAlias alias="CompulsionTime"                type="com.lgcns.ikep4.collpack.kms.admin.model.CompulsionTime"/>
+	
+	<resultMap id="result"  class="com.lgcns.ikep4.collpack.kms.admin.model.AdminPermission">
+		<result column="ROWNUM" property="rowNum" jdbcType="VARCHAR" javaType="String"/>
+		<result column="USER_NAME" property="userName" jdbcType="VARCHAR" javaType="String"/>
+		<result column="JOB_DUTY_NAME" property="jobDutyName" jdbcType="VARCHAR" javaType="String"/>
+		<result column="EMP_NO" property="empNo" jdbcType="VARCHAR" javaType="String"/>
+		<result column="USER_ID" property="userId" jdbcType="VARCHAR" javaType="String"/>
+		<result column="WORK_PLACE_NAME" property="workPlaceName" jdbcType="VARCHAR" javaType="String"/>		
+		<result column="TEAM_NAME" property="teamName" jdbcType="VARCHAR" javaType="String"/>
+		<result column="INFO_GRADE" property="infoGrade" jdbcType="VARCHAR" javaType="String"/>
+		<result column="TEAM_CNT" property="teamCnt" jdbcType="VARCHAR" javaType="String"/>
+		<result column="TEAM_CNT_BY_LEADER" property="teamCntByLeader" jdbcType="int" javaType="String"/>
+	</resultMap>
+	
+	<resultMap id="resultRecommendReply"  class="com.lgcns.ikep4.collpack.kms.admin.model.AdminPermission">
+		<result column="ROWNUM" property="rowNum" jdbcType="VARCHAR" javaType="String"/>
+		<result column="USER_NAME" property="userName" jdbcType="VARCHAR" javaType="String"/>
+		<result column="JOB_DUTY_NAME" property="jobDutyName" jdbcType="VARCHAR" javaType="String"/>
+		<result column="EMP_NO" property="empNo" jdbcType="VARCHAR" javaType="String"/>
+		<result column="USER_ID" property="userId" jdbcType="VARCHAR" javaType="String"/>
+		<result column="WORK_PLACE_NAME" property="workPlaceName" jdbcType="VARCHAR" javaType="String"/>		
+		<result column="TEAM_NAME" property="teamName" jdbcType="VARCHAR" javaType="String"/>
+		<result column="RECOMMEND_CNT1" property="recommendCnt1" jdbcType="VARCHAR" javaType="String"/>
+		<result column="RECOMMEND_CNT2" property="recommendCnt2" jdbcType="VARCHAR" javaType="String"/>
+		<result column="REPLY_CNT1" property="replyCnt1" jdbcType="VARCHAR" javaType="String"/>
+		<result column="REPLY_CNT2" property="replyCnt2" jdbcType="VARCHAR" javaType="String"/>
+		<result column="SCORE" property="score" jdbcType="VARCHAR" javaType="String"/>
+	</resultMap>
+	
+	<resultMap id="resultCompulsionTimeLog"  class="com.lgcns.ikep4.collpack.kms.admin.model.AdminPermission">
+		<result column="ROWNUM" property="rowNum" jdbcType="VARCHAR" javaType="String"/>
+		<result column="USER_NAME" property="userName" jdbcType="VARCHAR" javaType="String"/>
+		<result column="JOB_DUTY_NAME" property="jobDutyName" jdbcType="VARCHAR" javaType="String"/>
+		<result column="EMP_NO" property="empNo" jdbcType="VARCHAR" javaType="String"/>
+		<result column="USER_ID" property="userId" jdbcType="VARCHAR" javaType="String"/>
+		<result column="WORK_PLACE_NAME" property="workPlaceName" jdbcType="VARCHAR" javaType="String"/>		
+		<result column="TEAM_NAME" property="teamName" jdbcType="VARCHAR" javaType="String"/>
+		<result column="CLICK_TIME" property="clickTime" jdbcType="VARCHAR" javaType="String"/>
+		<result column="CLICK_FLG" property="clickFlg" jdbcType="VARCHAR" javaType="String"/>
+	</resultMap>
+	
+	<resultMap id="resultTeamLeader"  class="com.lgcns.ikep4.collpack.kms.admin.model.AdminTeamLeader">
+		<result column="ROWNUM" property="rowNum" jdbcType="VARCHAR" javaType="String"/>
+		<result column="TEAM_NAME" property="teamName" jdbcType="VARCHAR" javaType="String"/>
+		<result column="TEAM_CODE" property="teamCode" jdbcType="VARCHAR" javaType="String"/>
+		<result column="TEAM_CNT" property="teamCnt" jdbcType="VARCHAR" javaType="String"/>
+	</resultMap>
+	
+	<resultMap id="resultExpert" class="AdminPermission" > 
+	    <result column="CATEGORY_ID"          property="categoryId"         jdbcType="VARCHAR" />
+	    <result column="CATEGORY_NAME"        property="categoryName"       jdbcType="VARCHAR" />
+	    <result column="CATEGORY_SEQ_ID"      property="categorySeqId"      jdbcType="VARCHAR" />
+	    <result column="CATEGORY_TYPE"        property="categoryType"       jdbcType="VARCHAR" />
+	    <result column="COLOR"                property="color"              jdbcType="VARCHAR" />
+	    <result column="DESCRIPTION"          property="description"        jdbcType="VARCHAR" />
+	    <result column="PORTAL_ID"            property="portalId"           jdbcType="VARCHAR" />
+	    <result column="REGISTER_ID"          property="registerId"         jdbcType="VARCHAR" />
+	    <result column="REGISTER_NAME"        property="registerName"       jdbcType="VARCHAR" />
+	    <result column="REGIST_DATE"          property="registDate"         jdbcType="DATE" />
+	  </resultMap>
+	  <resultMap id="resultUser" class="AdminPermission" > 
+	    <result column="CATEGORY_ID"          property="categoryId"         jdbcType="VARCHAR" />
+	    <result column="CATEGORY_NAME"        property="categoryName"       jdbcType="VARCHAR" />
+	    <result column="USER_ID"      property="userId"      jdbcType="VARCHAR" />
+	    <result column="USER_NAME"        property="userName"       jdbcType="VARCHAR" />
+	    <result column="TEAM_NAME"        property="teamName"       jdbcType="VARCHAR" />
+	    <result column="JOB_TITLE_NAME"        property="jobDutyName"       jdbcType="VARCHAR" />
+	  </resultMap> 
+	  
+	  <resultMap id="specialUser" class="AdminPermission" > 
+	    <result column="USER_ID"      property="userId"      jdbcType="VARCHAR" />
+	    <result column="USER_NAME"        property="userName"       jdbcType="VARCHAR" />
+	    <result column="COLOR"                property="color"              jdbcType="VARCHAR" />
+	    <result column="TEAM_NAME"        property="teamName"       jdbcType="VARCHAR" />
+	    <result column="CATEGORY"        property="categoryId"       jdbcType="VARCHAR" />
+	    <result column="JOB_DUTY_NAME"        property="jobDutyName"       jdbcType="VARCHAR" />
+	    <result column="REGISTER_ID"          property="registerId"         jdbcType="VARCHAR" />
+	    <result column="REGISTER_NAME"        property="registerName"       jdbcType="VARCHAR" />
+	    <result column="REGIST_DATE"          property="registDate"         jdbcType="DATE" />
+	  </resultMap> 
+	  
+	  <resultMap id="keyInfoPermission" class="AdminPermission" > 
+	    <result column="USER_ID"      property="userId"      jdbcType="VARCHAR" />
+	    <result column="USER_NAME"        property="userName"       jdbcType="VARCHAR" />
+	    <result column="VIEW_YN"                property="viewYn"              jdbcType="VARCHAR" />
+	    <result column="TEAM_NAME"        property="teamName"       jdbcType="VARCHAR" />
+	    <result column="ALARM_YN"        property="alarmYn"       jdbcType="VARCHAR" />
+	    <result column="JOB_DUTY_NAME"        property="jobDutyName"       jdbcType="VARCHAR" />
+	    <result column="REGISTER_ID"          property="registerId"         jdbcType="VARCHAR" />
+	    <result column="REGISTER_NAME"        property="registerName"       jdbcType="VARCHAR" />
+	    <result column="REGIST_DATE"          property="registDate"         jdbcType="DATE" />
+	  </resultMap>
+	  
+	  <resultMap id="resultPeriod"  class="AdminPermission">
+		<result column="PERIOD" property="period" jdbcType="VARCHAR" />
+	  </resultMap>
+	 
+	 
+	<!-- ANSI --> 
+	
+  <select id="listCategory" resultMap="resultExpert">   
+	SELECT /* [Category_SqlMap.xml] category.listCategory */
+	         CATEGORY_ID
+			,CATEGORY_NAME
+			,CATEGORY_SEQ_ID
+			,CATEGORY_TYPE
+			,COLOR
+			,DESCRIPTION
+			,PORTAL_ID
+			,REGISTER_ID
+			,REGISTER_NAME
+			,REGIST_DATE
+			,DELETE_YN
+			,BOARD_ID
+	FROM  ikep4_kms_expert_field
+	WHERE DELETE_YN = 'Y'
+	  AND BOARD_ID  = #boardId#
+	 ORDER BY CATEGORY_SEQ_ID, CATEGORY_ID
+  </select>   
+  
+  <select id="listCategoryUser" resultMap="resultUser">   
+	select a.category_id as CATEGORY_ID,
+	a.category_name as CATEGORY_NAME,
+	b.user_id as USER_ID,
+	c.user_name as USER_NAME,
+	c.team_name as TEAM_NAME,
+	d.job_title_name as JOB_TITLE_NAME
+	from ikep4_kms_expert_field a 
+	left outer join ikep4_kms_expert b
+	on b.category_id = a.category_id 
+	and a.delete_yn = 'Y'
+	AND BOARD_ID  = #boardId#
+	left outer join ikep4_ev_user c 
+	on c.user_id = b.user_id
+	and c.user_status = 'C'
+	left outer join IKEP4_EV_JOB_TITLE d
+	on d.job_title_code = c.job_title_code
+  </select>   
+  
+  <select id="listSpecialUser" resultMap="specialUser">   
+	select  
+		A.USER_ID AS USER_ID,
+		A.USER_NAME AS USER_NAME,
+		A.COLOR AS COLOR,
+		A.CATEGORY AS CATEGORY,
+		B.TEAM_NAME AS TEAM_NAME,
+		C.JOB_TITLE_NAME AS JOB_DUTY_NAME,
+		A.REGISTER_ID AS REGISTER_ID,
+		A.REGISTER_NAME AS REGISTER_NAME,
+		A.REGIST_DATE AS REGIST_DATE,
+		A.CATEGORY AS CATEGORY
+	from ikep4_kms_special_user A INNER JOIN IKEP4_EV_USER B
+	ON B.USER_ID = A.user_id
+	INNER JOIN IKEP4_EV_JOB_TITLE C ON B.JOB_TITLE_CODE = C.job_title_code 
+  </select> 
+  
+  <select id="listKeyInfoPermission" resultMap="keyInfoPermission">   
+	select  
+		A.USER_ID AS USER_ID,
+		A.USER_NAME AS USER_NAME,
+		A.VIEW_YN AS VIEW_YN,
+		B.TEAM_NAME AS TEAM_NAME,
+		C.JOB_TITLE_NAME AS JOB_DUTY_NAME,
+		A.REGISTER_ID AS REGISTER_ID,
+		A.REGISTER_NAME AS REGISTER_NAME,
+		A.REGIST_DATE AS REGIST_DATE,
+		A.ALARM_YN AS ALARM_YN
+	from ikep4_kms_key_info_permission A INNER JOIN IKEP4_EV_USER B
+	ON B.USER_ID = A.user_id
+	INNER JOIN IKEP4_EV_JOB_TITLE C ON B.JOB_TITLE_CODE = C.job_title_code 
+  </select> 
+  
+   <insert id="createCategoryNm" parameterClass="AdminPermission">
+		INSERT INTO ikep4_kms_expert_field ( /* [CATEGORY_SqlMap.xml] Category.createCategoryNm */
+		 BOARD_ID,CATEGORY_ID,CATEGORY_NAME,REGISTER_ID,REGISTER_NAME, REGIST_DATE,DELETE_YN
+		) VALUES (
+		 #boardId#,#categoryId#,#addNameList#,#registerId#,#registerName#, CURRENT_TIMESTAMP,'Y'
+		)
+  </insert>
+  
+  <insert id="createCategoryUsers" parameterClass="AdminPermission">
+		INSERT INTO ikep4_kms_expert ( /* [CATEGORY_SqlMap.xml] Category.createCategoryUsers */
+		 CATEGORY_ID,USER_ID,REGISTER_ID,REGISTER_NAME, REGIST_DATE
+		) VALUES (
+		 #categoryId#,#userId#,#registerId#,#registerName#, CURRENT_TIMESTAMP
+		)
+  </insert>
+  
+  <insert id="createMessage" parameterClass="AdminPermission">
+		INSERT INTO ikep4_kms_caution ( 
+		 CONTENTS,REGISTER_ID,REGIST_DATE
+		) VALUES (
+		 #contents#,#registerId#,CURRENT_TIMESTAMP
+		)
+  </insert>
+  
+  <insert id="insertSpecialUser" parameterClass="AdminPermission">
+		INSERT INTO ikep4_kms_special_user ( 
+		 user_id,
+		user_name,
+		color,
+		category,
+		register_id,
+		register_name,
+		regist_date
+		) VALUES (
+		 #userId#,#userName#,#color#,#categoryId#,#registerId#,#registerName#, CURRENT_TIMESTAMP
+		)
+  </insert>
+  
+  <insert id="insertKeyInfoPermission" parameterClass="AdminPermission">
+		INSERT INTO ikep4_kms_key_info_permission ( 
+		 user_id,
+		user_name,
+		view_yn,
+		alarm_yn,
+		register_id,
+		register_name,
+		regist_date
+		) VALUES (
+		 #userId#,#userName#,#viewYn#,#alarmYn#,#registerId#,#registerName#, CURRENT_TIMESTAMP
+		)
+  </insert>
+  
+  <insert id="insertNewKeyInfoPermission">
+		INSERT INTO ikep4_kms_key_info_permission ( 
+		 user_id,
+		user_name,
+		view_yn,
+		alarm_yn,
+		register_id,
+		register_name,
+		regist_date
+		)
+		select user_id, user_name,'','','admin','관리자',current_timestamp from IKEP4_EV_USER 
+		where user_id in(
+		select user_id from IKEP4_EV_USER_ROLE
+		where role_id = (
+		select role_id from IKEP4_EV_ROLE
+		where role_name = 'Z1'))
+		and user_id not in(select user_Id from ikep4_kms_key_info_permission)
+  </insert>
+  
+  <update id="deleteCategoryUsers" parameterClass="String">
+	    delete from ikep4_kms_expert
+  </update>
+  
+  <update id="deleteMessage" parameterClass="String">
+	    delete from ikep4_kms_caution
+  </update>
+	
+  <update id="deleteCategoryNm" parameterClass="AdminPermission">
+	    delete from ikep4_kms_expert_field /* [CATEGORY_SqlMap.xml] Category.updateCategoryNm */
+	    WHERE CATEGORY_ID = #delIdList#
+	     AND BOARD_ID     = #boardId#
+  </update>
+  
+  <update id="saveCompulsionTimeSetting" parameterClass="CompulsionTime">
+	     
+	     UPDATE IKEP4_KMS_COMPULSIONTIME
+	      SET mon = #mon#,tue = #tue#,wed = #wed#,thu = #thu#,fri = #fri#,
+	      start_hour = #startHour#,start_min = #startMin#,end_hour = #endHour#,end_min = #endMin#
+	      
+  </update>
+  
+  <insert id="compulsionTimeClickSave" parameterClass="CompulsionTime">
+		INSERT INTO IKEP4_KMS_COMPULSIONTIME_LOG ( 
+		 USER_ID,CLICK_TIME,CLICK_FLG
+		) VALUES (
+		 #userId#, CURRENT_TIMESTAMP,#compulsionTimeClickFlg#
+		)
+  </insert>
+  
+  <select id="selectCompulsionTimeClickCheck" resultClass="int" parameterClass="CompulsionTime">  
+		
+		SELECT 
+			count(user_id)
+		FROM 
+		IKEP4_KMS_COMPULSIONTIME_LOG A	
+		WHERE 1=1
+			AND CLICK_FLG = #compulsionTimeClickFlg#
+			AND convert(varchar, CLICK_TIME, 112) = convert(varchar, CURRENT_TIMESTAMP, 112)
+			and user_id = #userId#
+				
+	</select>  	
+  
+  <select id="selectCompulsionTimeSetting" resultClass="CompulsionTime">  
+  		select mon as mon,
+  		tue as tue,
+  		wed as wed,
+  		thu as thu,
+  		fri as fri,
+  		start_hour as startHour,
+  		start_min as startMin,
+  		end_hour as endHour,
+  		end_min as endMin
+  		from IKEP4_KMS_COMPULSIONTIME
+  </select>
+  
+  <update id="deleteSpecialUser" parameterClass="AdminPermission">
+	    delete from ikep4_kms_special_user
+	    WHERE user_id = #userId#
+	    AND category = #categoryId#
+  </update>
+  
+  <update id="deleteKeyInfoPermission" parameterClass="AdminPermission">
+	    delete from ikep4_kms_key_info_permission
+	    WHERE user_id = #userId#
+  </update>
+  
+  <update id="updateCategoryNm" parameterClass="AdminPermission">
+	    UPDATE ikep4_kms_expert_field /* [CATEGORY_SqlMap.xml] Category.updateCategoryNm */
+	      SET CATEGORY_NAME = #updateNameList#, CATEGORY_SEQ_ID=#alignList#
+	     WHERE CATEGORY_ID  = #updateIdList#
+	      AND BOARD_ID      = #boardId#
+  </update>
+  
+  <update id="updateCategoryAlign" parameterClass="AdminPermission">
+	    UPDATE ikep4_kms_expert_field /* [CATEGORY_SqlMap.xml] Category.updateCategoryAlign */
+	      SET  CATEGORY_SEQ_ID=#categorySeqId#
+	     WHERE CATEGORY_NAME = #alignList#
+	      AND BOARD_ID      = #boardId#
+  </update>
+  
+	<select id="countBySearchCondition" parameterClass="KmsAdminSearchCondition" resultClass="int">  
+		SELECT /* [AdminPermission_SqlMap.xml] collpack.kms.admin.dao.AdminPermissionDao.countBySearchCondition */
+			COUNT(*)			
+		FROM IKEP4_EV_USER A 
+			LEFT JOIN IKEP4_EV_JOB_TITLE B
+    			ON A.job_title_code = B.job_title_code
+			INNER JOIN IKEP4_EV_WORK_PLACE C 
+				ON A.WORK_PLACE_CODE = C.WORK_PLACE_CODE
+		WHERE 1=1 
+		AND (A.JOB_CLASS_CODE IN ('11','12','21','22','24','31')
+				or A.user_id in (select user_id from ikep4_ev_user_role where role_id in ((SELECT ROLE_ID FROM IKEP4_EV_ROLE WHERE ROLE_NAME = 'COKM'))))  
+		AND A.USER_STATUS ='C' 			
+		<isNotEmpty property="workPlaceName">
+			AND A.WORK_PLACE_CODE IN (
+				SELECT WORK_PLACE_CODE FROM IKEP4_EV_WORK_PLACE WHERE WORK_PLACE_NAME = #workPlaceName#
+			)			
+		</isNotEmpty>
+		<isNotEmpty property="infoGrade">
+			<isEqual property="infoGrade" compareValue="A">
+				AND A.INFO_GRADE = 'A'
+			</isEqual>
+			<isEqual property="infoGrade" compareValue="B">
+				AND A.INFO_GRADE = 'B'
+			</isEqual>
+			<isEqual property="infoGrade" compareValue="C">
+				AND A.INFO_GRADE = 'C' 
+			</isEqual>
+		</isNotEmpty>	
+		<isNotEmpty property="searchWord">
+			<isEqual property="searchColumn" compareValue="userName">
+				AND A.USER_NAME like '%' + #searchWord# + '%'
+			</isEqual>
+			<isEqual property="searchColumn" compareValue="empNo">
+				AND A.EMP_NO = #searchWord#
+			</isEqual>
+		</isNotEmpty>
+	</select>  
+	
+	<select id="countByRecommendReplySearchCondition" parameterClass="KmsAdminSearchCondition" resultClass="int">  
+		SELECT /* [AdminPermission_SqlMap.xml] collpack.kms.admin.dao.AdminPermissionDao.countByRecommendReplySearchCondition */
+			COUNT(*)			
+		FROM IKEP4_EV_USER A 
+			LEFT JOIN IKEP4_EV_JOB_TITLE B
+    			ON A.job_title_code = B.job_title_code
+			INNER JOIN IKEP4_EV_WORK_PLACE C 
+				ON A.WORK_PLACE_CODE = C.WORK_PLACE_CODE
+		WHERE 1=1 AND A.JOB_CLASS_CODE IN ('11','12','21','22','24','31')
+		AND A.USER_STATUS ='C' 			
+		<isNotEmpty property="workPlaceName">
+			AND A.WORK_PLACE_CODE IN (
+				SELECT WORK_PLACE_CODE FROM IKEP4_EV_WORK_PLACE WHERE WORK_PLACE_NAME = #workPlaceName#
+			)			
+		</isNotEmpty>
+		<isNotEmpty property="searchWord">
+			<isEqual property="searchColumn" compareValue="userName">
+				AND A.USER_NAME like '%' + #searchWord# + '%'
+			</isEqual>
+			<isEqual property="searchColumn" compareValue="empNo">
+				AND A.EMP_NO = #searchWord#
+			</isEqual>
+		</isNotEmpty>
+	</select> 	
+	
+	<select id="countByCompulsionTimeLogSearchCondition" parameterClass="KmsAdminSearchCondition" resultClass="int">  
+		SELECT 
+		COUNT(*)
+				
+		FROM IKEP4_KMS_COMPULSIONTIME_log L 
+		INNER JOIN IKEP4_EV_USER A 
+		ON L.USER_ID = A.USER_ID
+			LEFT JOIN IKEP4_EV_JOB_TITLE B
+    			ON A.job_title_code = B.job_title_code
+			INNER JOIN IKEP4_EV_WORK_PLACE C 
+				ON A.WORK_PLACE_CODE = C.WORK_PLACE_CODE
+		WHERE 1=1 
+		AND A.USER_STATUS ='C' 			
+		<isNotEmpty property="startDate">AND L.CLICK_TIME BETWEEN #startDate# AND #endDate#</isNotEmpty>	
+		<isNotEmpty property="workPlaceName">
+			AND A.WORK_PLACE_CODE IN (
+				SELECT WORK_PLACE_CODE FROM IKEP4_EV_WORK_PLACE WHERE WORK_PLACE_NAME = #workPlaceName#
+			)			
+		</isNotEmpty>
+		<isNotEmpty property="searchWord">
+			<isEqual property="searchColumn" compareValue="userName">
+				AND A.USER_NAME like '%' + #searchWord# + '%'
+			</isEqual>
+			<isEqual property="searchColumn" compareValue="empNo">
+				AND A.EMP_NO = #searchWord#
+			</isEqual>
+		</isNotEmpty>
+	</select>
+		
+	
+	
+	<select id="getUserList" parameterClass="KmsAdminSearchCondition" resultMap="result">
+		SELECT /* [AdminPermission_SqlMap.xml] collpack.kms.admin.dao.AdminPermissionDao.getUserList */
+			ROWNUM, USER_NAME, JOB_DUTY_NAME, EMP_NO, USER_ID, WORK_PLACE_NAME, TEAM_NAME, INFO_GRADE, TEAM_CNT, TEAM_CNT_BY_LEADER
+		FROM 
+		( 
+			SELECT 
+				D.* 
+			FROM 
+			( 							
+				SELECT Row_number() OVER (	
+				
+								<isNotEmpty property="sortColumn" >
+									<isEqual property="sortColumn" compareValue="USER_NAME">
+ 										ORDER BY A.USER_NAME
+ 									</isEqual>
+ 									<isEqual property="sortColumn" compareValue="EMP_NO">
+ 										ORDER BY A.EMP_NO
+ 									</isEqual>
+ 									<isEqual property="sortColumn" compareValue="TEAM_NAME">
+ 										ORDER BY A.TEAM_NAME
+ 									</isEqual>
+ 									<isEqual property="sortColumn" compareValue="INFO_GRADE">
+ 										ORDER BY A.INFO_GRADE
+ 									</isEqual>   																	
+
+ 									<isEqual property="sortType" compareValue="ASC">
+ 										ASC
+ 									</isEqual>
+ 									<isEqual property="sortType" compareValue="DESC">
+ 										DESC
+ 									</isEqual>   									
+ 									
+ 								</isNotEmpty>  
+ 							 	<isEmpty property="sortColumn"> ORDER BY  A.USER_NAME ASC </isEmpty>
+				
+				 ) AS ROWNUM,				
+					A.USER_NAME, ISNULL(B.job_title_name, '') JOB_DUTY_NAME, A.EMP_NO, A.USER_ID, 
+					C.WORK_PLACE_NAME, A.TEAM_NAME, A.INFO_GRADE, '' as TEAM_CNT, '' as TEAM_CNT_BY_LEADER		
+				FROM IKEP4_EV_USER A 
+					LEFT JOIN IKEP4_EV_JOB_TITLE B ON A.job_title_code = B.job_title_code
+					INNER JOIN IKEP4_EV_WORK_PLACE C ON A.WORK_PLACE_CODE = C.WORK_PLACE_CODE		     
+				WHERE 1=1 
+				AND (A.JOB_CLASS_CODE IN ('11','12','21','22','24','31')
+				or A.user_id in (select user_id from ikep4_ev_user_role where role_id in ((SELECT ROLE_ID FROM IKEP4_EV_ROLE WHERE ROLE_NAME = 'COKM'))))   
+				AND A.USER_STATUS ='C'							
+				<isNotEmpty property="workPlaceName">
+					AND A.WORK_PLACE_CODE IN (
+						SELECT WORK_PLACE_CODE FROM IKEP4_EV_WORK_PLACE WHERE WORK_PLACE_NAME = #workPlaceName#
+					)			
+				</isNotEmpty>
+				<isNotEmpty property="infoGrade">
+					<isEqual property="infoGrade" compareValue="A">
+						AND A.INFO_GRADE = 'A'
+					</isEqual>
+					<isEqual property="infoGrade" compareValue="B">
+						AND A.INFO_GRADE = 'B'
+					</isEqual>
+					<isEqual property="infoGrade" compareValue="C">
+						AND A.INFO_GRADE = 'C' 
+					</isEqual>
+				</isNotEmpty>
+				<isNotEmpty property="searchWord">
+					<isEqual property="searchColumn" compareValue="userName">
+						AND A.USER_NAME like '%' + #searchWord# + '%'
+					</isEqual>
+					<isEqual property="searchColumn" compareValue="empNo">
+						AND A.EMP_NO = #searchWord#
+					</isEqual>
+				</isNotEmpty>
+				 
+		<![CDATA[   
+			) D
+			WHERE 
+				ROWNUM <=  #endRowIndex# /* 종료  */
+		) TBL  
+		WHERE 
+			ROWNUM >  #startRowIndex# /* 시작 */  
+		]]> 
+	
+	</select>
+	
+	<select id="getUserRecommendReplyList" parameterClass="KmsAdminSearchCondition" resultMap="resultRecommendReply">
+		SELECT /* [AdminPermission_SqlMap.xml] collpack.kms.admin.dao.AdminPermissionDao.getUserRecommendReplyList */
+			ROWNUM, USER_NAME, JOB_DUTY_NAME, EMP_NO, USER_ID, WORK_PLACE_NAME, TEAM_NAME, RECOMMEND_CNT1,REPLY_CNT1,RECOMMEND_CNT2,REPLY_CNT2,SCORE
+		FROM 
+		( 
+			SELECT 
+				D.* 
+			FROM 
+			( 							
+				SELECT Row_number() OVER (	
+				
+								<isNotEmpty property="sortColumn" >
+									<isEqual property="sortColumn" compareValue="USER_NAME">
+ 										ORDER BY A.USER_NAME
+ 									</isEqual>
+ 									<isEqual property="sortColumn" compareValue="EMP_NO">
+ 										ORDER BY A.EMP_NO
+ 									</isEqual>
+ 									<isEqual property="sortColumn" compareValue="TEAM_NAME">
+ 										ORDER BY A.TEAM_NAME
+ 									</isEqual>
+ 									<isEqual property="sortType" compareValue="ASC">
+ 										ASC
+ 									</isEqual>
+ 									<isEqual property="sortType" compareValue="DESC">
+ 										DESC
+ 									</isEqual>   									
+ 									
+ 								</isNotEmpty>  
+ 							 	<isEmpty property="sortColumn"> ORDER BY  A.USER_NAME ASC </isEmpty>
+				
+				 ) AS ROWNUM,				
+					A.USER_NAME, ISNULL(B.job_title_name, '') JOB_DUTY_NAME, A.EMP_NO, A.USER_ID, 
+					C.WORK_PLACE_NAME, A.TEAM_NAME, 	
+					(SELECT COUNT(*) FROM IKEP4_KMS_BD_RECOMMEND WHERE REGISTER_ID = A.USER_ID
+					<isNotEmpty property="startDate">AND REGIST_DATE BETWEEN #startDate# AND #endDate#</isNotEmpty>) AS RECOMMEND_CNT1,
+					(SELECT COUNT(*) FROM IKEP4_KMS_BD_LINEREPLY WHERE REGISTER_ID = A.USER_ID
+					<isNotEmpty property="startDate">AND REGIST_DATE BETWEEN #startDate# AND #endDate#</isNotEmpty>) AS REPLY_CNT1,
+					(SELECT COUNT(*) FROM IKEP4_KMS_BD_RECOMMEND WHERE ITEM_ID IN (SELECT ITEM_ID FROM IKEP4_KMS_BD_ITEM WHERE REGISTER_ID = A.USER_ID 
+					<isNotEmpty property="startDate">AND REGIST_DATE BETWEEN #startDate# AND #endDate#</isNotEmpty>)) AS RECOMMEND_CNT2,
+					(SELECT COUNT(*) FROM IKEP4_KMS_BD_LINEREPLY WHERE ITEM_ID IN (SELECT ITEM_ID FROM IKEP4_KMS_BD_ITEM WHERE REGISTER_ID = A.USER_ID 
+					<isNotEmpty property="startDate">AND REGIST_DATE BETWEEN #startDate# AND #endDate#</isNotEmpty>)) AS REPLY_CNT2,
+					(SELECT ISNULL(SUM(SS.SCORE_SUM),0) FROM (
+					SELECT ITEM_ID,(CASE WHEN SUM(SCORE) > 3 THEN 3 ELSE SUM(SCORE) END) AS SCORE_SUM 
+					FROM IKEP4_KMS_SCORE WHERE ITEM_ID IN (SELECT ITEM_ID FROM IKEP4_KMS_BD_ITEM 
+					WHERE REGISTER_ID=A.USER_ID <isNotEmpty property="startDate">AND REGIST_DATE BETWEEN #startDate# AND #endDate#</isNotEmpty>)
+					GROUP BY ITEM_ID) SS) AS SCORE
+				FROM IKEP4_EV_USER A 
+					LEFT JOIN IKEP4_EV_JOB_TITLE B ON A.job_title_code = B.job_title_code
+					INNER JOIN IKEP4_EV_WORK_PLACE C ON A.WORK_PLACE_CODE = C.WORK_PLACE_CODE		     
+				WHERE 1=1 AND A.JOB_CLASS_CODE IN ('11','12','21','22','24','31')  
+				AND A.USER_STATUS ='C'							
+				<isNotEmpty property="workPlaceName">
+					AND A.WORK_PLACE_CODE IN (
+						SELECT WORK_PLACE_CODE FROM IKEP4_EV_WORK_PLACE WHERE WORK_PLACE_NAME = #workPlaceName#
+					)			
+				</isNotEmpty>
+				<isNotEmpty property="searchWord">
+					<isEqual property="searchColumn" compareValue="userName">
+						AND A.USER_NAME like '%' + #searchWord# + '%'
+					</isEqual>
+					<isEqual property="searchColumn" compareValue="empNo">
+						AND A.EMP_NO = #searchWord#
+					</isEqual>
+				</isNotEmpty>
+				 
+		<![CDATA[   
+			) D
+			WHERE 
+				ROWNUM <=  #endRowIndex# /* 종료  */
+		) TBL  
+		WHERE 
+			ROWNUM >  #startRowIndex# /* 시작 */  
+		]]> 
+	
+	</select>
+	
+	<select id="getCompulsionTimeLogList" parameterClass="KmsAdminSearchCondition" resultMap="resultCompulsionTimeLog">
+		SELECT 
+			ROWNUM, USER_NAME, JOB_DUTY_NAME, EMP_NO, USER_ID, WORK_PLACE_NAME, TEAM_NAME, CLICK_TIME,CLICK_FLG
+		FROM 
+		( 
+			SELECT 
+				D.* 
+			FROM 
+			( 							
+				SELECT Row_number() OVER (	
+				
+								<isNotEmpty property="sortColumn" >
+									<isEqual property="sortColumn" compareValue="USER_NAME">
+ 										ORDER BY A.USER_NAME
+ 									</isEqual>
+ 									<isEqual property="sortColumn" compareValue="EMP_NO">
+ 										ORDER BY A.EMP_NO
+ 									</isEqual>
+ 									<isEqual property="sortColumn" compareValue="TEAM_NAME">
+ 										ORDER BY A.TEAM_NAME
+ 									</isEqual>
+ 									<isEqual property="sortType" compareValue="ASC">
+ 										ASC
+ 									</isEqual>
+ 									<isEqual property="sortType" compareValue="DESC">
+ 										DESC
+ 									</isEqual>   									
+ 									
+ 								</isNotEmpty>  
+ 							 	<isEmpty property="sortColumn"> ORDER BY  A.USER_NAME ASC </isEmpty>
+				
+				 ) AS ROWNUM,				
+					A.USER_NAME, ISNULL(B.job_title_name, '') JOB_DUTY_NAME, A.EMP_NO, A.USER_ID, 
+					C.WORK_PLACE_NAME, A.TEAM_NAME,	
+					convert(varchar, L.CLICK_TIME, 120) AS CLICK_TIME,
+					(CASE WHEN L.CLICK_FLG = '1' THEN '시작' ELSE '종료' END) AS CLICK_FLG 
+				FROM IKEP4_KMS_COMPULSIONTIME_log L 
+				INNER JOIN IKEP4_EV_USER A 
+				ON L.USER_ID = A.USER_ID
+					LEFT JOIN IKEP4_EV_JOB_TITLE B ON A.job_title_code = B.job_title_code
+					INNER JOIN IKEP4_EV_WORK_PLACE C ON A.WORK_PLACE_CODE = C.WORK_PLACE_CODE		     
+				WHERE 1=1 
+				AND A.USER_STATUS ='C'			
+				<isNotEmpty property="startDate">AND L.CLICK_TIME BETWEEN #startDate# AND #endDate#</isNotEmpty>				
+				<isNotEmpty property="workPlaceName">
+					AND A.WORK_PLACE_CODE IN (
+						SELECT WORK_PLACE_CODE FROM IKEP4_EV_WORK_PLACE WHERE WORK_PLACE_NAME = #workPlaceName#
+					)			
+				</isNotEmpty>
+				<isNotEmpty property="searchWord">
+					<isEqual property="searchColumn" compareValue="userName">
+						AND A.USER_NAME like '%' + #searchWord# + '%'
+					</isEqual>
+					<isEqual property="searchColumn" compareValue="empNo">
+						AND A.EMP_NO = #searchWord#
+					</isEqual>
+				</isNotEmpty>
+				<isNotEmpty property="clickFlg">
+						AND L.CLICK_FLG = #clickFlg#
+				</isNotEmpty>
+				 
+		<![CDATA[   
+			) D
+			WHERE 
+				ROWNUM <=  #endRowIndex# /* 종료  */
+		) TBL  
+		WHERE 
+			ROWNUM >  #startRowIndex# /* 시작 */  
+		]]> 
+	
+	</select>
+	
+	<select id="getWorkPlaceNameList" resultClass="String">		
+		SELECT /* [AdminPermission_SqlMap.xml] collpack.kms.admin.dao.AdminPermissionDao.getWorkPlaceNameList */
+			DISTINCT(WORK_PLACE_NAME) AS WORK_PLACE_NAME 
+		FROM IKEP4_EV_WORK_PLACE  
+	</select>
+	
+	<select id="getPeriodList" resultMap="resultPeriod">		
+		SELECT /* [AdminPermission_SqlMap.xml] collpack.kms.admin.dao.AdminPermissionDao.getPeriodList */
+			DISTINCT(PERIOD) AS PERIOD 
+		FROM IKEP4_KMS_CON_OBLIGATION_CNT  
+		order by period
+	</select>
+	
+	<select id="getUserPermInfo" parameterClass="KmsAdminSearchCondition" resultClass="AdminPermission">		
+		EXEC /* [AdminPermission_SqlMap.xml] collpack.kms.admin.dao.AdminPermissionDao.getUserPermInfo */ 
+		DBO.GET_USERPERMINFO_FROM_KMS_CON_OBLIGATIONCNT #userId#,#syear#,#smonth#
+	</select>	
+	
+	<select id="getSpecialUserInfo" parameterClass="KmsAdminSearchCondition" resultClass="AdminPermission">		
+		select  
+		A.USER_ID AS userId,
+		A.USER_NAME AS userName,
+		A.COLOR AS color,
+		A.CATEGORY AS categoryId,
+		B.TEAM_NAME AS teamName,
+		C.JOB_TITLE_NAME AS jobDutyName,
+		A.REGISTER_ID AS registerId,
+		A.REGISTER_NAME AS registerName,
+		A.REGIST_DATE AS registDate
+		from ikep4_kms_special_user A INNER JOIN IKEP4_EV_USER B
+		ON B.USER_ID = A.user_id
+		INNER JOIN IKEP4_EV_JOB_TITLE C ON B.JOB_TITLE_CODE = C.job_title_code 
+		where A.user_id = #userId#
+		AND A.COTEGORY = #categoryId#
+	</select>
+	
+	<select id="getKeyInfoPermissionUser" parameterClass="KmsAdminSearchCondition" resultClass="AdminPermission">		
+		select  
+		A.USER_ID AS userId,
+		A.USER_NAME AS userName,
+		A.VIEW_YN AS viewYn,
+		A.ALARM_YN AS alarmYn,
+		B.TEAM_NAME AS teamName,
+		C.JOB_TITLE_NAME AS jobDutyName,
+		A.REGISTER_ID AS registerId,
+		A.REGISTER_NAME AS registerName,
+		A.REGIST_DATE AS registDate
+		from ikep4_kms_key_info_permission A INNER JOIN IKEP4_EV_USER B
+		ON B.USER_ID = A.user_id
+		INNER JOIN IKEP4_EV_JOB_TITLE C ON B.JOB_TITLE_CODE = C.job_title_code 
+		where A.user_id = #userId#
+	</select>
+	
+	<update id="updateUserCnt" parameterClass="java.util.Map">
+	
+		EXEC /* [AdminPermission_SqlMap.xml] collpack.kms.admin.dao.AdminPermissionDao.updateUserCnt */ 
+		DBO.INSERT_FROM_KMS_CON_OBLIGATION_CNT #userId#, #myCnt#, #infoGrade# ,#searchYear# ,#searchMonth#		
+	</update>
+	
+	<select id="countLeaderPermBySearchCondition" parameterClass="KmsAdminSearchCondition" resultClass="int">  
+		
+		SELECT /* [Adminpermission_sqlmap.xml] collpack.kms.admin.dao.AdminPermissionDao.countLeaderPermBySearchCondition */ 
+			count(DISTINCT(A.USER_ID))
+		FROM 
+		IKEP4_KMS_DIVISION_PERMISSION A	
+			INNER JOIN IKEP4_EV_USER B
+			ON A.USER_ID = B.USER_ID
+		WHERE 1=1
+			AND B.JOB_CLASS_CODE IN ('11','12','21','22','24','31')
+			AND B.USER_STATUS = 'C'  			
+		<isNotEmpty property="searchWord">					
+			AND B.USER_NAME like '%' + #searchWord# + '%'		
+		</isNotEmpty>
+				
+	</select>  	
+		
+		
+	<select id="getLeaderPermissionList" parameterClass="KmsAdminSearchCondition" resultMap="result">
+		  		
+		/* [Adminpermission_sqlmap.xml] collpack.kms.admin.dao.AdminPermissionDao.getTeamLeaderList */
+				WITH CTE AS (
+					SELECT USER_ID, COUNT(USER_ID) AS CNT 
+					FROM IKEP4_KMS_DIVISION_PERMISSION
+					WHERE IS_USE = 0
+					GROUP BY USER_ID
+				), TBL2 AS (
+				
+					SELECT A.USER_ID , 
+						B.USER_NAME , 
+						B.EMP_NO  , 
+						B.TEAM_NAME, 
+						C.WORK_PLACE_NAME , 
+						'' AS JOB_DUTY_NAME, 
+						'' AS INFO_GRADE,
+						COUNT(a.USER_ID) AS TEAM_CNT,
+						'' AS TEAM_CNT_BY_LEADER
+						
+					FROM 
+					IKEP4_KMS_DIVISION_PERMISSION A	
+					INNER JOIN IKEP4_EV_USER B
+						ON A.USER_ID = B.USER_ID
+					INNER JOIN IKEP4_EV_WORK_PLACE C
+						ON B.WORK_PLACE_CODE = C.WORK_PLACE_CODE
+					WHERE 1=1
+					AND B.JOB_CLASS_CODE IN ('11','12','21','22','24','31') 
+					AND B.USER_STATUS = 'C' 	
+					<isNotEmpty property="searchWord">					
+						AND B.USER_NAME like '%' + #searchWord# + '%'					
+					</isNotEmpty>		
+					GROUP BY A.USER_ID,B.USER_NAME, B.EMP_NO, B.TEAM_NAME, C.WORK_PLACE_NAME	
+								
+				), TBL3 AS (
+				
+				
+					SELECT Row_number() OVER (	  
+					
+									<isNotEmpty property="sortColumn" >
+									<isEqual property="sortColumn" compareValue="USER_NAME">
+   										ORDER BY A.USER_NAME
+   									</isEqual>
+   									<isEqual property="sortColumn" compareValue="EMP_NO">
+   										ORDER BY A.EMP_NO
+   									</isEqual>
+   									<isEqual property="sortColumn" compareValue="TEAM_NAME">
+   										ORDER BY A.TEAM_NAME
+   									</isEqual>
+   									<isEqual property="sortColumn" compareValue="WORK_PLACE_NAME">
+   										ORDER BY A.WORK_PLACE_NAME
+   									</isEqual>   																	
+
+   									<isEqual property="sortType" compareValue="ASC">
+   										ASC
+   									</isEqual>
+   									<isEqual property="sortType" compareValue="DESC">
+   										DESC
+   									</isEqual>   									
+   									
+   								</isNotEmpty>  
+   							 	<isEmpty property="sortColumn">  ORDER BY A.EMP_NO ASC </isEmpty>
+	   							 	
+					 
+						) AS ROWNUM,
+						A.USER_ID , 
+						A.USER_NAME , 
+						A.EMP_NO  , 
+						A.TEAM_NAME, 
+						A.WORK_PLACE_NAME , 
+						'' as JOB_DUTY_NAME, 
+						'' as INFO_GRADE,
+						'' as TEAM_CNT,
+						ISNULL( B.CNT, 0)  as TEAM_CNT_BY_LEADER
+						
+					FROM TBL2 A LEFT JOIN CTE B
+					ON A.USER_ID = B.USER_ID
+				)
+	<![CDATA[				
+				SELECT D.* FROM TBL3 D
+				WHERE 
+				D.ROWNUM <= #endRowIndex# /* 종료  */
+				AND D.ROWNUM > #startRowIndex# /* 시작 */	
+		]]>				
+	</select>
+	
+	
+	<select id="countTeamByLeaderPermBySearchCondition" parameterClass="KmsAdminSearchCondition" resultClass="int">
+	
+		SELECT /* [Adminpermission_sqlmap.xml] collpack.kms.admin.dao.AdminPermissionDao.countTeamByLeaderPermBySearchCondition */
+			COUNT(*) 
+		FROM IKEP4_KMS_DIVISION_PERMISSION A INNER JOIN IKEP4_EV_GROUP B
+		ON A.team_code = B.group_id
+		WHERE USER_ID = #userId# AND IS_USE=0
+			
+	</select>
+	
+	<select id="getTeamByLeaderPermList" parameterClass="com.lgcns.ikep4.collpack.kms.admin.search.KmsAdminSearchCondition"  resultMap="resultTeamLeader">
+	
+	SELECT /* [Adminpermission_sqlmap.xml] collpack.kms.admin.dao.AdminPermissionDao.getTeamByLeaderPermList */
+			ROWNUM, TEAM_CODE, TEAM_NAME, TEAM_CNT
+		FROM 
+		(
+			SELECT 
+				D.*
+			FROM
+			(
+				SELECT Row_number() OVER (	  
+				
+								<isNotEmpty property="sortColumn" >
+									<isEqual property="sortColumn" compareValue="TEAM_CODE">
+   										ORDER BY A.TEAM_CODE
+   									</isEqual>   									
+   									<isEqual property="sortColumn" compareValue="TEAM_NAME">
+   										ORDER BY B.GROUP_NAME
+   									</isEqual>														
+
+   									<isEqual property="sortType" compareValue="ASC">
+   										ASC
+   									</isEqual>
+   									<isEqual property="sortType" compareValue="DESC">
+   										DESC
+   									</isEqual>   									
+   									
+   								</isNotEmpty>  
+   							 	<isEmpty property="sortColumn">  ORDER BY A.TEAM_CODE ASC </isEmpty>	
+				 
+					) AS ROWNUM,		
+					A.TEAM_CODE AS TEAM_CODE, B.GROUP_NAME AS TEAM_NAME, '' AS TEAM_CNT
+					FROM IKEP4_KMS_DIVISION_PERMISSION A INNER JOIN IKEP4_EV_GROUP B
+					ON A.team_code = B.group_id
+					WHERE USER_ID = #userId# AND IS_USE=0
+		<![CDATA[   
+			) D
+			WHERE 
+				ROWNUM <=  #endRowIndex# /* 종료  */
+		) TBL  
+		WHERE 
+			ROWNUM >  #startRowIndex# /* 시작 */   
+		]]> 					
+			
+	</select>    
+	
+	<select id="getLeaderIdList" resultClass="String">
+		SELECT /* [Adminpermission_sqlmap.xml] collpack.kms.admin.dao.AdminPermissionDao.getLeaderIdList */
+			USER_ID + '|' + TEAM_CODE as leaderId
+		FROM IKEP4_KMS_DIVISION_PERMISSION
+	</select>
+	
+	<select id="getDivisionTree" parameterClass="String" resultClass="String">
+		/* [Adminpermission_sqlmap.xml] collpack.kms.admin.dao.AdminPermissionDao.getDivisionTree */
+		WITH CTE AS (
+				SELECT	G1.*, G1.GROUP_ID AS GP
+        		FROM	IKEP4_EV_GROUP G1
+        		WHERE	PORTAL_ID = 'P000001' 
+        		AND group_id = #groupId#
+        		UNION ALL
+        		SELECT	G2.*, G2.group_id AS GP
+        		FROM	IKEP4_EV_GROUP G2, CTE
+       	 		WHERE	CTE.GROUP_ID = G2.parent_group_id
+	       	 	
+	       	 	
+		), TBL AS (
+			SELECT A.GP, B.group_name FROM CTE A left join IKEP4_EV_GROUP B
+			ON A.group_id = B.group_id				
+		)		 
+	
+		SELECT GP from TBL
+	</select>
+	
+	<insert id="insertTeamLeader" parameterClass="java.util.Map"> 
+		/* [Adminpermission_sqlmap.xml] collpack.kms.admin.dao.AdminPermissionDao.insertTeamLeader */
+		INSERT INTO IKEP4_KMS_DIVISION_PERMISSION	(USER_ID,  TEAM_CODE)
+		VALUES (#userId#, #teamCode#)
+	</insert>
+	
+	<select id="getLeaderAndTeam" parameterClass="java.util.Map" resultClass="int"> 
+		
+		SELECT /* [Adminpermission_sqlmap.xml] collpack.kms.admin.dao.AdminPermissionDao.getLeaderAndTeam */
+			COUNT(*)
+		FROM IKEP4_KMS_DIVISION_PERMISSION
+		WHERE USER_ID = #userId# AND TEAM_CODE = #teamCode# 
+		
+	</select>		
+	
+	<select id="getUserInfo" parameterClass="String" resultClass="AdminPermission"> 
+		
+		SELECT /* [Adminpermission_sqlmap.xml] collpack.kms.admin.dao.AdminPermissionDao.getUserInfo */ 
+			A.USER_NAME as userName, 
+			A.USER_ID as userId,
+			A.EMP_NO as empNo, 
+			A.TEAM_NAME as teamName, 
+			A.WORK_PLACE_CODE as workPlaceCode, 
+			B.WORK_PLACE_NAME as workPlaceName			
+		FROM IKEP4_EV_USER A LEFT JOIN IKEP4_EV_WORK_PLACE B
+		ON A.WORK_PLACE_CODE = B.WORK_PLACE_CODE
+		WHERE A.USER_ID=#userId#
+						
+	</select>
+
+
+	<update id="deleteTeamByLeader" parameterClass="AdminTeamLeader">
+		
+		UPDATE /* [Adminpermission_sqlmap.xml] collpack.kms.admin.dao.AdminPermissionDao.deleteTeamByLeader */
+		IKEP4_KMS_DIVISION_PERMISSION SET IS_USE = '1', UPDATE_DATE = SYSDATETIME()
+		WHERE USER_ID = #userId#
+		AND TEAM_CODE IN 
+		<iterate property="teamCodes" open="(" close=")" conjunction=",">
+			#teamCodes[]#
+		</iterate>		
+		
+	</update>
+	
+	
+	<insert id="insertTeamByLeader" parameterClass="AdminTeamLeader">
+		
+		EXEC DBO.IKEP4_KMS_ADD_PERMISSION_TEAMBYLEADER #userId#, #teamCode#
+		
+	</insert>
+	
+	<insert id="insertObligationCnt">
+		
+		EXEC DBO.UPDATE_KMS_CON_OBLIGATION_CNT
+		
+	</insert>
+	
+	
+	
+	
+	<select id="listTeamCodes" parameterClass="String" resultMap="resultTeamLeader"> 
+		
+		WITH CTE AS (
+			/* [Adminpermission_sqlmap.xml] collpack.kms.admin.dao.AdminPermissionDao.listTeamCodes */
+			SELECT * FROM IKEP4_EV_USER
+			WHERE WORK_PLACE_CODE IN (
+				SELECT WORK_PLACE_CODE FROM IKEP4_EV_WORK_PLACE
+				WHERE WORK_PLACE_NAME = #workPlaceName#
+			)
+		)
+		SELECT B.GROUP_ID AS TEAM_CODE, C.group_NAME as team_name, '' AS ROWNUM 
+		, '' AS TEAM_CNT FROM CTE A INNER JOIN IKEP4_EV_USER_GROUP B ON A.USER_ID = B.USER_ID INNER 
+		JOIN IKEP4_EV_GROUP C ON C.group_id = B.group_id WHERE C.group_NAME IS NOT NULL AND C.group_type_id 
+		= 'G0001' AND C.view_option = 1 /*1:LIVE GROUP, 2:DEAD GROUP AFTER OPEN*/ GROUP BY B.GROUP_ID, 
+		C.group_NAME ORDER BY C.group_NAME ASC
+						
+	</select>
+	
+	<insert id="insertUserCnt" parameterClass="KmsAdminSearchCondition">
+	<![CDATA[
+		DECLARE @chcker INTEGER;
+		SELECT @chcker = COUNT(*) from IKEP4_KMS_CON_OBLIGATION_CNT t WHERE t.user_id =  #userId#
+		if(@chcker = 0)
+			BEGIN
+				INSERT INTO IKEP4_KMS_CON_OBLIGATION_CNT 
+				   (user_id, OBLIGATION_CNT,PERIOD)
+				VALUES (#userId#, '0',  #syear#+#smonth#)	
+			END
+       ]]> 
+	</insert>
+	
+	<select id="countTeamCntByWorkPlacBySearchCondition" parameterClass="KmsAdminSearchCondition" resultClass="int">  
+		
+		WITH CTE AS (
+				/* [Adminpermission_sqlmap.xml] collpack.kms.admin.dao.AdminPermissionDao.countTeamCntByWorkPlacBySearchCondition */
+				SELECT A.*, C.group_name
+				    FROM IKEP4_KMS_CON_OBLIGATION_CNT A
+				   INNER JOIN IKEP4_EV_USER B
+				      ON A.USER_ID = B.USER_ID
+				    
+				   INNER JOIN IKEP4_EV_USER_GROUP UG
+				      ON B.USER_ID = UG.USER_ID
+				   INNER JOIN IKEP4_EV_GROUP C
+				      ON C.group_id = UG.group_id
+				   WHERE 
+				     C.group_type_id = 'G0001'
+				<isNotEmpty property="workPlaceName" >
+					AND B.WORK_PLACE_CODE IN (
+						SELECT WORK_PLACE_CODE FROM IKEP4_EV_WORK_PLACE
+						WHERE WORK_PLACE_NAME = #workPlaceName#
+					)
+				</isNotEmpty>
+				<isNotEmpty property="teamName">
+					AND C.group_name like '%' + #teamName# + '%'					
+				</isNotEmpty>
+								
+
+			), TBL AS (
+				SELECT Row_number() OVER (	  
+								
+											 ORDER BY C.group_name  ASC					 
+									) AS ROWNUM,
+									B.GROUP_ID AS TEAM_CODE, 
+									C.group_name  AS TEAM_NAME,
+									COUNT(A.OBLIGATION_CNT) AS TEAM_CNT 
+				FROM CTE A INNER JOIN IKEP4_EV_USER_GROUP B
+				ON A.USER_ID = B.USER_ID
+				INNER JOIN IKEP4_EV_GROUP C
+   				ON C.group_id = B.group_id
+				WHERE C.group_type_id = 'G0001'
+				GROUP BY  B.GROUP_ID, C.group_name
+			)
+			
+			SELECT COUNT(*) FROM TBL 
+				
+	</select>  	
+	<select id="getTeamCntByWorkPlaceList" parameterClass="KmsAdminSearchCondition" resultMap="resultTeamLeader"> 
+		
+		WITH CTE AS (
+			/* [Adminpermission_sqlmap.xml] collpack.kms.admin.dao.AdminPermissionDao.listTeamObligationCnt */
+			SELECT A.*, B.TEAM_NAME  FROM IKEP4_KMS_CON_OBLIGATION_CNT A 
+			INNER JOIN IKEP4_EV_USER B
+			ON A.USER_ID = B.USER_ID
+			INNER JOIN IKEP4_EV_USER_GROUP UG
+		      ON B.USER_ID = UG.USER_ID
+		   INNER JOIN IKEP4_EV_GROUP C
+		      ON C.group_id = UG.group_id
+		   WHERE 
+		     C.group_type_id = 'G0001'
+			
+				<isNotEmpty property="workPlaceName">
+					AND B.WORK_PLACE_CODE IN (
+						SELECT WORK_PLACE_CODE FROM IKEP4_EV_WORK_PLACE
+						WHERE WORK_PLACE_NAME = #workPlaceName#
+					)
+				</isNotEmpty>	
+				<isNotEmpty property="teamName">
+					AND C.group_name like '%' + #teamName# + '%'
+				</isNotEmpty>
+		), TBL AS (
+			SELECT Row_number() OVER (	
+			
+								<isNotEmpty property="sortColumn" >
+									<isEqual property="sortColumn" compareValue="TEAM_CODE">
+   										ORDER BY B.GROUP_ID
+   									</isEqual>   									
+   									<isEqual property="sortColumn" compareValue="TEAM_NAME">
+   										ORDER BY c.group_name
+   									</isEqual>
+   									<isEqual property="sortColumn" compareValue="TEAM_CNT">
+   										ORDER BY SUM(A.OBLIGATION_CNT)
+   									</isEqual>															
+
+   									<isEqual property="sortType" compareValue="ASC">
+   										ASC
+   									</isEqual>
+   									<isEqual property="sortType" compareValue="DESC">
+   										DESC
+   									</isEqual>   									
+   									
+   								</isNotEmpty>  
+   							 	<isEmpty property="sortColumn">  ORDER BY B.GROUP_ID ASC </isEmpty>	
+								) AS ROWNUM,
+								B.GROUP_ID AS TEAM_CODE, C.group_name  AS TEAM_NAME, SUM(A.OBLIGATION_CNT) AS TEAM_CNT 
+			FROM CTE A INNER JOIN IKEP4_EV_USER_GROUP B
+			ON A.USER_ID = B.USER_ID
+			INNER JOIN IKEP4_EV_GROUP C
+   			ON C.group_id = B.group_id
+			WHERE C.group_type_id = 'G0001'
+			GROUP BY  B.GROUP_ID, C.group_name
+		)
+		
+		<![CDATA[				
+			SELECT D.* FROM TBL D
+			WHERE 
+			D.ROWNUM <= #endRowIndex# /* 종료  */
+			AND D.ROWNUM > #startRowIndex# /* 시작 */	
+		]]>		
+						
+	</select>
+	
+	<select id="getUnregistTeamLeader"  parameterClass="String"  resultClass="java.util.HashMap">
+		<![CDATA[
+		SELECT /* [Adminpermission_sqlmap.xml] collpack.kms.admin.dao.AdminPermissionDao.getUnregistTeamLeader */
+			A.LEADER_ID AS LEADER_ID, A.GROUP_ID AS TEAM_CODE 
+		FROM 
+			IKEP4_EV_GROUP A LEFT JOIN IKEP4_EV_USER B
+			ON A.LEADER_ID = B.USER_ID
+		WHERE A.LEADER_ID IS NOT NULL AND A.LEADER_ID <> ''
+		AND B.JOB_CLASS_CODE  IN ('11', '12', '21', '22','24')
+		AND A.group_type_id = 'G0001'
+		AND B.USER_STATUS = 'C'		
+		AND A.LEADER_ID NOT IN (
+			SELECT USER_ID
+			FROM IKEP4_KMS_DIVISION_PERMISSION
+		)
+		]]>	
+	</select>
+ 
+</sqlMap>

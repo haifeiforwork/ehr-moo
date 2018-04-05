@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="com.lgcns.ikep4.servicepack.survey.svAnswer" >
+  <typeAlias alias="svAnswer"                type="com.lgcns.ikep4.servicepack.survey.model.Answer"/>
+  
+  <resultMap id="result" class="svAnswer" >
+    <result column="ANSWER_ID" property="answerId" jdbcType="VARCHAR" />
+    <result column="QUESTION_ID" property="questionId" jdbcType="VARCHAR" />
+    <result column="ANSWER_SEQ" property="answerSeq" jdbcType="DECIMAL" />
+    <result column="TITLE" property="title" jdbcType="VARCHAR" />
+    <result column="REGISTER_ID" property="registerId" jdbcType="VARCHAR" />
+    <result column="REGISTER_NAME" property="registerName" jdbcType="VARCHAR" />
+    <result column="REGIST_DATE" property="registDate" jdbcType="TIMESTAMP"/>
+    <result column="UPDATER_ID" property="updaterId" jdbcType="VARCHAR" />
+    <result column="UPDATER_NAME" property="updaterName" jdbcType="VARCHAR" />
+    <result column="UPDATE_DATE" property="updateDate" jdbcType="TIMESTAMP" />
+    <result property="jobTitleName" column="JOB_TITLE_NAME"/>
+	<result property="jobTitleEnglishName" column="JOB_TITLE_ENGLISH_NAME"/>
+	<result property="userName" column="USER_NAME"/>
+	<result property="userEnglishName" column="USER_ENGLISH_NAME"/>
+	<result property="teamName" column="TEAM_NAME"/>
+	<result property="teamEnglishName" column="TEAM_ENGLISH_NAME"/>
+  </resultMap>
+  
+    <sql id="sqlColumnList"> 
+	   s.ANSWER_ID, 
+	   s.QUESTION_ID, 
+	   s.ANSWER_SEQ,
+	   s.TITLE, 
+       s.REGISTER_ID, 
+       s.REGISTER_NAME,
+       s.REGIST_DATE, 
+       s.UPDATER_ID, 
+       s.UPDATER_NAME, 
+       s.UPDATE_DATE,
+       eu.USER_NAME, 
+       eu.USER_ENGLISH_NAME, 
+       eu.TEAM_NAME, 
+       eu.TEAM_ENGLISH_NAME,
+       ejt.JOB_TITLE_NAME, 
+       ejt.JOB_TITLE_ENGLISH_NAME
+  </sql> 
+  
+  
+ <select id="get" parameterClass="string" resultMap="result"> 
+    SELECT /* [svAnswer_SqlMap.xml] svAnswer.get */
+    <include refid="com.lgcns.ikep4.servicepack.survey.svAnswer.sqlColumnList" />
+    FROM  IKEP4_SV_ANSWER s,IKEP4_EV_USER eu,IKEP4_EV_JOB_TITLE ejt
+    WHERE   eu.job_title_code =ejt.job_title_code
+    		and s.REGISTER_ID = eu.user_id
+    		and ANSWER_ID = #answerId#
+  </select>
+  
+  <select id="exists" parameterClass="string" resultClass="int"> 
+    SELECT /* [svAnswer_SqlMap.xml] svAnswer.exists */
+    	  COUNT(*)
+    FROM  IKEP4_SV_ANSWER
+    WHERE ANSWER_ID = #answerId#
+  </select> 
+  
+  <select id="maxAnswerSeq" parameterClass="string" resultClass="int"> 
+    SELECT /* [svQuestion_SqlMap.xml] svQuestion.exists */
+    	  nvl(MAX(ANSWER_SEQ),0)
+    FROM  IKEP4_SV_ANSWER
+    WHERE QUESTION_ID = #questionId#
+  </select> 
+  
+    <select id="getAllByQuestionId" parameterClass="String" resultMap="result"> 
+    SELECT /* [svQuestionGroup_SqlMap.xml] svQuestionGroup.get */
+    <include refid="com.lgcns.ikep4.servicepack.survey.svAnswer.sqlColumnList" />
+    FROM  IKEP4_SV_ANSWER s,IKEP4_EV_USER eu,IKEP4_EV_JOB_TITLE ejt
+    WHERE   eu.job_title_code =ejt.job_title_code
+    		and s.REGISTER_ID = eu.user_id
+            and QUESTION_ID = #questionId#
+    order by s.ANSWER_SEQ asc        
+  </select>
+  
+  <insert id="create" parameterClass="svAnswer"> 
+    INSERT INTO IKEP4_SV_ANSWER ( /* [svAnswer_SqlMap.xml] svAnswer.insert */
+       ANSWER_ID, 
+	   QUESTION_ID, 
+	   ANSWER_SEQ,
+	   TITLE, 
+       REGISTER_ID, 
+       REGISTER_NAME,
+       REGIST_DATE, 
+       UPDATER_ID, 
+       UPDATER_NAME, 
+       UPDATE_DATE
+     ) VALUES (
+        #answerId#, 
+        #questionId#, 
+        #answerSeq#,
+        #title#, 
+        #registerId#,
+        #registerName#, 
+        #registDate#, 
+        #updaterId#, 
+        #updaterName#,
+        #updateDate#
+    )
+  </insert>
+  
+  <update id="update" parameterClass="svAnswer"> 
+    update IKEP4_SV_ANSWER
+    set QUESTION_ID = #questionId#,
+        ANSWER_SEQ = #answerSeq#,
+        TITLE = #title#,
+        UPDATER_ID = #updaterId#,
+        UPDATER_NAME = #updaterName#,
+        UPDATE_DATE = #updateDate#
+    where ANSWER_ID = #answerId#
+  </update>
+  
+  <delete id="remove" parameterClass="string"> 
+    delete from IKEP4_SV_ANSWER  /* [svAnswer_SqlMap.xml] svAnswer.remove */
+    where ANSWER_ID =  #answerId#
+  </delete>    
+  
+   <delete id="removeAllByQuestionId" parameterClass="string"> 
+    delete from IKEP4_SV_ANSWER  /* [svAnswer_SqlMap.xml] svAnswer.remove */
+    where QUESTION_ID = #questionId#
+  </delete> 
+  
+  
+   <delete id="removeAllByGroupId" parameterClass="string"> 
+    delete from IKEP4_SV_ANSWER  /* [svAnswer_SqlMap.xml] svAnswer.remove */
+    where QUESTION_ID in(
+     	select QUESTION_ID 
+     	FROM IKEP4_SV_QUESTION
+    	WHERE QUESTION_GROUP_ID = #questionGroupId#
+    )
+  </delete>  
+  
+  <delete id="removeAllBySurveyId" parameterClass="string"> 
+    delete from IKEP4_SV_ANSWER  /* [svAnswer_SqlMap.xml] svAnswer.remove */
+    where QUESTION_ID in(
+     	select QUESTION_ID 
+     	FROM IKEP4_SV_QUESTION sq,IKEP4_SV_GROUP sqg
+    	WHERE sq.QUESTION_GROUP_ID = sqg.QUESTION_GROUP_ID 
+    		  AND survey_id = #surveyId#
+    )
+  </delete>  
+</sqlMap>

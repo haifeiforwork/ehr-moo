@@ -1,0 +1,533 @@
+﻿
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" >
+
+<html xmlns="http://www.w3.org/1999/xhtml" >
+	<head><title>
+	 LGCNS 
+</title>
+<script language='javascript'>
+   // 전역적으로 사용되는 스크립트 변수
+   var WEBROOT = "/eW/";
+   var WEBSERVER = "officemail.lgcns.com";
+   var WEBPORT = "80";
+   var TITLE = " LGCNS ";
+   var DIALOGWIDTH = "405";
+   var DIALOGHEIGHT = "395";
+   var DIALOGSMALLHEIGHT = "140";
+   var DEFAULTDOMAIN = "lgcns.com";
+   var NEXTEPURL = "http://search.lgcns.com";
+   var UPLANNERURL = "http://uplanner.lgcns.com:9000";
+   var UPLOADSIZELIMIT = "50";
+   var UPLOADCOUNTLIMIT = "10";
+   var SENDERLIMIT = "500";
+</script>
+<script language='javascript' src='./eW/DNSoft.eW.FrameWork.Scripts.Common.js'></script>
+<script language='javascript' src='./eW/DNSoft.eW.FrameWork.Scripts.FormEvent.js'></script>
+<script language='javascript' src='./eW/DNSoft.eW.FrameWork.Scripts.ControlUtil.js'></script>
+<script language='javascript' src='./eW/DNSoft.eW.FrameWork.Scripts.Date.js'></script>
+<script language='javascript' src='./eW/DNSoft.eW.FrameWork.Scripts.eWControl.js'></script>
+
+		<style type="text/css">			
+			.txt_mail_number {
+				font-family: "arial";  
+				font-size: 12px;
+				color:#f2f19a;
+				text-align:right;
+				text-decoration: none;
+			}
+		</style>  
+		<script language="javascript" type="text/javascript">
+		var sOriginalDomain = document.domain;
+		var sNewDomain = "";
+        var saveMailCount = 0;
+        var todoCount = 0;
+        var mHttp = new ActiveXObject("Microsoft.xmlhttp");
+    	var cHttp =	new ActiveXObject("Microsoft.xmlhttp");
+        var szURL = null;
+        var screenPopup;
+        var chkRtn = "0";
+        
+        var nTimeOut = 60000;
+        
+        var sDate
+        
+
+        // Frmaework Javascript 이 호출되기 전에 호출하는 Event
+        // document.domain 이 바뀌기 전에 popup Instance 생성함
+        function beforeLoad()
+        {		
+				try
+				{
+			        var vdomain = document.domain;	    
+			        vdomain = vdomain.substr(vdomain.indexOf(".") + 1);	    
+
+					screenPopup = new ScreenPopup();
+					screenPopup.popup.document.domain = vdomain;
+										
+				}
+				catch(exception) {}        
+        }        
+        
+        
+ 	    /*=======================================================================
+	    Function명 : FormLoad()
+	    내      용 : 폼 로드시 실행되는 함수
+	    작  성  자 : 닷넷소프트 김광용
+	    최초작성일 : 2008년 04월 04일
+   	    최종수정자 : 닷넷소프트 김광용
+	    최종수정일 : 2008년 04월 04일
+	    비      고 : 
+	    ========================================================================*/	
+        function FormLoad()
+		{	
+			try
+			{
+				sNewDomain = document.domain;
+				
+			//	try
+		    //	{
+			//		screenPopup = new ScreenPopup();
+			//	}
+			//	catch(exception) {}
+
+				szURL = "../ajax_result/notice.html";//fn_GetWebRoot() + "eWM/Mail/Interface/XmlHttpProcess.aspx?cmd=newmail";
+
+				// 최초 안 읽은 메일 카운트를 가져오는 함수 실행
+				getUnreadCountSend();
+			    
+				// 안 읽은 메일 팝업 보여주기
+				init();
+			}
+			catch(exception)
+			{
+				if(document.Script["fn_OpenErrorMessage"] != null)
+				{
+					fn_OpenErrorMessage(exception.description);
+				}
+				else
+				{
+					alert(exception.description);
+				}
+			}
+		}
+        
+        // 최초 읽지 않는 메일 Count 가저오기
+        function getUnreadCountSend()
+        { 
+            try
+            { 
+                mHttp = new ActiveXObject("Microsoft.xmlhttp"); 
+                mHttp.onreadystatechange = getUnreadCount; 
+                mHttp.open("GET", szURL, true); 
+                mHttp.setRequestHeader("Content-type", "text/xml"); 
+                mHttp.send();
+            }
+            catch(e)
+            {
+                setTimeout("getUnreadCountSend()", nTimeOut);
+            } 
+        }
+        
+        function getUnreadCount()
+        {
+            if(mHttp.readyState == 4) 
+            {
+                if(mHttp.status == 200) 
+                { 
+                    try
+                    { 
+                        var curDiv = document.getElementById("curMailCount"); 
+                    
+                        xmldoc = new ActiveXObject("Microsoft.XMLDOM"); //로딩한 문서를 담을 객체
+                        xmldoc.loadXML(mHttp.responseText); //객체담기
+                        root = xmldoc.documentElement;      //루트엘리먼트 지정해 주고
+                        error = xmldoc.parseError; //에러처리
+                        
+                        if (error.errorCode != 0)
+                        {
+                            setTimeout("getUnreadCountSend()", nTimeOut);
+                            mHttp = false;
+                        }
+                        else
+                        {
+                            saveMailCount = root.getAttribute("unreadcount");
+                            document.form1.saveMailCount.value = saveMailCount;
+                        }
+                        
+                        if(saveMailCount != null)
+                        {
+                            curDiv.innerHTML = saveMailCount;
+                        }
+                        else
+                        {
+                            curDiv.innerHTML = "0"
+                        }
+                        
+                        mHttp = false;
+                    }
+                    catch(e)
+                    {
+                        var curDiv = document.getElementById("curMailCount"); 
+                        curDiv.innerHTML = "0";
+                        mHttp = false;
+                        setTimeout("getUnreadCountSend()", nTimeOut); 
+                    }
+                }
+            }
+        }
+        
+        function init()
+        {
+            try
+            {
+              cHttp = new ActiveXObject("Microsoft.xmlhttp");
+              cHttp.onreadystatechange = callMailPop;
+              cHttp.open("GET", szURL, true);
+              cHttp.setRequestHeader("Content-type", "text/xml"); 		
+              cHttp.send();      
+            }
+            catch(e)
+            {
+              alert("RecentMailCount.aspx : init() error: "+e.description + "\r\nError number: " + e.number)
+	          setTimeout("init()", nTimeOut);
+            } 			
+        }
+		
+		// 신규 메일 팝업
+        function callMailPop()
+        {
+			var sMailRcvTime = "";
+			var oPrevTime = null;
+			var oMailRcvTime = null;
+			
+	        if(cHttp.readyState == 4) 
+	        {
+		        if(cHttp.status == 200) 
+		        {	           
+			        try
+			        {
+			        	document.all.popupWin_showMsg.innerHTML = cHttp.responseText;
+						createScreenPopup(330, 85, document.all.popupWin.outerHTML);
+			        	return;
+        	            xmldoc = new ActiveXObject("Microsoft.XMLDOM"); //로딩한 문서를 담을 객체
+                    	
+        	            xmldoc.loadXML(cHttp.responseText); //객체담기
+        	            root = xmldoc.documentElement; //루트엘리먼트 지정해 주고
+        	            error = xmldoc.parseError; //에러처리
+        	            
+                        var curDiv = document.getElementById("curMailCount"); 
+        	            
+	        	        if (error.errorCode != 0)
+	        	        {
+	        	            curDiv.innerHTML = "0";
+					        setTimeout(init, nTimeOut);
+					        cHttp = false;	        		
+	        	        }
+	        	        else
+	        	        {
+	        		        var curMailCount = root.getAttribute("unreadcount");	
+		        	        var toplevelentries = root.getAttribute("toplevelentries");
+		        	        var useNewMsgAlarm = root.getAttribute("useNewMsgAlarm");
+        		        			        	
+                            if(curMailCount!=null)
+                            {
+                                curDiv.innerHTML = curMailCount;
+                            }
+                            else
+                            {
+                                curDiv.innerHTML = "0";
+                            }
+
+		        	        lastMailCount = document.form1.saveMailCount.value;
+
+		        	        if(toplevelentries>0)
+		        	        {
+			        	        if(curMailCount > lastMailCount)
+			        	        {
+			        		        var curMailCount = root.getAttribute("unreadcount");	
+				        	        var showElements = xmldoc.getElementsByTagName("text");
+	        	        	        var subject = "";
+	        	        	        var datereceived = "";
+	        	        	        var fromname = "";
+	        	        	        var mailopenlink = "";
+	        	        	        var setsecuritylink = "";
+	        	        	        var deletelink = "";
+        	        	        	
+				        	        for (var x=0; x<showElements.length; x++) {
+        				        		
+				        		        if(x == 0) subject = showElements[x].childNodes[0].nodeValue; 			        						        					        					        					                			                	                			                
+				        		        if(x == 1) datereceived = showElements[x].childNodes[0].nodeValue; 			        			
+				        		        if(x == 2) fromname = showElements[x].childNodes[0].nodeValue; 			        			
+				        		        if(x == 5) mailopenlink = showElements[x].childNodes[0].nodeValue;
+				        		        if(x == 6) setsecuritylink = showElements[x].childNodes[0].nodeValue;
+				        		        if(x == 7) deletelink = showElements[x].childNodes[0].nodeValue;
+				                    }
+				                    
+				                    sMailRcvTime = datereceived.substring(5, 7) + "/" + datereceived.substring(8, 10) + "/" + datereceived.substring(0, 4) + " " + datereceived.substring(11, 16);
+				                    
+				                    oPrevTime = new Date(document.all["hhdPrevTime"].value);
+									oMailRcvTime = new Date(sMailRcvTime);
+									
+									//if (true)
+									if (useNewMsgAlarm == "Y" && parseInt(oMailRcvTime.getTime()) > parseInt(oPrevTime.getTime()))
+									{
+										document.all["hhdPrevTime"].value = sMailRcvTime;
+										
+				        				mailopenlink = encodeURI(mailopenlink);
+				        				setsecuritylink = encodeURI(setsecuritylink);
+				        				deletelink = encodeURI(deletelink);
+	        				        	
+				        				altMsg = "<table width='329' height='74' border='0' cellpadding='0' cellspacing='1' bgcolor='333399'>";        
+				        				altMsg += "<tr>";
+				        				altMsg += "<td valign='top' bgcolor='#FFFFFF' style='font-family: 돋움;font-size: 12px;'><table border='0' cellspacing='0' cellpadding='0' style='font-family: 돋움;font-size: 12px;'>";
+				        				altMsg += "<tr>";
+				        				altMsg += "<td style='font-family: 돋움;font-size: 12px;'><a style='cursor:hand'><img src='../../../Images/Common/ContentFrame/bg_mailhint1.gif' width='327' height='7' onclick='document.domain=\"" + sNewDomain + "\";parent.popupHide();'></a></td>";
+				        				altMsg += "</tr>";
+				        				altMsg += "<tr>";
+				        				altMsg += "<td height='65' background='../../../Images/Common/ContentFrame/bg_mailhint2.gif' style='font-family: 돋움;font-size: 12px;'><table width='100%' border='0' cellspacing='0' cellpadding='0'>";
+				        				altMsg += "<tr>";
+				        				altMsg += "<td width='47' style='font-family: 돋움;font-size: 12px;'><table width='100%' border='0' cellspacing='0' cellpadding='0'>";
+				        				altMsg += "<tr>";
+				        				altMsg += "<td align='center' style='font-family: 돋움;font-size: 12px;'><img src='../../../Images/Common/ContentFrame/img_mailhint1.gif' width='29' height='29'></td>";
+				        				altMsg += "</tr>";
+				        				altMsg += "<tr>";
+				        				altMsg += "<td height='4' style='font-family: 돋움;font-size: 12px;'></td>";
+				        				altMsg += "</tr>";
+				        				altMsg += "<tr>";
+				        				altMsg += "<td align='center' style='font-family: 돋움;font-size: 12px;'><table border='0' cellspacing='0' cellpadding='0'>";
+				        				altMsg += " <tr>";
+				        				altMsg += "<td><a style='cursor:hand'><img src='../../../Images/Common/ContentFrame/ico_mailhint1.gif' width='11' height='14' border='0' onclick='document.domain=\"" + sNewDomain + "\";parent.SetImportant(\"" + setsecuritylink + "\");'></a></td>";
+				        				altMsg += "<td><a style='cursor:hand'><img src='../../../Images/Common/ContentFrame/ico_mailhint2.gif' width='13' height='14' border='0' onclick='document.domain=\"" + sNewDomain + "\";parent.SetDelete(\"" + deletelink + "\");'></a></td>";
+				        				altMsg += "</tr>";
+				        				altMsg += "</table></td>";
+				        				altMsg += "</tr>";
+				        				altMsg += "</table></td>";
+				        				altMsg += "<td valign='top' style='padding:4 0 0 4;' style='font-family: 돋움;font-size: 12px;'>";        			
+				        				altMsg += "<span onclick='document.domain=\"" + sNewDomain + "\";parent.OpenMailPopup(\"" + mailopenlink + "\");' style='font-family: 돋움;font-size: 12px;color:black;text-decoration: none;cursor:hand'><table width='100%' border='0' cellspacing='0' cellpadding='0'>";
+				        				altMsg += "<tr>";
+					        	        
+				        				var strNewMail = fn_Dic( "EWM_MAIL_NEWMAIL" ); // 신규메일
+				        				altMsg += "<td style='font-family: 돋움;font-size: 12px;font-weight: bold;color: 0000ff;'>[LGCNS] "+ strNewMail +" : 1 / 1</td>";
+				        				altMsg += "</tr>";
+				        				altMsg += "<tr>";
+				        				altMsg += "<td height='2' style='font-family: 돋움;font-size: 12px;'></td>";
+				        				altMsg += "</tr>";
+				        				altMsg += "<tr>";
+				        				altMsg += "<td style='font-family: 돋움;font-size: 12px;'>" + fromname + "[" + datereceived + "] <br>" + subject + ".</td>";
+				        				altMsg += "</tr>";
+				        				altMsg += "</table></span>";        			
+				        				altMsg += "</td>";
+				        				altMsg += "<td width='18' valign='top' style='font-family: 돋움;font-size: 12px;'><a href='#'><img src='../../../Images/Common/ContentFrame/btn_mailhint1.gif' width='11' height='9' border='0'></a></td>";
+				        				altMsg += "</tr>";
+				        				altMsg += "</table></td>";
+				        				altMsg += "</tr>";
+	        	
+				        				altMsg += "</table>";
+				        				altMsg += "</td>";
+				        				altMsg += "</tr>";
+				        				altMsg += "</table>";        
+					        	        
+				        				var isIe = false;
+	        	
+				        				var navigatorName = window.navigator.appName;
+				        				var navigatorVersion = window.navigator.appVersion;
+	        	
+				        				if(navigatorName == "Microsoft Internet Explorer" && navigatorVersion.substring(navigatorVersion.indexOf("MSIE") + 5, navigatorVersion.indexOf("MSIE") + 8) >= 5.5)
+				        				{
+				        					isIe = true;    
+				        				}
+				        				else
+				        				{
+				        					isIe = false;    
+				        				}
+	        	
+				        				if(isIe)
+				        				{
+				        					try
+				        					{
+				        						document.all.popupWin_showMsg.innerHTML = altMsg;
+				        						createScreenPopup(330, 85, document.all.popupWin.outerHTML);
+				        					}
+				        					catch(exception) {}
+				        				}
+				        			}
+			        	        }
+		        	        }
+		        	        
+	        		        document.form1.saveMailCount.value = curMailCount;
+	        	        }
+	        	        
+				        setTimeout(init, nTimeOut);
+				        cHttp = false;
+			        }
+			        catch(e)
+			        {
+				        //alert("callMailPopError : " + e.description);
+				        setTimeout(init, nTimeOut);	
+			        }
+                }       
+            }	    			
+        }
+        
+        function ScreenPopup()
+        {
+			try
+			{
+			//	document.domain = sOriginalDomain;      // IE8 로 인한 코드 패치 
+				this.popup = window.createPopup();
+			//	this.popup.document.domain = document.domain;   // IE8 로 인한 코드 패치 
+			//	document.domain = sNewDomain;            // IE8 로 인한 코드 패치 
+				this.popupwidth;
+				this.popupheight;
+				this.screenwidth;
+				this.screenheight;
+				this.x;
+				this.y;
+				this.offset;
+				this.show = ScreenPopupShow;
+				this.down = ScreenPopupDown;
+			}
+			catch(e) {}
+        }
+
+        function ScreenPopupDown()
+        {
+            this.offset+=10;
+            if(this.offset <= this.popupheight) this.popup.show(this.x, this.y + this.offset,this.popupwidth,this.popupheight - this.offset);
+        }
+        
+        function createScreenPopup(w, h, b)
+        {
+			try
+			{
+				screenPopup.popupwidth = w;
+				screenPopup.popupheight = h;
+				screenPopup.screenwidth = window.screen.availWidth;
+				screenPopup.screenheight = window.screen.availHeight;
+				
+                if (window.postMessage) // IE8이라면
+                {
+                    screenPopup.x = screenPopup.screenwidth - w;                    
+                }
+                else                 				
+				    screenPopup.x = screenPopup.screenwidth - w; //176;
+				    
+				screenPopup.y = screenPopup.screenheight - 130;
+				screenPopup.offset = screenPopup.popupheight;
+				showScreenPopup();
+			//	document.domain = sOriginalDomain;  // IE8 로 인한 코드 패치 
+				screenPopup.popup.document.body.innerHTML = b;
+				screenPopup.popup.document.all.popupWin.style.display='block';
+			//	document.domain = sNewDomain;   // IE8 로 인한 코드 패치 
+			}
+			catch(e) {}
+        }
+        
+        function showScreenPopup()
+        {
+            screenPopup.show();
+        }
+
+
+        function ScreenPopupShow()
+        {
+        //alert(this.x);  // 1104 , 624
+        //alert(this.y);  // 642 , 440
+        //alert(this.offset); // 85 , 85
+        //alert(this.popupwidth); // 330, 330
+        //alert(this.popupheight); // 85, 85
+        //alert("x = " + this.x + "\ny = " + (this.y + this.offset) + "\nwidth = " + this.popupwidth + "\nheight = " + (this.popupheight-10));
+            //this.popup.show(this.x, this.y + this.offset,this.popupwidth,this.popupheight-10);
+            this.popup.show(1200, 1000, 300, 90);
+            //setTimeout("hiddenScreenPopup()", 15000);
+        }
+        
+        function hiddenScreenPopup()
+        {
+            screenPopup.down();
+            if(screenPopup.offset <= screenPopup.popupheight)
+            {
+                setTimeout("hiddenScreenPopup()", 20);
+            }
+            else
+            {
+	            screenPopup.popup.hide();
+            }
+        }
+        
+        // 팝업 숨기기
+        function popupHide()
+        {
+            screenPopup.popup.hide();
+        }
+
+                
+		// 중요메일 설정
+        function SetImportant(mailUrl)
+        {
+	           popupHide();
+	           document.all.hifrProcess.src = mailUrl;
+        }
+        
+        // 메일 삭제
+        function SetDelete(mailUrl)
+        {
+	           popupHide();
+	           document.all.hifrProcess.src = mailUrl;
+        }
+        
+        // 메일 읽기 페이지 이동
+        function OpenMailPopup(mailUrl)
+        {
+	           popupHide();
+	           var URL =  mailUrl;
+	           childWin = window.open(URL, '', 'directories=no,location=no,menubar=no,resizable=yes,scrollbars=yes,status=yes,toolbar=no,left=150,top=200,width=850,height=700');
+	           childWin.focus();
+        }
+
+        function fun_GoMail()
+        {
+            if(window.parent != undefined && window.parent.goMail != undefined)
+                window.parent.goMail();
+        }
+	</script>
+	</head>
+	<body bgcolor="#496f95" topmargin="0" leftmargin="0" marginheight="0" marginwidth="0" scroll="no" onload="beforeLoad();fn_WindowOnLoad();">
+		<form name="form1" method="post" action="unreadcount.aspx" id="form1">
+<input type="hidden" name="winClosed" id="winClosed" value="open" />
+<input type="hidden" name="winClosedReturn" id="winClosedReturn" value="" />
+<input type="hidden" name="menuInfo" id="menuInfo" value="" />
+<input type="hidden" name="errorMessage" id="errorMessage" value="" />
+<input type="hidden" name="informationMessage" id="informationMessage" value="" />
+<input type="hidden" name="confirmMessage" id="confirmMessage" value="" />
+<input type="hidden" name="eWLanguage" id="eWLanguage" value="ko-KR" />
+<input type="hidden" name="__VIEWSTATE" id="__VIEWSTATE" value="/wEPDwUJLTg4MTE3NDk1ZGSkmWzKaOO6s4FUx4ctf2KbrUWg6g==" />
+
+<input type="hidden" name="__EVENTVALIDATION" id="__EVENTVALIDATION" value="/wEWAgKymvKFBQLFqbq9CoSMqiqT44sRV5vpCBuKd8Z4uYes" />
+			<table width="57px" cellpadding="0" cellspacing="0" border="0">
+				<tr>
+					<td width="32px" height="16px" style="background: url(../../../images/Common/ContentFrame/leftQuick_bgMail.png) no-repeat left top; cursor:hand" onclick="javascript:fun_GoMail();"></td>
+					<td style="padding-right:1px;"><a href="#" onclick="javascript:fun_GoMail();"><div class="txt_mail_number" id="curMailCount">0</div></a></td>
+				</tr>
+				<tr>
+					<td colspan="2" width="32px" height="1px" style="background: url(../../../images/Common/ContentFrame/leftQuick_qIcon_line.png) no-repeat left top;"></td>
+				</tr>
+			</table>
+			 <!--top메일-->
+			<table border="0" cellspacing="0" cellpadding="0">
+				<tr style="display:none;">
+					<td>
+						<input type="hidden" id="saveMailCount" name="saveMailCount">
+						<input name="hhdPrevTime" type="hidden" id="hhdPrevTime" value="05/03/2011 11:00" />
+					</td>
+				</tr>
+			</table>
+			<!--//top메일 -->
+			<div id="popupWin" style="display:none; background:#FFFFFF; width:320px; height:80px; " onselectstart="return false;" >
+			  <span id="popupWin_showMsg" align=left style="width:400; height:100; background-attachment: fixed; background-repeat: no-repeat;"></span>
+		  </div>		
+		  <iframe id="hifrProcess" frameborder="no" scrolling="no" style="display:none;"></iframe>
+		</form>
+	</body>
+</html>

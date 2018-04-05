@@ -1,0 +1,387 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="lightpack.cafe.member.dao.Member">
+
+	<typeAlias alias="cfMember" type="com.lgcns.ikep4.lightpack.cafe.member.model.Member" />
+	<typeAlias alias="cfMemberSearchCondition" type="com.lgcns.ikep4.lightpack.cafe.member.search.MemberSearchCondition"/>
+
+	<sql id="sqlColumnList">
+		D.PORTAL_ID					AS portalId,
+		A.CAFE_ID					AS cafeId,
+		A.MEMBER_ID					AS memberId,
+		A.MEMBER_INTRODUCTION		AS memberIntroduction,
+		A.MEMBER_LEVEL				AS memberLevel,
+		A.JOIN_APPLY_DATE			AS joinApplyDate,
+		A.JOIN_DATE					AS joinDate,
+		A.JOIN_TYPE					AS joinType,
+		A.REGISTER_ID				AS registerId,
+		A.REGISTER_NAME				AS registerName,
+		A.REGIST_DATE				AS registDate,
+		A.UPDATER_ID				AS updaterId,
+		A.UPDATER_NAME				AS updaterName,
+		A.UPDATE_DATE				AS updateDate,
+		D.CAFE_NAME					AS cafeName,
+		B.USER_NAME					AS memberName,
+		B.USER_ENGLISH_NAME			AS memberEnglishName,
+		B.TEAM_NAME					AS teamName,
+		B.TEAM_ENGLISH_NAME			AS teamEnglishName,
+		C.JOB_TITLE_NAME			AS jobTitleName,
+		C.JOB_TITLE_ENGLISH_NAME 	AS jobTitleEnglishName
+	</sql>
+
+	<!-- MS SQL -->
+	<select id="listBySearchCondition" parameterClass="cfMemberSearchCondition" resultClass="cfMember"> 
+	SELECT /* [Member_SqlMap.xml] lightpack.cafe.member.dao.Member.listBySearchCondition */ 
+		*
+	FROM 
+	( 
+		SELECT A.* FROM 
+		( 
+			/* START========================================= */
+			SELECT 
+				Row_number() OVER (
+									ORDER BY
+									<isNotEmpty property="sortColumn">
+							    	<isEqual property="sortColumn" compareValue="memberName">
+							    	B.USER_NAME
+									</isEqual>
+									<isEqual property="sortColumn" compareValue="jobTitleName">
+							    	C.JOB_TITLE_NAME
+									</isEqual>
+							    	<isEqual property="sortColumn" compareValue="teamName">
+							    	B.TEAM_NAME
+									</isEqual>
+									<isEqual property="sortColumn" compareValue="memberLevel">
+							    	A.MEMBER_LEVEL
+									</isEqual>	
+									<isEqual property="sortColumn" compareValue="joinDate">
+							    	A.JOIN_DATE
+									</isEqual>	
+									</isNotEmpty>
+							    	
+									<isNotEmpty property="sortType">
+							    	<isEqual property="sortType" compareValue="DESC">
+							    	DESC,
+									</isEqual>
+									<isEqual property="sortType" compareValue="ASC">
+							    	ASC,
+									</isEqual>
+									</isNotEmpty>
+						
+							    	C.SORT_ORDER ASC, B.USER_NAME ASC
+									) AS RNUM,
+				<include refid="lightpack.cafe.member.dao.Member.sqlColumnList" /> 
+			FROM   
+				IKEP4_CF_MEMBER		A
+				INNER JOIN IKEP4_EV_USER		B ON ( A.MEMBER_ID		=	B.USER_ID )
+				INNER JOIN IKEP4_EV_JOB_TITLE	C ON ( B.JOB_TITLE_CODE	=	C.JOB_TITLE_CODE )
+				INNER JOIN IKEP4_CF_CAFE	D ON ( A.CAFE_ID	=	D.CAFE_ID )			
+			WHERE	
+				A.CAFE_ID	=	#cafeId#
+				<isNotEmpty property="memberLevel">
+				AND A.MEMBER_LEVEL	=	#memberLevel#
+				</isNotEmpty>
+				
+				<isEmpty property="memberLevel">
+				AND A.MEMBER_LEVEL	IN ('1','2','3','4')
+				</isEmpty>	
+				
+				<isNotEmpty property="searchColumn">
+				<isEqual property="searchColumn" compareValue="memberName">
+				AND	( UPPER(B.USER_NAME)LIKE '%' + UPPER(#searchWord#) + '%' OR UPPER(B.USER_ENGLISH_NAME) LIKE '%' + UPPER(#searchWord#) + '%' )
+				</isEqual>
+				<isEqual property="searchColumn" compareValue="teamName">
+				AND	( UPPER(B.TEAM_NAME) LIKE '%' + UPPER(#searchWord#) + '%' OR UPPER(B.TEAM_ENGLISH_NAME) LIKE '%' + UPPER(#searchWord#) + '%' )
+				</isEqual>
+				</isNotEmpty>
+			/* ===========================================END  */ 
+	<![CDATA[
+		) A 
+		WHERE 
+			RNUM <=  #endRowIndex# /* 종료  */
+	) TBL
+	WHERE
+		RNUM >  #startRowIndex# /* 시작 */
+	]]> 
+	</select>  
+	
+	<!-- ANSI -->
+	<select id="countBySearchCondition" parameterClass="cfMemberSearchCondition" resultClass="int">
+		SELECT /* [Member_SqlMap.xml] lightpack.cafe.member.dao.Member.countBySearchCondition */ 
+	          COUNT(A.MEMBER_ID)
+		FROM   
+			IKEP4_CF_MEMBER A
+			INNER JOIN IKEP4_EV_USER 		B ON (A.MEMBER_ID		=	B.USER_ID)
+			INNER JOIN IKEP4_EV_JOB_TITLE	C ON (B.JOB_TITLE_CODE	=	C.JOB_TITLE_CODE)
+			INNER JOIN IKEP4_CF_CAFE	D ON (A.CAFE_ID	=	D.CAFE_ID)
+		WHERE
+			A.CAFE_ID	=	#cafeId#
+					
+			<isNotEmpty property="memberLevel">
+			AND A.MEMBER_LEVEL	=	#memberLevel#
+			</isNotEmpty>
+			
+			<isEmpty property="memberLevel">
+			AND A.MEMBER_LEVEL	IN ('1','2','3','4')
+			</isEmpty>	
+						
+			<isNotEmpty property="searchColumn">
+			<isEqual property="searchColumn" compareValue="memberName">
+			AND	( UPPER(B.USER_NAME)LIKE '%' + UPPER(#searchWord#) + '%' OR UPPER(B.USER_ENGLISH_NAME) LIKE '%' + UPPER(#searchWord#) + '%' )
+			</isEqual>
+			<isEqual property="searchColumn" compareValue="teamName">
+			AND	( UPPER(B.TEAM_NAME) LIKE '%' + UPPER(#searchWord#) + '%' OR UPPER(B.TEAM_ENGLISH_NAME) LIKE '%' + UPPER(#searchWord#) + '%' )
+			</isEqual>
+			</isNotEmpty>
+	</select>
+	
+	<!-- ANSI -->
+	<select id="listCafeMember" parameterClass="Map" resultClass="cfMember"> 
+		SELECT /* [Member_SqlMap.xml] lightpack.cafe.member.dao.Member.listCafeMember */ 
+				<include refid="lightpack.cafe.member.dao.Member.sqlColumnList" /> 
+		FROM   
+			IKEP4_CF_MEMBER A
+			INNER JOIN IKEP4_EV_USER 		B ON (A.MEMBER_ID		=	B.USER_ID)
+			INNER JOIN IKEP4_EV_JOB_TITLE	C ON (B.JOB_TITLE_CODE	=	C.JOB_TITLE_CODE)
+			INNER JOIN IKEP4_CF_CAFE	D ON (A.CAFE_ID	=	D.CAFE_ID)				
+		WHERE	
+			A.CAFE_ID	=	#cafeId#
+			<isNotEmpty property="memberType">
+			<isEqual property="memberType" compareValue="member">
+			AND A.MEMBER_LEVEL	IN ('2','3','4')
+			</isEqual>
+			<isEqual property="memberType" compareValue="all">
+			AND A.MEMBER_LEVEL	IN ('1','2','3','4')
+			</isEqual>
+			<isEqual property="memberType" compareValue="associate">
+			AND A.MEMBER_LEVEL	IN ('5')
+			</isEqual>			
+			</isNotEmpty>
+    	ORDER BY C.SORT_ORDER ASC, B.USER_NAME ASC
+	</select>
+
+	<!-- ANSI -->
+	<!-- create -->
+	<!-- join_date 무조건 등록날짜 -->
+	<!-- 승인시 재처리 및 개설자가 임의 회원 등록으로 인한 가입일지정 -->
+	<insert id="create" parameterClass="cfMember"> 
+	<![CDATA[ 
+		INSERT INTO IKEP4_CF_MEMBER /* [Member_SqlMap.xml] lightpack.cafe.member.dao.Member.create */
+		(
+			CAFE_ID,		MEMBER_ID,		MEMBER_INTRODUCTION,	MEMBER_LEVEL,	JOIN_APPLY_DATE,
+			JOIN_DATE,		REGISTER_ID,	REGISTER_NAME,			REGIST_DATE,
+			UPDATER_ID,		UPDATER_NAME,	UPDATE_DATE,			JOIN_TYPE
+		)  
+		VALUES
+		(
+			#cafeId#,	#memberId#,		#memberIntroduction#,	#memberLevel#,	CURRENT_TIMESTAMP,
+			CURRENT_TIMESTAMP,		#registerId#,	#registerName#,			CURRENT_TIMESTAMP,
+			#updaterId#,	#updaterName#,	CURRENT_TIMESTAMP,				#joinType#
+		)
+	]]>
+	</insert>	
+
+	<!-- ANSI -->
+	<!-- select -->
+	<select id="get" parameterClass="cfMember"  resultClass="cfMember">
+		SELECT /* [Member_SqlMap.xml] lightpack.cafe.member.dao.Member.get */
+    		<include refid="lightpack.cafe.member.dao.Member.sqlColumnList" />	
+		FROM 
+			IKEP4_CF_MEMBER A
+			INNER JOIN IKEP4_EV_USER 		B ON (A.MEMBER_ID		=	B.USER_ID)
+			INNER JOIN IKEP4_EV_JOB_TITLE	C ON (B.JOB_TITLE_CODE	=	C.JOB_TITLE_CODE)
+			INNER JOIN IKEP4_CF_CAFE	D ON (A.CAFE_ID	=	D.CAFE_ID)	
+		WHERE 
+			A.CAFE_ID		=	#cafeId#
+			AND A.MEMBER_ID		=	#memberId#
+	</select>
+	
+	<!-- ANSI -->
+	<select id="getSysopList" parameterClass="Map"  resultClass="cfMember">
+		SELECT /* [Member_SqlMap.xml] lightpack.cafe.member.dao.Member.getSysopList */
+    		A.MEMBER_ID	AS	memberId,
+    		B.USER_NAME	AS	memberName,
+    		B.USER_ENGLISH_NAME AS memberEnglishName,
+    		B.MAIL		AS	mailId
+		FROM 
+			IKEP4_CF_MEMBER		A
+			INNER JOIN IKEP4_EV_USER	B ON (A.MEMBER_ID = B.USER_ID AND B.MAIL IS NOT NULL)
+		WHERE 
+			A.MEMBER_LEVEL = '1'			
+			<isNotEmpty property="cafeIds">
+			AND A.CAFE_ID
+			<iterate prepend="IN" property="cafeIds" open="(" close=")" conjunction=",">
+			#cafeIds[]#
+			</iterate>
+			</isNotEmpty>
+	</select>
+	
+	<!-- ANSI -->
+	<select id="getSysop" parameterClass="String"  resultClass="cfMember">
+		SELECT /* [Member_SqlMap.xml] lightpack.cafe.member.dao.Member.getSysop */
+    		A.MEMBER_ID	AS	memberId,
+    		B.USER_NAME	AS	memberName,
+    		B.USER_ENGLISH_NAME AS memberEnglishName,
+    		B.MAIL		AS	mailId
+		FROM 
+			IKEP4_CF_MEMBER		A
+			INNER JOIN IKEP4_EV_USER	B ON (A.MEMBER_ID = B.USER_ID )
+		WHERE 
+			A.MEMBER_LEVEL = '1'			
+			AND A.CAFE_ID = #cafeId#
+	</select>	
+	
+	<!-- ANSI -->
+	<select id="getMemberList" parameterClass="Map"  resultClass="cfMember">
+		SELECT /* [Member_SqlMap.xml] lightpack.cafe.member.dao.Member.getMemberList */
+    		A.MEMBER_ID	AS	memberId,
+    		B.USER_NAME	AS	memberName,
+    		B.USER_ENGLISH_NAME AS memberEnglishName,
+    		B.MAIL		AS	mailId
+		FROM 
+			IKEP4_CF_MEMBER		A
+			INNER JOIN IKEP4_EV_USER	B ON (A.MEMBER_ID = B.USER_ID AND B.MAIL IS NOT NULL)
+		WHERE 
+			A.CAFE_ID=#cafeId#
+			AND A.MEMBER_LEVEL IN ('1','2','3','4')		
+			<isNotEmpty property="memberIds">
+			AND A.MEMBER_ID
+			<iterate prepend="IN" property="memberIds" open="(" close=")" conjunction=",">
+			#memberIds[]#
+			</iterate>
+			</isNotEmpty>
+	</select>	
+	
+	<!-- ANSI -->
+	<select id="getMemberMailList" parameterClass="String"  resultClass="cfMember">
+	<![CDATA[ 
+		SELECT /* [Member_SqlMap.xml] lightpack.cafe.member.dao.Member.getMemberMailList */
+    		A.MEMBER_ID	AS	memberId,
+    		B.USER_NAME	AS	memberName,
+    		B.USER_ENGLISH_NAME AS memberEnglishName,
+    		B.MAIL		AS	mailId
+		FROM 
+			IKEP4_CF_MEMBER		A
+			INNER JOIN IKEP4_EV_USER	B ON (A.MEMBER_ID = B.USER_ID AND B.MAIL IS NOT NULL)
+		WHERE 
+			AND A.MEMBER_LEVEL IN ('1','2','3','4')
+			AND A.CAFE_ID	=	#cafeId#
+			/* AND ROWNUM <3 임시 테스트 */
+	]]>
+	</select>
+	
+	<!-- ANSI -->
+	<select id="exists" parameterClass="cfMember" resultClass="java.lang.Integer">
+	<![CDATA[
+		SELECT /* [Member_SqlMap.xml] lightpack.cafe.member.dao.Member.exists */
+			COUNT(MEMBER_ID) 
+		FROM 
+			IKEP4_CF_MEMBER 
+		WHERE 
+			CAFE_ID	=	#cafeId#
+			AND MEMBER_ID	=	#memberId#
+	]]>
+	</select>
+
+	<!-- ANSI -->
+	<!-- update -->
+	<!-- updateType: modify:정보수정, join:회원승인,manage:시샵을 운영진으로,level:등급변경,defaultSet:디폴트WS,defaultInit: 디폴트 초기화 -->
+	<update id="update" parameterClass="cfMember">
+
+		UPDATE 
+			IKEP4_CF_MEMBER /* [Member_SqlMap.xml] lightpack.cafe.member.dao.Member.update */
+		SET 
+			<isNotEmpty property="updateType">
+			
+			<isEqual property="updateType" compareValue="modify">		
+			MEMBER_INTRODUCTION	=	#memberIntroduction#, 
+			</isEqual>
+			
+			<isEqual property="updateType" compareValue="join">		
+			MEMBER_LEVEL	=	#memberLevel#,
+			JOIN_DATE		=	CURRENT_TIMESTAMP, 
+			</isEqual>
+
+			<isEqual property="updateType" compareValue="manage">		
+			MEMBER_LEVEL	=	#memberLevel#,
+			</isEqual>
+			
+			<isEqual property="updateType" compareValue="level">		
+			MEMBER_LEVEL	=	#memberLevel#,
+			</isEqual>
+								
+			</isNotEmpty>
+			UPDATER_ID			=	#updaterId#,
+			UPDATER_NAME		=	#updaterName#,
+			UPDATE_DATE			=	CURRENT_TIMESTAMP
+		WHERE 
+			
+			<isNotEmpty property="updateType">
+			<isEqual property="updateType" compareValue="modify">
+			CAFE_ID	=	#cafeId#	
+			AND MEMBER_ID	=	#memberId#
+			</isEqual>
+			
+			<isEqual property="updateType" compareValue="join">
+			CAFE_ID	=	#cafeId#	
+			AND MEMBER_ID	=	#memberId#
+			</isEqual>
+
+			<isEqual property="updateType" compareValue="manage">
+			CAFE_ID	=	#cafeId#	
+			AND MEMBER_LEVEL=	'1'
+			</isEqual>
+			
+			<isEqual property="updateType" compareValue="level">
+			CAFE_ID	=	#cafeId#		
+			AND MEMBER_ID	=	#memberId#
+			</isEqual>
+			
+			<isEqual property="updateType" compareValue="defaultSet">
+			CAFE_ID	=	#cafeId#	
+			AND MEMBER_ID	=	#memberId#
+			</isEqual>
+			
+			<isEqual property="updateType" compareValue="defaultInit">
+			MEMBER_ID		=	#memberId#		
+			AND CAFE_ID IN 
+			(
+				SELECT
+					A.CAFE_ID 
+				FROM
+					IKEP4_CF_CAFE A
+					INNER JOIN IKEP4_CF_MEMBER B
+						ON A.CAFE_ID = B.CAFE_ID
+				WHERE 
+					A.PORTAL_ID = #portalId#
+					AND MEMBER_ID		=	#memberId#
+			)
+			</isEqual>			
+			</isNotEmpty>			
+	</update>
+
+	<!-- ANSI -->
+	<!-- delete -->
+	<delete id="physicalDelete" parameterClass="cfMember">
+	<![CDATA[
+		DELETE FROM 
+			IKEP4_CF_MEMBER /* [Member_SqlMap.xml] lightpack.cafe.member.dao.Member.physicalDelete */
+		WHERE 
+			CAFE_ID	=	#cafeId# 
+			AND MEMBER_ID	=	#memberId#		
+	]]>
+	</delete>
+	
+	<!-- ANSI -->
+	<delete id="physicalDeleteMemberByCafe" parameterClass="String">
+	<![CDATA[
+		DELETE FROM 
+			IKEP4_CF_MEMBER /* [Member_SqlMap.xml] lightpack.cafe.member.dao.Member.physicalDeleteMemberByCafe */
+		WHERE 
+			CAFE_ID	=	#cafeId# 
+	]]>
+	</delete>	
+	
+	
+</sqlMap>

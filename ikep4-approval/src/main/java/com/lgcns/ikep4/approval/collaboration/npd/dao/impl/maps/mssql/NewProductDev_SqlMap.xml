@@ -1,0 +1,1671 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="com.lgcns.ikep4.approval.collaboration.npd.dao.NewProductDev" >
+
+	<typeAlias alias="newProductDev" type="com.lgcns.ikep4.approval.collaboration.npd.model.NewProductDev"/>
+	<typeAlias alias="newProductDevSearchCondition" type="com.lgcns.ikep4.approval.collaboration.npd.search.NewProductDevSearchCondition" />
+	
+	<resultMap id="scheduleLimitMap" class="newProductDev">
+		<result property="mgntNo"				column="MGNT_NO"				jdbcType="VARCHAR"/>
+		<result property="reqDeptNm"			column="REQ_DEPT_NM"			jdbcType="VARCHAR"/>
+		<result property="productName"			column="PRODUCT_NAME"			jdbcType="VARCHAR"/>
+		<result property="email"				column="EMAIL"					jdbcType="VARCHAR"/>
+		<result property="userName"				column="USER_NAME"				jdbcType="VARCHAR"/>
+		<result property="senderEmail"			column="SENDER_EMAIL"			jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	<resultMap id="newProductDevResultListMap" class="newProductDev">
+		<result property="rNum"					column="RNUM"					jdbcType="VARCHAR"/>
+		<result property="mgntNo"				column="MGNT_NO"				jdbcType="VARCHAR"/>
+		<result property="processStatus"		column="PROCESS_STATUS"			jdbcType="VARCHAR"/>
+		<result property="reqDate"				column="REQ_DATE"				jdbcType="VARCHAR"/>
+		<result property="reqDeptId"			column="REQ_DEPT_ID"			jdbcType="VARCHAR"/>
+		<result property="reqDeptNm"			column="REQ_DEPT_NM"			jdbcType="VARCHAR"/>
+		<result property="reqEmpNo"				column="REQ_EMP_NO"				jdbcType="VARCHAR"/>
+		<result property="reqEmpNm"				column="REQ_EMP_NM"				jdbcType="VARCHAR"/>
+		<result property="productName"			column="PRODUCT_NAME"			jdbcType="VARCHAR"/>
+		<result property="custName"				column="CUST_NAME"				jdbcType="VARCHAR"/>
+		<result property="fstReviewEmpNo"		column="FST_REVIEW_EMP_NO"		jdbcType="VARCHAR"/>
+		<result property="fstReviewEmpNm"		column="FST_REVIEW_EMP_NM"		jdbcType="VARCHAR"/>
+		<result property="fstReviewDate"		column="FST_REVIEW_DATE"		jdbcType="VARCHAR"/>
+		<result property="companyCode"			column="COMPANY_CODE"			jdbcType="VARCHAR"/>
+		<result property="sndReviewDeptId"		column="SND_REVIEW_DEPT_ID"		jdbcType="VARCHAR"/>
+		<result property="sndReviewDeptNm"		column="SND_REVIEW_DEPT_NM"		jdbcType="VARCHAR"/>
+		<result property="sndRcvDraftEmpNo"		column="SND_RCV_DRAFT_EMP_NO"	jdbcType="VARCHAR"/>
+		<result property="sndRcvDraftEmpNm"		column="SND_RCV_DRAFT_EMP_NM"	jdbcType="VARCHAR"/>
+		<result property="apprDate"				column="APPR_DATE"				jdbcType="VARCHAR"/>
+		<result property="apprStsCd"			column="APPR_STS_CD"			jdbcType="VARCHAR"/>
+		<result property="rsltFileReadYn"		column="RSLT_FILE_READ_YN"		jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	<resultMap id="newProductDevResultMap" class="newProductDev">
+		<result property="mgntNo"				column="MGNT_NO"				jdbcType="VARCHAR"/>
+		<result property="companyCode"			column="COMPANY_CODE"			jdbcType="VARCHAR"/>
+		<result property="divisionNo"			column="DIVISION_NO"			jdbcType="VARCHAR"/>
+		<result property="reqEmpNo"				column="REQ_EMP_NO"				jdbcType="VARCHAR"/>
+		<result property="reqEmpNm"				column="REQ_EMP_NM"				jdbcType="VARCHAR"/>
+		
+		<result property="reqDate"				column="REQ_DATE"				jdbcType="VARCHAR"/>
+		<result property="reqDeptId"			column="REQ_DEPT_ID"			jdbcType="VARCHAR"/>
+		<result property="reqDeptNm"			column="REQ_DEPT_NM"			jdbcType="VARCHAR"/>
+		<result property="reqRcvDeptId"			column="REQ_RCV_DEPT_ID"		jdbcType="VARCHAR"/>
+		<result property="reqRcvDeptNm"			column="REQ_RCV_DEPT_NM"		jdbcType="VARCHAR"/>
+		
+		<result property="fstReviewEmpNo"		column="FST_REVIEW_EMP_NO"		jdbcType="VARCHAR"/>
+		<result property="fstReviewEmpNm"		column="FST_REVIEW_EMP_NM"		jdbcType="VARCHAR"/>
+		<result property="fstReviewDate"		column="FST_REVIEW_DATE"		jdbcType="VARCHAR"/>
+		<result property="fstReviewDeptId"		column="FST_REVIEW_DEPT_ID"		jdbcType="VARCHAR"/>
+		<result property="fstReviewDeptNm"		column="FST_REVIEW_DEPT_NM"		jdbcType="VARCHAR"/>
+		
+		<result property="sndReviewDeptId"		column="SND_REVIEW_DEPT_ID"		jdbcType="VARCHAR"/>
+		<result property="sndReviewDeptNm"		column="SND_REVIEW_DEPT_NM"		jdbcType="VARCHAR"/>
+		<result property="productName"			column="PRODUCT_NAME"			jdbcType="VARCHAR"/>
+		<result property="estQty"				column="EST_QTY"				jdbcType="VARCHAR"/>
+		<result property="estPrice"				column="EST_PRICE"				jdbcType="VARCHAR"/>
+		
+		<result property="standard"				column="STANDARD"				jdbcType="VARCHAR"/>
+		<result property="productUsage"			column="PRODUCT_USAGE"			jdbcType="VARCHAR"/>
+		<result property="custName"				column="CUST_NAME"				jdbcType="VARCHAR"/>
+		<result property="compAskSample"		column="COMP_ASK_SAMPLE"		jdbcType="VARCHAR"/>
+		<result property="reqFileItemId"		column="REQ_FILE_ITEM_ID"		jdbcType="VARCHAR"/>
+		
+		<result property="reqPurpose"			column="REQ_PURPOSE"			jdbcType="VARCHAR"/>
+		<result property="reqItemCd"			column="REQ_ITEM_CD"			jdbcType="VARCHAR"/>
+		<result property="reqItemEtcTxt"		column="REQ_ITEM_ETC_TXT"		jdbcType="VARCHAR"/>
+		<result property="reqScheduleCd"		column="REQ_SCHEDULE_CD"		jdbcType="VARCHAR"/>
+		<result property="reqScheduleEtcDate"	column="REQ_SCHEDULE_ETC_DATE"	jdbcType="VARCHAR"/>
+		
+		<result property="reqScheduleLimitDate"	column="REQ_SCHEDULE_LIMIT_DATE"	jdbcType="VARCHAR"/>
+		<result property="analysisPurpose"		column="ANALYSIS_PURPOSE"			jdbcType="VARCHAR"/>
+		<result property="businessInfo"			column="BUSINESS_INFO"				jdbcType="VARCHAR"/>
+		<result property="qualityAnalysis"		column="QUALITY_ANALYSIS"			jdbcType="VARCHAR"/>
+		<result property="etcRequest"			column="ETC_REQUEST"				jdbcType="VARCHAR"/>
+		
+		<result property="sndReviewOpinion"		column="SND_REVIEW_OPINION"			jdbcType="VARCHAR"/>
+		<result property="sndReviewResult"		column="SND_REVIEW_RESULT"			jdbcType="VARCHAR"/>
+		<result property="rsltFileItemId"		column="RSLT_FILE_ITEM_ID"			jdbcType="VARCHAR"/>
+		<result property="processStatus"		column="PROCESS_STATUS"				jdbcType="VARCHAR"/>
+		<result property="apprStsCd"			column="APPR_STS_CD"				jdbcType="VARCHAR"/>
+		
+		<result property="apprReqDate"			column="APPR_REQ_DATE"				jdbcType="VARCHAR"/>
+		<result property="apprDate"				column="APPR_DATE"					jdbcType="VARCHAR"/>
+		<result property="rejectReason"			column="REJECT_REASON"				jdbcType="VARCHAR"/>
+		
+		<!-- sss -->
+		
+		<result property="reqDraftEmpNo"		column="REQ_DRAFT_EMP_NO"			jdbcType="VARCHAR"/>
+		<result property="reqDraftEmpNm"		column="REQ_DRAFT_EMP_NM"			jdbcType="VARCHAR"/>
+		<result property="reqDraftStsCd"		column="REQ_DRAFT_STS_CD"			jdbcType="VARCHAR"/>
+		<result property="reqDraftDate"			column="REQ_DRAFT_DATE"				jdbcType="VARCHAR"/>
+		<result property="reqReviewEmpNo"		column="REQ_REVIEW_EMP_NO"			jdbcType="VARCHAR"/>
+		
+		<result property="reqReviewEmpNm"		column="REQ_REVIEW_EMP_NM"			jdbcType="VARCHAR"/>
+		<result property="reqReviewStsCd"		column="REQ_REVIEW_STS_CD"			jdbcType="VARCHAR"/>
+		<result property="reqReviewDate"		column="REQ_REVIEW_DATE"			jdbcType="VARCHAR"/>
+		<result property="reqApprEmpNo"			column="REQ_APPR_EMP_NO"			jdbcType="VARCHAR"/>
+		<result property="reqApprEmpNm"			column="REQ_APPR_EMP_NM"			jdbcType="VARCHAR"/>
+		
+		<result property="reqApprStsCd"			column="REQ_APPR_STS_CD"			jdbcType="VARCHAR"/>
+		<result property="reqApprDate"			column="REQ_APPR_DATE"				jdbcType="VARCHAR"/>
+		<result property="tcsDraftEmpNo"		column="TCS_DRAFT_EMP_NO"			jdbcType="VARCHAR"/>
+		<result property="tcsDraftEmpNm"		column="TCS_DRAFT_EMP_NM"			jdbcType="VARCHAR"/>
+		<result property="tcsDraftStsCd"		column="TCS_DRAFT_STS_CD"			jdbcType="VARCHAR"/>
+		<result property="tcsDraftDate"			column="TCS_DRAFT_DATE"				jdbcType="VARCHAR"/>
+		
+		<result property="tcsReviewEmpNo"		column="TCS_REVIEW_EMP_NO"			jdbcType="VARCHAR"/>
+		<result property="tcsReviewEmpNm"		column="TCS_REVIEW_EMP_NM"			jdbcType="VARCHAR"/>
+		<result property="tcsReviewStsCd"		column="TCS_REVIEW_STS_CD"			jdbcType="VARCHAR"/>
+		<result property="tcsReviewDate"		column="TCS_REVIEW_DATE"			jdbcType="VARCHAR"/>
+		<result property="tcsApprEmpNo"			column="TCS_APPR_EMP_NO"			jdbcType="VARCHAR"/>
+		<result property="tcsApprEmpNm"			column="TCS_APPR_EMP_NM"			jdbcType="VARCHAR"/>
+		
+		<result property="tcsApprStsCd"			column="TCS_APPR_STS_CD"			jdbcType="VARCHAR"/>
+		<result property="tcsApprDate"			column="TCS_APPR_DATE"				jdbcType="VARCHAR"/>
+		<result property="sndRcvDraftEmpNo"		column="SND_RCV_DRAFT_EMP_NO"		jdbcType="VARCHAR"/>
+		<result property="sndRcvDraftEmpNm"		column="SND_RCV_DRAFT_EMP_NM"		jdbcType="VARCHAR"/>
+		<result property="sndRcvDraftStsCd"		column="SND_RCV_DRAFT_STS_CD"		jdbcType="VARCHAR"/>
+		
+		<result property="sndRcvDraftDate"		column="SND_RCV_DRAFT_DATE"			jdbcType="VARCHAR"/>
+		<result property="sndRcvReviewEmpNo"	column="SND_RCV_REVIEW_EMP_NO"		jdbcType="VARCHAR"/>
+		<result property="sndRcvReviewEmpNm"	column="SND_RCV_REVIEW_EMP_NM"		jdbcType="VARCHAR"/>
+		<result property="sndRcvReviewStsCd"	column="SND_RCV_REVIEW_STS_CD"		jdbcType="VARCHAR"/>
+		<result property="sndRcvReviewDate"		column="SND_RCV_REVIEW_DATE"		jdbcType="VARCHAR"/>
+		
+		<result property="sndRcvApprEmpNo"		column="SND_RCV_APPR_EMP_NO"		jdbcType="VARCHAR"/>
+		<result property="sndRcvApprEmpNm"		column="SND_RCV_APPR_EMP_NM"		jdbcType="VARCHAR"/>
+		<result property="sndRcvApprStsCd"		column="SND_RCV_APPR_STS_CD"		jdbcType="VARCHAR"/>
+		<result property="sndRcvApprDate"		column="SND_RCV_APPR_DATE"			jdbcType="VARCHAR"/>
+		<result property="sndRsltDraftEmpNo"	column="SND_RSLT_DRAFT_EMP_NO"		jdbcType="VARCHAR"/>
+		
+		<result property="sndRsltDraftEmpNm"	column="SND_RSLT_DRAFT_EMP_NM"		jdbcType="VARCHAR"/>
+		<result property="sndRsltDraftStsCd"	column="SND_RSLT_DRAFT_STS_CD"		jdbcType="VARCHAR"/>
+		<result property="sndRsltDraftDate"		column="SND_RSLT_DRAFT_DATE"		jdbcType="VARCHAR"/>
+		<result property="sndRsltReviewEmpNo"	column="SND_RSLT_REVIEW_EMP_NO"		jdbcType="VARCHAR"/>
+		<result property="sndRsltReviewEmpNm"	column="SND_RSLT_REVIEW_EMP_NM"		jdbcType="VARCHAR"/>
+		<result property="sndRsltReviewStsCd"	column="SND_RSLT_REVIEW_STS_CD"		jdbcType="VARCHAR"/>
+		
+		<result property="sndRsltReviewDate"	column="SND_RSLT_REVIEW_DATE"		jdbcType="VARCHAR"/>
+		<result property="sndRsltApprEmpNo"		column="SND_RSLT_APPR_EMP_NO"		jdbcType="VARCHAR"/>
+		<result property="sndRsltApprEmpNm"		column="SND_RSLT_APPR_EMP_NM"		jdbcType="VARCHAR"/>
+		<result property="sndRsltApprStsCd"		column="SND_RSLT_APPR_STS_CD"		jdbcType="VARCHAR"/>
+		<result property="sndRsltApprDate"		column="SND_RSLT_APPR_DATE"			jdbcType="VARCHAR"/>
+		<result property="apprComment"			column="APPR_COMMENT"				jdbcType="VARCHAR"/>
+		
+		<result property="authYn"				column="AUTH_YN"					jdbcType="VARCHAR"/>
+		<result property="rejectReason"			column="REJECT_REASON"				jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	<select id="getProductDevCount" parameterClass="newProductDevSearchCondition" resultClass="int">
+		/* [NewProductDev_SqlMap.xml] newProductDev.getProductDevCount */
+		SELECT COUNT(*) AS RNUM
+		  FROM(
+				SELECT A.MGNT_NO
+				     , MAX(A.PROCESS_STATUS)          AS PROCESS_STATUS
+					 , CONVERT( CHAR(10), MAX(A.REQ_DATE), 102)                AS REQ_DATE
+					 , MAX(A.REQ_DEPT_ID)             AS REQ_DEPT_ID
+					 , MAX(A.REQ_DEPT_NM)             AS REQ_DEPT_NM
+					 , MAX(A.REQ_EMP_NO)              AS REQ_EMP_NO
+					 , MAX(A.REQ_EMP_NM)              AS REQ_EMP_NM
+					 , MAX(A.PRODUCT_NAME)            AS PRODUCT_NAME
+					 , MAX(A.CUST_NAME)               AS CUST_NAME
+					 , MAX(A.FST_REVIEW_EMP_NO)       AS FST_REVIEW_EMP_NO
+					 , MAX(A.FST_REVIEW_EMP_NM)       AS FST_REVIEW_EMP_NM
+					 , CONVERT( CHAR(10), MAX( A.FST_REVIEW_DATE), 102)        AS FST_REVIEW_DATE
+					 , MAX(A.COMPANY_CODE)            AS COMPANY_CODE
+					 , MAX(A.SND_REVIEW_DEPT_ID)      AS SND_REVIEW_DEPT_ID
+					 , MAX(A.SND_REVIEW_DEPT_NM)      AS SND_REVIEW_DEPT_NM
+					 , MAX(A.SND_RCV_DRAFT_EMP_NO)    AS SND_RCV_DRAFT_EMP_NO
+					 , MAX(A.SND_RCV_DRAFT_EMP_NM)    AS SND_RCV_DRAFT_EMP_NM
+					 , CONVERT( CHAR(10), MAX(A.APPR_DATE), 102)               AS APPR_DATE
+					 , MAX(A.APPR_STS_CD)             AS APPR_STS_CD
+					 , MAX(A.RSLT_FILE_READ_YN)       AS RSLT_FILE_READ_YN
+				  FROM (
+						SELECT A.MGNT_NO
+							 , A.PROCESS_STATUS
+							 , G.COM_NM                            AS PROCESS_STATUS_NM
+							 , A.REQ_DATE
+							 , A.REQ_DEPT_ID
+							 , C.GROUP_NAME                        AS REQ_DEPT_NM
+							 , A.REQ_EMP_NO
+							 , D.USER_NAME                         AS REQ_EMP_NM
+							 , A.PRODUCT_NAME
+							 , A.CUST_NAME
+							 , A.FST_REVIEW_EMP_NO
+							 , E.USER_NAME                         AS FST_REVIEW_EMP_NM
+							 , A.FST_REVIEW_DATE
+							 , A.COMPANY_CODE
+							 , A.SND_REVIEW_DEPT_ID
+							 , F.GROUP_NAME                        AS SND_REVIEW_DEPT_NM
+							 , B.SND_RCV_DRAFT_EMP_NO
+							 , H.USER_NAME                         AS SND_RCV_DRAFT_EMP_NM
+							 , A.APPR_STS_CD
+							 , A.APPR_DATE
+							 , ISNULL(I.RSLT_FILE_READ_YN, 'N')    AS RSLT_FILE_READ_YN
+						  FROM TB_DEV_REQUEST A
+							   LEFT OUTER JOIN TB_DEV_REQ_APPR_LINE B
+								  ON B.MGNT_NO = A.MGNT_NO
+							   INNER JOIN IKEP4_EV_GROUP C
+								  ON C.GROUP_TYPE_ID = 'G0001'
+								 AND C.VIEW_OPTION   = '1'
+								 AND C.GROUP_ID      = A.REQ_DEPT_ID
+							   INNER JOIN IKEP4_EV_USER D
+								  ON D.EMP_NO = A.REQ_EMP_NO
+							   LEFT OUTER JOIN IKEP4_EV_USER E
+								  ON E.EMP_NO = A.FST_REVIEW_EMP_NO
+							   LEFT OUTER JOIN IKEP4_EV_GROUP F
+								  ON F.GROUP_TYPE_ID = 'G0001'
+								 AND F.VIEW_OPTION   = '1'
+								 AND F.GROUP_ID      = A.SND_REVIEW_DEPT_ID
+							   LEFT OUTER JOIN TB_COMMON_CODE G
+								  ON G.GRP_CD = 'C00002'
+								 AND G.COM_CD = A.PROCESS_STATUS
+							   LEFT OUTER JOIN IKEP4_EV_USER H
+								  ON H.EMP_NO = B.SND_RCV_DRAFT_EMP_NO
+				               LEFT OUTER JOIN TB_USER_AUTH_MGNT I
+							      ON I.WORK_GBN_CD = '10'
+								 AND I.EMP_NO      = #sessionEmpNo#
+						 WHERE A.REQ_DATE          &gt;= CONVERT( DATETIME, #searchStartReqDate#)
+						   AND A.REQ_DATE          &lt; CONVERT( DATETIME, #searchEndReqDate#)+1
+						   <isNotEmpty property="searchReqEmpNo" >
+						   AND A.REQ_EMP_NO        = #searchReqEmpNo#
+						   </isNotEmpty>
+						   <isNotEmpty property="searchTcsDraftEmpNo" >
+						   AND A.FST_REVIEW_EMP_NO = #searchTcsDraftEmpNo#
+						   </isNotEmpty>
+						   <isNotEmpty property="searchProductName" >
+						   AND A.PRODUCT_NAME      LIKE '%' + #searchProductName# + '%'
+						   </isNotEmpty>
+						   <isNotEmpty property="searchProcessStatus" >
+						   AND A.PROCESS_STATUS    = #searchProcessStatus#
+						   </isNotEmpty>
+						   AND #sessionEmpNo#          IN (ISNULL(A.REQ_EMP_NO, '*'), ISNULL(B.REQ_REVIEW_EMP_NO, '*'), ISNULL(B.REQ_APPR_EMP_NO, '*'))    /* 로그인사번이 의뢰부서 결제선에 존재 체크 */
+						   AND (A.REQ_EMP_NO = #sessionEmpNo# OR
+						        (B.REQ_REVIEW_EMP_NO = #sessionEmpNo# AND B.REQ_DRAFT_STS_CD = '03') OR
+								(B.REQ_APPR_EMP_NO = #sessionEmpNo# AND ((B.REQ_DRAFT_STS_CD = '03' AND (B.REQ_REVIEW_EMP_NO IS NULL OR B.REQ_REVIEW_EMP_NO ='')) OR B.REQ_REVIEW_STS_CD = '03')))
+				        UNION ALL
+						SELECT A.MGNT_NO
+							 , A.PROCESS_STATUS
+							 , G.COM_NM                            AS PROCESS_STATUS_NM
+							 , A.REQ_DATE
+							 , A.REQ_DEPT_ID
+							 , C.GROUP_NAME                        AS REQ_DEPT_NM
+							 , A.REQ_EMP_NO
+							 , D.USER_NAME                         AS REQ_EMP_NM
+							 , A.PRODUCT_NAME
+							 , A.CUST_NAME
+							 , A.FST_REVIEW_EMP_NO
+							 , E.USER_NAME                         AS FST_REVIEW_EMP_NM
+							 , A.FST_REVIEW_DATE
+							 , A.COMPANY_CODE
+							 , A.SND_REVIEW_DEPT_ID
+							 , F.GROUP_NAME                        AS SND_REVIEW_DEPT_NM
+							 , B.SND_RCV_DRAFT_EMP_NO
+							 , H.USER_NAME                         AS SND_RCV_DRAFT_EMP_NM
+							 , A.APPR_STS_CD
+							 , A.APPR_DATE
+							 , ISNULL(I.RSLT_FILE_READ_YN, 'N')    AS RSLT_FILE_READ_YN
+						  FROM TB_DEV_REQUEST A
+							   LEFT OUTER JOIN TB_DEV_REQ_APPR_LINE B
+								  ON B.MGNT_NO = A.MGNT_NO
+							   INNER JOIN IKEP4_EV_GROUP C
+								  ON C.GROUP_TYPE_ID = 'G0001'
+								 AND C.VIEW_OPTION   = '1'
+								 AND C.GROUP_ID      = A.REQ_DEPT_ID
+							   INNER JOIN IKEP4_EV_USER D
+								  ON D.EMP_NO = A.REQ_EMP_NO
+							   LEFT OUTER JOIN IKEP4_EV_USER E
+								  ON E.EMP_NO = A.FST_REVIEW_EMP_NO
+							   LEFT OUTER JOIN IKEP4_EV_GROUP F
+								  ON F.GROUP_TYPE_ID = 'G0001'
+								 AND F.VIEW_OPTION   = '1'
+								 AND F.GROUP_ID      = A.SND_REVIEW_DEPT_ID
+							   LEFT OUTER JOIN TB_COMMON_CODE G
+								  ON G.GRP_CD = 'C00002'
+								 AND G.COM_CD = A.PROCESS_STATUS
+							   LEFT OUTER JOIN IKEP4_EV_USER H
+								  ON H.EMP_NO = B.SND_RCV_DRAFT_EMP_NO
+				               INNER JOIN TB_USER_AUTH_MGNT I
+							      ON I.WORK_GBN_CD = '10'
+								 AND I.EMP_NO      = #sessionEmpNo#
+						 WHERE A.REQ_DATE          &gt;= CONVERT( DATETIME, #searchStartReqDate#)
+						   AND A.REQ_DATE          &lt;= CONVERT( DATETIME, #searchEndReqDate#)+1
+						   AND A.PROCESS_STATUS    &gt;= '12'
+						   AND A.PROCESS_STATUS    &lt;&gt; '13'
+						   <isNotEmpty property="searchReqEmpNo" >
+						   AND A.REQ_EMP_NO        = #searchReqEmpNo#
+						   </isNotEmpty>
+						   <isNotEmpty property="searchTcsDraftEmpNo" >
+						   AND A.FST_REVIEW_EMP_NO = #searchTcsDraftEmpNo#
+						   </isNotEmpty>
+						   <isNotEmpty property="searchProductName" >
+						   AND A.PRODUCT_NAME      LIKE '%' + #searchProductName# + '%'
+						   </isNotEmpty>
+						   <isNotEmpty property="searchProcessStatus" >
+						   AND A.PROCESS_STATUS    = #searchProcessStatus#
+						   </isNotEmpty>
+						   AND #sessionEmpNo#           NOT IN (ISNULL(A.REQ_EMP_NO, '*'), ISNULL(B.REQ_REVIEW_EMP_NO, '*'), ISNULL(B.REQ_APPR_EMP_NO, '*'))    /* 로그인사번이 의뢰부서 결제선에 존재 체크 */
+						   AND (( #sessionEmpNo# NOT IN (ISNULL(B.TCS_REVIEW_EMP_NO, '*'), ISNULL(B.TCS_APPR_EMP_NO, '*'))) OR
+						        (B.TCS_REVIEW_EMP_NO = #sessionEmpNo# AND B.TCS_DRAFT_STS_CD = '03') OR
+								(B.TCS_APPR_EMP_NO = #sessionEmpNo# AND ((B.TCS_DRAFT_STS_CD = '03' AND (B.TCS_REVIEW_EMP_NO IS NULL OR B.TCS_REVIEW_EMP_NO ='')) OR B.TCS_REVIEW_STS_CD = '03')))
+						   AND EXISTS (SELECT 'Y'
+						                 FROM TB_USER_AUTH_MGNT
+										WHERE WORK_GBN_CD = '10'
+										  AND EMP_NO      = #sessionEmpNo#
+										  AND DEPT_ID     = '51000651'
+										  AND USE_YN      = 'Y')
+				        UNION ALL
+						SELECT A.MGNT_NO
+							 , A.PROCESS_STATUS
+							 , G.COM_NM                            AS PROCESS_STATUS_NM
+							 , A.REQ_DATE
+							 , A.REQ_DEPT_ID
+							 , C.GROUP_NAME                        AS REQ_DEPT_NM
+							 , A.REQ_EMP_NO
+							 , D.USER_NAME                         AS REQ_EMP_NM
+							 , A.PRODUCT_NAME
+							 , A.CUST_NAME
+							 , A.FST_REVIEW_EMP_NO
+							 , E.USER_NAME                         AS FST_REVIEW_EMP_NM
+							 , A.FST_REVIEW_DATE
+							 , A.COMPANY_CODE
+							 , A.SND_REVIEW_DEPT_ID
+							 , F.GROUP_NAME                        AS SND_REVIEW_DEPT_NM
+							 , B.SND_RCV_DRAFT_EMP_NO
+							 , H.USER_NAME                         AS SND_RCV_DRAFT_EMP_NM
+							 , A.APPR_STS_CD
+							 , A.APPR_DATE
+							 , ISNULL(I.RSLT_FILE_READ_YN, 'N')    AS RSLT_FILE_READ_YN
+						  FROM TB_DEV_REQUEST A
+							   LEFT OUTER JOIN TB_DEV_REQ_APPR_LINE B
+								  ON B.MGNT_NO = A.MGNT_NO
+							   INNER JOIN IKEP4_EV_GROUP C
+								  ON C.GROUP_TYPE_ID = 'G0001'
+								 AND C.VIEW_OPTION   = '1'
+								 AND C.GROUP_ID      = A.REQ_DEPT_ID
+							   INNER JOIN IKEP4_EV_USER D
+								  ON D.EMP_NO = A.REQ_EMP_NO
+							   LEFT OUTER JOIN IKEP4_EV_USER E
+								  ON E.EMP_NO = A.FST_REVIEW_EMP_NO
+							   LEFT OUTER JOIN IKEP4_EV_GROUP F
+								  ON F.GROUP_TYPE_ID = 'G0001'
+								 AND F.VIEW_OPTION   = '1'
+								 AND F.GROUP_ID      = A.SND_REVIEW_DEPT_ID
+							   LEFT OUTER JOIN TB_COMMON_CODE G
+								  ON G.GRP_CD = 'C00002'
+								 AND G.COM_CD = A.PROCESS_STATUS
+							   LEFT OUTER JOIN IKEP4_EV_USER H
+								  ON H.EMP_NO = B.SND_RCV_DRAFT_EMP_NO
+				               INNER JOIN TB_USER_AUTH_MGNT I
+							      ON I.WORK_GBN_CD = '10'
+								 AND I.EMP_NO      = #sessionEmpNo#
+						 WHERE A.REQ_DATE          &gt;= CONVERT( DATETIME, #searchStartReqDate#)
+						   AND A.REQ_DATE          &lt; CONVERT( DATETIME, #searchEndReqDate#)+1
+						   AND A.PROCESS_STATUS    &gt;= '22'
+						   AND A.PROCESS_STATUS    &lt;&gt; '23'
+						   AND A.PROCESS_STATUS    &lt; '40'
+						   <isNotEmpty property="searchReqEmpNo" >
+						   AND A.REQ_EMP_NO        = #searchReqEmpNo#
+						   </isNotEmpty>
+						   <isNotEmpty property="searchTcsDraftEmpNo" >
+						   AND A.FST_REVIEW_EMP_NO = #searchTcsDraftEmpNo#
+						   </isNotEmpty>
+						   <isNotEmpty property="searchProductName" >
+						   AND A.PRODUCT_NAME      LIKE '%' + #searchProductName# + '%'
+						   </isNotEmpty>
+						   <isNotEmpty property="searchProcessStatus" >
+						   AND A.PROCESS_STATUS    = #searchProcessStatus#
+						   </isNotEmpty>
+						   AND #sessionEmpNo#          NOT IN (ISNULL(B.REQ_DRAFT_EMP_NO, '*'), ISNULL(B.REQ_REVIEW_EMP_NO, '*'), ISNULL(B.REQ_APPR_EMP_NO, '*'), ISNULL(B.TCS_DRAFT_EMP_NO, '*'), ISNULL(B.TCS_REVIEW_EMP_NO, '*'), ISNULL(B.TCS_APPR_EMP_NO, '*'))    /* 로그인사번이 의뢰부서/TCS 결제선에 존재 체크 */
+						   AND ((#sessionEmpNo# NOT IN (ISNULL(B.SND_RCV_REVIEW_EMP_NO, '*'), ISNULL(B.SND_RCV_APPR_EMP_NO, '*'))) OR
+						        (B.SND_RCV_REVIEW_EMP_NO = #sessionEmpNo# AND B.SND_RCV_DRAFT_STS_CD = '03') OR
+								(B.SND_RCV_APPR_EMP_NO = #sessionEmpNo# AND ((B.SND_RCV_DRAFT_STS_CD = '03' AND (B.SND_RCV_REVIEW_EMP_NO IS NULL OR B.SND_RCV_REVIEW_EMP_NO ='')) OR B.SND_RCV_REVIEW_STS_CD = '03')))
+						   AND EXISTS (SELECT 'Y'
+						                 FROM TB_USER_AUTH_MGNT
+										WHERE WORK_GBN_CD = '10'
+										  AND EMP_NO      = #sessionEmpNo#
+										  AND DEPT_ID     &lt;&gt; '51000651'
+										  AND USE_YN      = 'Y')
+				        UNION ALL
+						SELECT A.MGNT_NO
+							 , A.PROCESS_STATUS
+							 , G.COM_NM                            AS PROCESS_STATUS_NM
+							 , A.REQ_DATE
+							 , A.REQ_DEPT_ID
+							 , C.GROUP_NAME                        AS REQ_DEPT_NM
+							 , A.REQ_EMP_NO
+							 , D.USER_NAME                         AS REQ_EMP_NM
+							 , A.PRODUCT_NAME
+							 , A.CUST_NAME
+							 , A.FST_REVIEW_EMP_NO
+							 , E.USER_NAME                         AS FST_REVIEW_EMP_NM
+							 , A.FST_REVIEW_DATE
+							 , A.COMPANY_CODE
+							 , A.SND_REVIEW_DEPT_ID
+							 , F.GROUP_NAME                        AS SND_REVIEW_DEPT_NM
+							 , B.SND_RCV_DRAFT_EMP_NO
+							 , H.USER_NAME                         AS SND_RCV_DRAFT_EMP_NM
+							 , A.APPR_STS_CD
+							 , A.APPR_DATE
+							 , ISNULL(I.RSLT_FILE_READ_YN, 'N')    AS RSLT_FILE_READ_YN
+						  FROM TB_DEV_REQUEST A
+							   LEFT OUTER JOIN TB_DEV_REQ_APPR_LINE B
+								  ON B.MGNT_NO = A.MGNT_NO
+							   INNER JOIN IKEP4_EV_GROUP C
+								  ON C.GROUP_TYPE_ID = 'G0001'
+								 AND C.VIEW_OPTION   = '1'
+								 AND C.GROUP_ID      = A.REQ_DEPT_ID
+							   INNER JOIN IKEP4_EV_USER D
+								  ON D.EMP_NO = A.REQ_EMP_NO
+							   LEFT OUTER JOIN IKEP4_EV_USER E
+								  ON E.EMP_NO = A.FST_REVIEW_EMP_NO
+							   LEFT OUTER JOIN IKEP4_EV_GROUP F
+								  ON F.GROUP_TYPE_ID = 'G0001'
+								 AND F.VIEW_OPTION   = '1'
+								 AND F.GROUP_ID      = A.SND_REVIEW_DEPT_ID
+							   LEFT OUTER JOIN TB_COMMON_CODE G
+								  ON G.GRP_CD = 'C00002'
+								 AND G.COM_CD = A.PROCESS_STATUS
+							   LEFT OUTER JOIN IKEP4_EV_USER H
+								  ON H.EMP_NO = B.SND_RCV_DRAFT_EMP_NO
+				               INNER JOIN TB_USER_AUTH_MGNT I
+							      ON I.WORK_GBN_CD = '10'
+								 AND I.EMP_NO      = #sessionEmpNo#
+						 WHERE A.REQ_DATE          &gt;= CONVERT( DATETIME, #searchStartReqDate#)
+						   AND A.REQ_DATE          &lt; CONVERT( DATETIME, #searchEndReqDate#)+1
+						   AND A.PROCESS_STATUS    &gt;= '32'
+						   AND A.PROCESS_STATUS    &lt;&gt; '33'
+						   <isNotEmpty property="searchReqEmpNo" >
+						   AND A.REQ_EMP_NO        = #searchReqEmpNo#
+						   </isNotEmpty>
+						   <isNotEmpty property="searchTcsDraftEmpNo" >
+						   AND A.FST_REVIEW_EMP_NO = #searchTcsDraftEmpNo#
+						   </isNotEmpty>
+						   <isNotEmpty property="searchProductName" >
+						   AND A.PRODUCT_NAME      LIKE '%' + #searchProductName# + '%'
+						   </isNotEmpty>
+						   <isNotEmpty property="searchProcessStatus" >
+						   AND A.PROCESS_STATUS    = #searchProcessStatus#
+						   </isNotEmpty>
+						   AND #sessionEmpNo#          NOT IN (ISNULL(B.REQ_DRAFT_EMP_NO, '*'), ISNULL(B.REQ_REVIEW_EMP_NO, '*'), ISNULL(B.REQ_APPR_EMP_NO, '*'), ISNULL(B.TCS_DRAFT_EMP_NO, '*'), ISNULL(B.TCS_REVIEW_EMP_NO, '*'), ISNULL(B.TCS_APPR_EMP_NO, '*'))    /* 로그인사번이 의뢰부서 결제선에 존재 체크 */
+						   AND ((#sessionEmpNo# NOT IN (ISNULL(B.SND_RSLT_REVIEW_EMP_NO, '*'), ISNULL(B.SND_RSLT_APPR_EMP_NO, '*'))) OR
+						        (B.SND_RSLT_REVIEW_EMP_NO = #sessionEmpNo# AND B.SND_RSLT_DRAFT_STS_CD = '03') OR
+								(B.SND_RSLT_APPR_EMP_NO = #sessionEmpNo# AND ((B.SND_RSLT_DRAFT_STS_CD = '03' AND (B.SND_RSLT_REVIEW_EMP_NO IS NULL OR B.SND_RSLT_REVIEW_EMP_NO ='')) OR B.SND_RSLT_REVIEW_STS_CD = '03')))
+						   AND EXISTS (SELECT 'Y'
+						                 FROM TB_USER_AUTH_MGNT
+										WHERE WORK_GBN_CD = '10'
+										  AND EMP_NO      = #sessionEmpNo#
+										  AND DEPT_ID     &lt;&gt; '51000651'
+										  AND USE_YN      = 'Y')
+					UNION ALL
+					SELECT A.MGNT_NO
+						 , A.PROCESS_STATUS
+						 , G.COM_NM                            AS PROCESS_STATUS_NM
+						 , A.REQ_DATE
+						 , A.REQ_DEPT_ID
+						 , C.GROUP_NAME                        AS REQ_DEPT_NM
+						 , A.REQ_EMP_NO
+						 , D.USER_NAME                         AS REQ_EMP_NM
+						 , A.PRODUCT_NAME
+						 , A.CUST_NAME
+						 , A.FST_REVIEW_EMP_NO
+						 , E.USER_NAME                         AS FST_REVIEW_EMP_NM
+						 , A.FST_REVIEW_DATE
+						 , A.COMPANY_CODE
+						 , A.SND_REVIEW_DEPT_ID
+						 , F.GROUP_NAME                        AS SND_REVIEW_DEPT_NM
+						 , B.SND_RCV_DRAFT_EMP_NO
+						 , H.USER_NAME                         AS SND_RCV_DRAFT_EMP_NM
+						 , A.APPR_STS_CD
+						 , A.APPR_DATE
+						 , ISNULL(I.RSLT_FILE_READ_YN, 'N')    AS RSLT_FILE_READ_YN
+					  FROM TB_DEV_REQUEST A
+						   LEFT OUTER JOIN TB_DEV_REQ_APPR_LINE B
+							  ON B.MGNT_NO = A.MGNT_NO
+						   INNER JOIN IKEP4_EV_GROUP C
+							  ON C.GROUP_TYPE_ID = 'G0001'
+							 AND C.VIEW_OPTION   = '1'
+							 AND C.GROUP_ID      = A.REQ_DEPT_ID
+						   INNER JOIN IKEP4_EV_USER D
+							  ON D.EMP_NO = A.REQ_EMP_NO
+						   LEFT OUTER JOIN IKEP4_EV_USER E
+							  ON E.EMP_NO = A.FST_REVIEW_EMP_NO
+						   LEFT OUTER JOIN IKEP4_EV_GROUP F
+							  ON F.GROUP_TYPE_ID = 'G0001'
+							 AND F.VIEW_OPTION   = '1'
+							 AND F.GROUP_ID      = A.SND_REVIEW_DEPT_ID
+						   LEFT OUTER JOIN TB_COMMON_CODE G
+							  ON G.GRP_CD = 'C00002'
+							 AND G.COM_CD = A.PROCESS_STATUS
+						   LEFT OUTER JOIN IKEP4_EV_USER H
+							  ON H.EMP_NO = B.SND_RCV_DRAFT_EMP_NO
+			               INNER JOIN TB_USER_AUTH_MGNT I
+						      ON I.WORK_GBN_CD = '10'
+							 AND I.EMP_NO      = '20070017'
+							 AND I.USE_YN      = 'Y'
+					 WHERE A.REQ_DATE          &gt;= CONVERT( DATETIME, #searchStartReqDate#)
+					   AND A.REQ_DATE          &lt; CONVERT( DATETIME, #searchEndReqDate#)+1
+					   AND A.PROCESS_STATUS    &gt;= '22'
+					   AND A.PROCESS_STATUS    &lt;&gt; '23'
+					   <isNotEmpty property="searchReqEmpNo" >
+					   AND A.REQ_EMP_NO        = #searchReqEmpNo#
+					   </isNotEmpty>
+					   <isNotEmpty property="searchTcsDraftEmpNo" >
+					   AND A.FST_REVIEW_EMP_NO = #searchTcsDraftEmpNo#
+					   </isNotEmpty>
+					   <isNotEmpty property="searchProductName" >
+					   AND A.PRODUCT_NAME      LIKE '%' + #searchProductName# + '%'
+					   </isNotEmpty>
+					   <isNotEmpty property="searchProcessStatus" >
+					   AND A.PROCESS_STATUS    = #searchProcessStatus#
+					   </isNotEmpty>
+					   AND '20070017'          NOT IN (ISNULL(B.REQ_DRAFT_EMP_NO, '*'), ISNULL(B.REQ_REVIEW_EMP_NO, '*'), ISNULL(B.REQ_APPR_EMP_NO, '*'), ISNULL(B.TCS_DRAFT_EMP_NO, '*'), ISNULL(B.TCS_REVIEW_EMP_NO, '*'), ISNULL(B.TCS_APPR_EMP_NO, '*'))    /* 로그인사번이 의뢰부서 결제선에 존재 체크 */
+					   AND EXISTS (SELECT 'Y'
+					                 FROM TB_DEV_REQ_SHARE_DEPT
+									WHERE MGNT_NO       = A.MGNT_NO
+									  AND SHARE_DEPT_ID = I.DEPT_ID)				   
+										  							) A
+				 GROUP BY A.MGNT_NO
+		      ) IA
+	</select>
+	
+	<select id="getProductDevList" parameterClass="newProductDevSearchCondition" resultMap="newProductDevResultListMap">
+		/* [NewProductDev_SqlMap.xml] newProductDev.getProductDevList */
+		SELECT IAA.*
+		  FROM
+		     (
+				SELECT IA.*
+				     , ROW_NUMBER() OVER( ORDER BY
+						     						<isNotEmpty property="sortColumn">
+						     							<isEqual property="sortColumn" compareValue="processStatus">
+						     								<isEqual property="sortType" compareValue="DESC">
+						     									IA.PROCESS_STATUS DESC,
+						     								</isEqual>
+						     								<isEqual property="sortType" compareValue="ASC">
+						     									IA.PROCESS_STATUS ASC,
+						     								</isEqual>
+						     							</isEqual>
+						     							<isEqual property="sortColumn" compareValue="reqDate">
+						     								<isEqual property="sortType" compareValue="DESC">
+						     									IA.REQ_DATE DESC,
+						     								</isEqual>
+						     								<isEqual property="sortType" compareValue="ASC">
+						     									IA.REQ_DATE ASC,
+						     								</isEqual>
+						     							</isEqual>
+						     							<isEqual property="sortColumn" compareValue="reqDeptNm">
+						     								<isEqual property="sortType" compareValue="DESC">
+						     									IA.REQ_DEPT_NM DESC,
+						     								</isEqual>
+						     								<isEqual property="sortType" compareValue="ASC">
+						     									IA.REQ_DEPT_NM ASC,
+						     								</isEqual>
+						     							</isEqual>
+						     							<isEqual property="sortColumn" compareValue="reqEmpNm">
+						     								<isEqual property="sortType" compareValue="DESC">
+						     									IA.REQ_EMP_NO DESC,
+						     								</isEqual>
+						     								<isEqual property="sortType" compareValue="ASC">
+						     									IA.REQ_EMP_NO ASC,
+						     								</isEqual>
+						     							</isEqual>
+						     							<isEqual property="sortColumn" compareValue="productName">
+						     								<isEqual property="sortType" compareValue="DESC">
+						     									IA.PRODUCT_NAME DESC,
+						     								</isEqual>
+						     								<isEqual property="sortType" compareValue="ASC">
+						     									IA.PRODUCT_NAME ASC,
+						     								</isEqual>
+						     							</isEqual>
+						     							<isEqual property="sortColumn" compareValue="custName">
+						     								<isEqual property="sortType" compareValue="DESC">
+						     									IA.CUST_NAME DESC,
+						     								</isEqual>
+						     								<isEqual property="sortType" compareValue="ASC">
+						     									IA.CUST_NAME ASC,
+						     								</isEqual>
+						     							</isEqual>
+						     							<isEqual property="sortColumn" compareValue="fstReviewEmpNm">
+						     								<isEqual property="sortType" compareValue="DESC">
+						     									IA.FST_REVIEW_EMP_NM DESC,
+						     								</isEqual>
+						     								<isEqual property="sortType" compareValue="ASC">
+						     									IA.FST_REVIEW_EMP_NM ASC,
+						     								</isEqual>
+						     							</isEqual>
+						     							<isEqual property="sortColumn" compareValue="fstReviewDate">
+						     								<isEqual property="sortType" compareValue="DESC">
+						     									IA.FST_REVIEW_DATE DESC,
+						     								</isEqual>
+						     								<isEqual property="sortType" compareValue="ASC">
+						     									IA.FST_REVIEW_DATE ASC,
+						     								</isEqual>
+						     							</isEqual>
+						     							<isEqual property="sortColumn" compareValue="companyCode">
+						     								<isEqual property="sortType" compareValue="DESC">
+						     									IA.COMPANY_CODE DESC,
+						     								</isEqual>
+						     								<isEqual property="sortType" compareValue="ASC">
+						     									IA.COMPANY_CODE ASC,
+						     								</isEqual>
+						     							</isEqual>
+						     							<isEqual property="sortColumn" compareValue="sndReviewDeptNm">
+						     								<isEqual property="sortType" compareValue="DESC">
+						     									IA.SND_REVIEW_DEPT_NM DESC,
+						     								</isEqual>
+						     								<isEqual property="sortType" compareValue="ASC">
+						     									IA.SND_REVIEW_DEPT_NM ASC,
+						     								</isEqual>
+						     							</isEqual>
+						     							<isEqual property="sortColumn" compareValue="sndRcvDraftEmpNm">
+						     								<isEqual property="sortType" compareValue="DESC">
+						     									IA.SND_RCV_DRAFT_EMP_NM DESC,
+						     								</isEqual>
+						     								<isEqual property="sortType" compareValue="ASC">
+						     									IA.SND_RCV_DRAFT_EMP_NM ASC,
+						     								</isEqual>
+						     							</isEqual>
+						     							<isEqual property="sortColumn" compareValue="apprDate">
+						     								<isEqual property="sortType" compareValue="DESC">
+						     									IA.APPR_STS_CD DESC,
+						     								</isEqual>
+						     								<isEqual property="sortType" compareValue="ASC">
+						     									IA.APPR_STS_CD ASC,
+						     								</isEqual>
+						     							</isEqual>
+						     						</isNotEmpty>
+													IA.MGNT_NO DESC
+						                         ) AS RNUM
+				  FROM
+				     (
+						SELECT A.MGNT_NO
+						     , MAX(A.PROCESS_STATUS)          AS PROCESS_STATUS
+							 , CONVERT( CHAR(10), MAX(A.REQ_DATE), 102)                AS REQ_DATE
+							 , MAX(A.REQ_DEPT_ID)             AS REQ_DEPT_ID
+							 , MAX(A.REQ_DEPT_NM)             AS REQ_DEPT_NM
+							 , MAX(A.REQ_EMP_NO)              AS REQ_EMP_NO
+							 , MAX(A.REQ_EMP_NM)              AS REQ_EMP_NM
+							 , MAX(A.PRODUCT_NAME)            AS PRODUCT_NAME
+							 , MAX(A.CUST_NAME)               AS CUST_NAME
+							 , MAX(A.FST_REVIEW_EMP_NO)       AS FST_REVIEW_EMP_NO
+							 , MAX(A.FST_REVIEW_EMP_NM)       AS FST_REVIEW_EMP_NM
+							 , CONVERT( CHAR(10), MAX( A.FST_REVIEW_DATE), 102)        AS FST_REVIEW_DATE
+							 , MAX(A.COMPANY_CODE)            AS COMPANY_CODE
+							 , MAX(A.SND_REVIEW_DEPT_ID)      AS SND_REVIEW_DEPT_ID
+							 , MAX(A.SND_REVIEW_DEPT_NM)      AS SND_REVIEW_DEPT_NM
+							 , MAX(A.SND_RCV_DRAFT_EMP_NO)    AS SND_RCV_DRAFT_EMP_NO
+							 , MAX(A.SND_RCV_DRAFT_EMP_NM)    AS SND_RCV_DRAFT_EMP_NM
+							 , CONVERT( CHAR(10), MAX(A.APPR_DATE), 102)               AS APPR_DATE
+							 , MAX(A.APPR_STS_CD)             AS APPR_STS_CD
+							 , MAX(A.RSLT_FILE_READ_YN)       AS RSLT_FILE_READ_YN
+						  FROM (
+								SELECT A.MGNT_NO
+									 , A.PROCESS_STATUS
+									 , G.COM_NM                            AS PROCESS_STATUS_NM
+									 , A.REQ_DATE
+									 , A.REQ_DEPT_ID
+									 , C.GROUP_NAME                        AS REQ_DEPT_NM
+									 , A.REQ_EMP_NO
+									 , D.USER_NAME                         AS REQ_EMP_NM
+									 , A.PRODUCT_NAME
+									 , A.CUST_NAME
+									 , A.FST_REVIEW_EMP_NO
+									 , E.USER_NAME                         AS FST_REVIEW_EMP_NM
+									 , A.FST_REVIEW_DATE
+									 , A.COMPANY_CODE
+									 , A.SND_REVIEW_DEPT_ID
+									 , F.GROUP_NAME                        AS SND_REVIEW_DEPT_NM
+									 , B.SND_RCV_DRAFT_EMP_NO
+									 , H.USER_NAME                         AS SND_RCV_DRAFT_EMP_NM
+									 , A.APPR_STS_CD
+									 , A.APPR_DATE
+									 , ISNULL(I.RSLT_FILE_READ_YN, 'N')    AS RSLT_FILE_READ_YN
+								  FROM TB_DEV_REQUEST A
+									   LEFT OUTER JOIN TB_DEV_REQ_APPR_LINE B
+										  ON B.MGNT_NO = A.MGNT_NO
+									   INNER JOIN IKEP4_EV_GROUP C
+										  ON C.GROUP_TYPE_ID = 'G0001'
+										 AND C.VIEW_OPTION   = '1'
+										 AND C.GROUP_ID      = A.REQ_DEPT_ID
+									   INNER JOIN IKEP4_EV_USER D
+										  ON D.EMP_NO = A.REQ_EMP_NO
+									   LEFT OUTER JOIN IKEP4_EV_USER E
+										  ON E.EMP_NO = A.FST_REVIEW_EMP_NO
+									   LEFT OUTER JOIN IKEP4_EV_GROUP F
+										  ON F.GROUP_TYPE_ID = 'G0001'
+										 AND F.VIEW_OPTION   = '1'
+										 AND F.GROUP_ID      = A.SND_REVIEW_DEPT_ID
+									   LEFT OUTER JOIN TB_COMMON_CODE G
+										  ON G.GRP_CD = 'C00002'
+										 AND G.COM_CD = A.PROCESS_STATUS
+									   LEFT OUTER JOIN IKEP4_EV_USER H
+										  ON H.EMP_NO = B.SND_RCV_DRAFT_EMP_NO
+						               LEFT OUTER JOIN TB_USER_AUTH_MGNT I
+									      ON I.WORK_GBN_CD = '10'
+										 AND I.EMP_NO      = #sessionEmpNo#
+								 WHERE A.REQ_DATE          &gt;= CONVERT( DATETIME, #searchStartReqDate#)
+								   AND A.REQ_DATE          &lt;= CONVERT( DATETIME, #searchEndReqDate#) + 1
+								   <isNotEmpty property="searchReqEmpNo" >
+								   AND A.REQ_EMP_NO        = #searchReqEmpNo#
+								   </isNotEmpty>
+								   <isNotEmpty property="searchTcsDraftEmpNo" >
+								   AND A.FST_REVIEW_EMP_NO = #searchTcsDraftEmpNo#
+								   </isNotEmpty>
+								   <isNotEmpty property="searchProductName" >
+								   AND A.PRODUCT_NAME      LIKE '%' + #searchProductName# + '%'
+								   </isNotEmpty>
+								   <isNotEmpty property="searchProcessStatus" >
+								   AND A.PROCESS_STATUS    = #searchProcessStatus#
+								   </isNotEmpty>
+								   AND #sessionEmpNo#          IN (ISNULL(A.REQ_EMP_NO, '*'), ISNULL(B.REQ_REVIEW_EMP_NO, '*'), ISNULL(B.REQ_APPR_EMP_NO, '*'))    /* 로그인사번이 의뢰부서 결제선에 존재 체크 */
+								   AND (A.REQ_EMP_NO = #sessionEmpNo# OR
+								        (B.REQ_REVIEW_EMP_NO = #sessionEmpNo# AND B.REQ_DRAFT_STS_CD = '03') OR
+										(B.REQ_APPR_EMP_NO = #sessionEmpNo# AND ((B.REQ_DRAFT_STS_CD = '03' AND (B.REQ_REVIEW_EMP_NO IS NULL OR B.REQ_REVIEW_EMP_NO ='')) OR B.REQ_REVIEW_STS_CD = '03')))
+						        UNION ALL
+								SELECT A.MGNT_NO
+									 , A.PROCESS_STATUS
+									 , G.COM_NM                            AS PROCESS_STATUS_NM
+									 , A.REQ_DATE
+									 , A.REQ_DEPT_ID
+									 , C.GROUP_NAME                        AS REQ_DEPT_NM
+									 , A.REQ_EMP_NO
+									 , D.USER_NAME                         AS REQ_EMP_NM
+									 , A.PRODUCT_NAME
+									 , A.CUST_NAME
+									 , A.FST_REVIEW_EMP_NO
+									 , E.USER_NAME                         AS FST_REVIEW_EMP_NM
+									 , A.FST_REVIEW_DATE
+									 , A.COMPANY_CODE
+									 , A.SND_REVIEW_DEPT_ID
+									 , F.GROUP_NAME                        AS SND_REVIEW_DEPT_NM
+									 , B.SND_RCV_DRAFT_EMP_NO
+									 , H.USER_NAME                         AS SND_RCV_DRAFT_EMP_NM
+									 , A.APPR_STS_CD
+									 , A.APPR_DATE
+									 , ISNULL(I.RSLT_FILE_READ_YN, 'N')    AS RSLT_FILE_READ_YN
+								  FROM TB_DEV_REQUEST A
+									   LEFT OUTER JOIN TB_DEV_REQ_APPR_LINE B
+										  ON B.MGNT_NO = A.MGNT_NO
+									   INNER JOIN IKEP4_EV_GROUP C
+										  ON C.GROUP_TYPE_ID = 'G0001'
+										 AND C.VIEW_OPTION   = '1'
+										 AND C.GROUP_ID      = A.REQ_DEPT_ID
+									   INNER JOIN IKEP4_EV_USER D
+										  ON D.EMP_NO = A.REQ_EMP_NO
+									   LEFT OUTER JOIN IKEP4_EV_USER E
+										  ON E.EMP_NO = A.FST_REVIEW_EMP_NO
+									   LEFT OUTER JOIN IKEP4_EV_GROUP F
+										  ON F.GROUP_TYPE_ID = 'G0001'
+										 AND F.VIEW_OPTION   = '1'
+										 AND F.GROUP_ID      = A.SND_REVIEW_DEPT_ID
+									   LEFT OUTER JOIN TB_COMMON_CODE G
+										  ON G.GRP_CD = 'C00002'
+										 AND G.COM_CD = A.PROCESS_STATUS
+									   LEFT OUTER JOIN IKEP4_EV_USER H
+										  ON H.EMP_NO = B.SND_RCV_DRAFT_EMP_NO
+						               INNER JOIN TB_USER_AUTH_MGNT I
+									      ON I.WORK_GBN_CD = '10'
+										 AND I.EMP_NO      = #sessionEmpNo#
+								 WHERE A.REQ_DATE          &gt;= CONVERT( DATETIME, #searchStartReqDate#)
+								   AND A.REQ_DATE          &lt;= CONVERT( DATETIME, #searchEndReqDate#) + 1
+								   AND A.PROCESS_STATUS    &gt;= '12'
+								   AND A.PROCESS_STATUS    &lt;&gt; '13'
+								   <isNotEmpty property="searchReqEmpNo" >
+								   AND A.REQ_EMP_NO        = #searchReqEmpNo#
+								   </isNotEmpty>
+								   <isNotEmpty property="searchTcsDraftEmpNo" >
+								   AND A.FST_REVIEW_EMP_NO = #searchTcsDraftEmpNo#
+								   </isNotEmpty>
+								   <isNotEmpty property="searchProductName" >
+								   AND A.PRODUCT_NAME      LIKE '%' + #searchProductName# + '%'
+								   </isNotEmpty>
+								   <isNotEmpty property="searchProcessStatus" >
+								   AND A.PROCESS_STATUS    = #searchProcessStatus#
+								   </isNotEmpty>
+								   AND #sessionEmpNo#          NOT IN (ISNULL(A.REQ_EMP_NO, '*'), ISNULL(B.REQ_REVIEW_EMP_NO, '*'), ISNULL(B.REQ_APPR_EMP_NO, '*'))    /* 로그인사번이 의뢰부서 결제선에 존재 체크 */
+								   AND (( #sessionEmpNo# NOT IN (ISNULL(B.TCS_REVIEW_EMP_NO, '*'), ISNULL(B.TCS_APPR_EMP_NO, '*'))) OR
+								        (B.TCS_REVIEW_EMP_NO = #sessionEmpNo# AND B.TCS_DRAFT_STS_CD = '03') OR
+										(B.TCS_APPR_EMP_NO = #sessionEmpNo# AND ((B.TCS_DRAFT_STS_CD = '03' AND (B.TCS_REVIEW_EMP_NO IS NULL OR B.TCS_REVIEW_EMP_NO ='')) OR B.TCS_REVIEW_STS_CD = '03')))
+								   AND EXISTS (SELECT 'Y'
+								                 FROM TB_USER_AUTH_MGNT
+												WHERE WORK_GBN_CD = '10'
+												  AND EMP_NO      = #sessionEmpNo#
+												  AND DEPT_ID     = '51000651'
+												  AND USE_YN      = 'Y')
+						        UNION ALL
+								SELECT A.MGNT_NO
+									 , A.PROCESS_STATUS
+									 , G.COM_NM                            AS PROCESS_STATUS_NM
+									 , A.REQ_DATE
+									 , A.REQ_DEPT_ID
+									 , C.GROUP_NAME                        AS REQ_DEPT_NM
+									 , A.REQ_EMP_NO
+									 , D.USER_NAME                         AS REQ_EMP_NM
+									 , A.PRODUCT_NAME
+									 , A.CUST_NAME
+									 , A.FST_REVIEW_EMP_NO
+									 , E.USER_NAME                         AS FST_REVIEW_EMP_NM
+									 , A.FST_REVIEW_DATE
+									 , A.COMPANY_CODE
+									 , A.SND_REVIEW_DEPT_ID
+									 , F.GROUP_NAME                        AS SND_REVIEW_DEPT_NM
+									 , B.SND_RCV_DRAFT_EMP_NO
+									 , H.USER_NAME                         AS SND_RCV_DRAFT_EMP_NM
+									 , A.APPR_STS_CD
+									 , A.APPR_DATE
+									 , ISNULL(I.RSLT_FILE_READ_YN, 'N')    AS RSLT_FILE_READ_YN
+								  FROM TB_DEV_REQUEST A
+									   LEFT OUTER JOIN TB_DEV_REQ_APPR_LINE B
+										  ON B.MGNT_NO = A.MGNT_NO
+									   INNER JOIN IKEP4_EV_GROUP C
+										  ON C.GROUP_TYPE_ID = 'G0001'
+										 AND C.VIEW_OPTION   = '1'
+										 AND C.GROUP_ID      = A.REQ_DEPT_ID
+									   INNER JOIN IKEP4_EV_USER D
+										  ON D.EMP_NO = A.REQ_EMP_NO
+									   LEFT OUTER JOIN IKEP4_EV_USER E
+										  ON E.EMP_NO = A.FST_REVIEW_EMP_NO
+									   LEFT OUTER JOIN IKEP4_EV_GROUP F
+										  ON F.GROUP_TYPE_ID = 'G0001'
+										 AND F.VIEW_OPTION   = '1'
+										 AND F.GROUP_ID      = A.SND_REVIEW_DEPT_ID
+									   LEFT OUTER JOIN TB_COMMON_CODE G
+										  ON G.GRP_CD = 'C00002'
+										 AND G.COM_CD = A.PROCESS_STATUS
+									   LEFT OUTER JOIN IKEP4_EV_USER H
+										  ON H.EMP_NO = B.SND_RCV_DRAFT_EMP_NO
+						               INNER JOIN TB_USER_AUTH_MGNT I
+									      ON I.WORK_GBN_CD = '10'
+										 AND I.EMP_NO      = #sessionEmpNo#
+								 WHERE A.REQ_DATE          &gt;= CONVERT( DATETIME, #searchStartReqDate#)
+								   AND A.REQ_DATE          &lt;= CONVERT( DATETIME, #searchEndReqDate#) + 1
+								   AND A.PROCESS_STATUS    &gt;= '22'
+								   AND A.PROCESS_STATUS    &lt;&gt; '23'
+								   AND A.PROCESS_STATUS    &lt; '40'
+								   <isNotEmpty property="searchReqEmpNo" >
+								   AND A.REQ_EMP_NO        = #searchReqEmpNo#
+								   </isNotEmpty>
+								   <isNotEmpty property="searchTcsDraftEmpNo" >
+								   AND A.FST_REVIEW_EMP_NO = #searchTcsDraftEmpNo#
+								   </isNotEmpty>
+								   <isNotEmpty property="searchProductName" >
+								   AND A.PRODUCT_NAME      LIKE '%' + #searchProductName# + '%'
+								   </isNotEmpty>
+								   <isNotEmpty property="searchProcessStatus" >
+								   AND A.PROCESS_STATUS    = #searchProcessStatus#
+								   </isNotEmpty>
+								   AND #sessionEmpNo#          NOT IN (ISNULL(B.REQ_DRAFT_EMP_NO, '*'), ISNULL(B.REQ_REVIEW_EMP_NO, '*'), ISNULL(B.REQ_APPR_EMP_NO, '*'), ISNULL(B.TCS_DRAFT_EMP_NO, '*'), ISNULL(B.TCS_REVIEW_EMP_NO, '*'), ISNULL(B.TCS_APPR_EMP_NO, '*'))    /* 로그인사번이 의뢰부서/TCS 결제선에 존재 체크 */
+								   AND ((#sessionEmpNo# NOT IN (ISNULL(B.SND_RCV_REVIEW_EMP_NO, '*'), ISNULL(B.SND_RCV_APPR_EMP_NO, '*'))) OR
+								        (B.SND_RCV_REVIEW_EMP_NO = #sessionEmpNo# AND B.SND_RCV_DRAFT_STS_CD = '03') OR
+										(B.SND_RCV_APPR_EMP_NO = #sessionEmpNo# AND ((B.SND_RCV_DRAFT_STS_CD = '03' AND (B.SND_RCV_REVIEW_EMP_NO IS NULL OR B.SND_RCV_REVIEW_EMP_NO ='')) OR B.SND_RCV_REVIEW_STS_CD = '03')))
+								   AND EXISTS (SELECT 'Y'
+								                 FROM TB_USER_AUTH_MGNT
+												WHERE WORK_GBN_CD = '10'
+												  AND EMP_NO      = #sessionEmpNo#
+												  AND DEPT_ID     &lt;&gt; '51000651'
+												  AND USE_YN      = 'Y')
+						        UNION ALL
+								SELECT A.MGNT_NO
+									 , A.PROCESS_STATUS
+									 , G.COM_NM                            AS PROCESS_STATUS_NM
+									 , A.REQ_DATE
+									 , A.REQ_DEPT_ID
+									 , C.GROUP_NAME                        AS REQ_DEPT_NM
+									 , A.REQ_EMP_NO
+									 , D.USER_NAME                         AS REQ_EMP_NM
+									 , A.PRODUCT_NAME
+									 , A.CUST_NAME
+									 , A.FST_REVIEW_EMP_NO
+									 , E.USER_NAME                         AS FST_REVIEW_EMP_NM
+									 , A.FST_REVIEW_DATE
+									 , A.COMPANY_CODE
+									 , A.SND_REVIEW_DEPT_ID
+									 , F.GROUP_NAME                        AS SND_REVIEW_DEPT_NM
+									 , B.SND_RCV_DRAFT_EMP_NO
+									 , H.USER_NAME                         AS SND_RCV_DRAFT_EMP_NM
+									 , A.APPR_STS_CD
+									 , A.APPR_DATE
+									 , ISNULL(I.RSLT_FILE_READ_YN, 'N')    AS RSLT_FILE_READ_YN
+								  FROM TB_DEV_REQUEST A
+									   LEFT OUTER JOIN TB_DEV_REQ_APPR_LINE B
+										  ON B.MGNT_NO = A.MGNT_NO
+									   INNER JOIN IKEP4_EV_GROUP C
+										  ON C.GROUP_TYPE_ID = 'G0001'
+										 AND C.VIEW_OPTION   = '1'
+										 AND C.GROUP_ID      = A.REQ_DEPT_ID
+									   INNER JOIN IKEP4_EV_USER D
+										  ON D.EMP_NO = A.REQ_EMP_NO
+									   LEFT OUTER JOIN IKEP4_EV_USER E
+										  ON E.EMP_NO = A.FST_REVIEW_EMP_NO
+									   LEFT OUTER JOIN IKEP4_EV_GROUP F
+										  ON F.GROUP_TYPE_ID = 'G0001'
+										 AND F.VIEW_OPTION   = '1'
+										 AND F.GROUP_ID      = A.SND_REVIEW_DEPT_ID
+									   LEFT OUTER JOIN TB_COMMON_CODE G
+										  ON G.GRP_CD = 'C00002'
+										 AND G.COM_CD = A.PROCESS_STATUS
+									   LEFT OUTER JOIN IKEP4_EV_USER H
+										  ON H.EMP_NO = B.SND_RCV_DRAFT_EMP_NO
+						               INNER JOIN TB_USER_AUTH_MGNT I
+									      ON I.WORK_GBN_CD = '10'
+										 AND I.EMP_NO      = #sessionEmpNo#
+								 WHERE A.REQ_DATE          &gt;= CONVERT( DATETIME, #searchStartReqDate#)
+								   AND A.REQ_DATE          &lt;= CONVERT( DATETIME, #searchEndReqDate#) + 1
+								   AND A.PROCESS_STATUS    &gt;= '32'
+								   AND A.PROCESS_STATUS    &lt;&gt; '33'
+								   <isNotEmpty property="searchReqEmpNo" >
+								   AND A.REQ_EMP_NO        = #searchReqEmpNo#
+								   </isNotEmpty>
+								   <isNotEmpty property="searchTcsDraftEmpNo" >
+								   AND A.FST_REVIEW_EMP_NO = #searchTcsDraftEmpNo#
+								   </isNotEmpty>
+								   <isNotEmpty property="searchProductName" >
+								   AND A.PRODUCT_NAME      LIKE '%' + #searchProductName# + '%'
+								   </isNotEmpty>
+								   <isNotEmpty property="searchProcessStatus" >
+								   AND A.PROCESS_STATUS    = #searchProcessStatus#
+								   </isNotEmpty>
+								   AND #sessionEmpNo#          NOT IN (ISNULL(B.REQ_DRAFT_EMP_NO, '*'), ISNULL(B.REQ_REVIEW_EMP_NO, '*'), ISNULL(B.REQ_APPR_EMP_NO, '*'), ISNULL(B.TCS_DRAFT_EMP_NO, '*'), ISNULL(B.TCS_REVIEW_EMP_NO, '*'), ISNULL(B.TCS_APPR_EMP_NO, '*'))    /* 로그인사번이 의뢰부서 결제선에 존재 체크 */
+								   AND ((#sessionEmpNo# NOT IN (ISNULL(B.SND_RSLT_REVIEW_EMP_NO, '*'), ISNULL(B.SND_RSLT_APPR_EMP_NO, '*'))) OR
+								        (B.SND_RSLT_REVIEW_EMP_NO = #sessionEmpNo# AND B.SND_RSLT_DRAFT_STS_CD = '03') OR
+										(B.SND_RSLT_APPR_EMP_NO = #sessionEmpNo# AND ((B.SND_RSLT_DRAFT_STS_CD = '03' AND (B.SND_RSLT_REVIEW_EMP_NO IS NULL OR B.SND_RSLT_REVIEW_EMP_NO ='')) OR B.SND_RSLT_REVIEW_STS_CD = '03')))
+								   AND EXISTS (SELECT 'Y'
+								                 FROM TB_USER_AUTH_MGNT
+												WHERE WORK_GBN_CD = '10'
+												  AND EMP_NO      = #sessionEmpNo#
+												  AND DEPT_ID     &lt;&gt; '51000651'
+												  AND USE_YN      = 'Y')
+							UNION ALL
+							SELECT A.MGNT_NO
+								 , A.PROCESS_STATUS
+								 , G.COM_NM                            AS PROCESS_STATUS_NM
+								 , A.REQ_DATE
+								 , A.REQ_DEPT_ID
+								 , C.GROUP_NAME                        AS REQ_DEPT_NM
+								 , A.REQ_EMP_NO
+								 , D.USER_NAME                         AS REQ_EMP_NM
+								 , A.PRODUCT_NAME
+								 , A.CUST_NAME
+								 , A.FST_REVIEW_EMP_NO
+								 , E.USER_NAME                         AS FST_REVIEW_EMP_NM
+								 , A.FST_REVIEW_DATE
+								 , A.COMPANY_CODE
+								 , A.SND_REVIEW_DEPT_ID
+								 , F.GROUP_NAME                        AS SND_REVIEW_DEPT_NM
+								 , B.SND_RCV_DRAFT_EMP_NO
+								 , H.USER_NAME                         AS SND_RCV_DRAFT_EMP_NM
+								 , A.APPR_STS_CD
+								 , A.APPR_DATE
+								 , ISNULL(I.RSLT_FILE_READ_YN, 'N')    AS RSLT_FILE_READ_YN
+							  FROM TB_DEV_REQUEST A
+								   LEFT OUTER JOIN TB_DEV_REQ_APPR_LINE B
+									  ON B.MGNT_NO = A.MGNT_NO
+								   INNER JOIN IKEP4_EV_GROUP C
+									  ON C.GROUP_TYPE_ID = 'G0001'
+									 AND C.VIEW_OPTION   = '1'
+									 AND C.GROUP_ID      = A.REQ_DEPT_ID
+								   INNER JOIN IKEP4_EV_USER D
+									  ON D.EMP_NO = A.REQ_EMP_NO
+								   LEFT OUTER JOIN IKEP4_EV_USER E
+									  ON E.EMP_NO = A.FST_REVIEW_EMP_NO
+								   LEFT OUTER JOIN IKEP4_EV_GROUP F
+									  ON F.GROUP_TYPE_ID = 'G0001'
+									 AND F.VIEW_OPTION   = '1'
+									 AND F.GROUP_ID      = A.SND_REVIEW_DEPT_ID
+								   LEFT OUTER JOIN TB_COMMON_CODE G
+									  ON G.GRP_CD = 'C00002'
+									 AND G.COM_CD = A.PROCESS_STATUS
+								   LEFT OUTER JOIN IKEP4_EV_USER H
+									  ON H.EMP_NO = B.SND_RCV_DRAFT_EMP_NO
+					               INNER JOIN TB_USER_AUTH_MGNT I
+								      ON I.WORK_GBN_CD = '10'
+									 AND I.EMP_NO      = '20070017'
+									 AND I.USE_YN      = 'Y'
+							 WHERE A.REQ_DATE          &gt;= CONVERT( DATETIME, #searchStartReqDate#)
+							   AND A.REQ_DATE          &lt; CONVERT( DATETIME, #searchEndReqDate#)+1
+							   AND A.PROCESS_STATUS    &gt;= '22'
+							   AND A.PROCESS_STATUS    &lt;&gt; '23'
+							   <isNotEmpty property="searchReqEmpNo" >
+							   AND A.REQ_EMP_NO        = #searchReqEmpNo#
+							   </isNotEmpty>
+							   <isNotEmpty property="searchTcsDraftEmpNo" >
+							   AND A.FST_REVIEW_EMP_NO = #searchTcsDraftEmpNo#
+							   </isNotEmpty>
+							   <isNotEmpty property="searchProductName" >
+							   AND A.PRODUCT_NAME      LIKE '%' + #searchProductName# + '%'
+							   </isNotEmpty>
+							   <isNotEmpty property="searchProcessStatus" >
+							   AND A.PROCESS_STATUS    = #searchProcessStatus#
+							   </isNotEmpty>
+							   AND '20070017'          NOT IN (ISNULL(B.REQ_DRAFT_EMP_NO, '*'), ISNULL(B.REQ_REVIEW_EMP_NO, '*'), ISNULL(B.REQ_APPR_EMP_NO, '*'), ISNULL(B.TCS_DRAFT_EMP_NO, '*'), ISNULL(B.TCS_REVIEW_EMP_NO, '*'), ISNULL(B.TCS_APPR_EMP_NO, '*'))    /* 로그인사번이 의뢰부서 결제선에 존재 체크 */
+							   AND EXISTS (SELECT 'Y'
+							                 FROM TB_DEV_REQ_SHARE_DEPT
+											WHERE MGNT_NO       = A.MGNT_NO
+											  AND SHARE_DEPT_ID = I.DEPT_ID)
+												  							) A
+						 GROUP BY A.MGNT_NO
+				     ) IA
+		     ) IAA
+		 WHERE IAA.RNUM &lt;= #endRowIndex#
+		   AND IAA.RNUM &gt; #startRowIndex#
+	</select>
+	
+	<select id="getDevRequest" parameterClass="newProductDevSearchCondition" resultMap="newProductDevResultMap">
+		/* [NewProductDev_SqlMap.xml] newProductDev.getDevRequest */
+		SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
+		SELECT A.MGNT_NO		AS MGNT_NO	/* 관리번호 */
+		     , A.COMPANY_CODE	AS COMPANY_CODE	/* 회사코드 */
+		     , A.DIVISION_NO	AS DIVISION_NO	/* 분류번호 */
+			 , A.REQ_EMP_NO		AS REQ_EMP_NO	/* 의뢰부서 담당자사번 */
+			 , DBO.FN_GET_EMPNO_EMP_NAME( A.REQ_EMP_NO)	AS REQ_EMP_NM	/* 의뢰부서 담당자명 */
+			 , CONVERT( CHAR(10), A.REQ_DATE, 102)		AS REQ_DATE		/* 의뢰일자 */
+			 , A.REQ_DEPT_ID	AS REQ_DEPT_ID	/* 의뢰부서 */
+			 , dbo.FN_GET_DEPT_NAME( A.REQ_DEPT_ID)	AS REQ_DEPT_NM	/* 의뢰부서명 */
+			 , A.REQ_RCV_DEPT_ID	AS REQ_RCV_DEPT_ID	/*  TCS팀 */
+			 ,  dbo.FN_GET_DEPT_NAME( A.REQ_RCV_DEPT_ID)	AS REQ_RCV_DEPT_NM	/*  TCS명 */
+			 , A.FST_REVIEW_EMP_NO	AS FST_REVIEW_EMP_NO	/* TCS팀 담당자사번 */
+			 ,  DBO.FN_GET_EMPNO_EMP_NAME( A.FST_REVIEW_EMP_NO)	AS FST_REVIEW_EMP_NM	/* TCS팀 담당자명*/
+			 , CONVERT( CHAR(10), A.FST_REVIEW_DATE, 102)	AS FST_REVIEW_DATE	/* 1차검토완료일 */
+			 , A.FST_REVIEW_DEPT_ID	AS FST_REVIEW_DEPT_ID	/* 1차검토부서 */
+			 , dbo.FN_GET_DEPT_NAME( A.FST_REVIEW_DEPT_ID)	AS FST_REVIEW_DEPT_NM	/* 1차검토부서명 */
+			 , A.SND_REVIEW_DEPT_ID	AS SND_REVIEW_DEPT_ID	/* 2차검토부서 */
+			 , dbo.FN_GET_DEPT_NAME( A.SND_REVIEW_DEPT_ID)	AS SND_REVIEW_DEPT_NM	/* 2차검토부서명 */
+			 , A.PRODUCT_NAME	AS PRODUCT_NAME	/* 제품명 */
+			 , REPLACE( CONVERT(VARCHAR, CONVERT( MONEY, A.EST_QTY), 1), '.00', '')		AS EST_QTY	/* 예상수량 */
+			 , REPLACE( CONVERT(VARCHAR, CONVERT( MONEY, A.EST_PRICE), 1), '.00', '')	AS EST_PRICE	/* 예상판가 */
+			 , A.STANDARD	AS STANDARD		/* 규격 */
+			 , A.PRODUCT_USAGE	AS PRODUCT_USAGE	/* 제품용도 */
+			 , A.CUST_NAME	AS CUST_NAME	/* 고객사명 */
+			 , A.COMP_ASK_SAMPLE	AS COMP_ASK_SAMPLE	/* 비교요청샘플 */
+			 , A.REQ_FILE_ITEM_ID	AS REQ_FILE_ITEM_ID	/* 파일항목ID */
+			 , A.REQ_PURPOSE	AS REQ_PURPOSE	/* 의뢰목적 */
+			 , A.REQ_ITEM_CD	AS REQ_ITEM_CD	/* 요청사항 */
+			 , A.REQ_ITEM_ETC_TXT	AS REQ_ITEM_ETC_TXT	/* 요청사항기타내역 */
+			 , A.REQ_SCHEDULE_CD	AS REQ_SCHEDULE_CD	/* 요구일정 코드 */
+			 , CONVERT( CHAR(10), A.REQ_SCHEDULE_ETC_DATE, 102)	AS REQ_SCHEDULE_ETC_DATE	/* 요구일정기타일자 */
+			 , CONVERT( CHAR(10), A.REQ_SCHEDULE_LIMIT_DATE, 102)	AS REQ_SCHEDULE_LIMIT_DATE	/* 요구일정한계일자 */
+			 , A.ANALYSIS_PURPOSE	AS ANALYSIS_PURPOSE	/* 1.분석 목적 및 배경. 가.분석 목적 */
+			 , A.BUSINESS_INFO	AS BUSINESS_INFO	/* 1.분석 목적 및 배경. 나.영업 정보 (고객사/시장 정보, 요청사항 입력) */
+			 , A.QUALITY_ANALYSIS	AS QUALITY_ANALYSIS	/* 2.분석 요청 사항. 가.품질 분석 항목  */
+			 , A.ETC_REQUEST	AS ETC_REQUEST	/* 2.분석 요청 사항. 나.기타 요청사항 */
+			 , A.SND_REVIEW_OPINION	AS SND_REVIEW_OPINION	/* 2차 검토 부서 진행 의견 */
+			 , A.SND_REVIEW_RESULT	AS SND_REVIEW_RESULT	/* 2차 검토 부서 결과 */
+			 , A.RSLT_FILE_ITEM_ID	AS RSLT_FILE_ITEM_ID	/* 결과파일항목ID  */
+			 , A.PROCESS_STATUS	AS PROCESS_STATUS	/* 진행상태코드 */
+			 , A.APPR_STS_CD	AS APPR_STS_CD	/* 품의상태코드 */
+			 , CONVERT( CHAR(10), A.APPR_REQ_DATE, 102)	AS APPR_REQ_DATE	/* 품의요청일자 */
+			 , CONVERT( CHAR(10), A.APPR_DATE, 102)	AS APPR_DATE	/* 품의확정일자 */
+			 , A.REJECT_REASON	AS REJECT_REASON	/* 반려사유 */
+			 , B.REQ_DRAFT_EMP_NO	AS REQ_DRAFT_EMP_NO	/* 의뢰부서-기안자사번 */
+			 , DBO.FN_GET_EMPNO_EMP_NAME( B.REQ_DRAFT_EMP_NO)	AS REQ_DRAFT_EMP_NM	/* 의뢰부서-기안자명*/
+			 , B.REQ_DRAFT_STS_CD	AS REQ_DRAFT_STS_CD	/* 의뢰부서-기안자품의상태코드 */
+			 , CONVERT( CHAR(5), B.REQ_DRAFT_DATE, 1)	AS REQ_DRAFT_DATE	/* 의뢰부서-기안일자 */
+			 , B.REQ_REVIEW_EMP_NO	AS REQ_REVIEW_EMP_NO	/* 의뢰부서-검토자사번 */
+			 , DBO.FN_GET_EMPNO_EMP_NAME( B.REQ_REVIEW_EMP_NO)	AS REQ_REVIEW_EMP_NM	/* 의뢰부서-검토자명 */
+			 , B.REQ_REVIEW_STS_CD	AS REQ_REVIEW_STS_CD	/* 의뢰부서-검토자품의상태코드 */
+			 , CONVERT( CHAR(5), B.REQ_REVIEW_DATE, 1)	AS REQ_REVIEW_DATE	/* 의뢰부서-검토일자 */
+			 , B.REQ_APPR_EMP_NO	AS REQ_APPR_EMP_NO	/* 의뢰부서-승인자사번 */
+			 , DBO.FN_GET_EMPNO_EMP_NAME( B.REQ_APPR_EMP_NO)	AS REQ_APPR_EMP_NM	/* 의뢰부서-승인자명 */
+			 , B.REQ_APPR_STS_CD	AS REQ_APPR_STS_CD	/* 의뢰부서-승인자품의상태코드 */
+			 , CONVERT( CHAR(5), B.REQ_APPR_DATE, 1)	AS REQ_APPR_DATE	/* 의뢰부서-승인일자 */
+			 , B.TCS_DRAFT_EMP_NO	AS TCS_DRAFT_EMP_NO	/* TCS-기안자사번 */
+			 , DBO.FN_GET_EMPNO_EMP_NAME( B.TCS_DRAFT_EMP_NO)	AS TCS_DRAFT_EMP_NM	/* TCS-기안자명 */
+			 , B.TCS_DRAFT_STS_CD	AS TCS_DRAFT_STS_CD	/* TCS-기안자품의상태코드 */
+			 , CONVERT( CHAR(5), B.TCS_DRAFT_DATE, 1)	AS TCS_DRAFT_DATE	/* TCS-기안일자 */
+			 , B.TCS_REVIEW_EMP_NO	AS TCS_REVIEW_EMP_NO	/* TCS-검토자사번 */
+			 , DBO.FN_GET_EMPNO_EMP_NAME( B.TCS_REVIEW_EMP_NO)	AS TCS_REVIEW_EMP_NM	/* TCS-검토자명 */
+			 , B.TCS_REVIEW_STS_CD	AS TCS_REVIEW_STS_CD	/* TCS-검토자품의상태코드 */
+			 , CONVERT( CHAR(5), B.TCS_REVIEW_DATE, 1)	AS TCS_REVIEW_DATE	/* TCS-검토일자 */
+			 , B.TCS_APPR_EMP_NO	AS TCS_APPR_EMP_NO	/* TCS-승인자사번 */
+			 , DBO.FN_GET_EMPNO_EMP_NAME( B.TCS_APPR_EMP_NO)	AS TCS_APPR_EMP_NM	/* TCS-승인자명 */
+			 , B.TCS_APPR_STS_CD	AS TCS_APPR_STS_CD	/* TCS-승인자품의상태코드 */
+			 , CONVERT( CHAR(5), B.TCS_APPR_DATE, 1)	AS TCS_APPR_DATE	/* TCS-승인일자 */
+			 , B.SND_RCV_DRAFT_EMP_NO	AS SND_RCV_DRAFT_EMP_NO	/* 2차검토부서접수-기안자사번 */
+			 , DBO.FN_GET_EMPNO_EMP_NAME( B.SND_RCV_DRAFT_EMP_NO)	AS SND_RCV_DRAFT_EMP_NM	/* 2차검토부서접수-기안자명 */
+			 , B.SND_RCV_DRAFT_STS_CD	AS SND_RCV_DRAFT_STS_CD	/* 2차검토부서접수-기안자품의상태코드 */
+			 , CONVERT( CHAR(5), B.SND_RCV_DRAFT_DATE, 1)	AS SND_RCV_DRAFT_DATE	/* 2차검토부서접수-기안일자 */
+			 , B.SND_RCV_REVIEW_EMP_NO	AS SND_RCV_REVIEW_EMP_NO	/* 2차검토부서접수-검토자사번 */
+			 , DBO.FN_GET_EMPNO_EMP_NAME( B.SND_RCV_REVIEW_EMP_NO)	AS SND_RCV_REVIEW_EMP_NM	/* 2차검토부서접수-검토자명 */
+			 , B.SND_RCV_REVIEW_STS_CD	AS SND_RCV_REVIEW_STS_CD	/* 2차검토부서접수-검토자품의상태코드 */
+			 , CONVERT( CHAR(5), B.SND_RCV_REVIEW_DATE, 1)	AS SND_RCV_REVIEW_DATE	/* 2차검토부서접수-검토일자 */
+			 , B.SND_RCV_APPR_EMP_NO	AS SND_RCV_APPR_EMP_NO	/* 2차검토부서접수-승인자사번 */
+			 , DBO.FN_GET_EMPNO_EMP_NAME( B.SND_RCV_APPR_EMP_NO)	AS SND_RCV_APPR_EMP_NM	/* 2차검토부서접수-승인자명 */
+			 , B.SND_RCV_APPR_STS_CD	AS SND_RCV_APPR_STS_CD	/* 2차검토부서접수-승인자품의상태코드 */
+			 , CONVERT( CHAR(5), B.SND_RCV_APPR_DATE, 1)	AS SND_RCV_APPR_DATE	/* 2차검토부서접수-승인일자 */
+			 , B.SND_RSLT_DRAFT_EMP_NO	AS SND_RSLT_DRAFT_EMP_NO	/* 2차검토부서결과-기안자사번 */
+			 , DBO.FN_GET_EMPNO_EMP_NAME( B.SND_RSLT_DRAFT_EMP_NO)	AS SND_RSLT_DRAFT_EMP_NM	/* 2차검토부서결과-기안자사번 */
+			 , B.SND_RSLT_DRAFT_STS_CD	AS SND_RSLT_DRAFT_STS_CD	/* 2차검토부서결과-기안자품의상태코드 */
+			 , CONVERT( CHAR(5), B.SND_RSLT_DRAFT_DATE, 1)	AS SND_RSLT_DRAFT_DATE	/* 2차검토부서결과-기안일자 */
+			 , B.SND_RSLT_REVIEW_EMP_NO	AS SND_RSLT_REVIEW_EMP_NO	/* 2차검토부서결과-검토자사번 */
+			 , DBO.FN_GET_EMPNO_EMP_NAME( B.SND_RSLT_REVIEW_EMP_NO)	AS SND_RSLT_REVIEW_EMP_NM	/* 2차검토부서결과-검토자명 */
+			 , B.SND_RSLT_REVIEW_STS_CD	AS SND_RSLT_REVIEW_STS_CD	/* 차검토부서결과-검토자품의상태코드 */
+			 , CONVERT( CHAR(5), B.SND_RSLT_REVIEW_DATE, 1)	AS SND_RSLT_REVIEW_DATE	/* 2차검토부서결과-검토일자 */
+			 , B.SND_RSLT_APPR_EMP_NO	AS SND_RSLT_APPR_EMP_NO	/* 2차검토부서결과-승인자사번 */
+			 , DBO.FN_GET_EMPNO_EMP_NAME( B.SND_RSLT_APPR_EMP_NO)	AS SND_RSLT_APPR_EMP_NM	/* 2차검토부서결과-승인자명 */
+			 , B.SND_RSLT_APPR_STS_CD	AS SND_RSLT_APPR_STS_CD	/* 2차검토부서결과-승인자품의상태코드 */
+			 , CONVERT( CHAR(5), B.SND_RSLT_APPR_DATE, 1)	AS SND_RSLT_APPR_DATE	/* 2차검토부서결과-승인일자 */
+			 , B.APPR_COMMENT	AS APPR_COMMENT	/* 품의주석 */
+			 , A.REJECT_REASON  AS REJECT_REASON	/* 반려사유 */
+			 , (
+				SELECT TOP 1 X.AUTH_YN
+				  FROM (
+						SELECT 'Y'    AS AUTH_YN
+						  FROM TB_DEV_REQUEST A
+							   INNER JOIN TB_DEV_REQ_APPR_LINE B
+								  ON B.MGNT_NO = A.MGNT_NO
+						 WHERE A.MGNT_NO = #mgntNo#
+						   AND (B.REQ_DRAFT_EMP_NO = #sessionEmpNo#
+							 OR (B.REQ_REVIEW_EMP_NO = #sessionEmpNo# AND B.REQ_DRAFT_STS_CD = '03')
+							 OR (B.REQ_APPR_EMP_NO = #sessionEmpNo# AND ((B.REQ_DRAFT_STS_CD = '03' AND (B.REQ_REVIEW_EMP_NO IS NULL OR B.REQ_REVIEW_EMP_NO = '')) OR B.REQ_REVIEW_STS_CD = '03'))
+							 OR B.TCS_DRAFT_EMP_NO = #sessionEmpNo#
+							 OR (B.TCS_REVIEW_EMP_NO = #sessionEmpNo# AND B.TCS_DRAFT_STS_CD = '03')
+							 OR (B.TCS_APPR_EMP_NO = #sessionEmpNo# AND ((B.TCS_DRAFT_STS_CD = '03' AND (B.TCS_REVIEW_EMP_NO IS NULL OR B.TCS_REVIEW_EMP_NO = '')) OR B.TCS_REVIEW_STS_CD = '03'))
+							 OR B.SND_RCV_DRAFT_EMP_NO = #sessionEmpNo#
+							 OR (B.SND_RCV_REVIEW_EMP_NO = #sessionEmpNo# AND B.SND_RCV_DRAFT_STS_CD = '03')
+							 OR (B.SND_RCV_APPR_EMP_NO = #sessionEmpNo# AND ((B.SND_RCV_DRAFT_STS_CD = '03' AND (B.SND_RCV_REVIEW_EMP_NO IS NULL OR B.SND_RCV_REVIEW_EMP_NO = '')) OR B.SND_RCV_REVIEW_STS_CD = '03'))
+							 OR B.SND_RSLT_DRAFT_EMP_NO = #sessionEmpNo#
+							 OR (B.SND_RSLT_REVIEW_EMP_NO = #sessionEmpNo# AND B.SND_RSLT_DRAFT_STS_CD = '03')
+							 OR (B.SND_RSLT_APPR_EMP_NO = #sessionEmpNo# AND ((B.SND_RSLT_DRAFT_STS_CD = '03' AND (B.SND_RSLT_REVIEW_EMP_NO IS NULL OR B.SND_RSLT_REVIEW_EMP_NO = '')) OR B.SND_RSLT_REVIEW_STS_CD = '03')))
+				        UNION ALL
+						SELECT 'Y'    AS AUTH_YN
+						  FROM TB_USER_AUTH_MGNT C
+						 WHERE C.WORK_GBN_CD = '10'
+						   AND C.EMP_NO      = #sessionEmpNo#
+						   AND C.DEPT_ID     = '51000651'
+						   AND C.USE_YN      = 'Y'
+						   AND EXISTS (SELECT 'Y'
+						                 FROM TB_DEV_REQUEST D
+										WHERE D.MGNT_NO = #mgntNo#
+										  AND D.PROCESS_STATUS &lt;= '12'
+										  AND D.PROCESS_STATUS &lt;&gt; '13')
+				        UNION ALL
+						SELECT 'Y'    AS AUTH_YN
+						  FROM TB_USER_AUTH_MGNT E
+						 WHERE E.WORK_GBN_CD = '10'
+						   AND E.EMP_NO      = #sessionEmpNo#
+						   AND E.USE_YN      = 'Y'
+						   AND EXISTS (SELECT 'Y'
+						                 FROM TB_DEV_REQUEST F
+										WHERE F.MGNT_NO            = #mgntNo#
+										  AND F.SND_REVIEW_DEPT_ID = E.DEPT_ID
+										  AND F.PROCESS_STATUS     &gt;= '22'
+										  AND F.PROCESS_STATUS     &lt;&gt; '23')
+				        UNION ALL
+						SELECT 'Y'    AS AUTH_YN
+						  FROM TB_USER_AUTH_MGNT G
+						 WHERE G.WORK_GBN_CD = '10'
+						   AND G.EMP_NO      = #sessionEmpNo#
+						   AND G.USE_YN      = 'Y'
+						   AND EXISTS (SELECT 'Y'
+						                 FROM TB_DEV_REQUEST F
+										WHERE F.MGNT_NO            = #mgntNo#
+										  AND F.PROCESS_STATUS     &gt;= '22'
+										  AND F.PROCESS_STATUS     &lt;&gt; '23')
+						   AND EXISTS (SELECT 'Y'
+						                 FROM TB_DEV_REQ_SHARE_DEPT E
+										WHERE E.MGNT_NO       = #mgntNo#
+										  AND E.SHARE_DEPT_ID = G.DEPT_ID) ) X
+			   ) AS AUTH_YN	/* 신제품 개발 검토 의뢰서 조회 권한 체크 */
+		 FROM TB_DEV_REQUEST A
+   INNER JOIN TB_DEV_REQ_APPR_LINE B
+           ON A.MGNT_NO = B.MGNT_NO
+        WHERE A.MGNT_NO = #mgntNo#
+	</select>
+	
+	<select id="getScheduleLimitTarget" resultMap="scheduleLimitMap">
+		/* [NewProductDev_SqlMap.xml] newProductDev.getScheduleLimitTarget */
+		SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
+		SELECT dbo.FN_GET_EMPNO_EMAIL_ADDRESS(B.EMP_NO)    AS EMAIL
+		     , A.PRODUCT_NAME                              AS PRODUCT_NAME
+			 , C.GROUP_NAME                                AS REQ_DEPT_NM
+			 , A.MGNT_NO								   AS MGNT_NO
+			 , D.USER_NAME      						   AS USER_NAME
+			 , dbo.FN_GET_EMPNO_EMAIL_ADDRESS( A.REQ_EMP_NO) AS SENDER_EMAIL
+		  FROM TB_DEV_REQUEST A
+		       INNER JOIN TB_USER_AUTH_MGNT B
+			      ON B.WORK_GBN_CD = '10'
+				 AND B.DEPT_ID     = A.SND_REVIEW_DEPT_ID
+				 AND B.USE_YN      = 'Y'
+		       INNER JOIN IKEP4_EV_GROUP C
+				  ON C.GROUP_TYPE_ID = 'G0001'
+				 AND C.VIEW_OPTION   = '1'
+				 AND C.GROUP_ID      = A.REQ_DEPT_ID
+			   INNER JOIN IKEP4_EV_USER D
+			      ON B.EMP_NO = D.EMP_NO
+		 WHERE A.APPR_STS_CD NOT IN ('03', '04')
+		   AND DATEADD(dd, DATEDIFF(dd, 0, getdate()), 0) > A.REQ_SCHEDULE_LIMIT_DATE
+	</select>
+	
+	<insert id="insertTbDevRequest" parameterClass="newProductDev">
+		<selectKey keyProperty="mgntNo" resultClass="String">
+			SELECT #mgntNo# + REPLICATE( 0, 3 - LEN( A.MAXSEQ)) + A.MAXSEQ
+			 FROM(
+			       SELECT CONVERT( VARCHAR, ISNULL( RIGHT( MAX( MGNT_NO ), 3), 0) + 1)  AS MAXSEQ
+			         FROM TB_DEV_REQUEST
+			        WHERE MGNT_NO LIKE  #mgntNo# + '%'
+			     )A
+		</selectKey>
+		/* [NewProductDev_SqlMap.xml] newProductDev.insertTbDevRequest */
+		INSERT INTO TB_DEV_REQUEST 
+		          (
+				    MGNT_NO
+				  , COMPANY_CODE
+				  , DIVISION_NO
+				  , REQ_EMP_NO
+				  , REQ_DATE
+				  , REQ_DEPT_ID
+				  ,	FST_REVIEW_DEPT_ID
+				  , PRODUCT_NAME
+				  , EST_QTY
+				  , EST_PRICE
+				  , STANDARD
+				  , PRODUCT_USAGE
+				  , CUST_NAME
+				  , COMP_ASK_SAMPLE
+				  , REQ_FILE_ITEM_ID
+				  , REQ_PURPOSE
+				  , REQ_ITEM_CD
+				  , REQ_ITEM_ETC_TXT
+				  , REQ_SCHEDULE_CD
+				  , REQ_SCHEDULE_ETC_DATE
+				  , REQ_SCHEDULE_LIMIT_DATE
+				  , ANALYSIS_PURPOSE
+				  , BUSINESS_INFO
+				  , APPR_STS_CD
+				) 
+		   VALUES 
+		        (
+				    #mgntNo#                /* 관리번호 */
+				  , #companyCode#			/* 회사코드 */
+				  , #divisionNo#			/* 분류번호 */
+				  , #reqEmpNo#				/* 의뢰부서 담당자사번 */
+				  , GETDATE()               /* 의뢰일자 */
+				  , #reqDeptId#             /* 의뢰부서 */
+				  , #fstReviewDeptId#		/* 1차검토 부서 */
+				  , #productName#           /* 제품명 */
+				  , REPLACE( #estQty#, ',', '')                /* 예상수량 */
+				  , REPLACE( #estPrice#, ',', '')              /* 예상판가 */
+				  , #standard#              /* 규격 */
+				  , #productUsage#          /* 제품용도 */
+				  , #custName#              /* 고객사명 */
+				  , #compAskSample#         /* 비교요청샘플 */
+				  , #reqFileItemId#			/* 파일항목ID */
+				  , #reqPurpose#            /* 의뢰목적 */
+				  , #reqItemCd#             /* 요청사항(C00003) */
+				  , #reqItemEtcTxt#         /* 요청사항기타내역 */
+				  , #reqScheduleCd#         /* 요구일정 코드(C00004) */
+				  , #reqScheduleEtcDate#    /* 요구일정기타일자 */
+				  , #reqScheduleLimitDate#  /* 요구일정한계일자 */
+				  , #analysisPurpose#       /* 1.분석 목적 및 배경. 가.분석 목적 */
+				  , #businessInfo#          /* 1.분석 목적 및 배경. 나.영업 정보 (고객사/시장 정보, 요청사항 입력) */
+				  , #apprStsCd#             /* 품의상태코드(C00005) */
+				)
+	</insert>
+	
+	<update id="updateReqScheduleCd" parameterClass="newProductDev">
+		/* [NewProductDev_SqlMap.xml] newProductDev.updateReqScheduleCd */
+		UPDATE TB_DEV_REQUEST
+		   SET REQ_SCHEDULE_CD = #reqScheduleCd#	/* 요구일정 코드(C00004) */
+		     , REQ_SCHEDULE_ETC_DATE = #reqScheduleEtcDate#			/* 요구일정기타일자 */
+		     <isEqual property="reqScheduleCd" compareValue="10">
+		     , REQ_SCHEDULE_LIMIT_DATE = DATEADD( WEEK, 1, GETDATE())		/* 요구일정한계일자 */
+		     </isEqual>
+		     <isEqual property="reqScheduleCd" compareValue="20">
+		     , REQ_SCHEDULE_LIMIT_DATE = DATEADD( WEEK, 2, GETDATE())		/* 요구일정한계일자 */
+		     </isEqual>
+		     <isEqual property="reqScheduleCd" compareValue="30">
+		     , REQ_SCHEDULE_LIMIT_DATE = DATEADD( WEEK, 3, GETDATE())		/* 요구일정한계일자 */
+		     </isEqual>
+		     <isEqual property="reqScheduleCd" compareValue="40">
+		     , REQ_SCHEDULE_LIMIT_DATE = DATEADD( MONTH, 1, GETDATE())		/* 요구일정한계일자 */
+		     </isEqual>
+		     <isEqual property="reqScheduleCd" compareValue="50">
+		     , REQ_SCHEDULE_LIMIT_DATE = #reqScheduleLimitDate#		/* 요구일정한계일자 */
+		     </isEqual>
+		 WHERE MGNT_NO = #mgntNo#
+	</update>
+	
+	<update id="updateTbDevRequest" parameterClass="newProductDev">
+		/* [NewProductDev_SqlMap.xml] newProductDev.updateTbDevRequest */
+		UPDATE TB_DEV_REQUEST
+		   SET 
+		     <isEqual property="processGroupNo" compareValue="1">
+		       COMPANY_CODE = #companyCode#			/* 회사코드 */
+		     , DIVISION_NO = #divisionNo#			/* 분류번호 */
+		     , PRODUCT_NAME = #productName#			/* 제품명 */
+		     , EST_QTY = REPLACE( #estQty#, ',', '')					/* 예상수량 */
+		     , EST_PRICE = REPLACE( #estPrice#, ',', '')				/* 예상판가 */
+		     , STANDARD = #standard#				/* 규격 */
+		     , PRODUCT_USAGE = #productUsage#		/* 제품용도 */
+		     , CUST_NAME = #custName#				/* 고객사명 */
+		     , REQ_PURPOSE = #reqPurpose#			/* 의뢰목적 */
+		     , REQ_SCHEDULE_LIMIT_DATE = #reqScheduleLimitDate#		/* 요구일정한계일자 */
+		     , ANALYSIS_PURPOSE = #analysisPurpose#	/* 1.분석 목적 및 배경. 가.분석 목적 */
+		     , BUSINESS_INFO = #businessInfo#		/* 1.분석 목적 및 배경. 나.영업 정보 (고객사/시장 정보, 요청사항 입력) */
+		     </isEqual>
+		     <isEqual property="processGroupNo" compareValue="2">
+		       COMPANY_CODE = #companyCode#			/* 회사코드 */
+		     , DIVISION_NO = #divisionNo#			/* 분류번호 */
+		     , PRODUCT_NAME = #productName#			/* 제품명 */
+		     , EST_QTY = REPLACE( #estQty#, ',', '')					/* 예상수량 */
+		     , EST_PRICE = REPLACE( #estPrice#, ',', '')				/* 예상판가 */
+		     , STANDARD = #standard#				/* 규격 */
+		     , PRODUCT_USAGE = #productUsage#		/* 제품용도 */
+		     , CUST_NAME = #custName#				/* 고객사명 */
+		     , REQ_PURPOSE = #reqPurpose#			/* 의뢰목적 */
+		     , REQ_ITEM_CD = #reqItemCd#			/* 요청사항(C00003) */
+		     , REQ_ITEM_ETC_TXT = #reqItemEtcTxt#	/* 요청사항기타내역 */
+		     , REQ_SCHEDULE_CD = #reqScheduleCd#	/* 요구일정 코드(C00004) */
+		     , REQ_SCHEDULE_ETC_DATE = #reqScheduleEtcDate#			/* 요구일정기타일자 */
+		     <isEqual property="reqScheduleCd" compareValue="10">
+		     , REQ_SCHEDULE_LIMIT_DATE = DATEADD( WEEK, 1, GETDATE())		/* 요구일정한계일자 */
+		     </isEqual>
+		     <isEqual property="reqScheduleCd" compareValue="20">
+		     , REQ_SCHEDULE_LIMIT_DATE = DATEADD( WEEK, 2, GETDATE())		/* 요구일정한계일자 */
+		     </isEqual>
+		     <isEqual property="reqScheduleCd" compareValue="30">
+		     , REQ_SCHEDULE_LIMIT_DATE = DATEADD( WEEK, 3, GETDATE())		/* 요구일정한계일자 */
+		     </isEqual>
+		     <isEqual property="reqScheduleCd" compareValue="40">
+		     , REQ_SCHEDULE_LIMIT_DATE = DATEADD( MONTH, 1, GETDATE())		/* 요구일정한계일자 */
+		     </isEqual>
+		     <isEqual property="reqScheduleCd" compareValue="50">
+		     , REQ_SCHEDULE_LIMIT_DATE = #reqScheduleLimitDate#		/* 요구일정한계일자 */
+		     </isEqual>
+		     , ANALYSIS_PURPOSE = #analysisPurpose#	/* 1.분석 목적 및 배경. 가.분석 목적 */
+		     , BUSINESS_INFO = #businessInfo#		/* 1.분석 목적 및 배경. 나.영업 정보 (고객사/시장 정보, 요청사항 입력) */
+		     , SND_REVIEW_DEPT_ID = #sndReviewDeptId#	/* 2차검토 부서 (수신부서)*/
+		     , COMP_ASK_SAMPLE = #compAskSample#	/* 비교요청샘플 */
+		     , QUALITY_ANALYSIS = #qualityAnalysis#	/* 2.분석 요청 사항. 가.품질 분석 항목 */
+		     , ETC_REQUEST = #etcRequest#			/* 2.분석 요청 사항. 가.품질 분석 항목 */
+		     </isEqual>
+		     <isEqual property="processGroupNo" compareValue="3">
+		       SND_REVIEW_OPINION = #sndReviewOpinion#	/* 2차 검토 부서 진행 의견 */
+		     </isEqual>
+		     <isEqual property="processGroupNo" compareValue="4">
+		       SND_REVIEW_RESULT = #sndReviewResult#	/* 2차 검토 부서 결과 */
+		     </isEqual>
+		 WHERE MGNT_NO = #mgntNo#
+	</update>
+	
+	<update id="updateRsltFileId" parameterClass="newProductDev">
+		/* [NewProductDev_SqlMap.xml] newProductDev.updateRsltFileId */
+		UPDATE TB_DEV_REQUEST
+		   SET RSLT_FILE_ITEM_ID =#rsltFileItemId#
+		 WHERE MGNT_NO = #mgntNo#
+	</update>
+	
+	<update id="updateApproveTbDevRequest" parameterClass="newProductDev">
+		/* [NewProductDev_SqlMap.xml] newProductDev.updateApproveTbDevRequest */
+		UPDATE TB_DEV_REQUEST
+		   SET PROCESS_STATUS = #processStatus#		/* 진행상태 코드 */
+		     , APPR_STS_CD = #apprStsCd#			/* 품의상태 코드 */
+		     <isNotEmpty property="fstReviewEmpNo" >
+		     , FST_REVIEW_EMP_NO = #fstReviewEmpNo#	/* TCS팀 담당자사번 */ 
+		     </isNotEmpty>
+		     <isNotEmpty property="fstReviewDate" >
+		     , FST_REVIEW_DATE = GETDATE()	/* 1차검토완료일 */ 
+		     </isNotEmpty>
+		     <isNotEmpty property="fstReviewDeptId" >
+		     , FST_REVIEW_DEPT_ID = #fstReviewDeptId#	/* 1차검토부서 */ 
+		     </isNotEmpty>
+		     <isNotEmpty property="sndReviewDeptId" >
+		     , SND_REVIEW_DEPT_ID = #sndReviewDeptId#	/* 2차검토부서 */ 
+		     </isNotEmpty>
+		     <isNotEmpty property="apprDate" >
+		     , APPR_DATE = GETDATE()	/* 품의확정일자 */ 
+		     </isNotEmpty>
+		     <isNotEmpty property="rejectReason" >
+		     , REJECT_REASON = #rejectReason#	/* 반려사유 */ 
+		     </isNotEmpty>
+		 WHERE MGNT_NO =  #mgntNo#
+	</update>
+	
+	<update id="updateApproveTbDevReqApprLine" parameterClass="newProductDev">
+		/* [NewProductDev_SqlMap.xml] newProductDev.updateApproveTbDevReqApprLine */
+		UPDATE TB_DEV_REQ_APPR_LINE
+		   SET 
+		<isEqual property="processGroupNo" compareValue="1">
+			<isNotEmpty property="reqDraftStsCd" >
+		       REQ_DRAFT_STS_CD = #reqDraftStsCd#	/* 의뢰부서-기안자품의상태코드 */
+		     , REQ_DRAFT_DATE = GETDATE()			/* 의뢰부서-기안일자 */
+	       	</isNotEmpty>
+	       	<isNotEmpty property="reqReviewStsCd" >
+		       REQ_REVIEW_STS_CD = #reqReviewStsCd#	/* 의뢰부서-검토자품의상태코드 */
+		     , REQ_REVIEW_DATE = GETDATE()			/* 의뢰부서-검토일자 */
+	       	</isNotEmpty>
+	       	<isNotEmpty property="reqApprStsCd" >
+		       REQ_APPR_STS_CD = #reqApprStsCd#		/* 의뢰부서-승인자품의상태코드 */
+		     , REQ_APPR_DATE = GETDATE()			/* 의뢰부서-승인일자 */
+	       	</isNotEmpty>
+		</isEqual>
+		<isEqual property="processGroupNo" compareValue="2">
+			<isNotEmpty property="tcsDraftStsCd" >
+		       TCS_DRAFT_STS_CD = #tcsDraftStsCd#	/* TCS-기안자품의상태코드 */
+		     , TCS_DRAFT_DATE = GETDATE()			/* TCS-기안일자 */
+				<isNotEmpty property="tcsDraftEmpNo" >
+			 , TCS_DRAFT_EMP_NO =#tcsDraftEmpNo#	/* TCS-기안자사번 */
+				</isNotEmpty>
+			</isNotEmpty>
+			<isNotEmpty property="tcsReviewStsCd" >
+		       TCS_REVIEW_STS_CD = #tcsReviewStsCd#	/* TCS-검토자품의상태코드 */
+		     , TCS_REVIEW_DATE = GETDATE()			/* TCS-검토일자 */
+		    </isNotEmpty>
+			<isNotEmpty property="tcsApprStsCd" >
+		       TCS_APPR_STS_CD = #tcsApprStsCd#		/* TCS-승인자품의상태코드(C00005) */
+		     , TCS_APPR_DATE = GETDATE()			/* TCS-승인일자 */
+		    </isNotEmpty>
+		</isEqual>
+		<isEqual property="processGroupNo" compareValue="3">
+			<isNotEmpty property="sndRcvDraftStsCd" >
+		       SND_RCV_DRAFT_STS_CD = #sndRcvDraftStsCd#	/* 2차검토부서접수-기안자품의상태코드(C00005) */
+		     , SND_RCV_DRAFT_DATE = GETDATE()				/* 2차검토부서접수-기안일자 */
+				<isNotEmpty property="sndRcvDraftEmpNo" >
+			 , SND_RCV_DRAFT_EMP_NO =#sndRcvDraftEmpNo#		/* 2차검토부서접수-기안자사번 */
+				</isNotEmpty>
+			</isNotEmpty>
+			<isNotEmpty property="sndRcvReviewStsCd" >
+		       SND_RCV_REVIEW_STS_CD = #sndRcvReviewStsCd#	/* 2차검토부서접수-검토자품의상태코드(C00005) */
+		     , SND_RCV_REVIEW_DATE = GETDATE()				/* 2차검토부서접수-검토일자 */
+		    </isNotEmpty>
+			<isNotEmpty property="sndRcvApprStsCd" >
+		       SND_RCV_APPR_STS_CD = #sndRcvApprStsCd#		/* 2차검토부서접수-승인자품의상태코드(C00005) */
+		     , SND_RCV_APPR_DATE = GETDATE()				/* 2차검토부서접수-승인일자 */
+		    </isNotEmpty>
+		</isEqual>
+		<isEqual property="processGroupNo" compareValue="4">
+			<isNotEmpty property="sndRsltDraftStsCd" >
+		       SND_RSLT_DRAFT_STS_CD = #sndRsltDraftStsCd#	/* 2차검토부서결과-기안자품의상태코드(C00005) */
+		     , SND_RSLT_DRAFT_DATE = GETDATE()				/* 2차검토부서결과-기안일자 */
+			<isNotEmpty property="sndRsltDraftEmpNo" >
+			 , SND_RSLT_DRAFT_EMP_NO =#sndRsltDraftEmpNo#	/* 2차검토부서결과-기안자사번 */
+			</isNotEmpty>
+			</isNotEmpty>
+			<isNotEmpty property="sndRsltReviewStsCd" >
+		       SND_RSLT_REVIEW_STS_CD = #sndRsltReviewStsCd#	/* 2차검토부서결과-검토자품의상태코드(C00005) */
+		     , SND_RSLT_REVIEW_DATE = GETDATE()					/* 2차검토부서결과-검토일자 */
+		    </isNotEmpty>
+			<isNotEmpty property="sndRsltApprStsCd" >
+		       SND_RSLT_APPR_STS_CD = #sndRsltApprStsCd#	/* 2차검토부서결과-승인자품의상태코드(C00005) */
+		     , SND_RSLT_APPR_DATE = GETDATE()				/* 2차검토부서결과-승인일자 */
+		    </isNotEmpty>
+		</isEqual>
+	    WHERE MGNT_NO = #mgntNo#          /* 개발 검토 의뢰서의 관리번호 */
+	</update>
+	
+	<update id="updateTbDevReqApprLine" parameterClass="newProductDev">
+		/* [NewProductDev_SqlMap.xml] newProductDev.updateTbDevReqApprLine */
+		UPDATE TB_DEV_REQ_APPR_LINE
+		   SET 
+		<isEqual property="processGroupNo" compareValue="1">
+	       	<isNotEmpty property="reqReviewEmpNo" >
+		         REQ_REVIEW_EMP_NO = #reqReviewEmpNo#	/* 의뢰부서-검토자사번 */
+		       , REQ_REVIEW_STS_CD = '01'				/* 의뢰부서-검토자품의상태코드 */
+	       	</isNotEmpty>
+	       	<isEmpty property="reqReviewEmpNo">
+		         REQ_REVIEW_EMP_NO = NULL				/* 의뢰부서-검토자사번 */
+		       , REQ_REVIEW_STS_CD = NULL				/* 의뢰부서-검토자품의상태코드 */
+	       	</isEmpty>
+	       	<isNotEmpty property="reqApprEmpNo" >
+		       , REQ_APPR_EMP_NO = #reqApprEmpNo#		/* 의뢰부서-승인자품의상태코드 */
+		       , REQ_APPR_STS_CD = '01'					/* 의뢰부서-승인자품의상태코드 */
+	       	</isNotEmpty>
+		</isEqual>
+		<isEqual property="processGroupNo" compareValue="2">
+	       	<isNotEmpty property="tcsReviewEmpNo" >
+		         TCS_REVIEW_EMP_NO = #tcsReviewEmpNo#	/* TCS부서-검토자사번 */
+		       , TCS_REVIEW_STS_CD = '01'				/* TCS부서-검토자품의상태코드 */
+	       	</isNotEmpty>
+	       	<isEmpty property="tcsReviewEmpNo" >
+		         TCS_REVIEW_EMP_NO = NULL	/* TCS부서-검토자사번 */
+		       , TCS_REVIEW_STS_CD = NULL				/* TCS부서-검토자품의상태코드 */
+	       	</isEmpty>
+	       	<isNotEmpty property="tcsApprEmpNo" >
+		       , TCS_APPR_EMP_NO = #tcsApprEmpNo#		/* TCS부서-승인자품의상태코드 */
+		       , TCS_APPR_STS_CD = '01'					/* TCS부서-승인자품의상태코드 */
+	       	</isNotEmpty>
+		</isEqual>
+		<isEqual property="processGroupNo" compareValue="3">
+	       	<isNotEmpty property="sndRcvReviewEmpNo" >
+		         SND_RCV_REVIEW_EMP_NO = #sndRcvReviewEmpNo#	/* 2차검토부서접수-검토자사번 */
+		       , SND_RCV_REVIEW_STS_CD = '01'					/* 2차검토부서접수-검토자품의상태코드 */
+	       	</isNotEmpty>
+	       	<isEmpty property="sndRcvReviewEmpNo" >
+		         SND_RCV_REVIEW_EMP_NO = NULL					/* 2차검토부서접수-검토자사번 */
+		       , SND_RCV_REVIEW_STS_CD = NULL					/* 2차검토부서접수-검토자품의상태코드 */
+	       	</isEmpty>
+	       	<isNotEmpty property="sndRcvApprEmpNo" >
+		       , SND_RCV_APPR_EMP_NO = #sndRcvApprEmpNo#		/* 2차검토부서접수-승인자품의상태코드 */
+		       , SND_RCV_APPR_STS_CD = '01'						/* 2차검토부서접수-승인자품의상태코드 */
+	       	</isNotEmpty>
+		</isEqual>
+		<isEqual property="processGroupNo" compareValue="4">
+	       	<isNotEmpty property="sndRsltReviewEmpNo" >
+		         SND_RSLT_REVIEW_EMP_NO = #sndRsltReviewEmpNo#	/* 2차검토부서접수-검토자사번 */
+		       , SND_RSLT_REVIEW_STS_CD = '01'					/* 2차검토부서접수-검토자품의상태코드 */
+	       	</isNotEmpty>
+	       	<isEmpty property="sndRsltReviewEmpNo" >
+		         SND_RSLT_REVIEW_EMP_NO = NULL					/* 2차검토부서접수-검토자사번 */
+		       , SND_RSLT_REVIEW_STS_CD = NULL					/* 2차검토부서접수-검토자품의상태코드 */
+	       	</isEmpty>
+	       	<isNotEmpty property="sndRsltApprEmpNo" >
+		       , SND_RSLT_APPR_EMP_NO = #sndRsltApprEmpNo#		/* 2차검토부서접수-승인자품의상태코드 */
+		       , SND_RSLT_APPR_STS_CD = '01'					/* 2차검토부서접수-승인자품의상태코드 */
+	       	</isNotEmpty>
+		</isEqual>
+	    WHERE MGNT_NO = #mgntNo#          /* 개발 검토 의뢰서의 관리번호 */
+	</update>
+	
+	<insert id="insertTbDevReqApprLine" parameterClass="newProductDev">
+		/* [NewProductDev_SqlMap.xml] newProductDev.insertTbDevReqApprLine */
+		INSERT INTO TB_DEV_REQ_APPR_LINE
+		          (
+					 MGNT_NO
+				   , REQ_DRAFT_EMP_NO
+				   , REQ_DRAFT_STS_CD
+				   , REQ_DRAFT_DATE
+				   , REQ_REVIEW_EMP_NO
+				   , REQ_REVIEW_STS_CD
+				   , REQ_APPR_EMP_NO
+				   , REQ_APPR_STS_CD
+		          )
+		     VALUES
+		          (
+		             #mgntNo#          /* 개발 검토 의뢰서의 관리번호 */
+				   , #reqDraftEmpNo#   /* 의뢰부서-기안자사번 */
+				   , #reqDraftStsCd#   /* 의뢰부서-기안자품의상태코드(C00005) */
+				   , GETDATE()		   /* 의뢰부서-기안일자 */
+				   , #reqReviewEmpNo#  /* 의뢰부서-검토자사번 */
+				   , #reqReviewStsCd#  /* 의뢰부서-검토자품의상태코드(C00005) */
+				   , #reqApprEmpNo#    /* 의뢰부서-승인자사번 */
+				   , #reqApprStsCd#    /* 의뢰부서-승인자품의상태코드(C00005) */
+		          )
+	</insert>
+	
+	<delete id="deleteTbDevRequest" parameterClass="String">
+		/* [NewProductDev_SqlMap.xml] newProductDev.deleteTBDevRequest */
+		DELETE FROM TB_DEV_REQUEST
+		 WHERE MGNT_NO = #mgntNo#
+	</delete>
+	
+	<delete id="deleteTbDevReqApprLine" parameterClass="String">
+		/* [NewProductDev_SqlMap.xml] newProductDev.deleteTBDevReqApprLine */
+		DELETE FROM TB_DEV_REQ_APPR_LINE
+		 WHERE MGNT_NO = #mgntNo#
+	</delete>
+	
+	<update id="initTbDevRequest" parameterClass="newProductDev">
+		UPDATE TB_DEV_REQUEST
+		   SET REQ_DATE = GETDATE()
+		     , FST_REVIEW_EMP_NO = NULL
+		     , FST_REVIEW_DATE = NULL
+		     , FST_REVIEW_DEPT_ID = NULL
+		     , SND_REVIEW_DEPT_ID = NULL
+		     , COMP_ASK_SAMPLE = NULL
+		     , REQ_ITEM_CD = NULL
+		     , REQ_ITEM_ETC_TXT = NULL
+		     , REQ_SCHEDULE_CD = NULL
+		     , REQ_SCHEDULE_ETC_DATE = NULL
+		     , REQ_SCHEDULE_LIMIT_DATE = NULL
+		     , QUALITY_ANALYSIS = NULL
+		     , ETC_REQUEST = NULL
+		     , SND_REVIEW_OPINION = NULL
+		     , SND_REVIEW_RESULT = NULL
+		     , RSLT_FILE_ITEM_ID = NULL
+		     , PROCESS_STATUS = '10'
+		     , APPR_STS_CD = '01' 
+		     , APPR_REQ_DATE = NULL
+		     , APPR_DATE = NULL
+		     , REJECT_REASON = NULL
+		 WHERE MGNT_NO = #mgntNo# 
+	</update>
+	
+	<update id="initTbDevReqApprLine" parameterClass="newProductDev">
+		UPDATE TB_DEV_REQ_APPR_LINE
+		   SET REQ_DRAFT_STS_CD = '01'
+			 , REQ_REVIEW_STS_CD = NULL
+			 , REQ_REVIEW_DATE = NULL
+			 , REQ_APPR_STS_CD = NULL
+			 , REQ_APPR_DATE = NULL
+			 , TCS_DRAFT_EMP_NO = NULL
+			 , TCS_DRAFT_STS_CD = NULL
+			 , TCS_DRAFT_DATE = NULL
+			 , TCS_REVIEW_EMP_NO = NULL
+			 , TCS_REVIEW_STS_CD = NULL
+			 , TCS_REVIEW_DATE = NULL
+			 , TCS_APPR_EMP_NO = NULL
+			 , TCS_APPR_STS_CD = NULL
+			 , TCS_APPR_DATE = NULL
+			 , SND_RCV_DRAFT_EMP_NO = NULL
+			 , SND_RCV_DRAFT_STS_CD = NULL
+			 , SND_RCV_DRAFT_DATE = NULL
+			 , SND_RCV_REVIEW_EMP_NO = NULL
+			 , SND_RCV_REVIEW_STS_CD = NULL
+			 , SND_RCV_REVIEW_DATE = NULL
+			 , SND_RCV_APPR_EMP_NO = NULL
+			 , SND_RCV_APPR_STS_CD = NULL
+			 , SND_RCV_APPR_DATE = NULL
+			 , SND_RSLT_DRAFT_EMP_NO = NULL
+			 , SND_RSLT_DRAFT_STS_CD = NULL
+			 , SND_RSLT_DRAFT_DATE = NULL
+			 , SND_RSLT_REVIEW_EMP_NO = NULL
+			 , SND_RSLT_REVIEW_STS_CD = NULL
+			 , SND_RSLT_REVIEW_DATE = NULL
+			 , SND_RSLT_APPR_EMP_NO = NULL
+			 , SND_RSLT_APPR_STS_CD = NULL
+			 , SND_RSLT_APPR_DATE = NULL
+			 , APPR_COMMENT = NULL
+		 WHERE MGNT_NO = #mgntNo#      
+	</update>
+	
+	<update id="updateReciptTbDevRequest" parameterClass="newProductDev">
+		UPDATE TB_DEV_REQUEST
+		   SET 
+		   <isEqual property="processGroupNo" compareValue="2">
+		       FST_REVIEW_EMP_NO = #fstReviewEmpNo#
+		       , APPR_STS_CD = '01'
+		       , PROCESS_STATUS = '20'
+		   </isEqual>
+		   <isEqual property="processGroupNo" compareValue="3">
+		        APPR_STS_CD = '01'
+		       , PROCESS_STATUS = '30'
+		   </isEqual>
+		   <isEqual property="processGroupNo" compareValue="4">
+		        APPR_STS_CD = '01'
+		       , PROCESS_STATUS = '40'
+		   </isEqual>
+		 WHERE MGNT_NO = #mgntNo# 
+	</update>
+	
+	<update id="updateReciptTbDevReqApprLine" parameterClass="newProductDev">
+		UPDATE TB_DEV_REQ_APPR_LINE
+		   SET 
+		   <isEqual property="processGroupNo" compareValue="2">
+		   	    TCS_DRAFT_EMP_NO = #tcsDraftEmpNo#
+		   	  , TCS_DRAFT_STS_CD = '01'
+		   </isEqual>
+		   <isEqual property="processGroupNo" compareValue="3">
+		   	     SND_RCV_DRAFT_EMP_NO = #sndRcvDraftEmpNo#
+		   	   , SND_RCV_DRAFT_STS_CD = '01'
+		   </isEqual>
+		   <isEqual property="processGroupNo" compareValue="4">
+		   	     SND_RSLT_DRAFT_EMP_NO = #sndRsltDraftEmpNo#
+		   	   , SND_RSLT_DRAFT_STS_CD = '01'
+		   </isEqual>
+		 WHERE MGNT_NO = #mgntNo#      
+	</update>
+	
+	<update id="updateFileId"  parameterClass="newProductDev">
+		/* [Proposal_SqlMap.xml] newProductDev.updateFileId */
+		UPDATE TB_DEV_REQUEST
+		   SET 
+		   <isEqual property="fileEditType" compareValue="req">
+		   REQ_FILE_ITEM_ID = #reqFileItemId#
+		   </isEqual>
+		   <isEqual property="fileEditType" compareValue="rslt">
+		   RSLT_FILE_ITEM_ID = #rsltFileItemId#
+		   </isEqual>
+		 WHERE MGNT_NO = #mgntNo#
+	</update>
+	
+</sqlMap>

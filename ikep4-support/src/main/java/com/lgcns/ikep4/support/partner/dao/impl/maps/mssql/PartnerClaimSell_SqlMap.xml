@@ -1,0 +1,648 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace = "support.partner.dao.partnerClaimSell">
+<typeAlias alias="PartnerQualityClaimSellSearchCondition" type="com.lgcns.ikep4.support.partner.search.PartnerQualityClaimSellSearchCondition" />
+<typeAlias alias="PartnerClaimSellItem" type="com.lgcns.ikep4.support.partner.model.PartnerClaimSellHistory" />
+
+	<resultMap id="QualityClaimSellHistoryResult" class="com.lgcns.ikep4.support.partner.model.PartnerClaimSellHistory">
+		<result column="ROWNUM"    property="rowNum"          jdbcType="VARCHAR" />
+		<result column="SEQNUM"    property="seqNum"          jdbcType="DECIMAL" />
+		<result column="PARTNER_ID"       property="partnerId"       jdbcType="VARCHAR" />
+		<result column="COUNSEL_DATE"       property="counselDate"       jdbcType="VARCHAR" />
+		<result column="COUNSELOR"          property="counselor"       jdbcType="VARCHAR" />
+		<result column="SECTOR"          property="sector"       jdbcType="VARCHAR" />
+		<result column="KEYMAN"          property="keyMan"       jdbcType="VARCHAR" />
+		<result column="PARTNER_NAME"          property="partnerName"       jdbcType="VARCHAR" />
+		<result column="REGISTER_ID"        property="registerId"      jdbcType="VARCHAR" />
+		<result column="REGISTER_NAME"     property="registerName"    jdbcType="VARCHAR" />
+		<result column="REGIST_DATE"        property="registDate"       jdbcType="VARCHAR" />
+		<result column="FAX"            property="fax"            jdbcType="VARCHAR" />
+		<result column="ADDRESS"         property="address"         jdbcType="VARCHAR" />
+		<result column="CATEGORY"              property="category"       jdbcType="VARCHAR" />
+		<result column="BUSINESS_NO"              property="businessNo"       jdbcType="VARCHAR" />
+		<result column="CORPORATION_NO"              property="corporationNo"       jdbcType="VARCHAR" />
+		<result column="ZIP_NO"              property="zipNo"       jdbcType="VARCHAR" />
+		<result column="EMAIL"              property="email"       jdbcType="VARCHAR" />
+		<result column="SAP_ID"              property="sapId"       jdbcType="VARCHAR" />
+		<result column="ITEMS"              property="items"       jdbcType="VARCHAR" />
+		<result column="COUNSEL_CNT"   property="counselCnt"   jdbcType="VARCHAR" />
+		<result column="PURPOSE"   property="purpose"   jdbcType="VARCHAR" />
+		<result column="COUNSEL_TITLE"   property="counselTitle"   jdbcType="VARCHAR" />
+		<result column="CEO_NAME"   property="ceoName"   jdbcType="VARCHAR" />
+		<result column="MAIN_PHONE"   property="mainPhone"   jdbcType="VARCHAR" />
+		<result column="CONTACTS"   property="contacts"   jdbcType="VARCHAR" />
+		<result column="COMMENT_CNT1"   property="commentCnt1"   jdbcType="VARCHAR" />
+		<result column="COMMENT_CNT2"   property="commentCnt2"   jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<resultMap id="PartnerInfoResult" class="com.lgcns.ikep4.support.partner.model.PartnerClaimSellHistory">
+		<result column="SEQNUM"    property="seqNum"          jdbcType="DECIMAL" />
+		<result column="PARTNER_ID"       property="partnerId"       jdbcType="VARCHAR" />
+		<result column="KEYMAN"          property="keyMan"       jdbcType="VARCHAR" />
+		<result column="SECTOR"          property="sector"       jdbcType="VARCHAR" />
+		<result column="PARTNER_NAME"          property="partnerName"       jdbcType="VARCHAR" />
+		<result column="REGISTER_ID"        property="registerId"      jdbcType="VARCHAR" />
+		<result column="REGISTER_NAME"     property="registerName"    jdbcType="VARCHAR" />
+		<result column="REGIST_DATE"        property="registDate"       jdbcType="VARCHAR" />
+		<result column="FAX"            property="fax"            jdbcType="VARCHAR" />
+		<result column="ADDRESS"         property="address"         jdbcType="VARCHAR" />
+		<result column="CATEGORY"              property="category"       jdbcType="VARCHAR" />
+		<result column="BUSINESS_NO"              property="businessNo"       jdbcType="VARCHAR" />
+		<result column="CORPORATION_NO"              property="corporationNo"       jdbcType="VARCHAR" />
+		<result column="ZIP_NO"              property="zipNo"       jdbcType="VARCHAR" />
+		<result column="EMAIL"              property="email"       jdbcType="VARCHAR" />
+		<result column="SAP_ID"              property="sapId"       jdbcType="VARCHAR" />
+		<result column="ITEMS"              property="items"       jdbcType="VARCHAR" />
+		<result column="PURPOSE"   property="purpose"   jdbcType="VARCHAR" />
+		<result column="CEO_NAME"   property="ceoName"   jdbcType="VARCHAR" />
+		<result column="MAIN_PHONE"   property="mainPhone"   jdbcType="VARCHAR" />
+		<result column="CONTACTS"   property="contacts"   jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<resultMap  id="QualityClaimSellHistoryExtendsResult" extends="QualityClaimSellHistoryResult"  class="com.lgcns.ikep4.support.partner.model.PartnerClaimSellHistory">
+	    <result column="JOB_RANK_NAME"          property="user.jobRankName"         jdbcType="VARCHAR" />
+	    <result column="TEAM_NAME"              property="user.teamName"            jdbcType="VARCHAR" />
+	    <result column="JOB_DUTY_NAME"          property="user.jobDutyName"         jdbcType="VARCHAR" />
+	    <result column="JOB_POSITION_NAME"      property="user.jobPositionName"     jdbcType="VARCHAR" />
+	    <result column="JOB_TITLE_NAME"         property="user.jobTitleName"        jdbcType="VARCHAR" />  
+	    <result column="PICTURE_ID"             property="user.pictureId"           jdbcType="VARCHAR" />   
+	    <result column="PROFILE_PICTURE_ID"     property="user.profilePictureId"    jdbcType="VARCHAR" />  
+		<result column="USER_NAME"              property="user.userName"            jdbcType="VARCHAR" />
+		<result column="USER_ENGLISH_NAME"      property="user.userEnglishName"     jdbcType="VARCHAR" />
+		<result column="JOB_TITLE_ENGLISH_NAME" property="user.jobTitleEnglishName" jdbcType="VARCHAR" />
+		<result column="TEAM_ENGLISH_NAME"      property="user.teamEnglishName"     jdbcType="VARCHAR" /> 
+	
+	</resultMap>
+	
+	<resultMap  id="crStatisticsListResult" class="com.lgcns.ikep4.support.partner.model.PartnerClaimSellHistory">
+	    <result column="USER_ID"          property="userId"         jdbcType="VARCHAR" />
+	    <result column="TEAM_NAME"              property="teamName"            jdbcType="VARCHAR" />
+	    <result column="JOB_TITLE_NAME"         property="jobTitleName"        jdbcType="VARCHAR" />  
+	    <result column="REG_CNT"     property="regCnt"    jdbcType="VARCHAR" />  
+		<result column="USER_NAME"              property="userName"            jdbcType="VARCHAR" />
+		<result column="REG_SUB_CNT"      property="regSubCnt"     jdbcType="VARCHAR" />
+		<result column="COM_CNT1" property="comCnt1" jdbcType="VARCHAR" />
+		<result column="COM_CNT2"      property="comCnt2"     jdbcType="VARCHAR" /> 
+	
+	</resultMap>
+
+<sql id="sqlColumnList">
+		PARTNER_ID,
+		KEYMAN,
+		SECTOR,
+		PARTNER_NAME,
+		PURPOSE,
+		DELETE_FLAG,
+		FAX,
+		ADDRESS,
+		CATEGORY,
+		BUSINESS_NO,
+		CORPORATION_NO,
+		ZIP_NO,
+		EMAIL,
+		SAP_ID,
+		ITEMS,
+		CEO_NAME,
+		MAIN_PHONE,
+		CONTACTS,
+		REGISTER_ID,
+		REGISTER_NAME,
+		REGIST_DATE,
+		UPDATER_ID,
+		UPDATER_NAME,
+		UPDATE_DATE
+ </sql>
+
+<select id="crStatisticsList" parameterClass="PartnerQualityClaimSellSearchCondition" resultMap="crStatisticsListResult">
+	WITH USER1 AS(
+	SELECT A.USER_ID, A.USER_NAME, A.TEAM_NAME, A.job_title_code, A.job_duty_code,
+	(SELECT C.job_title_name FROM IKEP4_EV_JOB_TITLE C WHERE C.job_title_code = A.job_title_code) AS JOB_TITLE_NAME,
+	(SELECT B.job_duty_name FROM IKEP4_EV_JOB_DUTY B WHERE B.job_duty_code = A.job_duty_code) AS JOB_DUTY_NAME
+	FROM IKEP4_EV_USER A
+	WHERE (USER_ID IN(
+	SELECT DISTINCT USER_ID FROM IKEP4_EV_USER_ROLE
+	WHERE ROLE_ID IN(
+	SELECT ROLE_ID FROM IKEP4_EV_ROLE
+	WHERE ROLE_NAME LIKE 'CR%'))
+	AND USER_ID NOT IN('admin','mj8909','nows','kangdw','skryoo')
+	or
+	user_id in(select user_id from IKEP4_EV_USER_GROUP
+	where group_id in(
+	select distinct group_id from IKEP4_EV_GROUP_ROLE
+	WHERE ROLE_ID IN(
+	SELECT ROLE_ID FROM IKEP4_EV_ROLE
+	WHERE ROLE_NAME LIKE 'CR%'))))
+	
+	),
+	
+	
+	
+	USER2 AS(
+	SELECT REGISTER_ID AS PTR, COUNT(*) AS PTR_CNT FROM PARTNER_COUNSEL_HISTORY
+	WHERE DELETE_FLAG = 'N'
+	and substring (convert(varchar,regist_date,23),0,8) = #searchYear#+'-'+#searchMonth#
+	GROUP BY REGISTER_ID),
+	
+	
+	USER3 AS(
+	SELECT REGISTER_ID AS SUB, COUNT(*) AS SUB_CNT FROM PARTNER_COUNSEL_HISTORY_SUB
+	WHERE ITEM_ID IN (SELECT SEQNUM FROM PARTNER_COUNSEL_HISTORY WHERE DELETE_FLAG = 'N')
+	and substring (convert(varchar,counsel_date,112),0,8) = #searchYear#+'.'+#searchMonth#
+	GROUP BY REGISTER_ID),
+	
+	USER4 AS(
+	SELECT COMMENT_REGISTER_ID1 AS COM1, COUNT(*) AS COM1_CNT FROM PARTNER_COUNSEL_HISTORY_SUB
+	WHERE COMMENT_REGISTER_ID1 IS NOT NULL
+	AND ITEM_ID IN (SELECT SEQNUM FROM PARTNER_COUNSEL_HISTORY WHERE DELETE_FLAG = 'N')
+	and substring (convert(varchar,comment_regist_date1,23),0,8) = #searchYear#+'-'+#searchMonth#
+	GROUP BY COMMENT_REGISTER_ID1),
+	
+	USER5 AS(
+	SELECT COMMENT_REGISTER_ID2 AS COM2, COUNT(*) AS COM2_CNT FROM PARTNER_COUNSEL_HISTORY_SUB
+	WHERE COMMENT_REGISTER_ID2 IS NOT NULL
+	AND ITEM_ID IN (SELECT SEQNUM FROM PARTNER_COUNSEL_HISTORY WHERE DELETE_FLAG = 'N')
+	and substring (convert(varchar,comment_regist_date2,23),0,8) = #searchYear#+'-'+#searchMonth#
+	GROUP BY COMMENT_REGISTER_ID2)
+	
+	
+	SELECT USER1.USER_ID AS USER_ID, USER1.USER_NAME AS USER_NAME, USER1.TEAM_NAME AS TEAM_NAME, case when ISNULL(USER1.JOB_DUTY_NAME,'') != '' then USER1.JOB_DUTY_NAME else USER1.JOB_TITLE_NAME end as JOB_TITLE_NAME, 
+	ISNULL(USER2.PTR_CNT,'0') AS REG_CNT, ISNULL(USER3.SUB_CNT,'0') AS REG_SUB_CNT, ISNULL(USER4.COM1_CNT,'0') AS COM_CNT1, ISNULL(USER5.COM2_CNT,'0') AS COM_CNT2 FROM USER1 
+	LEFT OUTER JOIN USER2
+	ON USER1.USER_ID = USER2.PTR
+	LEFT OUTER JOIN USER3
+	ON USER1.USER_ID = USER3.SUB
+	LEFT OUTER JOIN USER4
+	ON USER1.USER_ID = USER4.COM1
+	LEFT OUTER JOIN USER5
+	ON USER1.USER_ID = USER5.COM2
+	ORDER BY USER1.TEAM_NAME ASC, USER1.USER_NAME ASC
+</select>
+
+<select id="qualityClaimSellListBySearchCondition" parameterClass="PartnerQualityClaimSellSearchCondition" resultMap="QualityClaimSellHistoryExtendsResult">
+SELECT /* [QualityClaimSell_SqlMap.xml] QualityClaimSell.qualityClaimSellListBySearchCondition */
+		*
+		FROM (
+		SELECT A.* FROM (
+		/* START========================================= */
+		SELECT ROW_NUMBER()
+		OVER(ORDER BY  
+		       <isNotEmpty property="sortColumn">
+		       <isEqual property="sortColumn" compareValue="PURPOSE">
+					<isEqual property="sortType" compareValue="DESC">
+						item.PURPOSE DESC, item.REGIST_DATE DESC
+					</isEqual>
+					<isEqual property="sortType" compareValue="ASC">
+						item.PURPOSE ASC, item.REGIST_DATE DESC
+					</isEqual>
+				</isEqual>
+				<isEqual property="sortColumn" compareValue="ITEMS">
+					<isEqual property="sortType" compareValue="DESC">
+						item.ITEMS DESC, item.REGIST_DATE DESC
+					</isEqual>
+					<isEqual property="sortType" compareValue="ASC">
+						item.ITEMS ASC, item.REGIST_DATE DESC
+					</isEqual>
+				</isEqual>
+				<isEqual property="sortColumn" compareValue="PARTNER_NAME">
+					<isEqual property="sortType" compareValue="DESC">
+						item.PARTNER_NAME DESC, item.REGIST_DATE DESC
+					</isEqual>
+					<isEqual property="sortType" compareValue="ASC">
+						item.PARTNER_NAME ASC, item.REGIST_DATE DESC
+					</isEqual>
+				</isEqual>
+				<isEqual property="sortColumn" compareValue="REGISTER_NAME">
+					<isEqual property="sortType" compareValue="DESC">
+						 item.REGISTER_NAME DESC, item.REGIST_DATE DESC
+					</isEqual>
+					<isEqual property="sortType" compareValue="ASC">
+						 item.REGISTER_NAME ASC, item.REGIST_DATE DESC
+					</isEqual>
+				</isEqual>
+				<isEqual property="sortColumn" compareValue="COUNSELOR">
+					<isEqual property="sortType" compareValue="DESC">
+						(select top 1 counselor from PARTNER_COUNSEL_HISTORY_SUB where item_id = item.SEQNUM order by counsel_date desc) DESC
+					</isEqual>
+					<isEqual property="sortType" compareValue="ASC">
+						(select top 1 counselor from PARTNER_COUNSEL_HISTORY_SUB where item_id = item.SEQNUM order by counsel_date desc) ASC
+					</isEqual>
+				</isEqual>
+				<isEqual property="sortColumn" compareValue="COUNSEL_DATE">
+					<isEqual property="sortType" compareValue="DESC">
+						(select top 1 counsel_date from PARTNER_COUNSEL_HISTORY_SUB where item_id = item.SEQNUM order by counsel_date desc) DESC
+					</isEqual>
+					<isEqual property="sortType" compareValue="ASC">
+						(select top 1 counsel_date from PARTNER_COUNSEL_HISTORY_SUB where item_id = item.SEQNUM order by counsel_date desc) ASC
+					</isEqual>
+				</isEqual>
+				<isEqual property="sortColumn" compareValue="COMMENT_CNT1">
+					<isEqual property="sortType" compareValue="DESC">
+						(select count(*) from PARTNER_COUNSEL_HISTORY_SUB CS WHERE CS.ITEM_ID = item.SEQNUM AND ISNULL(CS.COMMENT1,'') != '') DESC
+					</isEqual>
+					<isEqual property="sortType" compareValue="ASC">
+						(select count(*) from PARTNER_COUNSEL_HISTORY_SUB CS WHERE CS.ITEM_ID = item.SEQNUM AND ISNULL(CS.COMMENT1,'') != '') ASC
+					</isEqual>
+				</isEqual>
+				<isEqual property="sortColumn" compareValue="COMMENT_CNT2">
+					<isEqual property="sortType" compareValue="DESC">
+						(select count(*) from PARTNER_COUNSEL_HISTORY_SUB CS WHERE CS.ITEM_ID = item.SEQNUM AND ISNULL(CS.COMMENT2,'') != '') DESC
+					</isEqual>
+					<isEqual property="sortType" compareValue="ASC">
+						(select count(*) from PARTNER_COUNSEL_HISTORY_SUB CS WHERE CS.ITEM_ID = item.SEQNUM AND ISNULL(CS.COMMENT2,'') != '') ASC
+					</isEqual>
+				</isEqual>
+				<isEqual property="sortColumn" compareValue="COUNSEL_CNT">
+					<isEqual property="sortType" compareValue="DESC">
+						(select count(*) from PARTNER_COUNSEL_HISTORY_SUB CS WHERE CS.ITEM_ID = item.SEQNUM) DESC
+					</isEqual>
+					<isEqual property="sortType" compareValue="ASC">
+						(select count(*) from PARTNER_COUNSEL_HISTORY_SUB CS WHERE CS.ITEM_ID = item.SEQNUM) ASC
+					</isEqual>
+				</isEqual>
+				</isNotEmpty>
+				 <isEmpty property="sortColumn">  
+					 (select top 1 counsel_date from PARTNER_COUNSEL_HISTORY_SUB where item_id = item.SEQNUM order by counsel_date desc) DESC, PARTNER_NAME ASC
+				 </isEmpty>   ) AS ROWNUM
+			,item.SEQNUM
+			,item.PARTNER_ID
+			,(select top 1 counsel_date from PARTNER_COUNSEL_HISTORY_SUB where item_id = item.SEQNUM order by counsel_date desc) AS COUNSEL_DATE
+			,(select top 1 counselor from PARTNER_COUNSEL_HISTORY_SUB where item_id = item.SEQNUM order by counsel_date desc) AS COUNSELOR
+			,item.KEYMAN
+			,item.SECTOR
+			,item.PARTNER_NAME
+			,item.PURPOSE
+			,item.CATEGORY
+			,(select top 1 counsel_title from PARTNER_COUNSEL_HISTORY_SUB where item_id = item.SEQNUM order by counsel_date desc) AS COUNSEL_TITLE
+			,item.CEO_NAME
+			,item.MAIN_PHONE
+			,item.CONTACTS
+			,item.REGISTER_ID
+			,item.REGISTER_NAME
+			,item.REGIST_DATE
+			,item.FAX
+			,item.ADDRESS
+			,item.BUSINESS_NO
+			,item.CORPORATION_NO
+			,item.ZIP_NO
+			,item.EMAIL
+			,item.SAP_ID
+			,item.ITEMS
+			,(select count(*) from PARTNER_COUNSEL_HISTORY_SUB CS WHERE CS.ITEM_ID = item.SEQNUM AND ISNULL(CS.COMMENT1,'') != '') AS COMMENT_CNT1
+			,(select count(*) from PARTNER_COUNSEL_HISTORY_SUB CS WHERE CS.ITEM_ID = item.SEQNUM AND ISNULL(CS.COMMENT2,'') != '') AS COMMENT_CNT2
+			,(select count(*) from PARTNER_COUNSEL_HISTORY_SUB CS WHERE CS.ITEM_ID = item.SEQNUM) AS COUNSEL_CNT
+			,usr.TEAM_NAME          AS TEAM_NAME,  
+		     usr.PICTURE_ID         AS PICTURE_ID, 
+		     usr.PROFILE_PICTURE_ID AS PROFILE_PICTURE_ID,     
+		    (SELECT JOB_RANK_NAME FROM IKEP4_EV_JOB_RANK with (nolock) WHERE IKEP4_EV_JOB_RANK.JOB_RANK_CODE = usr.JOB_RANK_CODE) AS JOB_RANK_NAME,
+			(SELECT JOB_DUTY_NAME FROM IKEP4_EV_JOB_DUTY with (nolock) WHERE IKEP4_EV_JOB_DUTY.JOB_DUTY_CODE =  (select 
+			ur.JOB_DUTY_CODE from IKEP4_EV_USER ur where ur.user_id = (select top 1 CS.register_id 
+			from PARTNER_COUNSEL_HISTORY_SUB CS WHERE CS.ITEM_ID = item.SEQNUM order by CS.counsel_date 
+			desc))) AS JOB_DUTY_NAME, 
+			(SELECT JOB_POSITION_NAME FROM IKEP4_EV_JOB_POSITION with (nolock) WHERE IKEP4_EV_JOB_POSITION.JOB_POSITION_CODE = usr.JOB_POSITION_CODE) AS JOB_POSITION_NAME,
+			(SELECT JOB_TITLE_NAME FROM IKEP4_EV_JOB_TITLE 
+			WHERE IKEP4_EV_JOB_TITLE.JOB_TITLE_CODE = (select ur.JOB_TITLE_CODE from IKEP4_EV_USER ur where ur.user_id = (select 
+			top 1 CS.register_id from PARTNER_COUNSEL_HISTORY_SUB CS WHERE CS.ITEM_ID = item.SEQNUM order by CS.counsel_date desc))) AS JOB_TITLE_NAME, 
+		     usr.USER_NAME  AS USER_NAME,
+		     usr.USER_ENGLISH_NAME  AS USER_ENGLISH_NAME,
+		     usr.TEAM_ENGLISH_NAME  AS TEAM_ENGLISH_NAME,  
+		    (SELECT JOB_TITLE_ENGLISH_NAME FROM IKEP4_EV_JOB_TITLE WHERE IKEP4_EV_JOB_TITLE.JOB_TITLE_CODE = usr.JOB_TITLE_CODE) AS JOB_TITLE_ENGLISH_NAME
+		FROM PARTNER_COUNSEL_HISTORY item with (nolock) INNER JOIN IKEP4_EV_USER usr with (nolock)
+	    ON item.REGISTER_ID = usr.USER_ID 
+		WHERE DELETE_FLAG = 'N'
+		<isNotEmpty property="searchColumn">
+			<isNotEmpty property="searchWord">
+				<isNotEmpty property="searchColumn">
+					<isEqual property="searchColumn" compareValue="partnerName">
+						AND	replace(item.PARTNER_NAME,' ','') LIKE '%' + replace(#searchWord#,' ','') + '%'
+					</isEqual>
+					<isEqual property="searchColumn" compareValue="registerName">
+						AND	replace(item.REGISTER_NAME,' ','') LIKE '%' + replace(#searchWord#,' ','') + '%'
+					</isEqual>
+					<isEqual property="searchColumn" compareValue="items">
+						AND	replace(item.ITEMS,' ','') LIKE '%' + replace(#searchWord#,' ','') + '%'
+					</isEqual>
+					<isEqual property="searchColumn" compareValue="counselContent">
+						AND item.SEQNUM in (select sub.ITEM_ID from PARTNER_COUNSEL_HISTORY_SUB sub where replace(sub.COUNSEL_CONTENTS,' ','') LIKE '%' + replace(#searchWord#,' ','') + '%' AND sub.LINEREPLY_DELETE = '0')
+					</isEqual>
+					<isEqual property="searchColumn" compareValue="counselor">
+						AND item.SEQNUM in (select sub.ITEM_ID from PARTNER_COUNSEL_HISTORY_SUB sub where replace(sub.COUNSELOR,' ','') LIKE '%' + replace(#searchWord#,' ','') + '%' AND sub.LINEREPLY_DELETE = '0')
+					</isEqual>	
+					<isEqual property="searchColumn" compareValue="counselDate">
+						AND item.SEQNUM in (select sub.ITEM_ID from PARTNER_COUNSEL_HISTORY_SUB sub where replace(sub.COUNSEL_DATE,' ','') LIKE '%' + replace(#searchWord#,' ','') + '%' AND sub.LINEREPLY_DELETE = '0')
+					</isEqual>	
+				</isNotEmpty>
+			</isNotEmpty>
+		</isNotEmpty>
+		<isEmpty property="searchColumn">
+			<isNotEmpty property="searchWord">
+				AND	(
+				replace(item.PARTNER_NAME,' ','') LIKE '%' + replace(#searchWord#,' ','') + '%'
+				or	replace(item.REGISTER_NAME,' ','') LIKE '%' + replace(#searchWord#,' ','') + '%'
+				or	replace(item.ITEMS,' ','') LIKE '%' + replace(#searchWord#,' ','') + '%'
+				or item.SEQNUM in (select sub.ITEM_ID from PARTNER_COUNSEL_HISTORY_SUB sub where replace(sub.COUNSEL_CONTENTS,' ','') LIKE '%' + replace(#searchWord#,' ','') + '%' AND sub.LINEREPLY_DELETE = '0')
+				or item.SEQNUM in (select sub.ITEM_ID from PARTNER_COUNSEL_HISTORY_SUB sub where replace(sub.COUNSELOR,' ','') LIKE '%' + replace(#searchWord#,' ','') + '%' AND sub.LINEREPLY_DELETE = '0')
+				or item.SEQNUM in (select sub.ITEM_ID from PARTNER_COUNSEL_HISTORY_SUB sub where replace(sub.COUNSEL_DATE,' ','') LIKE '%' + replace(#searchWord#,' ','') + '%' AND sub.LINEREPLY_DELETE = '0')
+				)
+			</isNotEmpty>
+		</isEmpty>
+		<isNotEmpty property="searchPurpose">
+			<isEqual property="searchPurpose" compareValue="CR01">
+				AND item.PURPOSE = 'CR01'
+			</isEqual>
+			<isEqual property="searchPurpose" compareValue="CR02">
+				AND item.PURPOSE = 'CR02'
+			</isEqual>
+			<isEqual property="searchPurpose" compareValue="CR03">
+				AND item.PURPOSE = 'CR03'
+			</isEqual>
+			<isEqual property="searchPurpose" compareValue="CR04">
+				AND item.PURPOSE = 'CR04'
+			</isEqual>
+			<isEqual property="searchPurpose" compareValue="CR05">
+				AND item.PURPOSE = 'CR05'
+			</isEqual>
+			<isEqual property="searchPurpose" compareValue="CR06">
+				AND item.PURPOSE = 'CR06'
+			</isEqual>
+			<isEqual property="searchPurpose" compareValue="CR07">
+				AND item.PURPOSE = 'CR07'
+			</isEqual>
+		</isNotEmpty>
+		<isNotEmpty property="rolePurposeList" >
+			<iterate open="(" close=")" property="rolePurposeList" conjunction="," prepend="AND item.PURPOSE IN">
+	           #rolePurposeList[]#
+	         </iterate>
+	    </isNotEmpty> 
+	    <isEmpty property="rolePurposeList" >
+			AND item.PURPOSE = 'notauth'
+	    </isEmpty>
+		/* ===========================================END */  
+		<![CDATA[   
+		    ) A WHERE ROWNUM <=  #endRowIndex# /* 종료  */
+		) TBL WHERE ROWNUM >  #startRowIndex# /* 시작 */ 
+	    ]]>		
+		
+</select>
+
+
+<select id="countBySearchCondition" parameterClass="PartnerQualityClaimSellSearchCondition" resultClass="int">
+	SELECT /* [QualityClaimSell_SqlMap.xml] */
+	COUNT(*)
+	FROM PARTNER_COUNSEL_HISTORY item INNER JOIN IKEP4_EV_USER usr
+	  ON item.REGISTER_ID = usr.USER_ID 
+	WHERE DELETE_FLAG = 'N'
+	<isNotEmpty property="searchColumn">
+		<isNotEmpty property="searchWord">
+			<isEqual property="searchColumn" compareValue="partnerName">
+				AND	replace(item.PARTNER_NAME,' ','') LIKE '%' + replace(#searchWord#,' ','') + '%'
+			</isEqual>
+			<isEqual property="searchColumn" compareValue="registerName">
+				AND	replace(item.REGISTER_NAME,' ','') LIKE '%' + replace(#searchWord#,' ','') + '%'
+			</isEqual>
+			<isEqual property="searchColumn" compareValue="items">
+				AND	replace(item.ITEMS,' ','') LIKE '%' + replace(#searchWord#,' ','') + '%'
+			</isEqual>
+			<isEqual property="searchColumn" compareValue="counselContent">
+				AND item.SEQNUM in (select sub.ITEM_ID from PARTNER_COUNSEL_HISTORY_SUB sub where replace(sub.COUNSEL_CONTENTS,' ','') LIKE '%' + replace(#searchWord#,' ','') + '%' AND sub.LINEREPLY_DELETE = '0')
+			</isEqual>
+			<isEqual property="searchColumn" compareValue="counselDate">
+				AND item.SEQNUM in (select sub.ITEM_ID from PARTNER_COUNSEL_HISTORY_SUB sub where replace(sub.COUNSEL_DATE,' ','') LIKE '%' + replace(#searchWord#,' ','') + '%' AND sub.LINEREPLY_DELETE = '0')
+			</isEqual>	
+			<isEqual property="searchColumn" compareValue="counselor">
+				AND item.SEQNUM in (select sub.ITEM_ID from PARTNER_COUNSEL_HISTORY_SUB sub where replace(sub.COUNSELOR,' ','') LIKE '%' + replace(#searchWord#,' ','') + '%' AND sub.LINEREPLY_DELETE = '0')
+			</isEqual>	
+		</isNotEmpty>
+	</isNotEmpty>
+	<isEmpty property="searchColumn">
+			<isNotEmpty property="searchWord">
+				AND	(
+				replace(item.PARTNER_NAME,' ','') LIKE '%' + replace(#searchWord#,' ','') + '%'
+				or	replace(item.REGISTER_NAME,' ','') LIKE '%' + replace(#searchWord#,' ','') + '%'
+				or	replace(item.ITEMS,' ','') LIKE '%' + replace(#searchWord#,' ','') + '%'
+				or item.SEQNUM in (select sub.ITEM_ID from PARTNER_COUNSEL_HISTORY_SUB sub where replace(sub.COUNSEL_CONTENTS,' ','') LIKE '%' + replace(#searchWord#,' ','') + '%' AND sub.LINEREPLY_DELETE = '0')
+				or item.SEQNUM in (select sub.ITEM_ID from PARTNER_COUNSEL_HISTORY_SUB sub where replace(sub.COUNSELOR,' ','') LIKE '%' + replace(#searchWord#,' ','') + '%' AND sub.LINEREPLY_DELETE = '0')
+				or item.SEQNUM in (select sub.ITEM_ID from PARTNER_COUNSEL_HISTORY_SUB sub where replace(sub.COUNSEL_DATE,' ','') LIKE '%' + replace(#searchWord#,' ','') + '%' AND sub.LINEREPLY_DELETE = '0')
+				)
+			</isNotEmpty>
+		</isEmpty>
+	<isNotEmpty property="searchPurpose">
+		<isEqual property="searchPurpose" compareValue="CR01">
+			AND item.PURPOSE = 'CR01'
+		</isEqual>
+		<isEqual property="searchPurpose" compareValue="CR02">
+			AND item.PURPOSE = 'CR02'
+		</isEqual>
+		<isEqual property="searchPurpose" compareValue="CR03">
+			AND item.PURPOSE = 'CR03'
+		</isEqual>
+		<isEqual property="searchPurpose" compareValue="CR04">
+			AND item.PURPOSE = 'CR04'
+		</isEqual>
+		<isEqual property="searchPurpose" compareValue="CR05">
+			AND item.PURPOSE = 'CR05'
+		</isEqual>
+		<isEqual property="searchPurpose" compareValue="CR06">
+			AND item.PURPOSE = 'CR06'
+		</isEqual>
+		<isEqual property="searchPurpose" compareValue="CR07">
+			AND item.PURPOSE = 'CR07'
+		</isEqual>
+	</isNotEmpty>
+	<isNotEmpty property="rolePurposeList" >
+			<iterate open="(" close=")" property="rolePurposeList" conjunction="," prepend="AND item.PURPOSE IN">
+	           #rolePurposeList[]#
+	         </iterate>
+	    </isNotEmpty> 
+	    <isEmpty property="rolePurposeList" >
+			AND item.PURPOSE = 'notauth'
+	    </isEmpty>
+</select>
+
+	
+<select id="getQualityClaimSell" parameterClass="int" resultMap="PartnerInfoResult">
+		SELECT
+			SEQNUM,         
+			PARTNER_ID,     
+			KEYMAN,     
+			SECTOR,    
+			PARTNER_NAME,   
+			REGISTER_ID,    
+			REGISTER_NAME,  
+			REGIST_DATE,    
+			FAX,            
+			ADDRESS,        
+			CATEGORY,       
+			BUSINESS_NO,    
+			CORPORATION_NO, 
+			ZIP_NO,         
+			EMAIL,          
+			SAP_ID,         
+			ITEMS,          
+			PURPOSE,        
+			CEO_NAME,       
+			MAIN_PHONE,     
+			CONTACTS        
+		FROM PARTNER_COUNSEL_HISTORY
+		WHERE DELETE_FLAG = 'N'
+	   	AND   SEQNUM=#itemId#
+  </select>
+  
+  <select id="getQualityClaimSellOther" parameterClass="int" resultMap="QualityClaimSellHistoryResult">
+		SELECT
+		top 1
+		ROW_NUMBER() OVER(ORDER BY COUNSEL_DATE DESC) AS ROWNUM,
+			SEQNUM,         
+			PARTNER_ID,     
+			COUNSEL_DATE,   
+			COUNSELOR,      
+			KEYMAN,         
+			PARTNER_NAME,   
+			REGISTER_ID,    
+			REGISTER_NAME,  
+			REGIST_DATE,    
+			FAX,            
+			ADDRESS,        
+			CATEGORY,       
+			BUSINESS_NO,    
+			CORPORATION_NO, 
+			ZIP_NO,         
+			EMAIL,          
+			SAP_ID,         
+			ITEMS,          
+			COUNSEL_CNT,    
+			'' AS COMMENT_CNT1,   
+			'' AS COMMENT_CNT2,   
+			PURPOSE,        
+			COUNSEL_TITLE,  
+			CEO_NAME,       
+			MAIN_PHONE,     
+			CONTACTS  
+		FROM PARTNER_COUNSEL_HISTORY with (nolock)
+		WHERE DELETE_FLAG = 'N'
+	   	AND   id in(select id from PARTNER_PERSON_INFO
+		where SEQNUM = #itemId#)
+  </select>
+
+
+	<insert id="createQualityClaimSell" parameterClass="PartnerClaimSellItem">
+		
+	 
+		INSERT INTO PARTNER_COUNSEL_HISTORY ( /* [QualityClaimSell_SqlMap.xml] PartnerClaimSellItem.createQualityClaimSell */
+		<include refid="support.partner.dao.partnerClaimSell.sqlColumnList" />
+		) 
+		VALUES (
+		#partnerId#,
+		#keyMan#,
+		#sector#,
+		#partnerName#,
+		#purpose#,
+		#deleteFlag#,
+		#fax#,
+		#address#,
+		#category#,
+		#businessNo#,
+		#corporationNo#,
+		#zipNo#,
+		#email#,
+		#sapId#,
+		#items#,
+		#ceoName#,
+		#mainPhone#,
+		#contacts#,
+		#registerId#,
+		#registerName#,
+		CURRENT_TIMESTAMP,
+		#updaterId#,
+		#updaterName#,
+		CURRENT_TIMESTAMP
+		)
+		
+		<selectKey resultClass="int" keyProperty="seqNum"> 
+               SELECT @@IDENTITY AS seqNum
+        </selectKey>	
+
+				
+	</insert>
+
+
+	<update id="updateQualityClaimSell" parameterClass="PartnerClaimSellItem">
+		UPDATE PARTNER_COUNSEL_HISTORY /* [QualityClaimSell_SqlMap.xml] PartnerClaimSellItem.updateQualityClaimSell */
+		SET 
+		 KEYMAN = #keyMan#
+		,PARTNER_NAME = #partnerName#
+		,SECTOR = #sector#
+		,PURPOSE = #purpose#
+		,CEO_NAME =#ceoName#
+		,MAIN_PHONE =#mainPhone#
+		,CONTACTS =#contacts#
+		,UPDATER_ID = #updaterId#
+		,UPDATER_NAME = #updaterName#
+		,UPDATE_DATE = CURRENT_TIMESTAMP
+		,FAX = #fax#
+		,ADDRESS = #address#
+		,CATEGORY = #category#
+		,BUSINESS_NO = #businessNo#
+		,CORPORATION_NO = #corporationNo#
+		,ZIP_NO = #zipNo#
+		,EMAIL = #email#
+		,SAP_ID = #sapId#
+		,ITEMS = #items#
+		WHERE SEQNUM = #seqNum#
+  	</update>
+
+	<update id="updateQualityClaimSellMaster" parameterClass="PartnerClaimSellItem">
+		UPDATE PARTNER_COUNSEL_HISTORY /* [QualityClaimSell_SqlMap.xml] PartnerClaimSellItem.updateQualityClaimSell */
+		SET 
+		 COUNSEL_DATE = #counselDate#
+		,COUNSELOR = #counselor#
+		,SUBJECT =#subject#
+		,CONTENT =#content#
+ 		,JIJONG =#jijong#
+ 		,FACTORY = #factory#
+ 		,CLAIM_GUBUN = #claimGubun#
+ 		,WEIGHT = #weight#
+		,UPDATER_ID = #updaterId#
+		,UPDATER_NAME = #updaterName#
+		,UPDATE_DATE = CURRENT_TIMESTAMP
+		,FACTORY_NAME = #factoryName#
+		,CLAIM_GUBUN_NAME = #claimGubunName#
+		WHERE SEQNUM = #seqNum#
+  	</update>
+	<update id="deleteQualityClaimSell" parameterClass="PartnerClaimSellItem">
+	UPDATE PARTNER_COUNSEL_HISTORY /* [QualityClaimSell_SqlMap.xml] PartnerClaimSellItem.deleteQualityClaimSell */
+	SET DELETE_FLAG = 'Y'
+		,UPDATER_ID = #updaterId#
+		,UPDATER_NAME = #updaterName#
+		,UPDATE_DATE = CURRENT_TIMESTAMP
+	WHERE SEQNUM = #seqNum#
+	
+	</update>
+
+
+  <!-- ANSI -->
+  <update id="updateLinereplyCount" parameterClass="string">
+    UPDATE PARTNER_COUNSEL_HISTORY /* [QualityClaimSell_SqlMap.xml] PartnerClaimSellItem.updateLinereplyCount */
+    SET    LINEREPLY_COUNT = (SELECT COUNT(*) FROM CUSTOMER_LINEREPLY WHERE ITEM_ID = #itemId# AND ITEM_TYPE = 'CL')
+    WHERE SEQNUM = #itemId# 
+  </update> 
+
+  <update id="updateQualityClaimSellMoreCount" parameterClass="string">
+    
+  </update> 
+
+  <update id="updateQualityClaimSellMoreInfo" parameterClass="PartnerClaimSellItem">
+    UPDATE PARTNER_COUNSEL_HISTORY /* [QualityClaim_SqlMap.xml] QualityClaimItem.updateQualityClaimSellMoreInfo */
+    SET    SUB_COUNT = (SELECT COUNT(*) FROM PARTNER_CL_SUB WHERE ITEM_ID = #itemId# AND ITEM_TYPE = 'CL'),
+    SUB_ID = #subId#
+    WHERE SEQNUM = #seqNum#
+  </update> 
+
+
+
+
+
+
+
+
+
+</sqlMap>

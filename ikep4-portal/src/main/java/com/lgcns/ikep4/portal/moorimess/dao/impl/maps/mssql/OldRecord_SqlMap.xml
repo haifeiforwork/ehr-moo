@@ -1,0 +1,392 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace = "portal.moorimess.dao.oldRecord">
+<typeAlias alias="OldRecordSearchCondition" type="com.lgcns.ikep4.portal.moorimess.search.OldRecordSearchCondition" />
+<typeAlias alias="OldRecordItem" type="com.lgcns.ikep4.portal.moorimess.model.OldRecordHistory" />
+
+	<resultMap id="OldRecordHistoryResult" class="com.lgcns.ikep4.portal.moorimess.model.OldRecordHistory">
+		<result column="ROWNUM" 		    property="rowNum" 			jdbcType="VARCHAR" />
+		<result column="SEQNUM" 		    property="seqNum" 			jdbcType="DECIMAL" />
+		<result column="ID" 			    property="customerId" 		jdbcType="VARCHAR" />
+		<result column="COUNSEL_DATE" 		property="counselDate" 		jdbcType="VARCHAR" />
+		<result column="COUNSELOR" 			property="counselor" 		jdbcType="VARCHAR" />
+		<result column="SALESMAN" 			property="salesman" 		jdbcType="VARCHAR" />
+		<result column="CUSTOMER" 			property="customer" 		jdbcType="VARCHAR" />
+		<result column="CLIENT" 			property="client" 			jdbcType="VARCHAR" />
+		<result column="PHONE1" 			property="clientPhone" 		jdbcType="VARCHAR" />
+		<result column="FABRICATION" 		property="fabrication" 		jdbcType="VARCHAR" />
+		<result column="CHARGE" 			property="charge" 			jdbcType="VARCHAR" />
+		<result column="PHONE2" 			property="chargePhone" 		jdbcType="VARCHAR" />
+		<result column="SUBJECT" 			property="subject"			jdbcType="VARCHAR" />
+		<result column="CONTENTS" 			property="contents" 			jdbcType="VARCHAR" />
+		<result column="ACTIONS" 			property="actions" 			jdbcType="VARCHAR" />
+		<result column="CLAIMS" 			property="claims" 			jdbcType="VARCHAR" />
+		<result column="FACILITY_HISTORY" 	property="facilityHistory" 	jdbcType="VARCHAR" />
+		<result column="JIJONG" 			property="jijong" 			jdbcType="VARCHAR" />
+		<result column="FACTORY" 			property="factory" 			jdbcType="VARCHAR" />
+		<result column="CLAIM_GUBUN" 		property="claimGubun" 		jdbcType="VARCHAR" />
+		<result column="WEIGHT" 			property="weight" 			jdbcType="VARCHAR" />
+		<result column="MAIN_PRINT" 		property="mainPrint" 		jdbcType="VARCHAR" />
+		<result column="MAIN_COMPANY" 		property="mainCompany" 		jdbcType="VARCHAR" />
+		<result column="MAIN_CONNECTION" 	property="mainConnection" 	jdbcType="VARCHAR" />
+		<result column="LINEREPLY_COUNT" 	property="linereplyCount" 	jdbcType="DECIMAL" />
+		<result column="REGISTER_ID" 	    property="registerId"   	jdbcType="VARCHAR" />
+		<result column="REGISTER_NAME"  	property="registerName" 	jdbcType="VARCHAR" />
+		<result column="REGIST_DATE"	  	property="registDate"	 	jdbcType="VARCHAR" />
+		<result column="SUB_ID"	  			property="subId"	 	jdbcType="VARCHAR" />
+		
+	</resultMap>
+	
+	<resultMap  id="OldRecordHistoryExtendsResult" extends="OldRecordHistoryResult"  class="com.lgcns.ikep4.portal.moorimess.model.OldRecordHistory">
+	    <result column="JOB_RANK_NAME"          property="user.jobRankName"         jdbcType="VARCHAR" />
+	    <result column="TEAM_NAME"              property="user.teamName"            jdbcType="VARCHAR" />
+	    <result column="JOB_DUTY_NAME"          property="user.jobDutyName"         jdbcType="VARCHAR" />
+	    <result column="JOB_POSITION_NAME"      property="user.jobPositionName"     jdbcType="VARCHAR" />
+	    <result column="JOB_TITLE_NAME"         property="user.jobTitleName"        jdbcType="VARCHAR" />  
+	    <result column="PICTURE_ID"             property="user.pictureId"           jdbcType="VARCHAR" />   
+	    <result column="PROFILE_PICTURE_ID"     property="user.profilePictureId"    jdbcType="VARCHAR" />  
+		<result column="USER_NAME"              property="user.userName"            jdbcType="VARCHAR" />
+		<result column="USER_ENGLISH_NAME"      property="user.userEnglishName"     jdbcType="VARCHAR" />
+		<result column="JOB_TITLE_ENGLISH_NAME" property="user.jobTitleEnglishName" jdbcType="VARCHAR" />
+		<result column="TEAM_ENGLISH_NAME"      property="user.teamEnglishName"     jdbcType="VARCHAR" /> 
+	
+	</resultMap>
+
+<sql id="sqlColumnList">
+		 ID
+		,COUNSEL_DATE
+		,COUNSELOR
+		,SALESMAN
+		,CUSTOMER
+		,CLIENT
+		,PHONE1
+		,FABRICATION
+		,CHARGE
+		,PHONE2
+		,SUBJECT
+		,CONTENTS
+		,ACTIONS
+		,CLAIMS
+		,FACILITY_HISTORY
+		,JIJONG
+		,FACTORY
+		,CLAIM_GUBUN
+		,WEIGHT
+		,MAIN_PRINT
+		,MAIN_COMPANY
+		,MAIN_CONNECTION
+		,LINEREPLY_COUNT
+		,DELETE_FLAG
+		,UPDATER_ID
+		,UPDATER_NAME
+		,UPDATE_DATE
+		,REGISTER_ID
+		,REGISTER_NAME
+		,REGIST_DATE
+		,CLAIM_GUBUN_NAME
+ </sql>
+
+
+<select id="oldRecordListBySearchCondition" parameterClass="OldRecordSearchCondition" resultMap="OldRecordHistoryResult">
+SELECT /* [OldRecord_SqlMap.xml] OldRecord.oldRecordListBySearchCondition */
+		*
+		FROM (
+		SELECT A.* FROM (
+		/* START========================================= */
+		SELECT ROW_NUMBER()
+		OVER(ORDER BY  
+		       <isNotEmpty property="sortColumn">
+				<isEqual property="sortColumn" compareValue="SUBJECT">
+					<isEqual property="sortType" compareValue="DESC">
+						 subject DESC
+					</isEqual>
+					<isEqual property="sortType" compareValue="ASC">
+						 subject ASC
+					</isEqual>
+				</isEqual>
+				<isEqual property="sortColumn" compareValue="REGIST_DATE">
+					<isEqual property="sortType" compareValue="DESC">
+						 item.REGIST_DATE DESC
+					</isEqual>
+					<isEqual property="sortType" compareValue="ASC">
+						 item.REGIST_DATE ASC
+					</isEqual>
+				</isEqual>
+				<isEqual property="sortColumn" compareValue="REGISTER_NAME">
+					<isEqual property="sortType" compareValue="DESC">
+						 item.REGISTER_NAME DESC
+					</isEqual>
+					<isEqual property="sortType" compareValue="ASC">
+						 item.REGISTER_NAME ASC
+					</isEqual>
+				</isEqual>
+				</isNotEmpty>
+				 <isEmpty property="sortColumn">  
+					 subject desc
+				 </isEmpty>  ) AS ROWNUM
+			,item.SEQNUM
+			,item.ID
+			,item.counsel_date  AS COUNSEL_DATE
+			,item.counselor AS COUNSELOR
+			,item.SALESMAN
+			,item.CUSTOMER
+			,item.CLIENT
+			,item.PHONE1
+			,item.FABRICATION
+			,item.CHARGE
+			,item.PHONE2
+			,item.subject AS SUBJECT
+			,item.CONTENTS
+			,item.ACTIONS
+			,item.CLAIMS
+			,item.FACILITY_HISTORY
+			,item.JIJONG
+			,item.factory AS FACTORY
+			,item.claim_gubun AS CLAIM_GUBUN
+			,item.WEIGHT
+			,item.MAIN_PRINT
+			,item.MAIN_COMPANY
+			,item.MAIN_CONNECTION
+			,item.LINEREPLY_COUNT
+			,item.REGISTER_ID
+			,item.REGISTER_NAME
+			,item.REGIST_DATE
+			,item.SUB_ID
+			,usr.TEAM_NAME          AS TEAM_NAME,  
+		     usr.PICTURE_ID         AS PICTURE_ID, 
+		     usr.PROFILE_PICTURE_ID AS PROFILE_PICTURE_ID,     
+		    (SELECT JOB_RANK_NAME FROM IKEP4_EV_JOB_RANK with (nolock) WHERE IKEP4_EV_JOB_RANK.JOB_RANK_CODE = usr.JOB_RANK_CODE) AS JOB_RANK_NAME,
+			(SELECT JOB_DUTY_NAME FROM IKEP4_EV_JOB_DUTY with (nolock) WHERE IKEP4_EV_JOB_DUTY.JOB_DUTY_CODE = usr.JOB_DUTY_CODE) AS JOB_DUTY_NAME,
+			(SELECT JOB_POSITION_NAME FROM IKEP4_EV_JOB_POSITION with (nolock) WHERE IKEP4_EV_JOB_POSITION.JOB_POSITION_CODE = usr.JOB_POSITION_CODE) AS JOB_POSITION_NAME,
+			(SELECT JOB_TITLE_NAME FROM IKEP4_EV_JOB_TITLE with (nolock) WHERE IKEP4_EV_JOB_TITLE.JOB_TITLE_CODE = usr.JOB_TITLE_CODE) AS JOB_TITLE_NAME, 
+		     usr.USER_NAME  AS USER_NAME,
+		     usr.USER_ENGLISH_NAME  AS USER_ENGLISH_NAME,
+		     usr.TEAM_ENGLISH_NAME  AS TEAM_ENGLISH_NAME,  
+		    (SELECT JOB_TITLE_ENGLISH_NAME FROM IKEP4_EV_JOB_TITLE WHERE IKEP4_EV_JOB_TITLE.JOB_TITLE_CODE = usr.JOB_TITLE_CODE) AS JOB_TITLE_ENGLISH_NAME
+		FROM bw_history item with (nolock) INNER JOIN IKEP4_EV_USER usr with (nolock)
+	    ON item.REGISTER_ID = usr.USER_ID 
+		WHERE DELETE_FLAG = 'N'
+		<isNotEmpty property="searchColumn">
+			<isNotEmpty property="searchWord">
+				<isEqual property="searchColumn" compareValue="subject">
+					AND item.SUBJECT
+					LIKE '%' + #searchWord# + '%'
+				</isEqual>
+				<isEqual property="searchColumn" compareValue="registerName">
+					AND item.REGISTER_NAME
+					LIKE '%' + #searchWord# + '%'
+				</isEqual>
+				<isEqual property="searchColumn" compareValue="registDate">
+					AND CONVERT(VARCHAR, item.REGIST_DATE, 102)
+					LIKE '%' + #searchWord# + '%'
+				</isEqual>
+			</isNotEmpty>
+		</isNotEmpty>
+		/* ===========================================END */  
+		<![CDATA[   
+		    ) A WHERE ROWNUM <=  #endRowIndex# /* 종료  */
+		) TBL WHERE ROWNUM >  #startRowIndex# /* 시작 */ 
+	    ]]>		
+		
+</select>
+
+
+<select id="countBySearchCondition" parameterClass="OldRecordSearchCondition" resultClass="int">
+	SELECT /* [OldRecord_SqlMap.xml] */
+	COUNT(*)
+	FROM bw_history item INNER JOIN IKEP4_EV_USER usr
+	  ON item.REGISTER_ID = usr.USER_ID 
+	WHERE DELETE_FLAG = 'N'
+	<isNotEmpty property="searchColumn">
+		<isNotEmpty property="searchWord">
+			<isEqual property="searchColumn" compareValue="subject">
+				AND item.SUBJECT
+				LIKE '%' + #searchWord# + '%'
+			</isEqual>
+			<isEqual property="searchColumn" compareValue="registerName">
+				AND item.REGISTER_NAME
+				LIKE '%' + #searchWord# + '%'
+			</isEqual>
+			<isEqual property="searchColumn" compareValue="registDate">
+				AND CONVERT(VARCHAR, item.REGIST_DATE, 102)
+				LIKE '%' + #searchWord# + '%'
+			</isEqual>
+		</isNotEmpty>
+	</isNotEmpty>
+</select>
+
+	
+<select id="getOldRecord" parameterClass="int" resultMap="OldRecordHistoryResult">
+		SELECT
+		ROW_NUMBER() OVER(ORDER BY COUNSEL_DATE DESC) AS ROWNUM
+			,SEQNUM
+			,ID
+			,COUNSEL_DATE
+			,COUNSELOR
+			,SALESMAN
+			,CUSTOMER
+			,CLIENT
+			,PHONE1
+			,FABRICATION
+			,CHARGE
+			,PHONE2
+			,SUBJECT
+			,CONTENTS
+			,ACTIONS
+			,CLAIMS
+			,FACILITY_HISTORY
+			,JIJONG
+			,FACTORY
+			,CLAIM_GUBUN
+			,WEIGHT
+			,MAIN_PRINT
+			,MAIN_COMPANY
+			,MAIN_CONNECTION
+			,LINEREPLY_COUNT
+			,REGISTER_ID
+			,REGISTER_NAME
+			,REGIST_DATE
+			,SUB_ID
+		FROM bw_history with (nolock)
+		WHERE DELETE_FLAG = 'N'
+	   	AND   SEQNUM=#itemId#
+  </select>
+
+
+	<insert id="createOldRecord" parameterClass="OldRecordItem">
+		
+	 
+		INSERT INTO bw_history ( /* [OldRecord_SqlMap.xml] OldRecordItem.createOldRecord */
+		<include refid="portal.moorimess.dao.oldRecord.sqlColumnList" />
+		) 
+		VALUES (
+		'',
+		#counselDate#,
+		#counselor#,
+		#salesman#,
+		#customer#,
+		#client#,
+		#clientPhone#,
+		#fabrication#,
+		#charge#,
+		#chargePhone#,
+		#subject#,
+		#contents#,
+		#actions#,
+		#claims#,
+		#facilityHistory#,
+		#jijong#,
+		#factory#,
+		#claimGubun#,
+		#weight#,
+		#mainPrint#,
+		#mainCompany#,
+		#mainConnection#,
+		#linereplyCount#,
+		#deleteFlag#,
+		#updaterId#,
+		#updaterName#,
+		CURRENT_TIMESTAMP,
+		#registerId#,
+		#registerName#,
+		CURRENT_TIMESTAMP,
+		#claimGubunName#
+		)
+		
+		<selectKey resultClass="int" keyProperty="seqNum"> 
+               SELECT @@IDENTITY AS seqNum
+        </selectKey>	
+
+				
+	</insert>
+
+
+	<update id="updateOldRecord" parameterClass="OldRecordItem">
+		UPDATE bw_history /* [OldRecord_SqlMap.xml] OldRecordItem.updateOldRecord */
+		SET 
+		 COUNSEL_DATE = #counselDate#
+		,COUNSELOR = #counselor#
+		,SALESMAN = #salesman#
+		,CUSTOMER = #customer#
+		,CLIENT = #client#
+		,PHONE1 = #clientPhone#
+		,FABRICATION =#fabrication#
+		,CHARGE =#charge#
+		,PHONE2 =#chargePhone#
+		,SUBJECT =#subject#
+		,CONTENTS =#contents#
+		,ACTIONS =#actions#
+		,CLAIMS =#claims#
+		,FACILITY_HISTORY =#facilityHistory#
+ 		,JIJONG =#jijong#
+ 		,FACTORY = #factory#
+ 		,CLAIM_GUBUN = #claimGubun#
+ 		,WEIGHT = #weight#
+		,MAIN_PRINT =#mainPrint#
+		,MAIN_COMPANY =#mainCompany#
+		,MAIN_CONNECTION =#mainConnection#
+		,UPDATER_ID = #updaterId#
+		,UPDATER_NAME = #updaterName#
+		,UPDATE_DATE = CURRENT_TIMESTAMP
+		,CLAIM_GUBUN_NAME = #claimGubunName#
+		WHERE SEQNUM = #seqNum# 
+  	</update>
+  	
+  	<update id="updateOldRecordMaster" parameterClass="OldRecordItem">
+		UPDATE bw_history /* [OldRecord_SqlMap.xml] OldRecordItem.updateOldRecordMaster */
+		SET 
+		 COUNSEL_DATE = #counselDate#
+		,COUNSELOR = #counselor#
+		,SUBJECT =#subject#
+		,CONTENTS =#contents#
+ 		,FACTORY = #factory#
+ 		,CLAIM_GUBUN = #claimGubun#
+		,UPDATER_ID = #updaterId#
+		,UPDATER_NAME = #updaterName#
+		,UPDATE_DATE = CURRENT_TIMESTAMP
+		,CLAIM_GUBUN_NAME = #claimGubunName#
+		WHERE SEQNUM = #seqNum# 
+  	</update>
+
+	<update id="deleteOldRecord" parameterClass="OldRecordItem">
+	UPDATE bw_history /* [OldRecord_SqlMap.xml] OldRecordItem.deleteOldRecord */
+	SET DELETE_FLAG = 'Y'
+		,UPDATER_ID = #updaterId#
+		,UPDATER_NAME = #updaterName#
+		,UPDATE_DATE = CURRENT_TIMESTAMP
+	WHERE SEQNUM = #seqNum#
+	
+	</update>
+
+
+  <!-- ANSI -->
+  <update id="updateLinereplyCount" parameterClass="string">
+    UPDATE bw_history /* [OldRecord_SqlMap.xml] OldRecordItem.updateLinereplyCount */
+    SET    LINEREPLY_COUNT = (SELECT COUNT(*) FROM CUSTOMER_LINEREPLY WHERE ITEM_ID = #itemId# AND ITEM_TYPE = 'BW')
+    WHERE SEQNUM = #itemId# 
+  </update> 
+  
+  <update id="updateOldRecordSubCount" parameterClass="string">
+    UPDATE bw_history /* [OldRecord_SqlMap.xml] OldRecordItem.updateOldRecordSubCount */
+    SET    SUB_COUNT = (SELECT COUNT(*) FROM OLDRECORD_SUB WHERE ITEM_ID = #itemId# AND ITEM_TYPE = 'BW')
+    WHERE SEQNUM = #itemId# 
+  </update> 
+
+
+	<update id="updateOldRecordSubInfo" parameterClass="OldRecordItem">
+	UPDATE bw_history /* [OldRecord_SqlMap.xml] OldRecordItem.updateOldRecordSubInfo */
+    SET    SUB_COUNT = (SELECT COUNT(*) FROM OLDRECORD_SUB WHERE ITEM_ID = #itemId# AND ITEM_TYPE = 'BW'),
+    SUB_ID = #subId#
+    WHERE SEQNUM = #seqNum#
+	</update>
+
+
+
+
+
+
+
+
+
+
+</sqlMap>

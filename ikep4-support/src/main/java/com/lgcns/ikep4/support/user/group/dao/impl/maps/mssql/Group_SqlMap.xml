@@ -1,0 +1,1583 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="support.user.group.dao.Group">
+	<typeAlias alias="Group" type="com.lgcns.ikep4.support.user.group.model.Group" />
+	<typeAlias alias="GroupType" type="com.lgcns.ikep4.support.user.group.model.GroupType" />
+	<typeAlias alias="userSearchCondition" type="com.lgcns.ikep4.support.user.member.model.UserSearchCondition"/>
+	<typeAlias alias="User" type="com.lgcns.ikep4.support.user.member.model.User" />
+	<typeAlias alias="GroupDetail" type="com.lgcns.ikep4.util.model.GroupDetail" />
+	
+	<resultMap id="resultByGroupType" class="Group">
+		<result property="groupId" column="GROUP_ID" />
+		<result property="portalId" column="PORTAL_ID" />
+		<result property="groupName" column="GROUP_NAME" />
+		<result property="parentGroupId" column="PARENT_GROUP_ID" />
+		<result property="parentGroupName" column="PARENT_GROUP_NAME" />
+		<result property="groupTypeId" column="GROUP_TYPE_ID" />
+		<result property="groupTypeName" column="GROUP_TYPE_NAME" />
+		<result property="childGroupCount" column="CHILD_GROUP_COUNT" />
+		<result property="sortOrder" column="SORT_ORDER" />
+		<result property="registerId" column="REGISTER_ID" />
+		<result property="registerName" column="REGISTER_NAME" />
+		<result property="updaterId" column="UPDATER_ID" />
+		<result property="updaterName" column="UPDATER_NAME" />
+		<result property="registDate" column="REGIST_DATE" />
+		<result property="updateDate" column="UPDATE_DATE" />
+		<result property="groupEnglishName" column="GROUP_ENGLISH_NAME" />
+		<result property="viewOption" column="VIEW_OPTION" />
+		<result property="fullPath" column="FULL_PATH" />
+		<result property="leaderId" column="LEADER_ID" />
+		<result property="leaderName" column="LEADER_NAME" />
+		<result property="leaderEnglishName" column="LEADER_ENGLISH_NAME" />
+		<result property="leaderTeamName" column="LEADER_TEAM_NAME" />
+		<result property="leaderTeamEnglishName" column="LEADER_TEAM_ENGLISH_NAME" />
+		<result property="leaderJobTitle" column="LEADER_JOB_TITLE" />
+		<result property="leaderEnglishJobTitle" column="LEADER_ENGLISH_JOB_TITLE" />
+	</resultMap>
+	
+	<resultMap id="resultGroup" class="Group">
+		<result property="groupId" column="GROUP_ID" columnIndex="1"/>
+		<result property="groupName" column="GROUP_NAME" columnIndex="2"/>
+		<result property="parentGroupId" column="PARENT_GROUP_ID" columnIndex="3"/>
+		<result property="groupTypeId" column="GROUP_TYPE_ID" columnIndex="4"/>
+		<result property="groupType" column="GROUP_TYPE" columnIndex="5"/>
+		<result property="childGroupCount" column="CHILD_GROUP_COUNT" columnIndex="6"/>
+		<result property="sortOrder" column="SORT_ORDER" columnIndex="7"/>
+		<result property="groupEnglishName" column="GROUP_ENGLISH_NAME" columnIndex="8"/>
+		<result property="viewOption" column="VIEW_OPTION" columnIndex="9"/>
+		<result property="fullPath" column="FULL_PATH" columnIndex="10"/>
+	</resultMap>
+	
+	<resultMap id="resultRootGroup" class="Group">
+		<result property="rootGroupId" column="ROOT_GROUP_ID" columnIndex="1"/>
+		<result property="rootGroupName" column="ROOT_GROUP_NAME" columnIndex="2"/>
+		<result property="rootGroupEnglishName" column="ROOT_GROUP_ENGLISH_NAME" columnIndex="3"/>
+	</resultMap>
+	
+	<resultMap id="resultGroupWithHierarchy" class="Group">
+		<result property="levelNum" column="LEVEL_NUM" columnIndex="1"/>
+		<result property="groupId" column="GROUP_ID" columnIndex="2"/>
+		<result property="groupName" column="GROUP_NAME" columnIndex="3"/>
+		<result property="groupEnglishName" column="GROUP_ENGLISH_NAME" columnIndex="4"/>
+		<result property="parentGroupId" column="PARENT_GROUP_ID" columnIndex="5"/>
+		<result property="leaderId" column="LEADER_ID" columnIndex="6"/>
+		<result property="leaderName" column="LEADER_NAME" columnIndex="7"/>
+		<result property="leaderEnglishName" column="LEADER_ENGLISH_NAME" columnIndex="8"/>
+		<result property="leaderJobTitle" column="LEADER_JOB_TITLE" columnIndex="9"/>
+		<result property="leaderEnglishJobTitle" column="LEADER_ENGLISH_JOB_TITLE" columnIndex="10"/>
+		<result property="viewOption" column="VIEW_OPTION" columnIndex="11"/>
+		<result property="fullPath" column="FULL_PATH" columnIndex="12"/>
+	</resultMap>
+	
+	<resultMap id="resultUserList" class="User">
+		<result property="userId" column="USER_ID" />
+		<result property="userName" column="USER_NAME" />
+		<result property="userEnglishName" column="USER_ENGLISH_NAME" />
+		<result property="groupId" column="GROUP_ID" />
+		<result property="jobTitleName" column="JOB_TITLE_NAME" />
+		<result property="jobTitleEnglishName" column="JOB_TITLE_ENGLISH_NAME" />
+		<result property="teamName" column="TEAM_NAME" />
+		<result property="teamEnglishName" column="TEAM_ENGLISH_NAME" />
+		<result property="isRepresentGroup" column="REPRESENT_GROUP" />
+	</resultMap>
+	
+	<resultMap id="resultGroupSimple" class="Group">
+		<result property="groupId" column="GROUP_ID" columnIndex="1"/>
+		<result property="groupName" column="GROUP_NAME" columnIndex="2"/>
+		<result property="groupEnglishName" column="GROUP_ENGLISH_NAME" columnIndex="3"/>
+	</resultMap>
+	
+	
+	<!-- MS SQL -->
+	<!-- 신규 등록 -->
+	<insert id="insert" parameterClass="Group"> 
+		
+	<selectKey resultClass="java.lang.String" keyProperty="sortOrder" >
+		SELECT dbo.IKEP4_UFN_LPAD(MAX(ISNULL(CONVERT(INTEGER, SORT_ORDER),100000)) + 1, 13, '0') 
+		FROM IKEP4_EV_GROUP
+	</selectKey>
+  		
+	<![CDATA[
+		INSERT INTO /* [Group_SqlMap.xml] support.user.group.dao.Group.insert */
+			IKEP4_EV_GROUP (
+			GROUP_ID,
+			PORTAL_ID, 
+			GROUP_NAME,
+			LEADER_ID,
+			PARENT_GROUP_ID,
+			GROUP_TYPE_ID,
+			CHILD_GROUP_COUNT,
+			SORT_ORDER,
+			REGISTER_ID, 
+			REGISTER_NAME,
+			UPDATER_ID, 
+			UPDATER_NAME,
+			REGIST_DATE, 
+			UPDATE_DATE,
+			GROUP_ENGLISH_NAME,
+			VIEW_OPTION,
+			FULL_PATH)
+		VALUES ( 
+			#groupId#,
+		    #portalId#,
+			#groupName#,
+			#leaderId#,
+			#parentGroupId#,
+			#groupTypeId#,
+			#childGroupCount#,
+			#sortOrder#,
+		    #registerId#, #registerName#,
+		    #updaterId#, #updaterName#,
+		    CURRENT_TIMESTAMP, CURRENT_TIMESTAMP,
+		    #groupEnglishName#,
+		    #viewOption#,
+		    #fullPath#)
+	]]>
+	</insert>
+
+	<!-- ANSI -->
+	<!-- 그룹 추가/수정시 Leader에 해당하는 User의 정보 Update -->
+	<update id="updateLeaderInfo" parameterClass="User">
+	<![CDATA[
+		UPDATE /* [Group_SqlMap.xml] support.user.group.dao.Group.updateLeaderInfo */
+			IKEP4_EV_USER
+		SET
+			LEADER = #leader#
+		WHERE
+			USER_ID = #userId#
+	]]>
+	</update>
+	
+	<!-- ANSI -->
+	<!-- 새 그룹 추가시 해당하는 상위 그룹의 childGroupCount -->
+	<update id="addChildCount" parameterClass="java.lang.String">
+	<![CDATA[
+		UPDATE /* [Group_SqlMap.xml] support.user.group.dao.Group.addChildCount */
+			IKEP4_EV_GROUP 
+		SET 
+			CHILD_GROUP_COUNT = CHILD_GROUP_COUNT + 1 
+		WHERE GROUP_ID = #parentGroupId#
+	]]>
+	</update>
+	
+	<!-- ANSI -->
+	<!-- 사용자를 그룹에 추가함 -->
+	<insert id="addUserToGroup" parameterClass="User">
+	<![CDATA[
+		INSERT INTO /* [Group_SqlMap.xml] support.user.group.dao.Group.addUserToGroup */
+		    IKEP4_EV_USER_GROUP (
+		        GROUP_ID, 
+		        USER_ID, 
+		        REGISTER_ID, 
+		        REGISTER_NAME, 
+		        UPDATER_ID, 
+		        UPDATER_NAME, 
+		        REGIST_DATE, 
+		        UPDATE_DATE,
+		        REPRESENT_GROUP) 
+		VALUES (
+				#groupId#,
+				#userId#,
+				#registerId#,
+				#registerName#,
+				#updaterId#,
+				#updaterName#,
+				CURRENT_TIMESTAMP,
+				CURRENT_TIMESTAMP,
+				#isRepresentGroup#)
+	]]>
+	</insert>
+	
+	<!-- ANSI -->
+	<!-- 사용자의 TEAMNAME을 업데이트(그룹 생성/수정 후) -->
+	<update id="updateTeamName" parameterClass="User">
+	<![CDATA[
+		UPDATE /* [Group_SqlMap.xml] support.user.group.dao.Group.updateTeamName */
+		    IKEP4_EV_USER
+		SET
+	]]>
+	<dynamic>
+		<isNotNull property="groupId">
+		<![CDATA[
+			TEAM_NAME = (SELECT GROUP_NAME
+			               FROM IKEP4_EV_GROUP
+			               WHERE GROUP_ID = #groupId#)
+		]]>
+		</isNotNull>
+		<isNull property="groupId">
+		<![CDATA[
+			TEAM_NAME = 'noGroup'
+		]]>
+		</isNull>
+	</dynamic>
+	<![CDATA[
+		WHERE 
+		    USER_ID = #userId#
+	]]>
+	</update>
+	
+	<!-- MS SQL -->
+	<select id="selectParentGroupId" parameterClass="java.lang.String" resultClass="java.lang.String">
+	<![CDATA[
+		WITH CTE AS (
+			SELECT
+				GROUP_ID, PARENT_GROUP_ID, 1 LV
+				FROM IKEP4_EV_GROUP
+				WHERE GROUP_ID = #groupId#
+			UNION ALL
+			SELECT
+				TBL.GROUP_ID, TBL.PARENT_GROUP_ID, LV + 1
+				FROM IKEP4_EV_GROUP TBL, CTE
+				WHERE TBL.GROUP_ID = CTE.PARENT_GROUP_ID
+		)
+		SELECT /* [Group_SqlMap.xml] support.user.group.dao.Group.selectParentGroup */ 
+			GROUP_ID
+		FROM CTE
+		WHERE LV = 2
+	]]>
+	</select>
+	
+	<!-- ANSI -->
+	<!-- 사용자를 새 그룹으로 업데이트 -->
+	<update id="updateUserGroup" parameterClass="User">
+	<![CDATA[
+		UPDATE /* [Group_SqlMap.xml] support.user.group.dao.Group.updateUserGroup */
+		    IKEP4_EV_USER_GROUP
+		SET 
+		    GROUP_ID = #groupId#
+		WHERE 
+		    USER_ID = #userId#
+	]]>
+	</update>
+	
+	<!-- MS SQL -->
+	<!-- 사용자를 현재 삭제되는 그룹의 상위 그룹으로 업데이트 -->
+	<update id="moveUserToParentGroup" parameterClass="User">
+	<![CDATA[
+		WITH CTE AS (
+			SELECT
+				GROUP_ID, PARENT_GROUP_ID, 1 LV
+				FROM IKEP4_EV_GROUP
+				WHERE GROUP_ID = #groupId#
+			UNION ALL
+			SELECT
+				TBL.GROUP_ID, TBL.PARENT_GROUP_ID, LV + 1
+				FROM IKEP4_EV_GROUP TBL, CTE
+				WHERE TBL.GROUP_ID = CTE.PARENT_GROUP_ID
+		)
+		UPDATE /* [Group_SqlMap.xml] support.user.group.dao.Group.moveUserToParentGroup */
+		    IKEP4_EV_USER_GROUP
+		SET 
+		    GROUP_ID = (SELECT GROUP_ID
+						FROM CTE
+						WHERE LV = 2)
+		WHERE 
+		    GROUP_ID = #groupId#
+		AND USER_ID = #userId#
+	]]>
+	</update>
+	
+	<!-- ANSI -->
+	<!-- 그룹정보를 user_group 테이블에서 제거 -->
+	<delete id="removeGroupFromUserGroup" parameterClass="java.lang.String">
+	<![CDATA[
+		DELETE /* [Group_SqlMap.xml] support.user.group.dao.Group.removeGroupFromUserGroup */
+		    IKEP4_EV_USER_GROUP
+		WHERE  
+		    GROUP_ID = #groupId#
+	]]>
+	</delete>
+	
+	<!-- ANSI -->
+	<!-- 그룹정보를 user_role 테이블에서 제거 -->
+	<delete id="deleteGroupFromRole" parameterClass="java.lang.String">
+	<![CDATA[
+		DELETE /* [Group_SqlMap.xml] support.user.group.dao.Group.deleteGroupFromRole */
+		    IKEP4_EV_GROUP_ROLE
+		WHERE  
+		    GROUP_ID = #groupId#
+	]]>
+	</delete>
+	
+	<!-- ANSI -->
+	<!-- 그룹정보를 user_role 테이블에서 제거 -->
+	<delete id="deleteGroupFromSysPermission" parameterClass="java.lang.String">
+	<![CDATA[
+		DELETE /* [Group_SqlMap.xml] support.user.group.dao.Group.deleteGroupFromSysPermission */
+		    IKEP4_EV_GROUP_SYS_PERMISSION
+		WHERE  
+		    GROUP_ID = #groupId#
+	]]>
+	</delete>
+	
+	<!-- ANSI -->
+	<!-- 그룹정보를 user_role 테이블에서 제거 -->
+	<delete id="deleteGroupFromConPermission" parameterClass="java.lang.String">
+	<![CDATA[
+		DELETE /* [Group_SqlMap.xml] support.user.group.dao.Group.deleteGroupFromConPermission */
+		    IKEP4_EV_GROUP_CON_PERMISSION
+		WHERE  
+		    GROUP_ID = #groupId#
+	]]>
+	</delete>
+	
+	<!-- MS SQL -->
+	<!-- 자식 그룹 이동 -->
+	<delete id="removeChild" parameterClass="java.lang.String">
+	<![CDATA[
+		WITH CTE AS (
+			SELECT
+				GROUP_ID, PARENT_GROUP_ID, 1 LV
+				FROM IKEP4_EV_GROUP
+				WHERE GROUP_ID = #groupId#
+			UNION ALL
+			SELECT
+				TBL.GROUP_ID, TBL.PARENT_GROUP_ID, LV + 1
+				FROM IKEP4_EV_GROUP TBL, CTE
+				WHERE TBL.GROUP_ID = CTE.PARENT_GROUP_ID
+		)
+		UPDATE /* [Group_SqlMap.xml] support.user.group.dao.Group.removeChild */
+			IKEP4_EV_GROUP
+		SET 
+			PARENT_GROUP_ID = (SELECT GROUP_ID
+								FROM CTE
+								WHERE PARENT_GROUP_ID IS NULL)
+		WHERE 
+			GROUP_ID = #groupId#
+	]]>
+	</delete>
+	
+	<!-- ANSI -->
+	<!-- 상세정보 -->
+	<select id="select" parameterClass="java.lang.String" resultMap="resultByGroupType">
+	<![CDATA[
+		SELECT /* [Group_SqlMap.xml] support.user.group.dao.Group.select */
+		    A.GROUP_ID,
+		    A.GROUP_NAME,
+		    A.GROUP_ENGLISH_NAME,
+		    A.CHILD_GROUP_COUNT,
+		    A.SORT_ORDER,
+		    A.PARENT_GROUP_ID,
+			A.LEADER_ID,
+            C.USER_NAME AS LEADER_NAME,
+            C.USER_ENGLISH_NAME AS LEADER_ENGLISH_NAME,
+            C.TEAM_NAME AS LEADER_TEAM_NAME,
+            C.TEAM_ENGLISH_NAME AS LEADER_TEAM_ENGLISH_NAME,
+            D.JOB_TITLE_NAME AS LEADER_JOB_TITLE,
+            D.JOB_TITLE_ENGLISH_NAME AS LEADER_ENGLISH_JOB_TITLE,
+		    (SELECT GROUP_NAME
+		     FROM IKEP4_EV_GROUP
+		     WHERE GROUP_ID = (SELECT PARENT_GROUP_ID 
+		                       FROM IKEP4_EV_GROUP 
+		                       WHERE GROUP_ID= #groupId#)) AS PARENT_GROUP_NAME,
+		    A.GROUP_TYPE_ID,
+		    B.GROUP_TYPE_NAME,
+		    A.PORTAL_ID,
+		    A.REGISTER_ID, 
+		    A.REGISTER_NAME,
+		    A.UPDATER_ID,
+		    A.UPDATER_NAME, 
+		    A.REGIST_DATE,
+		    A.UPDATE_DATE,
+		    A.VIEW_OPTION,
+		    A.FULL_PATH
+		FROM 
+		    IKEP4_EV_GROUP A
+		    LEFT OUTER JOIN IKEP4_EV_GROUP_TYPE B
+		    ON A.GROUP_TYPE_ID = B.GROUP_TYPE_ID
+            LEFT OUTER JOIN IKEP4_EV_USER C
+            ON A.LEADER_ID = C.USER_ID
+            LEFT OUTER JOIN IKEP4_EV_JOB_TITLE D
+            ON C.JOB_TITLE_CODE = D.JOB_TITLE_CODE
+		WHERE
+		    A.GROUP_ID = #groupId#
+	]]>
+	</select>
+	
+	<!-- ANSI -->
+	<!-- 그룹에 포함되는 유저리스트를 가져옴 -->
+	<select id="selectUserInGroup" parameterClass="java.lang.String" resultMap="resultUserList">
+	<![CDATA[
+		SELECT /* [Group_SqlMap.xml] support.user.group.dao.Group.selectUserInGroup */
+		    B.GROUP_ID, 
+		    A.USER_ID, 
+		    A.USER_NAME, 
+		    A.USER_ENGLISH_NAME,
+		    C.JOB_TITLE_NAME,
+		    C.JOB_TITLE_ENGLISH_NAME,
+		    A.TEAM_NAME,
+		    A.TEAM_ENGLISH_NAME,
+		    B.REPRESENT_GROUP
+		FROM IKEP4_EV_USER A 
+		LEFT OUTER JOIN IKEP4_EV_USER_GROUP B
+		ON A.USER_ID = B.USER_ID
+		LEFT OUTER JOIN IKEP4_EV_JOB_TITLE C
+		ON A.JOB_TITLE_CODE = C.JOB_TITLE_CODE
+		WHERE B.GROUP_ID = #GROUPID#
+	]]>
+	</select>
+	
+	<!-- ANSI -->
+	<select id="selectUserInfoInGroup" parameterClass="java.util.Map" resultClass="User">
+	<![CDATA[
+		SELECT /* [Group_SqlMap.xml] support.user.group.dao.Group.selectUserInfoInGroup */
+		    A.USER_ID AS userId, 
+		    A.USER_NAME AS userName, 
+		    A.USER_ENGLISH_NAME AS userEnglishName,
+		    C.JOB_TITLE_NAME AS jobTitleName,
+		    C.JOB_TITLE_ENGLISH_NAME AS jobTitleEnglishName,
+		    A.TEAM_NAME AS teamName,
+		    A.TEAM_ENGLISH_NAME AS teamEnglishName,
+		    B.REPRESENT_GROUP AS isRepresentGroup
+		FROM IKEP4_EV_USER A 
+		LEFT OUTER JOIN IKEP4_EV_USER_GROUP B
+		ON A.USER_ID = B.USER_ID
+		LEFT OUTER JOIN IKEP4_EV_JOB_TITLE C
+		ON A.JOB_TITLE_CODE = C.JOB_TITLE_CODE
+		WHERE B.GROUP_ID = #groupId#
+		AND A.USER_ID = #userId#
+	]]>
+	</select>
+	
+	<!-- ANSI -->
+	<!-- 기존 정보 수정 -->
+	<update id="update" parameterClass="Group">
+		UPDATE /* [Group_SqlMap.xml] support.user.group.dao.Group.update */
+			IKEP4_EV_GROUP
+		SET
+			<isNotEmpty property="groupName"> 
+				GROUP_NAME = #groupName#,
+			</isNotEmpty>
+			<isNotEmpty property="sortOrder"> 
+		    	SORT_ORDER = #sortOrder#,
+		    </isNotEmpty>
+		    <isNotEmpty property="parentGroupId"> 
+		    	PARENT_GROUP_ID = #parentGroupId#,
+		    </isNotEmpty>
+		    <isNotEmpty property="groupTypeId"> 
+		    	GROUP_TYPE_ID = #groupTypeId#,
+		    </isNotEmpty>
+		    <isNotEmpty property="portalId"> 
+		   		PORTAL_ID = #portalId#,
+		   	</isNotEmpty>
+		   	<isNotEmpty property="groupEnglishName"> 
+		   		GROUP_ENGLISH_NAME = #groupEnglishName#,
+		   	</isNotEmpty>
+		   	<isNotEmpty property="viewOption"> 
+		   		VIEW_OPTION = #viewOption#,
+		   	</isNotEmpty>
+		   	<isNotEmpty property="fullPath"> 
+		   		FULL_PATH = #fullPath#,
+		   	</isNotEmpty>
+	   		LEADER_ID = #leaderId#,
+			UPDATER_ID = #updaterId#,
+			UPDATER_NAME = #updaterName#,
+			UPDATE_DATE = CURRENT_TIMESTAMP
+		WHERE
+			GROUP_ID = #groupId#
+	</update>
+	
+	<!-- ANSI -->
+	<update id="updateUserTeamName" parameterClass="java.util.Map">
+	<![CDATA[
+		UPDATE IKEP4_EV_USER /* [Group_SqlMap.xml] support.user.group.dao.Group.updateUserTeamName */
+		SET 
+			TEAM_NAME = #postGroupName#,
+			TEAM_ENGLISH_NAME = #postGroupEnglishName#
+		WHERE TEAM_NAME = #preGroupName#
+	]]>
+	</update>
+	
+	<update id="updateUserRepresentTeamName" parameterClass="java.util.Map">
+		<![CDATA[
+		/* [Group_SqlMap.xml] support.user.group.dao.Group.updateUserRepresentTeamName */
+		UPDATE				IKEP4_EV_USER 
+		SET 				TEAM_NAME = #postGroupName#,
+							TEAM_ENGLISH_NAME = #postGroupEnglishName#
+		WHERE 				USER_ID IN (
+										SELECT				USER_ID 
+										FROM 				IKEP4_EV_USER_GROUP 
+										WHERE 				GROUP_ID = #groupId# 
+										AND 				REPRESENT_GROUP = '1'
+							)
+		]]>
+	</update>
+	
+	<!-- MS SQL -->
+	<update id="updateFullPath" parameterClass="Group">
+		WITH CTE AS (
+			SELECT *, 
+				<isEqual property="groupTypeId" compareValue="G0001">
+					CONVERT(NVARCHAR, '|' ) AS GN						    		
+		    	</isEqual>
+		    	<isNotEqual property="groupTypeId" compareValue="G0001">
+					CONVERT(NVARCHAR, '|' + GROUP_NAME) AS GN
+		    	</isNotEqual>
+			FROM IKEP4_EV_GROUP
+			WHERE GROUP_ID = #groupId#
+			UNION ALL
+			SELECT TBL.*, CONVERT(NVARCHAR, '|' + TBL.GROUP_NAME + CTE.GN ) AS GN
+			FROM IKEP4_EV_GROUP TBL, CTE
+			WHERE CTE.PARENT_GROUP_ID = TBL.GROUP_ID
+		)
+		UPDATE IKEP4_EV_GROUP /* [Group_SqlMap.xml] support.user.group.dao.Group.updateFullPath */
+		   SET FULL_PATH = (SELECT GN FROM CTE WHERE PARENT_GROUP_ID IS NULL)
+		 WHERE GROUP_ID = #groupId#
+	</update>
+	
+	
+	<!-- ANSI -->
+	<!-- 삭제 -->
+	<delete id="delete" parameterClass="java.lang.String">
+	<![CDATA[
+		DELETE /* [Group_SqlMap.xml] support.user.group.dao.Group.delete */ 
+		FROM IKEP4_EV_GROUP
+		WHERE
+			GROUP_ID = #groupId#
+	]]>
+	</delete>
+	
+	<!-- ANSI -->
+	<select id="selectChild" parameterClass="java.lang.String" resultClass="Group">
+	<![CDATA[
+		SELECT /* [Group_SqlMap.xml] support.user.group.dao.Group.selectChild */
+			*
+		FROM
+			IKEP4_EV_GROUP
+		WHERE
+			PARENT_GROUP_ID = #groupId#
+			
+	]]>
+	</select>
+	
+	<!-- MS SQL -->
+	<select id="getMaxSortOrder" resultClass="java.lang.String">
+	<![CDATA[
+		SELECT /* [Group_SqlMap.xml] support.user.group.dao.Group.getMaxSortOrder */
+			CONVERT(NVARCHAR, dbo.IKEP4_UFN_LPAD (MAX (CONVERT(INTEGER, sort_order) + 1), 13, '0')) AS SORT_ORDER
+		FROM IKEP4_EV_GROUP
+	]]>
+	</select>
+	
+	<!-- ANSI -->
+	<!-- 그룹 삭제/생성시 해당하는 상위 그룹의 chilchildGroupCount-->
+	<update id="deleteChildCount" parameterClass="java.lang.String">
+	<![CDATA[
+		UPDATE /* [Group_SqlMap.xml] support.user.group.dao.Group.deleteChildCount */
+		    IKEP4_EV_GROUP
+		SET
+		    CHILD_GROUP_COUNT = (SELECT MAX(CHILD_GROUP_COUNT)-1
+		                         FROM IKEP4_EV_GROUP
+		                         WHERE GROUP_ID = #parentGroupId#)
+		WHERE
+		    GROUP_ID = #parentGroupId#
+	]]>
+	</update>
+	
+	<!-- MS SQL -->
+	<!-- 위로 이동 -->
+	<select id="selectGoUp" parameterClass="java.util.Map" resultMap="resultGroup">
+	<![CDATA[	
+		SELECT /* [Group_SqlMap.xml] support.user.group.dao.Group.selectGoUp */
+			TOP 1 *
+		FROM 
+		(
+			SELECT 
+				GROUP_ID
+				,GROUP_NAME
+				,PARENT_GROUP_ID
+				,GROUP_TYPE_ID AS GROUP_TYPE_ID    
+				,'GROUP' AS GROUP_TYPE 
+				,CHILD_GROUP_COUNT
+				,SORT_ORDER
+				,GROUP_ENGLISH_NAME
+				,VIEW_OPTION
+				,FULL_PATH 
+			FROM 
+				IKEP4_EV_GROUP 
+			WHERE 
+				SORT_ORDER < #sortOrder#
+		) TBL
+		ORDER BY SORT_ORDER DESC
+	]]>
+    </select>
+    
+    <!-- MS SQL -->
+   	<!-- 아래로 이동 -->
+    <select id="selectGoDown" parameterClass="java.util.Map" resultMap="resultGroup">
+	<![CDATA[	
+		SELECT /* [Group_SqlMap.xml] support.user.group.dao.Group.selectGoDown */
+			TOP 1 *
+		FROM 
+		(
+			SELECT 
+				GROUP_ID
+				,GROUP_NAME
+				,PARENT_GROUP_ID
+				,GROUP_TYPE_ID AS GROUP_TYPE_ID    
+				,'GROUP' AS GROUP_TYPE 
+				,CHILD_GROUP_COUNT
+				,SORT_ORDER
+				,GROUP_ENGLISH_NAME
+				,VIEW_OPTION
+				,FULL_PATH 
+			FROM 
+				IKEP4_EV_GROUP 
+			WHERE 
+				SORT_ORDER > #sortOrder#
+		) TBL
+		ORDER BY SORT_ORDER ASC
+	]]>
+    </select>
+	
+	<!-- MS SQL -->
+	<!-- 목록 가져오기 -->
+	<select id="selectAll" parameterClass="userSearchCondition" resultClass="Group">
+	<![CDATA[
+		SELECT /* [Group_SqlMap.xml] support.user.group.dao.Group.selectAll */
+		    A.GROUP_ID AS groupId,
+		    A.GROUP_NAME AS groupName,
+		    A.PARENT_GROUP_ID AS parentGroupId,
+		    B.GROUP_TYPE_NAME AS groupTypeName,
+		    A.GROUP_ENGLISH_NAME AS groupEnglishName, 
+		    A.CHILD_GROUP_COUNT AS childGroupCount,
+		    A.SORT_ORDER AS sortOrder, 
+		    A.PORTAL_ID AS portalId,
+		    A.REGISTER_NAME AS registerName, 
+		    A.UPDATER_ID AS updaterId, 
+		    A.UPDATER_NAME AS updaterName, 
+		    A.REGIST_DATE AS registDate,
+		    A.UPDATE_DATE AS updateDate,
+		    A.VIEW_OPTION AS viewOption,
+		    A.FULL_PATH AS fullPath
+		FROM 
+		    IKEP4_EV_GROUP A
+		    LEFT OUTER JOIN IKEP4_EV_GROUP_TYPE B
+		    ON A.GROUP_TYPE_ID = B.GROUP_TYPE_ID
+		WHERE
+		    1 = 1
+	]]>
+	<dynamic>
+		<isNotEmpty property="searchWord">
+			<isEqual property="searchColumn" compareValue="id">
+				AND	A.GROUP_ID LIKE '%' + #searchWord# + '%'
+			</isEqual>
+			<isEqual property="searchColumn" compareValue="title">
+				AND	A.GROUP_NAME LIKE '%' + #searchWord# + '%'
+			</isEqual>
+			<isEqual property="searchColumn" compareValue="typetitle">
+				AND	B.GROUP_TYPE_NAME LIKE '%' + #searchWord# + '%'
+			</isEqual>
+		</isNotEmpty>
+		<isNotEmpty property="groupTypeId">
+	    		AND B.GROUP_TYPE_ID = #groupTypeId#
+	    </isNotEmpty>
+	</dynamic>
+		ORDER BY A.SORT_ORDER ASC
+	</select>
+	
+	<!-- ANSI -->
+	<select id="checkId" parameterClass="java.lang.String" resultClass="java.lang.String">
+	<![CDATA[
+		SELECT /* [Group_SqlMap.xml] support.user.group.dao.Group.checkId */
+			COUNT(GROUP_ID)
+		FROM
+			IKEP4_EV_GROUP
+		WHERE
+			GROUP_ID = #groupId#	
+	]]>
+	</select>
+	
+	<!-- ANSI -->
+	<select id="selectParentId" resultClass="Group">
+	<![CDATA[
+		SELECT /* [Group_SqlMap.xml] support.user.group.dao.Group.selectParentId */
+			DISTINCT(GROUP_ID) AS groupId, 
+			GROUP_NAME AS groupName
+		FROM
+			IKEP4_EV_GROUP
+	]]>
+	</select>
+
+	<!-- ANSI -->
+	<select id="selectTypeId" resultClass="GroupType">
+	<![CDATA[
+		SELECT /* [Group_SqlMap.xml] support.user.group.dao.Group.selectTypeId */
+		    DISTINCT(GROUP_TYPE_ID) AS groupTypeId, 
+		    GROUP_TYPE_NAME AS groupTypeName
+		FROM
+		    IKEP4_EV_GROUP_TYPE
+	]]>
+	</select>
+	
+	<!-- ANSI -->
+	<update id="updateMove" parameterClass="Group">
+	<![CDATA[
+		UPDATE /* [Group_SqlMap.xml] support.user.group.dao.Group.updateMove */
+			IKEP4_EV_GROUP
+		SET    PARENT_GROUP_ID  =  #parentGroupId#,
+			   SORT_ORDER       =  #sortOrder#, 
+			   UPDATER_ID       =  #updaterId#,
+			   UPDATER_NAME     =  #updaterName#,
+			   UPDATE_DATE      =  CURRENT_TIMESTAMP  
+		WHERE
+			GROUP_ID = #groupId#
+	]]>
+	</update>
+	
+	<!-- MS SQL -->
+	<!-- 그룹 이동 후 이동된 그룹 다음의 그룹들의 sortorder를 업데이트 -->
+	<update id="updateSortOrder" parameterClass="java.lang.String">
+	<![CDATA[
+		UPDATE /* [Group_SqlMap.xml] support.user.group.dao.Group.updateSortOrder */
+			IKEP4_EV_GROUP
+		SET 
+			SORT_ORDER = CONVERT(NVARCHAR,  dbo.IKEP4_UFN_LPAD((CONVERT(INTEGER, SORT_ORDER) + 1), 13, '0'))
+		WHERE
+			CONVERT(INTEGER, SORT_ORDER) > CONVERT(INTEGER, #prevSortOrder#)
+	]]>
+	</update>
+	
+	<!-- ANSI -->
+	<!-- 그룹 이동 후 이동된 그룹의 정보를 업데이트 -->
+	<update id="updateGroupMove" parameterClass="Group">
+	<![CDATA[
+		UPDATE /* [Group_SqlMap.xml] support.user.group.dao.Group.updateGroupMove */
+			IKEP4_EV_GROUP
+    	SET 
+    		SORT_ORDER = #sortOrder#,
+    		PARENT_GROUP_ID = #parentGroupId#
+    	WHERE 
+    		GROUP_ID = #groupId#
+   	]]>
+	</update>
+	
+	<!-- MS SQL -->
+	<!-- 조직도에서 그룹 타입별 목록 가져오기 : 지정된 그룹에 대한 하위 그룹 -->
+	<select id="selectOrgGroupByGroupTypeId" parameterClass="Group" resultMap="resultGroup">
+		WITH TBL AS (
+			SELECT	GROUP_ID
+			FROM	IKEP4_EV_GROUP
+			WHERE	GROUP_ID = ( 	SELECT	TOP 1 A.GROUP_ID AS GROUP_ID 
+									FROM	IKEP4_EV_USER_GROUP A, IKEP4_EV_GROUP B
+									WHERE	A.USER_ID = #registerId#
+									AND PORTAL_ID = #portalId#
+									AND	A.GROUP_ID = B.GROUP_ID ) 
+		),
+		CTE AS (
+			SELECT	*, CONVERT(NVARCHAR, '/' + SORT_ORDER) PATH_ORDER
+			FROM	IKEP4_EV_GROUP
+			WHERE	GROUP_TYPE_ID = #groupTypeId#
+			<dynamic>
+				<isNotEmpty property="groupId" prepend="AND">
+					PARENT_GROUP_ID = #groupId#
+				</isNotEmpty>
+				<isEmpty property="groupId" prepend="AND">
+					GROUP_ID = ( SELECT GROUP_ID FROM TBL )      
+					UNION ALL
+					SELECT	TMP.*, CONVERT(NVARCHAR, CTE.PATH_ORDER + '/' + TMP.SORT_ORDER) PATH_ORDER
+					FROM	IKEP4_EV_GROUP TMP, CTE
+					WHERE 	TMP.GROUP_TYPE_ID = #groupTypeId#
+						AND	TMP.GROUP_ID = CTE.PARENT_GROUP_ID
+				</isEmpty>
+			</dynamic>
+		)
+		SELECT	GROUP_ID,
+				GROUP_NAME,
+				PARENT_GROUP_ID,
+				GROUP_TYPE_ID,
+				GROUP_TYPE,
+				CHILD_GROUP_COUNT,
+				SORT_ORDER,
+		       	GROUP_ENGLISH_NAME,
+		       	VIEW_OPTION,
+		       	FULL_PATH
+		FROM (
+				<dynamic>
+					<isEmpty property="groupId">
+						SELECT /* [Group_SqlMap.xml] support.user.group.dao.Group.selectOrgGroupByGroupTypeId */
+							   GROUP_ID,
+						       GROUP_NAME,
+						       PARENT_GROUP_ID,
+						       GROUP_TYPE_ID AS GROUP_TYPE_ID,
+						       'GROUP' AS GROUP_TYPE,
+						       ( CHILD_GROUP_COUNT + (SELECT COUNT(*)
+					              FROM IKEP4_EV_USER A,
+					                   IKEP4_EV_USER_GROUP B,
+					                   (SELECT PARENT_GROUP_ID, GROUP_ID
+					                      FROM IKEP4_EV_GROUP
+					                     WHERE GROUP_TYPE_ID = #groupTypeId#) C
+					             WHERE A.USER_ID = B.USER_ID
+					               AND B.GROUP_ID = C.GROUP_ID
+					               AND B.GROUP_ID = G.GROUP_ID))  AS CHILD_GROUP_COUNT,
+						       SORT_ORDER,
+						       GROUP_ENGLISH_NAME,
+						       VIEW_OPTION,
+						       FULL_PATH,
+						       CONVERT(NVARCHAR, '/' + SORT_ORDER) AS PATH_ORDER
+						  FROM IKEP4_EV_GROUP G
+						 WHERE GROUP_TYPE_ID = #groupTypeId#
+						 AND PORTAL_ID = #portalId#
+						 AND PARENT_GROUP_ID IS NULL
+						 AND VIEW_OPTION = 1
+						 UNION ALL
+					</isEmpty>
+				</dynamic>
+				SELECT 
+					   A.GROUP_ID AS GROUP_ID,
+				       A.GROUP_NAME AS GROUP_NAME,
+				       A.PARENT_GROUP_ID AS PARENT_GROUP_ID,
+				       A.GROUP_TYPE_ID AS GROUP_TYPE_ID,
+				       'GROUP' AS GROUP_TYPE,
+				       A.CHILD_GROUP_COUNT  AS CHILD_GROUP_COUNT,
+				       A.SORT_ORDER AS SORT_ORDER,
+				       A.GROUP_ENGLISH_NAME AS GROUP_ENGLISH_NAME,
+				       A.VIEW_OPTION AS VIEW_OPTION,
+				       A.FULL_PATH AS FULL_PATH,
+				       B.PATH_ORDER AS PATH_ORDER
+				  FROM IKEP4_EV_GROUP A,
+				       ( SELECT PARENT_GROUP_ID, GROUP_ID, PATH_ORDER FROM CTE ) B
+				 <dynamic>
+					<isNotEmpty property="groupId" prepend="WHERE">
+						A.GROUP_ID = B.GROUP_ID
+					</isNotEmpty>
+					<isEmpty property="groupId" prepend="WHERE">
+						A.PARENT_GROUP_ID = B.PARENT_GROUP_ID 
+					</isEmpty>
+				</dynamic>
+			) TBL ORDER BY PATH_ORDER, GROUP_NAME
+	</select>
+	
+	<!-- MS SQL -->
+	<!-- 조직도에서 그룹 목록 가져오기 : 지정된 그룹에 대한 하위 그룹 -->
+	<select id="selectOrgGroup" parameterClass="Group" resultMap="resultGroup">
+		WITH TBL AS (
+			SELECT	GROUP_ID
+			FROM	IKEP4_EV_GROUP
+			WHERE	PORTAL_ID = #portalId#
+				AND GROUP_ID = (SELECT	TOP 1 A.GROUP_ID AS GROUP_ID
+                                FROM	IKEP4_EV_USER_GROUP A, IKEP4_EV_GROUP B
+                                WHERE	A.USER_ID = #registerId#
+                                	AND B.PORTAL_ID = #portalId#
+	                                /* 아래 그룹타입ID는 부서타입 ID로 고정 */
+	                                AND B.GROUP_TYPE_ID = 'G0001'
+	                                AND A.REPRESENT_GROUP = 1
+	                                AND A.GROUP_ID = B.GROUP_ID)
+		),
+		TBL2 AS (
+			SELECT * 
+			FROM	IKEP4_EV_GROUP 
+   			WHERE	GROUP_TYPE_ID = 'G0001'
+   				AND PORTAL_ID = #portalId#
+		),
+		CTE AS (
+			SELECT	PARENT_GROUP_ID, GROUP_ID, VIEW_OPTION
+			FROM TBL2
+			WHERE GROUP_TYPE_ID = 'G0001'
+	        <dynamic>
+	         	<isNotEmpty property="groupId" prepend="AND">
+					PARENT_GROUP_ID = #groupId#  
+				</isNotEmpty>
+				<isEmpty property="groupId" prepend="AND">
+					GROUP_ID = (SELECT TOP 1 GROUP_ID FROM TBL)
+					UNION ALL
+					SELECT	TT.PARENT_GROUP_ID, TT.GROUP_ID, TT.VIEW_OPTION
+					FROM TBL2 TT, CTE
+					WHERE TT.GROUP_TYPE_ID = 'G0001'
+					<isNotEmpty property="groupId" prepend="AND">
+						TT.PARENT_GROUP_ID = #groupId#
+					</isNotEmpty>	
+	                	AND TT.GROUP_ID =  CTE.PARENT_GROUP_ID
+				</isEmpty>
+			</dynamic>
+		)
+		<dynamic>
+			<isEmpty property="groupId">
+				SELECT GROUP_ID,
+				       GROUP_NAME,
+				       PARENT_GROUP_ID,
+				       GROUP_TYPE_ID AS GROUP_TYPE_ID,
+				       'GROUP' AS GROUP_TYPE,
+				       ( CHILD_GROUP_COUNT + (SELECT COUNT(*)
+			              FROM IKEP4_EV_USER A,
+			                   IKEP4_EV_USER_GROUP B,
+			                   (SELECT PARENT_GROUP_ID, GROUP_ID
+			                      FROM IKEP4_EV_GROUP
+			                     WHERE GROUP_TYPE_ID = 'G0001') C
+			             WHERE A.USER_ID = B.USER_ID
+			               AND B.GROUP_ID = C.GROUP_ID
+			               AND B.GROUP_ID = G.GROUP_ID))  AS CHILD_GROUP_COUNT,
+				       SORT_ORDER,
+				       GROUP_ENGLISH_NAME,
+				       VIEW_OPTION,
+				       FULL_PATH
+				  FROM IKEP4_EV_GROUP G
+				 WHERE GROUP_TYPE_ID = 'G0001'
+				 AND PARENT_GROUP_ID IS NULL
+				 AND PORTAL_ID = #portalId#
+				 AND VIEW_OPTION = 1
+				 UNION ALL
+			</isEmpty>
+		</dynamic>
+				
+				SELECT /* [Group_SqlMap.xml] support.user.group.dao.Group.selectOrgGroup */
+					   A.GROUP_ID AS GROUP_ID,
+				       A.GROUP_NAME AS GROUP_NAME,
+				       A.PARENT_GROUP_ID AS PARENT_GROUP_ID,
+				       A.GROUP_TYPE_ID AS GROUP_TYPE_ID,
+				       'GROUP' AS GROUP_TYPE,
+				       ( A.CHILD_GROUP_COUNT + (SELECT COUNT(*)
+						  FROM IKEP4_EV_USER AA,
+						       IKEP4_EV_USER_GROUP BB,
+						       (SELECT PARENT_GROUP_ID, GROUP_ID
+						          FROM IKEP4_EV_GROUP
+						         WHERE GROUP_TYPE_ID = 'G0001') C
+						 WHERE AA.USER_ID = BB.USER_ID
+						 AND BB.GROUP_ID = C.GROUP_ID
+               			 AND BB.GROUP_ID = A.GROUP_ID ))  AS CHILD_GROUP_COUNT,
+				       A.SORT_ORDER AS SORT_ORDER,
+				       A.GROUP_ENGLISH_NAME AS GROUP_ENGLISH_NAME,
+				       A.VIEW_OPTION AS VIEW_OPTION,
+				       A.FULL_PATH AS FULL_PATH
+				  FROM IKEP4_EV_GROUP A,
+				       CTE B
+				 WHERE 1=1
+				 AND A.VIEW_OPTION = 1
+				 AND B.VIEW_OPTION = 1
+				 <dynamic>
+				 	<isNotEmpty property="portalId" prepend="AND">
+						A.PORTAL_ID = #portalId#
+					</isNotEmpty>
+					<isNotEmpty property="groupId" prepend="AND">
+						A.GROUP_ID = B.GROUP_ID
+					</isNotEmpty>
+					<isEmpty property="groupId" prepend="AND">
+						A.PARENT_GROUP_ID = B.GROUP_ID 
+					</isEmpty>
+				</dynamic>
+				 ORDER BY FULL_PATH, SORT_ORDER, GROUP_NAME /* PARENT_GROUP_ID, GROUP_NAME를 수정 2012.11.13 psh */
+	</select>
+	
+	<select id="selectOrgGroupSp" parameterClass="Group" resultMap="resultGroup">
+		WITH TBL AS (
+			SELECT	GROUP_ID
+			FROM	IKEP4_EV_GROUP
+			WHERE	PORTAL_ID = #portalId#
+				AND GROUP_ID = (SELECT	TOP 1 A.GROUP_ID AS GROUP_ID
+                                FROM	IKEP4_EV_USER_GROUP A, IKEP4_EV_GROUP B
+                                WHERE	A.USER_ID = #registerId#
+                                	AND B.PORTAL_ID = #portalId#
+	                                /* 아래 그룹타입ID는 부서타입 ID로 고정 */
+	                                AND B.GROUP_TYPE_ID = 'G0001'
+	                                AND A.REPRESENT_GROUP = 1
+	                                AND A.GROUP_ID = B.GROUP_ID)
+		),
+		TBL2 AS (
+			SELECT * 
+			FROM	IKEP4_EV_GROUP 
+   			WHERE	GROUP_TYPE_ID = 'G0001'
+   				AND PORTAL_ID = #portalId#
+		),
+		CTE AS (
+			SELECT	PARENT_GROUP_ID, GROUP_ID, VIEW_OPTION
+			FROM TBL2
+			WHERE GROUP_TYPE_ID = 'G0001'
+	        <dynamic>
+	         	<isNotEmpty property="groupId" prepend="AND">
+					GROUP_ID = #groupId#  
+				</isNotEmpty>
+				<isEmpty property="groupId" prepend="AND">
+					GROUP_ID = (SELECT TOP 1 GROUP_ID FROM TBL)
+					UNION ALL
+					SELECT	TT.PARENT_GROUP_ID, TT.GROUP_ID, TT.VIEW_OPTION
+					FROM TBL2 TT, CTE
+					WHERE TT.GROUP_TYPE_ID = 'G0001'
+					<isNotEmpty property="groupId" prepend="AND">
+						TT.PARENT_GROUP_ID = #groupId#
+					</isNotEmpty>	
+	                	AND TT.GROUP_ID =  CTE.PARENT_GROUP_ID
+				</isEmpty>
+			</dynamic>
+		)
+		<dynamic>
+			<isEmpty property="groupId">
+				SELECT GROUP_ID,
+				       GROUP_NAME,
+				       PARENT_GROUP_ID,
+				       GROUP_TYPE_ID AS GROUP_TYPE_ID,
+				       'GROUP' AS GROUP_TYPE,
+				       ( CHILD_GROUP_COUNT + (SELECT COUNT(*)
+			              FROM IKEP4_EV_USER A,
+			                   IKEP4_EV_USER_GROUP B,
+			                   (SELECT PARENT_GROUP_ID, GROUP_ID
+			                      FROM IKEP4_EV_GROUP
+			                     WHERE GROUP_TYPE_ID = 'G0001') C
+			             WHERE A.USER_ID = B.USER_ID
+			               AND B.GROUP_ID = C.GROUP_ID
+			               AND B.GROUP_ID = G.GROUP_ID))  AS CHILD_GROUP_COUNT,
+				       SORT_ORDER,
+				       GROUP_ENGLISH_NAME,
+				       VIEW_OPTION,
+				       FULL_PATH
+				  FROM IKEP4_EV_GROUP G
+				 WHERE GROUP_TYPE_ID = 'G0001'
+				 AND PARENT_GROUP_ID IS NULL
+				 AND PORTAL_ID = #portalId#
+				 AND VIEW_OPTION = 1
+				 UNION ALL
+			</isEmpty>
+		</dynamic>
+				
+				SELECT /* [Group_SqlMap.xml] support.user.group.dao.Group.selectOrgGroup */
+					   A.GROUP_ID AS GROUP_ID,
+				       A.GROUP_NAME AS GROUP_NAME,
+				       A.PARENT_GROUP_ID AS PARENT_GROUP_ID,
+				       A.GROUP_TYPE_ID AS GROUP_TYPE_ID,
+				       'GROUP' AS GROUP_TYPE,
+				       ( A.CHILD_GROUP_COUNT + (SELECT COUNT(*)
+						  FROM IKEP4_EV_USER AA,
+						       IKEP4_EV_USER_GROUP BB,
+						       (SELECT PARENT_GROUP_ID, GROUP_ID
+						          FROM IKEP4_EV_GROUP
+						         WHERE GROUP_TYPE_ID = 'G0001') C
+						 WHERE AA.USER_ID = BB.USER_ID
+						 AND BB.GROUP_ID = C.GROUP_ID
+               			 AND BB.GROUP_ID = A.GROUP_ID ))  AS CHILD_GROUP_COUNT,
+				       A.SORT_ORDER AS SORT_ORDER,
+				       A.GROUP_ENGLISH_NAME AS GROUP_ENGLISH_NAME,
+				       A.VIEW_OPTION AS VIEW_OPTION,
+				       A.FULL_PATH AS FULL_PATH
+				  FROM IKEP4_EV_GROUP A,
+				       CTE B
+				 WHERE 1=1
+				 AND A.VIEW_OPTION = 1
+				 AND B.VIEW_OPTION = 1
+				 <dynamic>
+				 	<isNotEmpty property="portalId" prepend="AND">
+						A.PORTAL_ID = #portalId#
+					</isNotEmpty>
+					<isNotEmpty property="groupId" prepend="AND">
+						A.GROUP_ID = B.GROUP_ID
+					</isNotEmpty>
+					<isEmpty property="groupId" prepend="AND">
+						A.PARENT_GROUP_ID = B.GROUP_ID 
+					</isEmpty>
+				</dynamic>
+				 ORDER BY FULL_PATH, SORT_ORDER, GROUP_NAME /* PARENT_GROUP_ID, GROUP_NAME를 수정 2012.11.13 psh */
+	</select>
+	
+	<!-- ANSI -->
+	<!-- Collaboration에서 그룹 목록 가져오기 : 지정된 그룹에 대한 하위 그룹 -->
+	<select id="selectCollaborationGroup" parameterClass="java.lang.String" resultMap="resultGroup">
+		SELECT /* [Group_SqlMap.xml] support.user.group.dao.Group.selectCollaborationGroup */
+			  GROUP_ID
+			, GROUP_NAME
+			, PARENT_GROUP_ID
+			, GROUP_TYPE_ID AS GROUP_TYPE_ID    
+			, 'GROUP' AS GROUP_TYPE 
+			, CHILD_GROUP_COUNT
+			, SORT_ORDER
+			, GROUP_ENGLISH_NAME
+			, VIEW_OPTION
+			, FULL_PATH
+		FROM IKEP4_EV_GROUP
+		WHERE GROUP_TYPE_ID = 'G0001'
+		<dynamic prepend="AND">
+			<isNotNull>
+				PARENT_GROUP_ID = #groupId#
+			</isNotNull>
+		</dynamic>
+		ORDER BY SORT_ORDER, GROUP_NAME
+	</select>
+	
+	<!-- ANSI -->
+	<!-- Sns에서 그룹 목록 가져오기 : 지정된 그룹에 대한 하위 그룹 -->
+	<select id="selectSnsGroup" parameterClass="java.lang.String" resultMap="resultGroup">
+		SELECT /* [Group_SqlMap.xml] support.user.group.dao.Group.selectSnsGroup */
+			  GROUP_ID
+			, GROUP_NAME
+			, PARENT_GROUP_ID
+			, GROUP_TYPE_ID AS GROUP_TYPE_ID    
+			, 'GROUP' AS GROUP_TYPE 
+			, CHILD_GROUP_COUNT
+			, SORT_ORDER
+			, GROUP_ENGLISH_NAME
+			, VIEW_OPTION
+			, FULL_PATH
+		FROM IKEP4_EV_GROUP
+		WHERE GROUP_TYPE_ID = 'G0001'
+		<dynamic prepend="AND">
+			<isNotNull>
+				PARENT_GROUP_ID = #groupId#
+			</isNotNull>
+		</dynamic>
+		ORDER BY SORT_ORDER, GROUP_NAME
+	</select>
+	
+	<!-- MS SQL -->
+	<!-- 조직 검식시 호출 : 그룹명 검색 -->
+	<select id="selectGroupSearch" parameterClass="java.util.Map" resultMap="resultGroup">
+			WITH CTE AS (
+				SELECT	*
+				FROM	IKEP4_EV_GROUP 
+				WHERE	GROUP_TYPE_ID = 'G0001'
+					<dynamic>
+						<isNotNull property="groupName" prepend="AND">
+							(UPPER(GROUP_NAME) LIKE '%' + UPPER(#groupName#) + '%' OR UPPER(GROUP_ENGLISH_NAME) LIKE '%' + UPPER(#groupName#) + '%')
+						</isNotNull>
+					</dynamic> 
+					AND VIEW_OPTION = '1'   					
+			)
+			SELECT /* [Group_SqlMap.xml] support.user.group.dao.Group.selectGroupSearch */ 
+				GROUP_ID   
+	          , GROUP_NAME   
+	          , PARENT_GROUP_ID   
+			  , GROUP_TYPE_ID AS GROUP_TYPE_ID    
+			  , 'GROUP' AS GROUP_TYPE   
+	          , CHILD_GROUP_COUNT   
+	          , SORT_ORDER  
+	          , GROUP_ENGLISH_NAME
+			  , VIEW_OPTION
+			  , FULL_PATH
+			FROM CTE
+			ORDER BY PARENT_GROUP_ID,GROUP_NAME
+	</select>
+	
+	<!-- MS SQL -->
+	<!-- 해당 사용자가 속한  최상위 그룹조회  -->
+	<select id="selectUserRootGroup" parameterClass="java.util.Map" resultMap="resultRootGroup">
+		<![CDATA[
+		/* [Group_SqlMap.xml] support.user.group.dao.Group.selectUserRootGroup */ 
+		WITH TBL AS (
+			SELECT	A.GROUP_ID 
+			FROM	IKEP4_EV_USER_GROUP A
+					INNER JOIN IKEP4_EV_GROUP B
+						ON A.GROUP_ID = B.GROUP_ID
+			WHERE	B.GROUP_TYPE_ID = 'G0001'
+				AND A.REPRESENT_GROUP = 1
+				AND A.USER_ID = #userId#
+		),
+		CTE AS (
+			SELECT	PARENT_GROUP_ID,
+					GROUP_ID AS ROOT_GROUP_ID,
+					GROUP_NAME AS ROOT_GROUP_NAME,
+					GROUP_ENGLISH_NAME AS ROOT_GROUP_ENGLISH_NAME
+			FROM	IKEP4_EV_GROUP
+			WHERE	GROUP_ID = (SELECT GROUP_ID FROM TBL)
+			UNION ALL 
+			SELECT	G.PARENT_GROUP_ID,	
+					G.GROUP_ID AS ROOT_GROUP_ID,
+					G.GROUP_NAME AS ROOT_GROUP_NAME,
+					G.GROUP_ENGLISH_NAME AS ROOT_GROUP_ENGLISH_NAME
+			FROM	IKEP4_EV_GROUP G, CTE
+			WHERE	CTE.PARENT_GROUP_ID = G.GROUP_ID
+		)
+		SELECT	ROOT_GROUP_ID,
+				ROOT_GROUP_NAME,
+				ROOT_GROUP_ENGLISH_NAME 
+		FROM	CTE 
+		WHERE	PARENT_GROUP_ID IS NULL
+        ]]>
+	</select>
+	
+	<!-- MS SQL -->
+	<!-- 해당 사용자가 속한  그룹 계층 조회 -->
+	<select id="selectUserGroupWithHierarchy" parameterClass="java.util.Map" resultMap="resultGroupWithHierarchy">
+	   
+		<![CDATA[
+		 /* [Group_SqlMap.xml] support.user.group.dao.selectUserGroupWithHierarchy*/
+		WITH TBL AS (
+			SELECT	A.GROUP_ID 
+			FROM	IKEP4_EV_USER_GROUP A
+					INNER JOIN IKEP4_EV_GROUP B
+						ON A.GROUP_ID = B.GROUP_ID
+			WHERE	B.GROUP_TYPE_ID = 'G0001'
+				AND A.REPRESENT_GROUP = 1
+				AND A.USER_ID = #userId#
+		),
+		CTE AS (
+			SELECT	1 LEVEL_NUM, G.*
+			FROM	IKEP4_EV_GROUP G
+			WHERE	G.GROUP_ID = (SELECT GROUP_ID FROM TBL)
+			UNION ALL 
+			SELECT	LEVEL_NUM + 1, G2.*
+			FROM	IKEP4_EV_GROUP G2, CTE
+			WHERE	CTE.PARENT_GROUP_ID = G2.GROUP_ID
+		)
+		SELECT  A.LEVEL_NUM,
+                A.GROUP_ID,
+                A.GROUP_NAME,
+                A.GROUP_ENGLISH_NAME,
+                A.PARENT_GROUP_ID,
+                A.LEADER_ID, 
+                A.LEADER_NAME,                
+                A.LEADER_ENGLISH_NAME,
+                (CASE A.JOB_DUTY_NAME WHEN '' THEN A.JOB_TITLE_NAME
+                       ELSE A.JOB_DUTY_NAME END ) AS LEADER_JOB_TITLE,
+                (CASE A.JOB_DUTY_ENGLISH_NAME WHEN '' THEN JOB_TITLE_ENGLISH_NAME
+                       ELSE A.JOB_DUTY_ENGLISH_NAME END ) AS LEADER_ENGLISH_JOB_TITLE,
+                A.VIEW_OPTION, 
+                A.FULL_PATH
+        FROM		
+		(SELECT	TBL1.LEVEL_NUM,
+				TBL1.GROUP_ID,
+				TBL1.GROUP_NAME,
+				TBL1.GROUP_ENGLISH_NAME,
+				TBL1.PARENT_GROUP_ID,
+				TBL1.LEADER_ID, 
+				TBL2.USER_NAME AS LEADER_NAME,
+				TBL2.USER_ENGLISH_NAME AS LEADER_ENGLISH_NAME,
+				TBL3.JOB_TITLE_NAME,
+				TBL3.JOB_TITLE_ENGLISH_NAME,
+				ISNULL(TBL4.JOB_DUTY_NAME, '') JOB_DUTY_NAME,
+                TBL4.JOB_DUTY_ENGLISH_NAME,
+				VIEW_OPTION, 
+				FULL_PATH
+		FROM	(	SELECT	* 
+					FROM	CTE 
+					]]>
+				    <dynamic prepend="WHERE">
+						<isEqual property="isRoot" compareValue="false">
+							PARENT_GROUP_ID IS NOT NULL
+						</isEqual>
+					</dynamic>
+					<![CDATA[
+				) TBL1 
+				LEFT OUTER JOIN IKEP4_EV_USER TBL2 
+					ON TBL1.LEADER_ID = TBL2.USER_ID
+				LEFT OUTER JOIN IKEP4_EV_JOB_TITLE TBL3 
+					ON TBL2.JOB_TITLE_CODE = TBL3.JOB_TITLE_CODE 
+			    LEFT OUTER JOIN IKEP4_EV_JOB_DUTY TBL4
+                    ON TBL2.JOB_DUTY_CODE = TBL4.JOB_DUTY_CODE 
+		) A ORDER BY LEVEL_NUM ASC
+		]]>
+	</select>
+	
+	<!-- MS SQL -->
+	<!-- 해당 사용자가 속한  겸직 그룹 계층 조회 -->
+	<select id="selectUserGroupOther" parameterClass="java.util.Map" resultMap="resultGroupWithHierarchy">
+		<![CDATA[
+		WITH TBL AS (
+			SELECT	A.GROUP_ID 
+			FROM	IKEP4_EV_USER_GROUP A
+					INNER JOIN IKEP4_EV_GROUP B
+						ON A.GROUP_ID = B.GROUP_ID
+			WHERE	B.GROUP_TYPE_ID = 'G0001'
+				AND A.REPRESENT_GROUP <> 1
+				AND A.USER_ID = #userId#
+		),
+		CTE AS (
+			SELECT	1 LEVEL_NUM, G.*, CONVERT(NVARCHAR, G.GROUP_ID) AS GROUP_ID_PATH
+			FROM	IKEP4_EV_GROUP G
+			WHERE	G.GROUP_ID IN (SELECT GROUP_ID FROM TBL)
+			UNION ALL 
+			SELECT	LEVEL_NUM + 1, G2.*, CONVERT(NVARCHAR, CTE.GROUP_ID_PATH + '|' + G2.GROUP_ID) AS GROUP_ID_PATH
+			FROM	IKEP4_EV_GROUP G2, CTE
+			WHERE	CTE.PARENT_GROUP_ID = G2.GROUP_ID
+		)
+		SELECT	TBL1.LEVEL_NUM,
+				TBL1.GROUP_ID,
+				TBL1.GROUP_NAME,
+				TBL1.GROUP_ENGLISH_NAME,
+				TBL1.PARENT_GROUP_ID,
+				TBL1.LEADER_ID, 
+				TBL2.USER_NAME AS LEADER_NAME,
+				TBL2.USER_ENGLISH_NAME AS LEADER_ENGLISH_NAME,
+				TBL3.JOB_TITLE_NAME AS LEADER_JOB_TITLE,
+				TBL3.JOB_TITLE_ENGLISH_NAME  AS LEADER_ENGLISH_JOB_TITLE,
+				VIEW_OPTION, 
+				FULL_PATH
+		FROM	(	SELECT	* 
+					FROM	CTE 
+					]]>
+				    <dynamic prepend="WHERE">
+						<isEqual property="isRoot" compareValue="false">
+							PARENT_GROUP_ID IS NOT NULL
+						</isEqual>
+					</dynamic>
+					<![CDATA[
+				) TBL1 
+				LEFT OUTER JOIN IKEP4_EV_USER TBL2 
+					ON TBL1.LEADER_ID = TBL2.USER_ID
+				LEFT OUTER JOIN IKEP4_EV_JOB_TITLE TBL3 
+					ON TBL2.JOB_TITLE_CODE = TBL3.JOB_TITLE_CODE 
+		ORDER BY CASE WHEN CHARINDEX('|', GROUP_ID_PATH) = 0 THEN GROUP_ID_PATH 
+					 ELSE SUBSTRING(GROUP_ID_PATH, 1, CHARINDEX('|', GROUP_ID_PATH) - 1) END, LEVEL_NUM DESC
+		]]>
+	</select>
+
+	<!-- ANSI -->
+	<!-- 해당 사용자가 속한  그룹 조회 -->
+	<select id="selectUserGroup" parameterClass="java.util.Map" resultMap="resultGroupSimple">
+		SELECT A.GROUP_ID, A.GROUP_NAME, A.GROUP_ENGLISH_NAME
+			  FROM    IKEP4_EV_GROUP A JOIN IKEP4_EV_USER_GROUP B
+			       ON A.GROUP_ID = B.GROUP_ID AND A.GROUP_TYPE_ID = 'G0001'
+			 	WHERE USER_ID = #userId#
+			 	ORDER BY SORT_ORDER
+	</select>
+	
+	<!-- MS SQL -->
+	<select id="selectAllBySearchCondition" parameterClass="userSearchCondition" resultClass="Group">    	
+    	SELECT /* [Group_SqlMap.xml] selectAllBySearchCondition */ 
+		       *
+		FROM ( 
+		     SELECT A.* FROM ( 
+		         /* START========================================= */
+		         SELECT Row_number() OVER (	<isNotEmpty property="sortColumn" >
+												<isEqual property="sortColumn" compareValue="GROUP_NAME">
+										    		<isEqual property="userLocaleCode" compareValue="ko">
+											    		<isEqual property="sortType" compareValue="ASC">
+											    			ORDER BY A.GROUP_NAME ASC
+											    		</isEqual>
+											    		<isEqual property="sortType" compareValue="DESC">
+											    			ORDER BY A.GROUP_NAME DESC
+											    		</isEqual>
+											    	</isEqual>
+											    	<isNotEqual property="userLocaleCode" compareValue="ko">
+											    		<isEqual property="sortType" compareValue="ASC">
+											    			ORDER BY A.GROUP_ENGLISH_NAME ASC
+											    		</isEqual>
+											    		<isEqual property="sortType" compareValue="DESC">
+											    			ORDER BY A.GROUP_ENGLISH_NAME DESC
+											    		</isEqual>
+											    	</isNotEqual>
+										    	</isEqual>
+										    	<isEqual property="sortColumn" compareValue="GROUP_TYPE_NAME">
+										    		<isEqual property="userLocaleCode" compareValue="ko">
+											    		<isEqual property="sortType" compareValue="ASC">
+											    			ORDER BY B.GROUP_TYPE_NAME ASC
+											    		</isEqual>
+											    		<isEqual property="sortType" compareValue="DESC">
+											    			ORDER BY B.GROUP_TYPE_NAME DESC
+											    		</isEqual>
+											    	</isEqual>
+											    	<isNotEqual property="userLocaleCode" compareValue="ko">
+											    		<isEqual property="sortType" compareValue="ASC">
+											    			ORDER BY B.GROUP_TYPE_ENGLISH_NAME ASC
+											    		</isEqual>
+											    		<isEqual property="sortType" compareValue="DESC">
+											    			ORDER BY B.GROUP_TYPE_ENGLISH_NAME DESC
+											    		</isEqual>
+											    	</isNotEqual>
+										    	</isEqual>
+										    </isNotEmpty>
+										    <isEmpty property="sortColumn" >
+										    	ORDER BY A.SORT_ORDER
+										    </isEmpty>	) AS RNUM,
+						A.GROUP_ID groupId,
+						A.full_path+A.GROUP_NAME groupName,
+						A.GROUP_ENGLISH_NAME groupEnglishName,
+						A.GROUP_TYPE_ID groupTypeId,
+						B.GROUP_TYPE_NAME groupTypeName,
+						B.GROUP_TYPE_ENGLISH_NAME groupTypeEnglishName,
+						A.PARENT_GROUP_ID parentGroupId,
+						A.SORT_ORDER sortOrder
+					FROM IKEP4_EV_GROUP A JOIN IKEP4_EV_GROUP_TYPE B
+						ON (A.GROUP_TYPE_ID = B.GROUP_TYPE_ID)
+					WHERE 1 = 1
+					<isNotEmpty property="searchWord">
+						<isEqual property="searchColumn" compareValue="id">
+							AND	A.GROUP_ID LIKE '%' + #searchWord# + '%'
+						</isEqual>
+						<isEqual property="searchColumn" compareValue="title">
+							AND	(UPPER(A.GROUP_NAME) LIKE '%' + UPPER(#searchWord#) + '%' OR UPPER(A.GROUP_ENGLISH_NAME) LIKE '%' + UPPER(#searchWord#) + '%')
+						</isEqual>
+						<isEqual property="searchColumn" compareValue="typetitle">
+								AND	(UPPER(B.GROUP_TYPE_NAME) LIKE '%' + UPPER(#searchWord#) + '%' OR UPPER(B.GROUP_TYPE_ENGLISH_NAME) LIKE '%' + UPPER(#searchWord#) + '%')
+						</isEqual>
+					</isNotEmpty>
+					<isNotEmpty property="portalId">
+							AND A.PORTAL_ID = #portalId#
+					</isNotEmpty>
+					<isNotEmpty property="groupTypeId">
+				    		AND B.GROUP_TYPE_ID = #groupTypeId#
+				    </isNotEmpty>
+				    AND A.group_name != ''
+				 /* ===========================================END  */ 
+		<![CDATA[  
+		
+		    ) A WHERE RNUM <=  #endRowIndex# /* 종료  */
+		) TBL WHERE RNUM >  #startRowIndex# /* 시작 */
+		]]> 
+	</select>
+	
+	<!-- MS SQL -->
+	<select id="countBySearchCondition" parameterClass="userSearchCondition" resultClass="int">  
+		SELECT /* [Group_SqlMap.xml] countBySearchCondition */ 
+	           COUNT(*)
+		FROM IKEP4_EV_GROUP A JOIN IKEP4_EV_GROUP_TYPE B
+			ON (A.GROUP_TYPE_ID = B.GROUP_TYPE_ID)
+		WHERE 1 = 1
+		<isNotEmpty property="searchWord">
+			<isEqual property="searchColumn" compareValue="id">
+				AND	A.GROUP_ID LIKE '%' + #searchWord# + '%'
+			</isEqual>
+			<isEqual property="searchColumn" compareValue="title">
+				AND	(UPPER(A.GROUP_NAME) LIKE '%' + UPPER(#searchWord#) + '%' OR UPPER(A.GROUP_ENGLISH_NAME) LIKE '%' + UPPER(#searchWord#) + '%')
+			</isEqual>
+			<isEqual property="searchColumn" compareValue="typetitle">
+				AND	(UPPER(B.GROUP_TYPE_NAME) LIKE '%' + UPPER(#searchWord#) + '%' OR UPPER(B.GROUP_TYPE_ENGLISH_NAME) LIKE '%' + UPPER(#searchWord#) + '%')
+			</isEqual>
+		</isNotEmpty>
+		<isNotEmpty property="portalId">
+				AND A.PORTAL_ID = #portalId#
+		</isNotEmpty>
+		<isNotEmpty property="groupTypeId">
+	    		AND B.GROUP_TYPE_ID = #groupTypeId#
+	    </isNotEmpty>
+	    AND A.group_name != ''
+	</select> 
+	
+	<!-- MS SQL -->
+	<select id="selectGroupFullPath" parameterClass="Map" resultClass="String" >
+		WITH CTE AS (
+			SELECT	G1.*, CONVERT(NVARCHAR(2000), ',' + G1.GROUP_ID) AS GP
+        	FROM	IKEP4_EV_GROUP G1
+        	WHERE	G1.GROUP_ID IN (SELECT A.GROUP_ID
+	                             FROM   IKEP4_EV_USER_GROUP A
+	                             WHERE  A.REPRESENT_GROUP = 1
+	                                    AND G1.PORTAL_ID = #portalId#
+	                                    AND A.USER_ID = #userId#)
+        	UNION ALL
+        	SELECT	G2.*, CONVERT(NVARCHAR(2000), ',' + G2.GROUP_ID + CTE.GP) AS GP
+        	FROM	IKEP4_EV_GROUP G2, CTE
+       	 	WHERE	CTE.PARENT_GROUP_ID = G2.GROUP_ID
+		)
+		SELECT GP FROM CTE WHERE PARENT_GROUP_ID IS NULL  
+	</select>
+	
+	<select id="selectGroupFullPathByGroup" parameterClass="Map" resultClass="String" >
+		WITH CTE AS (
+			SELECT	G1.*, CONVERT(NVARCHAR(2000), ',' + G1.GROUP_ID) AS GP
+        	FROM	IKEP4_EV_GROUP G1
+        	WHERE	PORTAL_ID = #portalId# AND group_id = #groupId#
+        	UNION ALL
+        	SELECT	G2.*, CONVERT(NVARCHAR(2000), ',' + G2.GROUP_ID + CTE.GP) AS GP
+        	FROM	IKEP4_EV_GROUP G2, CTE
+       	 	WHERE	CTE.PARENT_GROUP_ID = G2.GROUP_ID
+		)
+		SELECT GP FROM CTE WHERE PARENT_GROUP_ID IS NULL
+	</select>
+	
+	<!-- ANSI -->
+	<select id="getTargetGroup" parameterClass="string" resultClass="Group"> 
+		/* [Group_SqlMap.xml] getTargetGroup */ 
+	  SELECT EG.group_id as groupId,
+	  	EG.group_name as groupName,
+	  	EG.group_english_name as groupEnglishName,
+	  	EG.parent_group_id as parentGroupId
+	    FROM IKEP4_SV_TARGET ST
+	    	INNER JOIN IKEP4_EV_GROUP EG ON ST.target_id = EG.group_id
+	    WHERE ST.target_type = 1 
+	     AND ST.SURVEY_ID = #surveyId#
+	     union all
+		SELECT EG.addrgroup_id as groupId,
+	  	EG.addrgroup_name as groupName,
+	  	'' as groupEnglishName,
+	  	'' as parentGroupId
+	    FROM IKEP4_SV_TARGET ST
+	    	INNER JOIN IKEP4_AD_ADDRGROUP EG ON ST.target_id = EG.addrgroup_id
+	    WHERE ST.target_type = 1 
+	     AND ST.SURVEY_ID = #surveyId#
+		 AND ST.target_id = EG.addrgroup_id
+		 AND EG.GROUP_TYPE = 'O'
+	</select>
+	
+	<select id="getRootGroupCount" parameterClass="java.util.Map" resultClass="int">
+		/* [Group_SqlMap.xml] support.user.group.dao.Group.getRootGroupCount */
+		SELECT				COUNT(group_id)
+		FROM				IKEP4_EV_GROUP
+		WHERE				portal_id = #portalId#
+		AND					group_type_id = #groupTypeId#
+		AND					parent_group_id IS NULL
+	</select>
+	
+	<select id="selectLeaderForGroup" parameterClass="String" resultClass="String">
+		/* [Group_SqlMap.xml] support.user.group.dao.Group.selectLeaderForGroup */
+		SELECT LEADER_ID
+		FROM IKEP4_EV_GROUP
+		WHERE GROUP_ID = #groupId#
+	</select>
+	
+	<!-- 팀 리더 삭제 -->
+	<update id="updateEmptyLeader" parameterClass="Group">
+		/* [Group_SqlMap.xml] support.user.group.dao.Group.updateEmptyLeader */
+		UPDATE 
+			IKEP4_EV_GROUP
+		SET LEADER_ID = null,
+			UPDATER_ID = #updaterId#,
+			UPDATER_NAME = #updaterName#,
+			UPDATE_DATE = CURRENT_TIMESTAMP
+		WHERE
+			GROUP_ID = #groupId#
+	</update>
+	
+	<update id="updateSapGroup" parameterClass="GroupDetail"> 
+ 		<![CDATA[
+		 /* [User_SqlMap.xml] support.user.member.dao.Group.updateSapGroup */
+		DECLARE @chcker INTEGER;
+		
+		SELECT @chcker = COUNT(*) from tmp_EV_GROUP t WHERE t.group_id = #groupId#
+		if(@chcker = 0)
+			BEGIN
+				INSERT INTO 
+					tmp_EV_GROUP (
+					group_id,           
+					group_name,         
+					parent_group_id,    
+					group_english_name, 
+					leader_id, 
+					sort_order,
+					group_edate,
+					regist_date,
+					is_use
+				    )
+				VALUES (
+					#groupId#,
+					#groupName#, 
+					#parentGroupId#, 
+					#groupEnglishName#, 
+					#leaderId#, 
+					#sortOrder#,
+					#groupEdate#, 
+					CURRENT_TIMESTAMP,
+					#isUse#
+				    )		
+			END
+			ELSE
+			BEGIN
+				UPDATE
+				   tmp_EV_GROUP
+				SET
+					group_name = #groupName#,
+					parent_group_id = #parentGroupId#,
+					group_english_name = #groupEnglishName#,
+					leader_id = #leaderId#,
+					sort_order = #sortOrder#,
+					group_edate = #groupEdate#,
+					update_date = CURRENT_TIMESTAMP,
+					is_use = #isUse#
+				WHERE
+				    group_id = #groupId#		
+		END
+       ]]> 
+  	</update>
+  	
+  	<delete id="deleteTmpGroup" parameterClass="java.lang.String">
+	<![CDATA[
+		DELETE /* [Group_SqlMap.xml] support.user.group.dao.Group.deleteTmpGroup */
+		    TMP_EV_GROUP
+	]]>
+	</delete>
+  	
+  	<!-- 임시 테이블의 사용자를 실 사용자 테이블에 적용한다...  -->
+    <select id="updateEpGroupTabeFromTmpGroupTable" parameterClass="String" resultClass="String">
+    <![CDATA[
+        declare @seq numeric(38)
+        exec dbo.update_EpGroupTabe_From_TmpGroupTable_ikep4 @seq OUTPUT        
+        SELECT @seq
+    ]]>
+    </select>
+	
+</sqlMap>

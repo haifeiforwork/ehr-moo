@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="collpack.fourm.dao.FrRecommend" >
+
+<typeAlias alias = "FrRecommend" type="com.lgcns.ikep4.collpack.forum.model.FrRecommend"/>
+
+  <resultMap id="FrRecommendResult" class="FrRecommend" >
+    <result column="REGISTER_ID" property="registerId" jdbcType="VARCHAR" />
+    <result column="REGIST_DATE" property="registDate" jdbcType="DATE" />
+    <result column="LINEREPLY_ID" property="linereplyId" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <insert id="create" parameterClass="FrRecommend" >
+    INSERT INTO IKEP4_FR_RECOMMEND (				/* [FrRecommend_SqlMap.xml] FrRecommend.create */
+	    REGISTER_ID
+	    , REGIST_DATE
+	    , LINEREPLY_ID
+    ) VALUES (
+	    #registerId#
+	    , sysdate
+	    , #linereplyId#
+    )
+  </insert>
+  
+  <select id="exists" resultClass="int" parameterClass="FrRecommend" >
+    SELECT 					/* [FrRecommend_SqlMap.xml] FrRecommend.exists */
+   	 COUNT(LINEREPLY_ID)
+    FROM IKEP4_FR_RECOMMEND
+    WHERE REGISTER_ID = #registerId#
+   	 AND LINEREPLY_ID = #linereplyId#
+  </select>
+  
+  <select id="getCountByUserId" resultClass="int" parameterClass="String" >
+	    SELECT								/* [FrRecommend_SqlMap.xml] FrRecommend.getCountByUserId */	
+			COUNT(LINEREPLY_ID)	    
+	    FROM IKEP4_FR_RECOMMEND
+	    WHERE REGISTER_ID = #registerId#
+  </select>
+  
+  
+  <select id="listUserIdByLinereplyId" resultClass="String" parameterClass="String" >
+	     SELECT 						/* [FrRecommend_SqlMap.xml] FrRecommend.listUserIdByLinereplyId */
+	     	DISTINCT(REGISTER_ID)
+	    FROM IKEP4_FR_RECOMMEND
+	    WHERE  LINEREPLY_ID = #linereplyId#
+  </select>
+  
+   <select id="listUserIdByItemId" resultClass="String" parameterClass="String" >
+	     SELECT 						/* [FrRecommend_SqlMap.xml] FrRecommend.listUserIdByItemId */
+	     	DISTINCT(REGISTER_ID)
+	    FROM IKEP4_FR_RECOMMEND
+	    WHERE  LINEREPLY_ID IN (
+					    SELECT LINEREPLY_ID 				
+					    FROM IKEP4_FR_LINEREPLY
+					    WHERE 
+					    	ITEM_ID = #itemId#
+					   )
+		
+  </select>
+  
+    <select id="listUserIdByDiscussionId" parameterClass="String" >
+	 SELECT  						/* [FrRecommend_SqlMap.xml] FrRecommend.listUserIdByDiscussionId */
+	 DISTINCT(REGISTER_ID)
+    FROM IKEP4_FR_RECOMMEND
+    WHERE  LINEREPLY_ID IN (
+					    SELECT LINEREPLY_ID 				
+					    FROM IKEP4_FR_LINEREPLY
+					    WHERE 
+					    	ITEM_ID IN (
+								    	SELECT  ITEM_ID					
+									    FROM IKEP4_FR_ITEM		
+									    WHERE DISCUSSION_ID = #discussionId#
+									   )
+					   )
+   </select>
+  
+  
+   <select id="getCountLinereply" resultClass="int" parameterClass="String" >
+    SELECT 					/* [FrRecommend_SqlMap.xml] FrRecommend.getCountLinereply */
+   	 COUNT(LINEREPLY_ID)
+    FROM IKEP4_FR_RECOMMEND
+    WHERE LINEREPLY_ID = #linereplyId#
+  </select>
+  
+  <select id="list" resultMap="FrRecommendResult" parameterClass="String" >
+    SELECT				/* [FrRecommend_SqlMap.xml] FrRecommend.list */
+   	 REGISTER_ID
+   	 , REGIST_DATE
+   	 , LINEREPLY_ID
+    FROM IKEP4_FR_RECOMMEND
+    WHERE LINEREPLY_ID = #linereplyId#
+  </select>
+  
+  <delete id="remove" parameterClass="FrRecommend" >
+    DELETE 						/* [FrRecommend_SqlMap.xml] FrRecommend.remove */
+    FROM IKEP4_FR_RECOMMEND
+    WHERE  LINEREPLY_ID = #linereplyId#
+    	AND REGISTER_ID = #registerId#
+  </delete>
+  
+  <delete id="removeByLinereplyId" parameterClass="String" >
+    DELETE 						/* [FrRecommend_SqlMap.xml] FrRecommend.removeByLinereplyId */
+    FROM IKEP4_FR_RECOMMEND
+    WHERE  LINEREPLY_ID = #linereplyId#
+  </delete>
+  
+  <delete id="removeByItemId" parameterClass="String" >
+    DELETE 						/* [FrRecommend_SqlMap.xml] FrRecommend.removeByLinereplyId */
+    FROM IKEP4_FR_RECOMMEND
+    WHERE  LINEREPLY_ID IN (
+					    SELECT LINEREPLY_ID 				
+					    FROM IKEP4_FR_LINEREPLY
+					    WHERE 
+					    	ITEM_ID = #itemId#
+					   )
+  </delete>
+  
+   <delete id="removeByDiscussionId" parameterClass="String" >
+	  DELETE 						/* [FrRecommend_SqlMap.xml] FrRecommend.removeByDiscussionId */
+    FROM IKEP4_FR_RECOMMEND
+    WHERE  LINEREPLY_ID IN (
+					    SELECT LINEREPLY_ID 				
+					    FROM IKEP4_FR_LINEREPLY
+					    WHERE 
+					    	ITEM_ID IN (
+								    	SELECT  ITEM_ID					
+									    FROM IKEP4_FR_ITEM		
+									    WHERE DISCUSSION_ID = #discussionId#
+									   )
+					   )
+   </delete>
+  
+</sqlMap>

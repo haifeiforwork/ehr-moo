@@ -1,0 +1,676 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="support.user.security.acl.dao.ACLContent">
+	<typeAlias alias="aclResourcePermission" type="com.lgcns.ikep4.support.security.acl.model.ACLResourcePermission" />
+
+	<resultMap id="permissionResult" class="java.util.HashMap">
+		<result property="permissionId" column="PERMISSION_ID" javaType="java.lang.String" />
+		<result property="open" column="OPEN_OPTION" javaType="java.lang.Integer" />
+		<result property="owner" column="OWNER_ID" javaType="java.lang.String" />
+	</resultMap>
+	
+	<resultMap id="basePermissionResult" class="java.util.HashMap">
+		<result property="resourceId" column="RESOURCE_ID" javaType="java.lang.String" />
+		<result property="permissionId" column="PERMISSION_ID" javaType="java.lang.String" />
+		<result property="open" column="OPEN_OPTION" javaType="java.lang.Integer" />
+		<result property="permissionName" column="PERMISSION_NAME" javaType="java.lang.String" />
+		<result property="permissionDescription" column="DESCRIPTION" javaType="java.lang.String" />
+		<result property="userId" column="OWNER_ID" javaType="java.lang.String" />
+		<result property="userName" column="OWNER_NAME" javaType="java.lang.String" />
+	</resultMap>
+	
+	<resultMap id="groupPermissionResult" class="com.lgcns.ikep4.support.security.acl.model.ACLGroupPermission">
+		<result property="groupId" column="GROUP_ID" javaType="java.lang.String" />
+		<result property="hierarchyPermission" column="HIERARCHY_PERMISSION" javaType="java.lang.Integer" />
+	</resultMap>
+	
+	<resultMap id="resourceIdResult" class="java.lang.String">
+		<result property="resourceId" column="RESOURCE_ID" javaType="java.lang.String" nullValue="" />
+	</resultMap>
+
+	<select id="listResourcePermission" resultMap="permissionResult" parameterClass="java.util.Map">
+	/* [ACLContent_SqlMap.xml] support.user.security.acl.dao.ACLContent.listResourcePermission */
+	<![CDATA[
+		SELECT
+            C.PERMISSION_ID,
+            C.OPEN_OPTION,
+            B.OWNER_ID
+		FROM 
+			IKEP4_EV_CLASS A,
+			IKEP4_EV_CON_RESOURCE B,
+			IKEP4_EV_CON_PERMISSION C,
+			IKEP4_EV_OPERATION D
+		WHERE   
+			A.CLASS_ID = B.CLASS_ID
+			AND B.RESOURCE_ID = C.RESOURCE_ID
+			AND D.OPERATION_ID = C.OPERATION_ID
+			AND A.CLASS_NAME = #className#
+			AND D.OPERATION_NAME IN
+	]]>
+		<iterate property="operationNames" open="(" close=")" conjunction=",">
+			#operationNames[]#
+		</iterate>
+  	<![CDATA[
+			AND B.RESOURCE_NAME = #resourceName#
+   	]]>
+	</select>
+	
+	<select id="listPermissionId" resultClass="java.lang.String" parameterClass="java.lang.String">
+	/* [ACLContent_SqlMap.xml] support.user.security.acl.daoACLSystemACLSystemlistPermissionId */
+	<![CDATA[
+		SELECT
+            PERMISSION_ID
+		FROM 
+			IKEP4_EV_CON_PERMISSION
+		WHERE   
+			RESOURCE_ID = #resourceId#
+	]]>
+	</select>
+	
+	<select id="getResourceId" resultMap="resourceIdResult" parameterClass="java.util.Map">
+	/* [ACLContent_SqlMap.xml] support.user.security.acl.dao.ACLContent.getResourceId */
+	<![CDATA[
+		SELECT
+			B.RESOURCE_ID
+		FROM
+			IKEP4_EV_CLASS A,
+			IKEP4_EV_CON_RESOURCE B
+		WHERE
+			A.CLASS_ID = B.CLASS_ID
+			AND A.CLASS_NAME = #className#
+			AND B.RESOURCE_NAME = #resourceName#
+   	]]>
+	</select>
+
+	<select id="listAllPermission" resultClass="java.lang.String" parameterClass="java.util.Map">
+	/* [ACLContent_SqlMap.xml] support.user.security.acl.dao.ACLContent.listAllPermission */
+	<![CDATA[
+		SELECT
+		    PERMISSION_ID
+		FROM
+		    IKEP4_EV_USER_CON_PERMISSION
+		WHERE
+		    USER_ID = #userId#
+		    AND PERMISSION_ID IN
+	]]>
+		    <iterate property="permissionIds" open="(" close=")" conjunction=",">
+		    	#permissionIds[]#
+		    </iterate>
+	<![CDATA[
+		UNION ALL
+		SELECT
+		    C.PERMISSION_ID
+		FROM
+		    IKEP4_EV_USER_GROUP A,
+		    IKEP4_EV_GROUP_CON_PERMISSION C
+		WHERE
+		    A.USER_ID = #userId#
+		    AND A.GROUP_ID = C.GROUP_ID
+		    AND C.PERMISSION_ID IN
+	]]>
+		    <iterate property="permissionIds" open="(" close=")" conjunction=",">
+		    	#permissionIds[]#
+		    </iterate>
+	<![CDATA[
+		    AND C.HIERARCHY_PERMISSION = 0
+		    AND EXISTS 
+		    (
+		        SELECT 
+		            1 
+		        FROM 
+		            IKEP4_EV_GROUP_CON_PERMISSION 
+		        WHERE 
+		            PERMISSION_ID IN
+	]]>
+				    <iterate property="permissionIds" open="(" close=")" conjunction=",">
+				    	#permissionIds[]#
+				    </iterate> 
+	<![CDATA[		    
+		            AND HIERARCHY_PERMISSION = 0
+		    )
+		    UNION ALL 
+		SELECT
+		    tbl1.PERMISSION_ID
+		FROM
+		    IKEP4_EV_GROUP_CON_PERMISSION tbl1
+		WHERE 
+			tbl1.GROUP_ID IN
+		    (
+		    SELECT 
+		    	DISTINCT tbl2.GROUP_ID
+		    FROM
+		    	IKEP4_EV_USER_GROUP tbl2, 
+				(
+				SELECT
+					tbl4.GROUP_ID, 
+					fncGetChildGroupCodes(tbl4.GROUP_ID) AS groupIds 
+				FROM
+					IKEP4_EV_GROUP_CON_PERMISSION tbl4
+				WHERE
+					tbl4.hierarchy_permission = 1
+				AND
+					tbl4.PERMISSION_ID IN
+	]]>
+						<iterate property="permissionIds" open="(" close=")" conjunction=",">
+		    			#permissionIds[]#
+		    			</iterate> 
+	<![CDATA[		    			
+				) tbl3
+			WHERE
+				/*INSTR(tbl3.groupIds, CONCAT('[',tbl2.GROUP_ID,']') > 0)*/
+				FIND_IN_SET(tbl2.GROUP_ID, tbl3.groupIds) > 0
+		    )
+		UNION ALL
+		SELECT
+		    E.PERMISSION_ID
+		FROM
+		    IKEP4_EV_USER_GROUP A,
+		    IKEP4_EV_GROUP_ROLE C,
+		    IKEP4_EV_ROLE D,
+		    IKEP4_EV_ROLE_CON_PERMISSION E
+		WHERE
+		    A.GROUP_ID =  C.GROUP_ID
+		    AND C.ROLE_ID = D.ROLE_ID
+		    AND D.ROLE_ID = E.ROLE_ID
+		    AND A.USER_ID = #userId#
+		    AND E.PERMISSION_ID IN
+	]]>    
+		    <iterate property="permissionIds" open="(" close=")" conjunction=",">
+				#permissionIds[]#
+			</iterate>
+	<![CDATA[
+		UNION ALL
+		SELECT
+		    C.PERMISSION_ID
+		FROM
+		    IKEP4_EV_USER_ROLE A,
+		    IKEP4_EV_ROLE_CON_PERMISSION C
+		WHERE
+		    A.ROLE_ID = C.ROLE_ID
+		    AND A.USER_ID = #userId#
+		    AND C.PERMISSION_ID IN
+	]]>    
+		    <iterate property="permissionIds" open="(" close=")" conjunction=",">
+				#permissionIds[]#
+			</iterate>
+	<![CDATA[	
+		UNION ALL
+		SELECT
+		    A.PERMISSION_ID
+		FROM
+		    IKEP4_EV_JDUTY_CON_PERMISSION A,
+		    IKEP4_EV_USER B
+		WHERE
+		    A.JOB_DUTY_CODE = B.JOB_DUTY_CODE
+		    AND B.USER_ID = #userId#
+		    AND A.PERMISSION_ID IN
+	]]>    
+		    <iterate property="permissionIds" open="(" close=")" conjunction=",">
+				#permissionIds[]#
+			</iterate>
+	<![CDATA[	
+		UNION ALL
+		SELECT
+		    A.PERMISSION_ID
+		FROM
+		    IKEP4_EV_JCLASS_CON_PERMISSION A,
+		    IKEP4_EV_USER B
+		WHERE
+		    A.JOB_CLASS_CODE = B.JOB_CLASS_CODE
+		    AND B.USER_ID = #userId#
+		    AND A.PERMISSION_ID IN
+	]]>    
+		    <iterate property="permissionIds" open="(" close=")" conjunction=",">
+				#permissionIds[]#
+			</iterate>
+	</select>
+	
+	<select id="listExpPermission" resultClass="java.lang.String" parameterClass="java.util.Map">
+	/* [ACLContent_SqlMap.xml] support.user.security.acl.dao.ACLContent.listExpPermission */
+	<![CDATA[
+		SELECT
+		    PERMISSION_ID
+		FROM
+		    IKEP4_EV_USER_CON_EXP_PERM
+		WHERE
+		    USER_ID = #userId#
+		    AND PERMISSION_ID IN
+	]]>
+		    <iterate property="permissionIds" open="(" close=")" conjunction=",">
+		    	#permissionIds[]#
+		    </iterate>
+	</select>
+	
+	
+	<select id="getBasePermission" parameterClass="java.util.Map" resultMap="basePermissionResult">
+	/* [ACLContent_SqlMap.xml] support.user.security.acl.dao.ACLContent.getBasePermission */
+	<![CDATA[
+		SELECT
+			B.RESOURCE_ID,
+			D.PERMISSION_ID,
+			D.OPEN_OPTION,
+			D.PERMISSION_NAME,
+			D.DESCRIPTION,
+			B.OWNER_ID,
+			B.OWNER_NAME
+		FROM
+			IKEP4_EV_CLASS A,
+			IKEP4_EV_CON_RESOURCE B,
+			IKEP4_EV_OPERATION C,
+			IKEP4_EV_CON_PERMISSION D
+		WHERE
+			A.CLASS_ID = B.CLASS_ID
+			AND B.RESOURCE_ID = D.RESOURCE_ID
+			AND D.OPERATION_ID = C.OPERATION_ID
+			AND A.CLASS_NAME = #className#
+			AND B.RESOURCE_NAME = #resourceName#
+			AND C.OPERATION_NAME = #operationName#
+	]]>
+	</select>
+	
+	<select id="listGroupPermission" parameterClass="java.lang.String" resultMap="groupPermissionResult">
+	/* [ACLContent_SqlMap.xml] support.user.security.acl.dao.ACLContent.listGroupPermission */
+	<![CDATA[
+		SELECT
+			GROUP_ID,
+			HIERARCHY_PERMISSION
+		FROM
+			IKEP4_EV_GROUP_CON_PERMISSION
+		WHERE
+			PERMISSION_ID = #permissionId#
+	]]> 
+	</select>
+	
+	<select id="listRolePermission" parameterClass="java.lang.String" resultClass="java.lang.String">
+	/* [ACLContent_SqlMap.xml] support.user.security.acl.dao.ACLContent.listRolePermission */
+	<![CDATA[
+		SELECT
+			ROLE_ID
+		FROM
+			IKEP4_EV_ROLE_CON_PERMISSION
+		WHERE
+			PERMISSION_ID = #permissionId#
+	]]> 
+	</select>
+	
+	<select id="listUserPermission" parameterClass="java.lang.String" resultClass="java.lang.String">
+	/* [ACLContent_SqlMap.xml] support.user.security.acl.dao.ACLContent.listUserPermission */
+	<![CDATA[
+		SELECT
+			USER_ID
+		FROM
+			IKEP4_EV_USER_CON_PERMISSION
+		WHERE
+			PERMISSION_ID = #permissionId#
+	]]> 
+	</select>
+	
+	<select id="listJobClassPermission" parameterClass="java.lang.String" resultClass="java.lang.String">
+	/* [ACLContent_SqlMap.xml] support.user.security.acl.dao.ACLContent.listJobClassPermission */
+	<![CDATA[
+		SELECT
+			JOB_CLASS_CODE
+		FROM
+			IKEP4_EV_JCLASS_CON_PERMISSION
+		WHERE
+			PERMISSION_ID = #permissionId#
+	]]> 
+	</select>
+	
+	<select id="listJobDutyPermission" parameterClass="java.lang.String" resultClass="java.lang.String">
+	/* [ACLContent_SqlMap.xml] support.user.security.acl.dao.ACLContent.listJobDutyPermission */
+	<![CDATA[
+		SELECT
+			JOB_DUTY_CODE
+		FROM
+			IKEP4_EV_JDUTY_CON_PERMISSION
+		WHERE
+			PERMISSION_ID = #permissionId#
+	]]> 
+	</select>
+	
+	<select id="listExpUserPermission" parameterClass="java.lang.String" resultClass="java.lang.String">
+	/* [ACLContent_SqlMap.xml] support.user.security.acl.dao.ACLContent.listExpUserPermission */
+	<![CDATA[
+		SELECT
+			USER_ID
+		FROM
+			IKEP4_EV_USER_CON_EXP_PERM
+		WHERE
+			PERMISSION_ID = #permissionId#
+	]]> 
+	</select>
+	
+	
+	<insert id="createResource" parameterClass="java.util.Map">
+	/* [ACLContent_SqlMap.xml] support.user.security.acl.dao.ACLContent.createResource */
+	<![CDATA[
+		INSERT INTO IKEP4_EV_CON_RESOURCE
+		(
+			RESOURCE_ID, 
+			RESOURCE_NAME, 
+			DESCRIPTION, 
+			CLASS_ID, 
+			OPEN_OPTION, 
+			OWNER_ID, 
+			OWNER_NAME, 
+			REGISTER_ID, 
+			REGISTER_NAME,
+			UPDATER_ID,
+			UPDATER_NAME
+		)
+		VALUES
+		(
+			#resourceId#,
+			#aclResourcePermission.resourceName#,
+			#aclResourcePermission.resourceDescription#,
+			(SELECT CLASS_ID FROM IKEP4_EV_CLASS WHERE CLASS_NAME = #aclResourcePermission.className#),
+			#aclResourcePermission.open#,
+			#aclResourcePermission.userId#,
+			#aclResourcePermission.userName#,
+			#aclResourcePermission.userId#,
+			#aclResourcePermission.userName#,
+			#aclResourcePermission.userId#,
+			#aclResourcePermission.userName#
+		)
+	]]>
+	</insert>
+	
+	<insert id="createBasePermission" parameterClass="java.util.Map">
+	/* [ACLContent_SqlMap.xml] support.user.security.acl.dao.ACLContent.createBasePermission */
+	<![CDATA[
+		INSERT INTO IKEP4_EV_CON_PERMISSION
+		(
+			PERMISSION_ID,
+            RESOURCE_ID,
+            OPERATION_ID,
+            PERMISSION_NAME,
+            DESCRIPTION,
+            OPEN_OPTION,
+            REGISTER_ID,
+            REGISTER_NAME,
+			UPDATER_ID,
+			UPDATER_NAME
+		)
+		VALUES
+		(
+            #permissionId#,
+            #resourceId#,
+            (SELECT OPERATION_ID FROM IKEP4_EV_OPERATION WHERE OPERATION_NAME = #aclResourcePermission.operationName#),
+            #aclResourcePermission.permissionName#,
+            #aclResourcePermission.permissionDescription#,
+            #aclResourcePermission.open#,
+            #aclResourcePermission.userId#,
+            #aclResourcePermission.userName#,
+			#aclResourcePermission.userId#,
+			#aclResourcePermission.userName#
+		)
+	]]>
+	</insert>
+	
+	<insert id="createUserPermission" parameterClass="java.util.Map">
+	/* [ACLContent_SqlMap.xml] support.user.security.acl.dao.ACLContent.createUserPermission */
+	<![CDATA[
+		INSERT INTO IKEP4_EV_USER_CON_PERMISSION
+		(
+			USER_ID,
+            PERMISSION_ID,
+            REGISTER_ID,
+            REGISTER_NAME,
+            UPDATER_ID,
+            UPDATER_NAME
+		)
+		VALUES
+		(
+			#assignUserId#,
+			#permissionId#,
+			#aclResourcePermission.userId#,
+			#aclResourcePermission.userName#,
+			#aclResourcePermission.userId#,
+			#aclResourcePermission.userName#
+		)
+	]]>
+	</insert>
+	
+	<insert id="createGroupPermission" parameterClass="java.util.Map">
+	/* [ACLContent_SqlMap.xml] support.user.security.acl.dao.ACLContent.createGroupPermission */
+	<![CDATA[
+		INSERT INTO IKEP4_EV_GROUP_CON_PERMISSION
+		(
+			GROUP_ID,
+            PERMISSION_ID,
+            HIERARCHY_PERMISSION,
+            REGISTER_ID,
+            REGISTER_NAME,
+            UPDATER_ID,
+            UPDATER_NAME
+		)
+		VALUES
+		(
+			#groupId#,
+			#permissionId#,
+			#hierarchyPermission#,
+			#aclResourcePermission.userId#,
+			#aclResourcePermission.userName#,
+			#aclResourcePermission.userId#,
+			#aclResourcePermission.userName#
+		)
+	]]>
+	</insert>
+	
+	<insert id="createRolePermission" parameterClass="java.util.Map">
+	/* [ACLContent_SqlMap.xml] support.user.security.acl.dao.ACLContent.createRolePermission */
+	<![CDATA[
+		INSERT INTO IKEP4_EV_ROLE_CON_PERMISSION
+		(
+			ROLE_ID,
+            PERMISSION_ID,
+            REGISTER_ID,
+            REGISTER_NAME,
+            UPDATER_ID,
+            UPDATER_NAME
+		)
+		VALUES
+		(
+			#roleId#,
+			#permissionId#,
+			#aclResourcePermission.userId#,
+			#aclResourcePermission.userName#,
+			#aclResourcePermission.userId#,
+			#aclResourcePermission.userName#
+		)
+	]]>
+	</insert>
+	
+	<insert id="createJobClassPermission" parameterClass="java.util.Map">
+	/* [ACLContent_SqlMap.xml] support.user.security.acl.dao.ACLContent.createJobClassPermission */
+	<![CDATA[
+		INSERT INTO IKEP4_EV_JCLASS_CON_PERMISSION
+		(
+			JOB_CLASS_CODE,
+            PERMISSION_ID,
+            REGISTER_ID,
+            REGISTER_NAME,
+            UPDATER_ID,
+            UPDATER_NAME
+		)
+		VALUES
+		(
+			#jobClassCode#,
+			#permissionId#,
+			#aclResourcePermission.userId#,
+			#aclResourcePermission.userName#,
+			#aclResourcePermission.userId#,
+			#aclResourcePermission.userName#
+		)
+	]]>
+	</insert>
+	
+	<insert id="createJobDutyPermission" parameterClass="java.util.Map">
+	/* [ACLContent_SqlMap.xml] support.user.security.acl.dao.ACLContent.createJobDutyPermission */
+	<![CDATA[
+		INSERT INTO IKEP4_EV_JDUTY_CON_PERMISSION
+		(
+			JOB_DUTY_CODE,
+            PERMISSION_ID,
+            REGISTER_ID,
+            REGISTER_NAME,
+            UPDATER_ID,
+            UPDATER_NAME
+		)
+		VALUES
+		(
+			#jobDutyCode#,
+			#permissionId#,
+			#aclResourcePermission.userId#,
+			#aclResourcePermission.userName#,
+			#aclResourcePermission.userId#,
+			#aclResourcePermission.userName#
+		)
+	]]>
+	</insert>
+	
+	<insert id="createExpUserPermission" parameterClass="java.util.Map">
+	/* [ACLContent_SqlMap.xml] support.user.security.acl.dao.ACLContent.createExpUserPermission */
+	<![CDATA[
+		INSERT INTO IKEP4_EV_USER_CON_EXP_PERM
+		(
+			USER_ID,
+            PERMISSION_ID,
+            REGISTER_ID,
+            REGISTER_NAME,
+            REGIST_DATE,
+            UPDATER_ID,
+            UPDATER_NAME,
+            UPDATE_DATE
+		)
+		VALUES
+		(
+			#exceptUserId#,
+			#permissionId#,
+			#aclResourcePermission.userId#,
+			#aclResourcePermission.userName#,
+			NOW(),
+			#aclResourcePermission.userId#,
+			#aclResourcePermission.userName#,
+			NOW()
+		)
+	]]>
+	</insert>
+	
+	<delete id="removeResource" parameterClass="java.lang.String">
+	/* [ACLContent_SqlMap.xml] support.user.security.acl.dao.ACLContent.removeResource */
+	<![CDATA[
+		DELETE FROM 
+			IKEP4_EV_CON_RESOURCE
+		WHERE
+			RESOURCE_ID = #resourceId#
+	]]>
+	</delete>
+	
+	<delete id="removeBasePermission" parameterClass="java.util.List">
+	/* [ACLContent_SqlMap.xml] support.user.security.acl.dao.ACLContent.removeBasePermission */
+	<![CDATA[
+		DELETE FROM 
+			IKEP4_EV_CON_PERMISSION
+		WHERE
+			PERMISSION_ID 
+	]]>
+	<dynamic prepend="IN">
+		<iterate open="(" conjunction="," close=")">	
+			#[]#
+		</iterate>
+	</dynamic>
+	</delete>
+	
+	<delete id="removeGroupPermission" parameterClass="java.util.List">
+	/* [ACLContent_SqlMap.xml] support.user.security.acl.dao.ACLContent.removeGroupPermission */
+	<![CDATA[
+		DELETE FROM 
+			IKEP4_EV_GROUP_CON_PERMISSION
+		WHERE
+			PERMISSION_ID
+	]]>
+	<dynamic prepend="IN">
+		<iterate open="(" conjunction="," close=")">	
+			#[]#
+		</iterate>
+	</dynamic>
+	</delete>
+	
+	<delete id="removeRolePermission" parameterClass="java.util.List">
+	/* [ACLContent_SqlMap.xml] support.user.security.acl.dao.ACLContent.removeRolePermission */
+	<![CDATA[
+		DELETE FROM 
+			IKEP4_EV_ROLE_CON_PERMISSION
+		WHERE
+			PERMISSION_ID
+	]]>
+	<dynamic prepend="IN">
+		<iterate open="(" conjunction="," close=")">	
+			#[]#
+		</iterate>
+	</dynamic>
+	</delete>
+	
+	<delete id="removeUserPermission" parameterClass="java.util.List">
+	/* [ACLContent_SqlMap.xml] support.user.security.acl.dao.ACLContent.removeUserPermission */
+	<![CDATA[
+		DELETE FROM 
+			IKEP4_EV_USER_CON_PERMISSION
+		WHERE
+			PERMISSION_ID
+	]]>
+	<dynamic prepend="IN">
+		<iterate open="(" conjunction="," close=")">	
+			#[]#
+		</iterate>
+	</dynamic>
+	</delete>
+	
+	<delete id="removeJobClassPermission" parameterClass="java.util.List">
+	/* [ACLContent_SqlMap.xml] support.user.security.acl.dao.ACLContent.removeJobClassPermission */
+	<![CDATA[
+		DELETE FROM 
+			IKEP4_EV_JCLASS_CON_PERMISSION
+		WHERE
+			PERMISSION_ID
+	]]>
+	<dynamic prepend="IN">
+		<iterate open="(" conjunction="," close=")">	
+			#[]#
+		</iterate>
+	</dynamic>
+	</delete>
+	
+	<delete id="removeJobDutyPermission" parameterClass="java.util.List">
+	/* [ACLContent_SqlMap.xml] support.user.security.acl.dao.ACLContent.removeJobDutyPermission */
+	<![CDATA[
+		DELETE FROM 
+			IKEP4_EV_JDUTY_CON_PERMISSION
+		WHERE
+			PERMISSION_ID
+	]]>
+	<dynamic prepend="IN">
+		<iterate open="(" conjunction="," close=")">	
+			#[]#
+		</iterate>
+	</dynamic>
+	</delete>
+	
+	<delete id="removeExpUserPermission" parameterClass="java.util.List">
+	/* [ACLContent_SqlMap.xml] support.user.security.acl.dao.ACLContent.removeExpUserPermission */
+	<![CDATA[
+		DELETE FROM 
+			IKEP4_EV_USER_CON_EXP_PERM
+		WHERE
+			PERMISSION_ID
+	]]>
+	<dynamic prepend="IN">
+		<iterate open="(" conjunction="," close=")">	
+			#[]#
+		</iterate>
+	</dynamic>
+	</delete>
+	
+</sqlMap>

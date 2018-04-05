@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="portal.portlet.congratulations">
+	<typeAlias alias="Congratulations"			type="com.lgcns.ikep4.portal.portlet.model.Congratulations" />
+	
+  	<resultMap id="configResult" class="Congratulations">
+  		<result column="PORTLET_CONFIG_ID" 		property="portletConfigId"		columnIndex="1" />
+	    <result column="PROPERTY_NAME"      	property="propertyName"      	columnIndex="2" />
+	    <result column="PROPERTY_VALUE"			property="propertyValue"		columnIndex="3" />
+	    <result column="REGISTER_ID"        	property="registerId"       	columnIndex="4" />
+  	</resultMap>
+  	
+  	<sql id="sqlColumnList">
+	    PORTLET_CONFIG_ID,
+	    PROPERTY_NAME,
+	    PROPERTY_VALUE,
+		REGISTER_ID,
+		REGISTER_NAME,
+		REGIST_DATE,
+		UPDATER_ID,
+		UPDATER_NAME,
+		UPDATE_DATE
+  	</sql>
+  	
+  	<insert id="createUserConfig" parameterClass="Congratulations"> 
+		<![CDATA[
+		/* [Congratulations_SqlMap.xml] portal.portlet.congratulations.createUserConfig */
+		INSERT	INTO		IKEP4_PO_PORTLET_USER_CONFIG 
+							(
+		]]>
+							<include refid="portal.portlet.congratulations.sqlColumnList" />
+		<![CDATA[
+							)
+		VALUES 				( 
+							#portletConfigId#,
+							#propertyName#,
+							#propertyValue#,
+					    	#registerId#,
+					    	#registerName#,
+					    	SYSDATE,
+					    	#updaterId#,
+					    	#updaterName#,
+					    	SYSDATE
+					    	)
+		]]>
+	</insert>
+  	
+  	<select id="getPortletConfigByUserId" parameterClass="java.util.Map" resultMap="configResult">  
+  		<![CDATA[
+  		/* [Congratulations_SqlMap.xml] portal.portlet.congratulations.getPortletConfigByUserId */
+		SELECT				PORTLET_CONFIG_ID,
+							PROPERTY_NAME,
+							PROPERTY_VALUE,
+							REGISTER_ID
+		FROM				IKEP4_PO_PORTLET_USER_CONFIG
+		WHERE				PORTLET_CONFIG_ID = #portletConfigId#
+		AND					PROPERTY_NAME = #propertyName#
+		AND					UPDATER_ID = #userId#
+		]]>
+  	</select>
+  	<select id="list" parameterClass="java.util.Map" resultClass="Congratulations">
+  		/* [Congratulations_SqlMap.xml] portal.portlet.congratulations.list */
+      	SELECT				'BIRTHDAY'      			AS  type,
+			                USER_ID      				AS  userId,
+			                USER_NAME      				AS  userName,
+			                USER_ENGLISH_NAME			AS	userEnglishName,
+			                BIRTHDAY      				AS  birthday, 
+			                WEDDING_ANNIV    			AS  weddingAnniv,
+			                GROUP_NAME    				AS  groupName, 
+			                GROUP_ENGLISH_NAME			AS	groupEnglishName,
+			                JOB_POSITION_NAME			AS  jobPositionName,
+			                JOB_POSITION_ENGLISH_NAME	AS	jobPositionEnglishName
+      	FROM				(
+      						SELECT				A.USER_ID,
+								                A.USER_NAME,
+								                A.USER_ENGLISH_NAME,
+								                A.BIRTHDAY, 
+								                A.WEDDING_ANNIV,
+								                C.GROUP_NAME, 
+								                C.GROUP_ENGLISH_NAME,
+								                D.JOB_POSITION_NAME,
+								                D.JOB_POSITION_ENGLISH_NAME
+    						FROM        		IKEP4_EV_USER A
+						    INNER JOIN       	IKEP4_EV_USER_GROUP B
+						    ON           		A.USER_ID = B.USER_ID
+						    INNER JOIN       	IKEP4_EV_GROUP C 
+						    ON           		B.GROUP_ID = C.GROUP_ID
+						    LEFT OUTER JOIN    	IKEP4_EV_JOB_POSITION D 
+						    ON           		A.JOB_POSITION_CODE = D.JOB_POSITION_CODE
+						    <![CDATA[
+						    WHERE         		A.PORTAL_ID = #portalId#
+						    AND         		A.USER_STATUS IN ('H', 'C')
+      						AND         		SUBSTR(A.BIRTHDAY, 6, 10) >= #startDate#
+						    AND         		SUBSTR(A.BIRTHDAY, 6, 10) <= #endDate#
+						    AND         		C.GROUP_TYPE_ID = 'G0001'
+						    AND         		C.VIEW_OPTION = '1'
+						    AND         		B.GROUP_ID IN 
+						    					(
+												SELECT				/*+ INDEX(IKEP4_EV_GROUP IKEP4_EV_GROUP(GROUP_TYPE_ID, GROUP_ID, PARENT_GROUP_ID,  PORTAL_ID)) */	GROUP_ID
+									            FROM         		IKEP4_EV_GROUP
+									            WHERE         		PORTAL_ID = #portalId#
+									            AND         		GROUP_TYPE_ID = 'G0001'
+							]]>
+									            START WITH       	GROUP_ID IN (
+									            	SELECT	A.GROUP_ID 
+													FROM	IKEP4_EV_USER_GROUP A
+														INNER JOIN IKEP4_EV_GROUP B	ON A.GROUP_ID = B.GROUP_ID
+													WHERE	B.GROUP_TYPE_ID = 'G0001' AND A.USER_ID = #userId#
+									            )
+									            CONNECT BY       	PRIOR GROUP_ID = PARENT_GROUP_ID
+              									)
+      						ORDER BY      		SUBSTR(A.BIRTHDAY, 6, 10) ASC
+      						)
+      
+		UNION ALL
+		
+		SELECT				'WEDDING_ANNIV'     		AS  type,
+			                USER_ID      				AS  userId,
+			                USER_NAME      				AS  userName,
+			                USER_ENGLISH_NAME			AS	userEnglishName,
+			                BIRTHDAY      				AS  birthday, 
+			                WEDDING_ANNIV    			AS  weddingAnniv,
+			                GROUP_NAME    				AS  groupName, 
+			                GROUP_ENGLISH_NAME			AS	groupEnglishName,
+			                JOB_POSITION_NAME			AS  jobPositionName,
+			                JOB_POSITION_ENGLISH_NAME	AS	jobPositionEnglishName
+      	FROM				(
+      						SELECT				A.USER_ID,
+								                A.USER_NAME,
+								                A.USER_ENGLISH_NAME,
+								                A.BIRTHDAY, 
+								                A.WEDDING_ANNIV,
+								                C.GROUP_NAME, 
+								                C.GROUP_ENGLISH_NAME,
+								                D.JOB_POSITION_NAME,
+								                D.JOB_POSITION_ENGLISH_NAME
+    						FROM        		IKEP4_EV_USER A
+						    INNER JOIN       	IKEP4_EV_USER_GROUP B
+						    ON           		A.USER_ID = B.USER_ID
+						    INNER JOIN       	IKEP4_EV_GROUP C 
+						    ON           		B.GROUP_ID = C.GROUP_ID
+						    LEFT OUTER JOIN    	IKEP4_EV_JOB_POSITION D 
+						    ON           		A.JOB_POSITION_CODE = D.JOB_POSITION_CODE
+						    <![CDATA[
+						    WHERE         		A.PORTAL_ID = #portalId#
+						    AND         		A.USER_STATUS IN ('H', 'C')
+      						AND         		SUBSTR(A.WEDDING_ANNIV, 6, 10) >= #startDate#
+						    AND         		SUBSTR(A.WEDDING_ANNIV, 6, 10) <= #endDate#
+						    AND         		C.GROUP_TYPE_ID = 'G0001'
+						    AND         		C.VIEW_OPTION = '1'
+						    AND         		B.GROUP_ID IN 
+						    					(
+												SELECT				/*+ INDEX(IKEP4_EV_GROUP IKEP4_EV_GROUP(GROUP_TYPE_ID, GROUP_ID, PARENT_GROUP_ID,  PORTAL_ID)) */	GROUP_ID
+									            FROM         		IKEP4_EV_GROUP
+									            WHERE         		PORTAL_ID = #portalId#
+									            AND         		GROUP_TYPE_ID = 'G0001'
+							]]>
+									            START WITH       	GROUP_ID IN (
+									            	SELECT	A.GROUP_ID 
+													FROM	IKEP4_EV_USER_GROUP A
+														INNER JOIN IKEP4_EV_GROUP B	ON A.GROUP_ID = B.GROUP_ID
+													WHERE	B.GROUP_TYPE_ID = 'G0001' AND A.USER_ID = #userId#
+									            )
+									            CONNECT BY       	PRIOR GROUP_ID = PARENT_GROUP_ID
+              									)
+      						ORDER BY      		SUBSTR(A.WEDDING_ANNIV, 6, 10) ASC
+      						)
+  	</select>
+  	
+  	<update id="updateUserConfig" parameterClass="Congratulations"> 
+ 		<![CDATA[
+ 		/* [Congratulations_SqlMap.xml] portal.portlet.congratulations.updateUserConfig */
+    	UPDATE				IKEP4_PO_PORTLET_USER_CONFIG 
+    	SET					PROPERTY_VALUE = #propertyValue#,
+		    				UPDATER_ID = #updaterId#,
+		    				UPDATER_NAME = #updaterName#,
+		    				UPDATE_DATE = SYSDATE
+    	WHERE				PORTLET_CONFIG_ID = #portletConfigId#
+    	AND					PROPERTY_NAME = #propertyName#
+    	AND					REGISTER_ID = #registerId#
+    	]]>
+  	</update>
+  	  	
+</sqlMap>   

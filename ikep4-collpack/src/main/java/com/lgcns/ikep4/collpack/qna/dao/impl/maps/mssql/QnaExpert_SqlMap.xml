@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="collpack.qna.dao.QnaExpert" >
+  
+  <typeAlias alias = "QnaExpert" type="com.lgcns.ikep4.collpack.qna.model.QnaExpert"/>
+  
+  <resultMap id="QnaExpertResult" class="QnaExpert" >
+    <result column="EXPERT_ID" 			property="expertId"  />
+    <result column="QNA_ID" 			property="qnaId" />
+    <result column="REQUEST_CHANNEL" 	property="requestChannel" />
+    <result column="REGISTER_ID" 		property="registerId" />
+    <result column="REGISTER_NAME" 		property="registerName"  />
+    <result column="REGIST_DATE" 		property="registDate"  />
+    <result column="TEAM_NAME"  		property="teamName" />
+	<result column="PICTURE_ID"   		property="pictureId"/>
+	<result column="JOB_TITLE_NAME"  	property="jobTitleName" 	/>
+	<result column="USER_NAME"  		property="userName" 	/>
+	<result column="MOBILE"  			property="mobile" 	/>
+	<result column="MAIL"  				property="mail" 	/>
+	<result property="userEnglishName" 		column="USER_ENGLISH_NAME"/>
+	<result property="teamEnglishName" 		column="TEAM_ENGLISH_NAME"/>
+	<result property="jobTitleEnglishName" 	column="JOB_TITLE_ENGLISH_NAME"/>
+	<result property="picturePath" 			column="PICTURE_PATH"/>
+	<result property="profilePicturePath" 	column="PROFILE_PICTURE_PATH"/>
+  </resultMap>
+  
+  <!-- ANSI -->
+  <select id="select" resultMap="QnaExpertResult" parameterClass="QnaExpert" >
+    SELECT 						/* [QnaExpert_SqlMap.xml] qnaExpert.select */ 
+   		A.EXPERT_ID, 
+   		A.QNA_ID, 
+   		A.REGISTER_ID, 
+   		A.REGISTER_NAME, 
+   		A.REGIST_DATE,
+   		A.REQUEST_CHANNEL,
+        C.PICTURE_ID,
+        C.TEAM_NAME,
+     
+        C.USER_NAME,
+        C.MOBILE,
+        C.MAIL,
+        C.USER_ENGLISH_NAME,
+  		C.TEAM_ENGLISH_NAME,
+  		CASE WHEN C.JOB_DUTY_CODE = '' THEN D.JOB_TITLE_NAME
+                 WHEN C.JOB_DUTY_CODE IS NULL THEN D.JOB_TITLE_NAME
+                 ELSE E.JOB_DUTY_NAME
+                 END AS JOB_TITLE_NAME,
+        CASE WHEN C.JOB_DUTY_CODE = '' THEN D.JOB_TITLE_ENGLISH_NAME
+                 WHEN C.JOB_DUTY_CODE IS NULL THEN D.JOB_TITLE_ENGLISH_NAME
+                 ELSE E.JOB_DUTY_ENGLISH_NAME
+                 END AS JOB_TITLE_ENGLISH_NAME,
+        C.PICTURE_PATH,
+  		CASE WHEN C.PROFILE_PICTURE_PATH = '' THEN C.SAP_PROFILE_PICTURE_PATH
+                 WHEN C.PROFILE_PICTURE_PATH IS NULL THEN C.SAP_PROFILE_PICTURE_PATH
+                 ELSE C.PROFILE_PICTURE_PATH
+                 END AS PROFILE_PICTURE_PATH   
+    FROM   IKEP4_QA_EXPERT A
+	       inner join IKEP4_EV_USER C
+	         ON A.EXPERT_ID = C.USER_ID
+	       LEFT OUTER JOIN IKEP4_EV_JOB_TITLE D
+	         ON C.JOB_TITLE_CODE = D.JOB_TITLE_CODE
+	       LEFT OUTER JOIN IKEP4_EV_JOB_DUTY E
+             ON C.JOB_DUTY_CODE = E.JOB_DUTY_CODE
+	WHERE  A.EXPERT_ID = #expertId#
+	       AND A.QNA_ID = #qnaId# 
+  </select>
+  
+   <!-- ANSI -->
+   <select id="selectAll" resultMap="QnaExpertResult" parameterClass="String" >
+    SELECT 							/* [QnaExpert_SqlMap.xml] qnaExpert.selectAll */ 
+   		A.EXPERT_ID, 
+   		A.QNA_ID, 
+   		A.REGISTER_ID, 
+   		A.REGISTER_NAME, 
+   		A.REGIST_DATE,
+   		A.REQUEST_CHANNEL,
+        C.PICTURE_ID,
+        C.TEAM_NAME,       
+        C.USER_NAME,
+        C.MOBILE,
+        C.MAIL,
+        C.USER_ENGLISH_NAME,
+  		C.TEAM_ENGLISH_NAME,  		
+  		C.PICTURE_PATH,
+  		CASE WHEN C.JOB_DUTY_CODE = '' THEN D.JOB_TITLE_NAME
+                 WHEN C.JOB_DUTY_CODE IS NULL THEN D.JOB_TITLE_NAME
+                 ELSE E.JOB_DUTY_NAME
+                 END AS JOB_TITLE_NAME,
+        CASE WHEN C.JOB_DUTY_CODE = '' THEN D.JOB_TITLE_ENGLISH_NAME
+                 WHEN C.JOB_DUTY_CODE IS NULL THEN D.JOB_TITLE_ENGLISH_NAME
+                 ELSE E.JOB_DUTY_ENGLISH_NAME
+                 END AS JOB_TITLE_ENGLISH_NAME,
+        C.PICTURE_PATH,
+        CASE WHEN C.PROFILE_PICTURE_PATH = '' THEN C.SAP_PROFILE_PICTURE_PATH
+                 WHEN C.PROFILE_PICTURE_PATH IS NULL THEN C.SAP_PROFILE_PICTURE_PATH
+                 ELSE C.PROFILE_PICTURE_PATH
+                 END AS PROFILE_PICTURE_PATH   
+    FROM   IKEP4_QA_EXPERT A
+	       inner join IKEP4_EV_USER C
+	         ON A.EXPERT_ID = C.USER_ID
+	      LEFT OUTER JOIN IKEP4_EV_JOB_TITLE D
+             ON C.JOB_TITLE_CODE = D.JOB_TITLE_CODE
+           LEFT OUTER JOIN IKEP4_EV_JOB_DUTY E
+             ON C.JOB_DUTY_CODE = E.JOB_DUTY_CODE
+	WHERE  A.QNA_ID = #qnaId# 
+  </select>
+  
+   <!-- ANSI -->
+   <select id="count" parameterClass="String" resultClass="int" >
+    SELECT 					/* [QnaExpert_SqlMap.xml] qnaExpert.count */ 
+    	COUNT(*) 
+    FROM IKEP4_QA_EXPERT
+    WHERE QNA_ID = #qnaId#
+  </select>
+  
+  <!-- ANSI -->
+  <insert id="insert" parameterClass="QnaExpert" >
+    INSERT INTO IKEP4_QA_EXPERT (			/* [QnaExpert_SqlMap.xml] qnaExpert.insert */ 
+    		EXPERT_ID, 
+    		QNA_ID, 
+    		REQUEST_CHANNEL,
+    		REGISTER_ID, 
+      		REGISTER_NAME, 
+      		REGIST_DATE
+      ) VALUES (
+	      	#expertId#, 
+	      	#qnaId#, 
+	      	#requestChannel#,
+	      	#registerId#, 
+	      	#registerName#, 
+	      	CURRENT_TIMESTAMP
+      )
+  </insert>
+
+  <!-- ANSI -->
+   <delete id="delete" parameterClass="QnaExpert" >
+    DELETE 					/* [QnaExpert_SqlMap.xml] qnaExpert.delete */ 
+    FROM IKEP4_QA_EXPERT
+    WHERE EXPERT_ID = #expertId#
+      AND QNA_ID = #qnaId#
+  </delete>
+  
+  <!-- ANSI -->
+  <delete id="deleteQna" parameterClass="String" >
+    DELETE 					/* [QnaExpert_SqlMap.xml] qnaExpert.deleteQna */ 
+    FROM IKEP4_QA_EXPERT
+    WHERE QNA_ID = #qnaId#
+  </delete>
+  
+</sqlMap>

@@ -1,0 +1,609 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="support.tagging.dao.Tag">
+  
+  <typeAlias alias ="Tag" type="com.lgcns.ikep4.support.tagging.model.Tag"/>
+  
+  <resultMap class="Tag" id="TagResult">
+    <result column="TAG_ID"  			property="tagId" />
+    <result column="TAG_ITEM_ID" 		property="tagItemId" />
+    <result column="TAG_ITEM_TYPE" 		property="tagItemType" />
+    <result column="TAG_ITEM_SUB_TYPE" 	property="tagItemSubType" />
+    <result column="REGISTER_ID" 		property="registerId" />
+    <result column="REGISTER_NAME" 		property="registerName" />
+    <result column="REGIST_DATE" 		property="registDate" />
+    <result column="TAG_NAME" 			property="tagName" />
+    <result column="TAG_ITEM_NAME" 		property="tagItemName" />
+    <result column="TAG_ITEM_URL" 		property="tagItemUrl" />
+    <result column="TAG_ITEM_CONTENTS"  property="tagItemContents" />
+  </resultMap>
+  
+  <resultMap class="Tag" id="TagResultStepMap" >
+   	<result column="TAG_ID"  			property="tagId" />
+   	<result column="TAG_NAME" 			property="tagName" />
+  	<result column="DISPLAY_STEP" 		property="displayStep" />
+  	<result column="TAG_FREQUENCY" 		property="tagFrequency" />
+  </resultMap>
+  
+  <resultMap class="Tag" id="TeamResultMap" >
+  	<result column="TEAM_TYPE_ID" 		property="teamTypeId" />
+  	<result column="TEAM_TYPE_NAME" 	property="teamTypeName" />
+  </resultMap>
+  
+  
+  <resultMap class="Tag" id="TagItemCountResultMap" >
+  	<result column="COUNT" 		property="count" />
+  	<result column="TAG_ID" 	property="tagId" />
+  	<result column="TAG_NAME" 	property="tagName" />
+  </resultMap>
+  
+   <resultMap class="Tag" id="TagItemAsUserResultMap" >
+  	<result column="TAG_ITEM_ID" 		property="tagItemId" />
+  	<result column="TEAM_NAME" 			property="teamName" />
+  	<result column="USER_NAME" 			property="userName" />
+  	<result column="MAIL" 				property="mail" />
+  	<result column="MOBILE" 			property="mobile" />
+  	<result column="JOB_DUTY_NAME" 		property="jobDutyName" />
+  	<result column="TAG_ITEM_NAME" 		property="tagItemName" />
+  	<result column="TAG_ITEM_URL" 		property="tagItemUrl" />
+  	<result column="TAG_ITEM_CONTENTS" 	property="tagItemContents" />
+  </resultMap>
+  
+  
+   <resultMap class="Tag" id="TagUserInfoResultMap" extends="TagResult">
+	  	<result column="TEAM_NAME" 				property="teamName" />
+		<result column="JOB_TITLE_NAME" 			property="jobTitleName" />
+		<result column="USER_ENGLISH_NAME" 		property="userEnglishName" 		/>
+		<result column="TEAM_ENGLISH_NAME" 		property="teamEnglishName" 		/>
+		<result column="JOB_TITLE_ENGLISH_NAME" property="jobTitleEnglishName" 	/>
+		<result column="PICTURE_PATH" property="picturePath" />
+		<result column="PROFILE_PICTURE_PATH"  property="profilePicturePath" />
+		<result column="DISPLAY_NAME"  property="tagItemTypeDisplayName" />
+   </resultMap>
+  
+  <select id="listCloud" parameterClass="Tag" resultMap="TagResultStepMap">
+	 /* [Tag_SqlMap.xml] Tag.listCloud */
+    SELECT 
+    	TAG_ID
+    	,TAG_NAME
+    	,(select IFNULL(MAX(DISPLAY_STEP),0)+1 from IKEP4_TG_CONFIG where TAG_FREQUENCY &lt;= FREQUENCY 
+    		<isNotEmpty property="portalId" prepend="AND">
+    			PORTAL_ID =  #portalId#
+    	 	</isNotEmpty>
+    	) DISPLAY_STEP
+    	,FREQUENCY TAG_FREQUENCY
+    FROM (
+		 	SELECT  /*+ index ( B IDX_TG_DICTIONARY_PK ) */ 
+                       A.TAG_ID
+			    	,B.TAG_NAME
+                      	,A.FREQUENCY
+                FROM     (
+                            SELECT   /*+ USE_HASH (C F) */ 
+                            		C.TAG_ID
+                            		,COUNT(C.TAG_ID) FREQUENCY
+                            		,MAX(C.REGIST_DATE) REGIST_DATE
+                               
+                            FROM IKEP4_TG_LINK C, IKEP4_EV_USER F
+                             WHERE 
+                            	C.REGISTER_ID = F.USER_ID
+                             <isNotEmpty prepend="AND" property="registerId" >
+					    		C.REGISTER_ID = #registerId#
+					    	 </isNotEmpty>
+					    	 <isNotEmpty prepend="AND" property="userIdList" >
+						    	 <iterate open="(" close=")"  property="userIdList" conjunction="," prepend="C.REGISTER_ID IN">
+						           #userIdList[]#
+						          </iterate>
+					    	 </isNotEmpty>
+					    	 <isEmpty property="tagItemTypes">
+						    	 <isNotEmpty prepend="AND" property="tagItemType" >
+						    		C.TAG_ITEM_TYPE = #tagItemType#
+						    	 </isNotEmpty>
+					    	 </isEmpty>
+					    	 <isNotEmpty prepend="AND" property="tagItemTypes" >
+						    	 <iterate open="(" close=")"  property="tagItemTypes" conjunction="," prepend="C.TAG_ITEM_TYPE IN">
+						           #tagItemTypes[]#
+						          </iterate>
+					    	 </isNotEmpty>
+					    	 <isNotEmpty prepend="AND" property="tagItemSubType">
+					    		C.TAG_ITEM_SUB_TYPE =  #tagItemSubType#
+					    	 </isNotEmpty>
+					    	 <isNotEmpty prepend="AND" property="limitDate">
+					    	 	<isNotEqual property="limitDate" compareValue="1">
+					    	 		C.REGIST_DATE &gt; date_sub(NOW(), interval #limitDate# day)
+					    	 	</isNotEqual>
+					    	 	<isEqual property="limitDate" compareValue="1">
+					    	 		DATE_FORMAT(C.REGIST_DATE, '%Y-%m-%d') = DATE_FORMAT(#timeZoneDate#, '%Y-%m-%d')
+					    	 	</isEqual>
+					    	 </isNotEmpty>
+					    	 <isNotEmpty property="portalId" prepend="AND">
+				    			C.PORTAL_ID =  #portalId#
+				    	 	</isNotEmpty>
+				    	 	<isNotEmpty prepend="AND" property="tagItemIdList" >
+						    	 <iterate open="(" close=")"  property="tagItemIdList" conjunction="," prepend="C.TAG_ITEM_ID IN">
+						           #tagItemIdList[]#
+						          </iterate>
+					    	 </isNotEmpty>
+					    	 <isNotEmpty prepend="AND" property="isSubType">
+					    		C.TAG_ITEM_SUB_TYPE IS NOT NULL
+					    	 </isNotEmpty>
+					    	 <isNotEmpty prepend="AND" property="isNotSubType">
+					    		C.TAG_ITEM_SUB_TYPE IS NULL
+					    	 </isNotEmpty>
+						 
+                			GROUP BY C.TAG_ID
+                          ) A, IKEP4_TG_DICTIONARY B
+                WHERE    A.TAG_ID        = B.TAG_ID
+    	 	<isNotEmpty property="tagName" prepend="AND">
+    			B.TAG_NAME LIKE CONCAT('%', #tagName#, '%')
+    	 	</isNotEmpty>
+               
+             <dynamic prepend="ORDER BY">
+             	 
+			 <isEmpty property="tagOrder" >
+			 	A.REGIST_DATE DESC
+			 </isEmpty>
+			 <isEqual property="tagOrder" compareValue="date">
+			 	A.REGIST_DATE DESC
+			 </isEqual>
+			 <isEqual property="tagOrder" compareValue="frequency">
+			 	A.FREQUENCY DESC, A.REGIST_DATE DESC
+			 </isEqual>
+			 <isEqual property="tagOrder" compareValue="tagName">
+			 	B.TAG_NAME ASC
+			 </isEqual>
+		 </dynamic>
+	) TBL
+    LIMIT #startRowIndex#, #pagePer#
+  </select>
+  
+  
+   <select id="selectCount" parameterClass="Tag" resultClass="int">
+		 	SELECT 					/* [Tag_SqlMap.xml] Tag.selectCount */
+                       COUNT(A.TAG_ID)
+                FROM     IKEP4_TG_DICTIONARY A
+                         ,(
+                            SELECT B.TAG_ID
+                             FROM IKEP4_TG_LINK B, IKEP4_EV_USER F
+                             WHERE 
+                             	B.REGISTER_ID = F.USER_ID
+	                              <isNotEmpty prepend="AND" property="registerId" >
+						    		B.REGISTER_ID = #registerId#
+						    	 </isNotEmpty>
+						    	 <isEmpty property="tagItemTypes">
+							    	 <isNotEmpty prepend="AND" property="tagItemType" >
+							    		B.TAG_ITEM_TYPE = #tagItemType#
+							    	 </isNotEmpty>
+						    	 </isEmpty>
+						    	 <isNotEmpty prepend="AND" property="tagItemTypes" >
+							    	 <iterate open="(" close=")"  property="tagItemTypes" conjunction="," prepend="B.TAG_ITEM_TYPE IN">
+							           #tagItemTypes[]#
+							          </iterate>
+						    	 </isNotEmpty>
+						    	 <isNotEmpty prepend="AND" property="tagItemSubType">
+						    		B.TAG_ITEM_SUB_TYPE =  #tagItemSubType#
+						    	 </isNotEmpty>
+						    	 <isNotEmpty prepend="AND" property="userIdList" >
+							    	 <iterate open="(" close=")"  property="userIdList" conjunction="," prepend="B.REGISTER_ID IN">
+							           #userIdList[]#
+							          </iterate>
+						    	 </isNotEmpty>
+						    	 <isNotEmpty prepend="AND" property="limitDate">
+						    		 B.REGIST_DATE &gt; date_sub(NOW(), interval #limitDate# day)
+						    	 </isNotEmpty>
+						    	 <isNotEmpty property="portalId" prepend="AND">
+					    			B.PORTAL_ID =  #portalId#
+					    	 	</isNotEmpty>
+					    	 	<isNotEmpty prepend="AND" property="tagItemIdList" >
+							    	 <iterate open="(" close=")"  property="tagItemIdList" conjunction="," prepend="B.TAG_ITEM_ID IN">
+							           #tagItemIdList[]#
+							          </iterate>
+						    	 </isNotEmpty>
+						    	  <isNotEmpty prepend="AND" property="isSubType">
+						    		B.TAG_ITEM_SUB_TYPE IS NOT NULL
+						    	 </isNotEmpty>
+						    	 <isNotEmpty prepend="AND" property="isNotSubType">
+						    		B.TAG_ITEM_SUB_TYPE IS NULL
+						    	 </isNotEmpty>
+							 GROUP BY B.TAG_ID
+                          ) D
+                WHERE    A.TAG_ID        = D.TAG_ID
+	    	 	<isNotEmpty property="tagName" prepend="AND">
+	    			A.TAG_NAME LIKE CONCAT('%', #tagName#, '%')
+	    	 	</isNotEmpty>
+	 
+  </select>
+  
+  
+  
+  
+   <select id="listSearch" parameterClass="Tag" resultMap="TagUserInfoResultMap">
+		/* [Tag_SqlMap.xml] Tag.listSearch */
+	 	SELECT 
+                 A.TAG_ID
+		    	,A.TAG_ITEM_ID
+		    	,C.TAG_ITEM_TYPE
+		    	,C.TAG_ITEM_SUB_TYPE
+		    	,C.REGISTER_ID
+		    	,C.REGISTER_NAME
+		    	,C.REGIST_DATE
+		    	,A.TAG_NAME
+		    	,C.TAG_ITEM_NAME
+		    	,C.TAG_ITEM_URL
+		    	,C.TAG_ITEM_CONTENTS
+		    	,F.TEAM_NAME
+				,G.JOB_TITLE_NAME
+				,F.USER_ENGLISH_NAME
+			 	,F.TEAM_ENGLISH_NAME
+			 	,G.JOB_TITLE_ENGLISH_NAME
+				,F.PICTURE_PATH
+				,F.PROFILE_PICTURE_PATH
+				,H.DISPLAY_NAME
+               FROM    
+   			 	(SELECT  MAX(G.TAG_ID) TAG_ID, MAX(H.TAG_NAME) TAG_NAME, G.TAG_ITEM_ID, G.TAG_ITEM_TYPE ,COUNT(G.TAG_ID) FREQUENCY
+                          FROM IKEP4_TG_LINK G, IKEP4_TG_DICTIONARY H 
+                          WHERE G.TAG_ID = H.TAG_ID 
+                          <isNotEmpty property="tagName" prepend="AND">
+                          	LOWER(H.TAG_NAME) = LOWER(#tagName#) 
+                          </isNotEmpty>
+                          <isNotNull property="tagIdList" prepend="AND">
+                          	<iterate open="(" close=")"  property="tagIdList" conjunction="," prepend="G.TAG_ID IN" >
+		           			#tagIdList[]#
+		          		</iterate>
+                          </isNotNull>
+                          <isNotEmpty property="tagId" prepend="AND">
+		    			 G.TAG_ID =  #tagId#
+		    	 	</isNotEmpty>
+		    	 	<isEmpty property="tagItemTypes">
+				    	 <isNotEmpty prepend="AND" property="tagItemType" >
+				    		 G.TAG_ITEM_TYPE = #tagItemType#
+				    	 </isNotEmpty>
+			    	 </isEmpty>
+			    	 <isNotNull prepend="AND" property="tagItemTypes" >
+				    	 <iterate open="(" close=")"  property="tagItemTypes" conjunction="," prepend="G.TAG_ITEM_TYPE IN">
+				           #tagItemTypes[]#
+				          </iterate>
+			    	 </isNotNull>
+			    	 <isNotEmpty prepend="AND" property="tagItemSubType">
+			    		G.TAG_ITEM_SUB_TYPE =  #tagItemSubType#
+			    	 </isNotEmpty>
+			    	 <isNotEmpty property="isBbs" prepend="AND">
+			    	 	  G.TAG_ITEM_TYPE NOT IN ('PE','PI')
+		    	 	</isNotEmpty>
+		    	 	 <isNotEmpty prepend="AND" property="isSubType">
+			    		 G.TAG_ITEM_SUB_TYPE IS NOT NULL
+			    	 </isNotEmpty>
+			    	 <isNotEmpty prepend="AND" property="isNotSubType">
+			    		 G.TAG_ITEM_SUB_TYPE IS NULL
+			    	 </isNotEmpty>
+                          GROUP BY  G.TAG_ITEM_ID, G.TAG_ITEM_TYPE) A 
+               			INNER JOIN IKEP4_TG_ITEM C ON A.TAG_ITEM_ID   = C.TAG_ITEM_ID AND  A.TAG_ITEM_TYPE = C.TAG_ITEM_TYPE
+               			INNER JOIN IKEP4_EV_USER F ON C.REGISTER_ID = F.USER_ID
+               			INNER JOIN IKEP4_EV_JOB_TITLE G ON F.JOB_TITLE_CODE = G.JOB_TITLE_CODE
+               			LEFT OUTER JOIN IKEP4_EV_ITEM_TYPE H ON C.TAG_ITEM_TYPE = H.ITEM_TYPE_CODE
+               WHERE 1 = 1
+             	<isNotEmpty property="portalId" prepend="AND">
+   			F.PORTAL_ID =  #portalId#
+   	 	</isNotEmpty>
+   	 	
+            <dynamic prepend="ORDER BY">
+		 <isEmpty property="tagOrder" >
+		 	C.REGIST_DATE DESC
+		 </isEmpty>
+		 <isEqual property="tagOrder" compareValue="date">
+		 	C.REGIST_DATE DESC
+		 </isEqual>
+		 <isEqual property="tagOrder" compareValue="tagName">
+		 	A.TAG_NAME ASC
+		 </isEqual>
+		 <isEqual property="tagOrder" compareValue="itemType">
+		 	 C.TAG_ITEM_TYPE ASC
+		 </isEqual>
+		 <isEqual property="tagOrder" compareValue="frequency">
+		 	A.FREQUENCY DESC, C.REGIST_DATE DESC
+		 </isEqual>
+	 </dynamic>
+		LIMIT #startRowIndex#, #pagePer#
+  </select>
+  
+  
+    <select id="readCountSearch" parameterClass="Tag" resultClass="int">
+		 	SELECT 					/* [Tag_SqlMap.xml] Tag.listCountSearch */
+                       COUNT(A.TAG_ID)
+                FROM    
+                 (SELECT  MAX(G.TAG_ID) TAG_ID, MAX(H.TAG_NAME) TAG_NAME, G.TAG_ITEM_ID, MAX(G.TAG_ITEM_TYPE) TAG_ITEM_TYPE ,COUNT(G.TAG_ID) FREQUENCY
+                            FROM IKEP4_TG_LINK G, IKEP4_TG_DICTIONARY H 
+                            WHERE G.TAG_ID = H.TAG_ID 
+                            <isNotEmpty property="tagName" prepend="AND">
+                            	LOWER(H.TAG_NAME) = LOWER(#tagName#) 
+                            </isNotEmpty>
+                            <isNotNull property="tagIdList" prepend="AND">
+                            	<iterate open="(" close=")"  property="tagIdList" conjunction="," prepend="G.TAG_ID IN" >
+				           			#tagIdList[]#
+				          		</iterate>
+                            </isNotNull>
+                            <isNotEmpty property="tagId" prepend="AND">
+				    			 G.TAG_ID =  #tagId#
+				    	 	</isNotEmpty>
+				    	 	<isEmpty property="tagItemTypes">
+						    	 <isNotEmpty prepend="AND" property="tagItemType" >
+						    		 G.TAG_ITEM_TYPE = #tagItemType#
+						    	 </isNotEmpty>
+					    	 </isEmpty>
+					    	 <isNotNull prepend="AND" property="tagItemTypes" >
+						    	 <iterate open="(" close=")"  property="tagItemTypes" conjunction="," prepend="G.TAG_ITEM_TYPE IN">
+						           #tagItemTypes[]#
+						          </iterate>
+					    	 </isNotNull>
+					    	 <isNotEmpty prepend="AND" property="tagItemSubType">
+					    		G.TAG_ITEM_SUB_TYPE =  #tagItemSubType#
+					    	 </isNotEmpty>
+					    	 <isNotEmpty property="isBbs" prepend="AND">
+					    	 	  G.TAG_ITEM_TYPE NOT IN ('PE','PI')
+				    	 	</isNotEmpty>
+				    	 	 <isNotEmpty prepend="AND" property="isSubType">
+					    		 G.TAG_ITEM_SUB_TYPE IS NOT NULL
+					    	 </isNotEmpty>
+					    	 <isNotEmpty prepend="AND" property="isNotSubType">
+					    		 G.TAG_ITEM_SUB_TYPE IS NULL
+					    	 </isNotEmpty>
+                            GROUP BY  G.TAG_ITEM_ID, G.TAG_ITEM_TYPE) A 
+                 		, IKEP4_TG_ITEM C, IKEP4_EV_USER F, IKEP4_EV_JOB_TITLE G
+                 WHERE    A.TAG_ITEM_ID   = C.TAG_ITEM_ID
+	                 AND  A.TAG_ITEM_TYPE = C.TAG_ITEM_TYPE
+	                 AND  C.REGISTER_ID = F.USER_ID
+	                 AND F.JOB_TITLE_CODE = G.JOB_TITLE_CODE
+               	<isNotEmpty property="portalId" prepend="AND">
+	    			F.PORTAL_ID =  #portalId#
+	    	 	</isNotEmpty>
+	    	 	<isNotEmpty property="tagId" prepend="AND">
+	    			 A.TAG_ID =  #tagId#
+	    	 	</isNotEmpty>
+	 
+  </select>
+   
+  <select id="listByItem" parameterClass="Tag" resultMap="TagResult">
+	 	SELECT 				/* [Tag_SqlMap.xml] Tag.listByItem */
+                A.TAG_ID
+		    	,A.TAG_ITEM_ID
+		    	,A.TAG_ITEM_TYPE
+		    	,A.TAG_ITEM_SUB_TYPE
+		    	,A.REGISTER_ID
+		    	,A.REGISTER_NAME
+		    	,A.REGIST_DATE
+		    	,B.TAG_NAME
+		    	,C.TAG_ITEM_NAME
+		    	,C.TAG_ITEM_URL
+		    	,C.TAG_ITEM_CONTENTS
+        FROM     IKEP4_TG_LINK A, IKEP4_TG_DICTIONARY B, IKEP4_TG_ITEM C
+        WHERE    A.TAG_ID        = B.TAG_ID
+         AND  A.TAG_ITEM_ID   	= C.TAG_ITEM_ID
+         AND  A.TAG_ITEM_TYPE 	= C.TAG_ITEM_TYPE
+         AND  A.TAG_ITEM_ID 	=  #tagItemId#
+         AND  A.TAG_ITEM_TYPE 	=  #tagItemType#
+
+       ORDER BY A.SORT_ORDER ASC
+		
+  </select>
+  
+  
+  <select id="listItemId" parameterClass="Tag" resultClass="String">
+  	/* [Tag_SqlMap.xml] Tag.listItemId */
+ 	SELECT 					
+	    	MAX(A.TAG_ITEM_ID) TAG_ITEM_ID
+       FROM     IKEP4_TG_LINK A, IKEP4_EV_USER F
+       	<isEmpty property="tagId" prepend=",">
+   			(SELECT TAG_ID 
+   			FROM IKEP4_TG_LINK 
+   			WHERE TAG_ITEM_TYPE = #tagItemType#
+   			<isNotEmpty property="tagItemId" prepend="AND">
+         			 TAG_ITEM_ID = #tagItemId# 
+         		</isNotEmpty>
+   			) B
+   	 	</isEmpty>
+   	 	<isNotEmpty property="tagName" prepend=",">	<!-- 태그 네임으로 검색 있을때만 -->
+   	 		IKEP4_TG_DICTIONARY C
+      		</isNotEmpty>
+      		<isNotEmpty property="groupType" prepend=","> <!-- who는 그룹중 최신 그룹만 가져와 비교하여야 함 -->
+   	 		(SELECT MAX(TAG_ITEM_ID) TAG_ITEM_ID
+   	 		FROM IKEP4_TG_LINK 
+   	 		WHERE TAG_ITEM_TYPE = #tagItemType# 
+   	 		GROUP BY TAG_ITEM_SUB_TYPE) D
+   	 	</isNotEmpty>
+   	 	WHERE  
+   	 		A.REGISTER_ID = F.USER_ID
+	        <isNotEmpty property="asTagItemType" prepend="AND">
+          		A.TAG_ITEM_TYPE = #asTagItemType#
+          	</isNotEmpty>
+          	<isEmpty property="asTagItemType" prepend="AND">
+          		 A.TAG_ITEM_TYPE = #tagItemType#
+          	</isEmpty>
+        	<isNotEmpty property="tagItemId" prepend="AND">
+          		A.TAG_ITEM_ID 	&lt;&gt;  #tagItemId#
+          	</isNotEmpty>
+          	<isNotEmpty property="tagName" prepend="AND">
+          		A.TAG_ID 	=  C.TAG_ID
+          	</isNotEmpty>
+          	<isNotEmpty property="tagId" prepend="AND">
+    			 A.TAG_ID =  #tagId#
+    	 	</isNotEmpty>
+    	 	<isEmpty property="tagId" prepend="AND">
+    	 		A.TAG_ID  = B.TAG_ID
+    	 	</isEmpty>
+    	 	<isNotEmpty property="tagName" prepend="AND">
+    	 		C.TAG_NAME  LIKE CONCAT('%', #tagName#, '%')
+    	 	</isNotEmpty>
+    	 	<isNotEmpty property="tagItemSubType" prepend="AND">
+    			 TAG_ITEM_SUB_TYPE =  #tagItemSubType#
+    	 	</isNotEmpty>
+    	 	<isNotEmpty property="groupType" prepend="AND">
+    	 		A.TAG_ITEM_ID =	D.TAG_ITEM_ID 
+    	 	</isNotEmpty>
+   	 	GROUP BY 
+   	 	<isNotEmpty property="groupType" >
+   	 		A.TAG_ITEM_SUB_TYPE
+   	 	</isNotEmpty>
+   	 	<isEmpty property="groupType">
+   	 	 	A.TAG_ITEM_ID
+   	 	</isEmpty>
+   	 LIMIT #startRowIndex#, #pagePer#
+  </select>
+  
+  
+  <select id="getCountListItemId" parameterClass="Tag" resultClass="int">
+	 	SELECT	/* [Tag_SqlMap.xml] Tag.getCountListItemId */
+		 COUNT(TAG_ITEM_ID)
+		 FROM
+		(
+		 	SELECT 					
+			    	 MAX(A.TAG_ITEM_ID) TAG_ITEM_ID
+	        FROM     IKEP4_TG_LINK A inner join IKEP4_CF_BD_ITEM BI on A.tag_item_id = BI.item_id
+	        , IKEP4_EV_USER F
+	        		<isEmpty property="tagId" prepend=",">
+		    			(SELECT TAG_ID 
+		    			FROM IKEP4_TG_LINK 
+		    			WHERE TAG_ITEM_TYPE = #tagItemType#
+		    			<isNotEmpty property="tagItemId" prepend="AND">
+		          			 TAG_ITEM_ID = #tagItemId# 
+		          		</isNotEmpty>
+		    			) B
+		    	 	</isEmpty>
+		    	 	<isNotEmpty property="tagName" prepend=",">	<!-- 태그 네임으로 검색 있을때만 -->
+		    	 		IKEP4_TG_DICTIONARY C
+		       		</isNotEmpty>
+	           		<isNotEmpty property="groupType" prepend=","> <!-- who는 그룹중 최신 그룹만 가져와 비교하여야 함 -->
+		    	 		(SELECT MAX(TAG_ITEM_ID) TAG_ITEM_ID
+		    	 		FROM IKEP4_TG_LINK 
+		    	 		WHERE TAG_ITEM_TYPE = #tagItemType# 
+		    	 		GROUP BY TAG_ITEM_SUB_TYPE) D
+		    	 	</isNotEmpty>
+	        	WHERE  
+					A.REGISTER_ID = F.USER_ID
+		        	<isNotEmpty property="asTagItemType" prepend="AND">
+		          		A.TAG_ITEM_TYPE = #asTagItemType#
+		          	</isNotEmpty>
+		          	<isEmpty property="asTagItemType" prepend="AND">
+		          		 A.TAG_ITEM_TYPE = #tagItemType#
+		          	</isEmpty>
+		          	<isNotEmpty property="tagItemId" prepend="AND">
+		          		A.TAG_ITEM_ID 	&lt;&gt;  #tagItemId#
+		          	</isNotEmpty>
+		          	<isNotEmpty property="tagName" prepend="AND">
+		          		A.TAG_ID 	=  C.TAG_ID
+		          	</isNotEmpty>
+		          	<isNotEmpty property="tagId" prepend="AND">
+		    			 A.TAG_ID =  #tagId#
+		    	 	</isNotEmpty>
+		    	 	<isEmpty property="tagId" prepend="AND">
+		    	 		A.TAG_ID  = B.TAG_ID
+		    	 	</isEmpty>
+		    	 	<isNotEmpty property="tagItemSubType" prepend="AND">
+		    			 TAG_ITEM_SUB_TYPE =  #tagItemSubType#
+		    	 	</isNotEmpty>
+		    	 	<isNotEmpty property="tagName" prepend="AND">
+		    	 		C.TAG_NAME  LIKE CONCAT('%', #tagName#, '%')
+		    	 	</isNotEmpty>
+		    	 	<isNotEmpty property="groupType" prepend="AND">
+		    	 		A.TAG_ITEM_ID =	D.TAG_ITEM_ID 
+		    	 	</isNotEmpty>
+	    	 	
+	    	 	GROUP BY 
+	    	 	<isNotEmpty property="groupType" >
+	    	 		A.TAG_ITEM_SUB_TYPE
+	    	 	</isNotEmpty>
+	    	 	<isEmpty property="groupType">
+	    	 	 	A.TAG_ITEM_ID
+	    	 	</isEmpty>
+    	 	) TBL
+  </select>
+  
+  
+  
+    <select id="listItemIdAsRandom" parameterClass="Tag" resultClass="String">
+	 	/* [Tag_SqlMap.xml] Tag.listItemIdAsRandom */
+	 	SELECT TAG_ITEM_ID
+	 	FROM (
+		 	SELECT 	/*+ leading (B) */			
+			    	MAX(A.TAG_ITEM_ID) TAG_ITEM_ID
+	        FROM     IKEP4_TG_LINK A, IKEP4_EV_USER F
+	        	<isEmpty property="tagId" prepend=",">
+	    			(SELECT TAG_ID FROM IKEP4_TG_LINK WHERE TAG_ITEM_ID = #tagItemId# AND  TAG_ITEM_TYPE = #tagItemType#) B
+	    	 	</isEmpty>
+	        WHERE    A.TAG_ITEM_TYPE 	=  #asTagItemType#
+	       		 AND  A.REGISTER_ID = F.USER_ID
+	        	AND  A.TAG_ITEM_ID 	&lt;&gt;  #tagItemId#
+	        	
+	    	 	<isEmpty property="tagId" prepend="AND">
+	    	 		A.TAG_ID  = B.TAG_ID
+	    	 	</isEmpty>
+	    	 	
+	    	 	GROUP BY A.TAG_ITEM_ID
+   	 	 ) ORDER BY dbms_random.value
+   	 	 LIMIT #endRowIndex#
+  </select>
+  
+  <select id="listItemCount" parameterClass="Tag" resultMap="TagItemCountResultMap">
+		 	SELECT 					/* [Tag_SqlMap.xml] Tag.listItemCount */
+			    	COUNT(TAG_ITEM_ID) COUNT
+			    	, B.TAG_ID
+			    	, MAX(B.TAG_NAME)   TAG_NAME
+	        FROM     IKEP4_TG_LINK A, IKEP4_TG_DICTIONARY B,
+	        		(SELECT TAG_ID FROM IKEP4_TG_LINK WHERE TAG_ITEM_ID = #tagItemId# AND  TAG_ITEM_TYPE =  #tagItemType#) C
+	        		, IKEP4_EV_USER F
+	        WHERE    A.TAG_ID  = B.TAG_ID
+	       	 	AND  A.REGISTER_ID = F.USER_ID
+	        	AND	B.TAG_ID  = C.TAG_ID
+	         	AND  A.TAG_ITEM_TYPE 	=  #tagItemType#
+	          	<!-- AND  A.TAG_ITEM_ID 	&lt;&gt;  #tagItemId# -->
+	          	GROUP BY B.TAG_ID
+  </select>
+  
+  <select id="listItemAsUserByTagId" parameterClass="Tag" resultClass="String">
+  	/* [Tag_SqlMap.xml] Tag.listItemAsUserByTagId */
+		SELECT  TAG_ITEM_ID
+		FROM    (
+			SELECT A.TAG_ITEM_ID
+			   	, C.TEAM_NAME
+			   	, C.USER_NAME
+			   	, C.MAIL
+			   	, C.MOBILE
+				, D.JOB_DUTY_NAME
+				, E.TAG_ITEM_NAME
+				, E.TAG_ITEM_URL
+				, E.TAG_ITEM_CONTENTS
+		     FROM     IKEP4_TG_LINK A, IKEP4_EV_USER C, IKEP4_EV_JOB_TITLE D, IKEP4_TG_ITEM E, IKEP4_EV_USER F
+		     WHERE    A.TAG_ITEM_TYPE 	=  #tagItemType#
+		     	AND  A.REGISTER_ID = F.USER_ID
+		       	AND  A.TAG_ID 			=  #tagId#
+		       	AND  A.TAG_ITEM_ID 	&lt;&gt;  #tagItemId#
+		       	AND  A.TAG_ITEM_ID	 	= C.USER_ID
+				AND  C.JOB_TITLE_CODE = D.JOB_TITLE_CODE
+				AND  A.TAG_ITEM_ID   	= E.TAG_ITEM_ID
+		        AND  A.TAG_ITEM_TYPE 	= E.TAG_ITEM_TYPE
+		    ORDER BY A.REGIST_DATE DESC
+		) F
+		LIMIT #startRowIndex#, #pagePer#
+  </select>
+  
+  
+  <select id="getCountListItemAsUserByTagId" parameterClass="Tag" resultClass="int">
+        SELECT 					/* [Tag_SqlMap.xml] Tag.getCountListItemAsUserByTagId */		
+		    	 COUNT(A.TAG_ITEM_ID)
+        FROM     IKEP4_TG_LINK A
+        WHERE    A.TAG_ITEM_TYPE 	=  #tagItemType#
+          	AND  A.TAG_ID 			=  #tagId#
+          	AND  A.TAG_ITEM_ID 	&lt;&gt;  #tagItemId#
+  </select>
+  
+  
+   <select id="listTeamType" parameterClass="String" resultMap="TeamResultMap">
+	 	SELECT 					/* [Tag_SqlMap.xml] Tag.listTeamType */
+		    	TYPE_ID TEAM_TYPE_ID, TYPE_NAME TEAM_TYPE_NAME
+        FROM     IKEP4_WS_TYPE
+        WHERE      PORTAL_ID 	=  #portalId#
+        	AND IS_DELETE = 0
+        	AND IS_ORGANIZATION = 0
+		ORDER BY SORT_ORDER 
+  </select>
+  
+  
+</sqlMap>

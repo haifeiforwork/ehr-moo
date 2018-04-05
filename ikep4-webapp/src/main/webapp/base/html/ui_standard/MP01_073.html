@@ -1,0 +1,2425 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ko">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>iKEP 4.00</title>
+<link rel="stylesheet" type="text/css" href="../../css/theme01/jquery_ui_custom.css" />
+<link rel="stylesheet" type="text/css" href="../../css/common.css" />
+<link rel="stylesheet" type="text/css" href="../../css/theme01/theme.css" />
+<link rel="stylesheet" type="text/css" href="../../css/plot_chart/jquery.jqplot.css" />
+<script type="text/javascript" src="../../js/jquery/jquery-1.6.2.min.js"></script>
+<script type="text/javascript" src="../../js/jquery/jquery-ui-1.8.13.min.without.datepicker.js"></script>
+<script type="text/javascript" src="../../js/plot_chart/jquery.jqplot.min.js"></script>
+<script type="text/javascript" src="../../js/plot_chart/jqplot.barRenderer.min.js"></script>
+<script type="text/javascript" src="../../js/plot_chart/jqplot.categoryAxisRenderer.min.js"></script>
+<script type="text/javascript" src="../../js/plot_chart/jqplot.pointLabels.min.js"></script>
+<script type="text/javascript" src="../../js/plot_chart/excanvas.min.js"></script>
+<script type="text/javascript" src="../../js/langResource/ko.js"></script>
+<script type="text/javascript" src="../../js/common.pack.js"></script>
+<script type="text/javascript" src="../../js/portlet.js"></script>
+<script type="text/javascript">
+(function($) {
+	$(document).ready(function() {
+ 	    $("#divTab_s").tabs();
+		$("#divTab_s2").tabs();
+		$("#divTab_s3").tabs();
+		$("#divTab_s4").tabs();
+		
+		var mainMenu = $("#topMenu");
+		var menuItems = mainMenu.children("ul").children("li");
+		var width = (menuItems.length * $(menuItems[0]).outerWidth());
+		mainMenu.css({width:width + "px"});
+		
+		menuItems.bind("mouseenter mouseleave", function(event) {
+			var el = event.target;
+			switch(el.tagName.toLowerCase()) {
+				case "ul" :
+				case "a" : el = $(el).parent(); break;
+				case "span" : el = $(el).parent().parent(); break;
+				default : el = $(el);
+			}
+			el.children("ul").toggle();
+		});
+		
+		$.each(menuItems.children("ul"), function() {
+			var subMenu = $(this);
+			subMenu.css({left:((subMenu.parent().outerWidth() - subMenu.outerWidth()) / 2 + 1)+"px"});
+		});
+		
+		
+		/* 그래프 함수 */
+		$.jqplot.config.enablePlugins = true;
+		
+		line1 	= [['2010.11', 220], ['2010.12', 120], ['2011.01', 240], ['2011.02', 350], ['2011.03', 300], ['2011.04', 270] ];
+		line2 	= [['2010.11', 720], ['2010.12', 820], ['2011.01', 1240], ['2011.02', 1350], ['2011.03', 1300], ['2011.04', 1270] ];
+		
+
+		plot1 = $.jqplot('chart1', [line1, line2], {
+			
+			grid:{
+				drawGridlines:false,
+				background: '#ffffff',
+				borderColor: '#555',
+		        borderWidth: 0,
+		        shadow: false
+			},
+			seriesColors: ["#82BC24","#363636"],
+		    seriesDefaults:{
+		    	shadow: true,   // show shadow or not.
+		        shadowAngle: 65,    // angle (degrees) of the shadow, clockwise from x axis.
+		    	renderer:$.jqplot.BarRenderer, 
+		    	rendererOptions:{barMargin:10, barWidth: 20}
+			},
+		    axes:{
+		    	xaxis:{
+		    		renderer:$.jqplot.CategoryAxisRenderer,
+		    		tickOptions:{
+		                showGridline:false, 
+		                markSize:0
+		            }
+		    	},
+		    	yaxis: {
+		    		showTicks: false,
+		    		min:0,
+		    		max:1500
+		    		//ticks:[0, 1500], 
+	                //tickOptions:{formatString:'%.0f'}
+	        	}
+		    }
+		});
+		
+		/* 그래프 함수 끝 */
+		
+		
+		//iKEP.setMainMenu();
+	});
+})(jQuery);
+</script>
+</head>
+<body>
+
+<!--skipNavigation Start-->
+<div id="skipNavigation">
+	<p><a href="#topInfo">헤더정보영역 바로가기</a></p>
+	<p><a href="#topMenu">탑메뉴 바로가기</a></p>	
+	<p><a href="#blockHeaderSub">퀵메뉴 바로가기</a></p>
+	<p><a href="#blockMainTop">컨텐츠영역 바로가기</a></p>	
+	<p><a href="#portletWrap">포틀릿영역 바로가기</a></p>
+</div>
+<!--//skipNavigation End-->
+
+<!--wrapper Start-->
+<div id="wrapper">
+
+	<!--blockContainer Start-->
+	<div id="blockContainer">
+
+		<!--blockHeader Start-->
+		<div id="blockHeader">	
+		
+			<!--topInfo Start-->	
+			<div id="topInfo">
+				<h1 class="none">헤더정보영역</h1>
+				<div id="topLogo">
+					<a href="#a"><img src="../../images/common/logo.png" alt="iKEP Logo" /></a>
+				</div>				
+				<div class="clear"></div>
+			</div>
+			<!--//topInfo End-->
+						
+			<!--topMenu Start-->
+			<div id="topMenu">
+				<h1 class="none">탑메뉴</h1>			
+			</div>
+			<!--//topMenu End-->	
+
+			<!--blockHeaderSub Start-->
+			<div id="blockHeaderSub">
+				<h1 class="none">퀵메뉴</h1>		
+			</div>
+			<!--//blockHeaderSub End-->
+										
+		</div>
+		<!--//blockHeader End-->
+		
+		<!--blockMain Start-->
+		<div id="blockMain">
+			
+			<!--blockMainTop Start-->	
+			<div id="blockMainTop">
+				<h1 class="none">컨텐츠영역</h1>		
+				<div class="mainTop_l">
+					<h2 class="none">Wise Saying</h2> 
+					<div class="mtitle"><img src="../../images/common/mtitle_wisesaying.gif" alt="wise saying" /></div>
+					<table summary="">
+						<caption></caption>
+						<tbody>
+							<tr>
+								<td width="110">
+									<img src="../../images/common/img_wisesaying.gif" alt="" /><!--이미지 최적화 사이즈는 110x115-->
+								</td>
+								<td width="*">
+									<p class="mainTop_imgtxt_01">희망을 품지 않은 자는 절망도 할 수 없다.</p>
+									<p class="mainTop_imgtxt_02">He who has never hoped<br />can never despair.</p>
+									<p class="mainTop_imgtxt_03"><i>조지 버나드 쇼</i></p>
+									<p class="mainTop_imgtxt_04"><i>George Bernard Shaw</i></p>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<div class="mainTop_m">
+					<!--tab Start-->		
+					<div id="divTab_s" class="iKEP_tab_s">
+						<ul>
+							<li><a href="#tabs-1">Today Focus</a></li>
+							<li><a href="#tabs-2">News</a></li>
+							<li><a href="#tabs-3">Happy Lounge</a></li>
+						</ul>
+						<div class="newslist">
+							<div id="tabs-1">
+								<ul>
+									<li><a href="#a">[자사] '범정부 클라우드 컴퓨팅 센터' 구축</a> <span class="ic_new"><span>new</span></span></li>
+									<li><a href="#a">[업계] IT서비스 내년 하반기부터 본격 수주경쟁 돌입</a></li>
+									<li><a href="#a">[업계] 대형IT서비스,캐피털IT사업 수주</a></li>
+									<li><a href="#a">[업계] 이달내 '스마트워크 포럼' 창립</a></li>
+									<li><a href="#a">[기타] G20 기간 알아두어야 할 것들</a></li>
+								</ul>
+							</div>
+							<div id="tabs-2">
+								두번째 탭 내용
+							</div>
+							<div id="tabs-3">
+								세번째 탭 내용
+							</div>
+						</div>				
+					</div>		
+					<!--//tab End-->
+				</div>
+				<div class="mainTop_r">
+					<h2 class="none">Management Classroom</h2> 
+					<div class="mtitle"><img src="../../images/common/mtitle_management.gif" alt="Management Classroom" /></div>
+					<a href="#a"><img src="../../images/common/img_management.gif" alt="모바일 환경 Closed-Open으로 간다" /></a>
+				</div>	
+				<div class="clear"></div>							
+			</div>
+			<!--//blockMainTop End-->
+					
+			<!--portletWrap Start-->
+			<div id="portletWrap">
+				<h1 class="none">포틀릿영역</h1>
+				
+				<!--portletSetting Start-->
+				<div id="portletSetting">
+					<h2 class="none">포틀릿셋팅</h2>
+					<ul class="po_setbtn">
+						<li class="po_btn_theme"><a href="#a"><span>Theme</span></a></li>
+						<li class="po_btn_portlet"><a href="#a"><span>Portlet</span></a></li>
+					</ul>
+					<div class="clear"></div>
+					<div class="portletSetting_c none">
+						<div class="l_t_corner"></div><div class="l_b_corner"></div><div class="r_b_corner"></div>
+					</div>					
+				</div>	
+				<!--//portletSetting End-->
+				
+				<!--portlet Start-->
+				<div id="portlet">
+					<div class="maximize"></div>
+					<div class="portlet_l">
+						<!--portletUnit Start-->
+						<div class="portletUnit">
+							<div class="portletUnit_t">
+								<div class="po_title"><h2>축하합니다</h2></div>
+								<div class="po_icon">
+									<ul>
+										<li class="po_icon_edit"><a href="#a"><span>edit</span></a></li>
+										<li class="po_icon_refresh"><a href="#a"><span>refresh</span></a></li>
+										<li class="po_icon_max"><a href="#a"><span>max</span></a></li>
+										<li class="po_icon_fold"><a href="#a"><span>fold</span></a></li>
+										<li class="po_icon_close"><a href="#a"><span>close</span></a></li>
+										<!--
+										<li class="po_icon_more"><a href="#a"><span>more</span></a></li>
+										<li class="po_icon_restore"><a href="#a"><span>restore</span></a></li>
+										<li class="po_icon_config"><a href="#a"><span>config</span></a></li>
+										-->
+									</ul>
+								</div>
+							</div>
+							<div class="portletUnit_c tableList_1">
+								<div class="poEdit none"><!--edit펼침화면 display:none____none 제거시 display 됨-->
+									<div>
+										대상기간 : 
+										<label><input name="" class="radio" title="week" type="radio" value="" />week</label>&nbsp;&nbsp;
+										<label><input name="" class="radio" title="month" type="radio" value="" />month</label>									
+									</div>
+									<div>
+										대상그룹 :
+										<input name="" class="checkbox" title="대상그룹" type="checkbox" value="" />
+										<select name="" title="대상그룹">
+											<option>담당/팀</option>
+										</select>
+									</div>
+									<div class="textRight"><a class="button_s" href="#a"><span>저장</span></a></div>
+								</div>
+								<div class="pTitle_1">
+									생일축하합니다
+								</div>
+								<table summary="생일자 명단">
+									<caption></caption>
+									<tbody>
+										<tr>
+											<th width="*" scope="row" class="today"><div class="ellipsis"><img src="../../images/icon/ic_birthday.gif" alt="" />  <a href="#a">김길동 부장 (공공/금융ERP컨설팅팀)</a></div></th>
+											<td width="30" class="textRight today"><span class="date">03.15</span></td>
+										</tr>
+										<tr>
+											<th scope="row"><div class="ellipsis"><a href="#a">김길동 부장 (UC컨설팅1팀)</a></div></th>
+											<td class="textRight"><span class="date">03.18</span></td>
+										</tr>										
+									</tbody>
+								</table>
+								<div class="dotline_1"></div>
+								<div class="pTitle_1">
+									결혼기념일을 축하합니다
+								</div>								
+								<table summary="결혼기념일자 명단">
+									<caption></caption>
+									<tbody>
+										<tr>
+											<th width="*" scope="row" class="today"><div class="ellipsis"><img src="../../images/icon/ic_wedding.gif" alt="" />  <a href="#a">최길동 총괄 CONSULTANT (UC팀)</a></div></th>
+											<td width="30" class="textRight today"><span class="date">03.15</span></td>
+										</tr>
+										<tr>
+											<th scope="row"><div class="ellipsis"><a href="#a">김길동 부장 (UC컨설팅1팀)</a></div></th>
+											<td class="textRight"><span class="date">03.20</span></td>
+										</tr>	
+										<tr>
+											<th scope="row"><div class="ellipsis"><a href="#a">김길동 부장 (UC컨설팅1팀)</a></div></th>
+											<td class="textRight"><span class="date">03.21</span></td>
+										</tr>																			
+									</tbody>
+								</table>								
+								<div class="l_b_corner"></div><div class="r_b_corner"></div>
+							</div>
+						</div>
+						<!--//portletUnit End-->
+					</div>
+					<div class="portlet_c">
+						<!--portletUnit Start-->
+						<div class="portletUnit">
+							<div class="portletUnit_t">
+								<div class="po_title"><h2>축하합니다</h2></div>
+								<div class="po_icon">
+									<ul>
+										<li class="po_icon_edit"><a href="#a"><span>edit</span></a></li>
+										<li class="po_icon_refresh"><a href="#a"><span>refresh</span></a></li>
+										<li class="po_icon_max"><a href="#a"><span>max</span></a></li>
+										<li class="po_icon_fold"><a href="#a"><span>fold</span></a></li>
+										<li class="po_icon_close"><a href="#a"><span>close</span></a></li>
+										<!--
+										<li class="po_icon_more"><a href="#a"><span>more</span></a></li>
+										<li class="po_icon_restore"><a href="#a"><span>restore</span></a></li>
+										<li class="po_icon_config"><a href="#a"><span>config</span></a></li>
+										-->
+									</ul>
+								</div>
+							</div>
+							<div class="portletUnit_c tableList_1">
+								<div class="poEdit">
+									<div>
+										대상기간 : 
+										<label><input name="" class="radio" title="week" type="radio" value="" />week</label>&nbsp;&nbsp;
+										<label><input name="" class="radio" title="month" type="radio" value="" />month</label>									
+									</div>
+									<div>
+										대상그룹 :
+										<input name="" class="checkbox" title="대상그룹" type="checkbox" value="" />
+										<select name="" title="대상그룹">
+											<option>담당/팀</option>
+										</select>
+									</div>
+									<div class="textRight"><a class="button_s" href="#a"><span>저장</span></a></div>
+								</div>
+								<div class="pTitle_1">
+									생일축하합니다
+								</div>
+								<table summary="생일자 명단">
+									<caption></caption>
+									<tbody>
+										<tr>
+											<th width="*" scope="row" class="today"><div class="ellipsis"><img src="../../images/icon/ic_birthday.gif" alt="" /> <a href="#a">김길동 부장 (공공/금융ERP컨설팅팀)</a></div></th>
+											<td width="30" class="textRight today"><span class="date">03.15</span></td>
+										</tr>
+										<tr>
+											<th scope="row"><div class="ellipsis"><a href="#a">김길동 부장 (UC컨설팅1팀)</a></div></th>
+											<td class="textRight"><span class="date">03.18</span></td>
+										</tr>	
+										<tr>
+											<th scope="row"><div class="ellipsis"><a href="#a">김길동 부장 (UC컨설팅1팀)</a></div></th>
+											<td class="textRight"><span class="date">03.18</span></td>
+										</tr>																			
+									</tbody>
+								</table>							
+								<div class="l_b_corner"></div><div class="r_b_corner"></div>
+							</div>
+						</div>
+						<!--//portletUnit End-->				
+					</div>
+					<div class="portlet_r">
+						<!--portletUnit Start-->
+						<div class="portletUnit">
+							<div class="portletUnit_t">
+								<div class="po_title"><h2>메일</h2></div>
+								<div class="po_icon">
+									<ul>
+										<li class="po_icon_edit"><a href="#a"><span>edit</span></a></li>
+										<li class="po_icon_refresh"><a href="#a"><span>refresh</span></a></li>
+										<li class="po_icon_max"><a href="#a"><span>max</span></a></li>
+										<li class="po_icon_fold"><a href="#a"><span>fold</span></a></li>
+										<li class="po_icon_close"><a href="#a"><span>close</span></a></li>
+										<!--
+										<li class="po_icon_more"><a href="#a"><span>more</span></a></li>
+										<li class="po_icon_restore"><a href="#a"><span>restore</span></a></li>
+										<li class="po_icon_config"><a href="#a"><span>config</span></a></li>
+										-->
+									</ul>
+								</div>
+							</div>
+							<div class="portletUnit_c tableList_1">
+								<div class="poEdit">
+									<div>
+										리스트 개수 : 
+										<select name="" title="리스트개수">
+											<option>5개</option>
+										</select>
+									</div>
+									<div class="textRight"><a class="button_s" href="#a"><span>저장</span></a></div>
+								</div>
+								<table summary="메일목록">
+									<caption></caption>
+									<tbody>
+										<tr>
+											<th width="*" scope="row"><div class="ellipsis"><a href="#a"><strong>이번에 입사한 홍길동 대리 인사드립니다</strong></a></div></th>
+											<td width="55" class="textCenter">홍길동</td>
+											<td width="30" class="textRight"><span class="date">03.22</span></td>
+										</tr>
+										<tr>
+											<th scope="row"><div class="ellipsis"><a href="#a">김길동 부장 (UC컨설팅1팀)</a></div></th>
+											<td class="textCenter">김길동</td>
+											<td class="textRight"><span class="date">03.18</span></td>
+										</tr>	
+										<tr>
+											<th scope="row"><div class="ellipsis"><a href="#a">김길동 부장 (UC컨설팅1팀)</a></div></th>
+											<td class="textCenter">이길동</td>
+											<td class="textRight"><span class="date">03.15</span></td>
+										</tr>
+										<tr>
+											<th scope="row"><div class="ellipsis"><a href="#a">김길동 부장 (UC컨설팅1팀)</a></div></th>
+											<td class="textCenter">이길동</td>
+											<td class="textRight"><span class="date">03.14</span></td>
+										</tr>
+										<tr>
+											<th scope="row"><div class="ellipsis"><a href="#a">김길동 부장 (UC컨설팅1팀)</a></div></th>
+											<td class="textCenter">이길동</td>
+											<td class="textRight"><span class="date">03.13</span></td>
+										</tr>																																							
+									</tbody>
+								</table>							
+								<div class="l_b_corner"></div><div class="r_b_corner"></div>
+							</div>
+						</div>
+						<!--//portletUnit End-->					
+					</div>
+					<div class="clear"></div>
+					
+					<div class="portlet_l">
+						<!--portletUnit Start-->
+						<div class="portletUnit">
+							<div class="portletUnit_t">
+								<div class="po_title"><h2>My Social Network</h2></div>
+								<div class="po_icon">
+									<ul>
+										<li class="po_icon_edit"><a href="#a"><span>edit</span></a></li>
+										<li class="po_icon_refresh"><a href="#a"><span>refresh</span></a></li>
+										<li class="po_icon_max"><a href="#a"><span>max</span></a></li>
+										<li class="po_icon_fold"><a href="#a"><span>fold</span></a></li>
+										<li class="po_icon_close"><a href="#a"><span>close</span></a></li>
+										<!--
+										<li class="po_icon_more"><a href="#a"><span>more</span></a></li>
+										<li class="po_icon_restore"><a href="#a"><span>restore</span></a></li>
+										<li class="po_icon_config"><a href="#a"><span>config</span></a></li>
+										-->
+									</ul>
+								</div>
+							</div>
+							<div class="portletUnit_c imgList_1">
+								<ul>
+									<li><a href="#a"><img src="../../images/common/photo_50x50.gif" alt="no image" /></a><p><a href="#a">글자가길어질경우이렇게됨</a></p></li>
+									<li><a href="#a"><img src="../../images/common/temp_img_50x50_1.gif" alt="image" /></a><p><a href="#a">김태희</a></p></li>
+									<li><a href="#a"><img src="../../images/common/temp_img_50x50_2.gif" alt="image" /></a><p><a href="#a">송혜교</a></p></li>
+									<li><a href="#a"><img src="../../images/common/temp_img_50x50_3.gif" alt="image" /></a><p><a href="#a">김길동</a></p></li>
+									<li><a href="#a"><img src="../../images/common/temp_img_50x50_4.gif" alt="image" /></a><p><a href="#a">최길동</a></p></li>
+									<li><a href="#a"><img src="../../images/common/temp_img_50x50_1.gif" alt="image" /></a><p><a href="#a">김태희</a></p></li>
+									<li><a href="#a"><img src="../../images/common/temp_img_50x50_2.gif" alt="image" /></a><p><a href="#a">송혜교</a></p></li>
+									<li><a href="#a"><img src="../../images/common/temp_img_50x50_3.gif" alt="image" /></a><p><a href="#a">김길동</a></p></li>
+									<li><a href="#a"><img src="../../images/common/temp_img_50x50_4.gif" alt="image" /></a><p><a href="#a">최길동</a></p></li>
+									<li><a href="#a"><img src="../../images/common/temp_img_50x50_1.gif" alt="image" /></a><p><a href="#a">김태희</a></p></li>
+								</ul>
+								<div class="clear"></div>
+								<div class="l_b_corner"></div><div class="r_b_corner"></div>
+							</div>
+						</div>
+						<!--//portletUnit End-->
+					</div>
+					<div class="portlet_c">
+						<!--portletUnit Start-->
+						<div class="portletUnit">
+							<div class="portletUnit_t">
+								<div class="po_title"><h2>오늘의 일정</h2></div>
+								<div class="po_icon">
+									<ul>
+										<!--
+										<li class="po_icon_edit"><a href="#a"><span>edit</span></a></li>
+										-->
+										<li class="po_icon_refresh"><a href="#a"><span>refresh</span></a></li>
+										<li class="po_icon_max"><a href="#a"><span>max</span></a></li>
+										<li class="po_icon_fold"><a href="#a"><span>fold</span></a></li>
+										<li class="po_icon_close"><a href="#a"><span>close</span></a></li>
+										<!--
+										<li class="po_icon_more"><a href="#a"><span>more</span></a></li>
+										<li class="po_icon_restore"><a href="#a"><span>restore</span></a></li>
+										<li class="po_icon_config"><a href="#a"><span>config</span></a></li>
+										-->
+									</ul>
+								</div>
+							</div>
+							<div class="portletUnit_c po_schedule">
+								<div class="date">2011.02.16 (수)</div>
+								<div class="pr_schedule_c">
+									<table summary="" class="pr_schedule_time">
+										<caption></caption>
+										<tbody>
+											<tr>
+												<td class="textCenter" style="width:18.18%">09:00</td>
+												<td style="width:9.09%;"></td>
+												<td class="textCenter" style="width:18.18%">12:00</td>
+												<td style="width:9.09%;"></td>
+												<td class="textCenter" style="width:18.18%">15:00</td>
+												<td style="width:9.09%;"></td>
+												<td class="textCenter" style="width:18.18%">18:00</td>
+											</tr>
+										</tbody>
+									</table>
+									<table summary="My Schedule">
+										<caption></caption>
+										<thead>
+											<tr>
+												<th></th>
+												<th></th>
+												<th><img src="../../images/common/bar_sch.gif" alt="" /></th>
+												<th></th>
+												<th></th>
+												<th></th>
+												<th></th>
+												<th></th>
+												<th><img src="../../images/common/bar_sch.gif" alt="" /></th>
+												<th></th>
+												<th></th>
+												<th></th>
+												<th></th>
+												<th></th>
+												<th><img src="../../images/common/bar_sch.gif" alt="" /></th>
+												<th></th>
+												<th></th>
+												<th></th>
+												<th></th>
+												<th></th>
+												<th><img src="../../images/common/bar_sch.gif" alt="" /></th>
+												<th></th>
+											</tr>
+										</thead>									
+										<tbody>
+											<tr>
+												<td><span>08:00~08:30</span></td>
+												<td><span>08:30~09:00</span></td>
+												<td class="pr_schbar_2"><span>09:00~09:30</span></td>
+												<td class="pr_schbar_2"><span>09:30~10:00</span></td>
+												<td class="pr_schbar_2"><span>10:00~10:30</span></td>
+												<td class="pr_schbar_2"><span>10:30~11:00</span></td>
+												<td><span>11:00~11:30</span></td>
+												<td><span>11:30~12:00</span></td>
+												<td class="pr_schbar_2"><span>12:00~12:30</span></td>
+												<td class="pr_schbar_2"><span>12:30~13:00</span></td>
+												<td><span>13:00~13:30</span></td>
+												<td><span>13:30~14:00</span></td>
+												<td><span>14:00~14:30</span></td>
+												<td><span>14:30~15:00</span></td>
+												<td class="pr_schbar_2"><span>15:00~15:30</span></td>
+												<td class="pr_schbar_2"><span>15:30~16:00</span></td>
+												<td class="pr_schbar_2"><span>16:00~16:30</span></td>
+												<td class="pr_schbar_2"><span>16:30~17:00</span></td>
+												<td><span>17:00~17:30</span></td>
+												<td><span>17:30~18:00</span></td>
+												<td><span>18:00~18:30</span></td>
+												<td><span>18:30~19:00</span></td>
+											</tr>
+										</tbody>
+									</table>
+									<ul>	
+										<li><span>09:00 ~ 11:00</span> <span class="cal_color_22 cal_color_box"></span> <a href="#a">UI표준/개발 가이드 교육</a></li>
+										<li><span>12:00 ~ 13:00</span> <span class="cal_color_01 cal_color_box"></span> <a href="#a">주간업무보고</a></li>
+										<li><span>15:00 ~ 17:00</span> <span class="cal_color_24 cal_color_box"></span> <a href="#a">자사 솔루션 영업전략 2차 세미나</a></li>
+									</ul>
+								</div>
+								<div class="clear"></div>				
+								<div class="l_b_corner"></div><div class="r_b_corner"></div>
+							</div>
+						</div>
+						<!--//portletUnit End-->
+					</div>
+						
+					<div class="portlet_r">
+						<!--portletUnit Start-->
+						<div class="portletUnit">
+							<div class="portletUnit_t">
+								<div class="po_title"><h2>금주의 일정</h2></div>
+								<div class="po_icon">
+									<ul>
+										<!--
+										<li class="po_icon_edit"><a href="#a"><span>edit</span></a></li>
+										-->
+										<li class="po_icon_refresh"><a href="#a"><span>refresh</span></a></li>
+										<li class="po_icon_max"><a href="#a"><span>max</span></a></li>
+										<li class="po_icon_fold"><a href="#a"><span>fold</span></a></li>
+										<li class="po_icon_close"><a href="#a"><span>close</span></a></li>
+										<!--
+										<li class="po_icon_more"><a href="#a"><span>more</span></a></li>
+										<li class="po_icon_restore"><a href="#a"><span>restore</span></a></li>
+										<li class="po_icon_config"><a href="#a"><span>config</span></a></li>
+										-->
+									</ul>
+								</div>
+							</div>
+							<div class="portletUnit_c po_schedule_w">
+								<div class="blockListTable msgTable">
+									<table summary="">
+										<caption></caption>
+										<thead>
+											<tr>
+												<th scope="col"><span class="fc_day_sun">일</span></th>
+												<th scope="col">월</th>
+												<th scope="col">화</th>
+												<th scope="col">수</th>
+												<th scope="col">목</th>
+												<th scope="col">금</th>
+												<th class="tdLast" scope="col"><span class="colorBlue">토</span></th>
+											</tr>				
+										</thead>
+										<tbody>
+											<tr>
+												<td></td>
+												<td></td>
+												<td></td>
+												<td><span class="pr_schbar_2"></span></td>
+												<td></td>
+												<td></td>
+												<td class="tdLast"></td>
+											</tr>											
+										</tbody>
+									</table>
+								</div>	
+								<div class="pr_schedule_c">							
+									<div class="date">수요일</div>
+									<ul>	
+										<li><span>09:00 ~ 11:00</span> <span class="cal_color_22 cal_color_box"></span> <a href="#a">UI표준/개발 가이드 교육</a></li>
+										<li><span>12:00 ~ 13:00</span> <span class="cal_color_17 cal_color_box"></span> <a href="#a">주간업무보고</a></li>
+										<li><span>15:00 ~ 17:00</span> <span class="cal_color_08 cal_color_box"></span> <a href="#a">자사 솔루션 영업전략 2차 세미나</a></li>
+									</ul>
+								</div>
+								<div class="clear"></div>				
+								<div class="l_b_corner"></div><div class="r_b_corner"></div>
+							</div>
+						</div>
+						<!--//portletUnit End-->
+					</div>														
+					<div class="clear"></div>
+					
+					<div class="portlet_l">
+						<!--portletUnit Start-->
+						<div class="portletUnit">
+							<div class="portletUnit_t">
+								<div class="po_title"><h2>My Café</h2></div>
+								<div class="po_icon">
+									<ul>
+										<li class="po_icon_edit"><a href="#a"><span>edit</span></a></li>
+										<li class="po_icon_refresh"><a href="#a"><span>refresh</span></a></li>
+										<li class="po_icon_max"><a href="#a"><span>max</span></a></li>
+										<li class="po_icon_fold"><a href="#a"><span>fold</span></a></li>
+										<li class="po_icon_close"><a href="#a"><span>close</span></a></li>
+										<!--
+										<li class="po_icon_more"><a href="#a"><span>more</span></a></li>
+										<li class="po_icon_restore"><a href="#a"><span>restore</span></a></li>
+										<li class="po_icon_config"><a href="#a"><span>config</span></a></li>
+										-->
+									</ul>
+								</div>
+							</div>
+							<div class="portletUnit_c tableList_1">
+								<div class="poEdit none"><!--edit펼침화면 display:none____none 제거시 display 됨-->
+									<div>
+										리스트 개수 :
+										<select name="" title="리스트 개수">
+											<option>3</option>
+											<option>5</option>
+											<option>7</option>
+											<option>10</option>
+										</select>
+									</div>
+									<div>
+										목록 :
+										<select name="" title="목록">
+											<option>행복카페</option>
+										</select>&nbsp;
+										<a href="#a"><img src="../../images/icon/ic_btn_plus.gif" alt="" class="valign_middle" /><span class="valign_middle"> 추가</span></a>
+									</div>
+									<div>
+										<span>행복카페</span><a href="#a"> <img src="../../images/icon/ic_btn_minus.gif" alt="" class="valign_middle" /></a>&nbsp;&nbsp;
+										<span>나눔카페</span><a href="#a"> <img src="../../images/icon/ic_btn_minus.gif" alt="" class="valign_middle" /></a>
+									</div>
+									<div class="textRight"><a class="button_s" href="#a"><span>저장</span></a></div>
+								</div>
+								<div class="pTitle_1">
+									<a href="#a">행복카페</a>
+								</div>
+								<table summary="행복카페리스트">
+									<caption></caption>
+									<tbody>
+										<tr>
+											<th width="*" scope="row"><div class="ellipsis"><a href="#a"><strong>6월 3주차 주간보고 - 솔루션그룹</strong></a></div></th>
+											<td width="30" class="textRight today"><span class="date">03.15</span></td>
+										</tr>
+										<tr>
+											<th scope="row"><div class="ellipsis"><a href="#a">떠오르는 협업, "보안 선행되야"</a></div></th>
+											<td class="textRight"><span class="date">03.18</span></td>
+										</tr>										
+									</tbody>
+								</table>
+								<div class="dotline_1"></div>
+								<div class="pTitle_1">
+									<a href="#a">나눔카페</a>
+								</div>								
+								<table summary="나눔카페리스트">
+									<caption></caption>
+									<tbody>
+										<tr>
+											<th width="*" scope="row"><div class="ellipsis"><a href="#a"><strong>[ES 부문 미래위]2010년 학습활동 비용 지원</strong></a></div></th>
+											<td width="30" class="textRight today"><span class="date">03.15</span></td>
+										</tr>
+										<tr>
+											<th scope="row"><div class="ellipsis"><a href="#a">[ES 부문 미래위]2010년 학습활동 비용 지원</a></div></th>
+											<td class="textRight"><span class="date">03.20</span></td>
+										</tr>	
+										<tr>
+											<th scope="row"><div class="ellipsis"><a href="#a">[ES 부문 미래위]2010년 학습활동 비용 지원</a></div></th>
+											<td class="textRight"><span class="date">03.21</span></td>
+										</tr>																			
+									</tbody>
+								</table>								
+								<div class="l_b_corner"></div><div class="r_b_corner"></div>
+							</div>
+						</div>
+						<!--//portletUnit End-->
+					</div>
+					
+					<div class="portlet_c">
+						<!--portletUnit Start-->
+						<div class="portletUnit">
+							<div class="portletUnit_t">
+								<div class="po_title"><h2>My Café</h2></div>
+								<div class="po_icon">
+									<ul>
+										<li class="po_icon_edit"><a href="#a"><span>edit</span></a></li>
+										<li class="po_icon_refresh"><a href="#a"><span>refresh</span></a></li>
+										<li class="po_icon_max"><a href="#a"><span>max</span></a></li>
+										<li class="po_icon_fold"><a href="#a"><span>fold</span></a></li>
+										<li class="po_icon_close"><a href="#a"><span>close</span></a></li>
+										<!--
+										<li class="po_icon_more"><a href="#a"><span>more</span></a></li>
+										<li class="po_icon_restore"><a href="#a"><span>restore</span></a></li>
+										<li class="po_icon_config"><a href="#a"><span>config</span></a></li>
+										-->
+									</ul>
+								</div>
+							</div>
+							<div class="portletUnit_c tableList_1">
+								<div class="poEdit">
+									<div>
+										리스트 개수 :
+										<select name="" title="리스트 개수">
+											<option>3</option>
+											<option>5</option>
+											<option>7</option>
+											<option>10</option>
+										</select>
+									</div>
+									<div>
+										목록 :
+										<select name="" title="목록">
+											<option>행복카페</option>
+										</select>&nbsp;
+										<a href="#a"><img src="../../images/icon/ic_btn_plus.gif" alt="" class="valign_middle" /><span class="valign_middle"> 추가</span></a>
+									</div>
+									<div>
+										<span>행복카페</span><a href="#a"> <img src="../../images/icon/ic_btn_minus.gif" alt="" class="valign_middle" /></a>&nbsp;&nbsp;
+										<span>나눔카페</span><a href="#a"> <img src="../../images/icon/ic_btn_minus.gif" alt="" class="valign_middle" /></a>
+									</div>
+									<div class="textRight"><a class="button_s" href="#a"><span>저장</span></a></div>
+								</div>
+								<div class="pTitle_1">
+									<a href="#a">행복카페</a>
+								</div>
+								<table summary="행복카페리스트">
+									<caption></caption>
+									<tbody>
+										<tr>
+											<th width="*" scope="row"><div class="ellipsis"><a href="#a"><strong>6월 3주차 주간보고 - 솔루션그룹</strong></a></div></th>
+											<td width="30" class="textRight today"><span class="date">03.15</span></td>
+										</tr>
+										<tr>
+											<th scope="row"><div class="ellipsis"><a href="#a">떠오르는 협업, "보안 선행되야"</a></div></th>
+											<td class="textRight"><span class="date">03.18</span></td>
+										</tr>										
+									</tbody>
+								</table>
+								<div class="dotline_1"></div>
+								<div class="pTitle_1">
+									<a href="#a">나눔카페</a>
+								</div>								
+								<table summary="나눔카페리스트">
+									<caption></caption>
+									<tbody>
+										<tr>
+											<th width="*" scope="row"><div class="ellipsis"><a href="#a"><strong>[ES 부문 미래위] 2010년 학습활동 비용 지원</strong></a></div></th>
+											<td width="30" class="textRight today"><span class="date">03.15</span></td>
+										</tr>
+										<tr>
+											<th scope="row"><div class="ellipsis"><a href="#a">[ES 부문 미래위] 2010년 학습활동 비용 지원</a></div></th>
+											<td class="textRight"><span class="date">03.20</span></td>
+										</tr>	
+										<tr>
+											<th scope="row"><div class="ellipsis"><a href="#a">[ES 부문 미래위] 2010년 학습활동 비용 지원</a></div></th>
+											<td class="textRight"><span class="date">03.21</span></td>
+										</tr>																			
+									</tbody>
+								</table>								
+								<div class="l_b_corner"></div><div class="r_b_corner"></div>
+							</div>
+						</div>
+						<!--//portletUnit End-->
+					</div>
+
+					<div class="portlet_r">
+						<!--portletUnit Start-->
+						<div class="portletUnit">
+							<div class="portletUnit_t">
+								<div class="po_title"><h2>최근 방문자</h2></div>
+								<div class="po_icon">
+									<ul>
+										<li class="po_icon_edit"><a href="#a"><span>edit</span></a></li>
+										<li class="po_icon_refresh"><a href="#a"><span>refresh</span></a></li>
+										<li class="po_icon_max"><a href="#a"><span>max</span></a></li>
+										<li class="po_icon_fold"><a href="#a"><span>fold</span></a></li>
+										<li class="po_icon_close"><a href="#a"><span>close</span></a></li>
+										<!--
+										<li class="po_icon_more"><a href="#a"><span>more</span></a></li>
+										<li class="po_icon_restore"><a href="#a"><span>restore</span></a></li>
+										<li class="po_icon_config"><a href="#a"><span>config</span></a></li>
+										-->
+									</ul>
+								</div>
+							</div>
+							<div class="portletUnit_c tableList_1">
+								<div class="poEdit">
+									<div>
+										리스트 개수 : 
+										<select name="" title="리스트개수">
+											<option>5개</option>
+										</select>
+									</div>
+									<div class="textRight"><a class="button_s" href="#a"><span>저장</span></a></div>
+								</div>
+								<div class="pTitle_1">
+									총 방문자 : 100명
+								</div>								
+								<table summary="최근 방문자 목록">
+									<caption></caption>
+									<tbody>
+										<tr>
+											<th width="70%" scope="row"><a href="#a">김길동 부장 (공공/금융ERP컨설팅팀)</a></th>
+											<td></td>
+										</tr>
+										<tr>
+											<th scope="row"><a href="#a">김길동 부장 (공공/금융ERP컨설팅팀)</a></th>
+											<td></td>
+										</tr>	
+										<tr>
+											<th scope="row"><a href="#a">김길동 부장 (UX팀)</a></th>
+											<td></td>
+										</tr>
+										<tr>
+											<th scope="row"><a href="#a">김길동 부장 (UC컨설팅1팀)</a></th>
+											<td></td>
+										</tr>
+										<tr>
+											<th scope="row"><a href="#a">김길동 부장 (UC컨설팅1팀)</a></th>
+											<td></td>
+										</tr>																																							
+									</tbody>
+								</table>							
+								<div class="l_b_corner"></div><div class="r_b_corner"></div>
+							</div>
+						</div>
+						<!--//portletUnit End-->					
+					</div>					
+					<div class="clear"></div>
+										
+					<div class="portlet_l">
+						<!--portletUnit Start-->
+						<div class="portletUnit">
+							<div class="portletUnit_t">
+								<div class="po_title"><h2>To-Do</h2></div>
+								<div class="po_icon">
+									<ul>
+										<li class="po_icon_edit"><a href="#a"><span>edit</span></a></li>
+										<li class="po_icon_refresh"><a href="#a"><span>refresh</span></a></li>
+										<li class="po_icon_max"><a href="#a"><span>max</span></a></li>
+										<li class="po_icon_fold"><a href="#a"><span>fold</span></a></li>
+										<li class="po_icon_close"><a href="#a"><span>close</span></a></li>
+										<!--
+										<li class="po_icon_more"><a href="#a"><span>more</span></a></li>
+										<li class="po_icon_restore"><a href="#a"><span>restore</span></a></li>
+										<li class="po_icon_config"><a href="#a"><span>config</span></a></li>
+										-->
+									</ul>
+								</div>
+							</div>
+							<!--blockListTable Start-->
+							<div class="portletUnit_c po_schedule_w">
+								<div class="poEdit none"><!--edit펼침화면 display:none____none 제거시 display 됨-->
+									<div>
+										리스트 개수 : 
+										<select name="" title="리스트개수">
+											<option>5개</option>
+										</select>
+									</div>
+									<div class="textRight"><a class="button_s" href="#a"><span>저장</span></a></div>
+								</div>
+								<div class="blockListTable msgTable">
+									<table summary="My To-Do 목록">
+										<caption></caption>
+										<thead>
+											<tr>
+												<th width="*" scope="col">제목</th>
+												<th width="70" scope="col">마감일</th>
+												<th width="50" class="tdLast" scope="col">상태</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr>
+												<td class="textLeft"><div class="ellipsis"><a href="#a">설문조사 결재요청 설문조사...</a></div></td>
+												<td>2011.02.15</td>
+												<td class="tdLast">정상</td>
+											</tr>
+											<tr>
+												<td class="textLeft"><div class="ellipsis"><a href="#a">설문조사 결재요청</a></div></td>
+												<td>2011.02.15</td>
+												<td class="tdLast"><span class="colorPoint">오늘마감</span></td>
+											</tr>
+											<tr>
+												<td class="textLeft"><div class="ellipsis"><a href="#a">설문조사 결재요청</a></div></td>
+												<td>2011.02.15</td>
+												<td class="tdLast"><span class="colorPointS">지연</span></td>
+											</tr>
+											<tr>
+												<td class="textLeft"><div class="ellipsis"><a href="#a">설문조사 결재요청</a></div></td>
+												<td>2011.02.15</td>
+												<td class="tdLast">정상</td>
+											</tr>
+											<tr>
+												<td class="textLeft"><div class="ellipsis"><a href="#a">설문조사 결재요청</a></div></td>
+												<td>2011.02.15</td>
+												<td class="tdLast">정상</td>
+											</tr>																													
+										</tbody>
+									</table>
+								</div>					
+							</div>
+							<!--//blockListTable End-->							
+							<div class="l_b_corner"></div><div class="r_b_corner"></div>
+						</div>
+						<!--//portletUnit End-->
+					</div>
+				
+					<div class="portlet_c">
+						<!--portletUnit Start-->
+						<div class="portletUnit">
+							<div class="portletUnit_t">
+								<div class="po_title"><h2>To-Do</h2></div>
+								<div class="po_icon">
+									<ul>
+										<li class="po_icon_edit"><a href="#a"><span>edit</span></a></li>
+										<li class="po_icon_refresh"><a href="#a"><span>refresh</span></a></li>
+										<li class="po_icon_max"><a href="#a"><span>max</span></a></li>
+										<li class="po_icon_fold"><a href="#a"><span>fold</span></a></li>
+										<li class="po_icon_close"><a href="#a"><span>close</span></a></li>
+										<!--
+										<li class="po_icon_more"><a href="#a"><span>more</span></a></li>
+										<li class="po_icon_restore"><a href="#a"><span>restore</span></a></li>
+										<li class="po_icon_config"><a href="#a"><span>config</span></a></li>
+										-->
+									</ul>
+								</div>
+							</div>
+							<!--blockListTable Start-->
+							<div class="portletUnit_c po_schedule_w">
+								<div class="poEdit">
+									<div>
+										리스트 개수 : 
+										<select name="" title="리스트개수">
+											<option>5개</option>
+										</select>
+									</div>
+									<div class="textRight"><a class="button_s" href="#a"><span>저장</span></a></div>
+								</div>
+								<div class="blockListTable msgTable">
+									<table summary="My To-Do 목록">
+										<caption></caption>
+										<thead>
+											<tr>
+												<th width="*" scope="col">제목</th>
+												<th width="70" scope="col">마감일</th>
+												<th width="50" class="tdLast" scope="col">상태</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr>
+												<td class="textLeft"><div class="ellipsis"><a href="#a">설문조사 결재요청 설문조사...</a></div></td>
+												<td>2011.02.15</td>
+												<td class="tdLast">정상</td>
+											</tr>
+											<tr>
+												<td class="textLeft"><div class="ellipsis"><a href="#a">설문조사 결재요청</a></div></td>
+												<td>2011.02.15</td>
+												<td class="tdLast"><span class="colorPoint">오늘마감</span></td>
+											</tr>
+											<tr>
+												<td class="textLeft"><div class="ellipsis"><a href="#a">설문조사 결재요청</a></div></td>
+												<td>2011.02.15</td>
+												<td class="tdLast"><span class="colorPointS">지연</span></td>
+											</tr>
+											<tr>
+												<td class="textLeft"><div class="ellipsis"><a href="#a">설문조사 결재요청</a></div></td>
+												<td>2011.02.15</td>
+												<td class="tdLast">정상</td>
+											</tr>
+											<tr>
+												<td class="textLeft"><div class="ellipsis"><a href="#a">설문조사 결재요청</a></div></td>
+												<td>2011.02.15</td>
+												<td class="tdLast">정상</td>
+											</tr>																													
+										</tbody>
+									</table>
+								</div>					
+							</div>
+							<!--//blockListTable End-->							
+							<div class="l_b_corner"></div><div class="r_b_corner"></div>
+						</div>
+						<!--//portletUnit End-->
+					</div>
+				
+					<div class="portlet_r">
+						<!--portletUnit Start-->
+						<div class="portletUnit">
+							<div class="portletUnit_t">
+								<div class="po_title"><h2>미확인 메일</h2></div>
+								<div class="po_icon">
+									<ul>
+										<li class="po_icon_edit"><a href="#a"><span>edit</span></a></li>
+										<li class="po_icon_refresh"><a href="#a"><span>refresh</span></a></li>
+										<li class="po_icon_max"><a href="#a"><span>max</span></a></li>
+										<li class="po_icon_fold"><a href="#a"><span>fold</span></a></li>
+										<li class="po_icon_close"><a href="#a"><span>close</span></a></li>
+										<!--
+										<li class="po_icon_more"><a href="#a"><span>more</span></a></li>
+										<li class="po_icon_restore"><a href="#a"><span>restore</span></a></li>
+										<li class="po_icon_config"><a href="#a"><span>config</span></a></li>
+										-->
+									</ul>
+								</div>
+							</div>
+							<div class="portletUnit_c tableList_1">
+								<div id="divTab_s2" class="iKEP_tab_s">
+									<ul>
+										<li><a href="#tabs-4">메일</a></li>
+										<li><a href="#tabs-5">쪽지</a></li>
+									</ul>				
+								</div>
+								<div class="poEdit">
+									<div>
+										리스트 개수 : 
+										<select name="" title="리스트개수">
+											<option>5개</option>
+										</select>
+									</div>
+									<div class="textRight"><a class="button_s" href="#a"><span>저장</span></a></div>
+								</div>
+								<table summary="메일목록">
+									<caption></caption>
+									<tbody>
+										<tr>
+											<th width="*" scope="row"><div class="ellipsis"><a href="#a"><strong>임원 및 감사 변경에 따른 공증 및 등기...</strong></a></div></th>
+											<td width="55" class="textCenter">홍길동</td>
+											<td width="30" class="textRight"><span class="date">03.22</span></td>
+										</tr>
+										<tr>
+											<th scope="row"><div class="ellipsis"><a href="#a">인장 사용신청</a></div></th>
+											<td class="textCenter">김길동</td>
+											<td class="textRight"><span class="date">03.18</span></td>
+										</tr>	
+										<tr>
+											<th scope="row"><div class="ellipsis"><a href="#a">인장 사용신청</a></div></th>
+											<td class="textCenter">이길동</td>
+											<td class="textRight"><span class="date">03.15</span></td>
+										</tr>
+										<tr>
+											<th scope="row"><div class="ellipsis"><a href="#a">인장 사용신청</a></div></th>
+											<td class="textCenter">이길동</td>
+											<td class="textRight"><span class="date">03.14</span></td>
+										</tr>
+										<tr>
+											<th scope="row"><div class="ellipsis"><a href="#a">인장 사용신청</a></div></th>
+											<td class="textCenter">이길동</td>
+											<td class="textRight"><span class="date">03.13</span></td>
+										</tr>																																							
+									</tbody>
+								</table>							
+								<div class="l_b_corner"></div><div class="r_b_corner"></div>
+							</div>
+						</div>
+						<!--//portletUnit End-->					
+					</div>
+					<div class="clear"></div>
+				
+					<div class="portlet_l">
+						<!--portletUnit Start-->
+						<div class="portletUnit">
+							<div class="portletUnit_t">
+								<div class="po_title"><h2>날씨 정보</h2></div>
+								<div class="po_icon">
+									<ul>
+										<li class="po_icon_edit"><a href="#a"><span>edit</span></a></li>
+										<li class="po_icon_refresh"><a href="#a"><span>refresh</span></a></li>
+										<li class="po_icon_max"><a href="#a"><span>max</span></a></li>
+										<li class="po_icon_fold"><a href="#a"><span>fold</span></a></li>
+										<li class="po_icon_close"><a href="#a"><span>close</span></a></li>
+										<!--
+										<li class="po_icon_more"><a href="#a"><span>more</span></a></li>
+										<li class="po_icon_restore"><a href="#a"><span>restore</span></a></li>
+										<li class="po_icon_config"><a href="#a"><span>config</span></a></li>
+										-->
+									</ul>
+								</div>
+							</div>
+							<!--blockListTable Start-->
+							<div class="portletUnit_c">
+								
+								<div class="weather">
+									<span>서울</span>
+									<div class="weather_view">
+										<div class="weather_icon_b">
+											<img src='../../images/portlet/weather/weather_chance_of_storm.png' alt="" />
+										</div>
+										<div class="weather_info">
+											<ul>
+												<li><span class="colorPoint mr10">-2℃</span><span>(28℉)</span></li>
+												<li>부분적으로 흐림</li>
+												<li>바람: 북풍, 14 km/h</li>
+												<li>습도: 43%</li>
+											</ul>
+										</div>
+									</div>
+									<div class="weather_day">
+										<ul>
+											<li>
+												<p>월</p>
+												<img src='../../images/portlet/weather/weather_sunny_s.png' alt="" />
+											</li>
+											<li>
+												<p>화</p>
+												<img src='../../images/portlet/weather/weather_cloudy_s.png' alt="" />
+											</li>
+											<li>
+												<p>수</p>
+												<img src='../../images/portlet/weather/weather_cloudy_s.png' alt="" />
+											</li>
+											<li>
+												<p>목</p>
+												<img src='../../images/portlet/weather/weather_sunny_s.png' alt="" />
+											</li>
+										</ul>
+									</div>
+									<div class="clear"></div>
+								</div>
+								
+								<div class="weather_line"><span>구분선</span></div>
+								
+								<div class="weather">
+									<span>구미</span>
+									<div class="weather_view">
+										<div class="weather_icon_b">
+											<img src='../../images/portlet/weather/weather_sunny.png' alt="" />
+										</div>
+										<div class="weather_info">
+											<ul>
+												<li><span class="colorPoint mr10">6℃</span><span>(43℉)</span></li>
+												<li>대체로 흐림</li>
+												<li>바람: 북서풍, 19 km/h</li>
+												<li>습도: 29%</li>
+											</ul>
+										</div>
+									</div>
+									<div class="weather_day">
+										<ul>
+											<li>
+												<p>월</p>
+												<img src='../../images/portlet/weather/weather_sunny_s.png' alt="" />
+											</li>
+											<li>
+												<p>화</p>
+												<img src='../../images/portlet/weather/weather_sunny_s.png' alt="" />
+											</li>
+											<li>
+												<p>수</p>
+												<img src='../../images/portlet/weather/weather_sunny_s.png' alt="" />
+											</li>
+											<li>
+												<p>목</p>
+												<img src='../../images/portlet/weather/weather_sunny_s.png' alt="" />
+											</li>
+										</ul>
+									</div>
+									<div class="clear"></div>
+								</div>
+													
+							</div>
+							<!--//blockListTable End-->							
+							<div class="l_b_corner"></div><div class="r_b_corner"></div>
+						</div>
+						<!--//portletUnit End-->
+					</div>
+					<!--layer start-->
+					<div class="weather_layer" style="top:1550px; left:120px; z-index:99;">
+						<div class="weather_layer_t">
+							5/5 (화)
+						</div>
+						<div class="weather_layer_info">
+							<ul>
+								<li><span class="colorBlue">4℃</span> <span class="w_bar">/</span> <span class="colorPoint">11℃</span></li>
+								<li>부분적으로 흐림</li>
+							</ul>
+						</div>
+					</div>		
+					<!--layer end-->
+
+					<div class="portlet_c">
+						<!--portletUnit Start-->
+						<div class="portletUnit">
+							<div class="portletUnit_t">
+								<div class="po_title"><h2>My Collaboration</h2></div>
+								<div class="po_icon">
+									<ul>
+										<li class="po_icon_edit"><a href="#a"><span>edit</span></a></li>
+										<li class="po_icon_refresh"><a href="#a"><span>refresh</span></a></li>
+										<li class="po_icon_max"><a href="#a"><span>max</span></a></li>
+										<li class="po_icon_fold"><a href="#a"><span>fold</span></a></li>
+										<li class="po_icon_close"><a href="#a"><span>close</span></a></li>
+										<!--
+										<li class="po_icon_more"><a href="#a"><span>more</span></a></li>
+										<li class="po_icon_restore"><a href="#a"><span>restore</span></a></li>
+										<li class="po_icon_config"><a href="#a"><span>config</span></a></li>
+										-->
+									</ul>
+								</div>
+							</div>
+							<div class="portletUnit_c tableList_1">
+								<div class="poEdit">
+									<div>
+										리스트 개수 :
+										<select name="" title="리스트 개수">
+											<option>3</option>
+											<option>5</option>
+											<option>7</option>
+											<option>10</option>
+										</select>
+									</div>
+									<div>
+										목록 :
+										<select name="" title="목록">
+											<option>[부서]정보기술팀</option>
+										</select>&nbsp;
+										<a href="#a"><img src="../../images/icon/ic_btn_plus.gif" alt="" class="valign_middle" /><span class="valign_middle"> 추가</span></a>
+									</div>
+									<div>
+										<span>정보기술팀</span><a href="#a"> <img src="../../images/icon/ic_btn_minus.gif" alt="" class="valign_middle" /></a>&nbsp;&nbsp;
+										<span>TF기술팀</span><a href="#a"> <img src="../../images/icon/ic_btn_minus.gif" alt="" class="valign_middle" /></a>
+									</div>
+									<div class="textRight"><a class="button_s" href="#a"><span>저장</span></a></div>
+								</div>
+								<div class="poEdit">
+									<div>
+										리스트 개수 :
+										<select name="" title="리스트 개수">
+											<option>3</option>
+											<option>5</option>
+											<option>7</option>
+											<option>10</option>
+										</select>
+									</div>
+									<div>
+										타입 :
+										<input name="" class="checkbox" title="타입" type="checkbox" value="" /> <span>지식</span>&nbsp;&nbsp;
+										<input name="" class="checkbox" title="타입" type="checkbox" value="" /> <span>일반</span>
+									</div>
+									<div>
+										<ul>
+											<li>목록 : <input name="" class="checkbox" title="타입" type="checkbox" value="" /> <span>EP/BPM Consulting Team Workspace</span></li>
+											<li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><input name="" class="checkbox" title="타입" type="checkbox" value="" /> <span>LGC생산팀</span></li>
+											<li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><input name="" class="checkbox" title="타입" type="checkbox" value="" /> <span>BrainStormers (ES사업담당WorkSpace)</span></li>
+											<li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><input name="" class="checkbox" title="타입" type="checkbox" value="" /> <span>DC-India</span></li>
+											<li><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><input name="" class="checkbox" title="타입" type="checkbox" value="" /> <span>엔터프라이즈솔루션 사업부문 포탈</span></li>
+										</ul>
+									</div>
+									<div class="textRight"><a class="button_s" href="#a"><span>저장</span></a></div>
+								</div>
+								<div class="pTitle_1">
+									<a href="#a">EP/BPM Consulting Team Workspace</a>
+								</div>
+								<table summary="EP/BPM Consulting Team Workspace 리스트">
+									<caption></caption>
+									<tbody>
+										<tr>
+											<th width="*" scope="row"><div class="ellipsis"><a href="#a"><strong>6월 3주차 주간보고 - 솔루션그룹</strong></a></div></th>
+											<td width="30" class="textRight today"><span class="date">03.15</span></td>
+										</tr>
+										<tr>
+											<th scope="row"><div class="ellipsis"><a href="#a">떠오르는 협업, "보안 선행되야"</a></div></th>
+											<td class="textRight"><span class="date">03.18</span></td>
+										</tr>										
+									</tbody>
+								</table>
+								<div class="dotline_1"></div>
+								<div class="pTitle_1">
+									<a href="#a">엔터프라이즈솔루션 사업부문 포탈</a>
+								</div>								
+								<table summary="엔터프라이즈솔루션 사업부문 포탈 리스트">
+									<caption></caption>
+									<tbody>
+										<tr>
+											<th width="*" scope="row"><div class="ellipsis"><a href="#a"><strong>[ES 부문 미래위] 2010년 학습활동 비용 지원</strong></a></div></th>
+											<td width="30" class="textRight today"><span class="date">03.15</span></td>
+										</tr>
+										<tr>
+											<th scope="row"><div class="ellipsis"><a href="#a">[ES 부문 미래위] 2010년 학습활동 비용 지원</a></div></th>
+											<td class="textRight"><span class="date">03.20</span></td>
+										</tr>	
+										<tr>
+											<th scope="row"><div class="ellipsis"><a href="#a">[ES 부문 미래위] 2010년 학습활동 비용 지원</a></div></th>
+											<td class="textRight"><span class="date">03.21</span></td>
+										</tr>																			
+									</tbody>
+								</table>							
+								<div class="l_b_corner"></div><div class="r_b_corner"></div>
+							</div>
+						</div>
+						<!--//portletUnit End-->
+					</div>
+					
+					<div class="portlet_r">
+						<!--portletUnit Start-->
+						<div class="portletUnit">
+							<div class="portletUnit_t">
+								<div class="po_title"><h2>전사 랭킹 정보 Top 5</h2></div>
+								<div class="po_icon">
+									<ul>
+										<li class="po_icon_edit"><a href="#a"><span>edit</span></a></li>
+										<li class="po_icon_refresh"><a href="#a"><span>refresh</span></a></li>
+										<li class="po_icon_max"><a href="#a"><span>max</span></a></li>
+										<li class="po_icon_fold"><a href="#a"><span>fold</span></a></li>
+										<li class="po_icon_close"><a href="#a"><span>close</span></a></li>
+										<!--
+										<li class="po_icon_more"><a href="#a"><span>more</span></a></li>
+										<li class="po_icon_restore"><a href="#a"><span>restore</span></a></li>
+										<li class="po_icon_config"><a href="#a"><span>config</span></a></li>
+										-->
+									</ul>
+								</div>
+							</div>
+							<div class="portletUnit_c po_schedule_w">
+
+								<div class="blockListTable msgTable">
+									<table summary="My To-Do 목록">
+										<caption></caption>
+										<thead>
+											<tr>
+												<th width="*" scope="col">제목</th>
+												<th width="50" scope="col">작성자</th>
+												<th width="70" class="tdLast" scope="col">일자</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr>
+												<td class="textLeft portNo01"><div class="ellipsis"><a href="#a">설문조사 결재요청설문조사 결재요청설문조사 결재요청설문조사 결재요청</a></div></td>
+												<td>홍길동</td>
+												<td class="tdLast">2011.02.15</td>
+											</tr>
+											<tr>
+												<td class="textLeft portNo02"><div class="ellipsis"><a href="#a">설문조사 결재요청설문조사 결재요청설문조사 결재요청설문조사 결재요청</a></div></td>
+												<td>홍길동</td>
+												<td class="tdLast">2011.02.15</td>
+											</tr>
+											<tr>
+												<td class="textLeft portNo03"><div class="ellipsis"><a href="#a">설문조사 결재요청</a></div></td>
+												<td>홍길동</td>
+												<td class="tdLast">2011.02.15</td>
+											</tr>
+											<tr>
+												<td class="textLeft portNo04"><div class="ellipsis"><a href="#a">설문조사 결재요청</a></div></td>
+												<td>홍길동</td>
+												<td class="tdLast">2011.02.15</td>
+											</tr>
+											<tr>
+												<td class="textLeft portNo05"><div class="ellipsis"><a href="#a">설문조사 결재요청</a></div></td>
+												<td>홍길동</td>
+												<td class="tdLast">2011.02.15</td>
+											</tr>																													
+										</tbody>
+									</table>
+								</div>				
+								<div class="l_b_corner"></div><div class="r_b_corner"></div>
+							</div>
+						</div>
+						<!--//portletUnit End-->
+					</div>
+					<div class="clear"></div>					
+
+					<div class="portlet_l">
+						<!--portletUnit Start-->
+						<div class="portletUnit">
+							<div class="portletUnit_t">
+								<div class="po_title"><h2>Social Ranking Top 10</h2></div>
+								<div class="po_icon">
+									<ul>
+										<li class="po_icon_edit"><a href="#a"><span>edit</span></a></li>
+										<li class="po_icon_refresh"><a href="#a"><span>refresh</span></a></li>
+										<li class="po_icon_max"><a href="#a"><span>max</span></a></li>
+										<li class="po_icon_fold"><a href="#a"><span>fold</span></a></li>
+										<li class="po_icon_close"><a href="#a"><span>close</span></a></li>
+										<!--
+										<li class="po_icon_more"><a href="#a"><span>more</span></a></li>
+										<li class="po_icon_restore"><a href="#a"><span>restore</span></a></li>
+										<li class="po_icon_config"><a href="#a"><span>config</span></a></li>
+										-->
+									</ul>
+								</div>
+							</div>
+							<div class="portletUnit_c imgList_1 ">								
+								<ul>
+									<li class="portNo01 position_0"><a href="#a"><img src="../../images/common/temp_img_50x50_1.gif" alt="image" onmouseover="iKEP.showUserSimpleInfo(1, this, {name:'박길동', rank:'과장', team:'UC 컨설팅팀'});" onmouseout="iKEP.showUserSimpleInfo(0);"/></a></li>
+									<li class="portNo02 position_0"><a href="#a"><img src="../../images/common/temp_img_50x50_2.gif" alt="image" onmouseover="iKEP.showUserSimpleInfo(1, this, {name:'박길동', rank:'과장', team:'UC 컨설팅팀'});" onmouseout="iKEP.showUserSimpleInfo(0);"/></a></li>
+									<li class="portNo03 position_0"><a href="#a"><img src="../../images/common/temp_img_50x50_3.gif" alt="image" onmouseover="iKEP.showUserSimpleInfo(1, this, {name:'박길동', rank:'과장', team:'UC 컨설팅팀'});" onmouseout="iKEP.showUserSimpleInfo(0);" /></a></li>
+									<li class="portNo04 position_0"><a href="#a"><img src="../../images/common/temp_img_50x50_4.gif" alt="image" onmouseover="iKEP.showUserSimpleInfo(1, this, {name:'박길동', rank:'과장', team:'UC 컨설팅팀'});" onmouseout="iKEP.showUserSimpleInfo(0);" /></a></li>
+									<li class="portNo05 position_0"><a href="#a"><img src="../../images/common/temp_img_50x50_5.gif" alt="image" onmouseover="iKEP.showUserSimpleInfo(1, this, {name:'박길동', rank:'과장', team:'UC 컨설팅팀'});" onmouseout="iKEP.showUserSimpleInfo(0);" /></a></li>
+									<li class="portNo06 position_0"><a href="#a"><img src="../../images/common/temp_img_50x50_6.gif" alt="image" onmouseover="iKEP.showUserSimpleInfo(1, this, {name:'박길동', rank:'과장', team:'UC 컨설팅팀'});" onmouseout="iKEP.showUserSimpleInfo(0);" /></a></li>
+									<li class="portNo07 position_0"><a href="#a"><img src="../../images/common/temp_img_50x50_1.gif" alt="image" onmouseover="iKEP.showUserSimpleInfo(1, this, {name:'박길동', rank:'과장', team:'UC 컨설팅팀'});" onmouseout="iKEP.showUserSimpleInfo(0);" /></a></li>
+									<li class="portNo08 position_0"><a href="#a"><img src="../../images/common/temp_img_50x50_2.gif" alt="image" onmouseover="iKEP.showUserSimpleInfo(1, this, {name:'박길동', rank:'과장', team:'UC 컨설팅팀'});" onmouseout="iKEP.showUserSimpleInfo(0);" /></a></li>
+									<li class="portNo09 position_0"><a href="#a"><img src="../../images/common/temp_img_50x50_3.gif" alt="image" onmouseover="iKEP.showUserSimpleInfo(1, this, {name:'박길동', rank:'과장', team:'UC 컨설팅팀'});" onmouseout="iKEP.showUserSimpleInfo(0);" /></a></li>
+									<li class="portNo10 position_0"><a href="#a"><img src="../../images/common/temp_img_50x50_4.gif" alt="image" onmouseover="iKEP.showUserSimpleInfo(1, this, {name:'박길동', rank:'과장', team:'UC 컨설팅팀'});" onmouseout="iKEP.showUserSimpleInfo(0);" /></a></li>																																				
+								</ul>	
+								<div class="clear"></div>						
+								<div class="l_b_corner"></div><div class="r_b_corner"></div>
+							</div>
+						</div>
+						<!--//portletUnit End-->					
+					</div>	
+
+					<div class="portlet_c">
+						<!--portletUnit Start-->
+						<div class="portletUnit">
+							<div class="portletUnit_t">
+								<div class="po_title"><h2>지식축척정보</h2></div>
+								<div class="po_icon">
+									<ul>
+										<li class="po_icon_edit"><a href="#a"><span>edit</span></a></li>
+										<li class="po_icon_refresh"><a href="#a"><span>refresh</span></a></li>
+										<li class="po_icon_max"><a href="#a"><span>max</span></a></li>
+										<li class="po_icon_fold"><a href="#a"><span>fold</span></a></li>
+										<li class="po_icon_close"><a href="#a"><span>close</span></a></li>
+										<!--
+										<li class="po_icon_more"><a href="#a"><span>more</span></a></li>
+										<li class="po_icon_restore"><a href="#a"><span>restore</span></a></li>
+										<li class="po_icon_config"><a href="#a"><span>config</span></a></li>
+										-->
+									</ul>
+								</div>
+							</div>
+							<div class="portletUnit_c">
+								<div style="text-align:center;">
+									<div style="height:20px;">
+										<table align="right">
+											<tbody>
+												<tr class="jqplot-table-legend">
+													<td style="text-align:center;" class="jqplot-table-legend">
+														<div>
+															<div style="background-color:rgb(130, 188, 36);border-color: rgb(130, 188, 36);" class="jqplot-table-legend-swatch"></div>
+														</div>
+													</td>
+													<td style="padding-top:0pt;" class="jqplot-table-legend">공개</td>											
+													<td style="text-align: center;" class="jqplot-table-legend">
+														<div>
+															<div style="background-color: rgb(54, 54, 54); border-color: rgb(54, 54, 54);" class="jqplot-table-legend-swatch"></div>
+														</div>
+													</td>
+													<td style="padding-top:0pt;" class="jqplot-table-legend">전체</td>
+												</tr>
+											</tbody>
+										</table>
+									</div>			
+									<div id="chart1" style="height:250px;"></div>			
+								</div>					
+								<div class="l_b_corner"></div><div class="r_b_corner"></div>
+							</div>
+						</div>
+						<!--//portletUnit End-->					
+					</div>										
+					<div class="clear"></div>
+															
+					<div class="portlet_l"  style="width:100%;">
+						<!--portletUnit Start-->
+						<div class="portletUnit">
+							<div class="portletUnit_t">
+								<div class="po_title"><h2>미확인 메일</h2></div>
+								<div class="po_icon">
+									<ul>
+										<li class="po_icon_edit"><a href="#a"><span>edit</span></a></li>
+										<li class="po_icon_refresh"><a href="#a"><span>refresh</span></a></li>
+										<li class="po_icon_max"><a href="#a"><span>max</span></a></li>
+										<li class="po_icon_fold"><a href="#a"><span>fold</span></a></li>
+										<li class="po_icon_close"><a href="#a"><span>close</span></a></li>
+										<!--
+										<li class="po_icon_more"><a href="#a"><span>more</span></a></li>
+										<li class="po_icon_restore"><a href="#a"><span>restore</span></a></li>
+										<li class="po_icon_config"><a href="#a"><span>config</span></a></li>
+										-->
+									</ul>
+								</div>
+							</div>
+							<div class="portletUnit_c tableList_1">
+								<div id="divTab_s3" class="iKEP_tab_s">
+									<ul>
+										<li><a href="#tabs-6">메일</a></li>
+										<li><a href="#tabs-7">쪽지</a></li>
+									</ul>				
+								</div>
+								<div class="poEdit none"><!--edit펼침화면 display:none____none 제거시 display 됨-->
+									<div>
+										리스트 개수 : 
+										<select name="" title="리스트개수">
+											<option>5개</option>
+										</select>
+									</div>
+									<div class="textRight"><a class="button_s" href="#a"><span>저장</span></a></div>
+								</div>
+								<table summary="메일목록">
+									<caption></caption>
+									<tbody>
+										<tr>
+											<th width="*" scope="row"><a href="#a"><strong>임원 및 감사 변경에 따른 공증 및 등기...</strong></a></th>
+											<td width="55" class="textCenter">홍길동</td>
+											<td width="30" class="textRight"><span class="date">03.22</span></td>
+										</tr>
+										<tr>
+											<th scope="row"><a href="#a">인장 사용신청</a></th>
+											<td class="textCenter">김길동</td>
+											<td class="textRight"><span class="date">03.18</span></td>
+										</tr>	
+										<tr>
+											<th scope="row"><a href="#a">인장 사용신청</a></th>
+											<td class="textCenter">이길동</td>
+											<td class="textRight"><span class="date">03.15</span></td>
+										</tr>
+										<tr>
+											<th scope="row"><a href="#a">인장 사용신청</a></th>
+											<td class="textCenter">이길동</td>
+											<td class="textRight"><span class="date">03.14</span></td>
+										</tr>
+										<tr>
+											<th scope="row"><a href="#a">인장 사용신청</a></th>
+											<td class="textCenter">이길동</td>
+											<td class="textRight"><span class="date">03.13</span></td>
+										</tr>																																							
+									</tbody>
+								</table>
+								<div class="dotline_1"></div>
+							
+								<!--blockMsgbox Start-->
+								<div class="blockMsgbox" style="margin-bottom:0px;"> 
+									<div class="msgbox_frame"></div>
+									<table summary="메일상세사항">
+										<caption></caption>
+										<colgroup>
+											<col width="30" />
+											<col width="80" />
+											<col width="*" />											
+										</colgroup>
+										<tbody>
+											<tr>
+												<th scope="row"><img src="../../images/icon/ic_favorite.gif" alt="" /></th>
+												<th width="*" colspan="2"><strong>[광고]고객님이 원하시는 상품으로 금리 적용됩니다.</strong></th>
+											</tr>
+											<tr>
+												<th scope="row" style="vertical-align:middle"><img src="../../images/icon/ic_treeminus.gif" alt="" /></th>
+												<th scope="row">보낸사람</th>
+												<td><a href="#a">"김희락" &lt;worldkhan@worldkhan.org&gt;</a></td>
+											</tr>
+											<tr>
+												<th scope="row"></th>
+												<th scope="row">보낸시간</th>
+												<td>2011.01.22 (토) 05:38:22 [GMT +09:00(서울, 도쿄)]</td>
+											</tr>
+											<tr>
+												<th scope="row"></th>
+												<th scope="row">받는사람</th>
+												<td>&lt;mskwak_1016@naver.com&gt;</td>
+											</tr>
+											<tr>
+												<th class="tdLast"></th>
+												<td class="tdLast" colspan="2">
+													<p class="border_none">
+														고객별 맞춤상품 추천으로 가장 좋은 조건으로!! 진행!! <br />
+														자영업자, 직장인, 주부, 학생 누구나!! 가능합니다!!
+													</p>
+												</td>
+											</tr>														
+										</tbody>
+									</table>
+								</div>
+								<!--//blockMsgbox End-->							
+								<div class="l_b_corner"></div><div class="r_b_corner"></div>
+							</div>
+						</div>
+						<!--//portletUnit End-->					
+					</div>
+					<div class="clear"></div>
+					
+					<div class="portlet_l" style="width:100%;">
+						<!--portletUnit Start-->
+						<div class="portletUnit">
+							<div class="portletUnit_t">
+								<div class="po_title"><h2>My Social Network</h2></div>
+								<div class="po_icon">
+									<ul>
+										<li class="po_icon_edit"><a href="#a"><span>edit</span></a></li>
+										<li class="po_icon_refresh"><a href="#a"><span>refresh</span></a></li>
+										<li class="po_icon_max"><a href="#a"><span>max</span></a></li>
+										<li class="po_icon_fold"><a href="#a"><span>fold</span></a></li>
+										<li class="po_icon_close"><a href="#a"><span>close</span></a></li>
+										<!--
+										<li class="po_icon_more"><a href="#a"><span>more</span></a></li>
+										<li class="po_icon_restore"><a href="#a"><span>restore</span></a></li>
+										<li class="po_icon_config"><a href="#a"><span>config</span></a></li>
+										-->
+									</ul>
+								</div>
+							</div>
+							<div class="portletUnit_c imgList_2">
+								
+								<div id="divTab_s4" class="iKEP_tab_s">
+									<ul>
+										<li><a href="#tabs-1">Following</a></li>
+										<li><a href="#tabs-2">Follower</a></li>
+									</ul>			
+								</div>		
+								
+								<ul class="imgList_1_max">
+									<li>
+										<table summary="following 목록">
+											<caption></caption>
+											<tbody>
+												<tr>
+													<td><input name="" class="checkbox" title="checkbox" type="checkbox" value="" /></td>
+													<td><a href="#a"><img src="../../images/common/photo_50x50.gif" alt="no image" /></a></td>
+													<td>
+														<div class="imgList_1_info">
+															<span class="imgList_1_id"><a href="#a">Lenny1234</a></span> <span class="imgList_1_name"><a href="#a">김길동</a></span>	
+															<div>Executive</div>
+														</div>													
+													</td>
+												</tr>
+											</tbody>
+										</table>
+									</li>
+									<li>
+										<table summary="following 목록">
+											<caption></caption>
+											<tbody>
+												<tr>
+													<td><input name="" class="checkbox" title="checkbox" type="checkbox" value="" /></td>
+													<td><a href="#a"><img src="../../images/common/temp_img_50x50_1.gif" alt="image" /></a></td>
+													<td>
+														<div class="imgList_1_info">
+															<span class="imgList_1_id"><a href="#a">TaeHi</a></span> <span class="imgList_1_name"><a href="#a">김태희</a></span>	
+															<div>Executive</div>
+														</div>													
+													</td>
+												</tr>
+											</tbody>
+										</table>
+									</li>
+									<li>
+										<table summary="following 목록">
+											<caption></caption>
+											<tbody>
+												<tr>
+													<td><input name="" class="checkbox" title="checkbox" type="checkbox" value="" /></td>
+													<td><a href="#a"><img src="../../images/common/temp_img_50x50_2.gif" alt="image" /></a></td>
+													<td>
+														<div class="imgList_1_info">
+															<span class="imgList_1_id"><a href="#a">ssong2011</a></span> <span class="imgList_1_name"><a href="#a">송혜교</a></span>	
+															<div>Executive</div>
+														</div>													
+													</td>
+												</tr>
+											</tbody>
+										</table>
+									</li>
+									<li>
+										<table summary="following 목록">
+											<caption></caption>
+											<tbody>
+												<tr>
+													<td><input name="" class="checkbox" title="checkbox" type="checkbox" value="" /></td>
+													<td><a href="#a"><img src="../../images/common/temp_img_50x50_3.gif" alt="image" /></a></td>
+													<td>
+														<div class="imgList_1_info">
+															<span class="imgList_1_id"><a href="#a">iKepiKep</a></span> <span class="imgList_1_name"><a href="#a">김길동</a></span>	
+															<div>Executive</div>
+														</div>													
+													</td>
+												</tr>
+											</tbody>
+										</table>
+									</li>										
+									<li>
+										<table summary="following 목록">
+											<caption></caption>
+											<tbody>
+												<tr>
+													<td><input name="" class="checkbox" title="checkbox" type="checkbox" value="" /></td>
+													<td><a href="#a"><img src="../../images/common/temp_img_50x50_4.gif" alt="image" /></a></td>
+													<td>
+														<div class="imgList_1_info">
+															<span class="imgList_1_id"><a href="#a">Choigildong</a></span> <span class="imgList_1_name"><a href="#a">최길동</a></span>	
+															<div>Executive</div>
+														</div>													
+													</td>
+												</tr>
+											</tbody>
+										</table>
+									</li>																	
+									<li>
+										<table summary="following 목록">
+											<caption></caption>
+											<tbody>
+												<tr>
+													<td><input name="" class="checkbox" title="checkbox" type="checkbox" value="" /></td>
+													<td><a href="#a"><img src="../../images/common/temp_img_50x50_1.gif" alt="image" /></a></td>
+													<td>
+														<div class="imgList_1_info">
+															<span class="imgList_1_id"><a href="#a">TaeHi</a></span> <span class="imgList_1_name"><a href="#a">김태희</a></span>	
+															<div>Executive</div>
+														</div>													
+													</td>
+												</tr>
+											</tbody>
+										</table>
+									</li>
+									<li>
+										<table summary="following 목록">
+											<caption></caption>
+											<tbody>
+												<tr>
+													<td><input name="" class="checkbox" title="checkbox" type="checkbox" value="" /></td>
+													<td><a href="#a"><img src="../../images/common/temp_img_50x50_2.gif" alt="image" /></a></td>
+													<td>
+														<div class="imgList_1_info">
+															<span class="imgList_1_id"><a href="#a">ssong2011</a></span> <span class="imgList_1_name"><a href="#a">송혜교</a></span>	
+															<div>Executive</div>
+														</div>													
+													</td>
+												</tr>
+											</tbody>
+										</table>
+									</li>
+									<li>
+										<table summary="following 목록">
+											<caption></caption>
+											<tbody>
+												<tr>
+													<td><input name="" class="checkbox" title="checkbox" type="checkbox" value="" /></td>
+													<td><a href="#a"><img src="../../images/common/temp_img_50x50_3.gif" alt="image" /></a></td>
+													<td>
+														<div class="imgList_1_info">
+															<span class="imgList_1_id"><a href="#a">iKepiKep</a></span> <span class="imgList_1_name"><a href="#a">김길동</a></span>	
+															<div>Executive</div>
+														</div>													
+													</td>
+												</tr>
+											</tbody>
+										</table>
+									</li>												
+								</ul>
+								<div class="clear"></div>				
+								<div class="l_b_corner"></div><div class="r_b_corner"></div>
+								<!--blockButton_3 Start-->
+								<div class="blockButton_3 imgList_no mt10"> 
+									<a class="button_3" href="#a"><span>추가 10건 더보기 <img src="../../images/icon/ic_more_ar.gif" alt=""/></span></a>				
+								</div>
+								<!--//blockButton_3 End-->
+							</div>
+						</div>
+						<!--//portletUnit End-->
+					</div>
+					
+					<div class="portlet_l" style="width:100%;">
+						<!--portletUnit Start-->
+						<div class="portletUnit">
+							<div class="portletUnit_t">
+								<div class="po_title"><h2>축하합니다</h2></div>
+								<div class="po_icon">
+									<ul>
+										<li class="po_icon_edit"><a href="#a"><span>edit</span></a></li>
+										<li class="po_icon_refresh"><a href="#a"><span>refresh</span></a></li>
+										<li class="po_icon_max"><a href="#a"><span>max</span></a></li>
+										<li class="po_icon_fold"><a href="#a"><span>fold</span></a></li>
+										<li class="po_icon_close"><a href="#a"><span>close</span></a></li>
+										<!--
+										<li class="po_icon_more"><a href="#a"><span>more</span></a></li>
+										<li class="po_icon_restore"><a href="#a"><span>restore</span></a></li>
+										<li class="po_icon_config"><a href="#a"><span>config</span></a></li>
+										-->
+									</ul>
+								</div>
+							</div>
+							<div class="portletUnit_c tableList_1">
+								<div class="poEdit none"><!--edit펼침화면 display:none____none 제거시 display 됨-->
+									<div>
+										대상기간 : 
+										<label><input name="" class="radio" title="week" type="radio" value="" />week</label>&nbsp;&nbsp;
+										<label><input name="" class="radio" title="month" type="radio" value="" />month</label>									
+									</div>
+									<div>
+										대상그룹 :
+										<input name="" class="checkbox" title="대상그룹" type="checkbox" value="" />
+										<select name="" title="대상그룹">
+											<option>담당/팀</option>
+										</select>
+									</div>
+									<div class="textRight"><a class="button_s" href="#a"><span>저장</span></a></div>
+								</div>
+								<div class="pTitle_1">
+									생일축하합니다
+								</div>
+								<table summary="생일자 명단">
+									<caption></caption>
+									<tbody>
+										<tr>
+											<th width="*" scope="row" class="today"><img src="../../images/icon/ic_birthday.gif" alt="" />  <a href="#a">김길동 부장 (공공/금융ERP컨설팅팀)</a></th>
+											<td width="30" class="textRight today"><span class="date">03.15</span></td>
+										</tr>
+										<tr>
+											<th scope="row"><a href="#a">김길동 부장 (UC컨설팅1팀)</a></th>
+											<td class="textRight"><span class="date">03.18</span></td>
+										</tr>										
+									</tbody>
+								</table>
+								<div class="dotline_1"></div>
+								<div class="pTitle_1">
+									결혼기념일을 축하합니다
+								</div>								
+								<table summary="결혼기념일자 명단">
+									<caption></caption>
+									<tbody>
+										<tr>
+											<th width="*" scope="row" class="today"><img src="../../images/icon/ic_wedding.gif" alt="" />  <a href="#a">최길동 총괄 CONSULTANT (UC팀)</a></th>
+											<td width="30" class="textRight today"><span class="date">03.15</span></td>
+										</tr>
+										<tr>
+											<th scope="row"><a href="#a">김길동 부장 (UC컨설팅1팀)</a></th>
+											<td class="textRight"><span class="date">03.20</span></td>
+										</tr>	
+										<tr>
+											<th scope="row"><a href="#a">김길동 부장 (UC컨설팅1팀)</a></th>
+											<td class="textRight"><span class="date">03.21</span></td>
+										</tr>																			
+									</tbody>
+								</table>								
+								<div class="l_b_corner"></div><div class="r_b_corner"></div>
+							</div>
+						</div>
+						<!--//portletUnit End-->
+					</div>
+					<div class="clear"></div>
+				
+					<div class="portlet_l" style="width:100%">
+						<!--portletUnit Start-->
+						<div class="portletUnit">
+							<div class="portletUnit_t">
+								<div class="po_title"><h2>메일</h2></div>
+								<div class="po_icon">
+									<ul>
+										<li class="po_icon_edit"><a href="#a"><span>edit</span></a></li>
+										<li class="po_icon_refresh"><a href="#a"><span>refresh</span></a></li>
+										<li class="po_icon_max"><a href="#a"><span>max</span></a></li>
+										<li class="po_icon_fold"><a href="#a"><span>fold</span></a></li>
+										<li class="po_icon_close"><a href="#a"><span>close</span></a></li>
+										<!--
+										<li class="po_icon_more"><a href="#a"><span>more</span></a></li>
+										<li class="po_icon_restore"><a href="#a"><span>restore</span></a></li>
+										<li class="po_icon_config"><a href="#a"><span>config</span></a></li>
+										-->
+									</ul>
+								</div>
+							</div>
+							<div class="portletUnit_c tableList_1">
+								<table summary="메일목록">
+									<caption></caption>
+									<tbody>
+										<tr>
+											<th width="*" scope="row"><a href="#a"><strong>이번에 입사한 홍길동 대리 인사드립니다</strong></a></th>
+											<td width="55" class="textCenter">홍길동</td>
+											<td width="30" class="textRight"><span class="date">03.22</span></td>
+										</tr>
+										<tr>
+											<th scope="row"><a href="#a">김길동 부장 (UC컨설팅1팀)</a></th>
+											<td class="textCenter">김길동</td>
+											<td class="textRight"><span class="date">03.18</span></td>
+										</tr>	
+										<tr>
+											<th scope="row"><a href="#a">김길동 부장 (UC컨설팅1팀)</a></th>
+											<td class="textCenter">이길동</td>
+											<td class="textRight"><span class="date">03.15</span></td>
+										</tr>
+										<tr>
+											<th scope="row"><a href="#a">김길동 부장 (UC컨설팅1팀)</a></th>
+											<td class="textCenter">이길동</td>
+											<td class="textRight"><span class="date">03.14</span></td>
+										</tr>
+										<tr>
+											<th scope="row"><a href="#a">김길동 부장 (UC컨설팅1팀)</a></th>
+											<td class="textCenter">이길동</td>
+											<td class="textRight"><span class="date">03.13</span></td>
+										</tr>																																							
+									</tbody>
+								</table>
+								<div class="dotline_1"></div>
+								
+								<!--blockMsgbox Start-->
+								<div class="blockMsgbox" style="margin-bottom:0px;"> 
+									<div class="msgbox_frame"></div>
+									<table summary="메일상세사항">
+										<caption></caption>
+										<colgroup>
+											<col width="30" />
+											<col width="80" />
+											<col width="*" />
+										</colgroup>
+										<tbody>
+											<tr>
+												<th scope="row"><img src="../../images/icon/ic_favorite.gif" alt="" /></th>
+												<th width="*" colspan="2"><strong>[광고]고객님이 원하시는 상품으로 금리 적용됩니다.</strong></th>
+											</tr>
+											<tr>
+												<th scope="row" style="vertical-align:middle"><img src="../../images/icon/ic_treeminus.gif" alt="" /></th>
+												<th scope="row">보낸사람</th>
+												<td><a href="#a">"김희락" &lt;worldkhan@worldkhan.org&gt;</a></td>
+											</tr>
+											<tr>
+												<th scope="row"></th>
+												<th scope="row">보낸시간</th>
+												<td>2011.01.22 (토) 05:38:22 [GMT +09:00(서울, 도쿄)]</td>
+											</tr>
+											<tr>
+												<th scope="row"></th>
+												<th scope="row">받는사람</th>
+												<td>&lt;mskwak_1016@naver.com&gt;</td>
+											</tr>
+											<tr>
+												<th class="tdLast"></th>
+												<td class="tdLast" colspan="2">
+													<p class="border_none">
+														고객별 맞춤상품 추천으로 가장 좋은 조건으로!! 진행!! <br />
+														자영업자, 직장인, 주부, 학생 누구나!! 가능합니다!!
+													</p>
+												</td>
+											</tr>														
+										</tbody>
+									</table>
+								</div>
+								<!--//blockMsgbox End-->
+								<div class="l_b_corner"></div><div class="r_b_corner"></div>
+							</div>
+							<div class="clear"></div>
+						</div>
+						<!--//portletUnit End-->
+					</div>
+					<div class="clear"></div>
+					
+					<div class="portlet_l" style="width:100%;">
+						<!--portletUnit Start-->
+						<div class="portletUnit">
+							<div class="portletUnit_t">
+								<div class="po_title"><h2>최근게시물</h2></div>
+								<div class="po_icon">
+									<ul>
+										<li class="po_icon_edit"><a href="#a"><span>edit</span></a></li>
+										<li class="po_icon_refresh"><a href="#a"><span>refresh</span></a></li>
+										<li class="po_icon_max"><a href="#a"><span>max</span></a></li>
+										<li class="po_icon_fold"><a href="#a"><span>fold</span></a></li>
+										<li class="po_icon_close"><a href="#a"><span>close</span></a></li>
+										<!--
+										<li class="po_icon_more"><a href="#a"><span>more</span></a></li>
+										<li class="po_icon_restore"><a href="#a"><span>restore</span></a></li>
+										<li class="po_icon_config"><a href="#a"><span>config</span></a></li>
+										-->
+									</ul>
+								</div>
+							</div>
+	
+							<!--blockListTable Start-->
+							<div class="portletUnit_c summaryView_2">
+								<table summary="최근게시물 게시판">
+									<caption></caption>						
+									<tbody>
+										<tr>
+											<td>
+												<div class="summaryViewTitle">
+													<a href="#a"><img src="../../images/icon/ic_attach.gif" alt="첨부" /></a> 
+													<a href="#a">중국법인</a>
+												</div>
+												<div class="summaryViewInfo">
+													<span class="summaryViewInfo_name"><a href="#a">홍길동 과장</a></span>
+													<span>2011.02.11</span>
+													<span>조회 <strong>26</strong></span>
+													<span>추천 <strong>7</strong></span>
+												</div>
+												<div class="summaryViewCon"><a href="#a">게이츠가 제품의 개선에 열정을 쏟는 데 비해 잡스는 완벽한 제품을 만들어내는 데 집념을 불태운다. 완성을 목표로 한 잡스의 열정은 대단하지만, 그가 정말 대단한 것은 완벽을 추구하다 실패한 뒤에 그 실패로부터 금방 다시 일어서는 집념이다.</a></div>
+												<div class="summaryViewTag"><span class="ic_tag"><span>태그</span></span>
+													<a href="#a">포기</a>, <a href="#a">실패</a>, <a href="#a">병가</a>, <a href="#a">애플</a>, <a href="#a">스티브잡스</a>
+												</div>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<div class="summaryViewTitle">
+													<a href="#a"><img src="../../images/icon/ic_attach.gif" alt="첨부" /></a> 
+													<a href="#a">중국법인</a>
+												</div>
+												<div class="summaryViewInfo">
+													<span class="summaryViewInfo_name"><a href="#a">홍길동 과장</a></span>
+													<span>2011.02.11</span>
+													<span>조회 <strong>26</strong></span>
+													<span>추천 <strong>7</strong></span>
+												</div>
+												<div class="summaryViewCon"><a href="#a">게이츠가 제품의 개선에 열정을 쏟는 데 비해 잡스는 완벽한 제품을 만들어내는 데 집념을 불태운다. 완성을 목표로 한 잡스의 열정은 대단하지만, 그가 정말 대단한 것은 완벽을 추구하다 실패한 뒤에 그 실패로부터 금방 다시 일어서는 집념이다.</a></div>
+												<div class="summaryViewTag"><span class="ic_tag"><span>태그</span></span>
+													<a href="#a">포기</a>, <a href="#a">실패</a>, <a href="#a">병가</a>, <a href="#a">애플</a>, <a href="#a">스티브잡스</a>
+												</div>
+											</td>
+										</tr>																																																	
+									</tbody>
+								</table>
+							</div>
+							<!--//blockListTable End-->								
+							<div class="l_b_corner"></div><div class="r_b_corner"></div>
+						</div>
+						<!--//portletUnit End-->
+					</div>
+					<div class="clear"></div>
+					
+					<div class="portlet_l" style="width:100%;">
+						<!--portletUnit Start-->
+						<div class="portletUnit">
+							<div class="portletUnit_t">
+								<div class="po_title"><h2>최근방명록</h2></div>
+								<div class="po_icon">
+									<ul>
+										<li class="po_icon_edit"><a href="#a"><span>edit</span></a></li>
+										<li class="po_icon_refresh"><a href="#a"><span>refresh</span></a></li>
+										<li class="po_icon_max"><a href="#a"><span>max</span></a></li>
+										<li class="po_icon_fold"><a href="#a"><span>fold</span></a></li>
+										<li class="po_icon_close"><a href="#a"><span>close</span></a></li>
+										<!--
+										<li class="po_icon_more"><a href="#a"><span>more</span></a></li>
+										<li class="po_icon_restore"><a href="#a"><span>restore</span></a></li>
+										<li class="po_icon_config"><a href="#a"><span>config</span></a></li>
+										-->
+									</ul>
+								</div>
+							</div>
+							<!--pr_guestbook Start-->
+							<div class="portletUnit_c pr_guestbook2">	
+								<div class="guestbook_t">
+									전체<strong>35</strong>
+								</div>	
+								
+								<div class="guestbook_c">
+									<div class="pr_guestbookInfo">
+										<span class="pr_guestbookInfo_name"><a href="#a">김연아 과장</a></span>					
+										<span>UX팀</span>
+										<span>2011.02.11 13:00</span>
+										<span class="rebtn">
+											<a class="ic_delete" href="#a"><span>삭제</span></a>
+											<a class="ic_reply" href="#a"><span>댓글등록</span></a>
+										</span>
+									</div>
+									<div class="commentNum">댓글 <span class="colorPoint">(2)</span></div>
+									<p>스티브 잡스는 화면 사이즈가 7인치인 단말기는 사용자나 소프트웨어 개발자를 생각지 않은 어중간한 제품이라며, 출시하자마자 시장에서 사라질 것이라 했다.</p>
+					
+									<!--blockComment_re Start-->
+									<div class="blockComment_re">
+										<div class="reply_ar"><img src="../../images/icon/ic_reply_ar.gif" alt="" /></div>
+										<div class="blockCommentInfo">
+											<span class="blockCommentInfo_name"><a href="#a">김태희 차장</a></span>					
+											<span>UX팀</span>
+											<span>2011.02.11 13:00</span>
+											<span class="rebtn">
+												<a class="ic_delete" href="#a"><span>삭제</span></a>
+											</span>
+										</div>
+										<p>7인치 갤럭시탭과 9.7인치 아이패드는 불과 2.7인치의 수치상 격차를 보이지만 실제 크기는 두 배 가량 차이가 난다고 하네요.</p>
+									</div>
+									<!--blockComment_re Start-->
+	 
+									<!--blockComment_re Start-->
+									<div class="blockComment_re">
+										<div class="reply_ar"><img src="../../images/icon/ic_reply_ar.gif" alt="" /></div>
+										<div class="blockCommentInfo">
+											<span class="blockCommentInfo_name"><a href="#a">이민정 차장</a></span>					
+											<span>UX팀</span>
+											<span>2011.02.11 13:00</span>
+											<span class="rebtn">
+												<a class="ic_delete" href="#a"><span>삭제</span></a>
+											</span>
+										</div>									
+										<p>삼성의 KO패군요 ㅎㅎ 지난해 아이패드 판매량은 무려 746만대에 달했으니...	</p>
+										
+										<!--blockComment_re Start-->
+										<div class="blockComment_re">
+											<div class="reply_ar"><img src="../../images/icon/ic_reply_ar.gif" alt="" /></div>
+											<div class="blockCommentInfo">
+												<span class="blockCommentInfo_name"><a href="#a">이민정 차장</a></span>					
+												<span>UX팀</span>
+												<span>2011.02.11 13:00</span>
+												<span class="rebtn">
+													<a class="ic_delete" href="#a"><span>삭제</span></a>
+												</span>
+											</div>									
+											<p>삼성의 KO패군요 ㅎㅎ 지난해 아이패드 판매량은 무려 746만대에 달했으니...	</p>
+																
+										</div>
+										<!--blockComment_re Start-->
+																							
+									</div>
+									<!--blockComment_re Start-->
+																										
+								</div>
+								<div class="guestbook_c">
+									<div class="pr_guestbookInfo">
+										<span class="pr_guestbookInfo_name"><a href="#a">김연아 과장</a></span>					
+										<span>UX팀</span>
+										<span>2011.02.11 13:00</span>
+										<span class="rebtn">
+											<a class="ic_delete" href="#a"><span>삭제</span></a>
+											<a class="ic_reply" href="#a"><span>댓글등록</span></a>
+										</span>
+									</div>
+									<div class="commentNum">댓글 <span class="colorPoint">(0)</span></div>
+									<p>스티브 잡스는 화면 사이즈가 7인치인 단말기는 사용자나 소프트웨어 개발자를 생각지 않은 어중간한 제품이라며, 출시하자마자 시장에서 사라질 것이라 했다.</p>
+								</div>								
+								<div class="guestbook_c divLast"><!--마지막 div에 divLast 삽입할 것-->
+									<div class="pr_guestbookInfo">
+										<span class="pr_guestbookInfo_name"><a href="#a">김연아 과장</a></span>						
+										<span>UX팀</span>
+										<span>2011.02.11 13:00</span>
+										<span class="rebtn">
+											<a class="ic_delete" href="#a"><span>삭제</span></a>
+											<a class="ic_reply" href="#a"><span>댓글등록</span></a>
+										</span>
+									</div>
+									<div class="commentNum">댓글 <span class="colorPoint">(0)</span></div>
+									<p>스티브 잡스는 화면 사이즈가 7인치인 단말기는 사용자나 소프트웨어 개발자를 생각지 않은 어중간한 제품이라며, 출시하자마자 시장에서 사라질 것이라 했다.</p>
+								</div>	
+								
+								<!--Page Numbur Start-->
+								<div class="pageNum border_none">			
+									<ul>
+										<li><a class="btn_page_first" href="#a" onclick="doSomething(); return false;"><span>첫페이지</span></a></li>
+										<li><a class="btn_page_pre" href="#a" onclick="doSomething(); return false;"><span>이전페이지</span></a></li>
+										<li><span class="liFirst"><a href="#a" onclick="doSomething(); return false;">1</a></span></li>
+										<li><span><a href="#a" onclick="doSomething(); return false;">2</a></span></li>
+										<li><span><a href="#a" onclick="doSomething(); return false;">3</a></span></li>
+										<li><span><a href="#a" onclick="doSomething(); return false;">4</a></span></li>
+										<li><span>5</span></li>
+										<li><span><a href="#a" onclick="doSomething(); return false;">6</a></span></li>
+										<li><span><a href="#a" onclick="doSomething(); return false;">7</a></span></li>
+										<li><span><a href="#a" onclick="doSomething(); return false;">8</a></span></li>
+										<li><span><a href="#a" onclick="doSomething(); return false;">9</a></span></li>
+										<li><span class="liLast"><a href="#a" onclick="doSomething(); return false;">10</a></span></li>
+										<li><a class="btn_page_next" href="#a" onclick="doSomething(); return false;"><span>다음페이지</span></a></li>
+										<li><a class="btn_page_last" href="#a" onclick="doSomething(); return false;"><span>마지막페이지</span></a></li>
+									</ul>
+								</div>
+								<!--//Page Numbur End-->																									
+							</div>
+							<!--//pr_guestbook End-->
+							<div class="l_b_corner"></div><div class="r_b_corner"></div>
+						</div>
+						<!--//portletUnit End-->
+					</div>
+					<div class="clear"></div>
+				
+					<div class="portlet_l" style="width:100%;">
+						<!--portletUnit Start-->
+						<div class="portletUnit">
+							<div class="portletUnit_t">
+								<div class="po_title"><h2>To-Do</h2></div>
+								<div class="po_icon">
+									<ul>
+										<li class="po_icon_edit"><a href="#a"><span>edit</span></a></li>
+										<li class="po_icon_refresh"><a href="#a"><span>refresh</span></a></li>
+										<li class="po_icon_max"><a href="#a"><span>max</span></a></li>
+										<li class="po_icon_fold"><a href="#a"><span>fold</span></a></li>
+										<li class="po_icon_close"><a href="#a"><span>close</span></a></li>
+										<!--
+										<li class="po_icon_more"><a href="#a"><span>more</span></a></li>
+										<li class="po_icon_restore"><a href="#a"><span>restore</span></a></li>
+										<li class="po_icon_config"><a href="#a"><span>config</span></a></li>
+										-->
+									</ul>
+								</div>
+							</div>
+							
+							<div class="portletUnit_c">
+								<!--tableTop Start-->					
+								<div class="tableTop">
+									<div class="tableTop_bgR"></div>
+									<div class="listInfo">
+										<select title="페이지당 건수">
+											<option selected="selected">10</option>
+											<option>15</option>
+											<option>20</option>
+											<option>30</option>
+											<option>40</option>
+											<option>50</option>
+										</select>
+										<div class="totalNum">전체<span>35</span></div>
+									</div>		
+									<div class="clear"></div>
+								</div>
+								<!--//tableTop End-->								
+					
+								<!--blockListTable Start-->
+								<div class="blockListTable msgTable" style="margin-bottom:0px;">
+									<table summary="My To-Do 목록">
+										<caption></caption>
+										<thead>
+											<tr>
+												<th scope="col" width="5%">번호</th>
+												<th scope="col" width="5%">구분</th>
+												<th scope="col" width="20%">시스템/업무종류</th>
+												<th scope="col" width="*">제목</th>
+												<th scope="col" width="10%">요청자</th>
+												<th scope="col" width="80">요청일</th>
+												<th scope="col" width="80">마감일</th>
+												<th class="tdLast" scope="col" width="80">상태</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr>
+												<td>5</td>
+												<td>담당자</td>
+												<td>[To-Do] 작업관리</td>
+												<td class="textLeft"><div class="ellipsis"><a href="#a">설문조사 결재요청</a></div></td>
+												<td>홍길동</td>
+												<td>2011.02.10</td>
+												<td>2011.02.15</td>
+												<td class="tdLast">정상</td>
+											</tr>
+											<tr>
+												<td>4</td>
+												<td>담당자</td>
+												<td>[To-Do] 작업관리</td>
+												<td class="textLeft"><div class="ellipsis"><a href="#a">설문조사 결재요청</a></div></td>
+												<td>홍길동</td>
+												<td>2011.02.10</td>
+												<td>2011.02.15</td>
+												<td class="tdLast"><span class="colorPoint">오늘마감</span></td>
+											</tr>
+											<tr>
+												<td>3</td>
+												<td>담당자</td>
+												<td>[To-Do] 작업관리</td>
+												<td class="textLeft"><div class="ellipsis"><a href="#a">설문조사 결재요청</a></div></td>
+												<td>홍길동</td>
+												<td>2011.02.10</td>
+												<td>2011.02.15</td>
+												<td class="tdLast"><span class="colorPointS">지연</span> <span class="delay">D+2</span></td>
+											</tr>
+											<tr>
+												<td>2</td>
+												<td>담당자</td>
+												<td>[To-Do] 작업관리</td>
+												<td class="textLeft"><div class="ellipsis"><a href="#a">설문조사 결재요청</a></div></td>
+												<td>홍길동</td>
+												<td>2011.02.10</td>
+												<td>2011.02.15</td>
+												<td class="tdLast">정상</td>
+											</tr>
+											<tr>
+												<td>1</td>
+												<td>담당자</td>
+												<td>[To-Do] 작업관리</td>
+												<td class="textLeft"><div class="ellipsis"><a href="#a">설문조사 결재요청</a></div></td>
+												<td>홍길동</td>
+												<td>2011.02.10</td>
+												<td>2011.02.15</td>
+												<td class="tdLast">정상</td>
+											</tr>																													
+										</tbody>
+									</table>	
+									<!--Page Numbur Start-->
+									<div class="pageNum">			
+										<ul>
+											<li><a class="btn_page_first" href="#a" onclick="doSomething(); return false;"><span>첫페이지</span></a></li>
+											<li><a class="btn_page_pre" href="#a" onclick="doSomething(); return false;"><span>이전페이지</span></a></li>
+											<li><span class="liFirst"><a href="#a" onclick="doSomething(); return false;">1</a></span></li>
+											<li><span><a href="#a" onclick="doSomething(); return false;">2</a></span></li>
+											<li><span><a href="#a" onclick="doSomething(); return false;">3</a></span></li>
+											<li><span><a href="#a" onclick="doSomething(); return false;">4</a></span></li>
+											<li><span>5</span></li>
+											<li><span><a href="#a" onclick="doSomething(); return false;">6</a></span></li>
+											<li><span><a href="#a" onclick="doSomething(); return false;">7</a></span></li>
+											<li><span><a href="#a" onclick="doSomething(); return false;">8</a></span></li>
+											<li><span><a href="#a" onclick="doSomething(); return false;">9</a></span></li>
+											<li><span class="liLast"><a href="#a" onclick="doSomething(); return false;">10</a></span></li>
+											<li><a class="btn_page_next" href="#a" onclick="doSomething(); return false;"><span>다음페이지</span></a></li>
+											<li><a class="btn_page_last" href="#a" onclick="doSomething(); return false;"><span>마지막페이지</span></a></li>
+										</ul>
+									</div>
+									<!--//Page Numbur End-->						
+								</div>
+								<!--//blockListTable End-->	
+							</div>							
+							<div class="l_b_corner"></div><div class="r_b_corner"></div>
+						</div>
+						<!--//portletUnit End-->
+					</div>
+					<div class="clear"></div>
+					
+					<!-- 06.24 평가점수 랭킹 Top 10 사용자 start -->
+					<div class="portlet_l">
+						<!--portletUnit Start-->
+						<div class="portletUnit">
+							<div class="portletUnit_t">
+								<div class="po_title"><h2>평가점수 랭킹 Top 10 사용자</h2></div>
+								<div class="po_icon">
+									<ul>
+										<li class="po_icon_edit"><a href="#a"><span>edit</span></a></li>
+										<li class="po_icon_refresh"><a href="#a"><span>refresh</span></a></li>
+										<li class="po_icon_max"><a href="#a"><span>max</span></a></li>
+										<li class="po_icon_fold"><a href="#a"><span>fold</span></a></li>
+										<li class="po_icon_close"><a href="#a"><span>close</span></a></li>
+										<!--
+										<li class="po_icon_more"><a href="#a"><span>more</span></a></li>
+										<li class="po_icon_restore"><a href="#a"><span>restore</span></a></li>
+										<li class="po_icon_config"><a href="#a"><span>config</span></a></li>
+										-->
+									</ul>
+								</div>
+							</div>
+							<div class="portletUnit_c imgList_3">								
+								<ul>
+									<li class="portNo01 position_0">
+										<a href="#a"><img src="../../images/common/temp_img_50x50_1.gif" alt="image" onmouseover="iKEP.showUserSimpleInfo(1, this, {name:'박길동', rank:'과장', team:'UC 컨설팅팀'});" onmouseout="iKEP.showUserSimpleInfo(0);"/></a>
+										<ul>
+											<li><span class="name"><a href="#a">홍길동 과장홍길동 과장홍길동 과장홍길동 과장홍길동 과장</a></span><span class="team">경영정보팀</span></li>
+											<li><span class="index">PVI : <span>2,245</span></span></li>
+										</ul>
+										<div class="clear"></div>
+									</li>
+									<li class="portNo02 position_0">
+										<a href="#a"><img src="../../images/common/temp_img_50x50_2.gif" alt="image" onmouseover="iKEP.showUserSimpleInfo(1, this, {name:'박길동', rank:'과장', team:'UC 컨설팅팀'});" onmouseout="iKEP.showUserSimpleInfo(0);"/></a>
+										<ul>
+											<li><span class="name"><a href="#a">홍길동 과장</a></span><span class="team">경영정보팀</span></li>
+											<li><span class="index">PVI : <span>2,245</span></span></li>
+										</ul>
+										<div class="clear"></div>
+									</li>
+									<li class="portNo03 position_0">
+										<a href="#a"><img src="../../images/common/temp_img_50x50_3.gif" alt="image" onmouseover="iKEP.showUserSimpleInfo(1, this, {name:'박길동', rank:'과장', team:'UC 컨설팅팀'});" onmouseout="iKEP.showUserSimpleInfo(0);" /></a>
+										<ul>
+											<li><span class="name"><a href="#a">홍길동 과장</a></span><span class="team">경영정보팀</span></li>
+											<li><span class="index">PVI : <span>2,245</span></span></li>
+										</ul>
+										<div class="clear"></div>
+									</li>
+									<li class="portNo04 position_1"><span class="name"><a href="#a">홍길동 과장홍길동 과장홍길동 과장홍길동 과장홍길동 과장</a></span><span class="team">경영정보팀</span><span class="index">PVI : <span>2,245</span></span></li>
+									<li class="portNo05 position_1"><span class="name"><a href="#a">홍길동 과장</a></span><span class="team">경영정보팀</span><span class="index">PVI : <span>2,245</span></span></li>
+									<li class="portNo06 position_1"><span class="name"><a href="#a">홍길동 과장</a></span><span class="team">경영정보팀</span><span class="index">PVI : <span>2,245</span></span></li>
+									<li class="portNo07 position_1"><span class="name"><a href="#a">홍길동 과장</a></span><span class="team">경영정보팀</span><span class="index">PVI : <span>2,245</span></span></li>
+									<li class="portNo08 position_1"><span class="name"><a href="#a">홍길동 과장</a></span><span class="team">경영정보팀</span><span class="index">PVI : <span>2,245</span></span></li>
+									<li class="portNo09 position_1"><span class="name"><a href="#a">홍길동 과장</a></span><span class="team">경영정보팀</span><span class="index">PVI : <span>2,245</span></span></li>
+									<li class="portNo10 position_1"><span class="name"><a href="#a">홍길동 과장</a></span><span class="team">경영정보팀</span><span class="index">PVI : <span>2,245</span></span></li>																																				
+								</ul>
+								<div class="clear"></div>
+								<div class="l_b_corner"></div><div class="r_b_corner"></div>
+							</div>
+						</div>
+						<!--//portletUnit End-->					
+					</div>
+					<div class="clear"></div>
+					<!-- //06.24 평가점수 랭킹 Top 10 사용자 end -->
+			
+			</div>
+			<!--//portlet End-->
+											
+		</div>
+		<!--//portletWrap End-->
+		
+	</div>
+	<!--//blockMain End-->
+	
+</div>
+<!--//blockContainer End-->
+
+<!--blockFooter Start-->
+<div id="blockFooter">
+	<div class="footer">
+	</div>
+</div>
+<!--//blockFooter End-->
+
+</div>
+<!--//wrapper End-->
+</body>
+</html>

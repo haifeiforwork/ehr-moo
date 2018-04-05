@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="collpack.collaboration.admin.dao.Category">
+
+	<typeAlias alias="Category" type="com.lgcns.ikep4.collpack.collaboration.admin.model.Category" />
+	<typeAlias alias="CategorySearchCondition" type="com.lgcns.ikep4.collpack.collaboration.admin.search.CategorySearchCondition"/>
+
+	<sql id="sqlColumnList">
+		A.PORTAL_ID			portalId,
+		A.CATEGORY_ID		categoryId,
+		A.CATEGORY_NAME		categoryName,
+		A.CATEGORY_ENGLISH_NAME categoryEnglishName,
+		A.TYPE_ID			typeId,
+		B.TYPE_NAME			typeName,
+		B.TYPE_ENGLISH_NAME typeEnglishName,
+		A.SORT_ORDER		sortOrder,
+		A.IS_DELETE			isDelete,
+		A.REGISTER_ID		registerId,
+		A.REGISTER_NAME		registerName,
+		A.REGIST_DATE		registDate,
+		A.UPDATER_ID		updaterId,
+		A.UPDATER_NAME		updaterName,
+		A.UPDATE_DATE		updateDate
+	</sql>
+	
+	<!-- MS SQL -->
+	<select id="listBySearchCondition" parameterClass="CategorySearchCondition" resultClass="Category"> 
+	SELECT /* [Category_SqlMap.xml] collpack.collaboration.admin.dao.Category.listBySearchCondition */ 
+		*
+	FROM 
+	( 
+		SELECT A.* FROM 
+		( 
+			/* START========================================= */
+			SELECT 
+				Row_number() OVER (ORDER BY A.SORT_ORDER) AS RNUM,
+				<include refid="collpack.collaboration.admin.dao.Category.sqlColumnList" /> 
+			FROM   
+				IKEP4_WS_CATEGORY A 
+				INNER JOIN IKEP4_WS_TYPE B ON ( A.TYPE_ID	=	B.TYPE_ID AND A.PORTAL_ID	=	B.PORTAL_ID)
+			WHERE	
+				A.PORTAL_ID		=	#portalId#				
+				AND A.IS_DELETE	=	0
+				<isNotEmpty property="typeId">
+				AND A.TYPE_ID	=	#typeId#
+				</isNotEmpty>
+
+				
+				<isNotEmpty property="searchColumn">
+				<isEqual property="searchColumn" compareValue="workspaceName">
+				AND	A.WORKSPACE_NAME LIKE '%' + #searchWord# + '%'
+				</isEqual>
+				<isEqual property="searchColumn" compareValue="registerName">
+				AND	A.REGISTER_NAME LIKE '%' + #searchWord# + '%'
+				</isEqual>
+				</isNotEmpty>
+			/* ===========================================END  */ 
+	<![CDATA[
+		) A WHERE RNUM <=  #endRowIndex# /* 종료  */
+	) TBL WHERE RNUM >  #startRowIndex# /* 시작 */
+	]]> 
+	</select>   
+	
+	<!-- MS SQL -->
+	<select id="countBySearchCondition" parameterClass="CategorySearchCondition" resultClass="int">
+		SELECT /* [Category_SqlMap.xml] collpack.collaboration.admin.dao.Category.countBySearchCondition */ 
+	          COUNT(A.CATEGORY_ID)
+		FROM   
+			IKEP4_WS_CATEGORY A
+		WHERE
+			A.PORTAL_ID		=	#portalId#
+			AND A.IS_DELETE	=	0
+			
+			<isNotEmpty property="typeId">
+			AND A.TYPE_ID	=	#typeId#
+			</isNotEmpty>
+
+			
+			<isNotEmpty property="searchColumn">
+			<isEqual property="searchColumn" compareValue="workspaceName">
+			AND	A.WORKSPACE_NAME LIKE '%' + #searchWord# + '%'
+			</isEqual>
+			<isEqual property="searchColumn" compareValue="registerName">
+			AND	A.REGISTER_NAME LIKE '%' + #searchWord# + '%'
+			</isEqual>
+			</isNotEmpty>
+	</select>
+	
+	<!-- ANSI -->
+	<select id="listByWorkspaceType" parameterClass="Map"  resultClass="Category">
+		SELECT /* [Category_SqlMap.xml] collpack.collaboration.admin.dao.Category.listByWorkspaceType */
+			<include refid="collpack.collaboration.admin.dao.Category.sqlColumnList" />
+		FROM 
+			IKEP4_WS_CATEGORY A 
+			INNER JOIN IKEP4_WS_TYPE B ON (	A.TYPE_ID	=	B.TYPE_ID AND A.PORTAL_ID	=	B.PORTAL_ID)
+		WHERE 
+			A.PORTAL_ID		=	#portalId#
+			AND A.TYPE_ID	=	#typeId#			
+			AND A.IS_DELETE	=	0
+		ORDER BY 
+			A.SORT_ORDER,A.CATEGORY_NAME
+	</select>
+	
+	<!-- MS SQL -->
+	<!-- create -->	
+	<insert id="create" parameterClass="Category"> 
+	<![CDATA[ 
+		INSERT INTO IKEP4_WS_CATEGORY /* [Category_SqlMap.xml] collpack.collaboration.admin.dao.Category.create */
+		(
+			PORTAL_ID,		CATEGORY_ID,	CATEGORY_NAME,	CATEGORY_ENGLISH_NAME,	TYPE_ID,	
+			SORT_ORDER,	
+			IS_DELETE,		REGISTER_ID,	REGISTER_NAME,	REGIST_DATE,	UPDATER_ID,	UPDATER_NAME,	UPDATE_DATE
+		)  
+		VALUES
+		(
+			#portalId#,		#categoryId#,	#categoryName#,	#categoryEnglishName#,	#typeId#,	
+			(SELECT ISNULL(MAX(SORT_ORDER),0) FROM IKEP4_WS_CATEGORY WHERE PORTAL_ID = #portalId# AND TYPE_ID	=	#typeId#)+1,		
+			#isDelete#,		#registerId#,	#registerName#,	CURRENT_TIMESTAMP,		#updaterId#,	#updaterName#,		CURRENT_TIMESTAMP	
+		)		
+	]]>
+	</insert>	
+
+	<!-- ANSI -->		
+	<!-- select -->
+	<select id="get" parameterClass="java.lang.String"  resultClass="Category">
+		SELECT /* [Category_SqlMap.xml] collpack.collaboration.admin.dao.Category.get */
+    		<include refid="collpack.collaboration.admin.dao.Category.sqlColumnList" />	
+		FROM 
+			IKEP4_WS_CATEGORY A 
+			INNER JOIN IKEP4_WS_TYPE B ON (	A.TYPE_ID	=	B.TYPE_ID AND A.PORTAL_ID	=	B.PORTAL_ID )
+		WHERE 
+			A.CATEGORY_ID	=	#categoryId#
+
+	</select>
+
+	<!-- ANSI -->
+	<select id="exists" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+	<![CDATA[
+		SELECT /* [Category_SqlMap.xml] collpack.collaboration.admin.dao.Category.exists */
+			COUNT(CATEGORY_ID) 
+		FROM 
+			IKEP4_WS_CATEGORY A 
+			INNER JOIN IKEP4_WS_TYPE B ON (	A.TYPE_ID	=	B.TYPE_ID AND A.PORTAL_ID	=	B.PORTAL_ID )
+		WHERE 
+			A.CATEGORY_ID	=	#categoryId#
+	]]>
+	</select>
+
+	<!-- ANSI -->
+	<select id="existsByTypeId" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+	<![CDATA[
+		SELECT /* [Category_SqlMap.xml] collpack.collaboration.admin.dao.Category.existsByTypeId */
+			COUNT(A.CATEGORY_ID) 
+		FROM 
+			IKEP4_WS_CATEGORY A 
+			INNER JOIN IKEP4_WS_TYPE B ON (	A.TYPE_ID	=	B.TYPE_ID AND A.PORTAL_ID	=	B.PORTAL_ID )
+		WHERE 
+			A.TYPE_ID	=	#typeId#
+			AND A.IS_DELETE=0
+	]]>
+	</select>
+	<!-- ANSI -->
+	<select id="existsWorkspaceByCategoryId" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+	<![CDATA[
+		SELECT /* [Category_SqlMap.xml] collpack.collaboration.admin.dao.Category.existsWorkspaceByCategoryId */
+			COUNT(B.WORKSPACE_ID) 
+		FROM 
+			IKEP4_WS_CATEGORY A 
+			INNER JOIN IKEP4_WS_WORKSPACE B ON (A.CATEGORY_ID=B.CATEGORY_ID AND A.PORTAL_ID=B.PORTAL_ID AND B.WORKSPACE_STATUS IN ('WO','WC','O') )
+		WHERE 
+			A.CATEGORY_ID	=	#categoryId#
+			AND A.IS_DELETE=0
+	]]>
+	</select>
+		
+	<!-- ANSI -->
+	<!-- update -->
+	<update id="update" parameterClass="Category">
+	<![CDATA[
+		UPDATE 
+			IKEP4_WS_CATEGORY /* [Category_SqlMap.xml] collpack.collaboration.admin.dao.Category.update */
+		SET 
+			CATEGORY_NAME	=	#categoryName#,
+			CATEGORY_ENGLISH_NAME = #categoryEnglishName#,
+			UPDATER_ID		=	#updaterId#,
+			UPDATER_NAME	=	#updaterName#,
+			UPDATE_DATE		=	CURRENT_TIMESTAMP
+		WHERE 
+			PORTAL_ID		=	#portalId#
+			AND CATEGORY_ID	=	#categoryId#			
+	]]>
+	</update>
+	
+	<!-- ANSI -->
+	<update id="updateCategoryOrder" parameterClass="Category">
+	<![CDATA[
+		UPDATE 
+			IKEP4_WS_CATEGORY /* [Category_SqlMap.xml] collpack.collaboration.admin.dao.Category.updateCategoryOrder */
+		SET 
+			SORT_ORDER		=	#sortOrder#
+		WHERE 
+			PORTAL_ID		=	#portalId#
+			AND CATEGORY_ID	=	#categoryId#
+	]]>
+	</update>
+
+	<!-- ANSI -->
+	<!-- delete -->
+	<update id="logicalDelete" parameterClass="Category">
+	<![CDATA[
+		UPDATE 
+			IKEP4_WS_CATEGORY /* [Category_SqlMap.xml] collpack.collaboration.admin.dao.Category.logicalDelete */
+		SET
+			IS_DELETE		=	1,
+			UPDATER_ID		=	#updaterId#,
+			UPDATER_NAME	=	#updaterName#,
+			UPDATE_DATE		=	CURRENT_TIMESTAMP			
+		WHERE  
+			CATEGORY_ID		=	#categoryId#
+			AND PORTAL_ID	=	#portalId#
+	]]>
+	</update>
+	
+	<!-- ANSI -->
+	<delete id="physicalDelete" parameterClass="java.lang.String">
+	<![CDATA[
+		DELETE FROM 
+			IKEP4_WS_CATEGORY  /* [Category_SqlMap.xml] collpack.collaboration.admin.dao.Category.physicalDelete */
+		WHERE 
+			CATEGORY_ID	=	#categoryId#			
+	]]>
+	</delete>
+
+</sqlMap>

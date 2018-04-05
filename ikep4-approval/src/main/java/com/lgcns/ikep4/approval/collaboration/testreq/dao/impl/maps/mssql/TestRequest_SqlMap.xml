@@ -1,0 +1,1201 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="com.lgcns.ikep4.approval.collaboration.testreq.dao.TestRequestDao" >
+
+	<typeAlias alias="testRequest" type="com.lgcns.ikep4.approval.collaboration.testreq.model.TestRequest"/>
+	<typeAlias alias="testRequestSearchCondition" type="com.lgcns.ikep4.approval.collaboration.testreq.search.TestRequestSearchCondition" />
+	
+	<resultMap id="testReqScheduleLimitMap" class="testRequest">
+		<result property="email"				column="EMAIL"				jdbcType="VARCHAR"/>
+		<result property="rcvEmpNm"				column="RCV_EMP_NM"			jdbcType="VARCHAR"/>
+		<result property="testReqTitle"			column="TEST_REQ_TITLE"			jdbcType="VARCHAR"/>
+		<result property="writeDeptNm"			column="WRITE_DEPT_NM"			jdbcType="VARCHAR"/>
+		<result property="trMgntNo"				column="TR_MGNT_NO"				jdbcType="VARCHAR"/>
+		<result property="senderEmail"			column="SENDER_EMAIL"			jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	<resultMap id="testRequestResultListMap" class="testRequest">
+		<result property="rNum"					column="RNUM"					jdbcType="VARCHAR"/>
+		<result property="trMgntNo"				column="TR_MGNT_NO"				jdbcType="VARCHAR"/>
+		<result property="processStatus"		column="PROCESS_STATUS"			jdbcType="VARCHAR"/>
+		<result property="writeDate"			column="WRITE_DATE"				jdbcType="VARCHAR"/>
+		<result property="writeEmpNo"			column="WRITE_EMP_NO"			jdbcType="VARCHAR"/>
+		<result property="writeEmpNm"			column="WRITE_EMP_NM"			jdbcType="VARCHAR"/>
+		<result property="companyChkVal"		column="COMPANY_CHK_VAL"		jdbcType="VARCHAR"/>
+		<result property="itemKindCd"			column="ITEM_KIND_CD"			jdbcType="VARCHAR"/>
+		<result property="itemKindNm"			column="ITEM_KIND_NM"			jdbcType="VARCHAR"/>
+		<result property="testReqTitle"			column="TEST_REQ_TITLE"			jdbcType="VARCHAR"/>
+		<result property="rcvDeptId"			column="RCV_DEPT_ID"			jdbcType="VARCHAR"/>
+		<result property="rcvDeptNm"			column="RCV_DEPT_NM"			jdbcType="VARCHAR"/>
+		<result property="rcvEmpNo"				column="RCV_EMP_NO"				jdbcType="VARCHAR"/>
+		<result property="rcvEmpNm"				column="RCV_EMP_NM"				jdbcType="VARCHAR"/>
+		<result property="completePlanDate"		column="COMPLETE_PLAN_DATE"		jdbcType="VARCHAR"/>
+		<result property="apprStsCd"			column="APPR_STS_CD"			jdbcType="VARCHAR"/>
+		<result property="apprDate"				column="APPR_DATE"				jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	<resultMap id="testRequestResultMap" class="testRequest">
+		<result property="trMgntNo"				column="TR_MGNT_NO"				jdbcType="VARCHAR"/>
+		<result property="companyChkVal"		column="COMPANY_CHK_VAL"		jdbcType="VARCHAR"/>
+		<result property="itemKindCd"			column="ITEM_KIND_CD"			jdbcType="VARCHAR"/>
+		<result property="writeEmpNo"			column="WRITE_EMP_NO"			jdbcType="VARCHAR"/>
+		<result property="writeEmpNm"			column="WRITE_EMP_NM"			jdbcType="VARCHAR"/>
+		<result property="writeDate"			column="WRITE_DATE"				jdbcType="VARCHAR"/>
+		<result property="writeDeptId"			column="WRITE_DEPT_ID"			jdbcType="VARCHAR"/>
+		<result property="writeDeptNm"			column="WRITE_DEPT_NM"			jdbcType="VARCHAR"/>
+		<result property="rcvEmpNo"				column="RCV_EMP_NO"				jdbcType="VARCHAR"/>
+		<result property="rcvEmpNm"				column="RCV_EMP_NM"				jdbcType="VARCHAR"/>
+		<result property="rcvDeptId"			column="RCV_DEPT_ID"			jdbcType="VARCHAR"/>
+		<result property="rcvDeptNm"			column="RCV_DEPT_NM"			jdbcType="VARCHAR"/>
+		<result property="testReqTitle"			column="TEST_REQ_TITLE"			jdbcType="VARCHAR"/>
+		<result property="reqScheduleCd"		column="REQ_SCHEDULE_CD"		jdbcType="VARCHAR"/>
+		<result property="reqScheduleEtcTxt"	column="REQ_SCHEDULE_ETC_TXT"	jdbcType="VARCHAR"/>
+		<result property="reqDetail"			column="REQ_DETAIL"				jdbcType="VARCHAR"/>
+		<result property="fileItemId"			column="FILE_ITEM_ID"			jdbcType="VARCHAR"/>
+		<result property="completePlanDate"		column="COMPLETE_PLAN_DATE"		jdbcType="VARCHAR"/>
+		<result property="resDeptOpinion"		column="RES_DEPT_OPINION"		jdbcType="VARCHAR"/>
+		<result property="processStatus"		column="PROCESS_STATUS"			jdbcType="VARCHAR"/>
+		<result property="apprStsCd"			column="APPR_STS_CD"			jdbcType="VARCHAR"/>
+		<result property="apprReqDate"			column="APPR_REQ_DATE"			jdbcType="VARCHAR"/>
+		<result property="apprDate"				column="APPR_DATE"				jdbcType="VARCHAR"/>
+		<result property="rejectReason"			column="REJECT_REASON"			jdbcType="VARCHAR"/>
+		<result property="addWriteDetail"		column="ADD_WRITE_DETAIL"		jdbcType="VARCHAR"/>
+		<result property="reqDraftEmpNo"		column="REQ_DRAFT_EMP_NO"		jdbcType="VARCHAR"/>
+		<result property="reqDraftEmpNm"		column="REQ_DRAFT_EMP_NM"		jdbcType="VARCHAR"/>
+		<result property="reqDraftStsCd"		column="REQ_DRAFT_STS_CD"		jdbcType="VARCHAR"/>
+		<result property="reqDraftDate"			column="REQ_DRAFT_DATE"			jdbcType="VARCHAR"/>
+		<result property="reqReviewEmpNo"		column="REQ_REVIEW_EMP_NO"		jdbcType="VARCHAR"/>
+		<result property="reqReviewEmpNm"		column="REQ_REVIEW_EMP_NM"		jdbcType="VARCHAR"/>
+		<result property="reqReviewStsCd"		column="REQ_REVIEW_STS_CD"		jdbcType="VARCHAR"/>
+		<result property="reqReviewDate"		column="REQ_REVIEW_DATE"		jdbcType="VARCHAR"/>
+		<result property="reqApprEmpNo"			column="REQ_APPR_EMP_NO"		jdbcType="VARCHAR"/>
+		<result property="reqApprEmpNm"			column="REQ_APPR_EMP_NM"		jdbcType="VARCHAR"/>
+		<result property="reqApprStsCd"			column="REQ_APPR_STS_CD"		jdbcType="VARCHAR"/>
+		<result property="reqApprDate"			column="REQ_APPR_DATE"			jdbcType="VARCHAR"/>
+		<result property="rcvDraftEmpNo"		column="RCV_DRAFT_EMP_NO"		jdbcType="VARCHAR"/>
+		<result property="rcvDraftEmpNm"		column="RCV_DRAFT_EMP_NM"		jdbcType="VARCHAR"/>
+		<result property="rcvDraftStsCd"		column="RCV_DRAFT_STS_CD"		jdbcType="VARCHAR"/>
+		<result property="rcvDraftDate"			column="RCV_DRAFT_DATE"			jdbcType="VARCHAR"/>
+		<result property="rcvReviewEmpNo"		column="RCV_REVIEW_EMP_NO"		jdbcType="VARCHAR"/>
+		<result property="rcvReviewEmpNm"		column="RCV_REVIEW_EMP_NM"		jdbcType="VARCHAR"/>
+		<result property="rcvReviewStsCd"		column="RCV_REVIEW_STS_CD"		jdbcType="VARCHAR"/>
+		<result property="rcvReviewDate"		column="RCV_REVIEW_DATE"		jdbcType="VARCHAR"/>
+		<result property="rcvApprEmpNo"			column="RCV_APPR_EMP_NO"		jdbcType="VARCHAR"/>
+		<result property="rcvApprEmpNm"			column="RCV_APPR_EMP_NM"		jdbcType="VARCHAR"/>
+		<result property="rcvApprStsCd"			column="RCV_APPR_STS_CD"		jdbcType="VARCHAR"/>
+		<result property="rcvApprDate"			column="RCV_APPR_DATE"			jdbcType="VARCHAR"/>
+		<result property="apprComment"			column="APPR_COMMENT"			jdbcType="VARCHAR"/>
+		<result property="authYn"				column="AUTH_YN"				jdbcType="VARCHAR"/>
+		<result property="imwonYn"				column="IMWON_YN"				jdbcType="VARCHAR"/>
+	</resultMap>
+	<select id="getTestRequestCount" parameterClass="testRequestSearchCondition" resultClass="int">
+		/* [TestRequest_SqlMap.xml] testRequest.getTestRequestCount */
+		SELECT COUNT(*) AS RNUM
+		  FROM(
+				SELECT A.TR_MGNT_NO
+				     , MAX(A.PROCESS_STATUS)        AS PROCESS_STATUS
+				     , MAX(A.PROCESS_STATUS_NM)     AS PROCESS_STATUS_NM
+					 , MAX(A.WRITE_DATE)            AS WRITE_DATE
+					 , MAX(A.WRITE_EMP_NO)          AS WRITE_EMP_NO
+					 , MAX(A.WRITE_EMP_NM)          AS WRITE_EMP_NM
+					 , MAX(A.COMPANY_CHK_VAL)       AS COMPANY_CHK_VAL
+					 , MAX(A.ITEM_KIND_CD)          AS ITEM_KIND_CD
+					 , MAX(A.ITEM_KIND_NM)          AS ITEM_KIND_NM
+					 , MAX(A.TEST_REQ_TITLE)        AS TEST_REQ_TITLE
+					 , MAX(A.RCV_DEPT_ID)           AS RCV_DEPT_ID
+				     , MAX(A.RCV_DEPT_NM)           AS RCV_DEPT_NM
+				     , MAX(A.RCV_EMP_NO)            AS RCV_EMP_NO
+				     , MAX(A.RCV_EMP_NM)            AS RCV_EMP_NM
+					 , Max( A.COMPLETE_PLAN_DATE)    AS COMPLETE_PLAN_DATE
+					 , MAX(A.APPR_STS_CD)           AS APPR_STS_CD
+					 , MAX(A.APPR_DATE)             AS APPR_DATE
+				  FROM (
+						SELECT A.TR_MGNT_NO
+							 , A.PROCESS_STATUS
+							 , C.COM_NM                AS PROCESS_STATUS_NM
+							 , A.WRITE_DATE
+							 , A.WRITE_EMP_NO
+							 , D.USER_NAME             AS WRITE_EMP_NM
+							 , CASE WHEN A.COMPANY_CHK_VAL = '111' THEN 'MP/P&amp;P/SP'
+							        WHEN A.COMPANY_CHK_VAL = '110' THEN 'MP/P&amp;P'
+							        WHEN A.COMPANY_CHK_VAL = '101' THEN 'MP/SP'
+							        WHEN A.COMPANY_CHK_VAL = '100' THEN 'MP'
+							        WHEN A.COMPANY_CHK_VAL = '011' THEN 'P&amp;P/SP'
+							        WHEN A.COMPANY_CHK_VAL = '010' THEN 'P&amp;P'
+							        WHEN A.COMPANY_CHK_VAL = '001' THEN 'SP'
+							        WHEN A.COMPANY_CHK_VAL = '000' THEN ''
+				               END                     AS COMPANY_CHK_VAL
+							 , A.ITEM_KIND_CD
+							 , E.COM_NM                AS ITEM_KIND_NM
+							 , A.TEST_REQ_TITLE
+							 , A.RCV_DEPT_ID
+							 , F.GROUP_NAME            AS RCV_DEPT_NM
+							 , A.RCV_EMP_NO
+							 , G.USER_NAME             AS RCV_EMP_NM
+							 , A.COMPLETE_PLAN_DATE
+							 , A.APPR_STS_CD
+							 , A.APPR_DATE
+						  FROM TB_TEST_REQUEST A
+							   LEFT OUTER JOIN TB_TEST_REQ_APPR_LINE B
+								  ON B.TR_MGNT_NO = A.TR_MGNT_NO
+							   LEFT OUTER JOIN TB_COMMON_CODE C
+								  ON C.GRP_CD = 'C00014'
+								 AND C.COM_CD = A.PROCESS_STATUS
+							   INNER JOIN IKEP4_EV_USER D
+								  ON D.EMP_NO = A.WRITE_EMP_NO
+							   LEFT OUTER JOIN TB_COMMON_CODE E
+								  ON E.GRP_CD = 'C00016'
+								 AND E.COM_CD = A.ITEM_KIND_CD
+							   LEFT OUTER JOIN IKEP4_EV_GROUP F
+								  ON F.GROUP_TYPE_ID = 'G0001'
+								 AND F.VIEW_OPTION   = '1'
+								 AND F.GROUP_ID      = A.RCV_DEPT_ID
+							   LEFT OUTER JOIN IKEP4_EV_USER G
+								  ON G.EMP_NO = A.RCV_EMP_NO
+						 WHERE A.WRITE_DATE     &gt;= CONVERT( DATETIME, #searchStartWriteDate#)
+						   AND A.WRITE_DATE     &lt; CONVERT( DATETIME, #searchEndWriteDate#) + 1
+						   <isNotEmpty property="searchReqEmpNo" >
+						   AND A.REQ_EMP_NO     = #searchReqEmpNo#
+						   </isNotEmpty>
+						   <isNotEmpty property="searchRcvEmpNo" >
+						   AND A.RCV_EMP_NO     = #searchRcvEmpNo#
+						   </isNotEmpty>
+						   <isNotEmpty property="searchProcessStatus" >
+						   AND A.PROCESS_STATUS = #searchProcessStatus#
+						   </isNotEmpty>
+						   <isNotEmpty property="searchItemKindCd" >
+						   AND A.ITEM_KIND_CD   = #searchItemKindCd#
+						   </isNotEmpty>
+						   <isNotEmpty property="searchTestReqTitle" >
+						   AND A.TEST_REQ_TITLE LIKE '%' + #searchTestReqTitle# + '%'
+						   </isNotEmpty>
+						   AND ((SUBSTRING( #searchCompanyChkVal#, 1, 1) = '1' AND SUBSTRING(A.COMPANY_CHK_VAL, 1, 1) = '1') OR
+						        (SUBSTRING(#searchCompanyChkVal#, 2, 1) = '1' AND SUBSTRING(A.COMPANY_CHK_VAL, 2, 1) = '1') OR
+								(SUBSTRING(#searchCompanyChkVal#, 3, 1) = '1' AND SUBSTRING(A.COMPANY_CHK_VAL, 3, 1) = '1'))
+						   AND (A.WRITE_EMP_NO = #sessionEmpNo# OR
+						        (B.REQ_REVIEW_EMP_NO = #sessionEmpNo# AND B.REQ_DRAFT_STS_CD = '03') OR
+								(B.REQ_APPR_EMP_NO = #sessionEmpNo# AND ((B.REQ_DRAFT_STS_CD = '03' AND (B.REQ_REVIEW_EMP_NO IS NULL OR B.REQ_REVIEW_EMP_NO = '')) OR B.REQ_REVIEW_STS_CD = '03')) OR
+								A.PROCESS_STATUS &gt;= '12')
+						UNION ALL
+						SELECT A.TR_MGNT_NO
+							 , A.PROCESS_STATUS
+							 , C.COM_NM                AS PROCESS_STATUS_NM
+							 , A.WRITE_DATE
+							 , A.WRITE_EMP_NO
+							 , D.USER_NAME             AS WRITE_EMP_NM
+							 , CASE WHEN A.COMPANY_CHK_VAL = '111' THEN 'MP/P&amp;P/SP'
+							        WHEN A.COMPANY_CHK_VAL = '110' THEN 'MP/P&amp;P'
+							        WHEN A.COMPANY_CHK_VAL = '101' THEN 'MP/SP'
+							        WHEN A.COMPANY_CHK_VAL = '100' THEN 'MP'
+							        WHEN A.COMPANY_CHK_VAL = '011' THEN 'P&amp;P/SP'
+							        WHEN A.COMPANY_CHK_VAL = '010' THEN 'P&amp;P'
+							        WHEN A.COMPANY_CHK_VAL = '001' THEN 'SP'
+							        WHEN A.COMPANY_CHK_VAL = '000' THEN ''
+				               END                     AS COMPANY_CHK_VAL
+							 , A.ITEM_KIND_CD
+							 , E.COM_NM                AS ITEM_KIND_NM
+							 , A.TEST_REQ_TITLE
+							 , A.RCV_DEPT_ID
+							 , F.GROUP_NAME            AS RCV_DEPT_NM
+							 , A.RCV_EMP_NO
+							 , G.USER_NAME             AS RCV_EMP_NM
+							 , A.COMPLETE_PLAN_DATE
+							 , A.APPR_STS_CD
+							 , A.APPR_DATE
+						  FROM TB_TEST_REQUEST A
+							   LEFT OUTER JOIN TB_COMMON_CODE C
+								  ON C.GRP_CD = 'C00014'
+								 AND C.COM_CD = A.PROCESS_STATUS
+							   INNER JOIN IKEP4_EV_USER D
+								  ON D.EMP_NO = A.WRITE_EMP_NO
+							   LEFT OUTER JOIN TB_COMMON_CODE E
+								  ON E.GRP_CD = 'C00016'
+								 AND E.COM_CD = A.ITEM_KIND_CD
+							   LEFT OUTER JOIN IKEP4_EV_GROUP F
+								  ON F.GROUP_TYPE_ID = 'G0001'
+								 AND F.VIEW_OPTION   = '1'
+								 AND F.GROUP_ID      = A.RCV_DEPT_ID
+							   LEFT OUTER JOIN IKEP4_EV_USER G
+								  ON G.EMP_NO = A.RCV_EMP_NO
+							   INNER JOIN IKEP4_EV_GROUP H
+								  ON H.GROUP_TYPE_ID = 'G0001'
+								 AND H.VIEW_OPTION   = '1'
+								 AND H.GROUP_ID      = A.WRITE_DEPT_ID
+						 WHERE A.WRITE_DATE     &gt;= CONVERT( DATETIME, #searchStartWriteDate#)
+						   AND A.WRITE_DATE     &lt; CONVERT( DATETIME, #searchEndWriteDate#) + 1
+						   <isNotEmpty property="searchReqEmpNo" >
+						   AND A.REQ_EMP_NO     = #searchReqEmpNo#
+						   </isNotEmpty>
+						   <isNotEmpty property="searchRcvEmpNo" >
+						   AND A.RCV_EMP_NO     = #searchRcvEmpNo#
+						   </isNotEmpty>
+						   <isNotEmpty property="searchProcessStatus" >
+						   AND A.PROCESS_STATUS = #searchProcessStatus#
+						   </isNotEmpty>
+						   <isNotEmpty property="searchItemKindCd" >
+						   AND A.ITEM_KIND_CD   = #searchItemKindCd#
+						   </isNotEmpty>
+						   <isNotEmpty property="searchTestReqTitle" >
+						   AND A.TEST_REQ_TITLE LIKE '%' + #searchTestReqTitle# + '%'
+						   </isNotEmpty>
+						   AND ((SUBSTRING(#searchCompanyChkVal#, 1, 1) = '1' AND SUBSTRING(A.COMPANY_CHK_VAL, 1, 1) = '1') OR
+						        (SUBSTRING(#searchCompanyChkVal#, 2, 1) = '1' AND SUBSTRING(A.COMPANY_CHK_VAL, 2, 1) = '1') OR
+								(SUBSTRING(#searchCompanyChkVal#, 3, 1) = '1' AND SUBSTRING(A.COMPANY_CHK_VAL, 3, 1) = '1'))
+						   AND A.WRITE_DEPT_ID  &lt;&gt; #sessionGoupId#    /* 로그인사번의 부서가 의뢰부서가 아닌 경우 */
+						   AND A.PROCESS_STATUS &gt;= '12'
+						   AND EXISTS (SELECT 'Y'
+				                         FROM IKEP4_EV_USER S
+										      INNER JOIN IKEP4_EV_USER_GROUP T
+											     ON T.USER_ID  = S.USER_ID
+												AND T.GROUP_ID IN (H.GROUP_ID, H.PARENT_GROUP_ID)
+				                        WHERE S.LEADER        = '1'
+				                          AND S.USER_STATUS   = 'C'
+				                          AND S.JOB_DUTY_CODE IN ('12', '13', '14', '20', '27', '67', '61')
+										  AND S.EMP_NO        = #sessionEmpNo#)
+						UNION ALL
+						SELECT A.TR_MGNT_NO
+							 , A.PROCESS_STATUS
+							 , C.COM_NM                AS PROCESS_STATUS_NM
+							 , A.WRITE_DATE
+							 , A.WRITE_EMP_NO
+							 , D.USER_NAME             AS WRITE_EMP_NM
+							 , CASE WHEN A.COMPANY_CHK_VAL = '111' THEN 'MP/P&amp;P/SP'
+							        WHEN A.COMPANY_CHK_VAL = '110' THEN 'MP/P&amp;P'
+							        WHEN A.COMPANY_CHK_VAL = '101' THEN 'MP/SP'
+							        WHEN A.COMPANY_CHK_VAL = '100' THEN 'MP'
+							        WHEN A.COMPANY_CHK_VAL = '011' THEN 'P&amp;P/SP'
+							        WHEN A.COMPANY_CHK_VAL = '010' THEN 'P&amp;P'
+							        WHEN A.COMPANY_CHK_VAL = '001' THEN 'SP'
+							        WHEN A.COMPANY_CHK_VAL = '000' THEN ''
+				               END                     AS COMPANY_CHK_VAL
+							 , A.ITEM_KIND_CD
+							 , E.COM_NM                AS ITEM_KIND_NM
+							 , A.TEST_REQ_TITLE
+							 , A.RCV_DEPT_ID
+							 , F.GROUP_NAME            AS RCV_DEPT_NM
+							 , A.RCV_EMP_NO
+							 , G.USER_NAME             AS RCV_EMP_NM
+							 , A.COMPLETE_PLAN_DATE
+							 , A.APPR_STS_CD
+							 , A.APPR_DATE
+						  FROM TB_TEST_REQUEST A
+							   LEFT OUTER JOIN TB_TEST_REQ_APPR_LINE B
+								  ON B.TR_MGNT_NO = A.TR_MGNT_NO
+							   LEFT OUTER JOIN TB_COMMON_CODE C
+								  ON C.GRP_CD = 'C00014'
+								 AND C.COM_CD = A.PROCESS_STATUS
+							   INNER JOIN IKEP4_EV_USER D
+								  ON D.EMP_NO = A.WRITE_EMP_NO
+							   LEFT OUTER JOIN TB_COMMON_CODE E
+								  ON E.GRP_CD = 'C00016'
+								 AND E.COM_CD = A.ITEM_KIND_CD
+							   LEFT OUTER JOIN IKEP4_EV_GROUP F
+								  ON F.GROUP_TYPE_ID = 'G0001'
+								 AND F.VIEW_OPTION   = '1'
+								 AND F.GROUP_ID      = A.RCV_DEPT_ID
+							   LEFT OUTER JOIN IKEP4_EV_USER G
+								  ON G.EMP_NO = A.RCV_EMP_NO
+						 WHERE A.WRITE_DATE     &gt;= CONVERT( DATETIME, #searchStartWriteDate#)
+						   AND A.WRITE_DATE     &lt; CONVERT( DATETIME, #searchEndWriteDate#) + 1
+						   <isNotEmpty property="searchReqEmpNo" >
+						   AND A.REQ_EMP_NO     = #searchReqEmpNo#
+						   </isNotEmpty>
+						   <isNotEmpty property="searchRcvEmpNo" >
+						   AND A.RCV_EMP_NO     = #searchRcvEmpNo#
+						   </isNotEmpty>
+						   <isNotEmpty property="searchProcessStatus" >
+						   AND A.PROCESS_STATUS = #searchProcessStatus#
+						   </isNotEmpty>
+						   <isNotEmpty property="searchItemKindCd" >
+						   AND A.ITEM_KIND_CD   = #searchItemKindCd#
+						   </isNotEmpty>
+						   <isNotEmpty property="searchTestReqTitle" >
+						   AND A.TEST_REQ_TITLE LIKE '%' + #searchTestReqTitle# + '%'
+						   </isNotEmpty>
+						   AND ((SUBSTRING(#searchCompanyChkVal#, 1, 1) = '1' AND SUBSTRING(A.COMPANY_CHK_VAL, 1, 1) = '1') OR
+						        (SUBSTRING(#searchCompanyChkVal#, 2, 1) = '1' AND SUBSTRING(A.COMPANY_CHK_VAL, 2, 1) = '1') OR
+								(SUBSTRING(#searchCompanyChkVal#, 3, 1) = '1' AND SUBSTRING(A.COMPANY_CHK_VAL, 3, 1) = '1'))
+						   AND A.PROCESS_STATUS &gt;= '12'
+						   AND A.PROCESS_STATUS &lt;&gt; '13'
+						   AND (A.RCV_EMP_NO = #sessionEmpNo# OR
+						        (B.RCV_REVIEW_EMP_NO = #sessionEmpNo# AND B.RCV_DRAFT_STS_CD = '03') OR
+								(B.RCV_APPR_EMP_NO = #sessionEmpNo# AND ((B.RCV_DRAFT_STS_CD = '03' AND (B.RCV_REVIEW_EMP_NO IS NULL OR B.RCV_REVIEW_EMP_NO = '')) OR B.RCV_REVIEW_STS_CD = '03')) OR
+								A.PROCESS_STATUS >= '22')
+						UNION ALL
+						SELECT A.TR_MGNT_NO
+							 , A.PROCESS_STATUS
+							 , C.COM_NM                AS PROCESS_STATUS_NM
+							 , A.WRITE_DATE
+							 , A.WRITE_EMP_NO
+							 , D.USER_NAME             AS WRITE_EMP_NM
+							 , CASE WHEN A.COMPANY_CHK_VAL = '111' THEN 'MP/P&amp;P/SP'
+							        WHEN A.COMPANY_CHK_VAL = '110' THEN 'MP/P&amp;P'
+							        WHEN A.COMPANY_CHK_VAL = '101' THEN 'MP/SP'
+							        WHEN A.COMPANY_CHK_VAL = '100' THEN 'MP'
+							        WHEN A.COMPANY_CHK_VAL = '011' THEN 'P&amp;P/SP'
+							        WHEN A.COMPANY_CHK_VAL = '010' THEN 'P&amp;P'
+							        WHEN A.COMPANY_CHK_VAL = '001' THEN 'SP'
+							        WHEN A.COMPANY_CHK_VAL = '000' THEN ''
+				               END                     AS COMPANY_CHK_VAL
+							 , A.ITEM_KIND_CD
+							 , E.COM_NM                AS ITEM_KIND_NM
+							 , A.TEST_REQ_TITLE
+							 , A.RCV_DEPT_ID
+							 , F.GROUP_NAME            AS RCV_DEPT_NM
+							 , A.RCV_EMP_NO
+							 , G.USER_NAME             AS RCV_EMP_NM
+							 , A.COMPLETE_PLAN_DATE
+							 , A.APPR_STS_CD
+							 , A.APPR_DATE
+						  FROM TB_TEST_REQUEST A
+							   LEFT OUTER JOIN TB_COMMON_CODE C
+								  ON C.GRP_CD = 'C00014'
+								 AND C.COM_CD = A.PROCESS_STATUS
+							   INNER JOIN IKEP4_EV_USER D
+								  ON D.EMP_NO = A.WRITE_EMP_NO
+							   LEFT OUTER JOIN TB_COMMON_CODE E
+								  ON E.GRP_CD = 'C00016'
+								 AND E.COM_CD = A.ITEM_KIND_CD
+							   INNER JOIN IKEP4_EV_GROUP F
+								  ON F.GROUP_TYPE_ID = 'G0001'
+								 AND F.VIEW_OPTION   = '1'
+								 AND F.GROUP_ID      = A.RCV_DEPT_ID
+							   INNER JOIN IKEP4_EV_USER G
+								  ON G.EMP_NO = A.RCV_EMP_NO
+						 WHERE A.WRITE_DATE     &gt;= CONVERT( DATETIME, #searchStartWriteDate#)
+						   AND A.WRITE_DATE     &lt; CONVERT( DATETIME, #searchEndWriteDate#) + 1
+						   <isNotEmpty property="searchReqEmpNo" >
+						   AND A.REQ_EMP_NO     = #searchReqEmpNo#
+						   </isNotEmpty>
+						   <isNotEmpty property="searchRcvEmpNo" >
+						   AND A.RCV_EMP_NO     = #searchRcvEmpNo#
+						   </isNotEmpty>
+						   <isNotEmpty property="searchProcessStatus" >
+						   AND A.PROCESS_STATUS = #searchProcessStatus#
+						   </isNotEmpty>
+						   <isNotEmpty property="searchItemKindCd" >
+						   AND A.ITEM_KIND_CD   = #searchItemKindCd#
+						   </isNotEmpty>
+						   <isNotEmpty property="searchTestReqTitle" >
+						   AND A.TEST_REQ_TITLE LIKE '%' + #searchTestReqTitle# + '%'
+						   </isNotEmpty>
+						   AND ((SUBSTRING(#searchCompanyChkVal#, 1, 1) = '1' AND SUBSTRING(A.COMPANY_CHK_VAL, 1, 1) = '1') OR
+						        (SUBSTRING(#searchCompanyChkVal#, 2, 1) = '1' AND SUBSTRING(A.COMPANY_CHK_VAL, 2, 1) = '1') OR
+								(SUBSTRING(#searchCompanyChkVal#, 3, 1) = '1' AND SUBSTRING(A.COMPANY_CHK_VAL, 3, 1) = '1'))
+						   AND A.RCV_DEPT_ID    &lt;&gt; #sessionGoupId#    /* 로그인사번의 부서가 주관부서가 아닌 경우 */
+						   AND A.PROCESS_STATUS &gt;= '22'
+						   AND EXISTS (SELECT 'Y'
+				                         FROM IKEP4_EV_USER S
+										      INNER JOIN IKEP4_EV_USER_GROUP T
+											     ON T.USER_ID  = S.USER_ID
+												AND T.GROUP_ID IN (F.GROUP_ID, F.PARENT_GROUP_ID)
+				                        WHERE S.LEADER        = '1'
+				                          AND S.USER_STATUS   = 'C'
+				                          AND S.JOB_DUTY_CODE IN ('12', '13', '14', '20', '27', '67', '61')
+										  AND S.EMP_NO        = #sessionEmpNo#) ) A
+				 GROUP BY A.TR_MGNT_NO
+		      ) IA
+	</select>
+	
+	<select id="getTestRequestList" parameterClass="testRequestSearchCondition" resultMap="testRequestResultListMap">
+		/* [TestRequest_SqlMap.xml] testRequest.getTestRequestList */
+		SELECT IAA.*
+		  FROM
+		     (
+				SELECT IA.*
+				     , ROW_NUMBER() OVER( ORDER BY
+						     						<isNotEmpty property="sortColumn">
+						     							<isEqual property="sortColumn" compareValue="processStatus">
+						     								<isEqual property="sortType" compareValue="DESC">
+						     									IA.PROCESS_STATUS DESC,
+						     								</isEqual>
+						     								<isEqual property="sortType" compareValue="ASC">
+						     									IA.PROCESS_STATUS ASC,
+						     								</isEqual>
+						     							</isEqual>
+						     							<isEqual property="sortColumn" compareValue="writeDate">
+						     								<isEqual property="sortType" compareValue="DESC">
+						     									IA.WRITE_DATE DESC,
+						     								</isEqual>
+						     								<isEqual property="sortType" compareValue="ASC">
+						     									IA.WRITE_DATE ASC,
+						     								</isEqual>
+						     							</isEqual>
+						     							<isEqual property="sortColumn" compareValue="writeEmpNm">
+						     								<isEqual property="sortType" compareValue="DESC">
+						     									IA.WRITE_EMP_NM DESC,
+						     								</isEqual>
+						     								<isEqual property="sortType" compareValue="ASC">
+						     									IA.WRITE_EMP_NM ASC,
+						     								</isEqual>
+						     							</isEqual>
+						     							<isEqual property="sortColumn" compareValue="companyChkVal">
+						     								<isEqual property="sortType" compareValue="DESC">
+						     									IA.COMPANY_CHK_VAL DESC,
+						     								</isEqual>
+						     								<isEqual property="sortType" compareValue="ASC">
+						     									IA.COMPANY_CHK_VAL ASC,
+						     								</isEqual>
+						     							</isEqual>
+						     							<isEqual property="sortColumn" compareValue="itemKindNm">
+						     								<isEqual property="sortType" compareValue="DESC">
+						     									IA.ITEM_KIND_NM DESC,
+						     								</isEqual>
+						     								<isEqual property="sortType" compareValue="ASC">
+						     									IA.ITEM_KIND_NM ASC,
+						     								</isEqual>
+						     							</isEqual>
+						     							<isEqual property="sortColumn" compareValue="testReqTitle">
+						     								<isEqual property="sortType" compareValue="DESC">
+						     									IA.TEST_REQ_TITLE DESC,
+						     								</isEqual>
+						     								<isEqual property="sortType" compareValue="ASC">
+						     									IA.TEST_REQ_TITLE ASC,
+						     								</isEqual>
+						     							</isEqual>
+						     							<isEqual property="sortColumn" compareValue="rcvDeptNm">
+						     								<isEqual property="sortType" compareValue="DESC">
+						     									IA.RCV_DEPT_NM DESC,
+						     								</isEqual>
+						     								<isEqual property="sortType" compareValue="ASC">
+						     									IA.RCV_DEPT_NM ASC,
+						     								</isEqual>
+						     							</isEqual>
+						     							<isEqual property="sortColumn" compareValue="rcvEmpNm">
+						     								<isEqual property="sortType" compareValue="DESC">
+						     									IA.RCV_EMP_NM DESC,
+						     								</isEqual>
+						     								<isEqual property="sortType" compareValue="ASC">
+						     									IA.RCV_EMP_NM ASC,
+						     								</isEqual>
+						     							</isEqual>
+						     							<isEqual property="sortColumn" compareValue="completePlanDate">
+						     								<isEqual property="sortType" compareValue="DESC">
+						     									IA.COMPLETE_PLAN_DATE DESC,
+						     								</isEqual>
+						     								<isEqual property="sortType" compareValue="ASC">
+						     									IA.COMPLETE_PLAN_DATE ASC,
+						     								</isEqual>
+						     							</isEqual>
+						     							<isEqual property="sortColumn" compareValue="trMgntNo">
+						     								<isEqual property="sortType" compareValue="DESC">
+						     									IA.TR_MGNT_NO DESC,
+						     								</isEqual>
+						     								<isEqual property="sortType" compareValue="ASC">
+						     									IA.TR_MGNT_NO ASC,
+						     								</isEqual>
+						     							</isEqual>
+						     						</isNotEmpty>
+													IA.TR_MGNT_NO DESC
+						                         ) AS RNUM
+				  FROM
+				     (
+						SELECT A.TR_MGNT_NO
+						     , MAX(A.PROCESS_STATUS)        AS PROCESS_STATUS
+						     , MAX(A.PROCESS_STATUS_NM)     AS PROCESS_STATUS_NM
+							 , CONVERT( CHAR(10), MAX(A.WRITE_DATE), 102)            AS WRITE_DATE
+							 , MAX(A.WRITE_EMP_NO)          AS WRITE_EMP_NO
+							 , MAX(A.WRITE_EMP_NM)          AS WRITE_EMP_NM
+							 , MAX(A.COMPANY_CHK_VAL)       AS COMPANY_CHK_VAL
+							 , MAX(A.ITEM_KIND_CD)          AS ITEM_KIND_CD
+							 , MAX(A.ITEM_KIND_NM)          AS ITEM_KIND_NM
+							 , MAX(A.TEST_REQ_TITLE)        AS TEST_REQ_TITLE
+							 , MAX(A.RCV_DEPT_ID)           AS RCV_DEPT_ID
+						     , MAX(A.RCV_DEPT_NM)           AS RCV_DEPT_NM
+						     , MAX(A.RCV_EMP_NO)            AS RCV_EMP_NO
+						     , MAX(A.RCV_EMP_NM)            AS RCV_EMP_NM
+							 , CONVERT( CHAR(10), MAX( A.COMPLETE_PLAN_DATE), 102)    AS COMPLETE_PLAN_DATE
+							 , MAX(A.APPR_STS_CD)           AS APPR_STS_CD
+							 , CONVERT( CHAR(10), MAX( A.APPR_DATE), 102)             AS APPR_DATE
+						  FROM (
+								SELECT A.TR_MGNT_NO
+									 , A.PROCESS_STATUS
+									 , C.COM_NM                AS PROCESS_STATUS_NM
+									 , A.WRITE_DATE
+									 , A.WRITE_EMP_NO
+									 , D.USER_NAME             AS WRITE_EMP_NM
+									 , CASE WHEN A.COMPANY_CHK_VAL = '111' THEN 'MP/P&amp;P/SP'
+									        WHEN A.COMPANY_CHK_VAL = '110' THEN 'MP/P&amp;P'
+									        WHEN A.COMPANY_CHK_VAL = '101' THEN 'MP/SP'
+									        WHEN A.COMPANY_CHK_VAL = '100' THEN 'MP'
+									        WHEN A.COMPANY_CHK_VAL = '011' THEN 'P&amp;P/SP'
+									        WHEN A.COMPANY_CHK_VAL = '010' THEN 'P&amp;P'
+									        WHEN A.COMPANY_CHK_VAL = '001' THEN 'SP'
+									        WHEN A.COMPANY_CHK_VAL = '000' THEN ''
+						               END                     AS COMPANY_CHK_VAL
+									 , A.ITEM_KIND_CD
+									 , E.COM_NM                AS ITEM_KIND_NM
+									 , A.TEST_REQ_TITLE
+									 , A.RCV_DEPT_ID
+									 , F.GROUP_NAME            AS RCV_DEPT_NM
+									 , A.RCV_EMP_NO
+									 , G.USER_NAME             AS RCV_EMP_NM
+									 , A.COMPLETE_PLAN_DATE
+									 , A.APPR_STS_CD
+									 , A.APPR_DATE
+								  FROM TB_TEST_REQUEST A
+									   LEFT OUTER JOIN TB_TEST_REQ_APPR_LINE B
+										  ON B.TR_MGNT_NO = A.TR_MGNT_NO
+									   LEFT OUTER JOIN TB_COMMON_CODE C
+										  ON C.GRP_CD = 'C00014'
+										 AND C.COM_CD = A.PROCESS_STATUS
+									   INNER JOIN IKEP4_EV_USER D
+										  ON D.EMP_NO = A.WRITE_EMP_NO
+									   LEFT OUTER JOIN TB_COMMON_CODE E
+										  ON E.GRP_CD = 'C00016'
+										 AND E.COM_CD = A.ITEM_KIND_CD
+									   LEFT OUTER JOIN IKEP4_EV_GROUP F
+										  ON F.GROUP_TYPE_ID = 'G0001'
+										 AND F.VIEW_OPTION   = '1'
+										 AND F.GROUP_ID      = A.RCV_DEPT_ID
+									   LEFT OUTER JOIN IKEP4_EV_USER G
+										  ON G.EMP_NO = A.RCV_EMP_NO
+								 WHERE A.WRITE_DATE     &gt;= CONVERT( DATETIME, #searchStartWriteDate#)
+								   AND A.WRITE_DATE     &lt; CONVERT( DATETIME, #searchEndWriteDate#) + 1
+								   <isNotEmpty property="searchReqEmpNo" >
+								   AND A.REQ_EMP_NO     = #searchReqEmpNo#
+								   </isNotEmpty>
+								   <isNotEmpty property="searchRcvEmpNo" >
+								   AND A.RCV_EMP_NO     = #searchRcvEmpNo#
+								   </isNotEmpty>
+								   <isNotEmpty property="searchProcessStatus" >
+								   AND A.PROCESS_STATUS = #searchProcessStatus#
+								   </isNotEmpty>
+								   <isNotEmpty property="searchItemKindCd" >
+								   AND A.ITEM_KIND_CD   = #searchItemKindCd#
+								   </isNotEmpty>
+								   <isNotEmpty property="searchTestReqTitle" >
+								   AND A.TEST_REQ_TITLE LIKE '%' + #searchTestReqTitle# + '%'
+								   </isNotEmpty>
+								   AND ((SUBSTRING(#searchCompanyChkVal#, 1, 1) = '1' AND SUBSTRING(A.COMPANY_CHK_VAL, 1, 1) = '1') OR
+								        (SUBSTRING(#searchCompanyChkVal#, 2, 1) = '1' AND SUBSTRING(A.COMPANY_CHK_VAL, 2, 1) = '1') OR
+										(SUBSTRING(#searchCompanyChkVal#, 3, 1) = '1' AND SUBSTRING(A.COMPANY_CHK_VAL, 3, 1) = '1'))
+								   AND (A.WRITE_EMP_NO = #sessionEmpNo# OR
+								        (B.REQ_REVIEW_EMP_NO = #sessionEmpNo# AND B.REQ_DRAFT_STS_CD = '03') OR
+										(B.REQ_APPR_EMP_NO = #sessionEmpNo# AND ((B.REQ_DRAFT_STS_CD = '03' AND (B.REQ_REVIEW_EMP_NO IS NULL OR B.REQ_REVIEW_EMP_NO = '')) OR B.REQ_REVIEW_STS_CD = '03')) OR
+										A.PROCESS_STATUS &gt;= '12')
+								UNION ALL
+								SELECT A.TR_MGNT_NO
+									 , A.PROCESS_STATUS
+									 , C.COM_NM                AS PROCESS_STATUS_NM
+									 , A.WRITE_DATE
+									 , A.WRITE_EMP_NO
+									 , D.USER_NAME             AS WRITE_EMP_NM
+									 , CASE WHEN A.COMPANY_CHK_VAL = '111' THEN 'MP/P&amp;P/SP'
+									        WHEN A.COMPANY_CHK_VAL = '110' THEN 'MP/P&amp;P'
+									        WHEN A.COMPANY_CHK_VAL = '101' THEN 'MP/SP'
+									        WHEN A.COMPANY_CHK_VAL = '100' THEN 'MP'
+									        WHEN A.COMPANY_CHK_VAL = '011' THEN 'P&amp;P/SP'
+									        WHEN A.COMPANY_CHK_VAL = '010' THEN 'P&amp;P'
+									        WHEN A.COMPANY_CHK_VAL = '001' THEN 'SP'
+									        WHEN A.COMPANY_CHK_VAL = '000' THEN ''
+						               END                     AS COMPANY_CHK_VAL
+									 , A.ITEM_KIND_CD
+									 , E.COM_NM                AS ITEM_KIND_NM
+									 , A.TEST_REQ_TITLE
+									 , A.RCV_DEPT_ID
+									 , F.GROUP_NAME            AS RCV_DEPT_NM
+									 , A.RCV_EMP_NO
+									 , G.USER_NAME             AS RCV_EMP_NM
+									 , A.COMPLETE_PLAN_DATE
+									 , A.APPR_STS_CD
+									 , A.APPR_DATE
+								  FROM TB_TEST_REQUEST A
+									   LEFT OUTER JOIN TB_COMMON_CODE C
+										  ON C.GRP_CD = 'C00014'
+										 AND C.COM_CD = A.PROCESS_STATUS
+									   INNER JOIN IKEP4_EV_USER D
+										  ON D.EMP_NO = A.WRITE_EMP_NO
+									   LEFT OUTER JOIN TB_COMMON_CODE E
+										  ON E.GRP_CD = 'C00016'
+										 AND E.COM_CD = A.ITEM_KIND_CD
+									   LEFT OUTER JOIN IKEP4_EV_GROUP F
+										  ON F.GROUP_TYPE_ID = 'G0001'
+										 AND F.VIEW_OPTION   = '1'
+										 AND F.GROUP_ID      = A.RCV_DEPT_ID
+									   LEFT OUTER JOIN IKEP4_EV_USER G
+										  ON G.EMP_NO = A.RCV_EMP_NO
+									   INNER JOIN IKEP4_EV_GROUP H
+										  ON H.GROUP_TYPE_ID = 'G0001'
+										 AND H.VIEW_OPTION   = '1'
+										 AND H.GROUP_ID      = A.WRITE_DEPT_ID
+								 WHERE A.WRITE_DATE     &gt;= CONVERT( DATETIME, #searchStartWriteDate#)
+								   AND A.WRITE_DATE     &lt; CONVERT( DATETIME, #searchEndWriteDate#) + 1
+								   <isNotEmpty property="searchReqEmpNo" >
+								   AND A.REQ_EMP_NO     = #searchReqEmpNo#
+								   </isNotEmpty>
+								   <isNotEmpty property="searchRcvEmpNo" >
+								   AND A.RCV_EMP_NO     = #searchRcvEmpNo#
+								   </isNotEmpty>
+								   <isNotEmpty property="searchProcessStatus" >
+								   AND A.PROCESS_STATUS = #searchProcessStatus#
+								   </isNotEmpty>
+								   <isNotEmpty property="searchItemKindCd" >
+								   AND A.ITEM_KIND_CD   = #searchItemKindCd#
+								   </isNotEmpty>
+								   <isNotEmpty property="searchTestReqTitle" >
+								   AND A.TEST_REQ_TITLE LIKE '%' + #searchTestReqTitle# + '%'
+								   </isNotEmpty>
+								   AND ((SUBSTRING(#searchCompanyChkVal#, 1, 1) = '1' AND SUBSTRING(A.COMPANY_CHK_VAL, 1, 1) = '1') OR
+								        (SUBSTRING(#searchCompanyChkVal#, 2, 1) = '1' AND SUBSTRING(A.COMPANY_CHK_VAL, 2, 1) = '1') OR
+										(SUBSTRING(#searchCompanyChkVal#, 3, 1) = '1' AND SUBSTRING(A.COMPANY_CHK_VAL, 3, 1) = '1'))
+								   AND A.WRITE_DEPT_ID  &lt;&gt; #sessionGoupId#    /* 로그인사번의 부서가 의뢰부서가 아닌 경우 */
+								   AND A.PROCESS_STATUS &gt;= '12'
+								   AND EXISTS (SELECT 'Y'
+						                         FROM IKEP4_EV_USER S
+												      INNER JOIN IKEP4_EV_USER_GROUP T
+													     ON T.USER_ID  = S.USER_ID
+														AND T.GROUP_ID IN (H.GROUP_ID, H.PARENT_GROUP_ID)
+						                        WHERE S.LEADER        = '1'
+						                          AND S.USER_STATUS   = 'C'
+						                          AND S.JOB_DUTY_CODE IN ('12', '13', '14', '20', '27', '67', '61')
+												  AND S.EMP_NO        = #sessionEmpNo#)
+								UNION ALL
+								SELECT A.TR_MGNT_NO
+									 , A.PROCESS_STATUS
+									 , C.COM_NM                AS PROCESS_STATUS_NM
+									 , A.WRITE_DATE
+									 , A.WRITE_EMP_NO
+									 , D.USER_NAME             AS WRITE_EMP_NM
+									 , CASE WHEN A.COMPANY_CHK_VAL = '111' THEN 'MP/P&amp;P/SP'
+									        WHEN A.COMPANY_CHK_VAL = '110' THEN 'MP/P&amp;P'
+									        WHEN A.COMPANY_CHK_VAL = '101' THEN 'MP/SP'
+									        WHEN A.COMPANY_CHK_VAL = '100' THEN 'MP'
+									        WHEN A.COMPANY_CHK_VAL = '011' THEN 'P&amp;P/SP'
+									        WHEN A.COMPANY_CHK_VAL = '010' THEN 'P&amp;P'
+									        WHEN A.COMPANY_CHK_VAL = '001' THEN 'SP'
+									        WHEN A.COMPANY_CHK_VAL = '000' THEN ''
+						               END                     AS COMPANY_CHK_VAL
+									 , A.ITEM_KIND_CD
+									 , E.COM_NM                AS ITEM_KIND_NM
+									 , A.TEST_REQ_TITLE
+									 , A.RCV_DEPT_ID
+									 , F.GROUP_NAME            AS RCV_DEPT_NM
+									 , A.RCV_EMP_NO
+									 , G.USER_NAME             AS RCV_EMP_NM
+									 , A.COMPLETE_PLAN_DATE
+									 , A.APPR_STS_CD
+									 , A.APPR_DATE
+								  FROM TB_TEST_REQUEST A
+									   LEFT OUTER JOIN TB_TEST_REQ_APPR_LINE B
+										  ON B.TR_MGNT_NO = A.TR_MGNT_NO
+									   LEFT OUTER JOIN TB_COMMON_CODE C
+										  ON C.GRP_CD = 'C00014'
+										 AND C.COM_CD = A.PROCESS_STATUS
+									   INNER JOIN IKEP4_EV_USER D
+										  ON D.EMP_NO = A.WRITE_EMP_NO
+									   LEFT OUTER JOIN TB_COMMON_CODE E
+										  ON E.GRP_CD = 'C00016'
+										 AND E.COM_CD = A.ITEM_KIND_CD
+									   LEFT OUTER JOIN IKEP4_EV_GROUP F
+										  ON F.GROUP_TYPE_ID = 'G0001'
+										 AND F.VIEW_OPTION   = '1'
+										 AND F.GROUP_ID      = A.RCV_DEPT_ID
+									   LEFT OUTER JOIN IKEP4_EV_USER G
+										  ON G.EMP_NO = A.RCV_EMP_NO
+								 WHERE A.WRITE_DATE     &gt;= CONVERT( DATETIME, #searchStartWriteDate#)
+								   AND A.WRITE_DATE     &lt; CONVERT( DATETIME, #searchEndWriteDate#) + 1
+								   <isNotEmpty property="searchReqEmpNo" >
+								   AND A.REQ_EMP_NO     = #searchReqEmpNo#
+								   </isNotEmpty>
+								   <isNotEmpty property="searchRcvEmpNo" >
+								   AND A.RCV_EMP_NO     = #searchRcvEmpNo#
+								   </isNotEmpty>
+								   <isNotEmpty property="searchProcessStatus" >
+								   AND A.PROCESS_STATUS = #searchProcessStatus#
+								   </isNotEmpty>
+								   <isNotEmpty property="searchItemKindCd" >
+								   AND A.ITEM_KIND_CD   = #searchItemKindCd#
+								   </isNotEmpty>
+								   <isNotEmpty property="searchTestReqTitle" >
+								   AND A.TEST_REQ_TITLE LIKE '%' + #searchTestReqTitle# + '%'
+								   </isNotEmpty>
+								   AND ((SUBSTRING(#searchCompanyChkVal#, 1, 1) = '1' AND SUBSTRING(A.COMPANY_CHK_VAL, 1, 1) = '1') OR
+								        (SUBSTRING(#searchCompanyChkVal#, 2, 1) = '1' AND SUBSTRING(A.COMPANY_CHK_VAL, 2, 1) = '1') OR
+										(SUBSTRING(#searchCompanyChkVal#, 3, 1) = '1' AND SUBSTRING(A.COMPANY_CHK_VAL, 3, 1) = '1'))
+								   AND A.PROCESS_STATUS &gt;= '12'
+								   AND A.PROCESS_STATUS &lt;&gt; '13'
+								   AND (A.RCV_EMP_NO = #sessionEmpNo# OR
+								        (B.RCV_REVIEW_EMP_NO = #sessionEmpNo# AND B.RCV_DRAFT_STS_CD = '03') OR
+										(B.RCV_APPR_EMP_NO = #sessionEmpNo# AND ((B.RCV_DRAFT_STS_CD = '03' AND (B.RCV_REVIEW_EMP_NO IS NULL OR B.RCV_REVIEW_EMP_NO = '')) OR B.RCV_REVIEW_STS_CD = '03')) OR
+										A.PROCESS_STATUS >= '22')
+								UNION ALL
+								SELECT A.TR_MGNT_NO
+									 , A.PROCESS_STATUS
+									 , C.COM_NM                AS PROCESS_STATUS_NM
+									 , A.WRITE_DATE
+									 , A.WRITE_EMP_NO
+									 , D.USER_NAME             AS WRITE_EMP_NM
+									 , CASE WHEN A.COMPANY_CHK_VAL = '111' THEN 'MP/P&amp;P/SP'
+									        WHEN A.COMPANY_CHK_VAL = '110' THEN 'MP/P&amp;P'
+									        WHEN A.COMPANY_CHK_VAL = '101' THEN 'MP/SP'
+									        WHEN A.COMPANY_CHK_VAL = '100' THEN 'MP'
+									        WHEN A.COMPANY_CHK_VAL = '011' THEN 'P&amp;P/SP'
+									        WHEN A.COMPANY_CHK_VAL = '010' THEN 'P&amp;P'
+									        WHEN A.COMPANY_CHK_VAL = '001' THEN 'SP'
+									        WHEN A.COMPANY_CHK_VAL = '000' THEN ''
+						               END                     AS COMPANY_CHK_VAL
+									 , A.ITEM_KIND_CD
+									 , E.COM_NM                AS ITEM_KIND_NM
+									 , A.TEST_REQ_TITLE
+									 , A.RCV_DEPT_ID
+									 , F.GROUP_NAME            AS RCV_DEPT_NM
+									 , A.RCV_EMP_NO
+									 , G.USER_NAME             AS RCV_EMP_NM
+									 , A.COMPLETE_PLAN_DATE
+									 , A.APPR_STS_CD
+									 , A.APPR_DATE
+								  FROM TB_TEST_REQUEST A
+									   LEFT OUTER JOIN TB_COMMON_CODE C
+										  ON C.GRP_CD = 'C00014'
+										 AND C.COM_CD = A.PROCESS_STATUS
+									   INNER JOIN IKEP4_EV_USER D
+										  ON D.EMP_NO = A.WRITE_EMP_NO
+									   LEFT OUTER JOIN TB_COMMON_CODE E
+										  ON E.GRP_CD = 'C00016'
+										 AND E.COM_CD = A.ITEM_KIND_CD
+									   INNER JOIN IKEP4_EV_GROUP F
+										  ON F.GROUP_TYPE_ID = 'G0001'
+										 AND F.VIEW_OPTION   = '1'
+										 AND F.GROUP_ID      = A.RCV_DEPT_ID
+									   INNER JOIN IKEP4_EV_USER G
+										  ON G.EMP_NO = A.RCV_EMP_NO
+								 WHERE A.WRITE_DATE     &gt;= CONVERT( DATETIME, #searchStartWriteDate#)
+								   AND A.WRITE_DATE     &lt; CONVERT( DATETIME, #searchEndWriteDate#) + 1
+								   <isNotEmpty property="searchReqEmpNo" >
+								   AND A.REQ_EMP_NO     = #searchReqEmpNo#
+								   </isNotEmpty>
+								   <isNotEmpty property="searchRcvEmpNo" >
+								   AND A.RCV_EMP_NO     = #searchRcvEmpNo#
+								   </isNotEmpty>
+								   <isNotEmpty property="searchProcessStatus" >
+								   AND A.PROCESS_STATUS = #searchProcessStatus#
+								   </isNotEmpty>
+								   <isNotEmpty property="searchItemKindCd" >
+								   AND A.ITEM_KIND_CD   = #searchItemKindCd#
+								   </isNotEmpty>
+								   <isNotEmpty property="searchTestReqTitle" >
+								   AND A.TEST_REQ_TITLE LIKE '%' + #searchTestReqTitle# + '%'
+								   </isNotEmpty>
+								   AND ((SUBSTRING(#searchCompanyChkVal#, 1, 1) = '1' AND SUBSTRING(A.COMPANY_CHK_VAL, 1, 1) = '1') OR
+								        (SUBSTRING(#searchCompanyChkVal#, 2, 1) = '1' AND SUBSTRING(A.COMPANY_CHK_VAL, 2, 1) = '1') OR
+										(SUBSTRING(#searchCompanyChkVal#, 3, 1) = '1' AND SUBSTRING(A.COMPANY_CHK_VAL, 3, 1) = '1'))
+								   AND A.RCV_DEPT_ID    &lt;&gt; #sessionGoupId#    /* 로그인사번의 부서가 주관부서가 아닌 경우 */
+								   AND A.PROCESS_STATUS &gt;= '22'
+								   AND EXISTS (SELECT 'Y'
+						                         FROM IKEP4_EV_USER S
+												      INNER JOIN IKEP4_EV_USER_GROUP T
+													     ON T.USER_ID  = S.USER_ID
+														AND T.GROUP_ID IN (F.GROUP_ID, F.PARENT_GROUP_ID)
+						                        WHERE S.LEADER        = '1'
+						                          AND S.USER_STATUS   = 'C'
+						                          AND S.JOB_DUTY_CODE IN ('12', '13', '14', '20', '27', '67', '61')
+												  AND S.EMP_NO        = #sessionEmpNo#) ) A
+						 GROUP BY A.TR_MGNT_NO
+				     ) IA
+		     ) IAA
+		 WHERE IAA.RNUM &lt;= #endRowIndex#
+		   AND IAA.RNUM &gt; #startRowIndex#
+	</select>
+	
+	<select id="getTestRequest" parameterClass="testRequestSearchCondition" resultMap="testRequestResultMap">
+		/* [TestRequest_SqlMap.xml] testRequest.getTestRequest */
+		SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
+		SELECT A.TR_MGNT_NO	AS TR_MGNT_NO
+		     , A.COMPANY_CHK_VAL AS COMPANY_CHK_VAL
+		     , A.ITEM_KIND_CD AS ITEM_KIND_CD
+		     , A.WRITE_EMP_NO AS WRITE_EMP_NO
+		     , DBO.FN_GET_EMPNO_EMP_NAME( A.WRITE_EMP_NO) AS WRITE_EMP_NM
+		     , CONVERT( CHAR(10), A.WRITE_DATE, 102)	AS WRITE_DATE
+		     , A.WRITE_DEPT_ID	AS WRITE_DEPT_ID
+		     , DBO.FN_GET_DEPT_NAME( A.WRITE_DEPT_ID)	AS WRITE_DEPT_NM
+		     , A.RCV_EMP_NO	AS RCV_EMP_NO
+		     , DBO.FN_GET_EMPNO_EMP_NAME( A.RCV_EMP_NO)	AS RCV_EMP_NM
+		     , A.RCV_DEPT_ID	AS RCV_DEPT_ID
+		     , DBO.FN_GET_DEPT_NAME( A.RCV_DEPT_ID)	AS RCV_DEPT_NM
+		     , A.TEST_REQ_TITLE	AS TEST_REQ_TITLE
+		     , A.REQ_SCHEDULE_CD	AS REQ_SCHEDULE_CD
+		     , A.REQ_SCHEDULE_ETC_TXT	AS REQ_SCHEDULE_ETC_TXT
+		     , A.REQ_DETAIL	AS REQ_DETAIL
+		     , A.FILE_ITEM_ID AS FILE_ITEM_ID
+		     , CONVERT( CHAR(10), A.COMPLETE_PLAN_DATE, 102) AS COMPLETE_PLAN_DATE 
+		     , A.RES_DEPT_OPINION	AS RES_DEPT_OPINION
+		     , A.PROCESS_STATUS	AS PROCESS_STATUS
+		     , A.APPR_STS_CD	AS APPR_STS_CD
+		     , CONVERT( CHAR(10), A.APPR_REQ_DATE, 102)	AS APPR_REQ_DATE
+		     , CONVERT( CHAR(10), A.APPR_DATE, 102)	AS APPR_DATE
+		     , A.REJECT_REASON	AS	REJECT_REASON
+		     , A.ADD_WRITE_DETAIL	AS ADD_WRITE_DETAIL
+		     , B.REQ_DRAFT_EMP_NO	AS REQ_DRAFT_EMP_NO
+		     , DBO.FN_GET_EMPNO_EMP_NAME( B.REQ_DRAFT_EMP_NO)	AS REQ_DRAFT_EMP_NM
+		     , B.REQ_DRAFT_STS_CD	AS REQ_DRAFT_STS_CD
+		     , CONVERT( CHAR(5), B.REQ_DRAFT_DATE, 1)	AS REQ_DRAFT_DATE
+		     , B.REQ_REVIEW_EMP_NO	AS REQ_REVIEW_EMP_NO
+		     , DBO.FN_GET_EMPNO_EMP_NAME( B.REQ_REVIEW_EMP_NO)	AS REQ_REVIEW_EMP_NM
+		     , B.REQ_REVIEW_STS_CD	AS REQ_REVIEW_STS_CD
+		     , CONVERT( CHAR(5), B.REQ_REVIEW_DATE, 1)	AS REQ_REVIEW_DATE
+		     , B.REQ_APPR_EMP_NO	AS REQ_APPR_EMP_NO
+		     , DBO.FN_GET_EMPNO_EMP_NAME( B.REQ_APPR_EMP_NO)	AS REQ_APPR_EMP_NM
+		     , B.REQ_APPR_STS_CD	AS REQ_APPR_STS_CD
+		     , CONVERT( CHAR(5), B.REQ_APPR_DATE, 1)	AS REQ_APPR_DATE
+		     , B.RCV_DRAFT_EMP_NO AS RCV_DRAFT_EMP_NO
+		     , DBO.FN_GET_EMPNO_EMP_NAME( B.RCV_DRAFT_EMP_NO) AS RCV_DRAFT_EMP_NM
+		     , B.RCV_DRAFT_STS_CD	AS RCV_DRAFT_STS_CD
+		     , CONVERT( CHAR(5), B.RCV_DRAFT_DATE, 1)	AS RCV_DRAFT_DATE
+		     , B.RCV_REVIEW_EMP_NO	AS RCV_REVIEW_EMP_NO
+		     , DBO.FN_GET_EMPNO_EMP_NAME( B.RCV_REVIEW_EMP_NO)	AS RCV_REVIEW_EMP_NM
+		     , B.RCV_REVIEW_STS_CD	AS RCV_REVIEW_STS_CD
+		     , CONVERT( CHAR(5), B.RCV_REVIEW_DATE, 1)	AS RCV_REVIEW_DATE
+		     , B.RCV_APPR_EMP_NO	AS RCV_APPR_EMP_NO
+		     , DBO.FN_GET_EMPNO_EMP_NAME( B.RCV_APPR_EMP_NO)	AS RCV_APPR_EMP_NM
+		     , B.RCV_APPR_STS_CD	AS RCV_APPR_STS_CD
+		     , CONVERT( CHAR(5), B.RCV_APPR_DATE, 1)	AS RCV_APPR_DATE
+		     , B.APPR_COMMENT	AS APPR_COMMENT
+		     , (
+		         SELECT TOP 1 X.AUTH_YN
+				  FROM (
+						SELECT 'Y'    AS AUTH_YN
+						  FROM TB_TEST_REQUEST A
+						       INNER JOIN TB_TEST_REQ_APPR_LINE B
+							      ON B.TR_MGNT_NO = A.TR_MGNT_NO
+						 WHERE A.TR_MGNT_NO    = #trMgntNo#
+						   AND (A.WRITE_EMP_NO = #sessionEmpNo# OR
+						        (B.REQ_REVIEW_EMP_NO = #sessionEmpNo# AND B.REQ_DRAFT_STS_CD = '03') OR
+								(B.REQ_APPR_EMP_NO = #sessionEmpNo# AND ((B.REQ_DRAFT_STS_CD = '03' AND (B.REQ_REVIEW_EMP_NO IS NULL OR B.REQ_REVIEW_EMP_NO = '')) OR B.REQ_REVIEW_STS_CD = '03')) OR
+								A.PROCESS_STATUS &gt;= '12')
+				        UNION ALL
+						SELECT 'Y'    AS AUTH_YN
+						  FROM TB_TEST_REQUEST A
+							   INNER JOIN IKEP4_EV_GROUP H
+								  ON H.GROUP_TYPE_ID = 'G0001'
+								 AND H.VIEW_OPTION   = '1'
+								 AND H.GROUP_ID      = A.WRITE_DEPT_ID
+						 WHERE A.TR_MGNT_NO     = #trMgntNo#
+						   AND A.WRITE_DEPT_ID  &lt;&gt; #sessionGoupId#
+						   AND A.PROCESS_STATUS &gt;= '12'
+						   AND EXISTS (SELECT 'Y'
+				                         FROM IKEP4_EV_USER S
+										      INNER JOIN IKEP4_EV_USER_GROUP T
+											     ON T.USER_ID  = S.USER_ID
+												AND T.GROUP_ID IN (H.GROUP_ID, H.PARENT_GROUP_ID)
+				                        WHERE S.LEADER        = '1'
+				                          AND S.USER_STATUS   = 'C'
+				                          AND S.JOB_DUTY_CODE IN ('12', '13', '14', '20', '27', '67', '61')
+										  AND S.EMP_NO        = #sessionEmpNo#)
+				        UNION ALL
+						SELECT 'Y'    AS AUTH_YN
+						  FROM TB_TEST_REQUEST A
+						       INNER JOIN TB_TEST_REQ_APPR_LINE B
+							      ON B.TR_MGNT_NO = A.TR_MGNT_NO
+						 WHERE A.TR_MGNT_NO     = #trMgntNo#
+						   AND A.PROCESS_STATUS &gt;= '12'
+						   AND A.PROCESS_STATUS &lt;&gt; '13'
+						   AND (A.RCV_EMP_NO = #sessionEmpNo# OR
+						        (B.RCV_REVIEW_EMP_NO = #sessionEmpNo# AND B.RCV_DRAFT_STS_CD = '03') OR
+								(B.RCV_APPR_EMP_NO = #sessionEmpNo# AND ((B.RCV_DRAFT_STS_CD = '03' AND (B.RCV_REVIEW_EMP_NO IS NULL OR B.RCV_REVIEW_EMP_NO = '')) OR B.RCV_REVIEW_STS_CD = '03')) OR
+								A.PROCESS_STATUS &gt;= '22')
+				        UNION ALL
+						SELECT 'Y'    AS AUTH_YN
+						  FROM TB_TEST_REQUEST A
+							   INNER JOIN IKEP4_EV_GROUP F
+								  ON F.GROUP_TYPE_ID = 'G0001'
+								 AND F.VIEW_OPTION   = '1'
+								 AND F.GROUP_ID      = A.RCV_DEPT_ID
+						 WHERE A.TR_MGNT_NO     = #trMgntNo#
+						   AND A.RCV_DEPT_ID    &lt;&gt; #sessionGoupId# 
+						   AND A.PROCESS_STATUS &gt;= '22'
+						   AND EXISTS (SELECT 'Y'
+				                         FROM IKEP4_EV_USER S
+										      INNER JOIN IKEP4_EV_USER_GROUP T
+											     ON T.USER_ID  = S.USER_ID
+												AND T.GROUP_ID IN (F.GROUP_ID, F.PARENT_GROUP_ID)
+				                        WHERE S.LEADER        = '1'
+				                          AND S.USER_STATUS   = 'C'
+				                          AND S.JOB_DUTY_CODE IN ('12', '13', '14', '20', '27', '67', '61')
+										  AND S.EMP_NO        = #sessionEmpNo#) ) X
+		       ) AS AUTH_YN
+		       , (
+		         SELECT 'Y'
+                   FROM IKEP4_EV_USER S
+			      INNER JOIN IKEP4_EV_USER_GROUP T
+				     ON T.USER_ID  = S.USER_ID
+					AND T.GROUP_ID IN (SELECT H.GROUP_ID
+					                     FROM IKEP4_EV_GROUP H
+					               INNER JOIN TB_TEST_REQUEST I
+					                       ON I.WRITE_DEPT_ID = H.GROUP_ID  /* 작성부서코드 */
+					                      AND I.TR_MGNT_NO = #trMgntNo#
+										WHERE H.GROUP_TYPE_ID = 'G0001'
+										  AND H.VIEW_OPTION   = '1'
+					                   UNION ALL
+									   SELECT H.PARENT_GROUP_ID
+					                     FROM IKEP4_EV_GROUP H
+					                     INNER JOIN TB_TEST_REQUEST I
+					                       ON I.WRITE_DEPT_ID = H.GROUP_ID  /* 작성부서코드 */
+					                      AND I.TR_MGNT_NO = #trMgntNo#
+										WHERE H.GROUP_TYPE_ID = 'G0001'
+										  AND H.VIEW_OPTION   = '1')   /* 작성부서코드 */
+                     WHERE S.LEADER        = '1'
+                       AND S.USER_STATUS   = 'C'
+                       AND S.JOB_DUTY_CODE IN ('12', '13', '14', '20', '27', '67', '61')
+			  		   AND S.EMP_NO        = #sessionEmpNo#                                /* 로그인 사번 */
+		         ) AS IMWON_YN
+		  FROM TB_TEST_REQUEST A
+	INNER JOIN TB_TEST_REQ_APPR_LINE B
+	        ON A.TR_MGNT_NO = B.TR_MGNT_NO
+	     WHERE A.TR_MGNT_NO = #trMgntNo#
+	</select>
+	
+	<select id="getScheduleLimitTarget" resultClass="java.util.Map" resultMap="testReqScheduleLimitMap">
+		/* [NewProductDev_SqlMap.xml] newProductDev.getScheduleLimitTarget */
+		SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
+		SELECT dbo.FN_GET_EMPNO_EMAIL_ADDRESS(A.RCV_EMP_NO)    AS EMAIL
+		     , DBO.FN_GET_EMPNO_EMP_NAME( A.RCV_EMP_NO)		   AS RCV_EMP_NM
+		     , A.TEST_REQ_TITLE                                AS TEST_REQ_TITLE
+			 , C.GROUP_NAME                                    AS WRITE_DEPT_NM
+			 , A.TR_MGNT_NO                                    AS TR_MGNT_NO
+			 , dbo.FN_GET_EMPNO_EMAIL_ADDRESS(A.WRITE_EMP_NO)  AS SENDER_EMAIL
+		  FROM TB_TEST_REQUEST A
+		       INNER JOIN TB_TEST_REQ_APPR_LINE B
+			      ON B.TR_MGNT_NO      = A.TR_MGNT_NO
+				 AND B.REQ_APPR_STS_CD = '03'
+				 AND DATEADD(dd, DATEDIFF(dd, 0, B.REQ_APPR_DATE + 3), 0) > getdate()
+				 AND B.RCV_DRAFT_STS_CD NOT IN ('03', '04')
+		       INNER JOIN IKEP4_EV_GROUP C
+				  ON C.GROUP_TYPE_ID = 'G0001'
+				 AND C.VIEW_OPTION   = '1'
+				 AND C.GROUP_ID      = A.WRITE_DEPT_ID
+ 		WHERE A.APPR_STS_CD NOT IN ('03', '04')
+	</select>
+	
+	<insert id="insertTestRequest" parameterClass="testRequest">
+		<selectKey keyProperty="trMgntNo" resultClass="String">
+			SELECT #trMgntNo# + REPLICATE( 0, 3 - LEN( A.MAXSEQ)) + A.MAXSEQ
+			 FROM(
+			       SELECT CONVERT( VARCHAR, ISNULL( RIGHT( MAX( TR_MGNT_NO ), 3), 0) + 1)  AS MAXSEQ
+			         FROM TB_TEST_REQUEST
+			        WHERE TR_MGNT_NO LIKE  #trMgntNo# + '%'
+			     )A
+		</selectKey>
+		/* [TestRequest_SqlMap.xml] testRequest.insertTestRequest */
+		INSERT INTO TB_TEST_REQUEST 
+		          (
+				    TR_MGNT_NO
+				  , COMPANY_CHK_VAL
+				  , ITEM_KIND_CD
+				  , WRITE_EMP_NO
+				  , WRITE_DATE
+				  , WRITE_DEPT_ID
+				  , RCV_EMP_NO
+				  , RCV_DEPT_ID
+				  , TEST_REQ_TITLE
+				  , REQ_SCHEDULE_CD
+				  , REQ_SCHEDULE_ETC_TXT
+				  , REQ_DETAIL
+				  , FILE_ITEM_ID
+				  , PROCESS_STATUS
+				  , APPR_STS_CD
+				) 
+		   VALUES 
+		        (
+				    #trMgntNo#			/* 시험의뢰서 관리번호 */
+				  , #companyChkVal#		/* 회사 체크 값 */
+				  , #itemKindCd#		/* 품목 코드(C00016) */
+				  , #writeEmpNo#		/* 작성자 사원번호 */
+				  , GETDATE()			/* 작성일자 */
+				  , #writeDeptId#		/* 작성자 부서코드 */
+				  , #rcvEmpNo#			/* 수신자 사번 */
+				  , #rcvDeptId#			/* 수신자 부서코드 */
+				  , #testReqTitle#		/* 시험의뢰서 제목 */
+				  , #reqScheduleCd#		/* 요구 일정(C00013) */
+				  , #reqScheduleEtcTxt#	/* 요구 일정 기타 내역 */
+				  , #reqDetail#			/* 시험 의뢰내용 */
+				  , #fileItemId#		/* 파일항목ID */
+				  , #processStatus#		/* 진행 상태(C00014) */
+				  , #apprStsCd#			/* 품의상태코드(C00005) */
+				)
+	</insert>
+	
+	<insert id="insertTestReqApprLine" parameterClass="testRequest">
+		/* [TestRequest_SqlMap.xml] testRequest.insertTestReqApprLine */
+		INSERT INTO TB_TEST_REQ_APPR_LINE 
+		          (
+				    TR_MGNT_NO
+				  , REQ_DRAFT_EMP_NO
+				  , REQ_DRAFT_STS_CD
+				  , REQ_DRAFT_DATE
+				  , REQ_REVIEW_EMP_NO
+				  , REQ_REVIEW_STS_CD
+				  , REQ_APPR_EMP_NO
+				  , REQ_APPR_STS_CD
+				) 
+		   VALUES 
+		        (
+				    #trMgntNo#			/* 시험의뢰서 관리번호 */
+				  , #reqDraftEmpNo#		/* 의뢰부서-기안자사번 */
+				  , #reqDraftStsCd#		/* 의뢰부서-기안자품의상태코드(C00005) */
+				  , GETDATE()
+				  , #reqReviewEmpNo#	/* 의뢰부서-검토자사번 */
+				  , #reqReviewStsCd#	/* 의뢰부서-검토자품의상태코드(C00005) */
+				  , #reqApprEmpNo#		/* 의뢰부서-승인자사번 */
+				  , #reqApprStsCd#		/* 의뢰부서-승인자품의상태코드(C00005) */
+				)
+	</insert>
+	
+	<update id="updateFileId" parameterClass="testRequest">
+		/* [TestRequest_SqlMap.xml] testRequest.updateFileId */
+		UPDATE TB_TEST_REQUEST
+		   SET FILE_ITEM_ID =#fileItemId#
+		 WHERE TR_MGNT_NO = #trMgntNo#
+	</update>
+	
+	<update id="updateTestRequest" parameterClass="testRequest">
+		/* [TestRequest_SqlMap.xml] testRequest.updateTestRequest */
+		UPDATE TB_TEST_REQUEST
+		   SET 
+		    <isEqual property="processGroupNo" compareValue="1">
+		       COMPANY_CHK_VAL    =      #companyChkVal#		/* 회사 체크 값 */       
+			 , ITEM_KIND_CD       =      #itemKindCd#			/* 품목 코드(C00016) */ 
+			 , RCV_EMP_NO         =      #rcvEmpNo#				/* 수신자 사번 */        
+			 , RCV_DEPT_ID        =      #rcvDeptId#			/* 수신자 부서코드 */      
+			 , TEST_REQ_TITLE     =      #testReqTitle#			/* 시험의뢰서 제목 */      
+			 , REQ_SCHEDULE_CD    =      #reqScheduleCd#		/* 요구 일정(C00013) */ 
+			 , REQ_SCHEDULE_ETC_TXT =    #reqScheduleEtcTxt#	/* 요구 일정 기타 내역 */   
+			 , REQ_DETAIL           =    #reqDetail#			/* 시험 의뢰내용 */       
+			 , FILE_ITEM_ID         =    #fileItemId#			/* 파일항목ID */        
+			</isEqual>
+		    <isEqual property="processGroupNo" compareValue="2">
+		       COMPLETE_PLAN_DATE = #completePlanDate#		/* 완료예정일 */
+		     , RES_DEPT_OPINION = #resDeptOpinion#			/* 주관부서 의견 */
+		    </isEqual>
+		WHERE TR_MGNT_NO = #trMgntNo#
+	</update>
+	
+	<update id="updateTestReqApprLine" parameterClass="testRequest">
+		/* [TestRequest_SqlMap.xml] testRequest.updateTestReqApprLine */
+		UPDATE TB_TEST_REQ_APPR_LINE
+		   SET 
+		    <isEqual property="processGroupNo" compareValue="1">
+		       REQ_REVIEW_EMP_NO = #reqReviewEmpNo#	/* 의뢰부서-검토자사번 */
+			 , REQ_APPR_EMP_NO = #reqApprEmpNo#		/* 의뢰부서-승인자사번 */
+			</isEqual>
+		    <isEqual property="processGroupNo" compareValue="2">
+		       RCV_REVIEW_EMP_NO = #rcvReviewEmpNo#	/* 주관부서-검토자사번 */
+			 , RCV_APPR_EMP_NO = #rcvApprEmpNo#		/* 주관부서-승인자사번 */
+			</isEqual>
+		 WHERE TR_MGNT_NO = #trMgntNo#
+	</update>
+	
+	<delete id="deleteTestRequest"  parameterClass="testRequest">
+		/* [TestRequest_SqlMap.xml] testRequest.deleteTestRequest */
+		DELETE FROM TB_TEST_REQ_APPR_LINE
+		      WHERE TR_MGNT_NO = #trMgntNo#
+	</delete>
+	
+	<delete id="deleteTestReqApprLine"  parameterClass="testRequest">
+		/* [TestRequest_SqlMap.xml] testRequest.deleteTestReqApprLine */
+		DELETE FROM TB_TEST_REQUEST
+		      WHERE TR_MGNT_NO = #trMgntNo#
+	</delete>
+	
+	<update id="approveTestRequest" parameterClass="testRequest">
+		/* [TestRequest_SqlMap.xml] testRequest.approveTestRequest */
+		UPDATE TB_TEST_REQUEST
+		   SET PROCESS_STATUS = #processStatus#		/* 진행상태 코드 */
+		     , APPR_STS_CD = #apprStsCd#			/* 품의상태 코드 */
+		     <isNotEmpty property="apprReqDate" >
+		     , APPR_REQ_DATE = GETDATE()	/* 품의요청일자 */
+		     </isNotEmpty>
+		     <isNotEmpty property="apprDate" >
+		     , APPR_DATE = GETDATE()	/* 품의확정일자 */
+		     </isNotEmpty>
+		     <isNotEmpty property="rejectReason" >
+		     , REJECT_REASON = #rejectReason#	/* 반려사유 */ 
+		     </isNotEmpty>
+		 WHERE TR_MGNT_NO = #trMgntNo#
+	</update>
+	
+	<update id="approveTestReqApprLine" parameterClass="testRequest">
+		/* [TestRequest_SqlMap.xml] testRequest.approveTestReqApprLine */
+		UPDATE TB_TEST_REQ_APPR_LINE
+		   SET
+		<isEqual property="processGroupNo" compareValue="1">
+		   <isNotEmpty property="reqDraftStsCd" >
+			   REQ_DRAFT_STS_CD = #reqDraftStsCd#	/* 의뢰부서-기안자품의상태코드(C00005) */
+			 , REQ_DRAFT_DATE = GETDATE()			/* 의뢰부서-기안일자 */
+		   </isNotEmpty>
+		   <isNotEmpty property="reqReviewStsCd" >
+		   	   REQ_REVIEW_STS_CD = #reqReviewStsCd#	/* 의뢰부서-검토자품의상태코드 */
+		   	 , REQ_REVIEW_DATE = GETDATE()			/* 의뢰부서-검토일자 */
+		   </isNotEmpty>
+		   <isNotEmpty property="reqApprStsCd" >
+		       REQ_APPR_STS_CD = #reqApprStsCd#		/* 의뢰부서-승인자품의상태코드 */
+		     , REQ_APPR_DATE = GETDATE()			/* 의뢰부서-승인일자 */
+		   </isNotEmpty>
+		   <isNotEmpty property="rcvDraftStsCd" >
+		   	<isNotEmpty property="reqApprStsCd" >,</isNotEmpty>
+		       RCV_DRAFT_EMP_NO = #rcvDraftEmpNo#	/* 주관부서-기안자사번 */
+			 , RCV_DRAFT_STS_CD = '01'	/* 주관부서-기안자품의상태코드(C00005) */
+			 , RCV_DRAFT_DATE = GETDATE()			/* 주관부서-기안일자 */
+		   </isNotEmpty>
+		</isEqual>
+		<isEqual property="processGroupNo" compareValue="2">
+		   <isNotEmpty property="rcvDraftStsCd" >
+			   RCV_DRAFT_STS_CD = #rcvDraftStsCd#	/* 주관부서-기안자품의상태코드(C00005) */
+			 , RCV_DRAFT_DATE = GETDATE()			/* 주관부서-기안일자 */
+		   </isNotEmpty>
+		   <isNotEmpty property="rcvReviewStsCd" >
+		   	   RCV_REVIEW_STS_CD = #rcvReviewStsCd#	/* 주관부서-검토자품의상태코드 */
+		   	 , RCV_REVIEW_DATE = GETDATE()			/* 주관부서-검토일자 */
+		   </isNotEmpty>
+		   <isNotEmpty property="rcvApprStsCd" >
+		       RCV_APPR_STS_CD = #rcvApprStsCd#		/* 주관부서-승인자품의상태코드 */
+		     , RCV_APPR_DATE = GETDATE()			/* 주관부서-승인일자 */
+		   </isNotEmpty>
+		</isEqual>
+		 WHERE TR_MGNT_NO = #trMgntNo#
+	</update>
+	
+	<update id="updateAddWriteDetail" parameterClass="testRequest">
+		/* [TestRequest_SqlMap.xml] testRequest.updateAddWriteDetail */
+		UPDATE TB_TEST_REQUEST
+		   SET ADD_WRITE_DETAIL = #addWriteDetail#
+		 WHERE TR_MGNT_NO = #trMgntNo#
+	</update>
+	
+	<update id="initTestRequest" parameterClass="testRequest">
+		/* [TestRequest_SqlMap.xml] testRequest.initTestRequest */
+		UPDATE TB_TEST_REQUEST
+		   SET PROCESS_STATUS = '10'
+			 , APPR_STS_CD = '01'
+			 , APPR_REQ_DATE = NULL
+			 , APPR_DATE = NULL
+			 , REJECT_REASON = NULL
+			 , COMPLETE_PLAN_DATE = NULL
+			 , RES_DEPT_OPINION = NULL
+		  WHERE TR_MGNT_NO = #trMgntNo#
+	</update>
+	
+	<update id="initTestReqApprLine" parameterClass="testRequest">
+		/* [TestRequest_SqlMap.xml] testRequest.initTestReqApprLine */
+		UPDATE TB_TEST_REQ_APPR_LINE
+		   SET REQ_DRAFT_STS_CD = '01'
+		   <isNotEmpty property="reqReviewEmpNo" >
+		     , REQ_REVIEW_STS_CD = '01'
+		     , REQ_REVIEW_DATE = NULL
+		   </isNotEmpty>
+		     , REQ_APPR_STS_CD = '01'
+		     , REQ_APPR_DATE = NULL
+		     , RCV_DRAFT_EMP_NO = NULL 
+		     , RCV_DRAFT_STS_CD = NULL 
+		     , RCV_DRAFT_DATE = NULL 
+		     , RCV_REVIEW_EMP_NO = NULL 
+		     , RCV_REVIEW_STS_CD = NULL 
+		     , RCV_REVIEW_DATE = NULL 
+		     , RCV_APPR_EMP_NO = NULL 
+		     , RCV_APPR_STS_CD = NULL 
+		     , RCV_APPR_DATE = NULL 
+		     , APPR_COMMENT = NULL 
+		 WHERE TR_MGNT_NO = #trMgntNo#
+	</update>
+</sqlMap>

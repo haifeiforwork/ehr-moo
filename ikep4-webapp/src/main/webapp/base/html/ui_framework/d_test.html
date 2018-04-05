@@ -1,0 +1,73 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ko">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Home</title>
+<link rel="stylesheet" type="text/css" href="../../css/import.css" />
+<link rel="stylesheet" type="text/css" href="../../css/theme01/import_theme.css" />
+<script type="text/javascript" src="../../js/jquery/jquery-1.6.2.min.js"></script>
+<script type="text/javascript" src="../../js/jquery/jquery-ui-1.8.13.min.without.datepicker.js"></script>
+<script type="text/javascript" src="../../js/langResource/ko.js"></script>
+<script type="text/javascript" src="../../js/common.pack.js"></script>
+<style type="text/css" rel="stylesheet">
+	div.tooltip {
+		display : none;
+		position : absolute;
+		padding : 3px 5px;
+		border : 1px solid #ccf;
+		background-color : white;
+		z-index : 100;
+	}
+</style>
+<script type="text/javascript">
+$(document).ready(function() {
+	var dialog1, dialog2, dialog3;
+	
+	var posit = $("#localeBtn").position();
+	
+	$("#localeBtn").bind("click", function(event) {
+		$("#locale").dialog({
+			height: 120,
+			width: 250,
+			modal: true,
+			position: [posit.left+$("#localeBtn").width()+7, posit.top],
+			resizable: false,
+			draggable: false
+		});		
+	});
+	
+	$(".button > a").bind("click", function(event) {
+		switch($(this).text()) {
+			case "open1" :
+				dialog1 = $("#dialog").dialog();
+				$("#dialog a").bind("click", function() {
+					if($(this).text() == "close") dialog1.dialog("close");
+				});
+				break;
+			case "open2" :
+				dialog2 = new iKEP.Dialog({title : "Ajax", url:"ajax.html", modal:false});
+				break;
+			case "close" :
+				dialog2.close();
+				break;
+		}
+	});
+});
+</script>
+</head>
+
+<body class="popup">
+<div class="button">Interactive : <a>open1</a> <a>open2</a> <a>close</a></div>
+<div id="dialog" title="Basic dialog">
+	<p>This is the default dialog which is useful for displaying information. The dialog window can be moved, resized and closed with the 'x' icon.</p>
+	<p><a>close</a></p>
+</div>
+<input type="text"></input><input type="button" id="localeBtn" name="localeBtn" value="Locale"><br/>
+<div id="locale" title="Set Locale" style="display:none;">
+	<p>kor : <input type="text"></p>
+	<p>eng : <input type="text"></p>
+	<p>jpn : <input type="text"></p>
+</div>
+	
+</body>
+</html>

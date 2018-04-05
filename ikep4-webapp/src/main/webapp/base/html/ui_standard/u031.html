@@ -1,0 +1,755 @@
+﻿
+
+	
+
+
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ko">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<!--타이틀-->
+
+
+<title>LG CNS :: iKEP4.00 전사게시판 관리 </title>
+<link rel="stylesheet" type="text/css" href="../../css/theme02/jquery_ui_custom.css" />
+<link rel="stylesheet" type="text/css" href="../../css/common.css" />
+<link rel="stylesheet" type="text/css" href="../../css/theme01/theme.css" />
+
+<script type="text/javascript" src="../../js/jquery/jquery-1.6.2.min.js"></script>
+<script type="text/javascript" src="../../js/jquery/jquery-ui-1.8.13.min.without.datepicker.js"></script>
+<script type="text/javascript" src="../../js/jquery/jquery.jstree.pack.js"></script>
+<script type="text/javascript" src="../../js/jquery/jquery.validate-1.8.min.js"></script>
+<script type="text/javascript" src="../../js/jquery/plugins.pack.js"></script>
+<script type="text/javascript" src="../../js/etc.plugins.pack.js"></script>
+<script type="text/javascript" src="../../js/langResource/ko.js"></script>
+<script type="text/javascript" src="../../js/common.pack.js"></script>
+</head>
+
+<body>
+
+
+
+
+
+
+
+ 
+ 
+ 
+ 
+ 
+
+
+
+ 
+<script type="text/javascript" src="../../js/jquery/splitter.js"></script>
+<script type="text/javascript">
+<!--   
+(function($){	
+	$(document).ready(function() {    
+
+		viewPopUpProfile = function(targetUserId) { 
+			var pageURL = "/ikep4-webapp/support/profile/getProfilePopup.do?targetUserId=" + targetUserId;
+			iKEP.popupOpen( pageURL , {width:800, height:280 , callback:function(result) {} });
+		}
+		
+		sort = function(sortColumn, sortType) { 
+			$("#searchBoardItemForm input[name=actionType]").val("sort");
+			$("#searchBoardItemForm input[name=sortColumn]").val("sortColumn"); 
+			$("#searchBoardItemForm input[name=sortType]").val(sortType == 'ASC' ? 'DESC' : 'ASC');	 
+			$("#searchBoardItemButton").click();
+		}; 
+		
+		//뷰모드 체인지 함수
+		changeViewMode = function(changeViewMode) {  
+			$("#searchBoardItemForm input[name=actionType]").val("changeView");
+			$("#searchBoardItemForm input[name=viewMode]").val(changeViewMode);
+			$("#searchBoardItemForm").submit(); 
+			return false; 
+		}; 
+		
+		$("#searchBoardItemButton").click(function() {   
+			$("#searchBoardItemForm input[name=actionType]").val("search");
+			$("#searchBoardItemForm").submit(); 
+			return false; 
+		});
+		
+		$("#checkboxAllBoardItem").click(function() { 
+			$("#searchBoardItemForm input[name=checkboxBoardItem]").attr("checked", $(this).attr("checked"));  
+		});  
+		
+		$("#adminMultiDeleteBoardItemButton").click(function() {  
+			var itemIds = new Array();
+			
+			$("#searchBoardItemForm input[name=checkboxBoardItem]:checked").each(function(index) { 
+				itemIds.push($(this).val()); 
+			});
+			 
+			
+			if(confirm("게시글의 삭제을 하시겠습니까?")) {
+				$.post("/ikep4-webapp/basicpack/board/boardItem/adminMultiDeleteBoardItem.do", {"itemId" : itemIds.toString()}) 
+				.success(function(data) {
+					$("#searchBoardItemButton").click();
+				})
+			}  
+		});   
+		
+		$("#searchBoardItemForm select[name=pagePerRecord]").change(function() { 
+			$("#searchBoardItemForm input[name=actionType]").val("pagePerRecord");
+			$("#searchBoardItemForm").submit(); 
+			return false;
+		}); 
+		
+		var objSplit = null;
+		
+		$("a[name=boardItem]").click(function() {
+			$("*[name=boardItemLine]").removeClass("bgSelected");
+			
+			$(this).parents("*[name=boardItemLine]").addClass("bgSelected");
+			
+			 if(objSplit == null  ) {  
+				
+					 
+					
+						return true;
+					
+				
+				
+			 } else if(objSplit.getType() == "v") {
+				$("#BottomPane").remove();
+				$("div.contentIframe").remove();
+				$("#RightPane").append("<div class='contentIframe'>");  
+				$("#RightPane div.contentIframe").load($(this).attr("href") + "&layoutType=layoutVertical"); 
+				return false;
+				
+			} else if(objSplit.getType() == "h") { 
+				$("#RightPane").remove(); 
+				$("div.contentIframe").remove();
+			    $("#BottomPane").append("<div class='contentIframe'>");
+				$("#BottomPane div.contentIframe").load($(this).attr("href") + "&layoutType=layoutHorizental");
+				return false;
+			} else {  
+				return true;
+			}
+			 
+			 return false;
+			
+		}); 
+		
+		$("#btnLayoutNormal").click(function() {    
+    		$.get('/ikep4-webapp/basicpack/board/boardItem/updateUserConfigLayout.do?boardId=100000004596&layoutType=layoutNormal');
+ 
+			if(objSplit != null) {
+				objSplit.destroy();
+				objSplit = null;
+				$("input[name=layoutType]").val("layoutNormal");
+			}
+		});
+		
+		$("#btnLayoutVertical").click(function(event) { 
+			$.get('/ikep4-webapp/basicpack/board/boardItem/updateUserConfigLayout.do?boardId=100000004596&layoutType=layoutVertical');
+			
+			if(objSplit == null) {
+				var options = {type : "v", callback:function($divContent) {getContents($divContent);}}; 
+				objSplit = new iKEP.Splitter("#splitterBox", options);
+				$("input[name=layoutType]").val("layoutVertical");				
+			} else {
+				objSplit.destroy();
+				objSplit = null;
+				$(this).trigger("click"); 
+			} 
+			
+		}); 
+		
+		$("#btnLayoutHorizental").click(function(event) {   
+			$.get('/ikep4-webapp/basicpack/board/boardItem/updateUserConfigLayout.do?boardId=100000004596&layoutType=layoutHorizental');
+			
+			if(objSplit == null) {
+				var options = {type : "h", callback:function($divContent) {getContents($divContent);}}; 
+				objSplit = new iKEP.Splitter("#splitterBox", options);
+				$("input[name=layoutType]").val("layoutHorizental");
+			} else {
+				objSplit.destroy();
+				objSplit = null;
+				$(this).trigger("click"); 
+			} 
+		}); 
+		
+		if($("input[name=layoutType]").val() ==  "layoutVertical") { 
+			$("#btnLayoutVertical").click();
+			
+		} else if($("input[name=layoutType]").val() ==  "layoutHorizental") {
+			$("#btnLayoutHorizental").click();
+			
+		} else {
+			
+		} 
+		
+	}); 
+	
+	/* 개인영역 펼치기 */
+	getContents = function($divContent){
+		
+		$divContent.empty();
+		$divContent.html("1111111111111111111");
+		/*
+		var url = "./u03_01.html";
+		var parms = "";
+		$.ajax({
+			url : url,
+			data : "",
+			type : "post",
+			success : function(result) {
+				$divContent.html(result);
+			},
+			error : function(event, request, settings) { 
+				alert("error");	
+			}
+		});
+		*/
+	}
+	
+		
+})(jQuery);
+//-->
+</script>
+<!--mainContents Start-->
+<div id="tagResult">
+	<!--blockListTable Start-->
+	<form id="searchBoardItemForm" method="post" action="/ikep4-webapp/basicpack/board/boardItem/listBoardItemView.do">  
+	
+	<input name="sortColumn" type="hidden" value="" title="정렬 컬럼" />
+	 		
+	
+	<input name="sortType" type="hidden" value="" title="정렬 타입 " />
+	 
+	
+	<input name="boardId" type="hidden" value="100000004596" title="게시판 ID" />
+	  
+	
+	<input name="layoutType" type="hidden" value="layoutNormal" title="레이아웃타입" />
+	   
+	<!--tableTop Start-->  
+	<div class="tableTop">  
+		<h2>자유게시판</h2>
+		<div class="listInfo">  
+			  
+				<select name="pagePerRecord" title='페이지당 게시글 수'>
+				
+					<option value="10" >10</option>
+				
+					<option value="15" selected="selected">15</option>
+				
+					<option value="20" >20</option>
+				
+					<option value="30" >30</option>
+				
+					<option value="40" >40</option>
+				
+					<option value="50" >50</option>
+				 
+				</select> 
+			
+			<div class="totalNum">(전체 <span>9</span>)</div>
+		</div>	  
+		
+		<div class="listView_1"> 
+			<input name="viewMode" type="hidden" value="1" title="목록 모드" /> 
+			<div class="none">보기방식 선택버튼</div>
+			<ul> 
+				
+				    
+				    
+				      <li><a name="viewModeTypeButton" onclick="changeViewMode('0');" href="#a"><img src="../../images/icon/ic_view_list.gif" alt="" title="목록목록" /></a></li>
+				     
+				 
+				
+				    
+				       <li><a name="viewModeTypeButton" onclick="changeViewMode('1');" href="#a"><img src="../../images/icon/ic_view_sumlist_on.gif" alt="" title="간단목록[on]" /></a></li>
+				    
+				      
+				 				
+				
+				   
+				    
+				       <li><a name="viewModeTypeButton" onclick="changeViewMode('2');" href="#a"><img src="../../images/icon/ic_view_summary.gif" alt="" title="요약목록" /></a></li>
+				     
+				 
+				
+				    
+				    
+				       <li><a name="viewModeTypeButton" onclick="changeViewMode('3');" href="#a"><img src="../../images/icon/ic_view_gallery.gif" alt="" title="갤러리목록" /></a></li>
+				      
+				  
+			</ul> 
+		</div>		
+		  							
+		<div class="listView_2">
+			<div class="none">레이아웃 토글버튼</div>
+			<ul>  
+				<li><a id="btnLayoutNormal"     href="#a"><img src="../../images/icon/ic_splitter_d.gif" alt="" title="목록보기 " /></a></li>
+				<li><a id="btnLayoutVertical"   href="#a"><img src="../../images/icon/ic_splitter_v.gif" alt="" title="가로보기 " /></a></li>
+				<li><a id="btnLayoutHorizental" href="#a"><img src="../../images/icon/ic_splitter_h.gif" alt="" title="세로보기  " /></a></li> 
+			</ul>
+		</div>  
+		<div class="tableSearch"> 
+			  
+				<select name="searchColumn" title='검색타입'>
+					<option value="title"  />제목</option>
+					<option value="registerName"  />게시자</option>
+				</select>		
+					
+			  					
+				<input name="searchWord" value="" type="text" class="inputbox" title='검색어 '  size="20" />
+			
+			<a href="#a" id="searchBoardItemButton" class="ic_search"><span>검색 </span></a>  
+		</div>			
+		<div class="clear"></div>
+	</div>
+	<!--//tableTop End--> 
+	
+	<!--splitterBox Start-->
+	<div id="splitterBox">
+		<div>   	
+							
+			<!--blockListTable Start--> 	
+			<div class="blockListTable summaryView">
+				
+				
+				<table summary="받은쪽지함">
+					<caption></caption>	 
+					<tbody>
+						<tr class="bgWhite" name="boardItemLine">
+							<td style="width:20px; padding: 5px;"><input name="checkboxBoardItem" class="checkbox" title="checkbox" type="checkbox" value="100000773221" /></td>
+							<td class="textLeft">
+								<strong>  
+									<a name="boardItem" href="/ikep4-webapp/basicpack/board/boardItem/readBoardItemView.do?boardId=100000004596&itemId=100000773221">Apple announces iPad 2 (잡스 동영상 포함) </a>
+								</strong>
+								<div class="summaryViewInfo">							
+									<span><a href="#a" onclick="javascript:viewPopUpProfile('admin')">admin Manager</a></span>
+									<img src="../../images/common/bar_info.gif" alt="" />
+									<span class="summaryViewInfo_date">2011.04.29 03:10:20</span>
+									<img src="../../images/common/bar_info.gif" alt="" />
+									<span>조회 <span class="summaryViewInfo_num">4</span></span>
+									<img src="../../images/common/bar_info.gif" alt="" />
+									<span>추천 <span class="summaryViewInfo_num">0</span></span>
+								</div> 
+								<div class="summaryViewTag"><span class="ic_tag"><span>태그 </span></span>	
+						        	<a href="#a" onclick="iKEP.tagging.tagSearch('100000773225', 'BD', '');return false;">ipad2</a>
+								</div> 
+							</td>
+						</tr>  
+					 	<tr class="bgWhite" name="boardItemLine">
+							<td style="width:20px; padding: 5px;"><input name="checkboxBoardItem" class="checkbox" title="checkbox" type="checkbox" value="100000773215" /></td>
+							<td class="textLeft">
+								<strong>
+									<a name="boardItem" href="/ikep4-webapp/basicpack/board/boardItem/readBoardItemView.do?boardId=100000004596&itemId=100000773215">Internet Explorer 9 Preview - First Look (동영상 포함) </a>
+								</strong>
+								<div class="summaryViewInfo">
+									<span><a href="#a" onclick="javascript:viewPopUpProfile('admin')">admin Manager</a></span>
+									<img src="../../images/common/bar_info.gif" alt="" />
+									<span class="summaryViewInfo_date">2011.04.29 03:04:21</span>
+									<img src="../../images/common/bar_info.gif" alt="" />
+									<span>조회 <span class="summaryViewInfo_num">1</span></span>
+									<img src="../../images/common/bar_info.gif" alt="" />
+									<span>추천 <span class="summaryViewInfo_num">0</span></span>
+								</div> 
+								<div class="summaryViewTag"><span class="ic_tag"><span>태그 </span></span>
+						        	<a href="#a" onclick="iKEP.tagging.tagSearch('100000773218', 'BD', '');return false;">ie9</a>
+						        	, 
+						        	<a href="#a" onclick="iKEP.tagging.tagSearch('100000773219', 'BD', '');return false;">html5</a>
+								</div> 
+							</td>
+						</tr>  
+						 
+						<tr class="bgWhite" name="boardItemLine"> 
+						 
+							<td style="width:20px; padding: 5px;"><input name="checkboxBoardItem" class="checkbox" title="checkbox" type="checkbox" value="100000770132" /></td>
+							 			
+						<td class="textLeft">
+							<strong>  
+								  
+							 		  
+									 
+										<a name="boardItem" href="/ikep4-webapp/basicpack/board/boardItem/readBoardItemView.do?boardId=100000004596&itemId=100000770132">ewrwerwerwer </a>
+																		
+							 		 
+							 		 				
+							 		  
+							 		
+								 
+							</strong>
+							<div class="summaryViewInfo">
+								<img src="../../images/icon/ic_attach.gif" alt="파일" />
+								<span>
+									
+								 		  
+										
+											
+											
+											
+												
+												 
+													<a href="#a" onclick="javascript:viewPopUpProfile('ba')">admin Associate Staff</a>
+												
+																					 
+										 
+									  
+								</span>
+								<img src="../../images/common/bar_info.gif" alt="" />
+								<span class="summaryViewInfo_date">2011.04.28 11:18:05</span>
+								<img src="../../images/common/bar_info.gif" alt="" />
+								<span>조회 <span class="summaryViewInfo_num">3</span></span>
+								<img src="../../images/common/bar_info.gif" alt="" />
+								<span>추천 <span class="summaryViewInfo_num">0</span></span>
+							</div> 
+							<div class="summaryViewTag"><span class="ic_tag"><span>태그 </span></span>
+						        
+						        	
+						        	<a href="#a" onclick="iKEP.tagging.tagSearch('100000770136', 'BD', '');return false;">하나</a>
+						        
+						        	, 
+						        	<a href="#a" onclick="iKEP.tagging.tagSearch('100000770137', 'BD', '');return false;">둘</a>
+						        
+						        	, 
+						        	<a href="#a" onclick="iKEP.tagging.tagSearch('100000770138', 'BD', '');return false;">셋</a>
+						         
+							</div> 
+						</td>
+					</tr>  
+					 
+					<tr class="bgWhite" name="boardItemLine"> 
+						 
+							<td style="width:20px; padding: 5px;"><input name="checkboxBoardItem" class="checkbox" title="checkbox" type="checkbox" value="100000770204" /></td>
+							 			
+						<td class="textLeft">
+							<strong>  
+								  
+							 		  
+									 
+										<a name="boardItem" href="/ikep4-webapp/basicpack/board/boardItem/readBoardItemView.do?boardId=100000004596&itemId=100000770204">[RE] ewrwerwerwer </a>
+																		
+							 		 
+							 		 				
+							 		  
+							 		
+								 
+							</strong>
+							<div class="summaryViewInfo">
+								<img src="../../images/icon/ic_attach.gif" alt="파일" />
+								<span>
+									
+								 		  
+										
+											
+											
+											
+												
+												 
+													<a href="#a" onclick="javascript:viewPopUpProfile('ba')">admin Associate Staff</a>
+												
+																					 
+										 
+									  
+								</span>
+								<img src="../../images/common/bar_info.gif" alt="" />
+								<span class="summaryViewInfo_date">2011.04.28 11:28:41</span>
+								<img src="../../images/common/bar_info.gif" alt="" />
+								<span>조회 <span class="summaryViewInfo_num">3</span></span>
+								<img src="../../images/common/bar_info.gif" alt="" />
+								<span>추천 <span class="summaryViewInfo_num">0</span></span>
+							</div> 
+							<div class="summaryViewTag"><span class="ic_tag"><span>태그 </span></span>
+						        
+						        	
+						        	<a href="#a" onclick="iKEP.tagging.tagSearch('100000770210', 'BD', '');return false;">나는 답글이다</a>
+						         
+							</div> 
+						</td>
+					</tr>  
+					 
+					<tr class="bgWhite" name="boardItemLine"> 
+						 
+							<td style="width:20px; padding: 5px;"><input name="checkboxBoardItem" class="checkbox" title="checkbox" type="checkbox" value="100000770117" /></td>
+							 			
+						<td class="textLeft">
+							<strong>  
+								  
+							 		  
+									 
+										<a name="boardItem" href="/ikep4-webapp/basicpack/board/boardItem/readBoardItemView.do?boardId=100000004596&itemId=100000770117">qweqw </a>
+																		
+							 		 
+							 		 				
+							 		  
+							 		
+								 
+							</strong>
+							<div class="summaryViewInfo">
+								<img src="../../images/icon/ic_attach.gif" alt="파일" />
+								<span>
+									
+								 		  
+										
+											
+											
+											
+												
+												 
+													<a href="#a" onclick="javascript:viewPopUpProfile('ba')">admin Associate Staff</a>
+												
+																					 
+										 
+									  
+								</span>
+								<img src="../../images/common/bar_info.gif" alt="" />
+								<span class="summaryViewInfo_date">2011.04.28 11:17:11</span>
+								<img src="../../images/common/bar_info.gif" alt="" />
+								<span>조회 <span class="summaryViewInfo_num">2</span></span>
+								<img src="../../images/common/bar_info.gif" alt="" />
+								<span>추천 <span class="summaryViewInfo_num">0</span></span>
+							</div> 
+							<div class="summaryViewTag"><span class="ic_tag"><span>태그 </span></span>
+						        
+						        	
+						        	<a href="#a" onclick="iKEP.tagging.tagSearch('100000768453', 'BD', '');return false;">234234</a>
+						         
+							</div> 
+						</td>
+					</tr>  
+					 
+					<tr class="bgWhite" name="boardItemLine"> 
+						 
+							<td style="width:20px; padding: 5px;"><input name="checkboxBoardItem" class="checkbox" title="checkbox" type="checkbox" value="100000770059" /></td>
+							 			
+						<td class="textLeft">
+							<strong>  
+								  
+							 		  
+									 
+										<a name="boardItem" href="/ikep4-webapp/basicpack/board/boardItem/readBoardItemView.do?boardId=100000004596&itemId=100000770059">234234 </a>
+																		
+							 		 
+							 		 				
+							 		  
+							 		
+								 
+							</strong>
+							<div class="summaryViewInfo">
+								
+								<span>
+									
+								 		  
+										
+											
+											
+											
+												
+												 
+													<a href="#a" onclick="javascript:viewPopUpProfile('ba')">admin Associate Staff</a>
+												
+																					 
+										 
+									  
+								</span>
+								<img src="../../images/common/bar_info.gif" alt="" />
+								<span class="summaryViewInfo_date">2011.04.28 10:58:20</span>
+								<img src="../../images/common/bar_info.gif" alt="" />
+								<span>조회 <span class="summaryViewInfo_num">1</span></span>
+								<img src="../../images/common/bar_info.gif" alt="" />
+								<span>추천 <span class="summaryViewInfo_num">0</span></span>
+							</div> 
+							<div class="summaryViewTag"><span class="ic_tag"><span>태그 </span></span>
+						        
+						        	
+						        	<a href="#a" onclick="iKEP.tagging.tagSearch('100000768453', 'BD', '');return false;">234234</a>
+						         
+							</div> 
+						</td>
+					</tr>  
+					 
+					<tr class="bgWhite" name="boardItemLine"> 
+						 
+							<td style="width:20px; padding: 5px;"><input name="checkboxBoardItem" class="checkbox" title="checkbox" type="checkbox" value="100000770056" /></td>
+							 			
+						<td class="textLeft">
+							<strong>  
+								  
+							 		  
+									 
+										<a name="boardItem" href="/ikep4-webapp/basicpack/board/boardItem/readBoardItemView.do?boardId=100000004596&itemId=100000770056">123 </a>
+																		
+							 		 
+							 		 				
+							 		  
+							 		
+								 
+							</strong>
+							<div class="summaryViewInfo">
+								
+								<span>
+									
+								 		  
+										
+											
+											
+											
+												
+												 
+													<a href="#a" onclick="javascript:viewPopUpProfile('ba')">admin Associate Staff</a>
+												
+																					 
+										 
+									  
+								</span>
+								<img src="../../images/common/bar_info.gif" alt="" />
+								<span class="summaryViewInfo_date">2011.04.28 10:57:18</span>
+								<img src="../../images/common/bar_info.gif" alt="" />
+								<span>조회 <span class="summaryViewInfo_num">1</span></span>
+								<img src="../../images/common/bar_info.gif" alt="" />
+								<span>추천 <span class="summaryViewInfo_num">0</span></span>
+							</div> 
+							<div class="summaryViewTag"><span class="ic_tag"><span>태그 </span></span>
+						        
+						        	
+						        	<a href="#a" onclick="iKEP.tagging.tagSearch('100000709932', 'BD', '');return false;">wer</a>
+						         
+							</div> 
+						</td>
+					</tr>  
+					 
+					<tr class="bgWhite" name="boardItemLine"> 
+						 
+							<td style="width:20px; padding: 5px;"><input name="checkboxBoardItem" class="checkbox" title="checkbox" type="checkbox" value="100000764859" /></td>
+							 			
+						<td class="textLeft">
+							<strong>  
+								  
+							 		  
+									 
+										<a name="boardItem" href="/ikep4-webapp/basicpack/board/boardItem/readBoardItemView.do?boardId=100000004596&itemId=100000764859">나는 게시판이다. <span class="colorPoint">(315)</span></a>
+																		
+							 		 
+							 		 				
+							 		  
+							 		
+								 
+							</strong>
+							<div class="summaryViewInfo">
+								
+								<span>
+									
+								 		  
+										
+											
+											
+											
+												
+												 
+													<a href="#a" onclick="javascript:viewPopUpProfile('admin')">admin Manager</a>
+												
+																					 
+										 
+									  
+								</span>
+								<img src="../../images/common/bar_info.gif" alt="" />
+								<span class="summaryViewInfo_date">2011.04.27 04:51:20</span>
+								<img src="../../images/common/bar_info.gif" alt="" />
+								<span>조회 <span class="summaryViewInfo_num">367</span></span>
+								<img src="../../images/common/bar_info.gif" alt="" />
+								<span>추천 <span class="summaryViewInfo_num">164</span></span>
+							</div> 
+							<div class="summaryViewTag"><span class="ic_tag"><span>태그 </span></span>
+						        
+						        	
+						        	<a href="#a" onclick="iKEP.tagging.tagSearch('100000764860', 'BD', '');return false;">BBS테스크태그1</a>
+						        
+						        	, 
+						        	<a href="#a" onclick="iKEP.tagging.tagSearch('100000764861', 'BD', '');return false;">BBS테스트태크2</a>
+						         
+							</div> 
+						</td>
+					</tr>  
+					 
+					<tr class="bgWhite" name="boardItemLine"> 
+						 
+							<td style="width:20px; padding: 5px;"><input name="checkboxBoardItem" class="checkbox" title="checkbox" type="checkbox" value="100000738223" /></td>
+							 			
+						<td class="textLeft">
+							<strong>  
+								  
+							 		  
+									 
+										<a name="boardItem" href="/ikep4-webapp/basicpack/board/boardItem/readBoardItemView.do?boardId=100000004596&itemId=100000738223">fdsafdas <span class="colorPoint">(131)</span></a>
+																		
+							 		 
+							 		 				
+							 		  
+							 		
+								 
+							</strong>
+							<div class="summaryViewInfo">
+								
+								<span>
+									
+								 		  
+										
+											
+											
+											
+												
+												 
+													<a href="#a" onclick="javascript:viewPopUpProfile('user1')">admin Associate Staff</a>
+												
+																					 
+										 
+									  
+								</span>
+								<img src="../../images/common/bar_info.gif" alt="" />
+								<span class="summaryViewInfo_date">2011.04.20 00:32:09</span>
+								<img src="../../images/common/bar_info.gif" alt="" />
+								<span>조회 <span class="summaryViewInfo_num">394</span></span>
+								<img src="../../images/common/bar_info.gif" alt="" />
+								<span>추천 <span class="summaryViewInfo_num">85</span></span>
+							</div> 
+							<div class="summaryViewTag"><span class="ic_tag"><span>태그 </span></span>
+						         
+							</div> 
+						</td>
+					</tr> 
+					</tbody> 
+				</table>
+				
+			
+				<!--Page Numbur Start-->
+				<input name="actionType" value="" type="hidden" />
+				<div class='pageNum'>
+					<ul>  <li>    <a href='#a' class='btn_page_first' onclick='javascript:pageMoveAction("pageIndex", "*", "1"); $jq("#searchBoardItemButton").click();  return false;'>      <span></span>    </a>  </li>  <li>    <a href='#a' class='btn_page_pre' onclick='javascript:pageMoveAction("pageIndex", "*", "1"); $jq("#searchBoardItemButton").click();  return false;'>      <span></span>    </a>  </li>  <li><span class='liFirst'>1</span></li>  <li>    <a href='#a' class='btn_page_next' onclick='javascript:pageMoveAction("pageIndex", "*", "1"); $jq("#searchBoardItemButton").click();  return false;'>      <span></span>    </a>  </li>  <li>    <a href='#a' class='btn_page_last' onclick='javascript:pageMoveAction("pageIndex", "*", "1"); $jq("#searchBoardItemButton").click();  return false;'>      <span></span>    </a>  </li></ul>
+				</div>
+				<input name="pageIndex" type="hidden" value="1" title="현재 페이지" />
+				<!--//Page Numbur End-->
+			
+			
+			</div>
+			<!--//blockListTable End-->
+			
+			<!--blockButton Start-->
+			<div class="blockButton">									
+				<ul>					
+					<li><a id="createBoardItemButton" class="button" href="/ikep4-webapp/basicpack/board/boardItem/createBoardItemView.do?boardId=100000004596"><span>등록</span></a></li>
+					 <li><a id="adminMultiDeleteBoardItemButton" class="button" href="#a"><span>삭제</span></a></li>					 
+				</ul>
+			</div> 
+			<!--//blockButton End--> 
+			
+		</div>  
+	</div>
+<!--//splitterBox End-->	
+</form>	
+</div>
+	
+</body>
+</html>

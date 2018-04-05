@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="portal.login.dao.UserAccount">
+	<typeAlias alias="UserAccount"
+		type="com.lgcns.ikep4.portal.login.model.UserAccount" />
+
+	<!-- USER 테이블 조회 결과 -->
+	<resultMap id="userAccount" class="UserAccount" groupBy="id">
+		<result property="username" column="USER_ID" />
+		<result property="password" column="USER_PASSWORD" />
+		<result property="updatePasswordDate" column="UPDATE_PASSWORD_DATE" />
+	</resultMap>
+	
+	<!-- USER 테이블 조회 결과 -->
+	<resultMap id="userAccountMobile" class="UserAccount" groupBy="id">
+		<result property="username" column="USER_ID" />
+		<result property="password" column="USER_PASSWORD" />
+	</resultMap>
+
+	<select id="getUserByUsername" resultMap="userAccount"
+		parameterClass="java.util.HashMap">
+      <![CDATA[
+		SELECT 
+           	USER_ID, 
+           	USER_PASSWORD,
+           	CONVERT(VARCHAR, UPDATE_PASSWORD_DATE, 112) as UPDATE_PASSWORD_DATE
+		FROM 
+			IKEP4_EV_USER 
+        WHERE 
+        	USER_ID=#username#
+            AND PORTAL_ID=#portalId#
+      ]]>
+	</select>
+	
+	<insert id="insert" parameterClass="userAccount"> 
+	
+	INSERT INTO EP_NEW_LOGIN_USER
+           (user_id
+           ,user_pwd
+           ,login_date
+           ,EncryptedPasswd)
+     VALUES
+           (#username#
+           ,#password#
+           ,CURRENT_TIMESTAMP
+           ,#updatePasswordDate#)
+	</insert>
+
+	<select id="getUserByUsernameMobile" resultMap="userAccountMobile"
+		parameterClass="java.util.HashMap">
+      <![CDATA[
+		SELECT 
+           	USER_ID, 
+           	USER_PASSWORD
+		FROM 
+			IKEP4_EV_USER 
+        WHERE 
+        	USER_ID=#username#
+        AND USER_STATUS = 'C'
+      ]]>
+	</select>
+
+
+</sqlMap>

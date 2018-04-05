@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="support.message.MessageCategory">
+
+    <typeAlias alias="MessageCategory" type="com.lgcns.ikep4.support.message.model.MessageCategory" />
+    <resultMap class="com.lgcns.ikep4.support.message.model.MessageCategory" id="result">		
+		<result column="CATEGORY_ID"           property="categoryId"          jdbcType="VARCHAR" /> 
+		<result column="CATEGORY_NAME"         property="categoryName"        jdbcType="VARCHAR" /> 
+		<result column="CATEGORY_ENGLISH_NAME" property="categoryEnglishName" jdbcType="VARCHAR" />
+	</resultMap>
+	
+    <select id="getCategory" resultMap="result">
+    	SELECT /* [Message_Category_SqlMap.xml] MessageCategory.getCategory */
+    		CATEGORY_ID
+    		, CATEGORY_NAME
+    		, CATEGORY_ENGLISH_NAME
+		FROM IKEP4_ME_CATEGORY
+		ORDER BY CATEGORY_ID
+	</select>
+	
+</sqlMap>

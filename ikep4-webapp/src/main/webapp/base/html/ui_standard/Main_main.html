@@ -1,0 +1,455 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ko">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>iKEP 4.00 Main</title>
+<link rel="stylesheet" type="text/css" href="../../css/theme01/jquery_ui_custom.css" />
+<link rel="stylesheet" type="text/css" href="../../css/common.css" />
+<link rel="stylesheet" type="text/css" href="../../css/theme01/theme.css" />
+<script type="text/javascript" src="../../js/jquery/jquery-1.6.2.min.js"></script>
+<script type="text/javascript" src="../../js/jquery/jquery-ui-1.8.13.min.without.datepicker.js"></script>
+<script type="text/javascript">var contextRoot = "/ikep4-webapp";</script>
+<script type="text/javascript" src="../../js/langResource/ko.js"></script>
+<script type="text/javascript" src="../../js/common.pack.js"></script>
+<script type="text/javascript" src="../../js/portlet.js"></script>
+<script type="text/javascript">
+<!--
+(function($) {
+	
+	$(document).ready(function() {
+		
+		$("#divTab_s").tabs();
+		
+	});	
+	
+	createWclockEmbedObject = function(target){
+		
+		var idx = (new Date()).getTime();
+		var swf = iKEP.getContextRoot()+"/base/swf/portlet/wclock/wclock.swf";
+		var gmt = "GMT%2B08";
+		var wDate = "20110506151734";
+		var title = "현재시간";
+		var wxml = iKEP.getContextRoot()+"/base/swf/portlet/wclock/timedata_ko.xml";
+		var param = "gGmt="+gmt+"&amp;gData="+wDate+"&amp;gCity=뉴욕&amp;gLocale="+title+"&amp;gXmlfile="+wxml;
+		var embedTag = (jQuery.browser["msie"] === true) ? '<object id="embedObj_' + idx + '" align="middle" width="349" height="240" codebase="http://fpdownload.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=9.0.0.0" classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000">' +
+				'<param name="allowScriptAccess" value="always"/>' +
+				'<param name="movie" value="' + swf + '?' + param + '"/>' +
+				'<param name="wmode" value="transparent"/>' +	//window
+				'<param name="menu" value="false"/>' +
+				'<param name="scaleMode" value="noScale"/>' +
+				'<param name="showMenu" value="false"/>' +
+				'<param name="align" value="CT"/>' +
+				'<param name="quality" value="high"/>' +
+				'<param name="bgcolor" value="#ffffff"/>' +
+			'</object>' : '<embed align="middle" width="340" height="240"' +
+			' pluginspage="http://www.macromedia.com/go/getflashplayer"' +
+			' type="application/x-shockwave-flash"' +
+			' allowscriptaccess="always"' +
+			' bgcolor="#ffffff"' +
+			' quality="high"' +
+			' menu="false"' +
+			' wmode="transparent"' +	//window
+			' src="' + swf + '?' + param + '"/>';
+		
+		jQuery(target).html(embedTag);
+
+	};
+	
+		
+})(jQuery);
+-->
+</script>
+</head>
+
+<body>
+<!--skipNavigation Start-->
+<div id="skipNavigation">
+	<p><a href="#blockMainTop">컨텐츠영역 바로가기</a></p>	
+	<p><a href="#portletWrap">포틀릿영역 바로가기</a></p>
+</div>
+<!--//skipNavigation End-->
+
+<!--wrapper Start-->
+<div id="wrapper">
+
+	<!--blockContainer Start-->
+	<div id="blockContainer">
+	
+		<!--blockMain Start-->
+		<div id="blockMain">
+			
+			<!--blockMainTop Start-->	
+			<div id="blockMainTop">
+				<h1 class="none">컨텐츠영역</h1>		
+				<div class="mainTop_l">
+					<h2 class="none">Wise Saying</h2> 
+					<div class="mtitle"><img src="../../images/common/mtitle_wisesaying.gif" alt="wise saying" /></div>
+					<table summary="">
+						<caption></caption>
+						<tbody>
+							<tr>
+								<td width="110">
+									<img src="../../images/common/img_wisesaying.gif" alt="" /><!--이미지 최적화 사이즈는 110x115-->
+								</td>
+								<td width="*">
+									<p class="mainTop_imgtxt_01">희망을 품지 않은 자는 절망도 할 수 없다.</p>
+									<p class="mainTop_imgtxt_02">He who has never hoped<br />can never despair.</p>
+									<p class="mainTop_imgtxt_03"><i>조지 버나드 쇼</i></p>
+									<p class="mainTop_imgtxt_04"><i>George Bernard Shaw</i></p>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<div class="mainTop_m">
+					<!--tab Start-->		
+					<div id="divTab_s" class="iKEP_tab_s">
+						<ul>
+							<li><a href="#tabs-1">Today Focus</a></li>
+							<li><a href="#tabs-2">News</a></li>
+							<li><a href="#tabs-3">Happy Lounge</a></li>
+						</ul>
+						<div class="more"><a href="#a"><img src="../../images/common/btn_more.gif" alt="more" /></a></div>
+						<div class="newslist">
+							<div id="tabs-1">
+								<ul>
+									<li><a href="#a">[자사] '범정부 클라우드 컴퓨팅 센터' 구축</a> <span class="ic_new"><span>new</span></span></li>
+									<li><a href="#a">[업계] IT서비스 내년 하반기부터 본격 수주경쟁 돌입</a></li>
+									<li><a href="#a">[업계] 대형IT서비스,캐피털IT사업 수주</a></li>
+									<li><a href="#a">[업계] 이달내 '스마트워크 포럼' 창립</a></li>
+									<li><a href="#a">[기타] G20 기간 알아두어야 할 것들</a></li>
+								</ul>
+							</div>
+							<div id="tabs-2">
+								두번째 탭 내용
+							</div>
+							<div id="tabs-3">
+								세번째 탭 내용
+							</div>
+						</div>				
+					</div>		
+					<!--//tab End-->
+				</div>
+				<div class="mainTop_r">
+					<h2 class="none">Management Classroom</h2> 
+					<div class="mtitle"><img src="../../images/common/mtitle_management.gif" alt="Management Classroom" /></div>
+					<a href="#a"><img src="../../images/common/img_management.gif" alt="모바일 환경 Closed-Open으로 간다" /></a>
+				</div>	
+				<div class="clear"></div>							
+			</div>
+			<!--//blockMainTop End-->
+					
+			<!--portletWrap Start-->
+			<div id="portletWrap">
+				<h1 class="none">포틀릿영역</h1>
+				
+				<!--portletSetting Start-->
+				<div id="portletSetting">
+					<h2 class="none">포틀릿셋팅</h2>
+					<ul class="po_setbtn">		
+						<li class="po_btn_theme"><a href="#a"><span>Theme</span></a></li>
+						<li class="po_btn_portlet"><a href="#a"><span>Portlet</span></a></li>
+						<li class="mr5"><a href="#a"><img src="../../images/icon/ic_main_layer_layout.gif" alt="개인 레이어 설정 버튼" /></a></li>	
+						<li class="mr3"><a href="#a"><img src="../../images/icon/ic_main_layout.gif" alt="개인 레이아웃 설정 버튼" /></a></li>									
+					</ul>
+					
+					<!--layer start-->
+					<div class="quicktxt_personalBox" id="personalBox" style="position:absolute;top:26px; right:300px;z-index:999;">
+						<div class="quicktxt_menuBox">
+							<div class="quicktxt_tit_personal dash" id="personalBoxTitle"><span>개인화면설정</span><a href="#a" id="personalBoxClose"><img src="../../images/icon/ic_close_layer.gif" alt="" /></a></div>
+							<div id="personalBoxContent" class="textCenter">
+								<div class="mt10 mb5 inlineblock">
+									<ul>
+										<li class="main_layout_tb floatLeft"><a href="#"></a></li>
+										<li class="main_layout_l_on floatLeft"><a href="#"></a></li>
+										<li class="main_layout_r floatLeft"><a href="#"></a></li>
+									</ul>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!--layer end-->					
+					
+					<!--layer start-->
+					<div class="quicktxt_personalBox" id="personalBox" style="position:absolute;top:26px; right:98px;z-index:999;">
+						<div class="quicktxt_menuBox">
+							<div class="quicktxt_tit_personal dash" id="personalBoxTitle"><span>개인레이어설정</span><a href="#a" id="personalBoxClose"><img src="../../images/icon/ic_close_layer.gif" alt="" /></a></div>
+							<div id="personalBoxContent">
+								<div class="textCenter mt10">
+									<a href="#"><img src="../../images/icon/ic_main_column1on.png" alt="개인설정 이미지"/></a>
+									<a href="#"><img src="../../images/icon/ic_main_column2on.png" alt="개인설정 이미지"/></a>
+									<a href="#"><img src="../../images/icon/ic_main_column3.png" alt="개인설정 이미지"/></a>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!--layer end-->
+					
+					<div class="clear"></div>
+					<div class="portletSetting_c relative none"> <!--셋팅화면 접힌 상태는 class="portletSetting_c relative none"-->
+						<div class="portletcat">
+							<ul>
+								<li class="licurrent"><a href="#a">WORK</a></li>
+								<li><a href="#a">MESSAGES</a></li>
+								<li><a href="#a">COLLABORATION</a></li>
+								<li><a href="#a">KNOWLEDGE</a></li>
+								<li><a href="#a">PEOPLE</a></li>
+								<li><a href="#a">INNOVATION</a></li>
+							</ul>
+						</div>
+						<div class="portletsum">
+							<ul>
+								<li><a class="img_portlet_01 selected" href="#a"><span>Today Focus</span></a></li>
+								<li><a class="img_portlet_02" href="#a"><span>RSS</span></a></li>
+								<li><a class="img_portlet_03" href="#a"><span>오늘의 일정</span></a></li>
+								<li><a class="img_portlet_04" href="#a"><span>News</span></a></li>
+								<li><a class="img_portlet_05" href="#a"><span>Collaboration</span></a></li>
+								<li><a class="img_portlet_06" href="#a"><span>Social Network</span></a></li>	
+								<li><a class="img_portlet_01 selected" href="#a"><span>Today Focus</span></a></li>
+								<li><a class="img_portlet_02" href="#a"><span>RSS</span></a></li>
+								<li><a class="img_portlet_03" href="#a"><span>오늘의 일정</span></a></li>
+								<li><a class="img_portlet_04" href="#a"><span>News</span></a></li>
+								<li><a class="img_portlet_05" href="#a"><span>Collaboration</span></a></li>
+								<li><a class="img_portlet_06" href="#a"><span>Social Network</span></a></li>																							
+							</ul>
+
+						</div>
+						<div class="clear"></div>
+						<div class="l_t_corner"></div><div class="l_b_corner"></div><div class="r_b_corner"></div>
+					</div>					
+				</div>	
+				<!--//portletSetting End-->
+				
+				<!--portlet Start-->
+				<div id="portlet">
+					<div class="maximize"></div>
+					<div class="portlet_l">
+						<!--portletUnit Start-->
+						<div class="portletUnit">
+							<div class="portletUnit_t">
+								<div class="po_title"><h2>축하합니다</h2></div>
+								<div class="po_icon">
+									<ul>
+										<li class="po_icon_edit"><a href="#a"><span>edit</span></a></li>
+										<li class="po_icon_refresh"><a href="#a"><span>refresh</span></a></li>
+										<li class="po_icon_max"><a href="#a"><span>max</span></a></li>
+										<li class="po_icon_fold"><a href="#a"><span>fold</span></a></li>
+										<li class="po_icon_close"><a href="#a"><span>close</span></a></li>
+										<!--
+										<li class="po_icon_more"><a href="#a"><span>more</span></a></li>
+										<li class="po_icon_restore"><a href="#a"><span>restore</span></a></li>
+										<li class="po_icon_config"><a href="#a"><span>config</span></a></li>
+										-->
+									</ul>
+								</div>
+							</div>
+							<div class="portletUnit_c tableList_1">
+								<div class="poEdit none"><!--edit펼침화면 display:none____none 제거시 display 됨-->
+									<div>
+										대상기간 : 
+										<label><input name="" class="radio" title="week" type="radio" value="" />week</label>&nbsp;&nbsp;
+										<label><input name="" class="radio" title="month" type="radio" value="" />month</label>									
+									</div>
+									<div>
+										대상그룹 :
+										<input name="" class="checkbox" title="대상그룹" type="checkbox" value="" />
+										<select name="" title="대상그룹">
+											<option>담당/팀</option>
+										</select>
+									</div>
+									<div class="textRight"><a class="button_s" href="#a"><span>저장</span></a></div>
+								</div>
+								<div class="pTitle_1">
+									생일축하합니다
+								</div>
+								<table summary="생일자 명단">
+									<caption></caption>
+									<tbody>
+										<tr>
+											<th width="*" scope="row" class="today"><img src="../../images/icon/ic_birthday.gif" alt="" />  <a href="#a">김길동 부장 (공공/금융ERP컨설팅팀)</a></th>
+											<td width="30" class="textRight today"><span class="date">03.15</span></td>
+										</tr>
+										<tr>
+											<th scope="row"><a href="#a">김길동 부장 (UC컨설팅1팀)</a></th>
+											<td class="textRight"><span class="date">03.18</span></td>
+										</tr>										
+									</tbody>
+								</table>
+								<div class="dotline_1"></div>
+								<div class="pTitle_1">
+									결혼기념일을 축하합니다
+								</div>								
+								<table summary="결혼기념일자 명단">
+									<caption></caption>
+									<tbody>
+										<tr>
+											<th width="*" scope="row" class="today"><img src="../../images/icon/ic_wedding.gif" alt="" />  <a href="#a">최길동 총괄 CONSULTANT (UC팀)</a></th>
+											<td width="30" class="textRight today"><span class="date">03.15</span></td>
+										</tr>
+										<tr>
+											<th scope="row"><a href="#a">김길동 부장 (UC컨설팅1팀)</a></th>
+											<td class="textRight"><span class="date">03.20</span></td>
+										</tr>																				
+									</tbody>
+								</table>							
+								<div class="l_b_corner"></div><div class="r_b_corner"></div>
+							</div>
+						</div>
+						<!--//portletUnit End-->
+					</div>
+					<div class="portlet_c">
+						<!--portletUnit Start-->
+						<div class="portletUnit">
+							<div class="portletUnit_t">
+								<div class="po_title"><h2>My Social Network</h2></div>
+								<div class="po_icon">
+									<ul>
+										<li class="po_icon_edit"><a href="#a"><span>edit</span></a></li>
+										<li class="po_icon_refresh"><a href="#a"><span>refresh</span></a></li>
+										<li class="po_icon_max"><a href="#a"><span>max</span></a></li>
+										<li class="po_icon_fold"><a href="#a"><span>fold</span></a></li>
+										<li class="po_icon_close"><a href="#a"><span>close</span></a></li>
+										<!--
+										<li class="po_icon_more"><a href="#a"><span>more</span></a></li>
+										<li class="po_icon_restore"><a href="#a"><span>restore</span></a></li>
+										<li class="po_icon_config"><a href="#a"><span>config</span></a></li>
+										-->
+									</ul>
+								</div>
+							</div>
+							<div class="portletUnit_c imgList_1">
+								<ul>
+									<li><a href="#a"><img src="../../images/common/photo_50x50.gif" alt="no image" /></a><p><a href="#a">홍길동</a></p></li>
+									<li><a href="#a"><img src="../../images/common/temp_img_50x50_1.gif" alt="image" /></a><p><a href="#a">김태희</a></p></li>
+									<li><a href="#a"><img src="../../images/common/temp_img_50x50_2.gif" alt="image" /></a><p><a href="#a">송혜교</a></p></li>
+									<li><a href="#a"><img src="../../images/common/temp_img_50x50_3.gif" alt="image" /></a><p><a href="#a">김길동</a></p></li>
+									<li><a href="#a"><img src="../../images/common/temp_img_50x50_4.gif" alt="image" /></a><p><a href="#a">최길동</a></p></li>
+									<li><a href="#a"><img src="../../images/common/temp_img_50x50_1.gif" alt="image" /></a><p><a href="#a">김태희</a></p></li>
+									<li><a href="#a"><img src="../../images/common/temp_img_50x50_2.gif" alt="image" /></a><p><a href="#a">송혜교</a></p></li>
+									<li><a href="#a"><img src="../../images/common/temp_img_50x50_3.gif" alt="image" /></a><p><a href="#a">김길동</a></p></li>
+									<li><a href="#a"><img src="../../images/common/temp_img_50x50_5.gif" alt="image" /></a><p><a href="#a">김연아</a></p></li>
+									<li><a href="#a"><img src="../../images/common/temp_img_50x50_6.gif" alt="image" /></a><p><a href="#a">현빈</a></p></li>
+								</ul>
+								<div class="clear"></div>				
+								<div class="l_b_corner"></div><div class="r_b_corner"></div>
+							</div>
+						</div>
+						<!--//portletUnit End-->				
+					</div>
+					<div class="portlet_r">
+						<!--portletUnit Start-->
+						<div class="portletUnit">
+							<div class="portletUnit_t">
+								<div class="po_title"><h2>금주의 일정</h2></div>
+								<div class="po_icon">
+									<ul>
+										<!--
+										<li class="po_icon_edit"><a href="#a"><span>edit</span></a></li>
+										-->
+										<li class="po_icon_refresh"><a href="#a"><span>refresh</span></a></li>
+										<li class="po_icon_max"><a href="#a"><span>max</span></a></li>
+										<li class="po_icon_fold"><a href="#a"><span>fold</span></a></li>
+										<li class="po_icon_close"><a href="#a"><span>close</span></a></li>
+										<!--
+										<li class="po_icon_more"><a href="#a"><span>more</span></a></li>
+										<li class="po_icon_restore"><a href="#a"><span>restore</span></a></li>
+										<li class="po_icon_config"><a href="#a"><span>config</span></a></li>
+										-->
+									</ul>
+								</div>
+							</div>
+							<div class="portletUnit_c po_schedule_w">
+								<div class="blockListTable msgTable">
+									<table summary="">
+										<caption></caption>
+										<thead>
+											<tr>
+												<th scope="col"><span class="fc_day_sun">일</span></th>
+												<th scope="col">월</th>
+												<th scope="col">화</th>
+												<th scope="col">수</th>
+												<th scope="col">목</th>
+												<th scope="col">금</th>
+												<th class="tdLast" scope="col"><span class="colorBlue">토</span></th>
+											</tr>				
+										</thead>
+										<tbody>
+											<tr>
+												<td></td>
+												<td></td>
+												<td></td>
+												<td><span class="pr_schbar_2"></span></td>
+												<td></td>
+												<td></td>
+												<td class="tdLast"></td>
+											</tr>											
+										</tbody>
+									</table>
+								</div>	
+								<div class="pr_schedule_c">							
+									<div class="date">수요일</div>
+									<ul>	
+										<li><span>09:00 ~ 11:00</span> <a href="#a">UI표준/개발 가이드 교육</a></li>
+										<li><span>12:00 ~ 13:00</span> <a href="#a">주간업무보고</a></li>
+										<li><span>15:00 ~ 17:00</span> <a href="#a">자사 솔루션 영업전략 2차 세미나</a></li>
+									</ul>
+								</div>
+								<div class="clear"></div>				
+								<div class="l_b_corner"></div><div class="r_b_corner"></div>
+							</div>
+						</div>
+						<!--//portletUnit End-->				
+					</div>
+					
+					
+					<div class="portlet_l">
+						<!--portletUnit Start-->
+						<div class="portletUnit">
+							<div class="portletUnit_t">
+								<div class="po_title"><h2>축하합니다</h2></div>
+								<div class="po_icon">
+									<ul>
+										<li class="po_icon_edit"><a href="#a"><span>edit</span></a></li>
+										<li class="po_icon_refresh"><a href="#a"><span>refresh</span></a></li>
+										<li class="po_icon_max"><a href="#a"><span>max</span></a></li>
+										<li class="po_icon_fold"><a href="#a"><span>fold</span></a></li>
+										<li class="po_icon_close"><a href="#a"><span>close</span></a></li>
+										<!--
+										<li class="po_icon_more"><a href="#a"><span>more</span></a></li>
+										<li class="po_icon_restore"><a href="#a"><span>restore</span></a></li>
+										<li class="po_icon_config"><a href="#a"><span>config</span></a></li>
+										-->
+									</ul>
+								</div>
+							</div>
+							<div class="portletUnit_c tableList_1 textCenter">
+								
+								<div id="flashContent" style="width:100%; height:240px;">
+									<script>createWclockEmbedObject("#flashContent");</script>
+								</div>	
+								<div class="colorBlue mt5" >※ <span style="font-size:0.9em;">Left:내가설정한시간, Right:비교하고자하는시간</span></div>
+														
+								<div class="l_b_corner"></div><div class="r_b_corner"></div>
+							</div>
+						</div>
+						<!--//portletUnit End-->
+					</div>					
+					
+					
+					<div class="clear"></div>
+				</div>
+				<!--//portlet End-->
+												
+			</div>
+			<!--//portletWrap End-->
+			
+		</div>
+		<!--//blockMain End-->
+		
+	</div>
+	<!--//blockContainer End-->
+
+</div>
+<!--//wrapper End-->
+</body>
+</html>

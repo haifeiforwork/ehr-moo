@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="lightpack.todo.dao.myOrder">
+	<typeAlias alias = "myOrder" type="com.lgcns.ikep4.lightpack.todo.model.MyOrder"/>
+	<typeAlias alias = "TodoSearchCondition" type="com.lgcns.ikep4.lightpack.todo.search.TodoSearchCondition"/>
+	
+	<!--  테이블 조회 결과 -->
+	<resultMap id="myOrderResult" class="MyOrder">
+		<result property="systemName"        column="SYSTEM_NAME"        />
+		<result property="subworkName"       column="SUBWORK_NAME"       />
+		<result property="subworkCode"       column="SUBWORK_CODE"       />
+		<result property="taskId"            column="TASK_ID"            />
+		<result property="workerName"        column="WORKER_NAME"        />
+		<result property="title"             column="TITLE"              />
+		<result property="startDate"         column="START_DATE"         />
+		<result property="dueDate"           column="DUE_DATE"           />
+		<result property="userStatus"        column="USER_STATUS"        />
+		<result property="overDayCount"      column="OVER_DAY_COUNT"     />
+		<result property="workersCount"      column="WORKERS_COUNT"      />
+		<result property="workerEnglishName" column="WORKER_ENGLISH_NAME"/>
+	</resultMap>
+	
+	<!-- ANSI -->
+	<!-- //나의  지시 카운트 -->
+	<select id="countMyOrder" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+	  <![CDATA[
+		   SELECT /* [MyOrder_SqlMap.xml] MyOrder.countMyOrder */
+		   		  COUNT(1) 
+		     FROM IKEP4_TD_TASK A
+		    WHERE DIRECTOR_ID = #directorId#
+			  AND SUBWORK_CODE != 'MYTASK'
+			  AND TASK_STATUS = 'A'
+	   ]]>
+	</select>
+	
+	<!-- MS SQL -->
+	<!-- //나의 지시 -->
+	<select id="listMyOrder" parameterClass="TodoSearchCondition"  resultMap="myOrderResult">
+	  <![CDATA[ 
+		   SELECT /* [MyOrder_SqlMap.xml] MyOrder.listMyOrder */
+		   		  TOP #rowNum# 
+		   		  *
+			 FROM (SELECT B.SYSTEM_NAME,
+						  C.SUBWORK_CODE,
+						  C.SUBWORK_NAME,
+				          A.TASK_ID,     
+				          D.USER_NAME AS WORKER_NAME, 
+				          A.TITLE,       
+				          A.START_DATE,  
+				          A.DUE_DATE,    
+				          CASE WHEN A.TASK_STATUS = 'B' THEN 'B'
+				  	   		   WHEN	CONVERT(FLOAT, CURRENT_TIMESTAMP - A.DUE_DATE) > 0 THEN 'A2'
+				       		   ELSE 'A1' END AS USER_STATUS,
+				  		  CASE WHEN A.TASK_STATUS = 'B' THEN ''
+				  	   		   WHEN CONVERT(FLOAT, CURRENT_TIMESTAMP - A.DUE_DATE) > 0 THEN '' + DATEDIFF(DD, A.DUE_DATE, CURRENT_TIMESTAMP)
+				       		   ELSE '' END AS OVER_DAY_COUNT,
+				       	  A.WORKERS_COUNT,     
+				          D.USER_ENGLISH_NAME AS WORKER_ENGLISH_NAME 
+					 FROM (SELECT A.TASK_ID,
+						          MIN(B.WORKER_ID) AS WORKER_ID,
+						          MIN(A.TITLE) AS TITLE,
+						          MIN(A.START_DATE) AS START_DATE,
+						          MIN(A.DUE_DATE) AS DUE_DATE,
+						          MIN(A.TASK_STATUS) AS TASK_STATUS,
+						          COUNT(1) - 1 AS WORKERS_COUNT
+							 FROM IKEP4_TD_TASK A,
+							      IKEP4_TD_TASK_USER B
+							WHERE A.DIRECTOR_ID = #directorId#
+			  				  AND A.SUBWORK_CODE != 'MYTASK'
+							  AND A.TASK_STATUS = 'A'
+							  AND A.TASK_ID = B.TASK_ID
+							GROUP BY A.TASK_ID
+							ORDER BY MIN(A.REGIST_DATE) DESC
+						  ) A,
+						  IKEP4_TD_LEGACY B,
+						  IKEP4_TD_SUBWORK C,
+						  IKEP4_EV_USER D
+					WHERE B.SYSTEM_CODE = #systemCode#
+				      AND B.SYSTEM_CODE = C.SYSTEM_CODE
+					  AND C.SUBWORK_CODE = #subworkCode#
+					  AND A.WORKER_ID = D.USER_ID
+				 )
+	   ]]>
+	</select>
+	
+	<!-- MS SQL -->
+	<!-- //나의 지시 검색 카운트 -->
+	<select id="countMyOrderSearch" parameterClass="TodoSearchCondition" resultClass="java.lang.Integer">
+	  <![CDATA[
+		   SELECT /* [MyOrder_SqlMap.xml] MyOrder.countMyOrderSearch */
+		   		  COUNT(1) 
+		     FROM (SELECT /*+ use_nl(A,B) */ A.TASK_ID
+		             FROM IKEP4_TD_TASK A, 
+				          IKEP4_TD_TASK_USER B,
+				          IKEP4_EV_USER C
+				    WHERE A.DIRECTOR_ID = #directorId#
+			  		  AND A.SUBWORK_CODE != 'MYTASK'
+					  AND A.TASK_ID = B.TASK_ID
+					  AND B.WORKER_ID = C.USER_ID
+	    ]]>
+		<dynamic>
+		  <isNotEmpty property="fromDay" >
+			<![CDATA[ 
+  				AND A.REGIST_DATE BETWEEN #fromDay# AND #toDay#
+				]]>
+		  </isNotEmpty>
+		  <isEqual property="todoStatus" compareValue="0">
+ 			<![CDATA[ 
+  			  	AND A.TASK_STATUS = 'A'
+  			]]>
+		  </isEqual>
+		  <isEqual property="todoStatus" compareValue="1">
+ 			<![CDATA[ 
+  			  	AND A.TASK_STATUS = 'B'
+  			]]>
+		  </isEqual>
+		  <isNotEmpty property="searchText"> 
+			  <isEqual property="searchType" compareValue="A">
+	 			<![CDATA[ 
+	  			  	AND A.TITLE LIKE '%'+ #searchText# + '%'
+	  			]]>
+			  </isEqual>
+			  <isEqual property="searchType" compareValue="B">
+	 			<![CDATA[ 
+	  			  	AND (C.USER_NAME LIKE '%'+ #searchText# + '%' OR C.USER_ENGLISH_NAME LIKE '%'+ #searchText#)
+	  			]]>
+			  </isEqual>
+		  </isNotEmpty>
+		</dynamic>
+		<![CDATA[ 
+					GROUP BY A.TASK_ID
+				  ) TBL
+  		]]>
+	</select>
+	
+	<!-- MS SQL -->
+	<!-- //나의 지시 검색 -->
+	<select id="listMyOrderSearch" parameterClass="TodoSearchCondition"  resultMap="myOrderResult">
+	  <![CDATA[ 
+	  	   SELECT /* [MyOrder_SqlMap.xml] MyOrder.listMyOrderSearch */
+	  	   		  SYSTEM_NAME,
+				  SUBWORK_CODE,
+				  SUBWORK_NAME,  
+				  TASK_ID,       
+				  WORKER_NAME,   
+				  TITLE,         
+				  START_DATE,    
+				  DUE_DATE,      
+				  USER_STATUS,   
+				  OVER_DAY_COUNT,
+				  WORKERS_COUNT,
+				  WORKER_ENGLISH_NAME
+	         FROM (SELECT Row_number() OVER (ORDER BY A.DUE_DATE) AS RNUM,
+				          B.SYSTEM_NAME,
+						  C.SUBWORK_CODE,
+						  C.SUBWORK_NAME,
+				          A.TASK_ID,     
+				          A.WORKER_NAME, 
+				          A.TITLE,       
+				          A.START_DATE,  
+				          A.DUE_DATE,    
+				          CASE WHEN A.TASK_STATUS = 'B' THEN 'B'
+				          	   WHEN	CONVERT(FLOAT, CURRENT_TIMESTAMP - A.DUE_DATE) > 0 THEN 'A2'
+				       		   ELSE 'A1' END AS USER_STATUS,
+				  		  CASE WHEN A.TASK_STATUS = 'B' THEN ''
+				  		  	   WHEN CONVERT(FLOAT, CURRENT_TIMESTAMP - A.DUE_DATE) > 0 THEN '' + DATEDIFF(DD, A.DUE_DATE, CURRENT_TIMESTAMP)
+				  	   		   ELSE '' END AS OVER_DAY_COUNT,
+				       	  A.WORKERS_COUNT,
+				       	  A.WORKER_ENGLISH_NAME
+					 FROM (SELECT A.TASK_ID,
+						          MIN(B.WORKER_ID) AS WORKER_ID,
+						          MIN(A.TITLE) AS TITLE,
+						          MIN(A.START_DATE) AS START_DATE,
+						          MIN(A.DUE_DATE) AS DUE_DATE,
+						          MIN(A.TASK_STATUS) AS TASK_STATUS,
+						          COUNT(1) - 1 AS WORKERS_COUNT,
+						          MIN(C.USER_NAME) AS WORKER_NAME,
+						          MIN(C.USER_ENGLISH_NAME) AS WORKER_ENGLISH_NAME,
+						          MIN(A.REGIST_DATE) AS REG_DATE
+							 FROM IKEP4_TD_TASK A,
+							      IKEP4_TD_TASK_USER B,
+						          IKEP4_EV_USER C
+							WHERE A.DIRECTOR_ID = #directorId#
+			  				  AND A.SUBWORK_CODE != 'MYTASK'
+							  AND A.TASK_ID = B.TASK_ID
+		                      AND B.WORKER_ID = C.USER_ID
+			    ]]>
+			 				<dynamic>
+							  <isNotEmpty property="fromDay" >
+								<![CDATA[ 
+					  				AND A.REGIST_DATE BETWEEN #fromDay# AND #toDay#
+								]]>
+							  </isNotEmpty>
+							  <isEqual property="todoStatus" compareValue="0">
+			   					<![CDATA[ 
+				   			  	AND A.TASK_STATUS = 'A'
+			    				]]>
+							  </isEqual>
+							  <isEqual property="todoStatus" compareValue="1">
+			   					<![CDATA[ 
+				   			  	AND A.TASK_STATUS = 'B'
+			    				]]>
+							  </isEqual>
+							  <isNotEmpty property="searchText"> 
+								  <isEqual property="searchType" compareValue="A">
+				   					<![CDATA[ 
+					   			  	AND A.TITLE LIKE '%'+ #searchText# + '%'
+				    				]]>
+								  </isEqual>
+								  <isEqual property="searchType" compareValue="B">
+				   					<![CDATA[ 
+					   			  	AND (C.USER_NAME LIKE '%'+ #searchText# + '%' OR C.USER_ENGLISH_NAME LIKE '%'+ #searchText# + '%')
+				    				]]>
+								  </isEqual>
+							  </isNotEmpty>
+			 				</dynamic>
+			   <![CDATA[  
+							GROUP BY A.TASK_ID
+					  ) A,
+					  IKEP4_TD_LEGACY B,
+					  IKEP4_TD_SUBWORK C
+				WHERE B.SYSTEM_CODE = #systemCode#
+			      AND B.SYSTEM_CODE = C.SYSTEM_CODE
+				  AND C.SUBWORK_CODE = #subworkCode#
+			  ) TBL
+		WHERE RNUM > #startRowIndex# AND RNUM <= #endRowIndex#
+	   ]]>
+	</select>	
+</sqlMap>

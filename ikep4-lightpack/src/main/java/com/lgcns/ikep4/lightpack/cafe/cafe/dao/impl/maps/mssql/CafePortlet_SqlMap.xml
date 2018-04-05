@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="lightpack.cafe.cafe.dao.CafePortlet">
+
+	<typeAlias alias="CafePortlet" type="com.lgcns.ikep4.lightpack.cafe.cafe.model.CafePortlet" />
+
+	<sql id="sqlColumnList">
+		PORTLET_ID AS portletId,
+		PORTLET_NAME AS portletName,
+		VIEW_URL AS viewUrl,
+		SORT_ORDER AS sortOrder,
+		IS_DEFAULT AS isDefault,
+		PORTLET_ENGLISH_NAME AS portletEnglishName
+	</sql>
+
+	<!-- ANSI -->
+	<select id="get" parameterClass="java.lang.String" resultClass="CafePortlet">
+		SELECT /* [CafePortlet_SqlMap.xml] lightpack.cafe.cafe.dao.CafePortlet.get */
+			<include refid="lightpack.cafe.cafe.dao.CafePortlet.sqlColumnList" />
+		FROM 
+			IKEP4_CF_PORTLET
+		WHERE
+			PORTLET_ID = #portletId#
+	</select>
+
+	<!-- ANSI -->
+	<select id="exists" parameterClass="java.lang.String"	resultClass="int">
+		SELECT /* [CafePortlet_SqlMap.xml] lightpack.cafe.cafe.dao.CafePortlet.exists */
+			COUNT(*)
+		FROM
+			IKEP4_CF_PORTLET
+		WHERE
+			PORTLET_ID = #portletId# 
+	</select>
+
+	<!-- ANSI -->
+	<select id="listAllPortlet" parameterClass="CafePortlet" resultClass="CafePortlet">
+		SELECT /* [CafePortlet_SqlMap.xml]	lightpack.cafe.cafe.dao.CafePortlet.listAllPortlet */
+			<include refid="lightpack.cafe.cafe.dao.CafePortlet.sqlColumnList" />
+		FROM 
+			IKEP4_CF_PORTLET
+		<dynamic>
+			<!-- 디폴트 포틀릿 요청시에만 -->
+			<isNotEmpty property="isDefault">
+				<isEqual property="isDefault" compareValue="1" prepend="WHERE">
+					IS_DEFAULT = #isDefault#
+				</isEqual>
+			</isNotEmpty>
+		</dynamic>
+		ORDER BY SORT_ORDER
+	</select>
+
+	<!-- ANSI -->
+	<select id="countAllPortlet" parameterClass="CafePortlet"	resultClass="int">
+		SELECT /* [CafePortlet_SqlMap.xml] lightpack.cafe.cafe.dao.CafePortlet.countAllPortlet */
+		COUNT(*)
+		FROM IKEP4_CF_PORTLET
+		<dynamic>
+			<!-- 디폴트 포틀릿 요청시에만 -->
+			<isNotEmpty property="isDefault">
+				<isEqual property="isDefault" compareValue="1" prepend="WHERE">
+					IS_DEFAULT = #isDefault#
+				</isEqual>
+			</isNotEmpty>
+		</dynamic>
+		ORDER BY SORT_ORDER
+	</select>
+	
+	<!-- MS SQL -->
+	<select id="listAllCafePortlet" parameterClass="String" resultClass="CafePortlet">
+		SELECT /* [CafePortlet_SqlMap.xml]	lightpack.cafe.cafe.dao.CafePortlet.listAllCafePortlet */
+			PORTLET_ID AS portletId,
+			PORTLET_NAME AS portletName,
+			VIEW_URL AS viewUrl,
+			SORT_ORDER AS sortOrder,
+			IS_DEFAULT AS isDefault,
+			BOARD_ID	AS boardId,
+			PORTLET_ENGLISH_NAME AS portletEnglishName
+		FROM 
+		(
+			SELECT
+				PORTLET_ID,
+				PORTLET_NAME,
+				VIEW_URL,
+				SORT_ORDER , 
+				IS_DEFAULT,
+				'' AS BOARD_ID,
+				PORTLET_ENGLISH_NAME
+			FROM IKEP4_CF_PORTLET 
+			WHERE IS_DEFAULT=1
+				
+			UNION ALL
+			
+			SELECT
+				'CF_PORTLET_09' AS PORTLET_ID,
+				BOARD_NAME AS PORTLET_NAME,
+				'' VIEW_URL,
+				(Row_number() OVER (ORDER BY B.BOARD_ID)) + 6 AS SORT_ORDER,
+				0 AS IS_DEFAULT,
+				BOARD_ID,
+				BOARD_NAME PORTLET_ENGLISH_NAME
+			FROM IKEP4_CF_BD_BOARD B  
+			WHERE CAFE_ID =#cafeId#
+				 AND BOARD_TYPE=0
+				 AND IS_DELETE=0
+		) TBL
+		ORDER BY 
+			SORT_ORDER 
+	</select>
+	
+	<!-- MS SQL -->
+	<select id="countAllCafePortlet" parameterClass="String"	resultClass="int">
+		SELECT /* [CafePortlet_SqlMap.xml] lightpack.cafe.cafe.dao.CafePortlet.countAllCafePortlet */
+			COUNT(*)
+		FROM 
+		(
+			SELECT
+				PORTLET_ID,
+				PORTLET_NAME,
+				VIEW_URL,
+				SORT_ORDER , 
+				IS_DEFAULT
+			FROM 
+				IKEP4_CF_PORTLET A
+			WHERE 
+				IS_DEFAULT=1
+			UNION ALL
+			SELECT
+				'CF_PORTLET_06' AS PORTLET_ID,
+				BOARD_NAME AS PORTLET_NAME,
+				'' AS VIEW_URL,
+				(Row_number() OVER (ORDER BY B.BOARD_ID)) + 6 AS SORT_ORDER,
+				0 AS IS_DEFAULT
+			FROM 
+				IKEP4_CF_BD_BOARD B  
+			WHERE
+				CAFE_ID =#cafeId#
+		) TBL
+	</select>
+	
+	<!-- ANSI -->
+	<insert id="create" parameterClass="CafePortlet">
+	<![CDATA[
+		INSERT INTO IKEP4_CF_PORTLET /* [CafePortlet_SqlMap.xml] lightpack.cafe.cafe.dao.CafePortlet.create */
+		(
+			PORTLET_ID,		PORTLET_NAME,	VIEW_URL,	SORT_ORDER,		IS_DEFAULT	,PORTLET_ENGLISH_NAME
+		) 
+		VALUES 
+		(
+			#portletId#,	#portletName#,	#viewUrl#,	#sortOrder#,	#isDefault#, #portletEnglishName#
+		)
+	]]>			
+	</insert>
+
+	<!-- ANSI -->
+	<update id="update" parameterClass="CafePortlet">
+		UPDATE IKEP4_CF_PORTLET
+			/* [CafePortlet_SqlMap.xml] lightpack.cafe.cafe.dao.CafePortlet.update */
+		SET 
+			PORTLET_NAME = #portletName#,
+			VIEW_URL = #viewUrl#,
+			IS_DEFAULT = #isDefault#,
+			SORT_ORDER = #sortOrder#
+		WHERE
+			PORTLET_ID = #portletId# 
+	</update>
+
+	<!-- ANSI -->
+	<delete id="physicalDelete" parameterClass="java.lang.String">
+		DELETE FROM IKEP4_CF_PORTLET 
+			/* [CafePortlet_SqlMap.xml] lightpack.cafe.cafe.dao.CafePortlet.physicalDelete */
+		WHERE 
+			PORTLET_ID = #portletId#  
+	</delete>
+
+</sqlMap> 

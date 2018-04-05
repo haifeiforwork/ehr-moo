@@ -1,0 +1,665 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="collpack.qna.dao.Qna" >
+	
+	<typeAlias alias = "Qna" type="com.lgcns.ikep4.collpack.qna.model.Qna"/>
+	
+	<resultMap id="QnaResult" class="Qna" >
+		<result property="qnaId" 				column="QNA_ID" />
+		<result property="qnaGroupId" 			column="QNA_GROUP_ID" />
+		<result property="qnaType" 				column="QNA_TYPE" />
+		<result property="categoryId" 			column="CATEGORY_ID"/>
+		<result property="title" 				column="TITLE" nullValue=""/>
+		<result property="urgent" 				column="URGENT"/>
+		<result property="status" 				column="STATUS"/>
+		<result property="hitCount" 			column="HIT_COUNT"/>
+		<result property="recommendCount" 		column="RECOMMEND_COUNT"/>
+		<result property="replyCount" 			column="REPLY_COUNT"/>
+		<result property="linereplyCount" 		column="LINEREPLY_COUNT"/>
+		<result property="favoriteCount" 		column="FAVORITE_COUNT"/>
+		<result property="attachFileCount" 		column="ATTACH_FILE_COUNT"/>
+		<result property="answerAdopt" 			column="ANSWER_ADOPT"/>
+		<result property="answerNecessaryTime" 	column="ANSWER_NECESSARY_TIME"/>
+		<result property="itemDelete" 			column="ITEM_DELETE"/>
+		<result property="portalId" 			column="PORTAL_ID"/>
+		<result property="registerId" 			column="REGISTER_ID"/>
+		<result property="registerName" 		column="REGISTER_NAME"/>
+		<result property="registDate" 			column="REGIST_DATE"/>
+		<result property="teamName" 			column="TEAM_NAME"/>
+		<result property="pictureId" 			column="PICTURE_ID"/>
+		<result property="jobTitleName" 		column="JOB_TITLE_NAME"/>
+		<result property="alarmChannel" 		column="ALARM_CHANNEL"/>
+		<result property="mail" 				column="MAIL"/>
+		<result property="mobile" 				column="MOBILE"/>
+		<result property="updaterId" 			column="UPDATER_ID"/>
+		<result property="updaterName" 			column="UPDATER_NAME"/>
+		<result property="updateDate" 			column="UPDATE_DATE"/>
+		<result property="mailCount" 			column="MAIL_COUNT"/>
+		<result property="mblogCount" 			column="MBLOG_COUNT"/>
+		<result property="userEnglishName" 		column="USER_ENGLISH_NAME"/>
+		<result property="teamEnglishName" 		column="TEAM_ENGLISH_NAME"/>
+		<result property="jobTitleEnglishName" 	column="JOB_TITLE_ENGLISH_NAME"/>
+		<result property="score" 				column="SCORE" nullValue="0"/>
+		<result property="bestFlag" 			column="BEST_FLAG" nullValue="0"/>
+		<result property="picturePath" 			column="PICTURE_PATH"/>
+		<result property="profilePicturePath" 	column="PROFILE_PICTURE_PATH"/>
+	</resultMap>
+	
+	<resultMap class="Qna" id="qnaResultContents" extends="QnaResult">
+		<result property="contents" 			column="CONTENTS" javaType="string" jdbcType="CLOB" nullValue=""/>
+	</resultMap>
+	
+	<resultMap  class="Qna" id="qnaResultRelation" extends="QnaResult">
+		<result property="categoryName" 		column="CATEGORY_NAME"/>
+	</resultMap>
+	
+	<sql id="Qna_Column_List" >
+	   	 A.QNA_ID,  
+   		A.QNA_GROUP_ID, 
+   		A.QNA_TYPE, 
+   		A.TITLE, 
+  		A.HIT_COUNT, 
+  		A.RECOMMEND_COUNT, 
+  		A.REPLY_COUNT, 
+  		A.LINEREPLY_COUNT,
+  		A.ATTACH_FILE_COUNT, 
+  		A.REGISTER_ID, 
+  		A.REGISTER_NAME, 
+  		A.REGIST_DATE,
+  		A.CATEGORY_ID, 
+  		A.ANSWER_ADOPT, 
+  		A.URGENT, 
+  		A.PORTAL_ID,
+  		A.ITEM_DELETE,
+  		A.FAVORITE_COUNT,
+  		A.ANSWER_NECESSARY_TIME,
+  		C.PICTURE_ID,
+  		C.TEAM_NAME,
+  		D.JOB_TITLE_NAME,
+  		A.ALARM_CHANNEL,
+  		C.MAIL,
+  		C.MOBILE,
+  		A.UPDATER_ID,
+  		A.UPDATER_NAME,
+  		A.UPDATE_DATE,
+  		A.MAIL_COUNT,
+  		A.MBLOG_COUNT,
+  		C.USER_ENGLISH_NAME,
+  		C.TEAM_ENGLISH_NAME,
+  		D.JOB_TITLE_ENGLISH_NAME,
+  		A.SCORE,
+  		A.BEST_FLAG,
+  		C.PICTURE_PATH,
+  		C.PROFILE_PICTURE_PATH
+  </sql>
+	
+	<!-- insert -->
+	<insert id="insert" parameterClass="Qna"> 
+           INSERT INTO IKEP4_QA_QNA ( /* [Qna_SqlMap.xml] qna.insert */
+           		QNA_ID, 
+           		QNA_GROUP_ID, 
+           		QNA_TYPE, 
+           		TITLE, 
+           		CONTENTS, 
+           		HIT_COUNT, 
+           		RECOMMEND_COUNT, 
+           		REPLY_COUNT, 
+           		LINEREPLY_COUNT,
+           		ATTACH_FILE_COUNT, 
+           		REGISTER_ID, 
+           		REGISTER_NAME, 
+           		REGIST_DATE,
+           		UPDATER_ID,
+           		UPDATER_NAME,
+           		UPDATE_DATE,
+           		CATEGORY_ID, 
+           		ANSWER_ADOPT, 
+           		URGENT, 
+           		PORTAL_ID,
+           		ITEM_DELETE,
+           		STATUS,
+           		FAVORITE_COUNT,
+           		ANSWER_NECESSARY_TIME,
+           		ALARM_CHANNEL,
+           		MAIL_COUNT,
+           		MBLOG_COUNT,
+           		SCORE,
+           		BEST_FLAG
+           	)  VALUES (
+           		#qnaId#, 
+           		#qnaGroupId#, 
+           		#qnaType#, 
+           		#title#, 
+           		#contents#, 
+           		0, 
+           		0, 
+           		0, 
+           		0, 
+           		#attachFileCount#, 
+           		#registerId#, 
+           		#registerName#, 
+           		sysdate, 
+           		#updaterId#, 
+           		#updaterName#, 
+           		sysdate, 
+           		#categoryId#, 
+           		0,
+           		#urgent#, 
+           		#portalId#,
+           		0,
+           		0,
+           		0,
+           		0,
+           		#alarmChannel#,
+           		0,
+           		0,
+           		0,
+           		0
+           	)
+   </insert>
+   
+   <!-- select -->
+	<select id="select" parameterClass="String" resultMap="qnaResultContents">
+		   SELECT  				/* [Qna_SqlMap.xml] qna.select */
+		   		
+		   		<include refid="Qna_Column_List" />
+		   		,A.STATUS
+		   		,A.CONTENTS
+		   		
+            FROM IKEP4_QA_QNA A
+            	INNER JOIN IKEP4_EV_USER C
+            		ON A.REGISTER_ID = C.USER_ID
+            	INNER JOIN IKEP4_EV_JOB_TITLE D
+            		ON  C.JOB_TITLE_CODE = D.JOB_TITLE_CODE
+            WHERE A.QNA_ID = #qnaId#
+	</select>
+	
+	 <!-- select -->
+	<select id="selectByGroup" parameterClass="map" resultMap="qnaResultContents">
+		   SELECT					/* [Qna_SqlMap.xml] qna.selectByGroup */
+		    	
+		    	<include refid="Qna_Column_List" />
+		   		,A.STATUS
+		   		,A.CONTENTS
+		   		
+            FROM IKEP4_QA_QNA A
+            	INNER JOIN IKEP4_EV_USER C
+            		ON A.REGISTER_ID = C.USER_ID
+            	INNER JOIN IKEP4_EV_JOB_TITLE D
+            		ON C.JOB_TITLE_CODE = D.JOB_TITLE_CODE
+            WHERE A.QNA_GROUP_ID = #qnaGroupId#
+            	<isNotEmpty prepend="AND" property="line">
+			    	 ROWNUM &lt;= #line#
+			     </isNotEmpty>
+            ORDER BY A.QNA_TYPE ASC, 
+            		A.ANSWER_ADOPT DESC, 
+            		A.RECOMMEND_COUNT DESC, 
+            		A.UPDATE_DATE DESC
+	</select>
+	
+	<select id="selectGroupAdoptStatus" parameterClass="String" resultClass="int">
+	   SELECT 					/* [Qna_SqlMap.xml] qna.selectGroupAdoptStatus */   
+	   			NVL(MAX(ANSWER_ADOPT),9)      <!-- null일때 9로 주어 답글이 없음을 알려줌 -->
+           FROM IKEP4_QA_QNA
+           WHERE QNA_GROUP_ID = #qnaGroupId#
+           	AND ITEM_DELETE = 0
+           	AND QNA_TYPE = 1
+	</select>
+	
+	
+	<select id="getSumAnswerNecessaryTime" parameterClass="String" resultClass="double">
+	   SELECT 									/* [Qna_SqlMap.xml] qna.getSumAnswerNecessaryTime */   
+	   			NVL(SUM(ANSWER_NECESSARY_TIME),0) 	
+           FROM IKEP4_QA_QNA  
+           WHERE ANSWER_NECESSARY_TIME &gt; 0.0
+           AND PORTAL_ID = #portalId#
+	</select>
+	
+	<select id="getCountAnswerNecessaryTime" parameterClass="String" resultClass="int">
+	   SELECT 									/* [Qna_SqlMap.xml] qna.getCountAnswerNecessaryTime */   
+	   			NVL(COUNT(QNA_ID),0) 	
+           FROM IKEP4_QA_QNA  
+           WHERE ANSWER_NECESSARY_TIME &gt; 0.0
+           AND PORTAL_ID = #portalId#
+	</select>
+	
+	<select id="getCountQna" parameterClass="String" resultClass="int">
+	   SELECT 									/* [Qna_SqlMap.xml] qna.getCountQna */  
+	   		NVL(COUNT(QNA_ID),0)
+	   	FROM IKEP4_QA_QNA 
+	    WHERE QNA_TYPE = 0 
+	    AND PORTAL_ID = #portalId#
+	</select>
+	
+	<select id="getCountQnaHasAnswer" parameterClass="String" resultClass="int">
+	   SELECT 									/* [Qna_SqlMap.xml] qna.getCountQnaHasAnswer */  
+	   		NVL(COUNT(QNA_ID),0)
+	   FROM	   IKEP4_QA_QNA
+	   	WHERE REPLY_COUNT &gt; 0 
+	   		AND QNA_TYPE = 0  
+	   		AND PORTAL_ID = #portalId#
+	</select>
+	
+	
+	<select id="selectAll" parameterClass="Qna" resultMap="QnaResult">
+          SELECT  										/* [Qna_SqlMap.xml] qna.selectAll */
+          		*
+	      FROM    (
+	                SELECT  ROWNUM NUM, F.*
+	                FROM
+	                        (
+	                          SELECT 
+	                           
+	                          	<include refid="Qna_Column_List" />
+	                          		
+							    <isEqual property="qnaType" compareValue="1">						<!-- 질문이면 부모 상태값을 가져와야 함 -->
+							    	, (SELECT STATUS FROM IKEP4_QA_QNA WHERE QNA_ID = A.QNA_GROUP_ID) STATUS
+							    </isEqual>
+         						<isNotEqual  property="qnaType" compareValue="1" >
+							    	, A.STATUS
+							    </isNotEqual>
+           						 	
+	                         FROM    IKEP4_QA_QNA A
+	                         		INNER JOIN IKEP4_EV_USER C
+	                         			ON A.REGISTER_ID = C.USER_ID
+	                         		INNER JOIN IKEP4_EV_JOB_TITLE D
+	                         			ON C.JOB_TITLE_CODE = D.JOB_TITLE_CODE
+	                         <dynamic prepend="WHERE">
+		                          <isNotEmpty  property="itemDelete" prepend="AND" >
+							    	A.ITEM_DELETE = #itemDelete#
+							      </isNotEmpty>
+		                          <isNotEmpty prepend="AND" property="portalId" >
+							    	 A.PORTAL_ID = #portalId#
+							     </isNotEmpty>
+							     <isNotEmpty prepend="AND" property="categoryId" >
+							    	A.CATEGORY_ID = #categoryId#
+							     </isNotEmpty>
+							     <isNotEmpty prepend="AND" property="urgent" >
+							    	A.URGENT = #urgent#
+							     </isNotEmpty>
+							     <isNotEmpty prepend="AND" property="newDate">
+							     	<isEqual property="newDate" compareValue="1">
+							     		TO_CHAR(A.REGIST_DATE, 'YYYY-MM-DD')= TO_CHAR(sysdate, 'YYYY-MM-DD')
+							     	</isEqual>
+							     	<isNotEqual property="newDate" compareValue="1">
+							     	 	A.REGIST_DATE &gt; SYSDATE - #newDate#
+							     	</isNotEqual>
+							     </isNotEmpty>
+							     <isNotEmpty prepend="AND" property="registerId" >
+							    	A.REGISTER_ID = #registerId#
+							     </isNotEmpty>
+							     <isNotEmpty prepend="AND" property="answerAdopt">
+							    	A.ANSWER_ADOPT = #answerAdopt#
+							     </isNotEmpty>
+							     <isNotEmpty prepend="AND" property="qnaType">
+							    	  A.QNA_TYPE = #qnaType#
+							     </isNotEmpty>
+							     <isNotEmpty prepend="AND" property="status">
+							    	 A.STATUS = #status#
+							     </isNotEmpty>
+							     <isNotEmpty prepend="AND" property="isNotAdopt">
+							    	 A.STATUS IN ('0','1')
+							     </isNotEmpty>
+							     <isNotEmpty prepend="AND" property="bestFlag">
+							    	 A.BEST_FLAG = #bestFlag#
+							     </isNotEmpty>
+							     <isNotEmpty prepend="AND" property="answerBestFlag">
+							    	 A.QNA_ID IN (SELECT QNA_GROUP_ID FROM IKEP4_QA_QNA WHERE  BEST_FLAG = 1 AND QNA_TYPE = 1)
+							     </isNotEmpty>
+							     <isNotEmpty prepend="AND" property="isNullCategory">
+							    	 A.CATEGORY_ID IS NULL
+							     </isNotEmpty>
+							     <isNotEmpty property="searchColumn">
+								     <isNotEmpty property="searchWord">
+										<isEqual property="searchColumn" compareValue="title" prepend="AND">
+											 A.TITLE LIKE '%' || #searchWord# || '%'
+										</isEqual>
+										<isEqual property="searchColumn" compareValue="registerName" prepend="AND">
+											(C.USER_NAME  LIKE '%' || #searchWord# || '%' OR C.USER_ENGLISH_NAME LIKE '%' || #searchWord# || '%')
+										</isEqual>
+										<isEqual property="searchColumn" compareValue="all" prepend="AND">
+											 (A.TITLE LIKE '%' || #searchWord# || '%' OR A.REGISTER_Name = #searchWord# OR C.USER_ENGLISH_NAME = #searchWord#) 
+										</isEqual>
+									</isNotEmpty>
+								</isNotEmpty> 
+						    </dynamic>
+						    	ORDER BY
+						    	<isEqual property="orderType" compareValue="answer" >
+						    		A.QNA_GROUP_ID DESC, A.QNA_TYPE DESC
+						    	</isEqual>
+						    	<isEmpty property="orderType">
+						    		A.QNA_ID DESC
+						    	</isEmpty>
+	                  ) F
+	                WHERE   ROWNUM &lt;= #endRowIndex#
+	              )
+	      WHERE   NUM &gt; #startRowIndex#
+	</select>
+	
+	
+	<!-- selectCount -->
+	<select id="selectCount" parameterClass="Qna" resultClass="int">
+		   SELECT 										/* [Qna_SqlMap.xml] qna.selectCount */
+		   		/*+ use_hash ( A,C) */   COUNT(A.QNA_ID) 
+		   FROM IKEP4_QA_QNA A
+		   		INNER JOIN IKEP4_EV_USER C
+		   		ON  A.REGISTER_ID = C.USER_ID
+		  	<dynamic prepend="WHERE">
+                 <isNotEmpty  property="itemDelete" prepend="AND">
+			    	A.ITEM_DELETE = #itemDelete#
+			     </isNotEmpty>
+                 <isNotEmpty prepend="AND" property="portalId">
+			    	 A.PORTAL_ID = #portalId#
+			     </isNotEmpty>
+			     <isNotEmpty prepend="AND" property="categoryId">
+			    	A.CATEGORY_ID = #categoryId#
+			     </isNotEmpty>
+			     <isNotEmpty prepend="AND" property="urgent">
+			    	A.URGENT = #urgent#
+			     </isNotEmpty>
+			     <isNotEmpty prepend="AND" property="newDate">
+			     	<isEqual property="newDate" compareValue="1">
+			     		TO_CHAR(A.REGIST_DATE, 'YYYY-MM-DD')= TO_CHAR(sysdate, 'YYYY-MM-DD')
+			     	</isEqual>
+			     	<isNotEqual property="newDate" compareValue="1">
+			     	 	A.REGIST_DATE &gt; SYSDATE - #newDate#
+			     	</isNotEqual>
+			     </isNotEmpty>
+			     <isNotEmpty prepend="AND" property="registerId">
+			    	A.REGISTER_ID = #registerId#
+			     </isNotEmpty>
+			     <isNotEmpty prepend="AND" property="answerAdopt">
+			    	A.ANSWER_ADOPT = #answerAdopt#
+			     </isNotEmpty>
+			     <isNotEmpty prepend="AND" property="qnaType">
+			    	  A.QNA_TYPE = #qnaType#
+			     </isNotEmpty>
+			     <isNotEmpty prepend="AND" property="status">
+			    	 A.STATUS = #status#
+			     </isNotEmpty>
+			     <isNotEmpty prepend="AND" property="isNotAdopt">
+			    	 A.STATUS IN ('0','1')
+			     </isNotEmpty>
+			     <isNotEmpty prepend="AND" property="bestFlag">
+			    	 A.BEST_FLAG = #bestFlag#
+			     </isNotEmpty>
+			     <isNotEmpty prepend="AND" property="answerBestFlag">
+			    	 A.QNA_ID IN (SELECT QNA_GROUP_ID FROM IKEP4_QA_QNA WHERE  BEST_FLAG = 1 AND QNA_TYPE = 1)
+			     </isNotEmpty>
+			      <isNotEmpty prepend="AND" property="isNullCategory">
+			    	 A.CATEGORY_ID IS NULL
+			     </isNotEmpty>
+			     <isNotEmpty property="searchColumn">
+				     <isNotEmpty property="searchWord">
+						<isEqual property="searchColumn" compareValue="title" prepend="AND">
+							 A.TITLE LIKE '%' || #searchWord# || '%'
+						</isEqual>
+						<isEqual property="searchColumn" compareValue="registerName" prepend="AND">
+							(C.USER_NAME LIKE '%' || #searchWord# || '%' OR C.USER_ENGLISH_NAME LIKE '%' || #searchWord# || '%')
+						</isEqual>
+						<isEqual property="searchColumn" compareValue="all" prepend="AND">
+							 (A.TITLE LIKE '%' || #searchWord# || '%' OR A.REGISTER_Name = #searchWord# OR C.USER_ENGLISH_NAME = #searchWord#) 
+						</isEqual>
+					</isNotEmpty>
+				</isNotEmpty> 
+			</dynamic>
+	</select>
+	
+	
+	
+	<select id="selectListRelation" parameterClass="Qna" resultMap="qnaResultRelation">
+          SELECT  			/* [Qna_SqlMap.xml] qna.selectListRelation */
+     							
+				<include refid="Qna_Column_List" />
+				,(SELECT STATUS FROM IKEP4_QA_QNA WHERE QNA_ID = A.QNA_GROUP_ID) STATUS
+				, E.CATEGORY_NAME
+     							
+           FROM    IKEP4_QA_QNA A
+           		INNER JOIN IKEP4_EV_USER C
+           			ON A.REGISTER_ID = C.USER_ID
+           		INNER JOIN IKEP4_EV_JOB_TITLE D
+           			ON C.JOB_TITLE_CODE = D.JOB_TITLE_CODE
+           		LEFT OUTER JOIN IKEP4_QA_CATEGORY E <!-- 카테고리 테이블 조인으로인하여 따로 분리 -->
+           		 	ON A.CATEGORY_ID = E.CATEGORY_ID
+           WHERE  A.PORTAL_ID = #portalId#
+	          <isNotEmpty  property="itemDelete" prepend="AND" >
+		    		A.ITEM_DELETE = #itemDelete#
+		      </isNotEmpty>
+		     <isNotEmpty prepend="AND" property="qnaType">
+		    	  A.QNA_TYPE = #qnaType#
+		     </isNotEmpty>
+		      <iterate open="(" close=")" property="qnaIdList" conjunction="," prepend="AND A.QNA_ID IN">
+	           		#qnaIdList[]#
+	          </iterate>
+		      
+      	   ORDER BY A.REGIST_DATE DESC
+	</select>
+	
+	
+	<select id="selectCountRelation" parameterClass="Qna" resultClass="int">
+    	SELECT  		/* [Qna_SqlMap.xml] qna.selectCountRelation */
+    		COUNT(A.QNA_ID) 
+        FROM    IKEP4_QA_QNA A
+        WHERE  A.PORTAL_ID = #portalId#
+          <isNotEmpty  property="itemDelete" prepend="AND" >
+	    	A.ITEM_DELETE = #itemDelete#
+	      </isNotEmpty>
+	      <isNotEmpty prepend="AND" property="qnaType">
+	    	  A.QNA_TYPE = #qnaType#
+	     </isNotEmpty>
+	      <iterate open="(" close=")" property="qnaIdList" conjunction="," prepend="AND A.QNA_ID IN">
+           #qnaIdList[]#
+          </iterate>
+           <isNotEmpty  property="qnaId" prepend="AND" >
+	    	A.QNA_GROUP_ID &lt;&gt; #qnaId#
+	      </isNotEmpty>
+	</select>
+	
+	<select id="listChildId" parameterClass="String" resultClass="String">
+    	SELECT  		/* [Qna_SqlMap.xml] qna.listChildId */
+    		QNA_ID 
+        FROM    IKEP4_QA_QNA
+        WHERE QNA_GROUP_ID  = (
+	      	SELECT QNA_GROUP_ID
+			 FROM IKEP4_QA_QNA
+            WHERE QNA_ID = #qnaId# 
+	       ) 
+	    AND QNA_ID != #qnaId#
+          
+	</select>
+	
+	
+	<update id="update" parameterClass="Qna">
+		   UPDATE IKEP4_QA_QNA 	/* [Qna_SqlMap.xml] qna.update */
+		   SET TITLE = #title#, 
+			   CONTENTS = #contents#, 
+		       URGENT = #urgent#,
+			   UPDATER_ID = #updaterId#, 
+			   UPDATER_NAME = #updaterName#, 
+			   UPDATE_DATE = sysdate,
+			   ALARM_CHANNEL = #alarmChannel#,
+			   ATTACH_FILE_COUNT = #attachFileCount#,
+			   CATEGORY_ID = #categoryId#
+		   WHERE QNA_ID = #qnaId#
+	</update>
+	
+	
+	<update id="updateHit" parameterClass="String">
+		   UPDATE IKEP4_QA_QNA 	/* [Qna_SqlMap.xml] qna.updateHit */
+		   SET HIT_COUNT = (SELECT NVL(COUNT(QNA_ID),0) FROM IKEP4_QA_REFERENCE WHERE QNA_ID = #qnaId# ) 
+		   WHERE QNA_ID = #qnaId#
+	</update>
+	
+	<update id="updateGroupHitCount" parameterClass="String">
+		   UPDATE IKEP4_QA_QNA 	/* [Qna_SqlMap.xml] qna.updateGroupHitCount */
+		   SET HIT_COUNT = (SELECT NVL(COUNT(QNA_ID),0) FROM IKEP4_QA_REFERENCE WHERE QNA_ID = #qnaId# )
+		   WHERE QNA_GROUP_ID = #qnaGroupId#
+	</update>
+	
+	<update id="updateRecommendCount" parameterClass="String">
+		   UPDATE IKEP4_QA_QNA 	/* [Qna_SqlMap.xml] qna.updateRecommendCount */
+		   SET RECOMMEND_COUNT = (SELECT NVL(COUNT(QNA_ID),0) FROM IKEP4_QA_RECOMMEND WHERE QNA_ID = #qnaId# )
+		   WHERE QNA_ID = #qnaId#
+	</update>
+	
+	<update id="updateRecommendCountSum" parameterClass="String">
+		   UPDATE IKEP4_QA_QNA 		/* [Qna_SqlMap.xml] qna.updateRecommendCountSum */
+		   SET RECOMMEND_COUNT = 
+		   	 (
+			   	SELECT NVL(SUM(RECOMMEND_COUNT),0) 
+			   	FROM IKEP4_QA_QNA A
+			   		INNER JOIN (SELECT QNA_GROUP_ID FROM IKEP4_QA_QNA WHERE QNA_ID =  #qnaId#) B
+			   		ON A.QNA_GROUP_ID = B.QNA_GROUP_ID
+			   	WHERE 
+			   		A.QNA_ID &lt;&gt; B.QNA_GROUP_ID
+			   )
+		   WHERE QNA_ID = (SELECT QNA_GROUP_ID FROM IKEP4_QA_QNA WHERE QNA_ID =  #qnaId#)
+	</update>
+	
+	<update id="updateReplyCount" parameterClass="String">
+		   UPDATE IKEP4_QA_QNA 		/* [Qna_SqlMap.xml] qna.updateReplyCount */
+		   SET REPLY_COUNT = 
+			   (
+			   	SELECT NVL(COUNT(QNA_ID)-1,0)<!-- 질문은 제외  -->
+			   	FROM IKEP4_QA_QNA 
+			   	WHERE 
+			   		QNA_GROUP_ID = #qnaId# 
+			   		 AND ITEM_DELETE = 0 
+			   )
+		   WHERE QNA_ID = (SELECT QNA_GROUP_ID FROM IKEP4_QA_QNA WHERE QNA_ID =  #qnaId#)
+	</update>
+	
+	<update id="updateLinereplyCount" parameterClass="String">
+		   UPDATE IKEP4_QA_QNA 		/* [Qna_SqlMap.xml] qna.updateLinereplyCount */
+		   SET LINEREPLY_COUNT =
+		   	(
+			   	SELECT NVL(COUNT(LINEREPLY_ID),0) 
+			   	FROM IKEP4_QA_LINEREPLY 
+			   	WHERE 
+			   		QNA_ID = #qnaId# 
+			   	 AND LINEREPLY_DELETE = 0
+			   )
+		   WHERE QNA_ID = #qnaId#
+	</update>
+	
+	<update id="updateAttachFileCount" parameterClass="qna">
+		   UPDATE IKEP4_QA_QNA 		/* [Qna_SqlMap.xml] qna.updateAttachFileCount */
+		   SET ATTACH_FILE_COUNT = ATTACH_FILE_COUNT + #attachFileCount# 
+		    WHERE QNA_ID = #qnaId#
+	</update>
+	
+	<update id="updateAnswerAdopt" parameterClass="qna">
+		   UPDATE IKEP4_QA_QNA 		/* [Qna_SqlMap.xml] qna.updateAnswerAdopt */
+		   SET ANSWER_ADOPT = #answerAdopt# 
+		   WHERE QNA_ID = #qnaId#
+	</update>
+	
+	<update id="updateUrgent" parameterClass="qna">
+		   UPDATE IKEP4_QA_QNA 		/* [Qna_SqlMap.xml] qna.updateUrgent */
+		   SET URGENT = #urgent# 
+		   WHERE QNA_ID = #qnaId#
+	</update>
+	
+	
+	<update id="updateItemDelete" parameterClass="qna">
+		   UPDATE IKEP4_QA_QNA 		/* [Qna_SqlMap.xml] qna.updateItemDelete */
+		   SET ITEM_DELETE = #itemDelete# 
+		   WHERE QNA_GROUP_ID = #qnaId#
+	</update>
+	
+	<update id="updateStatus" parameterClass="qna">
+		   UPDATE IKEP4_QA_QNA 		/* [Qna_SqlMap.xml] qna.updateStatus */
+		   SET STATUS = #status# 
+		   WHERE QNA_ID = (SELECT QNA_GROUP_ID FROM IKEP4_QA_QNA WHERE QNA_ID =  #qnaId#)
+	</update>
+	
+	<update id="updateFavoriteCount" parameterClass="qna">
+		   UPDATE IKEP4_QA_QNA 		/* [Qna_SqlMap.xml] qna.updateFavoriteCount */
+		   SET FAVORITE_COUNT = FAVORITE_COUNT + #favoriteCount# 
+		   WHERE QNA_ID = #qnaId#
+	</update>
+	
+	<update id="updateGroupFavoriteCount" parameterClass="qna">
+		   UPDATE IKEP4_QA_QNA 		/* [Qna_SqlMap.xml] qna.updateGroupFavoriteCount */
+		   SET FAVORITE_COUNT = FAVORITE_COUNT + #favoriteCount# 
+		   WHERE QNA_GROUP_ID = #qnaGroupId#
+	</update>
+	
+	
+	<update id="updateAnswerNecessaryTime" parameterClass="qna">
+		   UPDATE IKEP4_QA_QNA 		/* [Qna_SqlMap.xml] qna.updateAnswerNecessaryTime */
+		   SET ANSWER_NECESSARY_TIME = #answerNecessaryTime# 
+		   WHERE QNA_ID = #qnaId#
+	</update>
+	
+	<update id="updateCategoryId" parameterClass="map">
+		   UPDATE IKEP4_QA_QNA 		/* [Qna_SqlMap.xml] qna.updateCategoryId */
+		   SET CATEGORY_ID = #afterCategoryId# 
+		   WHERE CATEGORY_ID = #beforeCategoryId#
+	</update>
+	
+	<update id="updateMailCount" parameterClass="string">
+		   UPDATE IKEP4_QA_QNA 		/* [Qna_SqlMap.xml] qna.updateMailCount */
+		   SET MAIL_COUNT = MAIL_COUNT + 1
+		   WHERE QNA_ID = #qnaId#
+	</update>
+	
+	<update id="updateMblogCount" parameterClass="string">
+		   UPDATE IKEP4_QA_QNA 		/* [Qna_SqlMap.xml] qna.updateMailCount */
+		   SET MBLOG_COUNT = MBLOG_COUNT + 1
+		   WHERE QNA_ID = #qnaId#
+	</update>
+   
+   <delete id="delete" parameterClass="string">
+	       DELETE FROM IKEP4_QA_QNA 	/* [Qna_SqlMap.xml] qna.delete */
+	       	WHERE QNA_ID = #qnaId# 
+	</delete>
+   
+	<update id="updateScore" parameterClass="Qna"> 
+           UPDATE IKEP4_QA_QNA 		/* [Qna_SqlMap.xml] qna.updateScore */
+		   SET SCORE = #score#
+		   WHERE QNA_ID = #qnaId#
+   </update>
+   
+   <update id="updateBestFlag" parameterClass="Qna"> 
+           UPDATE IKEP4_QA_QNA 		/* [Qna_SqlMap.xml] qna.updateBestFlag */
+		   SET BEST_FLAG = 1
+		   WHERE 
+			   QNA_TYPE = #qnaType#
+			   AND PORTAL_ID = #portalId#
+			   AND SCORE &gt; #score#
+   </update>
+   
+	
+	<select id="selectBestQnaId" parameterClass="Qna" resultClass="String">
+		SELECT /* [QnaScore_SqlMap.xml] qnaScore.selectBestQnaId */
+			* 
+		FROM (
+			SELECT		 
+				QNA_ID
+			FROM IKEP4_QA_QNA 
+			WHERE QNA_TYPE = #qnaType#
+			AND PORTAL_ID = #portalId#
+			AND BEST_FLAG = 1
+			<isNotEmpty prepend="AND" property="newDate">
+		     	<isEqual property="newDate" compareValue="1">
+		     		TO_CHAR(REGIST_DATE, 'YYYY-MM-DD')= TO_CHAR(sysdate, 'YYYY-MM-DD')
+		     	</isEqual>
+		     	<isNotEqual property="newDate" compareValue="1">
+		     	 	REGIST_DATE &gt; SYSDATE - #newDate#
+		     	</isNotEqual>
+		     </isNotEmpty>
+			ORDER BY SCORE DESC
+		)
+		WHERE ROWNUM &lt;= #endRowIndex#
+	</select>
+
+	
+	<update id="updateScoreInit" >
+	       UPDATE IKEP4_QA_QNA 		/* [Qna_SqlMap.xml] qna.updateScoreInit */
+		   SET BEST_FLAG = 0
+		   		, SCORE = 0
+	</update>
+	
+</sqlMap>

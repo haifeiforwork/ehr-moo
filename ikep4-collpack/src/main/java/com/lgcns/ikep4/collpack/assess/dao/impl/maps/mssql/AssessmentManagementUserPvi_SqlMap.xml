@@ -1,0 +1,830 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="collpack.assess.dao.AssessmentManagementUserPvi">
+	<typeAlias alias="AssessmentManagementUserPviPK" type="com.lgcns.ikep4.collpack.assess.model.AssessmentManagementUserPviPK"/>
+	<typeAlias alias="AssessmentManagementUserPvi" type="com.lgcns.ikep4.collpack.assess.model.AssessmentManagementUserPvi"/>
+	<typeAlias alias="AssessmentManagementBlockPageCondition" type="com.lgcns.ikep4.collpack.assess.search.AssessmentManagementBlockPageCondition"/>
+
+	<resultMap class="AssessmentManagementUserPvi" id="result">
+		<result column="USER_ID" property="userId" jdbcType="VARCHAR" javaType="String"/>
+		<result column="PVI" property="pvi" jdbcType="NUMBER" javaType="Integer"/>
+		<result column="RANK" property="rank" jdbcType="NUMBER" javaType="Integer"></result>
+		<result column="CONTRIBUTION_SCORE" property="contributionScore" jdbcType="NUMBER" javaType="Integer"/>
+		<result column="PARTICIPATION_SCORE" property="participationScore" jdbcType="NUMBER" javaType="Integer"/>
+		<result column="APPLICATION_SCORE" property="applicationScore" jdbcType="NUMBER" javaType="Integer"/>
+		<result column="FRIENDSHIP_SCORE" property="friendshipScore" jdbcType="NUMBER" javaType="Integer"/>
+		<result column="INFLUENCE_SCORE" property="influenceScore" jdbcType="NUMBER" javaType="Integer"/>
+	</resultMap>
+
+	<resultMap class="AssessmentManagementUserPvi" extends="result" id="userInfoResult">
+		<result column="USER_NAME" property="userName" jdbcType="VARCHAR" javaType="String"/>
+		<result column="USER_ENGLISH_NAME" property="userEnglishName" jdbcType="VARCHAR" javaType="String"/>
+		<result column="TEAM_NAME" property="teamName" jdbcType="VARCHAR" javaType="String"/>
+		<result column="TEAM_ENGLISH_NAME" property="teamEnglishName" jdbcType="VARCHAR" javaType="String"/>
+		<result column="JOB_TITLE_NAME" property="jobTitleName" jdbcType="VARCHAR" javaType="String"/>
+		<result column="JOB_TITLE_ENGLISH_NAME" property="jobTitleEnglishName" jdbcType="VARCHAR" javaType="String"/>
+	</resultMap>
+
+	<resultMap class="AssessmentManagementUserPvi" extends="userInfoResult" id="userInfoRateResult">
+		<result column="RATE" property="rate" jdbcType="NUMBER" javaType="Integer"/>
+	</resultMap>
+	
+	<resultMap class="AssessmentManagementUserPvi" extends="result" id="stepResult">
+		<result column="STEP" property="step" jdbcType="NUMBER" javaType="Integer"/>
+	</resultMap>
+
+<!-- MS SQL -->
+<!-- 사용자평가 조회 -->
+	<select id="getByUserId" parameterClass="String" resultMap="userInfoRateResult">
+	<![CDATA[
+		SELECT /* [AssessmentManagementUserPvi_SqlMap.xml] collpack.assess.dao.AssessmentManagementUserPvi.getByUserId */
+		       PVI.USER_ID, PVI.PVI PVI, PVI.RANK RANK
+		     , CONTRIBUTION_SCORE, PARTICIPATION_SCORE, APPLICATION_SCORE, FRIENDSHIP_SCORE, INFLUENCE_SCORE
+		     , USR.USER_NAME USER_NAME, USR.USER_ENGLISH_NAME USER_ENGLISH_NAME
+		     , USR.TEAM_NAME TEAM_NAME, USR.TEAM_ENGLISH_NAME TEAM_ENGLISH_NAME
+		     , USR.JOB_TITLE_NAME JOB_TITLE_NAME, USR.JOB_TITLE_ENGLISH_NAME JOB_TITLE_ENGLISH_NAME
+		     , ROUND((PVI.RANK / (SELECT MAX(RANK) FROM IKEP4_AM_USER_PVI Z WHERE Z.PORTAL_ID = PVI.PORTAL_ID)) * 100, 0) RATE
+		     , USR.PICTURE_PATH, USR.PROFILE_PICTURE_PATH
+		  FROM IKEP4_AM_USER_PVI PVI
+			   INNER JOIN (
+					        SELECT USR.USER_ID USER_ID
+					             , USR.USER_NAME USER_NAME, USR.USER_ENGLISH_NAME USER_ENGLISH_NAME
+					             , USR.TEAM_NAME TEAM_NAME, USR.TEAM_ENGLISH_NAME TEAM_ENGLISH_NAME
+					             , JOB.JOB_TITLE_NAME JOB_TITLE_NAME, JOB.JOB_TITLE_ENGLISH_NAME JOB_TITLE_ENGLISH_NAME
+					             , USR.PICTURE_PATH, 
+					             (    CASE 
+					                     WHEN USR.PROFILE_PICTURE_PATH = '' THEN USR.SAP_PROFILE_PICTURE_PATH
+                                         WHEN USR.PROFILE_PICTURE_PATH IS NULL THEN USR.SAP_PROFILE_PICTURE_PATH
+                                         ELSE USR.PROFILE_PICTURE_PATH
+                                       END
+                                  ) AS PROFILE_PICTURE_PATH
+					          FROM IKEP4_EV_USER USR
+					          	   INNER JOIN IKEP4_EV_JOB_TITLE JOB
+					         			ON USR.JOB_TITLE_CODE = JOB.JOB_TITLE_CODE
+					       ) USR
+			 		ON	PVI.USER_ID = USR.USER_ID
+		 WHERE PVI.USER_ID = #userId#
+	]]>
+	</select>
+
+<!-- MS SQL -->
+<!-- 포털별 전체개수 반환 (페이징) -->
+	<select id="countByPortalIdPage" parameterClass="AssessmentManagementBlockPageCondition" resultClass="Integer">
+		SELECT /* [AssessmentManagementUserPvi_SqlMap.xml] collpack.assess.dao.AssessmentManagementUserPvi.countByPortalIdPage */
+		       COUNT(PVI.USER_ID) COUNT_ITEM_ID
+		  FROM IKEP4_AM_USER_PVI PVI
+		  	   INNER JOIN IKEP4_EV_USER USR
+/*
+		  JOIN (
+		        SELECT USR.USER_ID USER_ID
+		          FROM IKEP4_EV_USER USR
+		          JOIN IKEP4_EV_JOB_TITLE JOB
+		         USING (JOB_TITLE_CODE)
+		       ) USR
+*/
+		 			ON PVI.USER_ID = USR.USER_ID
+		 WHERE PVI.PORTAL_ID = #portalId#
+		 <isNotEmpty property="userName" prepend="AND ">USR.USER_NAME LIKE '%' + #userName# + '%' OR USR.USER_ENGLISH_NAME LIKE '%' + #userName# + '%'</isNotEmpty>
+	<![CDATA[
+	]]>
+	</select>
+	
+<!-- MS SQL -->
+<!-- 포털별 리스트 (페이징) -->
+	<select id="listByPortalIdPage" parameterClass="AssessmentManagementBlockPageCondition" resultMap="userInfoResult">
+	<![CDATA[
+		/* [AssessmentManagementUserPvi_SqlMap.xml] collpack.assess.dao.AssessmentManagementUserPvi.listByPortalIdPage */
+	]]>
+		WITH MAIN_BODY AS (
+		    SELECT Row_number() OVER (ORDER BY PVI.PVI <isEqual property="pviOrder" compareValue="1">DESC</isEqual>) AS RANK_NUMBER
+		    	 , PVI.USER_ID, PVI.PVI PVI, PVI.RANK RANK
+		         , CONTRIBUTION_SCORE, PARTICIPATION_SCORE, APPLICATION_SCORE, FRIENDSHIP_SCORE, INFLUENCE_SCORE
+		         , USR.USER_NAME USER_NAME, USR.USER_ENGLISH_NAME USER_ENGLISH_NAME
+		         , USR.TEAM_NAME TEAM_NAME, USR.TEAM_ENGLISH_NAME TEAM_ENGLISH_NAME
+		         , USR.JOB_TITLE_NAME JOB_TITLE_NAME, USR.JOB_TITLE_ENGLISH_NAME JOB_TITLE_ENGLISH_NAME
+		         , USR.PICTURE_PATH, USR.PROFILE_PICTURE_PATH
+		      FROM IKEP4_AM_USER_PVI PVI
+			       INNER JOIN (
+					            SELECT USR.USER_ID USER_ID
+					                 , USR.USER_NAME USER_NAME, USR.USER_ENGLISH_NAME USER_ENGLISH_NAME
+					                 , USR.TEAM_NAME TEAM_NAME, USR.TEAM_ENGLISH_NAME TEAM_ENGLISH_NAME
+					                 , JOB.JOB_TITLE_NAME JOB_TITLE_NAME, JOB.JOB_TITLE_ENGLISH_NAME JOB_TITLE_ENGLISH_NAME
+					                 , USR.PICTURE_PATH, ISNULL(USR.PROFILE_PICTURE_PATH, USR.sap_profile_picture_path) as PROFILE_PICTURE_PATH
+					              FROM IKEP4_EV_USER USR
+					              	   INNER JOIN IKEP4_EV_JOB_TITLE JOB
+					              	   		ON USR.JOB_TITLE_CODE = JOB.JOB_TITLE_CODE
+					           ) USR
+		     			ON PVI.USER_ID = USR.USER_ID
+		     WHERE PVI.PORTAL_ID = #portalId#
+		     <isNotEmpty property="userName" prepend="AND ">USR.USER_NAME LIKE '%' + #userName# + '%' OR USR.USER_ENGLISH_NAME LIKE '%' + #userName# + '%'</isNotEmpty>
+		)
+		SELECT USER_ID, PVI, RANK
+		     , CONTRIBUTION_SCORE, PARTICIPATION_SCORE, APPLICATION_SCORE, FRIENDSHIP_SCORE, INFLUENCE_SCORE
+		     , USER_NAME, USER_ENGLISH_NAME, TEAM_NAME, TEAM_ENGLISH_NAME, JOB_TITLE_NAME, JOB_TITLE_ENGLISH_NAME
+		     , PICTURE_PATH, PROFILE_PICTURE_PATH
+		  FROM (
+		        SELECT BODY.*
+		          FROM MAIN_BODY BODY
+		         <isEqual property="excel" compareValue="false">
+		         <![CDATA[
+		         WHERE RANK_NUMBER <= #endOrder#
+		         ]]>
+		         </isEqual>
+		       ) BODY
+		 <isEqual property="excel" compareValue="false">
+		 <![CDATA[
+		 WHERE RANK_NUMBER >= #startOrder#
+		 ]]>
+		 </isEqual>
+		 <isEqual property="excel" compareValue="true">
+		 ORDER BY RANK_NUMBER
+		 </isEqual>
+	</select>
+
+<!-- MS SQL -->
+<!-- 조직별 전체개수 반환 (페이징) -->
+	<select id="countByGroupIdPage" parameterClass="AssessmentManagementBlockPageCondition" resultClass="Integer">
+		SELECT /* [AssessmentManagementUserPvi_SqlMap.xml] collpack.assess.dao.AssessmentManagementUserPvi.countByGroupIdPage */
+		       COUNT(PVI.USER_ID) COUNT_ITEM_ID
+		  FROM IKEP4_AM_USER_PVI PVI
+		  	   INNER JOIN IKEP4_EV_USER USR
+		  	   		ON PVI.USER_ID = USR.USER_ID
+/*
+		  JOIN (
+		        SELECT USR.USER_ID USER_ID
+		          FROM IKEP4_EV_USER USR
+		          JOIN IKEP4_EV_JOB_TITLE JOB
+		         USING (JOB_TITLE_CODE)
+		       ) USR
+*/
+		  	   INNER JOIN IKEP4_EV_USER_GROUP GRP
+		  	   		ON USR.USER_ID = GRP.USER_ID
+		 WHERE GRP.GROUP_ID = #groupId#
+		 <isNotEmpty property="userName" prepend="AND ">USR.USER_NAME LIKE '%' + #userName# + '%' OR USR.USER_ENGLISH_NAME LIKE '%' + #userName# + '%'</isNotEmpty>
+	<![CDATA[
+	]]>
+	</select>
+
+<!-- MS SQL -->
+<!-- 조직별 리스트 (페이징) -->
+	<select id="listByGroupIdPage" parameterClass="AssessmentManagementBlockPageCondition" resultMap="userInfoResult">
+	<![CDATA[
+		/* [AssessmentManagementUserPvi_SqlMap.xml] collpack.assess.dao.AssessmentManagementUserPvi.listByGroupIdPage */
+	]]>
+		WITH MAIN_BODY AS (
+		    SELECT Row_number() OVER (ORDER BY PVI.PVI <isEqual property="pviOrder" compareValue="1">DESC</isEqual>) AS RANK_NUMBER
+		    	 , PVI.USER_ID, PVI.PVI PVI
+		         , CONTRIBUTION_SCORE, PARTICIPATION_SCORE, APPLICATION_SCORE, FRIENDSHIP_SCORE, INFLUENCE_SCORE
+		         , USR.USER_NAME USER_NAME, USR.USER_ENGLISH_NAME USER_ENGLISH_NAME
+		         , USR.TEAM_NAME TEAM_NAME, USR.TEAM_ENGLISH_NAME TEAM_ENGLISH_NAME
+		         , USR.JOB_TITLE_NAME JOB_TITLE_NAME, USR.JOB_TITLE_ENGLISH_NAME JOB_TITLE_ENGLISH_NAME
+		         , USR.PICTURE_PATH, USR.PROFILE_PICTURE_PATH
+		      FROM IKEP4_AM_USER_PVI PVI
+			       INNER JOIN (
+					            SELECT USR.USER_ID USER_ID
+					                 , USR.USER_NAME USER_NAME, USR.USER_ENGLISH_NAME USER_ENGLISH_NAME
+					                 , USR.TEAM_NAME TEAM_NAME, USR.TEAM_ENGLISH_NAME TEAM_ENGLISH_NAME
+					                 , JOB.JOB_TITLE_NAME JOB_TITLE_NAME, JOB.JOB_TITLE_ENGLISH_NAME JOB_TITLE_ENGLISH_NAME
+					                 , USR.PICTURE_PATH, USR.PROFILE_PICTURE_PATH
+					              FROM IKEP4_EV_USER USR
+					              	   INNER JOIN IKEP4_EV_JOB_TITLE JOB
+					              	   		ON USR.JOB_TITLE_CODE = JOB.JOB_TITLE_CODE
+					           ) USR
+						ON PVI.USER_ID = USR.USER_ID
+		      	   INNER JOIN IKEP4_EV_USER_GROUP GRP
+		      	   		ON USR.USER_ID = GRP.USER_ID
+		     WHERE GRP.GROUP_ID = #groupId#
+		     <isNotEmpty property="userName" prepend="AND ">USR.USER_NAME LIKE '%' + #userName# + '%' OR USR.USER_ENGLISH_NAME LIKE '%' + #userName# + '%'</isNotEmpty>
+		)
+		SELECT USER_ID, PVI, RANK_NUMBER RANK
+		     , CONTRIBUTION_SCORE, PARTICIPATION_SCORE, APPLICATION_SCORE, FRIENDSHIP_SCORE, INFLUENCE_SCORE
+		     , USER_NAME, USER_ENGLISH_NAME, TEAM_NAME, TEAM_ENGLISH_NAME, JOB_TITLE_NAME, JOB_TITLE_ENGLISH_NAME
+		     , PICTURE_PATH, PROFILE_PICTURE_PATH
+		  FROM (
+		        SELECT BODY.*
+		          FROM MAIN_BODY BODY
+		         <isEqual property="excel" compareValue="false">
+		         <![CDATA[
+		         WHERE RANK_NUMBER <= #endOrder#
+		         ]]>
+		         </isEqual>
+		       ) BODY
+		 <isEqual property="excel" compareValue="false">
+		 <![CDATA[
+		 WHERE RANK_NUMBER >= #startOrder#
+		 ]]>
+		 </isEqual>
+		 <isEqual property="excel" compareValue="true">
+		 ORDER BY RANK_NUMBER
+		 </isEqual>
+	</select>
+
+<!-- ANSI -->
+<!-- 평가점수 초기화 -->
+	<update id="initScoreByPortalId" parameterClass="Map">
+	<![CDATA[
+		UPDATE /* [AssessmentManagementUserPvi_SqlMap.xml] collpack.assess.dao.AssessmentManagementUserPvi.initScoreByPortalId */
+		       IKEP4_AM_USER_PVI
+		   SET PVI = 0
+		     , RANK = 0
+		     , CONTRIBUTION_SCORE = 0
+		     , PARTICIPATION_SCORE = 0
+		     , APPLICATION_SCORE = 0
+		     , FRIENDSHIP_SCORE = 0
+		     , INFLUENCE_SCORE = 0
+		     , REGISTER_ID = #registerId#
+		     , REGIST_DATE = CURRENT_TIMESTAMP
+		 WHERE PORTAL_ID = #portalId#
+	]]>
+	</update>
+
+<!-- ANSI -->
+<!-- 포털별 PVI 최대값 조회 -->
+	<select id="getMaxPviByPortalId" parameterClass="String" resultClass="Integer">
+	<![CDATA[
+		SELECT /* [AssessmentManagementUserPvi_SqlMap.xml] collpack.assess.dao.AssessmentManagementUserPvi.getMaxPviByPortalId */
+		       MAX(PVI) PVI
+		  FROM IKEP4_AM_USER_PVI
+		 WHERE PORTAL_ID = #portalId#
+	]]>
+	</select>
+
+<!-- 사용자점수 및 Symbol 조회 -->
+	<select id="getWithSymbolByUserId" parameterClass="String" resultMap="stepResult">
+	<![CDATA[
+		SELECT /* [AssessmentManagementUserPvi_SqlMap.xml] collpack.assess.dao.AssessmentManagementUserPvi.getWithSymbolByUserId */
+		       PVI.USER_ID
+		     , PVI.PVI, PVI.RANK
+		     , PVI.CONTRIBUTION_SCORE
+		     , PVI.PARTICIPATION_SCORE
+		     , PVI.APPLICATION_SCORE
+		     , PVI.FRIENDSHIP_SCORE
+		     , PVI.INFLUENCE_SCORE
+		     , SYM.STEP
+		  FROM IKEP4_AM_USER_PVI PVI
+		  	   INNER JOIN IKEP4_AM_PVI_SYMBOL SYM
+		  	   		ON PVI.PORTAL_ID = SYM.PORTAL_ID
+		 WHERE PVI.USER_ID = #userId#
+		   AND PVI.PVI BETWEEN SYM.SECTION_START_SCORE AND SYM.SECTION_END_SCORE
+	]]>
+	</select>
+
+<!-- 사용자별 평가점수 배치 -->
+<!-- ANSI -->
+<!-- 임시집계테이블(IKEP4_AM_USER_ACTIVITIES) Truncate -->
+	<statement id="truncateUserActivities">
+	<![CDATA[
+		/* [AssessmentManagementUserPvi_SqlMap.xml] collpack.assess.dao.AssessmentManagementUserPvi.truncateUserActivities */
+		TRUNCATE TABLE IKEP4_AM_USER_ACTIVITIES
+	]]>
+	</statement>
+
+<!-- ANSI -->
+<!-- 자료등록/우수자료 (COUNT_TYPE : 'Regist') -->
+<!-- IS_GOOD_DOC 우수 게시물 여부(0: 일반게시물, 1: 우수게시물) 이므로 SUM()을 우수자료수로 사용 -->
+	<insert id="batchGatherRegistScore">
+	<![CDATA[
+		INSERT /* [AssessmentManagementUserPvi_SqlMap.xml] collpack.assess.dao.AssessmentManagementUserPvi."batchGatherRegistScore" */
+		       INTO IKEP4_AM_USER_ACTIVITIES (COUNT_TYPE, PORTAL_ID, USER_ID, FIRST_VALUE, SECOND_VALUE)
+		SELECT 'Regist', CVI.PORTAL_ID, CVI.REGISTER_ID, COUNT(CVI.ITEM_ID) SCORE, SUM(CVI.IS_GOOD_DOC) BEST_SCORE
+		  FROM IKEP4_KN_CVI_POINT CVI
+			   INNER JOIN IKEP4_AM_POLICY PCY
+			 		ON CVI.PORTAL_ID = PCY.PORTAL_ID
+			 	   AND CVI.REGIST_DATE > PCY.EVALUATION_START_DATE
+			   INNER JOIN IKEP4_AM_TARGET TAR
+			   		ON CVI.PORTAL_ID = TAR.PORTAL_ID
+			   	   AND CVI.MODULE_CODE = TAR.MODULE_CODE
+		 WHERE TAR.SELECTION = 0
+		 GROUP BY CVI.PORTAL_ID, CVI.REGISTER_ID
+	]]>
+	</insert>
+
+<!-- ANSI -->
+<!-- 답변수 / 우수답변수 (COUNT_TYPE : 'Answer') -->
+<!-- ANSWER_ADOPT 채택 여부 (0, 미채택, 1, 채택답변) 이므로 SUM()을 우수답변수로 사용 -->
+	<insert id="batchGatherAnswerScore">
+	<![CDATA[
+		INSERT /* [AssessmentManagementUserPvi_SqlMap.xml] collpack.assess.dao.AssessmentManagementUserPvi.batchGatherAnswerScore */
+		       INTO IKEP4_AM_USER_ACTIVITIES (COUNT_TYPE, PORTAL_ID, USER_ID, FIRST_VALUE, SECOND_VALUE)
+		SELECT 'Answer', QNA.PORTAL_ID, QNA.REGISTER_ID USER_ID, COUNT(QNA.QNA_ID) SCORE, SUM(QNA.ANSWER_ADOPT) BEST_SCORE
+		  FROM IKEP4_QA_QNA QNA
+		  	   INNER JOIN IKEP4_AM_POLICY PCY
+		  	   		ON QNA.PORTAL_ID = PCY.PORTAL_ID
+		  	   	   AND QNA.REGIST_DATE > PCY.EVALUATION_START_DATE
+		 WHERE QNA.QNA_TYPE = 1
+		   AND QNA.ITEM_DELETE = 0
+		 GROUP BY QNA.PORTAL_ID, QNA.REGISTER_ID
+	]]>
+	</insert>
+
+<!-- ANSI -->
+<!-- Comment (COUNT_TYPE : 'Linereply') -->
+	<insert id="batchGatherLinereplyScore">
+	<![CDATA[
+		INSERT /* [AssessmentManagementUserPvi_SqlMap.xml] collpack.assess.dao.AssessmentManagementUserPvi.batchGatherLinereplyScore */
+		       INTO IKEP4_AM_USER_ACTIVITIES (COUNT_TYPE, PORTAL_ID, USER_ID, FIRST_VALUE)
+		SELECT 'Linereply', PCY.PORTAL_ID, REPLY.REGISTER_ID USER_ID, COUNT(REPLY.REGISTER_ID) SCORE
+		  FROM (
+		        SELECT 'SB' MODULE_CODE, REGISTER_ID, REGIST_DATE
+		          FROM IKEP4_SB_BD_LINEREPLY
+		         WHERE LINEREPLY_DELETE = 0
+		        UNION ALL
+		        SELECT 'ID' MODULE_CODE, REGISTER_ID, REGIST_DATE
+		          FROM IKEP4_ID_LINEREPLY
+		         WHERE LINEREPLY_DELETE = 0
+		        UNION ALL
+		        SELECT 'FR' MODULE_CODE, REGISTER_ID, REGIST_DATE
+		          FROM IKEP4_FR_LINEREPLY
+		         WHERE LINEREPLY_DELETE = 0
+		        UNION ALL
+		        SELECT 'QA' MODULE_CODE, REGISTER_ID, REGIST_DATE
+		          FROM IKEP4_QA_LINEREPLY
+		         WHERE LINEREPLY_DELETE = 0
+		        UNION ALL
+		        SELECT 'WM' MODULE_CODE, REGISTER_ID, REGIST_DATE
+		          FROM IKEP4_WM_LINEREPLY
+		         WHERE IS_DELETE = 0
+		        UNION ALL
+		        SELECT 'CF' MODULE_CODE, REGISTER_ID, REGIST_DATE
+		          FROM IKEP4_CF_BD_LINEREPLY
+		         WHERE LINEREPLY_DELETE = 0
+		        UNION ALL
+		        SELECT 'WS' MODULE_CODE, REGISTER_ID, REGIST_DATE
+		          FROM IKEP4_WS_BD_LINEREPLY
+		         WHERE LINEREPLY_DELETE = 0
+		        UNION ALL
+		        SELECT 'BD' MODULE_CODE, REGISTER_ID, REGIST_DATE
+		          FROM IKEP4_BD_LINEREPLY
+		         WHERE LINEREPLY_DELETE = 0
+		       ) REPLY
+		  	   INNER JOIN IKEP4_EV_USER USR
+		    		ON REPLY.REGISTER_ID = USR.USER_ID
+		  	   INNER JOIN IKEP4_AM_POLICY PCY
+		  	   		ON USR.PORTAL_ID = PCY.PORTAL_ID
+		  	   	   AND REPLY.REGIST_DATE > PCY.EVALUATION_START_DATE
+		  	   INNER JOIN IKEP4_AM_TARGET TAR
+		  	   		ON REPLY.MODULE_CODE = TAR.MODULE_CODE
+		  	   	   AND USR.PORTAL_ID = TAR.PORTAL_ID
+		 WHERE TAR.SELECTION = 0
+		 GROUP BY PCY.PORTAL_ID, REPLY.REGISTER_ID
+	]]>
+	</insert>
+
+<!-- ANSI -->
+<!-- 추천수 (COUNT_TYPE : 'Recommend') -->
+	<insert id="batchGatherRecommendScore">
+	<![CDATA[
+		INSERT /* [AssessmentManagementUserPvi_SqlMap.xml] collpack.assess.dao.AssessmentManagementUserPvi.batchGatherRecommendScore */
+		       INTO IKEP4_AM_USER_ACTIVITIES (COUNT_TYPE, PORTAL_ID, USER_ID, FIRST_VALUE)
+		SELECT 'Recommend', PCY.PORTAL_ID, RECOM.REGISTER_ID USER_ID, COUNT(RECOM.REGISTER_ID) SCORE
+		  FROM (
+		        SELECT 'SB' MODULE_CODE, REGISTER_ID, REGIST_DATE
+		          FROM IKEP4_SB_BD_ITEM_RECOMMEND
+		        UNION ALL
+		        SELECT 'ID' MODULE_CODE, REGISTER_ID, REGIST_DATE
+		          FROM IKEP4_ID_RECOMMEND
+		        UNION ALL
+		        SELECT 'QA' MODULE_CODE, REGISTER_ID, REGIST_DATE
+		          FROM IKEP4_QA_RECOMMEND
+		        UNION ALL
+		        SELECT 'CF' MODULE_CODE, REGISTER_ID, REGIST_DATE
+		          FROM IKEP4_CF_BD_RECOMMEND
+		        UNION ALL
+		        SELECT 'WS' MODULE_CODE, REGISTER_ID, REGIST_DATE
+		          FROM IKEP4_WS_BD_RECOMMEND
+		        UNION ALL
+		        SELECT 'BD' MODULE_CODE, REGISTER_ID, REGIST_DATE
+		          FROM IKEP4_BD_RECOMMEND
+		       ) RECOM
+			   INNER JOIN IKEP4_EV_USER USR
+					ON RECOM.REGISTER_ID = USR.USER_ID
+			   INNER JOIN IKEP4_AM_POLICY PCY
+			   		ON USR.PORTAL_ID = PCY.PORTAL_ID
+				   AND RECOM.REGIST_DATE > PCY.EVALUATION_START_DATE
+			   INNER JOIN IKEP4_AM_TARGET TAR
+			   		ON USR.PORTAL_ID = TAR.PORTAL_ID
+			   	   AND RECOM.MODULE_CODE = TAR.MODULE_CODE
+		 WHERE TAR.SELECTION = 0
+		 GROUP BY PCY.PORTAL_ID, RECOM.REGISTER_ID
+	]]>
+	</insert>
+
+<!-- ANSI -->
+<!-- 조회수 (COUNT_TYPE : 'Hit') -->
+	<insert id="batchGatherHitScore">
+	<![CDATA[
+		INSERT /* [AssessmentManagementUserPvi_SqlMap.xml] collpack.assess.dao.AssessmentManagementUserPvi.batchGatherHitScore */
+		       INTO IKEP4_AM_USER_ACTIVITIES (COUNT_TYPE, PORTAL_ID, USER_ID, FIRST_VALUE)
+		SELECT 'Hit', PCY.PORTAL_ID, REFER.REGISTER_ID USER_ID, COUNT(REFER.REGISTER_ID) SCORE
+		  FROM (
+		        SELECT 'SB' MODULE_CODE, REGISTER_ID, REGIST_DATE
+		          FROM IKEP4_SB_BD_LINEREPLY
+		        UNION ALL
+		        SELECT 'CV' MODULE_CODE, REGISTER_ID, REGIST_DATE
+		          FROM IKEP4_CV_REFERENCE
+		        UNION ALL
+		        SELECT 'ID' MODULE_CODE, REGISTER_ID, REGIST_DATE
+		          FROM IKEP4_ID_REFERENCE
+		        UNION ALL
+		        SELECT 'FR' MODULE_CODE, REGISTER_ID, REGIST_DATE
+		          FROM IKEP4_FR_REFERENCE
+		        UNION ALL
+		        SELECT 'QA' MODULE_CODE, REGISTER_ID, REGIST_DATE
+		          FROM IKEP4_QA_REFERENCE
+		        UNION ALL
+		        SELECT 'WM' MODULE_CODE, REGISTER_ID, REGIST_DATE
+		          FROM IKEP4_WM_REFERENCE
+		        UNION ALL
+		        SELECT 'CF' MODULE_CODE, REGISTER_ID, REGIST_DATE
+		          FROM IKEP4_CF_BD_REFERENCE
+		        UNION ALL
+		        SELECT 'WS' MODULE_CODE, REGISTER_ID, REGIST_DATE
+		          FROM IKEP4_WS_BD_REFERENCE
+		        UNION ALL
+		        SELECT 'BD' MODULE_CODE, REGISTER_ID, REGIST_DATE
+		          FROM IKEP4_BD_REFERENCE
+		       ) REFER
+			   INNER JOIN IKEP4_EV_USER USR
+					ON REFER.REGISTER_ID = USR.USER_ID
+			   INNER JOIN IKEP4_AM_POLICY PCY
+			   		ON USR.PORTAL_ID = PCY.PORTAL_ID
+				   AND REFER.REGIST_DATE > PCY.EVALUATION_START_DATE
+			   INNER JOIN IKEP4_AM_TARGET TAR
+			   		ON USR.PORTAL_ID = TAR.PORTAL_ID
+			   	   AND REFER.MODULE_CODE = TAR.MODULE_CODE
+		 WHERE TAR.SELECTION = 0
+		 GROUP BY PCY.PORTAL_ID, REFER.REGISTER_ID
+	]]>
+	</insert>
+
+<!-- ANSI -->
+<!-- 검색수 (내가 검색을 한 수) (COUNT_TYPE : 'Search') -->
+	<insert id="batchGatherSearchScore">
+	<![CDATA[
+		INSERT /* [AssessmentManagementUserPvi_SqlMap.xml] collpack.assess.dao.AssessmentManagementUserPvi.batchGatherSearchScore */
+		       INTO IKEP4_AM_USER_ACTIVITIES (COUNT_TYPE, PORTAL_ID, USER_ID, FIRST_VALUE)
+		SELECT 'Search', HIS.PORTAL_ID, HIS.REGISTER_ID USER_ID, COUNT(HIS.SEARCH_HISTORY_ID) SCORE
+		  FROM IKEP4_SP_HISTORY HIS
+		  	   INNER JOIN IKEP4_AM_POLICY PCY
+		  	   		ON HIS.PORTAL_ID = PCY.PORTAL_ID
+		  	   	   AND HIS.REGIST_DATE > PCY.EVALUATION_START_DATE
+		 GROUP BY HIS.PORTAL_ID, HIS.REGISTER_ID
+	]]>
+	</insert>
+
+<!-- ANSI -->
+<!-- Follower수 (나를 Follow 한 사람의 수) (COUNT_TYPE : 'Follow') -->
+	<insert id="batchGatherFollowScore">
+	<![CDATA[
+		INSERT /* [AssessmentManagementUserPvi_SqlMap.xml] collpack.assess.dao.AssessmentManagementUserPvi.batchGatherFollowScore */
+		       INTO IKEP4_AM_USER_ACTIVITIES (COUNT_TYPE, PORTAL_ID, USER_ID, FIRST_VALUE)
+		SELECT 'Follow', USR.PORTAL_ID, FLW.FOLLOWING_USER_ID USER_ID, COUNT(FLW.USER_ID) SCORE
+		  FROM IKEP4_MB_FOLLOW FLW
+		  	   INNER JOIN IKEP4_EV_USER USR
+		    		ON FLW.FOLLOWING_USER_ID = USR.USER_ID
+		 GROUP BY USR.PORTAL_ID, FLW.FOLLOWING_USER_ID
+	]]>
+	</insert>
+
+<!-- ANSI -->
+<!-- Following수 (내가 Follow 한 사람의 수) (COUNT_TYPE : 'Following') -->
+	<insert id="batchGatherFollowingScore">
+	<![CDATA[
+		INSERT /* [AssessmentManagementUserPvi_SqlMap.xml] collpack.assess.dao.AssessmentManagementUserPvi.batchGatherFollowingScore */
+		       INTO IKEP4_AM_USER_ACTIVITIES (COUNT_TYPE, PORTAL_ID, USER_ID, FIRST_VALUE)
+		SELECT 'Following', USR.PORTAL_ID, FLW.USER_ID USER_ID, COUNT(FLW.USER_ID) SCORE
+		  FROM IKEP4_MB_FOLLOW FLW
+		  	   INNER JOIN IKEP4_EV_USER USR
+		    		ON FLW.USER_ID = USR.USER_ID
+		 GROUP BY USR.PORTAL_ID, FLW.USER_ID
+	]]>
+	</insert>
+
+<!-- ANSI -->
+<!-- Mutual Following수 (COUNT_TYPE : 'CrossFollowing') -->
+	<insert id="batchGatherCrossFollowingScore">
+	<![CDATA[
+		INSERT /* [AssessmentManagementUserPvi_SqlMap.xml] collpack.assess.dao.AssessmentManagementUserPvi.batchGatherCrossFollowingScore */
+		       INTO IKEP4_AM_USER_ACTIVITIES (COUNT_TYPE, PORTAL_ID, USER_ID, FIRST_VALUE)
+		SELECT 'CrossFollowing', USR.PORTAL_ID, USR.USER_ID USER_ID, COUNT(USR.USER_ID) SCORE
+		  FROM IKEP4_EV_USER USR
+			   INNER JOIN IKEP4_MB_FOLLOW AAA
+			    	ON USR.USER_ID = AAA.USER_ID
+			   INNER JOIN IKEP4_MB_FOLLOW BBB
+			    	ON USR.USER_ID = BBB.FOLLOWING_USER_ID
+			       AND AAA.FOLLOWING_USER_ID = BBB.USER_ID
+		 GROUP BY USR.PORTAL_ID, USR.USER_ID
+	]]>
+	</insert>
+
+<!-- ANSI -->
+<!-- 가입 MicroBlogGroup수 (COUNT_TYPE : 'MblogGroup') -->
+	<insert id="batchGatherMblogGroupScore">
+	<![CDATA[
+		INSERT /* [AssessmentManagementUserPvi_SqlMap.xml] collpack.assess.dao.AssessmentManagementUserPvi.batchGatherMblogGroupScore */
+		       INTO IKEP4_AM_USER_ACTIVITIES (COUNT_TYPE, PORTAL_ID, USER_ID, FIRST_VALUE)
+		SELECT 'MblogGroup', USR.PORTAL_ID, MEM.MEMBER_ID USER_ID, COUNT(MEM.MEMBER_ID) SCORE
+		  FROM IKEP4_MB_MBGROUP_MEMBER MEM
+			   INNER JOIN IKEP4_MB_MBGROUP GRP
+			   		ON MEM.MBGROUP_ID = GRP.MBGROUP_ID
+			   INNER JOIN IKEP4_EV_USER USR
+			    	ON MEM.MEMBER_ID = USR.USER_ID
+		 WHERE MEM.STATUS = '1'
+		   AND GRP.IS_DELETE = 0
+		 GROUP BY USR.PORTAL_ID, MEM.MEMBER_ID
+	]]>
+	</insert>
+
+<!-- ANSI -->
+<!-- 방명록 방명록글수 (COUNT_TYPE : 'GuestbookItem') -->
+	<insert id="batchGatherGuestbookItemScore">
+	<![CDATA[
+		INSERT /* [AssessmentManagementUserPvi_SqlMap.xml] collpack.assess.dao.AssessmentManagementUserPvi.batchGatherGuestbookItemScore */
+		       INTO IKEP4_AM_USER_ACTIVITIES (COUNT_TYPE, PORTAL_ID, USER_ID, FIRST_VALUE)
+		SELECT 'GuestbookItem', USR.PORTAL_ID, BOOK.TARGET_USER_ID USER_ID, COUNT(BOOK.GUESTBOOK_ID) SCORE
+		  FROM IKEP4_GB_GUESTBOOK BOOK
+			   INNER JOIN IKEP4_EV_USER USR
+			    	ON BOOK.TARGET_USER_ID = USR.USER_ID
+			   INNER JOIN IKEP4_AM_POLICY PCY
+			 		ON USR.PORTAL_ID = PCY.PORTAL_ID
+			 	   AND BOOK.REGIST_DATE > PCY.EVALUATION_START_DATE
+		 GROUP BY USR.PORTAL_ID, BOOK.TARGET_USER_ID
+	]]>
+	</insert>
+
+<!-- ANSI -->
+<!-- 트윗수 (COUNT_TYPE : 'Tweet') -->
+	<insert id="batchGatherTweetScore">
+	<![CDATA[
+		INSERT /* [AssessmentManagementUserPvi_SqlMap.xml] collpack.assess.dao.AssessmentManagementUserPvi.batchGatherTweetScore */
+		       INTO IKEP4_AM_USER_ACTIVITIES (COUNT_TYPE, PORTAL_ID, USER_ID, FIRST_VALUE)
+		SELECT 'Tweet', USR.PORTAL_ID, BLOG.REGISTER_ID USER_ID, COUNT(BLOG.MBLOG_ID) SCORE
+		  FROM IKEP4_MB_MBLOG BLOG
+			   INNER JOIN IKEP4_EV_USER USR
+			    	ON BLOG.REGISTER_ID = USR.USER_ID
+			   INNER JOIN IKEP4_AM_POLICY PCY
+			 		ON USR.PORTAL_ID = PCY.PORTAL_ID
+			 	   AND BLOG.REGIST_DATE > PCY.EVALUATION_START_DATE
+		 GROUP BY USR.PORTAL_ID, BLOG.REGISTER_ID
+	]]>
+	</insert>
+
+<!-- ANSI -->
+<!-- Retweet수 (COUNT_TYPE : 'Retweet') -->
+	<insert id="batchGatherRetweetScore">
+	<![CDATA[
+		INSERT /* [AssessmentManagementUserPvi_SqlMap.xml] collpack.assess.dao.AssessmentManagementUserPvi.batchGatherRetweetScore */
+		       INTO IKEP4_AM_USER_ACTIVITIES (COUNT_TYPE, PORTAL_ID, USER_ID, FIRST_VALUE)
+		SELECT 'Retweet', USR.PORTAL_ID, SRC.REGISTER_ID USER_ID, COUNT(SRC.MBLOG_ID) CNT
+		  FROM IKEP4_MB_MBLOG SRC
+			   INNER JOIN IKEP4_MB_MBLOG TAR
+			    	ON SRC.MBLOG_ID = TAR.RETWEET_MBLOG_ID
+			   INNER JOIN IKEP4_EV_USER USR
+			    	ON SRC.REGISTER_ID = USR.USER_ID
+			   INNER JOIN IKEP4_AM_POLICY PCY
+			   		ON USR.PORTAL_ID = PCY.PORTAL_ID
+			   	   AND TAR.REGIST_DATE > PCY.EVALUATION_START_DATE
+		 GROUP BY USR.PORTAL_ID, SRC.REGISTER_ID
+	]]>
+	</insert>
+
+<!-- ANSI -->
+<!-- Profile 방문수 (COUNT_TYPE : 'ProfileVisit') -->
+	<insert id="batchGatherProfileVisitScore">
+	<![CDATA[
+		INSERT /* [AssessmentManagementUserPvi_SqlMap.xml] collpack.assess.dao.AssessmentManagementUserPvi.batchGatherProfileVisitScore */
+		       INTO IKEP4_AM_USER_ACTIVITIES (COUNT_TYPE, PORTAL_ID, USER_ID, FIRST_VALUE)
+		SELECT 'ProfileVisit', USR.PORTAL_ID, PRO.OWNER_ID USER_ID, COUNT(PRO.OWNER_ID) SCORE
+		  FROM IKEP4_PF_PROFILE_VISIT PRO
+			   INNER JOIN IKEP4_EV_USER USR
+			    	ON PRO.OWNER_ID = USR.USER_ID
+			   INNER JOIN IKEP4_AM_POLICY PCY
+			 		ON USR.PORTAL_ID = PCY.PORTAL_ID
+			 	   AND PRO.VISIT_DATE > PCY.EVALUATION_START_DATE
+		 GROUP BY USR.PORTAL_ID, PRO.OWNER_ID
+	]]>
+	</insert>
+
+<!-- ANSI -->
+<!-- 기존자료 삭제(IKEP4_AM_USER_PVI) -->
+	<delete id="batchRemoveUserPviPoint">
+	<![CDATA[
+		DELETE /* [AssessmentManagementUserPvi_SqlMap.xml] collpack.assess.dao.AssessmentManagementUserPvi.batchRemoveUserPviPoint */
+		  FROM IKEP4_AM_USER_PVI
+	]]>
+	</delete>
+
+<!-- MS SQL -->
+<!-- 사용자별 평가정보 계산 -->
+	<insert id="batchCalcUserPvi">
+	<![CDATA[
+		INSERT /* [AssessmentManagementUserPvi_SqlMap.xml] collpack.assess.dao.AssessmentManagementUserPvi.batchCalcUserPvi */
+		       INTO IKEP4_AM_USER_PVI (USER_ID, PVI, RANK, CONTRIBUTION_SCORE, PARTICIPATION_SCORE, APPLICATION_SCORE, FRIENDSHIP_SCORE, INFLUENCE_SCORE, PORTAL_ID, REGISTER_ID, REGIST_DATE)
+		SELECT USER_ID
+		     , PVI
+		     , RANK() OVER(PARTITION BY PORTAL_ID ORDER BY PVI DESC) RANK
+		     , CONTRIBUTION_SCORE, PARTICIPATION_SCORE, APPLICATION_SCORE, FRIENDSHIP_SCORE, INFLUENCE_SCORE
+		     , PORTAL_ID, 'batch', CURRENT_TIMESTAMP
+		  FROM (
+		        SELECT USER_ID, PORTAL_ID
+		             , ROUND(CONTRIBUTION_SCORE * CONTRIBUTION_WEIGHT / 100, 0) +
+		               ROUND(PARTICIPATION_SCORE * PARTICIPATION_WEIGHT / 100, 0) +
+		               ROUND(APPLICATION_SCORE * APPLICATION_WEIGHT / 100, 0) +
+		               ROUND(FRIENDSHIP_SCORE * FRIENDSHIP_WEIGHT / 100, 0) +
+		               ROUND(INFLUENCE_SCORE * LEADERSHIP_WEIGHT / 100, 0) PVI
+		             , CONTRIBUTION_SCORE, PARTICIPATION_SCORE, APPLICATION_SCORE, FRIENDSHIP_SCORE, INFLUENCE_SCORE
+		          FROM (
+		                SELECT PORTAL_ID, USER_ID
+		                     , CASE
+		                         WHEN CONTRIBUTION_SCORE > CONTRIBUTION_MAX THEN CONTRIBUTION_MAX
+		                         ELSE                                            CONTRIBUTION_SCORE
+		                       END CONTRIBUTION_SCORE
+		                     , CASE
+		                         WHEN PARTICIPATION_SCORE > PARTICIPATION_MAX THEN PARTICIPATION_MAX
+		                         ELSE                                              PARTICIPATION_SCORE
+		                       END PARTICIPATION_SCORE
+		                     , CASE
+		                         WHEN APPLICATION_SCORE > APPLICATION_MAX THEN APPLICATION_MAX
+		                         ELSE                                          APPLICATION_SCORE
+		                       END APPLICATION_SCORE
+		                     , CASE
+		                         WHEN FRIENDSHIP_SCORE > FRIENDSHIP_MAX THEN FRIENDSHIP_MAX
+		                         ELSE                                        FRIENDSHIP_SCORE
+		                       END FRIENDSHIP_SCORE
+		                     , CASE
+		                         WHEN INFLUENCE_SCORE > LEADERSHIP_MAX THEN LEADERSHIP_MAX
+		                         ELSE                                       INFLUENCE_SCORE
+		                       END INFLUENCE_SCORE
+		                     , CONTRIBUTION_WEIGHT
+		                     , PARTICIPATION_WEIGHT
+		                     , APPLICATION_WEIGHT
+		                     , FRIENDSHIP_WEIGHT
+		                     , LEADERSHIP_WEIGHT
+		                  FROM (
+		                        SELECT ACT.PORTAL_ID, USER_ID
+		                             , ACT.ITEM_REGIST_SCORE * PCY.ITEM_REGIST_SCORE +
+		                               ACT.BEST_ITEM_SCORE * PCY.BEST_ITEM_SCORE +
+		                               ACT.ANSWER_SCORE * PCY.ANSWER_SCORE +
+		                               ACT.BEST_ANSWER_SCORE * PCY.BEST_ANSWER_SCORE CONTRIBUTION_SCORE
+		                             , ACT.LINEREPLY_SCORE * PCY.LINEREPLY_SCORE +
+		                               ACT.RECOMMEND_SCORE * PCY.RECOMMEND_SCORE PARTICIPATION_SCORE
+		                             , ACT.HIT_SCORE * PCY.HIT_SCORE +
+		                               ACT.SEARCH_SCORE * PCY.SEARCH_SCORE APPLICATION_SCORE
+		                             , ACT.FOLLOW_SCORE * PCY.FOLLOW_SCORE +
+		                               ACT.FOLLOWING_SCORE * PCY.FOLLOWING_SCORE +
+		                               ACT.CROSS_FOLLOWING_SCORE * PCY.CROSS_FOLLOWING_SCORE +
+		                               ACT.MBLOG_GROUP_SCORE * PCY.MBLOG_GROUP_SCORE +
+		                               ACT.GUESTBOOK_ITEM_SCORE * PCY.GUESTBOOK_ITEM_SCORE FRIENDSHIP_SCORE
+		                             , ACT.TWEET_SCORE * PCY.TWEET_SCORE +
+		                               ACT.RETWEET_SCORE * PCY.RETWEET_SCORE +
+		                               ACT.PROFILE_VISIT_SCORE * PCY.PROFILE_VISIT_SCORE INFLUENCE_SCORE
+		                             , CONTRIBUTION_MAX, CONTRIBUTION_WEIGHT
+		                             , PARTICIPATION_MAX, PARTICIPATION_WEIGHT
+		                             , APPLICATION_MAX, APPLICATION_WEIGHT
+		                             , FRIENDSHIP_MAX, FRIENDSHIP_WEIGHT
+		                             , LEADERSHIP_MAX, LEADERSHIP_WEIGHT
+		                          FROM (
+		                                SELECT PORTAL_ID, USER_ID
+		                                     , SUM(CASE WHEN COUNT_TYPE = 'Regist' THEN FIRST_VALUE ELSE 0 END) ITEM_REGIST_SCORE
+		                                     , SUM(CASE WHEN COUNT_TYPE = 'Regist' THEN SECOND_VALUE ELSE 0 END) BEST_ITEM_SCORE
+		                                     , SUM(CASE WHEN COUNT_TYPE = 'Answer' THEN FIRST_VALUE ELSE 0 END) ANSWER_SCORE
+		                                     , SUM(CASE WHEN COUNT_TYPE = 'Answer' THEN SECOND_VALUE ELSE 0 END) BEST_ANSWER_SCORE
+		                                     , SUM(CASE WHEN COUNT_TYPE = 'Linereply' THEN FIRST_VALUE ELSE 0 END) LINEREPLY_SCORE
+		                                     , SUM(CASE WHEN COUNT_TYPE = 'Recommend' THEN FIRST_VALUE ELSE 0 END) RECOMMEND_SCORE
+		                                     , SUM(CASE WHEN COUNT_TYPE = 'Hit' THEN FIRST_VALUE ELSE 0 END) HIT_SCORE
+		                                     , SUM(CASE WHEN COUNT_TYPE = 'Search' THEN FIRST_VALUE ELSE 0 END) SEARCH_SCORE
+		                                     , SUM(CASE WHEN COUNT_TYPE = 'Follow' THEN FIRST_VALUE ELSE 0 END) FOLLOW_SCORE
+		                                     , SUM(CASE WHEN COUNT_TYPE = 'Following' THEN FIRST_VALUE ELSE 0 END) FOLLOWING_SCORE
+		                                     , SUM(CASE WHEN COUNT_TYPE = 'CrossFollowing' THEN FIRST_VALUE ELSE 0 END) CROSS_FOLLOWING_SCORE
+		                                     , SUM(CASE WHEN COUNT_TYPE = 'MblogGroup' THEN FIRST_VALUE ELSE 0 END) MBLOG_GROUP_SCORE
+		                                     , SUM(CASE WHEN COUNT_TYPE = 'GuestbookItem' THEN FIRST_VALUE ELSE 0 END) GUESTBOOK_ITEM_SCORE
+		                                     , SUM(CASE WHEN COUNT_TYPE = 'Tweet' THEN FIRST_VALUE ELSE 0 END) TWEET_SCORE
+		                                     , SUM(CASE WHEN COUNT_TYPE = 'Retweet' THEN FIRST_VALUE ELSE 0 END) RETWEET_SCORE
+		                                     , SUM(CASE WHEN COUNT_TYPE = 'ProfileVisit' THEN FIRST_VALUE ELSE 0 END) PROFILE_VISIT_SCORE
+		                                  FROM IKEP4_AM_USER_ACTIVITIES
+		                                 GROUP BY PORTAL_ID, USER_ID
+		                               ) ACT
+		                          	   INNER JOIN IKEP4_AM_POLICY PCY
+		                         			ON ACT.PORTAL_ID = PCY.PORTAL_ID
+		                       ) TBL1
+		               ) TBL2
+		       ) TBL3
+	]]>
+	</insert>
+
+<!-- ANSI -->
+<!-- 기존자료 삭제(IKEP4_AM_GROUP_PVI) -->
+	<delete id="batchRemoveGroupPviPoint">
+	<![CDATA[
+		DELETE /* [AssessmentManagementUserPvi_SqlMap.xml] collpack.assess.dao.AssessmentManagementUserPvi.batchRemoveGroupPviPoint */
+		  FROM IKEP4_AM_GROUP_PVI
+	]]>
+	</delete>
+
+<!-- ANSI -->
+<!-- 조직별 평가정보 계산 -->
+<!-- 사용자별 점수로 최하위 조직만 입력(자식이 없는 그룹만) -->
+	<insert id="batchAppendLeafGroupPvi">
+	<![CDATA[
+		INSERT /* [AssessmentManagementUserPvi_SqlMap.xml] collpack.assess.dao.AssessmentManagementUserPvi.batchAppendLeafGroupPvi */
+		       INTO IKEP4_AM_GROUP_PVI (GROUP_ID, PARENT_GROUP_ID, USER_COUNT, PVI, CONTRIBUTION_SCORE, PARTICIPATION_SCORE, APPLICATION_SCORE, FRIENDSHIP_SCORE, INFLUENCE_SCORE, PORTAL_ID, REGISTER_ID, REGIST_DATE)
+		SELECT PVI.GROUP_ID, PARENT_GROUP_ID, USER_COUNT
+		     , PVI, CONTRIBUTION_SCORE, PARTICIPATION_SCORE, APPLICATION_SCORE, FRIENDSHIP_SCORE, INFLUENCE_SCORE
+		     , PORTAL_ID, 'batch', CURRENT_TIMESTAMP
+		  FROM (
+		        SELECT UGRP.GROUP_ID
+		             , COUNT(PVI.USER_ID) USER_COUNT
+		             , SUM(PVI) PVI
+		             , SUM(CONTRIBUTION_SCORE) CONTRIBUTION_SCORE
+		             , SUM(PARTICIPATION_SCORE) PARTICIPATION_SCORE
+		             , SUM(APPLICATION_SCORE) APPLICATION_SCORE
+		             , SUM(FRIENDSHIP_SCORE) FRIENDSHIP_SCORE
+		             , SUM(INFLUENCE_SCORE) INFLUENCE_SCORE
+		          FROM IKEP4_AM_USER_PVI PVI
+			           INNER JOIN IKEP4_EV_USER_GROUP UGRP
+			         		ON PVI.USER_ID = UGRP.USER_ID
+		         WHERE UGRP.REPRESENT_GROUP = 1
+		         GROUP BY UGRP.GROUP_ID
+		       ) PVI
+			   INNER JOIN (
+					        SELECT GROUP_ID, PORTAL_ID, PARENT_GROUP_ID
+					          FROM IKEP4_EV_GROUP GRP
+					         WHERE GROUP_TYPE_ID = 'G0001'
+					           AND NOT EXISTS (SELECT 1
+					                             FROM IKEP4_EV_GROUP ZZZ
+					                            WHERE ZZZ.PARENT_GROUP_ID = GRP.GROUP_ID
+					                          )
+					       ) GRP
+		 			ON PVI.GROUP_ID = GRP.GROUP_ID
+	]]>
+	</insert>
+
+<!-- ANSI -->
+<!-- 조직입력(자식이 있는 그룹만) -->
+	<insert id="batchAppendNoLeafGroupPvi">
+	<![CDATA[
+		INSERT /* [AssessmentManagementUserPvi_SqlMap.xml] collpack.assess.dao.AssessmentManagementUserPvi.batchAppendNoLeafGroupPvi */
+		       INTO IKEP4_AM_GROUP_PVI (GROUP_ID, PARENT_GROUP_ID, USER_COUNT, PVI, CONTRIBUTION_SCORE, PARTICIPATION_SCORE, APPLICATION_SCORE, FRIENDSHIP_SCORE, INFLUENCE_SCORE, PORTAL_ID, REGISTER_ID, REGIST_DATE)
+		SELECT GROUP_ID, PARENT_GROUP_ID
+		     , 0 USER_COUNT
+		     , 0 PVI, 0 CONTRIBUTION_SCORE, 0 PARTICIPATION_SCORE, 0 APPLICATION_SCORE, 0 FRIENDSHIP_SCORE, 0 INFLUENCE_SCORE
+		     , PORTAL_ID, 'batch', CURRENT_TIMESTAMP
+		  FROM IKEP4_EV_GROUP GRP
+		 WHERE GROUP_TYPE_ID = 'G0001'
+		   AND NOT EXISTS (SELECT 1
+		                     FROM IKEP4_AM_GROUP_PVI ZZZ
+		                    WHERE ZZZ.GROUP_ID = GRP.GROUP_ID
+		                  )
+	]]>
+	</insert>
+
+<!-- MS SQL -->
+<!-- 조직별 최대 차수 조회 -->
+	<select id="batchGetMaxDepth" resultClass="Integer">
+	<![CDATA[
+		WITH CTE AS (
+			SELECT	*, 1 LEVEL
+			FROM 	IKEP4_AM_GROUP_PVI
+			WHERE	PARENT_GROUP_ID IS NULL
+			UNION ALL
+			SELECT 	P.*, LEVEL + 1
+			FROM	IKEP4_AM_GROUP_PVI P, CTE
+			WHERE	CTE.GROUP_ID = P.PARENT_GROUP_ID
+		)
+		SELECT /* [AssessmentManagementUserPvi_SqlMap.xml] collpack.assess.dao.AssessmentManagementUserPvi.batchGetMaxDepth */
+		       MAX(LEVEL) MAX_LEVEL
+		  FROM CTE
+	]]>
+	</select>
+
+<!-- MS SQL -->
+<!-- 조직별 평가점수 계산 -->
+	<update id="batchCalcGroupPvi" parameterClass="Integer">
+	<![CDATA[
+		WITH CTE AS(
+			SELECT	*, 1 LEVEL
+			FROM 	IKEP4_AM_GROUP_PVI
+			WHERE	PARENT_GROUP_ID IS NULL
+			UNION ALL
+			SELECT 	P.*, LEVEL + 1
+			FROM	IKEP4_AM_GROUP_PVI P, CTE
+			WHERE	CTE.GROUP_ID = P.PARENT_GROUP_ID
+		)
+		UPDATE /* [AssessmentManagementUserPvi_SqlMap.xml] collpack.assess.dao.AssessmentManagementUserPvi.batchCalcGroupPvi */
+		       IKEP4_AM_GROUP_PVI
+		   SET PVI = PVI + (SELECT ISNULL(SUM(PVI), 0) FROM IKEP4_AM_GROUP_PVI ZZZ WHERE ZZZ.PARENT_GROUP_ID = IKEP4_AM_GROUP_PVI.GROUP_ID)
+		     , USER_COUNT = USER_COUNT + (SELECT ISNULL(SUM(USER_COUNT), 0) FROM IKEP4_AM_GROUP_PVI ZZZ WHERE ZZZ.PARENT_GROUP_ID = IKEP4_AM_GROUP_PVI.GROUP_ID)
+		     , CONTRIBUTION_SCORE = CONTRIBUTION_SCORE + (SELECT ISNULL(SUM(CONTRIBUTION_SCORE), 0) FROM IKEP4_AM_GROUP_PVI ZZZ WHERE ZZZ.PARENT_GROUP_ID = IKEP4_AM_GROUP_PVI.GROUP_ID)
+		     , PARTICIPATION_SCORE = PARTICIPATION_SCORE + (SELECT ISNULL(SUM(PARTICIPATION_SCORE), 0) FROM IKEP4_AM_GROUP_PVI ZZZ WHERE ZZZ.PARENT_GROUP_ID = IKEP4_AM_GROUP_PVI.GROUP_ID)
+		     , APPLICATION_SCORE = APPLICATION_SCORE + (SELECT ISNULL(SUM(APPLICATION_SCORE), 0) FROM IKEP4_AM_GROUP_PVI ZZZ WHERE ZZZ.PARENT_GROUP_ID = IKEP4_AM_GROUP_PVI.GROUP_ID)
+		     , FRIENDSHIP_SCORE = FRIENDSHIP_SCORE + (SELECT ISNULL(SUM(FRIENDSHIP_SCORE), 0) FROM IKEP4_AM_GROUP_PVI ZZZ WHERE ZZZ.PARENT_GROUP_ID = IKEP4_AM_GROUP_PVI.GROUP_ID)
+		     , INFLUENCE_SCORE = INFLUENCE_SCORE + (SELECT ISNULL(SUM(INFLUENCE_SCORE), 0) FROM IKEP4_AM_GROUP_PVI ZZZ WHERE ZZZ.PARENT_GROUP_ID = IKEP4_AM_GROUP_PVI.GROUP_ID)
+		 WHERE GROUP_ID IN (
+		                    SELECT GROUP_ID
+		                      FROM CTE
+		                     WHERE LEVEL = #levelDepth#
+		                   )
+	]]>
+	</update>
+
+</sqlMap>

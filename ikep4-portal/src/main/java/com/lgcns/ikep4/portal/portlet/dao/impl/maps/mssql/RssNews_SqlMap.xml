@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="portal.portlet.dao.rssNews">
+<typeAlias alias = "PortletRss" type="com.lgcns.ikep4.portal.portlet.model.PortletRss"/>
+
+<delete id="delete" parameterClass="string">
+    /* [RssNews_SqlMap.xml] portal.portlet.dao.rssNews.delete */
+    DELETE FROM IKEP4_PO_PORTLET_RSSNEWS
+     WHERE PORTLET_CONFIG_ID = #portletConfigId#
+ </delete>
+ 
+ <insert id="create" parameterClass="map">
+     /* [RssNews_SqlMap.xml] portal.portlet.dao.rssNews.create */
+    INSERT INTO IKEP4_PO_PORTLET_RSSNEWS ( 
+      PORTLET_CONFIG_ID,
+      CATEGORY_ID,
+      REGISTER_ID, 
+      REGIST_DATE, 
+      UPDATER_ID, 
+      UPDATE_DATE
+    ) VALUES (
+      #portletConfigId#,
+      #categoryId#,    
+      #registerId#,       
+      CURRENT_TIMESTAMP,       
+      #updaterId#,        
+      CURRENT_TIMESTAMP
+    )
+  </insert> 
+</sqlMap>

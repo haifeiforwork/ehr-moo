@@ -1,0 +1,613 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="collpack.knowledgemonitor.dao.KnowledgeMonitorCviPoint">
+	<typeAlias alias="KnowledgeMonitorCviPointPK" type="com.lgcns.ikep4.collpack.knowledgemonitor.model.KnowledgeMonitorCviPointPK"/>
+	<typeAlias alias="KnowledgeMonitorCviPoint" type="com.lgcns.ikep4.collpack.knowledgemonitor.model.KnowledgeMonitorCviPoint"/>
+	<typeAlias alias="KnowledgeRankBlockPageCondition" type="com.lgcns.ikep4.collpack.knowledgemonitor.search.KnowledgeRankBlockPageCondition"/>
+	<typeAlias alias="KnowledgeMonitorPortletSearchCondition" type="com.lgcns.ikep4.collpack.knowledgemonitor.portlet.model.KnowledgeMonitorPortletSearchCondition"/>
+
+	<resultMap class="KnowledgeMonitorCviPoint" id="portletResult">
+		<result column="ITEM_ID" property="itemId" jdbcType="VARCHAR" javaType="String"/>
+		<result column="TITLE" property="title" jdbcType="VARCHAR" javaType="String"/>
+		<result column="REGISTER_ID" property="registerId" jdbcType="VARCHAR" javaType="String"/>
+		<result column="REGIST_DATE" property="registDate" jdbcType="DATE" javaType="Date"/>
+		<result column="ITEM_URL" property="itemUrl" jdbcType="VARCHAR" javaType="String"/>
+		<result column="RANK_NUMBER" property="rankNumber" jdbcType="NUMBER" javaType="Integer"/>
+		<result column="MODULE_CODE" property="moduleCode" jdbcType="VARCHAR" javaType="String"/>
+		<result column="MODULE_NAME" property="moduleName" jdbcType="VARCHAR" javaType="String"/>
+		<result column="USER_NAME" property="userName" jdbcType="VARCHAR" javaType="String"/>
+		<result column="USER_ENGLISH_NAME" property="userEnglishName" jdbcType="VARCHAR" javaType="String"/>
+	</resultMap>
+
+	<resultMap class="KnowledgeMonitorCviPoint" extends="portletResult" id="result">
+		<result column="CVI_SCORE" property="cviScore" jdbcType="NUMBER" javaType="Integer"/>
+		<result column="HIT_COUNT" property="hitCount" jdbcType="NUMBER" javaType="Integer"/>
+		<result column="RECOMMEND_COUNT" property="recommendCount" jdbcType="NUMBER" javaType="Integer"/>
+		<result column="LINEREPLY_COUNT" property="linereplyCount" jdbcType="NUMBER" javaType="Integer"/>
+		<result column="FAVORITE_COUNT" property="favoriteCount" jdbcType="NUMBER" javaType="Integer"/>
+		<result column="DISTRIBUTE_COUNT" property="distributeCount" jdbcType="NUMBER" javaType="Integer"/>
+	</resultMap>
+
+<!-- 포털별 지식 전체개수 반환 -->
+	<select id="countByPortalIdModuleCode" parameterClass="KnowledgeRankBlockPageCondition" resultClass="Integer">
+		SELECT /* [KnowledgeMonitorCviPoint_SqlMap.xml] collpack.knowledgemonitor.dao.KnowledgeMonitorCviPoint.countByPortalIdModuleCode */
+		       COUNT(ITEM_ID) COUNT_ITEM_ID
+		  FROM IKEP4_KN_CVI_POINT
+		 WHERE PORTAL_ID = #portalId#
+		 AND REGIST_DATE BETWEEN TO_DATE(#fromDate#) AND TO_DATE(#toDate#)
+		 
+		   <isNotEmpty property="moduleCodes" prepend="AND ">MODULE_CODE IN <iterate property="moduleCodeArray" open="(" conjunction="," close=")">#moduleCodeArray[]#</iterate></isNotEmpty>
+		   <isEmpty property="moduleCodes" prepend="AND ">1 = 2</isEmpty>
+		   
+	<![CDATA[
+	]]>
+	</select>
+
+<!-- 포털별 지식 조회 (페이징) -->
+	<select id="listByPortalIdModuleCodePage" parameterClass="KnowledgeRankBlockPageCondition" resultMap="result">
+	<![CDATA[
+		/* [KnowledgeMonitorCviPoint_SqlMap.xml] collpack.knowledgemonitor.dao.KnowledgeMonitorCviPoint.listByPortalIdModuleCodePage */
+		WITH MAIN_BODY AS (
+		    SELECT ITEM_ID, MODULE_CODE, PORTAL_ID
+		         , TITLE, REGISTER_ID, REGIST_DATE, ITEM_URL, CVI_SCORE
+		         , HIT_COUNT, RECOMMEND_COUNT, LINEREPLY_COUNT, FAVORITE_COUNT
+		         , MAIL_COUNT, MBLOG_COUNT
+		      FROM IKEP4_KN_CVI_POINT
+		     WHERE PORTAL_ID = #portalId#
+		     AND REGIST_DATE BETWEEN TO_DATE(#fromDate#) AND TO_DATE(#toDate#)
+	]]>
+		       <isNotEmpty property="moduleCodes" prepend="AND ">MODULE_CODE IN <iterate property="moduleCodeArray" open="(" conjunction="," close=")">#moduleCodeArray[]#</iterate></isNotEmpty>
+		       <isEmpty property="moduleCodes" prepend="AND ">1 = 2</isEmpty>
+		   
+	<![CDATA[
+		     ORDER BY CVI_SCORE DESC
+		)
+		SELECT ITEM_ID, TITLE, REGISTER_ID, REGIST_DATE, ITEM_URL, CVI_SCORE
+		     , HIT_COUNT, RECOMMEND_COUNT, LINEREPLY_COUNT, FAVORITE_COUNT
+		     , MAIL_COUNT + MBLOG_COUNT DISTRIBUTE_COUNT
+		     , RANK_NUMBER, MODULE_CODE
+		     , (SELECT MODULE_NAME FROM IKEP4_KN_MODULE Z WHERE Z.MODULE_CODE = BODY.MODULE_CODE AND Z.PORTAL_ID = BODY.PORTAL_ID) MODULE_NAME
+		     , (SELECT USER_NAME FROM IKEP4_EV_USER Z WHERE Z.USER_ID = BODY.REGISTER_ID) USER_NAME
+		     , (SELECT USER_ENGLISH_NAME FROM IKEP4_EV_USER Z WHERE Z.USER_ID = BODY.REGISTER_ID) USER_ENGLISH_NAME
+		  FROM (
+		        SELECT ROWNUM RANK_NUMBER, BODY.*
+		          FROM MAIN_BODY BODY
+		         WHERE ROWNUM <= #endOrder#
+		       ) BODY
+		 WHERE RANK_NUMBER >= #startOrder#
+	]]>
+	</select>
+
+
+<!-- 배치 작업 -->
+
+<!-- 기존자료 삭제 -->
+	<delete id="batchRemove">
+	<![CDATA[
+		DELETE /* [KnowledgeMonitorCviPoint_SqlMap.xml] collpack.knowledgemonitor.dao.KnowledgeMonitorCviPoint.batchRemove */
+		  FROM IKEP4_KN_CVI_POINT CVI
+		 WHERE EXISTS (
+		               SELECT 1
+		                 FROM IKEP4_KN_MODULE MOD
+		                WHERE CVI.PORTAL_ID = MOD.PORTAL_ID
+		                  AND CVI.MODULE_CODE = MOD.MODULE_CODE
+		                  AND ADD_MONTHS(TRUNC(SYSDATE), -1 * MOD.CVI_EVALUATION_TERM) < CVI.REGIST_DATE
+		              )
+	]]>
+	</delete>
+
+	<sql id="KnowledgeMonitorCviPointColumnList">
+		   ITEM_ID
+		 , MODULE_CODE
+		 , PORTAL_ID
+		 , TITLE
+		 , REGISTER_ID
+		 , REGIST_DATE
+		 , CVI_SCORE
+		 , HIT_COUNT
+		 , HIT_SCORE
+		 , RECOMMEND_COUNT
+		 , RECOMMEND_SCORE
+		 , LINEREPLY_COUNT
+		 , LINEREPLY_SCORE
+		 , FAVORITE_COUNT
+		 , FAVORITE_SCORE
+		 , MAIL_COUNT
+		 , MBLOG_COUNT
+		 , DISTRIBUTE_SCORE
+		 , COLLECT_DATE
+		 , IS_GOOD_DOC
+	</sql>
+
+<!-- BBS -->
+	<insert id="batchGatherBBS">
+		INSERT /* [KnowledgeMonitorCviPoint_SqlMap.xml] collpack.knowledgemonitor.dao.KnowledgeMonitorCviPoint.batchGatherBBS */
+		       INTO IKEP4_KN_CVI_POINT (<include refid="KnowledgeMonitorCviPointColumnList"/>)
+	<![CDATA[
+		SELECT ITEM_ID, MODULE_CODE, PORTAL_ID, TITLE, REGISTER_ID, REGIST_DATE
+		     , HIT_SCORE + RECOMMEND_SCORE + LINEREPLY_SCORE + FAVORITE_SCORE + DISTRIBUTE_SCORE CVI_SCORE
+		     , HIT_COUNT, HIT_SCORE, RECOMMEND_COUNT, RECOMMEND_SCORE, LINEREPLY_COUNT
+		     , LINEREPLY_SCORE, FAVORITE_COUNT, FAVORITE_SCORE, MAIL_COUNT, MBLOG_COUNT, DISTRIBUTE_SCORE
+		     , SYSDATE COLLECT_DATE
+		     , CASE
+		         WHEN ROUND(HIT_SCORE + RECOMMEND_SCORE + LINEREPLY_SCORE + FAVORITE_SCORE +
+		               DISTRIBUTE_SCORE) >= GOOD_DOC_CUTLINE THEN 1
+		         ELSE 0
+		       END IS_GOOD_DOC
+		  FROM (
+		        SELECT ITEM_ID, MODULE_CODE, PORTAL_ID, TITLE, REGISTER_ID, REGIST_DATE
+		             , HIT_COUNT, (HIT_COUNT * HIT_WEIGHT / 100) HIT_SCORE
+		             , RECOMMEND_COUNT, (RECOMMEND_COUNT * RECOMMEND_WEIGHT / 100) RECOMMEND_SCORE
+		             , LINEREPLY_COUNT, (LINEREPLY_COUNT * LINEREPLY_WEIGHT / 100) LINEREPLY_SCORE
+		             , FAVORITE_COUNT, (FAVORITE_COUNT * FAVORITE_WEIGHT / 100) FAVORITE_SCORE
+		             , MAIL_COUNT, MBLOG_COUNT, (DISTRIBUTE_COUNT * DISTRIBUTE_WEIGHT / 100) DISTRIBUTE_SCORE
+		             , GOOD_DOC_CUTLINE
+		          FROM (
+		                SELECT CVI.HIT_WEIGHT HIT_WEIGHT, CVI.RECOMMEND_WEIGHT RECOMMEND_WEIGHT
+		                     , CVI.LINEREPLY_WEIGHT LINEREPLY_WEIGHT, CVI.FAVORITE_WEIGHT FAVORITE_WEIGHT
+		                     , CVI.DISTRIBUTE_WEIGHT DISTRIBUTE_WEIGHT, CVI.GOOD_DOC_CUTLINE GOOD_DOC_CUTLINE
+		                     , ITEM.ITEM_ID ITEM_ID, CVI.MODULE_CODE MODULE_CODE, CVI.PORTAL_ID PORTAL_ID
+		                     , ITEM.TITLE TITLE, ITEM.REGISTER_ID REGISTER_ID, ITEM.REGIST_DATE REGIST_DATE
+		                     , ITEM.HIT_COUNT HIT_COUNT
+		                     , ITEM.RECOMMEND_COUNT RECOMMEND_COUNT
+		                     , ITEM.LINEREPLY_COUNT LINEREPLY_COUNT
+		                     , (SELECT COUNT(FAVORITE_ID)
+		                          FROM IKEP4_AS_FAVORITE Z
+		                         WHERE Z.TYPE = 'CONTENTS'
+		                           AND Z.TARGET_ID = ITEM.ITEM_ID) FAVORITE_COUNT
+		                     , ITEM.MAIL_COUNT MAIL_COUNT
+		                     , ITEM.MBLOG_COUNT MBLOG_COUNT
+		                     , ITEM.MAIL_COUNT + ITEM.MBLOG_COUNT DISTRIBUTE_COUNT
+		                  FROM IKEP4_BD_ITEM ITEM
+		                  JOIN IKEP4_BD_BOARD BOARD
+		                 USING (BOARD_ID)
+		                  JOIN IKEP4_KN_MODULE CVI
+		                    ON CVI.PORTAL_ID = BOARD.PORTAL_ID
+		                   AND CVI.MODULE_CODE = 'BD'
+		                   AND CVI.IS_USAGE = 1
+		                 WHERE ITEM.REGIST_DATE > ADD_MONTHS(TRUNC(SYSDATE), -1 * CVI.CVI_EVALUATION_TERM)
+		                   AND ITEM.ITEM_DELETE = 0
+		               )
+		       )
+	]]>
+	</insert>
+
+<!-- WorkSpace -->
+	<insert id="batchGatherWorkSpace">
+		INSERT /* [KnowledgeMonitorCviPoint_SqlMap.xml] collpack.knowledgemonitor.dao.KnowledgeMonitorCviPoint.batchGatherWorkSpace */
+		       INTO IKEP4_KN_CVI_POINT (<include refid="KnowledgeMonitorCviPointColumnList"/>)
+	<![CDATA[
+		SELECT ITEM_ID, MODULE_CODE, PORTAL_ID, TITLE, REGISTER_ID, REGIST_DATE
+		     , HIT_SCORE + RECOMMEND_SCORE + LINEREPLY_SCORE + FAVORITE_SCORE + DISTRIBUTE_SCORE CVI_SCORE
+		     , HIT_COUNT, HIT_SCORE, RECOMMEND_COUNT, RECOMMEND_SCORE, LINEREPLY_COUNT
+		     , LINEREPLY_SCORE, FAVORITE_COUNT, FAVORITE_SCORE, MAIL_COUNT, MBLOG_COUNT, DISTRIBUTE_SCORE
+		     , SYSDATE COLLECT_DATE
+		     , CASE
+		         WHEN ROUND(HIT_SCORE + RECOMMEND_SCORE + LINEREPLY_SCORE + FAVORITE_SCORE +
+		               DISTRIBUTE_SCORE) >= GOOD_DOC_CUTLINE THEN 1
+		         ELSE 0
+		       END IS_GOOD_DOC
+		  FROM (
+		        SELECT ITEM_ID, MODULE_CODE, PORTAL_ID, TITLE, REGISTER_ID, REGIST_DATE
+		             , HIT_COUNT, (HIT_COUNT * HIT_WEIGHT / 100) HIT_SCORE
+		             , RECOMMEND_COUNT, (RECOMMEND_COUNT * RECOMMEND_WEIGHT / 100) RECOMMEND_SCORE
+		             , LINEREPLY_COUNT, (LINEREPLY_COUNT * LINEREPLY_WEIGHT / 100) LINEREPLY_SCORE
+		             , FAVORITE_COUNT, (FAVORITE_COUNT * FAVORITE_WEIGHT / 100) FAVORITE_SCORE
+		             , MAIL_COUNT, MBLOG_COUNT, (DISTRIBUTE_COUNT * DISTRIBUTE_WEIGHT / 100) DISTRIBUTE_SCORE
+		             , GOOD_DOC_CUTLINE
+		          FROM (
+		                SELECT CVI.HIT_WEIGHT HIT_WEIGHT, CVI.RECOMMEND_WEIGHT RECOMMEND_WEIGHT
+		                     , CVI.LINEREPLY_WEIGHT LINEREPLY_WEIGHT, CVI.FAVORITE_WEIGHT FAVORITE_WEIGHT
+		                     , CVI.DISTRIBUTE_WEIGHT DISTRIBUTE_WEIGHT, CVI.GOOD_DOC_CUTLINE GOOD_DOC_CUTLINE
+		                     , ITEM.ITEM_ID ITEM_ID, CVI.MODULE_CODE MODULE_CODE, CVI.PORTAL_ID PORTAL_ID
+		                     , ITEM.TITLE TITLE, ITEM.REGISTER_ID REGISTER_ID, ITEM.REGIST_DATE REGIST_DATE
+		                     , ITEM.HIT_COUNT HIT_COUNT
+		                     , ITEM.RECOMMEND_COUNT RECOMMEND_COUNT
+		                     , ITEM.LINEREPLY_COUNT LINEREPLY_COUNT
+		                     , (SELECT COUNT(FAVORITE_ID)
+		                          FROM IKEP4_AS_FAVORITE Z
+		                         WHERE Z.TYPE = 'CONTENTS'
+		                           AND Z.TARGET_ID = ITEM.ITEM_ID) FAVORITE_COUNT
+		                     , ITEM.MAIL_COUNT MAIL_COUNT
+		                     , ITEM.MBLOG_COUNT MBLOG_COUNT
+		                     , ITEM.MAIL_COUNT + ITEM.MBLOG_COUNT DISTRIBUTE_COUNT
+		                  FROM IKEP4_WS_BD_ITEM ITEM
+		                  JOIN IKEP4_WS_BD_BOARD BOARD
+		                 USING (BOARD_ID)
+		                  JOIN IKEP4_KN_MODULE CVI
+		                    ON CVI.PORTAL_ID = BOARD.PORTAL_ID
+		                   AND CVI.MODULE_CODE = 'WS'
+		                   AND CVI.IS_USAGE = 1
+		                 WHERE ITEM.REGIST_DATE > ADD_MONTHS(TRUNC(SYSDATE), -1 * CVI.CVI_EVALUATION_TERM)
+		                   AND ITEM.ITEM_DELETE = 0
+		               )
+		       )
+	]]>
+	</insert>
+
+<!-- Cafe -->
+	<insert id="batchGatherCafe">
+		INSERT /* [KnowledgeMonitorCviPoint_SqlMap.xml] collpack.knowledgemonitor.dao.KnowledgeMonitorCviPoint.batchGatherCafe */
+		       INTO IKEP4_KN_CVI_POINT (<include refid="KnowledgeMonitorCviPointColumnList"/>)
+	<![CDATA[
+		SELECT ITEM_ID, MODULE_CODE, PORTAL_ID, TITLE, REGISTER_ID, REGIST_DATE
+		     , HIT_SCORE + RECOMMEND_SCORE + LINEREPLY_SCORE + FAVORITE_SCORE + DISTRIBUTE_SCORE CVI_SCORE
+		     , HIT_COUNT, HIT_SCORE, RECOMMEND_COUNT, RECOMMEND_SCORE, LINEREPLY_COUNT
+		     , LINEREPLY_SCORE, FAVORITE_COUNT, FAVORITE_SCORE, MAIL_COUNT, MBLOG_COUNT, DISTRIBUTE_SCORE
+		     , SYSDATE COLLECT_DATE
+		     , CASE
+		         WHEN ROUND(HIT_SCORE + RECOMMEND_SCORE + LINEREPLY_SCORE + FAVORITE_SCORE +
+		               DISTRIBUTE_SCORE) >= GOOD_DOC_CUTLINE THEN 1
+		         ELSE 0
+		       END IS_GOOD_DOC
+		  FROM (
+		        SELECT ITEM_ID, MODULE_CODE, PORTAL_ID, TITLE, REGISTER_ID, REGIST_DATE
+		             , HIT_COUNT, (HIT_COUNT * HIT_WEIGHT / 100) HIT_SCORE
+		             , RECOMMEND_COUNT, (RECOMMEND_COUNT * RECOMMEND_WEIGHT / 100) RECOMMEND_SCORE
+		             , LINEREPLY_COUNT, (LINEREPLY_COUNT * LINEREPLY_WEIGHT / 100) LINEREPLY_SCORE
+		             , FAVORITE_COUNT, (FAVORITE_COUNT * FAVORITE_WEIGHT / 100) FAVORITE_SCORE
+		             , MAIL_COUNT, MBLOG_COUNT, (DISTRIBUTE_COUNT * DISTRIBUTE_WEIGHT / 100) DISTRIBUTE_SCORE
+		             , GOOD_DOC_CUTLINE
+		          FROM (
+		                SELECT CVI.HIT_WEIGHT HIT_WEIGHT, CVI.RECOMMEND_WEIGHT RECOMMEND_WEIGHT
+		                     , CVI.LINEREPLY_WEIGHT LINEREPLY_WEIGHT, CVI.FAVORITE_WEIGHT FAVORITE_WEIGHT
+		                     , CVI.DISTRIBUTE_WEIGHT DISTRIBUTE_WEIGHT, CVI.GOOD_DOC_CUTLINE GOOD_DOC_CUTLINE
+		                     , ITEM.ITEM_ID ITEM_ID, CVI.MODULE_CODE MODULE_CODE, CVI.PORTAL_ID PORTAL_ID
+		                     , ITEM.TITLE TITLE, ITEM.REGISTER_ID REGISTER_ID, ITEM.REGIST_DATE REGIST_DATE
+		                     , ITEM.HIT_COUNT HIT_COUNT
+		                     , ITEM.RECOMMEND_COUNT RECOMMEND_COUNT
+		                     , ITEM.LINEREPLY_COUNT LINEREPLY_COUNT
+		                     , (SELECT COUNT(FAVORITE_ID)
+		                          FROM IKEP4_AS_FAVORITE Z
+		                         WHERE Z.TYPE = 'CONTENTS'
+		                           AND Z.TARGET_ID = ITEM.ITEM_ID) FAVORITE_COUNT
+		                     , ITEM.MAIL_COUNT MAIL_COUNT
+		                     , ITEM.MBLOG_COUNT MBLOG_COUNT
+		                     , ITEM.MAIL_COUNT + ITEM.MBLOG_COUNT DISTRIBUTE_COUNT
+		                  FROM IKEP4_CF_BD_ITEM ITEM
+		                  JOIN IKEP4_CF_BD_BOARD BOARD
+		                 USING (BOARD_ID)
+		                  JOIN IKEP4_KN_MODULE CVI
+		                    ON CVI.PORTAL_ID = BOARD.PORTAL_ID
+		                   AND CVI.MODULE_CODE = 'CF'
+		                   AND CVI.IS_USAGE = 1
+		                 WHERE ITEM.REGIST_DATE > ADD_MONTHS(TRUNC(SYSDATE), -1 * CVI.CVI_EVALUATION_TERM)
+		                   AND ITEM.ITEM_DELETE = 0
+		               )
+		       )
+	]]>
+	</insert>
+
+<!-- WorkManual -->
+	<insert id="batchGatherWorkManual">
+		INSERT /* [KnowledgeMonitorCviPoint_SqlMap.xml] collpack.knowledgemonitor.dao.KnowledgeMonitorCviPoint.batchGatherWorkManual */
+		       INTO IKEP4_KN_CVI_POINT (<include refid="KnowledgeMonitorCviPointColumnList"/>)
+	<![CDATA[
+		SELECT ITEM_ID, MODULE_CODE, PORTAL_ID, TITLE, REGISTER_ID, REGIST_DATE
+		     , HIT_SCORE + RECOMMEND_SCORE + LINEREPLY_SCORE + FAVORITE_SCORE + DISTRIBUTE_SCORE CVI_SCORE
+		     , HIT_COUNT, HIT_SCORE, RECOMMEND_COUNT, RECOMMEND_SCORE, LINEREPLY_COUNT
+		     , LINEREPLY_SCORE, FAVORITE_COUNT, FAVORITE_SCORE, MAIL_COUNT, MBLOG_COUNT, DISTRIBUTE_SCORE
+		     , SYSDATE COLLECT_DATE
+		     , CASE
+		         WHEN ROUND(HIT_SCORE + RECOMMEND_SCORE + LINEREPLY_SCORE + FAVORITE_SCORE +
+		               DISTRIBUTE_SCORE) >= GOOD_DOC_CUTLINE THEN 1
+		         ELSE 0
+		       END IS_GOOD_DOC
+		  FROM (
+		        SELECT ITEM_ID, MODULE_CODE, PORTAL_ID, TITLE, REGISTER_ID, REGIST_DATE
+		             , HIT_COUNT, (HIT_COUNT * HIT_WEIGHT / 100) HIT_SCORE
+		             , RECOMMEND_COUNT, (RECOMMEND_COUNT * RECOMMEND_WEIGHT / 100) RECOMMEND_SCORE
+		             , LINEREPLY_COUNT, (LINEREPLY_COUNT * LINEREPLY_WEIGHT / 100) LINEREPLY_SCORE
+		             , FAVORITE_COUNT, (FAVORITE_COUNT * FAVORITE_WEIGHT / 100) FAVORITE_SCORE
+		             , MAIL_COUNT, MBLOG_COUNT, (DISTRIBUTE_COUNT * DISTRIBUTE_WEIGHT / 100) DISTRIBUTE_SCORE
+		             , GOOD_DOC_CUTLINE
+		          FROM (
+		                SELECT CVI.HIT_WEIGHT HIT_WEIGHT, CVI.RECOMMEND_WEIGHT RECOMMEND_WEIGHT
+		                     , CVI.LINEREPLY_WEIGHT LINEREPLY_WEIGHT, CVI.FAVORITE_WEIGHT FAVORITE_WEIGHT
+		                     , CVI.DISTRIBUTE_WEIGHT DISTRIBUTE_WEIGHT, CVI.GOOD_DOC_CUTLINE GOOD_DOC_CUTLINE
+		                     , ITEM.MANUAL_ID ITEM_ID, CVI.MODULE_CODE MODULE_CODE, CVI.PORTAL_ID PORTAL_ID
+		                     , ITEM.TITLE TITLE, ITEM.REGISTER_ID REGISTER_ID, ITEM.REGIST_DATE REGIST_DATE
+		                     , ITEM.HIT_COUNT HIT_COUNT
+		                     , 0 RECOMMEND_COUNT
+		                     , ITEM.LINEREPLY_COUNT LINEREPLY_COUNT
+		                     , (SELECT COUNT(FAVORITE_ID)
+		                          FROM IKEP4_AS_FAVORITE Z
+		                         WHERE Z.TYPE = 'CONTENTS'
+		                           AND Z.TARGET_ID = ITEM.MANUAL_ID) FAVORITE_COUNT
+		                     , ITEM.MAIL_COUNT MAIL_COUNT
+		                     , ITEM.MBLOG_COUNT MBLOG_COUNT
+		                     , ITEM.MAIL_COUNT + ITEM.MBLOG_COUNT DISTRIBUTE_COUNT
+		                  FROM IKEP4_WM_MANUAL ITEM
+		                  JOIN IKEP4_WM_CATEGORY BOARD
+		                 USING (CATEGORY_ID)
+		                  JOIN IKEP4_KN_MODULE CVI
+		                    ON CVI.PORTAL_ID = BOARD.PORTAL_ID
+		                   AND CVI.MODULE_CODE = 'WM'
+		                   AND CVI.IS_USAGE = 1
+		                 WHERE ITEM.REGIST_DATE > ADD_MONTHS(TRUNC(SYSDATE), -1 * CVI.CVI_EVALUATION_TERM)
+		                   AND ITEM.MANUAL_TYPE != 'C'
+		               )
+		       )
+	]]>
+	</insert>
+
+<!-- SocialBlog -->
+	<insert id="batchGatherSocialBlog">
+		INSERT /* [KnowledgeMonitorCviPoint_SqlMap.xml] collpack.knowledgemonitor.dao.KnowledgeMonitorCviPoint.batchGatherSocialBlog */
+		       INTO IKEP4_KN_CVI_POINT (<include refid="KnowledgeMonitorCviPointColumnList"/>)
+	<![CDATA[
+		SELECT ITEM_ID, MODULE_CODE, PORTAL_ID, TITLE, REGISTER_ID, REGIST_DATE
+		     , HIT_SCORE + RECOMMEND_SCORE + LINEREPLY_SCORE + FAVORITE_SCORE + DISTRIBUTE_SCORE CVI_SCORE
+		     , HIT_COUNT, HIT_SCORE, RECOMMEND_COUNT, RECOMMEND_SCORE, LINEREPLY_COUNT
+		     , LINEREPLY_SCORE, FAVORITE_COUNT, FAVORITE_SCORE, MAIL_COUNT, MBLOG_COUNT, DISTRIBUTE_SCORE
+		     , SYSDATE COLLECT_DATE
+		     , CASE
+		         WHEN ROUND(HIT_SCORE + RECOMMEND_SCORE + LINEREPLY_SCORE + FAVORITE_SCORE +
+		               DISTRIBUTE_SCORE) >= GOOD_DOC_CUTLINE THEN 1
+		         ELSE 0
+		       END IS_GOOD_DOC
+		  FROM (
+		        SELECT ITEM_ID, MODULE_CODE, PORTAL_ID, TITLE, REGISTER_ID, REGIST_DATE
+		             , HIT_COUNT, (HIT_COUNT * HIT_WEIGHT / 100) HIT_SCORE
+		             , RECOMMEND_COUNT, (RECOMMEND_COUNT * RECOMMEND_WEIGHT / 100) RECOMMEND_SCORE
+		             , LINEREPLY_COUNT, (LINEREPLY_COUNT * LINEREPLY_WEIGHT / 100) LINEREPLY_SCORE
+		             , FAVORITE_COUNT, (FAVORITE_COUNT * FAVORITE_WEIGHT / 100) FAVORITE_SCORE
+		             , MAIL_COUNT, MBLOG_COUNT, (DISTRIBUTE_COUNT * DISTRIBUTE_WEIGHT / 100) DISTRIBUTE_SCORE
+		             , GOOD_DOC_CUTLINE
+		          FROM (
+		                SELECT CVI.HIT_WEIGHT HIT_WEIGHT, CVI.RECOMMEND_WEIGHT RECOMMEND_WEIGHT
+		                     , CVI.LINEREPLY_WEIGHT LINEREPLY_WEIGHT, CVI.FAVORITE_WEIGHT FAVORITE_WEIGHT
+		                     , CVI.DISTRIBUTE_WEIGHT DISTRIBUTE_WEIGHT, CVI.GOOD_DOC_CUTLINE GOOD_DOC_CUTLINE
+		                     , ITEM.ITEM_ID ITEM_ID, CVI.MODULE_CODE MODULE_CODE, CVI.PORTAL_ID PORTAL_ID
+		                     , ITEM.TITLE TITLE, ITEM.REGISTER_ID REGISTER_ID, ITEM.REGIST_DATE REGIST_DATE
+		                     , ITEM.HIT_COUNT HIT_COUNT
+		                     , ITEM.RECOMMEND_COUNT RECOMMEND_COUNT
+		                     , ITEM.LINEREPLY_COUNT LINEREPLY_COUNT
+		                     , (SELECT COUNT(FAVORITE_ID)
+		                          FROM IKEP4_AS_FAVORITE Z
+		                         WHERE Z.TYPE = 'CONTENTS'
+		                           AND Z.TARGET_ID = ITEM.ITEM_ID) FAVORITE_COUNT
+		                     , ITEM.MAIL_COUNT MAIL_COUNT
+		                     , ITEM.MBLOG_COUNT MBLOG_COUNT
+		                     , ITEM.MAIL_COUNT + ITEM.MBLOG_COUNT DISTRIBUTE_COUNT
+		                  FROM IKEP4_SB_BD_ITEM ITEM
+		                  JOIN IKEP4_EV_USER BOARD
+		                    ON ITEM.REGISTER_ID = BOARD.USER_ID
+		                  JOIN IKEP4_KN_MODULE CVI
+		                    ON CVI.PORTAL_ID = BOARD.PORTAL_ID
+		                   AND CVI.MODULE_CODE = 'SB'
+		                   AND CVI.IS_USAGE = 1
+		                 WHERE ITEM.REGIST_DATE > ADD_MONTHS(TRUNC(SYSDATE), -1 * CVI.CVI_EVALUATION_TERM)
+		               )
+		       )
+	]]>
+	</insert>
+
+<!-- Q&A -->
+	<insert id="batchGatherQnA">
+		INSERT /* [KnowledgeMonitorCviPoint_SqlMap.xml] collpack.knowledgemonitor.dao.KnowledgeMonitorCviPoint.batchGatherQnA */
+		       INTO IKEP4_KN_CVI_POINT (<include refid="KnowledgeMonitorCviPointColumnList"/>)
+	<![CDATA[
+		SELECT ITEM_ID, MODULE_CODE, PORTAL_ID, TITLE, REGISTER_ID, REGIST_DATE
+		     , HIT_SCORE + RECOMMEND_SCORE + LINEREPLY_SCORE + FAVORITE_SCORE + DISTRIBUTE_SCORE CVI_SCORE
+		     , HIT_COUNT, HIT_SCORE, RECOMMEND_COUNT, RECOMMEND_SCORE, LINEREPLY_COUNT
+		     , LINEREPLY_SCORE, FAVORITE_COUNT, FAVORITE_SCORE, MAIL_COUNT, MBLOG_COUNT, DISTRIBUTE_SCORE
+		     , SYSDATE COLLECT_DATE
+		     , CASE
+		         WHEN ROUND(HIT_SCORE + RECOMMEND_SCORE + LINEREPLY_SCORE + FAVORITE_SCORE +
+		               DISTRIBUTE_SCORE) >= GOOD_DOC_CUTLINE THEN 1
+		         ELSE 0
+		       END IS_GOOD_DOC
+		  FROM (
+		        SELECT ITEM_ID, MODULE_CODE, PORTAL_ID, TITLE, REGISTER_ID, REGIST_DATE
+		             , HIT_COUNT, (HIT_COUNT * HIT_WEIGHT / 100) HIT_SCORE
+		             , RECOMMEND_COUNT, (RECOMMEND_COUNT * RECOMMEND_WEIGHT / 100) RECOMMEND_SCORE
+		             , LINEREPLY_COUNT, (LINEREPLY_COUNT * LINEREPLY_WEIGHT / 100) LINEREPLY_SCORE
+		             , FAVORITE_COUNT, (FAVORITE_COUNT * FAVORITE_WEIGHT / 100) FAVORITE_SCORE
+		             , MAIL_COUNT, MBLOG_COUNT, (DISTRIBUTE_COUNT * DISTRIBUTE_WEIGHT / 100) DISTRIBUTE_SCORE
+		             , GOOD_DOC_CUTLINE
+		          FROM (
+		                SELECT CVI.HIT_WEIGHT HIT_WEIGHT, CVI.RECOMMEND_WEIGHT RECOMMEND_WEIGHT
+		                     , CVI.LINEREPLY_WEIGHT LINEREPLY_WEIGHT, CVI.FAVORITE_WEIGHT FAVORITE_WEIGHT
+		                     , CVI.DISTRIBUTE_WEIGHT DISTRIBUTE_WEIGHT, CVI.GOOD_DOC_CUTLINE GOOD_DOC_CUTLINE
+		                     , ITEM.QNA_ID ITEM_ID, CVI.MODULE_CODE MODULE_CODE, CVI.PORTAL_ID PORTAL_ID
+		                     , ITEM.TITLE TITLE, ITEM.REGISTER_ID REGISTER_ID, ITEM.REGIST_DATE REGIST_DATE
+		                     , ITEM.HIT_COUNT HIT_COUNT
+		                     , ITEM.RECOMMEND_COUNT RECOMMEND_COUNT
+		                     , ITEM.LINEREPLY_COUNT LINEREPLY_COUNT
+		                     , (SELECT COUNT(FAVORITE_ID)
+		                          FROM IKEP4_AS_FAVORITE Z
+		                         WHERE Z.TYPE = 'CONTENTS'
+		                           AND Z.TARGET_ID = ITEM.QNA_ID) FAVORITE_COUNT
+		                     , ITEM.MAIL_COUNT MAIL_COUNT
+		                     , ITEM.MBLOG_COUNT MBLOG_COUNT
+		                     , ITEM.MAIL_COUNT + ITEM.MBLOG_COUNT DISTRIBUTE_COUNT
+		                  FROM IKEP4_QA_QNA ITEM
+		                  JOIN IKEP4_KN_MODULE CVI
+		                    ON CVI.PORTAL_ID = ITEM.PORTAL_ID
+		                   AND CVI.MODULE_CODE = 'QA'
+		                   AND CVI.IS_USAGE = 1
+		                 WHERE ITEM.REGIST_DATE > ADD_MONTHS(TRUNC(SYSDATE), -1 * CVI.CVI_EVALUATION_TERM)
+		                   AND ITEM.ITEM_DELETE = 0
+		               )
+		       )
+	]]>
+	</insert>
+
+<!-- Forum -->
+	<insert id="batchGatherForum">
+		INSERT /* [KnowledgeMonitorCviPoint_SqlMap.xml] collpack.knowledgemonitor.dao.KnowledgeMonitorCviPoint.batchGatherForum */
+		       INTO IKEP4_KN_CVI_POINT (<include refid="KnowledgeMonitorCviPointColumnList"/>)
+	<![CDATA[
+		SELECT ITEM_ID, MODULE_CODE, PORTAL_ID, TITLE, REGISTER_ID, REGIST_DATE
+		     , HIT_SCORE + RECOMMEND_SCORE + LINEREPLY_SCORE + FAVORITE_SCORE + DISTRIBUTE_SCORE CVI_SCORE
+		     , HIT_COUNT, HIT_SCORE, RECOMMEND_COUNT, RECOMMEND_SCORE, LINEREPLY_COUNT
+		     , LINEREPLY_SCORE, FAVORITE_COUNT, FAVORITE_SCORE, MAIL_COUNT, MBLOG_COUNT, DISTRIBUTE_SCORE
+		     , SYSDATE COLLECT_DATE
+		     , CASE
+		         WHEN ROUND(HIT_SCORE + RECOMMEND_SCORE + LINEREPLY_SCORE + FAVORITE_SCORE +
+		               DISTRIBUTE_SCORE) >= GOOD_DOC_CUTLINE THEN 1
+		         ELSE 0
+		       END IS_GOOD_DOC
+		  FROM (
+		        SELECT ITEM_ID, MODULE_CODE, PORTAL_ID, TITLE, REGISTER_ID, REGIST_DATE
+		             , HIT_COUNT, (HIT_COUNT * HIT_WEIGHT / 100) HIT_SCORE
+		             , RECOMMEND_COUNT, (RECOMMEND_COUNT * RECOMMEND_WEIGHT / 100) RECOMMEND_SCORE
+		             , LINEREPLY_COUNT, (LINEREPLY_COUNT * LINEREPLY_WEIGHT / 100) LINEREPLY_SCORE
+		             , FAVORITE_COUNT, (FAVORITE_COUNT * FAVORITE_WEIGHT / 100) FAVORITE_SCORE
+		             , MAIL_COUNT, MBLOG_COUNT, (DISTRIBUTE_COUNT * DISTRIBUTE_WEIGHT / 100) DISTRIBUTE_SCORE
+		             , GOOD_DOC_CUTLINE
+		          FROM (
+		                SELECT CVI.HIT_WEIGHT HIT_WEIGHT, CVI.RECOMMEND_WEIGHT RECOMMEND_WEIGHT
+		                     , CVI.LINEREPLY_WEIGHT LINEREPLY_WEIGHT, CVI.FAVORITE_WEIGHT FAVORITE_WEIGHT
+		                     , CVI.DISTRIBUTE_WEIGHT DISTRIBUTE_WEIGHT, CVI.GOOD_DOC_CUTLINE GOOD_DOC_CUTLINE
+		                     , ITEM.ITEM_ID ITEM_ID, CVI.MODULE_CODE MODULE_CODE, CVI.PORTAL_ID PORTAL_ID
+		                     , ITEM.TITLE TITLE, ITEM.REGISTER_ID REGISTER_ID, ITEM.REGIST_DATE REGIST_DATE
+		                     , ITEM.HIT_COUNT HIT_COUNT
+		                     , 0 RECOMMEND_COUNT
+		                     , ITEM.LINEREPLY_COUNT LINEREPLY_COUNT
+		                     , (SELECT COUNT(FAVORITE_ID)
+		                          FROM IKEP4_AS_FAVORITE Z
+		                         WHERE Z.TYPE = 'CONTENTS'
+		                           AND Z.TARGET_ID = ITEM.ITEM_ID) FAVORITE_COUNT
+		                     , BOARD.MAIL_COUNT MAIL_COUNT
+		                     , BOARD.MBLOG_COUNT MBLOG_COUNT
+		                     , BOARD.MAIL_COUNT + BOARD.MBLOG_COUNT DISTRIBUTE_COUNT
+		                  FROM IKEP4_FR_ITEM ITEM
+		                  JOIN IKEP4_FR_DISCUSSION BOARD
+		                 USING (DISCUSSION_ID)
+		                  JOIN IKEP4_KN_MODULE CVI
+		                    ON CVI.PORTAL_ID = ITEM.PORTAL_ID
+		                   AND CVI.MODULE_CODE = 'FR'
+		                   AND CVI.IS_USAGE = 1
+		                 WHERE ITEM.REGIST_DATE > ADD_MONTHS(TRUNC(SYSDATE), -1 * CVI.CVI_EVALUATION_TERM)
+		               )
+		       )
+	]]>
+	</insert>
+
+<!-- Ideation -->
+	<insert id="batchGatherIdeation">
+		INSERT /* [KnowledgeMonitorCviPoint_SqlMap.xml] collpack.knowledgemonitor.dao.KnowledgeMonitorCviPoint.batchGatherIdeation */
+		       INTO IKEP4_KN_CVI_POINT (<include refid="KnowledgeMonitorCviPointColumnList"/>)
+	<![CDATA[
+		SELECT ITEM_ID, MODULE_CODE, PORTAL_ID, TITLE, REGISTER_ID, REGIST_DATE
+		     , HIT_SCORE + RECOMMEND_SCORE + LINEREPLY_SCORE + FAVORITE_SCORE + DISTRIBUTE_SCORE CVI_SCORE
+		     , HIT_COUNT, HIT_SCORE, RECOMMEND_COUNT, RECOMMEND_SCORE, LINEREPLY_COUNT
+		     , LINEREPLY_SCORE, FAVORITE_COUNT, FAVORITE_SCORE, MAIL_COUNT, MBLOG_COUNT, DISTRIBUTE_SCORE
+		     , SYSDATE COLLECT_DATE
+		     , CASE
+		         WHEN ROUND(HIT_SCORE + RECOMMEND_SCORE + LINEREPLY_SCORE + FAVORITE_SCORE +
+		               DISTRIBUTE_SCORE) >= GOOD_DOC_CUTLINE THEN 1
+		         ELSE 0
+		       END IS_GOOD_DOC
+		  FROM (
+		        SELECT ITEM_ID, MODULE_CODE, PORTAL_ID, TITLE, REGISTER_ID, REGIST_DATE
+		             , HIT_COUNT, (HIT_COUNT * HIT_WEIGHT / 100) HIT_SCORE
+		             , RECOMMEND_COUNT, (RECOMMEND_COUNT * RECOMMEND_WEIGHT / 100) RECOMMEND_SCORE
+		             , LINEREPLY_COUNT, (LINEREPLY_COUNT * LINEREPLY_WEIGHT / 100) LINEREPLY_SCORE
+		             , FAVORITE_COUNT, (FAVORITE_COUNT * FAVORITE_WEIGHT / 100) FAVORITE_SCORE
+		             , MAIL_COUNT, MBLOG_COUNT, (DISTRIBUTE_COUNT * DISTRIBUTE_WEIGHT / 100) DISTRIBUTE_SCORE
+		             , GOOD_DOC_CUTLINE
+		          FROM (
+		                SELECT CVI.HIT_WEIGHT HIT_WEIGHT, CVI.RECOMMEND_WEIGHT RECOMMEND_WEIGHT
+		                     , CVI.LINEREPLY_WEIGHT LINEREPLY_WEIGHT, CVI.FAVORITE_WEIGHT FAVORITE_WEIGHT
+		                     , CVI.DISTRIBUTE_WEIGHT DISTRIBUTE_WEIGHT, CVI.GOOD_DOC_CUTLINE GOOD_DOC_CUTLINE
+		                     , ITEM.ITEM_ID ITEM_ID, CVI.MODULE_CODE MODULE_CODE, CVI.PORTAL_ID PORTAL_ID
+		                     , ITEM.TITLE TITLE, ITEM.REGISTER_ID REGISTER_ID, ITEM.REGIST_DATE REGIST_DATE
+		                     , ITEM.HIT_COUNT HIT_COUNT
+		                     , ITEM.RECOMMEND_COUNT RECOMMEND_COUNT
+		                     , ITEM.LINEREPLY_COUNT LINEREPLY_COUNT
+		                     , (SELECT COUNT(FAVORITE_ID)
+		                          FROM IKEP4_AS_FAVORITE Z
+		                         WHERE Z.TYPE = 'CONTENTS'
+		                           AND Z.TARGET_ID = ITEM.ITEM_ID) FAVORITE_COUNT
+		                     , ITEM.MAIL_COUNT MAIL_COUNT
+		                     , ITEM.MBLOG_COUNT MBLOG_COUNT
+		                     , ITEM.MAIL_COUNT + ITEM.MBLOG_COUNT DISTRIBUTE_COUNT
+		                  FROM IKEP4_ID_IDEA ITEM
+		                  JOIN IKEP4_KN_MODULE CVI
+		                    ON CVI.PORTAL_ID = ITEM.PORTAL_ID
+		                   AND CVI.MODULE_CODE = 'ID'
+		                   AND CVI.IS_USAGE = 1
+		                 WHERE ITEM.REGIST_DATE > ADD_MONTHS(TRUNC(SYSDATE), -1 * CVI.CVI_EVALUATION_TERM)
+		               )
+		       )
+	]]>
+	</insert>
+
+<!-- CoporateVoca -->
+	<insert id="batchGatherCorVoca">
+		INSERT /* [KnowledgeMonitorCviPoint_SqlMap.xml] collpack.knowledgemonitor.dao.KnowledgeMonitorCviPoint.batchGatherCorVoca */
+		       INTO IKEP4_KN_CVI_POINT (<include refid="KnowledgeMonitorCviPointColumnList"/>)
+	<![CDATA[
+		SELECT ITEM_ID, MODULE_CODE, PORTAL_ID, TITLE, REGISTER_ID, REGIST_DATE
+		     , HIT_SCORE + RECOMMEND_SCORE + LINEREPLY_SCORE + FAVORITE_SCORE + DISTRIBUTE_SCORE CVI_SCORE
+		     , HIT_COUNT, HIT_SCORE, RECOMMEND_COUNT, RECOMMEND_SCORE, LINEREPLY_COUNT
+		     , LINEREPLY_SCORE, FAVORITE_COUNT, FAVORITE_SCORE, MAIL_COUNT, MBLOG_COUNT, DISTRIBUTE_SCORE
+		     , SYSDATE COLLECT_DATE
+		     , CASE
+		         WHEN ROUND(HIT_SCORE + RECOMMEND_SCORE + LINEREPLY_SCORE + FAVORITE_SCORE +
+		               DISTRIBUTE_SCORE) >= GOOD_DOC_CUTLINE THEN 1
+		         ELSE 0
+		       END IS_GOOD_DOC
+		  FROM (
+		        SELECT ITEM_ID, MODULE_CODE, PORTAL_ID, TITLE, REGISTER_ID, REGIST_DATE
+		             , HIT_COUNT, (HIT_COUNT * HIT_WEIGHT / 100) HIT_SCORE
+		             , RECOMMEND_COUNT, (RECOMMEND_COUNT * RECOMMEND_WEIGHT / 100) RECOMMEND_SCORE
+		             , LINEREPLY_COUNT, (LINEREPLY_COUNT * LINEREPLY_WEIGHT / 100) LINEREPLY_SCORE
+		             , FAVORITE_COUNT, (FAVORITE_COUNT * FAVORITE_WEIGHT / 100) FAVORITE_SCORE
+		             , MAIL_COUNT, MBLOG_COUNT, (DISTRIBUTE_COUNT * DISTRIBUTE_WEIGHT / 100) DISTRIBUTE_SCORE
+		             , GOOD_DOC_CUTLINE
+		          FROM (
+		                SELECT CVI.HIT_WEIGHT HIT_WEIGHT, CVI.RECOMMEND_WEIGHT RECOMMEND_WEIGHT
+		                     , CVI.LINEREPLY_WEIGHT LINEREPLY_WEIGHT, CVI.FAVORITE_WEIGHT FAVORITE_WEIGHT
+		                     , CVI.DISTRIBUTE_WEIGHT DISTRIBUTE_WEIGHT, CVI.GOOD_DOC_CUTLINE GOOD_DOC_CUTLINE
+		                     , ITEM.WORD_ID ITEM_ID, CVI.MODULE_CODE MODULE_CODE, CVI.PORTAL_ID PORTAL_ID
+		                     , ITEM.WORD_NAME TITLE, ITEM.REGISTER_ID REGISTER_ID, ITEM.REGIST_DATE REGIST_DATE
+		                     , ITEM.HIT_COUNT HIT_COUNT
+		                     , 0 RECOMMEND_COUNT
+		                     , 0 LINEREPLY_COUNT
+		                     , (SELECT COUNT(FAVORITE_ID)
+		                          FROM IKEP4_AS_FAVORITE Z
+		                         WHERE Z.TYPE = 'CONTENTS'
+		                           AND Z.TARGET_ID = ITEM.WORD_ID) FAVORITE_COUNT
+		                     , 0 MAIL_COUNT
+		                     , 0 MBLOG_COUNT
+		                     , 0 DISTRIBUTE_COUNT
+		                  FROM IKEP4_CV_WORD ITEM
+		                  JOIN IKEP4_KN_MODULE CVI
+		                    ON CVI.PORTAL_ID = ITEM.PORTAL_ID
+		                   AND CVI.MODULE_CODE = 'CV'
+		                   AND CVI.IS_USAGE = 1
+		                 WHERE ITEM.REGIST_DATE > ADD_MONTHS(TRUNC(SYSDATE), -1 * CVI.CVI_EVALUATION_TERM)
+		               )
+		       )
+	]]>
+	</insert>
+
+<!-- 포털별 지식 조회 (포틀릿) -->
+	<select id="listByPortalIdPortelet" parameterClass="KnowledgeMonitorPortletSearchCondition" resultMap="portletResult">
+		SELECT /* [KnowledgeMonitorCviPoint_SqlMap.xml] collpack.knowledgemonitor.dao.KnowledgeMonitorCviPoint.listByPortalIdPortelet */
+		       ITEM_ID, TITLE, REGISTER_ID, REGIST_DATE, ITEM_URL
+		     , RANK_NUMBER, MODULE_CODE
+		     , (SELECT MODULE_NAME FROM IKEP4_KN_MODULE Z WHERE Z.MODULE_CODE = A.MODULE_CODE AND Z.PORTAL_ID = A.PORTAL_ID) MODULE_NAME
+		     , (SELECT USER_NAME FROM IKEP4_EV_USER Z WHERE Z.USER_ID = A.REGISTER_ID) USER_NAME
+		     , (SELECT USER_ENGLISH_NAME FROM IKEP4_EV_USER Z WHERE Z.USER_ID = A.REGISTER_ID) USER_ENGLISH_NAME
+		  FROM (
+		        SELECT ROWNUM RANK_NUMBER, A.*
+		          FROM (
+		                SELECT ITEM_ID, MODULE_CODE, PORTAL_ID
+		                     , TITLE, REGISTER_ID, REGIST_DATE, ITEM_URL
+		                  FROM IKEP4_KN_CVI_POINT
+		                 WHERE PORTAL_ID = #portalId#
+		                 AND REGIST_DATE > TO_DATE (TO_CHAR (ADD_MONTHS (SYSDATE, -1), 'yyyymm') || '01')
+		                 ORDER BY CVI_SCORE DESC
+		               ) A
+		       ) A
+	<![CDATA[
+		 WHERE RANK_NUMBER <= #recordCount#
+	]]>
+	</select>
+
+</sqlMap>

@@ -1,0 +1,272 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ko">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<!--타이틀-->
+
+<title>Address book.</title>
+<link rel="stylesheet" type="text/css" href="../../css/theme01/jquery_ui_custom.css" />
+<link rel="stylesheet" type="text/css" href="../../css/common.css" />
+<link rel="stylesheet" type="text/css" href="../../css/theme01/theme.css" />
+
+<script type="text/javascript" src="../../js/jquery/jquery-1.4.4.min.js"></script>
+
+<script type="text/javascript" src="../../js/jquery/jquery-ui-1.8.7.custom.min.js"></script>
+<script type="text/javascript">var contextRoot = "/ikep4-webapp";</script>
+<script type="text/javascript" src="../../js/common.pack.js"></script>
+</head>
+
+<body>
+
+
+<style type="text/css">
+	.list-selectable { margin: 0; padding: 0; }
+	.list-selectable li { padding: 3px 5px; cursor:pointer; text-decoration:underline; }
+	.list-selectable .ui-selecting { background: #FECA40; }
+	.list-selectable .ui-selected { background: #F39814; color: white; }
+</style>
+
+<script type="text/javascript" src="../../js/jquery/jquery.jstree.pack.js"></script>
+<script type="text/javascript" src="../../js/jquery/plugins.pack.js"></script>
+
+<script type="text/javascript" src="../../js/etc.plugins.pack.js"></script>
+<script type="text/javascript">
+/* item data format : array in json object
+ * 1. {type:"group", code:"", name:""}
+ * 2. {type:"user", id:"", name:"", empNo:"", email:"", group:""}
+*/
+var dialogWindow = null;
+var fnCaller;
+
+var tab, groupTree;
+
+(function($){
+	fnCaller = function (params, dialog) {
+		if(params) {
+			if(params.items) {
+				appendItem(params.items);
+			}
+			if(params.search) {
+				$("#treesch").val(params.search);
+			}
+		}
+		
+		dialogWindow = dialog;
+		$("#btnClose").click(function() {
+			dialogWindow.close();
+		});
+	};
+
+	$(document).ready(function() {
+		tab = $("#divTabs").tabs({
+			select : function(event, ui) {
+				switch($(ui.panel).attr("id")) {
+					case "tabs-groupTree" :
+						if(!groupTree) {
+							groupTree = $("#treeDept").jstree({	// 조직도 생성
+								plugins:["themes", "ui", "json_data"],
+								json_data : {
+									data : iKEP.arrayToTreeData({"items":[{"name":"사장실","hasChild":"0","parent":"A00000","code":"A00001","type":"group"},{"name":"전자사업본부","hasChild":"0","parent":"A00000","code":"A10000","type":"group"},{"name":"금융사업본부","hasChild":"0","parent":"A00000","code":"A20000","type":"group"},{"name":"통신사업본부","hasChild":"0","parent":"A00000","code":"A30000","type":"group"},{"name":"공공사업본부","hasChild":"0","parent":"A00000","code":"A40000","type":"group"},{"name":"건설사업본부","hasChild":"0","parent":"A00000","code":"A50000","type":"group"},{"name":"전략마케팅본부","hasChild":"0","parent":"A00000","code":"A60000","type":"group"},{"name":"경영지원본부","hasChild":"0","parent":"A00000","code":"A70000","type":"group"},{"name":"솔루션사업본부","hasChild":"1","parent":"A00000","code":"A80000","type":"group"},{"name":"경영관리부문","hasChild":"0","parent":"A00000","code":"A90000","type":"group"}]}.items)
+								}
+							});
+							$("#treeDept").jstree("set_theme", "classic");
+						}
+						break;
+				}
+			}
+		});
+		
+		$("#ulResult").selectable();
+		$("#treeDept").bind("dblclick", applyItem);
+		$("#btnItemAdd").click(applyItem);
+		$("#btnItemRemove").click(function() {
+			var $items = $("#ulResult > li.ui-selected");
+			if($items.length > 0) {
+				$items.remove();
+				$("#cntSelectedItem").text($("#ulResult>li").size());
+			} else {
+				alert("삭제할 아이템을 선택해주세요.");
+			}
+		});
+		
+		$("#btnApply").click(function() {
+			var result = [];
+			var $resultItems = $("#ulResult").children();
+			
+			if($resultItems.length <= 0) {
+				alert("적용할 아이템을 선택하지 않으셨습니다.");
+				return false;
+			}
+			
+			$.each($resultItems, function() {
+				var data = $.extend({}, $.data(this, "data"));
+				var info = {name:$(this).text()};
+				switch(data.type) {
+					case "group" :
+						$.extend(info, {code:data.code});
+						break;
+					case "user" :
+						$.extend(info, {id:data.id, empNo:data.empNo, email:data.email});
+						break;
+				}
+				result.push(data);//{type:data.type, info:info}
+			});
+			
+			try {	// callback function : dialog 생성시 callback handler 셋팅됨.
+				dialogWindow.callback(result);
+				dialogWindow.close();
+			} catch(e) {}
+		});
+		
+		$("#btnSearch").click(function(){
+			var keyword = $("#schKeyword").val();
+			if(!keyword) {
+				alert("검색어를 입력해주세요.");
+				return false;
+			}
+			
+			tab.tabs("select", 0);
+			$("#divSearchResult").empty()
+				.jstree({
+					plugins:["themes", "ui", "json_data"],
+					json_data:{ data : iKEP.arrayToTreeData({"items":[{"name":"전자사업본부","parent":"A00000","code":"A10000","type":"group"},{"name":"금융사업본부","parent":"A00000","code":"A20000","type":"group"},{"name":"통신사업본부","parent":"A00000","code":"A30000","type":"group"},{"name":"공공사업본부","parent":"A00000","code":"A40000","type":"group"},{"name":"건설사업본부","parent":"A00000","code":"A50000","type":"group"},{"name":"전략마케팅본부","parent":"A00000","code":"A60000","type":"group"},{"name":"경영지원본부","parent":"A00000","code":"A70000","type":"group"},{"name":"솔루션사업본부","parent":"A00000","code":"A80000","type":"group"}]}.items) }
+				});
+			$("#divSearchResult").bind("dblclick", applyItem);
+		});
+		$("#schKeyword").bind("keypress", function(event) {
+			if(event.which == 13) {
+				$("#btnSearch").trigger("click");
+			}
+		});
+	});
+	
+	function applyItem() {	// 조직도 및 검색 목록에서 아이템을 선택해서 넘길때
+		var $activeTab = $("#divTabs").children("ul.ui-tabs-nav").children("li.ui-state-active");	// active tab item
+		var $tree = $($activeTab.children("a").attr("href")).find("div.jstree");	// active tree
+
+		var $treeItems = $tree.find("a.jstree-clicked").parent();
+		if($treeItems.length <= 0) {
+			alert("추가할 항목을 선택해주세요.");
+			return false;
+		}
+		
+		var items = [];
+		$treeItems.each(function(idx) {
+			var $li = $(this);
+			items.push($.extend({name:$li.find("a").text()}, $.parseJSON($li.attr("data"))));
+		});
+		appendItem(items);
+	}
+	
+	function appendItem(addItems) {	// 선택한 목록 추가
+		var $result = $("#ulResult");
+		
+		var arrAddedItems = [];	// 이미 추가 되어 있는 목록을 뽑아온다.
+		var result = $result.children().each(function() {
+			var data = $.data(this, "data");
+			arrAddedItems.push(data.type == "group" ? data.code : data.id);
+		});
+		
+		var cntAddedItem = 0;
+		$.each(addItems, function(idx) {
+			if (arrAddedItems.length == 0 || $.inArray(this.type == "group" ? this.code : this.id, arrAddedItems) == -1) {
+				var elItem = $.tmpl("tmplResultItem", this).appendTo($result);
+
+				$.data(elItem[0], "data", this);
+				cntAddedItem++;
+			}
+		});
+		
+		if(cntAddedItem == 0) {
+			//alert("선택하신 항목은 이미 추가 된 항목입니다.");
+		} else {
+			$("#cntSelectedItem").text(arrAddedItems.length + cntAddedItem);
+		}
+	}
+	
+	$.template("tmplResultItem", '<li>${name}</li>');
+})(jQuery);
+</script>
+
+<div>
+
+	<div class="shuttleSearch">
+		<label for="treesch">이름/부서</label>
+		<input type="text" class="inputbox" id="schKeyword" value="" size="20" />
+		<a id="btnSearch" href="#"><img src="../../images/theme/theme01/basic/ic_search.gif" alt="검색" /></a> 
+	</div>
+
+	
+	<!--blockShuttle Start-->
+	<div class="blockShuttle">
+		<div>
+			<div id="divTabs" class="iKEP_tab">
+				<ul>
+					<li><a href="#tabs-1">검색</a></li>
+					<li><a href="#tabs-groupTree">조직도</a></li>
+					<li><a href="/ikep4-webapp/common/myAddrBook.do">개인주소록</a></li>
+
+					<li><a href="/ikep4-webapp/common/myAddrBook.do">Following</a></li>
+					<li><a href="/ikep4-webapp/common/myAddrBook.do">자동 그룹</a></li>
+				</ul>
+				<div>
+					<div class="tab_conbox" style="float:left; width:280px;">
+						<div id="tabs-1">
+							<h4>검색 결과</h4>
+
+							<div id="divSearchResult" style="height:300px; overflow:auto;"></div>
+						</div>
+						<div id="tabs-groupTree">
+							<div>
+								<div class="sbox" style="height:300px; overflow:auto;">
+									<div class="shuttleTree">
+										<div id="treeDept"></div>
+									</div>
+								</div>
+
+							</div>
+						</div>
+					</div>
+					<div style="padding-left:310px;">
+						<div style="float:left;"><!-- width:58px -->
+							<ul style="margin-top:150px;"><!--margin-top을 셔틀높이에 맞게 설정할 것-->
+								<li><a id="btnItemAdd" href="#"><img src="../../images/common/btn_shuttle_add.gif" alt="Add" /></a></li>
+								<li><a id="btnItemRemove" href="#"><img src="../../images/common/btn_shuttle_del.gif" alt="Del" /></a></li>
+							</ul>
+
+						</div>
+						
+						<div style="padding-left:65px; min-width:230px;">
+							<div class="sbox">
+								<div class="shuttleTitle">
+									공유범위 (<span id="cntSelectedItem"></span>)
+								</div>
+								<div class="shuttleCon" style="height:300px;">
+									<ul id="ulResult" class="list-selectable"></ul>
+								</div>
+
+							</div>
+						</div>
+					</div>
+					<div class="clear"></div>	
+				</div>
+			</div>
+		</div>
+	</div>
+	<!--//blockShuttle End-->
+
+	
+	<!--blockButton Start-->
+	<div class="blockButton">
+		<ul>
+			<li><a id="btnApply" class="button"><span>적용</span></a></li>
+			<li><a id="btnClose" class="button"><span>닫기</span></a></li>
+		</ul>
+	</div>
+	<!--//blockButton End-->
+
+	
+</div>
+
+</body>
+</html>

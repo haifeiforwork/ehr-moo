@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="collpack.fourm.dao.FrParticipant" >
+
+	<typeAlias alias = "FrParticipant" type="com.lgcns.ikep4.collpack.forum.model.FrParticipant"/>
+	
+	<typeAlias alias = "FrSearch" type="com.lgcns.ikep4.collpack.forum.model.FrSearch"/>
+
+  <resultMap id="FrParticipantResult" class="FrParticipant" >
+    <result column="DISCUSSION_ID" 		property="discussionId" />
+    <result column="PARTICIPATION_TYPE" property="participationType"  />
+    <result column="REGISTER_ID" 		property="registerId" />
+    <result column="REGIST_DATE" 		property="registDate" />
+  </resultMap>
+  
+  
+    <resultMap id="FrParticipantListResult" class="FrParticipant" >
+    <result column="REGISTER_ID" 		property="registerId" />
+    <result column="TEAM_NAME" 			property="teamName" />
+    <result column="JOB_TITLE_NAME" 	property="jobTitleName" />
+    <result column="USER_NAME" 			property="userName" />
+    <result column="USER_ENGLISH_NAME" 		property="userEnglishName" 		/>
+	<result column="TEAM_ENGLISH_NAME" 		property="teamEnglishName" 		/>
+	<result column="JOB_TITLE_ENGLISH_NAME" property="jobTitleEnglishName" 	/>
+	<result column="PICTURE_PATH" property="picturePath" 	/>
+	<result column="PROFILE_PICTURE_PATH" property="profilePicturePath" 	/>
+  </resultMap>
+  
+  
+   <insert id="create" parameterClass="FrParticipant" >
+    INSERT 					/* [FrParticipant_SqlMap.xml] FrParticipant.create */  
+    INTO IKEP4_FR_PARTICIPANT (
+	    DISCUSSION_ID
+	    , PARTICIPATION_TYPE
+	    , REGISTER_ID
+	    , REGIST_DATE
+    ) VALUES (
+	    #discussionId#
+	    , #participationType#
+	    , #registerId#
+	    , sysdate
+    )
+  </insert>
+  
+  
+  <select id="get" resultMap="FrParticipantResult" parameterClass="FrParticipant" >
+    SELECT 				/* [FrParticipant_SqlMap.xml] FrParticipant.get */ 
+      DISCUSSION_ID
+	    , PARTICIPATION_TYPE
+	    , REGISTER_ID
+	    , REGIST_DATE
+    FROM IKEP4_FR_PARTICIPANT
+    WHERE DISCUSSION_ID = #discussionId#
+      AND PARTICIPATION_TYPE = #participationType#
+      AND REGISTER_ID = #registerId#
+  </select>
+  
+  
+  <select id="exists" resultClass="int" parameterClass="FrParticipant" >
+    SELECT 				/* [FrParticipant_SqlMap.xml] FrParticipant.exists */ 
+      	COUNT(DISCUSSION_ID)
+    FROM IKEP4_FR_PARTICIPANT
+    WHERE DISCUSSION_ID = #discussionId#
+      AND PARTICIPATION_TYPE = #participationType#
+      AND REGISTER_ID = #registerId#
+  </select>
+  
+  
+  <select id="list" resultMap="FrParticipantListResult" parameterClass="FrSearch" >
+     SELECT 			/* [FrParticipant_SqlMap.xml] FrParticipant.list */		
+     	O.*
+    	,C.TEAM_NAME 
+    	,D.JOB_TITLE_NAME
+    	,C.USER_NAME
+    	,C.USER_ENGLISH_NAME
+  	    ,C.TEAM_ENGLISH_NAME
+  	    ,D.JOB_TITLE_ENGLISH_NAME
+  	    ,C.PICTURE_PATH
+  		,C.PROFILE_PICTURE_PATH
+     FROM(
+	     SELECT  								
+	         	*
+	      FROM    (
+	                SELECT  ROWNUM NUM, F.*
+	                FROM
+	                     (
+		                     SELECT * FROM (
+							    SELECT	
+							    	A.REGISTER_ID, MAX(A.REGIST_DATE) REGIST_DATE
+							    FROM IKEP4_FR_PARTICIPANT A
+							    WHERE A.DISCUSSION_ID = #discussionId#
+							    GROUP BY REGISTER_ID
+							  ) 
+							   ORDER by  REGIST_DATE DESC
+	  					 ) F
+	               WHERE   ROWNUM &lt;= #endRowIndex#
+	             )
+	     WHERE   NUM &gt; #startRowIndex#
+     ) O, IKEP4_EV_USER C, IKEP4_EV_JOB_TITLE D
+      WHERE O.REGISTER_ID = C.USER_ID
+		AND C.JOB_TITLE_CODE = D.JOB_TITLE_CODE
+  </select>
+  
+  <select id="getCountList" resultClass="int" parameterClass="FrSearch" >
+	    SELECT 			/* [FrParticipant_SqlMap.xml] FrParticipant.getCountList */	
+			COUNT(REGISTER_ID)
+         FROM  (
+		    SELECT			 		 
+			    A.REGISTER_ID
+		    FROM IKEP4_FR_PARTICIPANT A
+		    WHERE A.DISCUSSION_ID = #discussionId#
+		    GROUP BY A.REGISTER_ID
+	    ) 
+  </select>
+  
+  
+    <delete id="remove" parameterClass="FrParticipant" >
+    DELETE 					/* [FrParticipant_SqlMap.xml] FrParticipant.remove */ 
+    FROM IKEP4_FR_PARTICIPANT
+    WHERE DISCUSSION_ID = #discussionId#
+      AND PARTICIPATION_TYPE = #participationType#
+      AND REGISTER_ID = #registerId#
+  </delete>
+  
+   <delete id="removeByDiscussion" parameterClass="String" >
+    DELETE 					/* [FrParticipant_SqlMap.xml] FrParticipant.removeByDiscussion */ 
+    FROM IKEP4_FR_PARTICIPANT
+    WHERE DISCUSSION_ID = #discussionId#
+  </delete>
+  
+</sqlMap>

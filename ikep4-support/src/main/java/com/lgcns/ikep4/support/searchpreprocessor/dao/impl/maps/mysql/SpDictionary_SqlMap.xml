@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="com.lgcns.ikep4.support.searchpreprocessor.dictionary">
+  
+	<typeAlias alias="spDictionary" type="com.lgcns.ikep4.support.searchpreprocessor.model.Dictionary"/>
+  
+  	<resultMap class="spDictionary" id="baseResultMap">
+	    <result column="SEARCH_KEYWORD_ID" jdbcType="VARCHAR" property="searchKeywordId" />
+	    <result column="SEARCH_KEYWORD" jdbcType="VARCHAR" property="searchKeyword" />
+	    <result column="FREQUENCY_COUNT" jdbcType="DECIMAL" property="frequencyCount" />
+	    <result column="PORTAL_ID" jdbcType="VARCHAR" property="portalId" />
+	    <result column="REGISTER_ID" jdbcType="VARCHAR" property="registerId" />
+	    <result column="REGISTER_NAME" jdbcType="VARCHAR" property="registerName" />
+	    <result column="REGIST_DATE" jdbcType="TIMESTAMP" property="registDate" />
+  	</resultMap>
+  
+   	<sql id="sqlColumnList"> 
+		SEARCH_KEYWORD_ID, 
+		SEARCH_KEYWORD, 
+		FREQUENCY_COUNT, 
+		PORTAL_ID, 
+		REGISTER_ID,
+		REGISTER_NAME, 
+		REGIST_DATE
+  	</sql> 
+  
+  	<select id="get" parameterClass="string" resultMap="baseResultMap">
+    	SELECT				<include refid="com.lgcns.ikep4.support.searchpreprocessor.dictionary.sqlColumnList" />
+    	FROM				IKEP4_SP_DICTIONARY
+    	WHERE				SEARCH_KEYWORD_ID = #searchKeywordId#
+  	</select>
+  	
+  	<select id="getBySearchKeyword" parameterClass="spDictionary" resultMap="baseResultMap">
+    	SELECT				<include refid="com.lgcns.ikep4.support.searchpreprocessor.dictionary.sqlColumnList" />
+    	FROM				IKEP4_SP_DICTIONARY
+    	WHERE 				SEARCH_KEYWORD = #searchKeyword#
+        AND					PORTAL_ID = #portalId#
+  	</select>
+  	
+  	<select id="exists"  parameterClass="string" resultClass="int">
+    	SELECT				COUNT(*) 
+    	FROM				IKEP4_SP_DICTIONARY
+    	WHERE 				SEARCH_KEYWORD_ID = #searchKeywordId#
+  	</select>
+  
+  	<delete id="remove" parameterClass="string">
+    	DELETE
+    	FROM				IKEP4_SP_DICTIONARY
+    	WHERE				SEARCH_KEYWORD_ID = #searchKeywordId#
+  	</delete>
+  
+  	<insert id="create" parameterClass="spDictionary">
+    	INSERT INTO			IKEP4_SP_DICTIONARY 
+		    				(
+		    				<include refid="com.lgcns.ikep4.support.searchpreprocessor.dictionary.sqlColumnList" />
+		    				)
+    	VALUES				(
+					    	#searchKeywordId#, 
+					    	#searchKeyword#, 
+					    	#frequencyCount#,
+					      	#portalId#, 
+					      	#registerId#, 
+					      	#registerName#, 
+					      	#registDate#
+					      	)
+  	</insert>
+  
+  	<update id="update" parameterClass="spDictionary">
+    	UPDATE				IKEP4_SP_DICTIONARY
+    	SET					FREQUENCY_COUNT = FREQUENCY_COUNT + 1
+    	WHERE				SEARCH_KEYWORD_ID = #searchKeywordId#
+  	</update>
+
+  	<select id="getList" parameterClass="spDictionary" resultMap="baseResultMap"> 
+    	SELECT				<include refid="com.lgcns.ikep4.support.searchpreprocessor.dictionary.sqlColumnList" />
+    	FROM  				IKEP4_SP_DICTIONARY
+    	WHERE 				PORTAL_ID = #portalId#
+    	ORDER BY 			FREQUENCY_COUNT DESC, 
+    						REGIST_DATE DESC
+  	</select>
+  	
+  	<select id="getRankList" parameterClass="spDictionary" resultMap="baseResultMap"> 
+    	SELECT				<include refid="com.lgcns.ikep4.support.searchpreprocessor.dictionary.sqlColumnList" />
+    	FROM  				IKEP4_SP_DICTIONARY
+    	WHERE 				PORTAL_ID = #portalId#
+    	ORDER BY 			FREQUENCY_COUNT DESC, 
+    						REGIST_DATE DESC
+    	LIMIT 				100
+  	</select>
+  	
+  	<select id="getPortalIdList" resultClass="string"> 
+    	SELECT 				DISTINCT PORTAL_ID
+    	FROM  				IKEP4_SP_DICTIONARY
+  	</select>
+    
+</sqlMap>

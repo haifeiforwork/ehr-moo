@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="collpack.knowledgemonitor.dao.KnowledgeMonitorModule">
+	<typeAlias alias="KnowledgeMonitorModulePK" type="com.lgcns.ikep4.collpack.knowledgemonitor.model.KnowledgeMonitorModulePK"/>
+	<typeAlias alias="KnowledgeMonitorModule" type="com.lgcns.ikep4.collpack.knowledgemonitor.model.KnowledgeMonitorModule"/>
+
+	<resultMap class="KnowledgeMonitorModule" id="moduleResult">
+		<result column="MODULE_CODE" property="moduleCode" jdbcType="VARCHAR" javaType="String"/>
+		<result column="MODULE_NAME" property="moduleName" jdbcType="VARCHAR" javaType="String"/>
+		<result column="IS_USAGE" property="isUsage" jdbcType="NUMBER" javaType="Integer"/>
+	</resultMap>
+
+	<resultMap class="KnowledgeMonitorModule" extends="moduleResult" id="contentPolicyResult">
+		<result column="HIT_WEIGHT" property="hitWeight" jdbcType="NUMBER" javaType="Integer"/>
+		<result column="RECOMMEND_WEIGHT" property="recommendWeight" jdbcType="NUMBER" javaType="Integer"/>
+		<result column="LINEREPLY_WEIGHT" property="linereplyWeight" jdbcType="NUMBER" javaType="Integer"/>
+		<result column="FAVORITE_WEIGHT" property="favoriteWeight" jdbcType="NUMBER" javaType="Integer"/>
+		<result column="DISTRIBUTE_WEIGHT" property="distributeWeight" jdbcType="NUMBER" javaType="Integer"/>
+		<result column="GOOD_DOC_CUTLINE" property="goodDocCutline" jdbcType="NUMBER" javaType="Integer"/>
+		<result column="CVI_EVALUATION_TERM" property="cviEvaluationTerm" jdbcType="NUMBER" javaType="Integer"/>
+	</resultMap>
+
+	<resultMap class="KnowledgeMonitorModule" extends="moduleResult" id="commentPolicyResult">
+		<result column="GOOD_LINEREPLY_CUTLINE" property="goodLinereplyCutline" jdbcType="NUMBER" javaType="Integer"/>
+	</resultMap>
+
+<!-- ANSI -->
+<!-- Module 입력 -->
+	<insert id="create" parameterClass="KnowledgeMonitorModule">
+	<![CDATA[
+		INSERT /* [KnowledgeMonitorModule_SqlMap.xml] collpack.knowledgemonitor.dao.KnowledgeMonitorModule.create */
+		       INTO IKEP4_KN_MODULE (
+		       MODULE_CODE
+		     , PORTAL_ID
+		     , MODULE_NAME
+		     , IS_USAGE
+		     , HIT_WEIGHT
+		     , RECOMMEND_WEIGHT
+		     , LINEREPLY_WEIGHT
+		     , FAVORITE_WEIGHT
+		     , DISTRIBUTE_WEIGHT
+		     , GOOD_DOC_CUTLINE
+		     , GOOD_LINEREPLY_CUTLINE
+		     , CVI_EVALUATION_TERM
+		     , REGISTER_ID
+		     , REGISTER_NAME
+		     , REGIST_DATE
+		     , UPDATER_ID
+		     , UPDATER_NAME
+		     , UPDATE_DATE
+		       )
+		VALUES (
+		       #moduleCode#
+		     , #portalId#
+		     , #moduleName#
+		     , #isUsage#
+		     , #hitWeight#
+		     , #recommendWeight#
+		     , #linereplyWeight#
+		     , #favoriteWeight#
+		     , #distributeWeight#
+		     , #goodDocCutline#
+		     , #goodLinereplyCutline#
+		     , #cviEvaluationTerm#
+		     , #registerId#
+		     , #registerName#
+		     , CURRENT_TIMESTAMP
+		     , #updaterId#
+		     , #updaterName#
+		     , CURRENT_TIMESTAMP
+		       )
+	]]>
+	</insert>
+
+<!-- 포털별 Module 리스트 -->
+<!-- ANSI -->
+	<select id="listByPortalId" parameterClass="String" resultMap="moduleResult">
+	<![CDATA[
+		SELECT /* [KnowledgeMonitorModule_SqlMap.xml] collpack.knowledgemonitor.dao.KnowledgeMonitorModule.listByPortalId */
+		       MODULE_CODE, MODULE_NAME, IS_USAGE
+		  FROM IKEP4_KN_MODULE
+		 WHERE PORTAL_ID = #portalId#
+		 ORDER BY MODULE_CODE
+	]]>
+	</select>
+
+<!-- 포털별 사용가능한 Module 리스트 -->
+<!-- ANSI -->
+	<select id="listUsableByPortalId" parameterClass="String" resultMap="moduleResult">
+	<![CDATA[
+		SELECT /* [KnowledgeMonitorModule_SqlMap.xml] collpack.knowledgemonitor.dao.KnowledgeMonitorModule.listUsableByPortalId */
+		       MODULE_CODE, MODULE_NAME, IS_USAGE
+		  FROM IKEP4_KN_MODULE
+		 WHERE PORTAL_ID = #portalId#
+		   AND IS_USAGE = 1
+		 ORDER BY MODULE_CODE
+	]]>
+	</select>
+
+<!-- 포털별 Module 사용불가로 변경 -->
+<!-- ANSI -->
+	<update id="updateUnusableByPortalId" parameterClass="KnowledgeMonitorModule">
+	<![CDATA[
+		UPDATE /* [KnowledgeMonitorModule_SqlMap.xml] collpack.knowledgemonitor.dao.KnowledgeMonitorModule.updateUnusableByPortalId */
+		       IKEP4_KN_MODULE
+		   SET IS_USAGE = 0
+		     , UPDATER_ID = #updaterId#
+		     , UPDATER_NAME = #updaterName#
+		     , UPDATE_DATE = CURRENT_TIMESTAMP 
+		 WHERE PORTAL_ID = #portalId#
+	]]>
+	</update>
+
+<!-- 모듈별 사용가능으로 변경 -->
+<!-- ANSI -->
+	<update id="updateUsableByPortalIdModuleCode" parameterClass="KnowledgeMonitorModule">
+		UPDATE /* [KnowledgeMonitorModule_SqlMap.xml] collpack.knowledgemonitor.dao.KnowledgeMonitorModule.updateUsableByPortalIdModuleCode */
+		       IKEP4_KN_MODULE
+		   SET IS_USAGE = 1
+		     , UPDATER_ID = #updaterId#
+		     , UPDATER_NAME = #updaterName#
+		     , UPDATE_DATE = CURRENT_TIMESTAMP 
+		 WHERE PORTAL_ID = #portalId#
+		   <isNotEmpty property="moduleCodeCommaString" prepend="AND ">MODULE_CODE IN <iterate property="moduleCodeArray" open="(" conjunction="," close=")">#moduleCodeArray[]#</iterate></isNotEmpty>
+		   <isEmpty property="moduleCodeCommaString" prepend="AND ">1 = 2</isEmpty>
+	<![CDATA[
+	]]>
+	</update>
+
+<!-- MS SQL -->	
+<!-- 평가관리모듈 동기화 -->
+	<update id="updateAssessmentManagementModuleCode" parameterClass="String">
+	<![CDATA[
+		UPDATE /* [KnowledgeMonitorModule_SqlMap.xml] collpack.knowledgemonitor.dao.KnowledgeMonitorModule.updateAssessmentManagementModuleCode */
+		       IKEP4_AM_TARGET AM
+		   SET AVAILABLE = (SELECT CASE WHEN IS_USAGE = 1 THEN 0
+		   								ELSE 1 END
+		                      FROM IKEP4_KN_MODULE KN
+		                     WHERE KN.PORTAL_ID = AM.PORTAL_ID
+		                       AND KN.MODULE_CODE = AM.MODULE_CODE)
+		     , SELECTION = CASE WHEN (SELECT IS_USAGE
+		                              FROM   IKEP4_KN_MODULE KN
+		                              WHERE  KN.PORTAL_ID = AM.PORTAL_ID
+		                              	AND  KN.MODULE_CODE = AM.MODULE_CODE) = 0 THEN 1
+		                  		ELSE SELECTION END 
+		 WHERE PORTAL_ID = #portalId#
+		   AND REQUIRED = 1
+	]]>
+	</update>
+
+<!-- 포털별 CVI 정책 리스트 -->
+<!-- ANSI -->
+	<select id="listContentPolicyByPortalId" parameterClass="String" resultMap="contentPolicyResult">
+	<![CDATA[
+		SELECT /* [KnowledgeMonitorModule_SqlMap.xml] collpack.knowledgemonitor.dao.KnowledgeMonitorCviPolicy.listContentPolicyByPortalId */
+		       MODULE_CODE, MODULE_NAME, IS_USAGE
+		     , HIT_WEIGHT, RECOMMEND_WEIGHT, LINEREPLY_WEIGHT, FAVORITE_WEIGHT, DISTRIBUTE_WEIGHT, GOOD_DOC_CUTLINE
+		     , CVI_EVALUATION_TERM
+		  FROM IKEP4_KN_MODULE
+		 WHERE PORTAL_ID = #portalId#
+		   AND IS_USAGE = 1
+		 ORDER BY MODULE_CODE
+	]]>
+	</select>
+
+<!-- CVI 정책 수정 -->
+<!-- ANSI -->
+	<update id="updateContentPolicyByPortalIdModuleCode" parameterClass="KnowledgeMonitorModule">
+	<![CDATA[
+		UPDATE /* [KnowledgeMonitorModule_SqlMap.xml] collpack.knowledgemonitor.dao.KnowledgeMonitorCviPolicy.updateContentPolicyByPortalIdModuleCode */
+		       IKEP4_KN_MODULE
+		   SET HIT_WEIGHT = #hitWeight#
+		     , RECOMMEND_WEIGHT = #recommendWeight#
+		     , LINEREPLY_WEIGHT = #linereplyWeight#
+		     , FAVORITE_WEIGHT = #favoriteWeight#
+		     , DISTRIBUTE_WEIGHT = #distributeWeight#
+		     , GOOD_DOC_CUTLINE = #goodDocCutline#
+		     , CVI_EVALUATION_TERM = #cviEvaluationTerm#
+		     , UPDATER_ID = #updaterId#
+		     , UPDATER_NAME = #updaterName#
+		     , UPDATE_DATE = CURRENT_TIMESTAMP 
+		 WHERE PORTAL_ID = #portalId#
+		   AND MODULE_CODE = #moduleCode#
+	]]>
+	</update>
+
+<!-- 포털별 Comment 정책 리스트 -->
+<!-- ANSI -->
+	<select id="listCommentPolicyByPortalId" parameterClass="String" resultMap="commentPolicyResult">
+	<![CDATA[
+		SELECT /* [KnowledgeMonitorModule_SqlMap.xml] collpack.knowledgemonitor.dao.KnowledgeMonitorCviPolicy.listCommentPolicyByPortalId */
+		       MODULE_CODE, MODULE_NAME, IS_USAGE
+		     , GOOD_LINEREPLY_CUTLINE
+		  FROM IKEP4_KN_MODULE
+		 WHERE PORTAL_ID = #portalId#
+		   AND IS_USAGE = 1
+		 ORDER BY MODULE_CODE
+	]]>
+	</select>
+
+<!-- Comment 정책 수정 -->
+<!-- ANSI -->
+	<update id="updateCommentPolicyByPortalIdModuleCode" parameterClass="KnowledgeMonitorModule">
+	<![CDATA[
+		UPDATE /* [KnowledgeMonitorModule_SqlMap.xml] collpack.knowledgemonitor.dao.KnowledgeMonitorCviPolicy.updateCommentPolicyByPortalIdModuleCode */
+		       IKEP4_KN_MODULE
+		   SET GOOD_LINEREPLY_CUTLINE = #goodLinereplyCutline#
+		     , UPDATER_ID = #updaterId#
+		     , UPDATER_NAME = #updaterName#
+		     , UPDATE_DATE = CURRENT_TIMESTAMP 
+		 WHERE PORTAL_ID = #portalId#
+		   AND MODULE_CODE = #moduleCode#
+	]]>
+	</update>
+
+</sqlMap>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="com.lgcns.ikep4.approval.collaboration.npd.dao.DevReqShareDept" >
+
+	<typeAlias alias="devReqShareDept" type="com.lgcns.ikep4.approval.collaboration.npd.model.DevReqShareDept"/>
+	
+	<resultMap id="devReqShareDeptMap" class="devReqShareDept">
+		<result property="shareDeptId"		column="SHARE_DEPT_ID"			jdbcType="VARCHAR"/>
+		<result property="shareDeptNm"		column="SHARE_DEPT_NM"			jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	<select id="getDevReqShareDept" parameterClass="String" resultMap="devReqShareDeptMap">
+		/* [DevReqShareDept_SqlMap.xml] devReqShareDept.getDevReqShareDept */
+		SELECT A.SHARE_DEPT_ID		AS SHARE_DEPT_ID	/* 회람부서코드 */
+		     , DBO.FN_GET_DEPT_NAME( A.SHARE_DEPT_ID )	AS SHARE_DEPT_NM
+		 FROM TB_DEV_REQ_SHARE_DEPT A
+        WHERE A.MGNT_NO = #mgntNo#
+	</select>
+	
+	<insert id="insertDevReqShareDept" parameterClass="DevReqShareDept" >
+		/* [DevReqShareDept_SqlMap.xml] devReqShareDept.insertDevReqShareDept */
+		INSERT INTO TB_DEV_REQ_SHARE_DEPT
+		          (
+		          	  MGNT_NO
+		          	, SHARE_DEPT_ID
+		          )
+		     VALUES
+		          (
+		              #mgntNo#
+		            , replace( #shareDeptId#, 'G:', '')
+		          )
+	</insert>
+	
+	<delete id="deleteDevReqShareDept" parameterClass="String">
+		/* [DevReqShareDept_SqlMap.xml] devReqShareDept.deleteDevReqShareDept */
+		DELETE FROM TB_DEV_REQ_SHARE_DEPT
+		      WHERE MGNT_NO = #mgntNo#
+	</delete>
+</sqlMap>

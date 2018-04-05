@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="portal.admin.screen.portalPage" >
+	<typeAlias alias = "PortalPage" type="com.lgcns.ikep4.portal.admin.screen.model.PortalPage"/>
+	<typeAlias alias = "PortalPageSearchCondition" type="com.lgcns.ikep4.portal.admin.screen.model.PortalPageSearchCondition"/>
+
+	<!-- 포탈 페이지 테이블 조회 결과 -->
+	<resultMap id="pageResult" class="PortalPage">
+		<result property="pageId" column="PAGE_ID"/>
+		<result property="pageName" column="PAGE_NAME"/>
+		<result property="common" column="COMMON"/>
+		<result property="systemCode" column="SYSTEM_CODE"/>
+		<result property="systemName" column="SYSTEM_NAME"/>
+		<result property="ownerId" column="OWNER_ID"/>
+		<result property="registerId" column="REGISTER_ID"/>
+		<result property="registerName" column="REGISTER_NAME"/>
+		<result property="registDate" column="REGIST_DATE"/>
+		<result property="updaterId" column="UPDATER_ID"/>
+		<result property="updaterName" column="UPDATER_NAME"/>
+		<result property="updateDate" column="UPDATE_DATE"/>
+		<result property="commonPortletVerticalWidth" column="COMMON_PORTLET_VERTICAL_WIDTH"/>
+	</resultMap>
+	<resultMap id="listResult" class="PortalPage">
+		<result property="num" column="NUM"/>
+		<result property="pageId" column="PAGE_ID"/>
+		<result property="pageName" column="PAGE_NAME"/>
+		<result property="layoutName" column="LAYOUT_NAME"/>
+		<result property="common" column="COMMON"/>
+		<result property="systemCode" column="SYSTEM_CODE"/>
+		<result property="systemName" column="SYSTEM_NAME"/>
+		<result property="ownerId" column="OWNER_ID"/>
+		<result property="ownerName" column="OWNER_NAME"/>
+		<result property="registerId" column="REGISTER_ID"/>
+		<result property="registerName" column="REGISTER_NAME"/>
+		<result property="registDate" column="REGIST_DATE"/>
+		<result property="updaterId" column="UPDATER_ID"/>
+		<result property="updaterName" column="UPDATER_NAME"/>
+		<result property="updateDate" column="UPDATE_DATE"/>
+		<result property="commonPortletVerticalWidth" column="COMMON_PORTLET_VERTICAL_WIDTH"/>
+	</resultMap>
+	
+   <select id="getPage" parameterClass="java.util.HashMap" resultMap="pageResult">
+	  <![CDATA[
+	  	   /* [PortalPage_SqlMap.xml] portal.admin.screen.portalPage.getPage */
+		   select   
+			   a.PAGE_ID,
+			   b.ITEM_MESSAGE AS PAGE_NAME, 
+			   a.COMMON, 
+			   a.SYSTEM_CODE,
+			   C.SYSTEM_NAME, 
+			   a.OWNER_ID, 
+			   a.REGISTER_ID, 
+			   a.REGISTER_NAME, 
+			   a.REGIST_DATE, 
+			   a.UPDATER_ID, 
+			   a.UPDATER_NAME, 
+			   a.UPDATE_DATE,
+			   a.COMMON_PORTLET_VERTICAL_WIDTH
+			 From IKEP4_PO_PAGE a inner join 
+			 	  IKEP4_I18N_MESSAGE b on a.page_id = b.item_id AND b.FIELD_NAME = #fieldName# AND b.LOCALE_CODE = #localeCode# left outer join
+			 	  IKEP4_PO_SYSTEM c on a.system_code = c.system_code
+			where a.page_id = #pageId#
+	   ]]>
+	</select>
+	
+	<update id="updatePage" parameterClass="PortalPage">
+	  <![CDATA[
+	  	   /* [PortalPage_SqlMap.xml] portal.admin.screen.portalPage.updatePage */   
+		   UPDATE IKEP4_PO_PAGE   
+		   SET PAGE_NAME = #pageName#,	 
+			   UPDATER_ID = #updaterId#, 
+			   UPDATER_NAME = #updaterName#,
+			   UPDATE_DATE = sysdate 
+		   WHERE PAGE_ID = #pageId#
+	   ]]>
+	</update>
+	
+	<insert id="createPage" parameterClass="PortalPage"> 
+      <![CDATA[
+      	   /* [PortalPage_SqlMap.xml] portal.admin.screen.portalPage.createPage */ 
+           INSERT INTO IKEP4_PO_PAGE (PAGE_ID, PAGE_NAME, COMMON, SYSTEM_CODE, OWNER_ID, REGISTER_ID, REGISTER_NAME, REGIST_DATE, UPDATER_ID, UPDATER_NAME, UPDATE_DATE)  
+           VALUES (#pageId#, #pageName#, #common#, #systemCode#, #ownerId#, #registerId#, #registerName#, sysdate, #updaterId#, #updaterName#, sysdate)
+       ]]>
+   </insert>
+   
+   <select id="countPage" parameterClass="PortalPageSearchCondition" resultClass="int">  
+  		<![CDATA[
+  		/* [PortalPage_SqlMap.xml] portal.admin.screen.portalPage.countPage */ 
+		SELECT 			
+           				COUNT(*)
+		FROM   			IKEP4_PO_PAGE A	INNER JOIN 
+						IKEP4_PO_SYSTEM B ON A.SYSTEM_CODE = B.SYSTEM_CODE LEFT OUTER JOIN
+						IKEP4_EV_USER C	ON A.OWNER_ID = C.USER_ID LEFT OUTER JOIN		
+						IKEP4_I18N_MESSAGE D ON	A.PAGE_ID = D.ITEM_ID AND D.FIELD_NAME = #fieldName# AND D.LOCALE_CODE = #userLocaleCode#
+		WHERE 			A.PAGE_ID <> #pageId#
+		  AND           B.PORTAL_ID = #portalId#  			
+		]]>
+		<isNotEmpty property="searchColumn">
+		<isNotEmpty property="searchWord">
+		<isEqual property="searchColumn" compareValue="PAGE_NAME">
+		AND				UPPER(D.ITEM_MESSAGE) LIKE UPPER('%' || #searchWord# || '%')
+		</isEqual>
+		<isEqual property="searchColumn" compareValue="SYSTEM_NAME">
+		AND				UPPER(B.SYSTEM_NAME) LIKE UPPER('%' || #searchWord# || '%')
+		</isEqual>
+		</isNotEmpty>
+		</isNotEmpty>
+  	</select>
+  	
+  	<select id="listPage" parameterClass="PortalPageSearchCondition" resultMap="listResult">  
+  		<![CDATA[
+  		/* [PortalPage_SqlMap.xml] portal.admin.screen.portalPage.listPage */
+		SELECT			
+				*
+		FROM 		(
+							SELECT
+									ROWNUM AS NUM,
+									C.*
+								FROM
+									(
+					         			SELECT		   A.PAGE_ID, 
+													   D.ITEM_MESSAGE AS PAGE_NAME,
+													   E.LAYOUT_NAME,
+													   A.COMMON, 
+													   A.SYSTEM_CODE,
+													   B.SYSTEM_NAME, 
+													   A.OWNER_ID,
+													   C.USER_NAME AS OWNER_NAME, 
+													   A.REGISTER_ID, 
+													   A.REGISTER_NAME, 
+													   A.REGIST_DATE, 
+													   A.UPDATER_ID, 
+													   A.UPDATER_NAME, 
+													   A.UPDATE_DATE,
+													   A.COMMON_PORTLET_VERTICAL_WIDTH
+					         			FROM   		IKEP4_PO_PAGE A INNER JOIN
+					         						IKEP4_PO_SYSTEM B ON A.SYSTEM_CODE = B.SYSTEM_CODE LEFT OUTER JOIN
+					         						IKEP4_EV_USER C	ON A.OWNER_ID = C.USER_ID LEFT OUTER JOIN
+					         						IKEP4_I18N_MESSAGE D ON	A.PAGE_ID = D.ITEM_ID AND D.FIELD_NAME = #fieldName# AND D.LOCALE_CODE = #userLocaleCode# LEFT OUTER JOIN
+					         						(
+												        SELECT
+												            y.page_id,
+												            max(z.layout_name) LAYOUT_NAME
+												          FROM 
+												            IKEP4_PO_PAGE_LAYOUT y inner join
+												            IKEP4_PO_LAYOUT z on y.layout_id = z.layout_id
+												        GROUP BY y.page_id
+												     ) E on A.page_id = E.page_id
+					         	       WHERE        A.PAGE_ID <> #pageId#
+					         	         AND        B.PORTAL_ID = #portalId#    
+		]]>								         	       
+	         	       					<isNotEmpty property="searchColumn">
+							 				<isNotEmpty property="searchWord">
+												<isEqual property="searchColumn" compareValue="PAGE_NAME">
+													AND	UPPER(D.ITEM_MESSAGE) LIKE UPPER('%' || #searchWord# || '%')
+												</isEqual>
+												<isEqual property="searchColumn" compareValue="SYSTEM_NAME">
+													AND	UPPER(B.SYSTEM_NAME) LIKE UPPER('%' || #searchWord# || '%')
+												</isEqual>
+											</isNotEmpty>
+										</isNotEmpty>
+								   		<isNotEmpty property="sortColumn">
+								   			<isEqual property="sortColumn" compareValue="PAGE_NAME">
+									    		<isEqual property="sortType" compareValue="ASC">
+									    			ORDER BY D.ITEM_MESSAGE ASC
+									    		</isEqual>
+									    		<isEqual property="sortType" compareValue="DESC">
+									    			ORDER BY D.ITEM_MESSAGE DESC
+									    		</isEqual>
+									    	</isEqual>
+								   			<isEqual property="sortColumn" compareValue="LAYOUT_NAME">
+									    		<isEqual property="sortType" compareValue="ASC">
+									    			ORDER BY E.LAYOUT_NAME ASC
+									    		</isEqual>
+									    		<isEqual property="sortType" compareValue="DESC">
+									    			ORDER BY E.LAYOUT_NAME DESC
+									    		</isEqual>
+									    	</isEqual>
+									    	<isEqual property="sortColumn" compareValue="SYSTEM_NAME">
+									    		<isEqual property="sortType" compareValue="ASC">
+									    			ORDER BY B.SYSTEM_NAME ASC
+									    		</isEqual>
+									    		<isEqual property="sortType" compareValue="DESC">
+									    			ORDER BY B.SYSTEM_NAME DESC
+									    		</isEqual>
+									    	</isEqual>
+									    	<isEqual property="sortColumn" compareValue="COMMON">
+									    		<isEqual property="sortType" compareValue="ASC">
+									    			ORDER BY A.COMMON ASC
+									    		</isEqual>
+									    		<isEqual property="sortType" compareValue="DESC">
+									    			ORDER BY A.COMMON DESC
+									    		</isEqual>
+									    	</isEqual>
+									    	<isEqual property="sortColumn" compareValue="USER_NAME">
+									    		<isEqual property="sortType" compareValue="ASC">
+									    			ORDER BY C.USER_NAME ASC
+									    		</isEqual>
+									    		<isEqual property="sortType" compareValue="DESC">
+									    			ORDER BY C.USER_NAME DESC
+									    		</isEqual>
+									    	</isEqual>
+								   		</isNotEmpty>
+								   		<isEmpty property="sortColumn">
+								   			ORDER BY A.REGIST_DATE DESC
+								   		</isEmpty>
+		<![CDATA[
+									) C
+								WHERE ROWNUM <= #endRowIndex#	
+	    			)		
+  				WHERE NUM > #startRowIndex#					 
+		]]>
+  	</select>
+  	
+  	<delete id="removePage" parameterClass="java.lang.String">
+      <![CDATA[
+       /* [PortalPage_SqlMap.xml] portal.admin.screen.portalPage.removePage */
+       DELETE FROM IKEP4_PO_PAGE 
+        WHERE PAGE_ID = #pageId#
+	   ]]>
+	</delete>
+	
+	<select id="getPageId" parameterClass="String" resultClass="String">  
+  		<![CDATA[
+  		/* [PortalPage_SqlMap.xml] portal.admin.screen.portalPage.getPageId */
+  		SELECT 
+		    A.page_id 
+		  From IKEP4_PO_PAGE A INNER JOIN 
+		       IKEP4_PO_PAGE_LAYOUT B on A.page_id = b.page_id INNER JOIN
+		       IKEP4_PO_LAYOUT C on b.layout_id = c.layout_id
+		 WHERE A.system_code = #systemCode#
+		   AND C.common = 1
+		   AND rownum = 1
+		]]>
+  	</select>
+  	
+  	<update id="updateCommonPortletWidth" parameterClass="PortalPage">
+  		UPDATE IKEP4_PO_PAGE
+  		SET COMMON_PORTLET_VERTICAL_WIDTH = #commonPortletVerticalWidth#
+  		WHERE PAGE_ID = #pageId#
+  	</update>
+</sqlMap>

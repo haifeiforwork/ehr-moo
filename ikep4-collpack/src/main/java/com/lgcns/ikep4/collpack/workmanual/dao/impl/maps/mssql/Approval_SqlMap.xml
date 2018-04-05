@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="collpack.workmanual.dao.approval">
+	<typeAlias alias = "Approval" type="com.lgcns.ikep4.collpack.workmanual.model.Approval"/>
+	<typeAlias alias = "ApprovalSearchCondition" type="com.lgcns.ikep4.collpack.workmanual.search.ApprovalSearchCondition"/>
+	
+	<!-- 테이블 조회 결과 -->
+	<resultMap id="approvalResult" class="Approval">
+		<result property="approvalId"          column="APPROVAL_ID"           />
+		<result property="manualId"            column="MANUAL_ID"             />
+		<result property="versionId"           column="VERSION_ID"            />
+		<result property="manualType"          column="MANUAL_TYPE"           />
+		<result property="requestContents"     column="REQUEST_CONTENTS"      />
+		<result property="registerId"          column="REGISTER_ID"           />
+		<result property="registerName"        column="REGISTER_NAME"         />
+		<result property="registDate"          column="REGIST_DATE"           />
+		<result property="approvalStatus"      column="APPROVAL_STATUS"       />
+		<result property="indexRowNum"         column="INDEX_ROWNUM"          />
+		<result property="version"             column="VERSION"               />
+		<result property="versionTitle"        column="VERSION_TITLE"         />
+		<result property="approvalResult"      column="APPROVAL_RESULT"       />
+		<result property="registerEnglishName" column="REGISTER_ENGLISH_NAME" />
+	</resultMap>
+	
+	<!-- ANSI -->
+	<insert id="create" parameterClass="Approval"> 
+      <![CDATA[ 
+           INSERT INTO IKEP4_WM_APPROVAL (/* [Approval_SqlMap.xml] Approval.create */
+           		APPROVAL_ID, MANUAL_ID, VERSION_ID, MANUAL_TYPE, REQUEST_CONTENTS, 
+           		REGISTER_ID, REGISTER_NAME, REGIST_DATE, APPROVAL_STATUS)  
+           VALUES (#approvalId#, #manualId#, #versionId#, #manualType#, #requestContents#,
+           		   #registerId#, #registerName#, CURRENT_TIMESTAMP, 'A')
+       ]]>
+   </insert>
+   
+   	<!-- ANSI -->
+	<select id="get" parameterClass="java.lang.String" resultMap="approvalResult">
+	  <![CDATA[
+		   SELECT /* [Approval_SqlMap.xml] Approval.get */
+				  A.*,
+				  0 AS INDEX_ROWNUM,
+				  0 AS VERSION,
+				  '' AS VERSION_TITLE,
+				  '' AS APPROVAL_RESULT,
+				  B.USER_ENGLISH_NAME AS REGISTER_ENGLISH_NAME
+		     FROM IKEP4_WM_APPROVAL A
+		     	  INNER JOIN IKEP4_EV_USER B
+		     	  	ON A.REGISTER_ID = B.USER_ID
+		    WHERE A.APPROVAL_ID = #approvalId#
+	   ]]>
+	</select>
+	
+	<!-- ANSI -->
+	<update id="update" parameterClass="Approval">
+	  <![CDATA[
+		   UPDATE IKEP4_WM_APPROVAL /* [Approval_SqlMap.xml] Approval.update */ 
+		      SET APPROVAL_STATUS  = #approvalStatus#
+		    WHERE APPROVAL_ID = #approvalId#
+	   ]]>
+	</update>
+   
+   <!-- ANSI -->
+   <delete id="remove" parameterClass="java.lang.String">
+      <![CDATA[
+	       DELETE FROM IKEP4_WM_APPROVAL /* [Approval_SqlMap.xml] Approval.remove */ 
+	        WHERE APPROVAL_ID = #approvalId#
+	   ]]>
+	</delete>
+	
+	<!-- ANSI -->
+	<select id="count" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+	  <![CDATA[
+		   SELECT /* [Approval_SqlMap.xml] Approval.count */ 
+		   		  COUNT(1) 
+		     FROM IKEP4_WM_APPROVAL 
+		    WHERE APPROVAL_ID = #approvalId#
+	   ]]>
+	</select>
+	
+	<!-- MS SQL -->
+	<!-- //나의 결재함 조회 개수 -->
+	<select id="countMyApproval" parameterClass="ApprovalSearchCondition" resultClass="java.lang.Integer">
+	  <![CDATA[
+		   SELECT /* [Approval_SqlMap.xml] Approval.countMyApproval */ 
+		   		  COUNT(1) 
+		     FROM IKEP4_WM_APPROVAL A
+		    	  INNER JOIN IKEP4_WM_APPROVAL_LINE B
+		    	  	ON A.APPROVAL_ID = B.APPROVAL_ID
+		    	  INNER JOIN IKEP4_WM_MANUAL_VERSION C
+		    	  	ON C.VERSION_ID = A.VERSION_ID
+		    WHERE B.APPROVAL_USER_ID = #userId#
+	  ]]>
+		  <isEqual property="approvalType" compareValue="A">
+ 			<![CDATA[ 
+  			  AND B.APPROVAL_RESULT IN ('B', 'C', 'D')
+  			]]>
+		  </isEqual>
+		  <isEqual property="approvalType" compareValue="B">
+ 			<![CDATA[ 
+  			  AND B.APPROVAL_RESULT = 'B'
+  			]]>
+		  </isEqual>
+		  <isEqual property="approvalType" compareValue="C">
+ 			<![CDATA[ 
+  			  AND B.APPROVAL_RESULT IN ('C', 'D')
+  			]]>
+		  </isEqual>
+		  <isNotEmpty property="searchText"> 
+			  <isEqual property="searchType" compareValue="A">
+	 			<![CDATA[ 
+	  			  AND C.VERSION_TITLE LIKE '%'+ #searchText# + '%'
+	  			]]>
+			  </isEqual>
+			  <isEqual property="searchType" compareValue="B">
+	 			<![CDATA[ 
+	  			  AND A.REGISTER_NAME LIKE '%'+ #searchText# + '%' 
+	  			]]>
+			  </isEqual>
+		  </isNotEmpty>	  
+	</select>
+   
+   	<!-- MS SQL -->
+	<!-- //나의 결재함 조회 -->
+	<select id="listMyApproval" parameterClass="ApprovalSearchCondition" resultMap="approvalResult">
+	  <![CDATA[
+		   SELECT /* [Approval_SqlMap.xml] Approval.listMyApproval */
+		   		  A.*
+		   	 FROM (SELECT A.*
+				     FROM (SELECT Row_number() OVER (ORDER BY A.REGIST_DATE DESC) AS INDEX_ROWNUM,
+				     			  A.*,
+							 	  C.VERSION,
+							 	  C.VERSION_TITLE,
+							 	  B.APPROVAL_RESULT,
+							 	  D.USER_ENGLISH_NAME AS REGISTER_ENGLISH_NAME
+						     FROM IKEP4_WM_APPROVAL A
+						     	  INNER JOIN IKEP4_WM_APPROVAL_LINE B
+						     	  	ON A.APPROVAL_ID = B.APPROVAL_ID
+						     	  INNER JOIN IKEP4_WM_MANUAL_VERSION C
+						     	  	ON C.VERSION_ID = A.VERSION_ID
+						     	  INNER JOIN IKEP4_EV_USER D
+						     	  	ON A.REGISTER_ID = D.USER_ID
+						    WHERE B.APPROVAL_USER_ID = #userId#
+	   ]]>
+						  <isEqual property="approvalType" compareValue="A">
+				 			<![CDATA[ 
+				  			  AND B.APPROVAL_RESULT IN ('B', 'C', 'D')
+				  			]]>
+						  </isEqual>
+						  <isEqual property="approvalType" compareValue="B">
+				 			<![CDATA[ 
+				  			  AND B.APPROVAL_RESULT = 'B'
+				  			]]>
+						  </isEqual>
+						  <isEqual property="approvalType" compareValue="C">
+				 			<![CDATA[ 
+				  			  AND B.APPROVAL_RESULT IN ('C', 'D')
+				  			]]>
+						  </isEqual>
+						  <isNotEmpty property="searchText"> 
+							  <isEqual property="searchType" compareValue="A">
+			   					<![CDATA[ 
+				   			  	  AND C.VERSION_TITLE LIKE '%'+ #searchText# + '%'
+			    				]]>
+							  </isEqual>
+							  <isEqual property="searchType" compareValue="B">
+			   					<![CDATA[ 
+				   			  	  AND A.REGISTER_NAME LIKE '%'+ #searchText# + '%' 
+			    				]]>
+							  </isEqual> 
+						 </isNotEmpty>	  
+	   <![CDATA[		
+		      		      ) A
+		      		WHERE INDEX_ROWNUM <= #endRowIndex#
+      			  ) A
+		    WHERE A.INDEX_ROWNUM > #startRowIndex#
+	   ]]>
+	</select>
+   
+   	<!-- ANSI -->
+	<!-- //상신 중인 결재정보 -->
+	<select id="getSubmittingApproval" parameterClass="java.lang.String" resultMap="approvalResult">
+	  <![CDATA[
+		   SELECT /* [Approval_SqlMap.xml] Approval.getSubmittingApproval */
+				  A.*,
+				  0 AS INDEX_ROWNUM,
+				  0 AS VERSION,
+				  '' AS VERSION_TITLE,
+				  '' AS APPROVAL_RESULT,
+				  B.USER_ENGLISH_NAME AS REGISTER_ENGLISH_NAME
+		     FROM IKEP4_WM_APPROVAL A
+		     	  INNER JOIN IKEP4_EV_USER B
+		     	  	ON A.REGISTER_ID = B.USER_ID
+		    WHERE A.VERSION_ID = #versionId#
+		      AND A.APPROVAL_STATUS = 'A'
+	   ]]>
+	</select>
+	
+	
+</sqlMap>

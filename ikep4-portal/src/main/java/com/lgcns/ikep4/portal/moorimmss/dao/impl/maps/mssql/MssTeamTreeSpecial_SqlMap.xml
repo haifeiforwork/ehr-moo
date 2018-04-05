@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="portal.moorimmss.dao.mssTeamTreeSpecial" >
+	<typeAlias alias = "MssTeamTreeSpecial" type="com.lgcns.ikep4.portal.moorimmss.model.MssTeamTreeSpecial"/>
+
+	
+	<resultMap id="mssTeamTreeSpecialResult" class="MssTeamTreeSpecial">
+		<result property="itemId" column="itemId"/>
+		<result property="userId" column="userId"/>
+		<result property="groupId" column="groupId"/>		
+	</resultMap>
+	<resultMap id="mssTeamTreeSpecialResult1" class="MssTeamTreeSpecial">
+		<result property="itemId" column="itemId"/>
+		<result property="userId" column="userId"/>
+		<result property="groupId" column="groupId"/>	
+		<result property="childGroupCnt" column="childGroupCnt"/>	
+	</resultMap>
+   
+
+
+   	<!-- ANSI -->
+	<!-- insert -->
+	<insert id="create" parameterClass="MssTeamTreeSpecial"> 
+      <![CDATA[ 
+		Insert into IKEP4_PO_MSS_TEAMVIEW (ITEM_ID,USER_ID,GROUP_ID) 
+		VALUES (#itemId#, #userId#, #groupId#)	
+       ]]>
+   </insert>	
+   
+	
+	<select id="getList" resultMap="mssTeamTreeSpecialResult">
+	  <![CDATA[
+		 SELECT t.ITEM_ID as itemId, u.user_name+'('+t.USER_ID+')' as userId, g.group_name+'('+t.GROUP_ID+')' as groupId
+		 FROM IKEP4_PO_MSS_TEAMVIEW t inner join ikep4_ev_user u on t.user_id=u.user_id 
+		 inner join ikep4_ev_group g on t.group_id = g.group_id 
+		 ORDER BY userId
+	   ]]>
+	</select>
+	<select id="getListUser" resultMap="mssTeamTreeSpecialResult1" parameterClass="string">
+	  <![CDATA[
+		 SELECT t.ITEM_ID as itemId, t.USER_ID as userId, t.GROUP_ID as groupId,
+		 (select count(g.group_id) from IKEP4_EV_GROUP g
+		where g.parent_group_id = t.group_id) as childGroupCnt
+		 FROM IKEP4_PO_MSS_TEAMVIEW t 
+		 where t.user_id=#userId#
+		 and t.group_id in (select group_id from  IKEP4_EV_GROUP)
+		 ORDER BY userId
+	   ]]>
+	</select>
+
+   <delete id="deleteMssTeamTreeSpecialListMultiCid">
+       DELETE FROM IKEP4_PO_MSS_TEAMVIEW WHERE ITEM_ID IN
+       <iterate open="(" close=")" conjunction=",">
+       		#[]#
+       </iterate>
+	</delete>
+	
+	
+	
+	
+</sqlMap>

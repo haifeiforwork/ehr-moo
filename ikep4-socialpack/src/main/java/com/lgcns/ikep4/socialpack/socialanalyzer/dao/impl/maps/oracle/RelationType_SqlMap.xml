@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="socialpack.socialanalyzer.dao.relationType" >
+	<typeAlias alias = "RelationType" type="com.lgcns.ikep4.socialpack.socialanalyzer.model.RelationType"/>
+	<typeAlias alias = "RelationTypePk" type="com.lgcns.ikep4.socialpack.socialanalyzer.model.RelationTypePk"/>
+	
+	<!-- 테이블 조회 결과 -->
+	<resultMap id="relationTypeResult" class="RelationType">
+		<result property="typeCode"     column="TYPE_CODE"     />
+		<result property="portalId"     column="PORTAL_ID"     />
+		<result property="typeName"     column="TYPE_NAME"     />
+		<result property="typeWeight"   column="TYPE_WEIGHT"   />
+		<result property="validMonth"   column="VALID_MONTH"   />
+		<result property="registerId"   column="REGISTER_ID"   />
+		<result property="registerName" column="REGISTER_NAME" />
+		<result property="registDate"   column="REGIST_DATE"   />
+		<result property="updaterId"    column="UPDATER_ID"    />
+		<result property="updaterName"  column="UPDATER_NAME"  />
+		<result property="updateDate"   column="UPDATE_DATE"   />
+	</resultMap>
+	
+	<insert id="create" parameterClass="RelationType"> 
+      <![CDATA[ 
+           INSERT INTO IKEP4_SN_RELATION_TYPE (/* [RelationType_SqlMap.xml] RelationType.create */
+           		TYPE_CODE, PORTAL_ID, TYPE_NAME, TYPE_WEIGHT, VALID_MONTH, 
+				REGISTER_ID, REGISTER_NAME, REGIST_DATE, UPDATER_ID, UPDATER_NAME, 
+				UPDATE_DATE)  
+           VALUES (#typeCode#, #portalId#, #typeName#, #typeWeight#, #validMonth#, 
+				#registerId#, #registerName#, SYSDATE, #updaterId#, #updaterName#, 
+				SYSDATE)
+       ]]>
+   </insert>
+   
+	<select id="get" parameterClass="RelationTypePk" resultMap="relationTypeResult">
+	  <![CDATA[
+		   SELECT /* [RelationType_SqlMap.xml] RelationType.get */
+				  A.*
+		     FROM IKEP4_SN_RELATION_TYPE A
+		    WHERE TYPE_CODE = #typeCode#
+		      AND PORTAL_ID = #portalId#
+	   ]]>
+	</select>
+	
+	<update id="update" parameterClass="RelationType">
+	  <![CDATA[
+		   UPDATE IKEP4_SN_RELATION_TYPE /* [RelationType_SqlMap.xml] RelationType.update */ 
+		      SET TYPE_WEIGHT   = #typeWeight#,  
+				  VALID_MONTH   = #validMonth#, 
+				  UPDATER_ID    = #updaterId#,   
+				  UPDATER_NAME  = #updaterName#,
+				  UPDATE_DATE   = SYSDATE
+		    WHERE TYPE_CODE = #typeCode#
+		      AND PORTAL_ID = #portalId#
+	   ]]>
+	</update>
+   
+   <delete id="remove" parameterClass="RelationTypePk">
+      <![CDATA[
+	       DELETE FROM IKEP4_SN_RELATION_TYPE /* [RelationType_SqlMap.xml] RelationType.remove */ 
+	        WHERE TYPE_CODE = #typeCode#
+		      AND PORTAL_ID = #portalId#
+	   ]]>
+	</delete>
+	
+	<select id="count" parameterClass="RelationTypePk" resultClass="java.lang.Integer">
+	  <![CDATA[
+		   SELECT /* [RelationType_SqlMap.xml] RelationType.count */ 
+		   		  COUNT(1) 
+		     FROM IKEP4_SN_RELATION_TYPE 
+		    WHERE TYPE_CODE = #typeCode#
+		      AND PORTAL_ID = #portalId#
+	   ]]>
+	</select>
+</sqlMap>

@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="support.user.code.dao.Nation">
+	<typeAlias alias="Nation" type="com.lgcns.ikep4.support.user.code.model.Nation" />
+	<typeAlias alias="SearchCondition" type="com.lgcns.ikep4.support.user.code.model.AdminSearchCondition" />
+
+	<resultMap id="result" class="Nation">
+		<result property="nationCode" column="NATION_CODE" />
+		<result property="nationName" column="NATION_NAME" />
+		<result property="registerId" column="REGISTER_ID" />
+		<result property="registerName" column="REGISTER_NAME" />
+		<result property="updaterId" column="UPDATER_ID" />
+		<result property="updaterName" column="UPDATER_NAME" />
+		<result property="registDate" column="REGIST_DATE" />
+		<result property="updateDate" column="UPDATE_DATE" />
+		<result property="num" column="NUM" />
+	</resultMap>
+
+	<resultMap id="getResult" class="Nation">
+		<result property="nationCode" column="NATION_CODE" />
+		<result property="nationName" column="NATION_NAME" />
+		<result property="registerId" column="REGISTER_ID" />
+		<result property="registerName" column="REGISTER_NAME" />
+		<result property="updaterId" column="UPDATER_ID" />
+		<result property="updaterName" column="UPDATER_NAME" />
+		<result property="registDate" column="REGIST_DATE" />
+		<result property="updateDate" column="UPDATE_DATE" />
+	</resultMap>
+
+	<!-- 신규 등록 -->
+	<!-- ANSI -->
+	<insert id="insert" parameterClass="Nation"> 
+	<![CDATA[
+		INSERT INTO /* [Nation_SqlMap.xml] support.user.code.dao.Nation.insert */
+			IKEP4_EV_NATION (
+			NATION_CODE, 
+			NATION_NAME, 
+			REGISTER_ID, 
+			REGISTER_NAME,
+			UPDATER_ID, 
+			UPDATER_NAME,
+			REGIST_DATE, 
+			UPDATE_DATE)
+		VALUES ( 
+			#nationCode#,
+			#nationName#,
+		    #registerId#,
+		    #registerName#,
+		    #updaterId#,
+		    #updaterName#,
+		    CURRENT_TIMESTAMP ,
+		    CURRENT_TIMESTAMP )
+	]]>
+	</insert>
+
+	<!-- 상세정보 -->
+	<!-- ANSI -->
+	<select id="select" parameterClass="java.lang.String" resultMap="getResult">
+	<![CDATA[
+		SELECT /* [Nation_SqlMap.xml] support.user.code.dao.Nation.select */
+		    NATION_CODE,
+		    NATION_NAME,
+		    REGISTER_ID,
+		    REGISTER_NAME,
+		    UPDATER_ID,
+		    UPDATER_NAME,
+		    REGIST_DATE,
+		    UPDATE_DATE
+		FROM 
+		    IKEP4_EV_NATION
+		WHERE
+			NATION_CODE = #nationCode#
+	]]>
+	</select>
+
+	<!-- 기존 정보 수정 -->
+	<!-- ANSI -->
+	<update id="update" parameterClass="Nation">
+	<![CDATA[
+		UPDATE /* [Nation_SqlMap.xml] support.user.code.dao.Nation.update */
+			IKEP4_EV_NATION
+		SET
+			NATION_NAME = #nationName#,
+			UPDATER_ID = #updaterId#,
+			UPDATER_NAME = #updaterName#,
+			UPDATE_DATE = CURRENT_TIMESTAMP 
+		WHERE
+			NATION_CODE = #nationCode#
+	]]>
+	</update>
+
+	<!-- 삭제 -->
+	<!-- ANSI -->
+	<delete id="delete" parameterClass="java.lang.String">
+	<![CDATA[
+		DELETE /* [Nation_SqlMap.xml] support.user.code.dao.Nation.delete */ 
+		FROM IKEP4_EV_NATION
+		WHERE
+			NATION_CODE = #nationCode#
+	]]>
+	</delete>
+
+	<!-- 목록 가져오기 -->
+	<!-- MSSQL -->
+	<select id="selectAll" parameterClass="SearchCondition"
+		resultMap="result">
+	<![CDATA[
+		SELECT /* [Nation_SqlMap.xml] support.user.code.dao.Nation.selectAll */
+		        AA.* 
+		    FROM 
+		    ( 
+				SELECT ROW_NUMBER() OVER(
+	]]>			
+					<isNotNull property="sortColumn">
+						<isEqual property="sortColumn" compareValue="NATION_CODE">
+							<isEqual property="sortType" compareValue="ASC">
+								ORDER BY A.NATION_CODE ASC
+							</isEqual>
+							<isEqual property="sortType" compareValue="DESC">
+								ORDER BY A.NATION_CODE DESC
+							</isEqual>
+						</isEqual>
+						<isEqual property="sortColumn" compareValue="NATION_NAME">
+							<isEqual property="sortType" compareValue="ASC">
+								ORDER BY B.ITEM_MESSAGE ASC
+							</isEqual>
+							<isEqual property="sortType" compareValue="DESC">
+								ORDER BY B.ITEM_MESSAGE DESC
+							</isEqual>
+						</isEqual>
+					</isNotNull>
+					<isNull property="sortColumn">
+						ORDER BY A.REGIST_DATE DESC, A.NATION_CODE ASC
+					</isNull>
+	<![CDATA[
+				) AS NUM,				
+				    A.NATION_CODE,
+				    B.ITEM_MESSAGE AS NATION_NAME,
+				    A.REGISTER_ID AS REGISTER_ID,
+				    A.REGISTER_NAME AS REGISTER_NAME,
+				    A.UPDATER_ID AS UPDATER_ID,
+				    A.UPDATER_NAME AS UPDATER_NAME,
+				    A.REGIST_DATE AS REGIST_DATE,
+				    A.UPDATE_DATE AS UPDATE_DATE
+				FROM 
+				    IKEP4_EV_NATION A
+				    JOIN IKEP4_I18N_MESSAGE B
+				    ON A.NATION_CODE = B.ITEM_ID
+				    AND B.FIELD_NAME = #fieldName#
+				    AND B.LOCALE_CODE = #userLocaleCode#
+		        WHERE 1 = 1
+		        ]]>	
+		<isNotNull property="searchColumn">
+			<isEqual property="searchColumn" compareValue="title">
+				AND
+				UPPER(B.ITEM_MESSAGE) LIKE '%' + UPPER(#searchWord#) + '%'
+			</isEqual>
+			<isEqual property="searchColumn" compareValue="code">
+				AND
+				A.NATION_CODE LIKE '%' + #searchWord# + '%'
+			</isEqual>
+		</isNotNull>
+
+	<![CDATA[
+		    ) AA 
+		    WHERE AA.NUM <=  #endRowIndex# and AA.NUM >  #startRowIndex# /* 시작 */
+	]]>
+	</select>
+	
+	<!-- MSSQL -->
+	<select id="selectCount" parameterClass="SearchCondition"
+		resultClass="int">
+	<![CDATA[
+		SELECT /* [Nation_SqlMap.xml] support.user.code.dao.Nation.selectCount */ 
+		    COUNT(*)
+		FROM 
+		    IKEP4_EV_NATION A
+		    JOIN IKEP4_I18N_MESSAGE B
+		    ON A.NATION_CODE = B.ITEM_ID
+		    AND B.FIELD_NAME = #fieldName#
+		    AND B.LOCALE_CODE = #userLocaleCode#
+        WHERE 1 = 1
+        ]]>	
+		<isNotEmpty property="searchColumn">
+			<isEqual property="searchColumn" compareValue="title">
+				AND
+				UPPER(A.NATION_NAME) LIKE '%' + UPPER(#searchWord#) + '%'
+			</isEqual>
+			<isEqual property="searchColumn" compareValue="code">
+				AND
+				A.NATION_CODE LIKE '%' + #searchWord# + '%'
+			</isEqual>
+		</isNotEmpty>
+	</select>
+	
+	<!-- ANSI -->
+	<select id="checkCode" parameterClass="java.lang.String"
+		resultClass="java.lang.String">
+	<![CDATA[
+		SELECT /* [Nation_SqlMap.xml] support.user.code.dao.Nation.checkCode */
+			COUNT(NATION_CODE)
+		FROM
+			IKEP4_EV_NATION
+		WHERE
+			NATION_CODE = #nationCode#	
+	]]>
+	</select>
+	
+	<!-- 목록 가져오기 -->
+	<!-- ANSI -->
+	<select id="listAll" parameterClass="String" resultClass="Nation">
+	<![CDATA[
+		SELECT /* [Nation_SqlMap.xml] support.user.code.dao.Nation.listAll */
+		    A.NATION_CODE nationCode,
+		    B.ITEM_MESSAGE AS nationName,
+		    A.REGISTER_ID AS registerId,
+		    A.REGISTER_NAME AS registerName,
+		    A.UPDATER_ID AS updaterId,
+		    A.UPDATER_NAME AS updaterName,
+		    A.REGIST_DATE AS registDate,
+		    A.UPDATE_DATE AS updateDate
+		  FROM 
+		    IKEP4_EV_NATION A INNER JOIN 
+            IKEP4_I18N_MESSAGE B ON A.NATION_CODE = B.ITEM_ID AND B.FIELD_NAME = 'nationName' AND B.LOCALE_CODE = #localeCode#
+         ORDER BY A.REGIST_DATE DESC, A.NATION_CODE ASC
+    ]]>
+	</select>
+
+</sqlMap>

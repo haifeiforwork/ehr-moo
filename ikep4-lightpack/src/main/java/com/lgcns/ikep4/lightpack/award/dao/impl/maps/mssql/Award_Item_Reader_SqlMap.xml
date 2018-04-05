@@ -1,0 +1,564 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="lightpack.award.dao.awardItemReader">
+  <typeAlias alias="AwardItemReader" type="com.lgcns.ikep4.lightpack.award.model.AwardItemReader"/>
+  <typeAlias alias="AwardItemReaderSearchCondition" type="com.lgcns.ikep4.lightpack.award.search.AwardItemReaderSearchCondition"/>
+  
+  <resultMap id="awardItemReaderResultBt" class="com.lgcns.ikep4.lightpack.award.model.AwardItemReader">
+    <result column="ITEM_ID"             property="itemId"            jdbcType="VARCHAR" />
+    <result column="BOARD_ITEM_ID"  property="awardItemId"  jdbcType="VARCHAR" />
+    <result column="READER_ID" property="readerId" jdbcType="VARCHAR" />
+    <result column="READER_TYPE" property="readerType" jdbcType="VARCHAR" />
+    <result column="READER_NAME" property="readerName" jdbcType="VARCHAR" />
+    <result column="CONTENTS" property="contents" jdbcType="CLOB" />
+    <result column="WORD_NAME" property="wordName" jdbcType="VARCHAR" />
+  </resultMap> 
+  
+  <resultMap id="awardItemReaderResult" class="com.lgcns.ikep4.lightpack.award.model.AwardItemReader">
+    <result column="ITEM_ID"             property="itemId"            jdbcType="VARCHAR" />
+    <result column="BOARD_ITEM_ID"  property="awardItemId"  jdbcType="VARCHAR" />
+    <result column="READER_ID" property="readerId" jdbcType="VARCHAR" />
+    <result column="READER_TYPE" property="readerType" jdbcType="VARCHAR" />
+    <result column="READER_NAME" property="readerName" jdbcType="VARCHAR" />
+  </resultMap> 
+  
+  
+  <resultMap id="awardItemReaderViewResult" class="com.lgcns.ikep4.lightpack.award.model.AwardItemReader">
+    <result column="READER_ID"       property="readerId"         jdbcType="VARCHAR" />
+    <result column="READER_NAME"      property="readerName"     jdbcType="VARCHAR" />
+    <result column="READER_TEAM_NAME" property="readerTeamName"    jdbcType="VARCHAR" />
+    <result column="READ_DATE"          property="readDate"              jdbcType="TIMESTAMP" />
+  </resultMap> 
+  
+   <resultMap id="awardItemReaderViewResult2" class="com.lgcns.ikep4.lightpack.award.model.AwardItemReader">
+    <result column="READER_ID"       property="readerId"         jdbcType="VARCHAR" />
+    <result column="READER_NAME"      property="readerName"     jdbcType="VARCHAR" />
+    <result column="READER_TEAM_NAME" property="readerTeamName"    jdbcType="VARCHAR" />
+    <result column="READER_MAIL"          property="readerMail"              jdbcType="VARCHAR" />
+    <result column="READER_PASSWORD"          property="readerPassword"              jdbcType="VARCHAR" />
+  </resultMap> 
+  
+  <select id="listAwardItemReader" parameterClass="string" resultMap="awardItemReaderResult">
+    SELECT 
+	ITEM_ID, BOARD_ITEM_ID , READER_ID , READER_TYPE ,
+	CASE 
+	WHEN READER_TYPE = 'G' THEN 
+   (SELECT GROUP_NAME FROM IKEP4_EV_GROUP WHERE GROUP_ID=READER_ID ) 
+    WHEN READER_TYPE = 'C' THEN 
+   (select addrgroup_name from IKEP4_AD_ADDRGROUP where addrgroup_id=READER_ID ) 
+    ELSE
+   (	SELECT	 A.USER_NAME+'/'+ isnull(D.JOB_DUTY_NAME,C.JOB_TITLE_NAME) +'/'+ A.TEAM_NAME
+      
+	       
+		FROM 
+					IKEP4_EV_USER A 
+                    INNER JOIN IKEP4_EV_JOB_TITLE C
+                    ON  A.JOB_TITLE_CODE = C.JOB_TITLE_CODE
+                    LEFT OUTER JOIN IKEP4_EV_JOB_DUTY D
+                    ON  A.JOB_DUTY_CODE = D.JOB_DUTY_CODE WHERE A.USER_ID=READER_ID ) 
+    END AS READER_NAME
+ 	from IKEP4_AW_ITEM_READER  /* [award_Item_reader_SqlMap.xml] selectReaderCount */
+    WHERE board_item_id= #awardItemId# 
+  </select>
+  
+  
+  <select id="listAwardItemAllNoti" parameterClass="string" resultMap="awardItemReaderResultBt">
+    SELECT 
+	'' as ITEM_ID , ITEM_ID AS BOARD_ITEM_ID , REGISTER_ID as READER_ID , '' as READER_TYPE , '' as READER_NAME, CONTENTS as CONTENTS, WORD_NAME as WORD_NAME
+ 	from IKEP4_AW_ITEM with (nolock)
+    WHERE reader_mail_flag=1 and temp_save=0
+  </select>
+  
+  <select id="listAwardItemAllNotiInstant" parameterClass="string" resultMap="awardItemReaderResultBt">
+    SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
+    SELECT 
+	'' as ITEM_ID , ITEM_ID AS BOARD_ITEM_ID , REGISTER_ID as READER_ID , '' as READER_TYPE , '' as READER_NAME, CONTENTS as CONTENTS, WORD_NAME as WORD_NAME
+ 	from IKEP4_AW_ITEM
+    WHERE item_id = #itemId# and temp_save=0
+  </select>
+  
+  <update id="updateMailSending">
+		UPDATE IKEP4_AW_ITEM SET READER_MAIL_FLAG=2 WHERE ITEM_ID IN
+	       <iterate open="(" close=")" conjunction=",">
+	       		#[]#
+	       </iterate>	
+	</update>   
+	<update id="updateMailWaitYn" parameterClass="String">
+		UPDATE IKEP4_AW_ITEM SET READER_MAIL_FLAG=0 WHERE ITEM_ID = #itemId#
+	</update>
+  
+ <select id="listReaderAllMail" parameterClass="string" resultMap="awardItemReaderViewResult2">  
+	  WITH CTE AS ( /* [award_Item_reader_SqlMap.xml] listReaderBySearchCondition */
+			SELECT *
+			FROM	IKEP4_EV_GROUP
+			WHERE	PORTAL_ID = 'P000001'
+				AND	GROUP_TYPE_ID = 'G0001'
+				AND	GROUP_ID in (
+								select reader_id from IKEP4_AW_ITEM_READER 
+								where reader_type = 'G' 
+								AND board_item_id = #awardItemId#
+
+								)
+			UNION ALL
+			SELECT	G.*
+			FROM	IKEP4_EV_GROUP G, CTE
+			WHERE	G.PORTAL_ID = 'P000001'
+				AND	G.GROUP_TYPE_ID = 'G0001'
+				AND CTE.GROUP_ID = G.PARENT_GROUP_ID
+		)
+	  SELECT 
+			*
+	  FROM (
+
+						SELECT
+						distinct U.USER_NAME AS READER_NAME , UG.user_id AS READER_ID , B.group_name AS READER_TEAM_NAME,  U.MAIL AS READER_MAIL , U.user_password AS READER_PASSWORD
+						FROM IKEP4_EV_USER_GROUP UG
+						LEFT JOIN   CTE C  ON UG.group_id= C.group_id 
+						INNER JOIN  IKEP4_EV_GROUP B ON B.GROUP_ID = C.GROUP_ID
+						INNER JOIN  IKEP4_EV_USER U ON U.user_id=UG.user_id
+						WHERE UG.group_id IN (C.group_id)
+						
+						union 
+						
+						select
+						distinct U.USER_NAME  AS READER_NAME , READER_ID , U.TEAM_name AS READER_TEAM_NAME,  U.MAIL AS READER_MAIL , U.user_password AS READER_PASSWORD
+						from IKEP4_AW_ITEM_READER RD
+						INNER JOIN  IKEP4_EV_USER U ON RD.reader_id = U.user_id
+						where RD.reader_type = 'U' 
+						AND RD.board_item_id = #awardItemId#
+						
+						union 
+				
+						select 
+						distinct U.USER_NAME  AS READER_NAME , U.user_id as READER_ID , U.TEAM_name AS READER_TEAM_NAME,  U.MAIL AS READER_MAIL , U.user_password AS READER_PASSWORD
+						from IKEP4_AW_ITEM_READER RD
+						LEFT  JOIN  IKEP4_AD_ADDRGROUP AG ON RD.reader_id=AG.addrgroup_id 
+						INNER JOIN  IKEP4_AD_PERSON2GROUP AU ON AG.addrgroup_id =AU.addrgroup_id
+						INNER JOIN  IKEP4_EV_USER U ON AU.person_id = U.user_id
+						where RD.reader_type = 'C' 
+						AND RD.board_item_id =  #awardItemId#
+						
+				) BB
+
+  </select>
+  
+  <select id="listReaderBySearchCondition" parameterClass="AwardItemReaderSearchCondition" resultMap="awardItemReaderViewResult">  
+	  WITH CTE AS ( /* [award_Item_reader_SqlMap.xml] listReaderBySearchCondition */
+			SELECT *
+			FROM	IKEP4_EV_GROUP
+			WHERE	PORTAL_ID = 'P000001'
+				AND	GROUP_TYPE_ID = 'G0001'
+				AND	GROUP_ID in (
+								select reader_id from IKEP4_AW_ITEM_READER 
+								where reader_type = 'G' 
+								AND board_item_id = #awardItemId#
+
+								)
+			UNION ALL
+			SELECT	G.*
+			FROM	IKEP4_EV_GROUP G, CTE
+			WHERE	G.PORTAL_ID = 'P000001'
+				AND	G.GROUP_TYPE_ID = 'G0001'
+				AND CTE.GROUP_ID = G.PARENT_GROUP_ID
+		)
+	  SELECT 
+			*
+	  FROM (
+		     SELECT AA.* FROM ( 
+		      
+		         SELECT Row_number() OVER (ORDER BY  
+		         								<isNotEmpty property="sortColumn">
+													<isEqual property="sortColumn" compareValue="READER_NAME">
+														<isEqual property="sortType" compareValue="DESC">
+															READER_NAME DESC ,READ_DATE DESC
+														</isEqual>
+														<isEqual property="sortType" compareValue="ASC">
+															READER_NAME ASC ,READ_DATE DESC
+														</isEqual>
+													</isEqual> 
+													<isEqual property="sortColumn" compareValue="READ_DATE">
+														<isEqual property="sortType" compareValue="DESC">
+															READ_DATE DESC ,READER_NAME ASC
+														</isEqual>
+														<isEqual property="sortType" compareValue="ASC">
+															READ_DATE ASC ,READER_NAME ASC
+														</isEqual>
+													</isEqual> 
+													<isEqual property="sortColumn" compareValue="READER_TEAM_NAME">
+														<isEqual property="sortType" compareValue="DESC">
+															READER_TEAM_NAME DESC ,READER_NAME ASC
+														</isEqual>
+														<isEqual property="sortType" compareValue="ASC">
+															READER_TEAM_NAME ASC ,READER_NAME ASC
+														</isEqual>
+													</isEqual> 
+		         								</isNotEmpty>  
+										         <isEmpty property="sortColumn">
+										          READ_DATE DESC, READER_NAME ASC 
+										         </isEmpty>
+										   ) AS RNUM,
+		          BB.* FROM (
+						SELECT
+						distinct U.USER_NAME AS READER_NAME , UG.user_id AS READER_ID , B.group_name AS READER_TEAM_NAME, R.regist_date AS READ_DATE 
+						FROM IKEP4_EV_USER_GROUP UG
+						LEFT JOIN   CTE C  ON UG.group_id= C.group_id 
+						INNER JOIN  IKEP4_EV_GROUP B ON B.GROUP_ID = C.GROUP_ID
+						INNER JOIN  IKEP4_EV_USER U ON U.user_id=UG.user_id
+						LEFT  JOIN  IKEP4_AW_REFERENCE R ON UG.user_id=R.register_id AND R.item_id= #awardItemId#
+						WHERE UG.group_id IN (C.group_id)
+						
+						union 
+						
+						select
+						distinct U.USER_NAME  AS READER_NAME , READER_ID , U.TEAM_name AS READER_TEAM_NAME, R.regist_date AS READ_DATE
+						from IKEP4_AW_ITEM_READER RD
+						INNER JOIN  IKEP4_EV_USER U ON RD.reader_id = U.user_id
+						LEFT  JOIN  IKEP4_AW_REFERENCE R ON RD.reader_id=R.register_id AND R.item_id= #awardItemId#
+						where RD.reader_type = 'U' 
+						AND RD.board_item_id = #awardItemId#
+						
+						union 
+				
+						select 
+						distinct U.USER_NAME  AS READER_NAME , U.user_id as READER_ID , U.TEAM_name AS READER_TEAM_NAME, R.regist_date AS READ_DATE
+						from IKEP4_AW_ITEM_READER RD
+						LEFT  JOIN  IKEP4_AD_ADDRGROUP AG ON RD.reader_id=AG.addrgroup_id 
+						INNER JOIN  IKEP4_AD_PERSON2GROUP AU ON AG.addrgroup_id =AU.addrgroup_id
+						INNER JOIN  IKEP4_EV_USER U ON AU.person_id = U.user_id
+						LEFT  JOIN  IKEP4_AW_REFERENCE R ON AU.person_id=R.register_id AND R.item_id=  #awardItemId#
+						where RD.reader_type = 'C' 
+						AND RD.board_item_id =  #awardItemId#
+						
+				) BB
+				where read_date is not null
+				<isNotEmpty property="searchColumn">
+					<isNotEmpty property="searchWord">
+						<isEqual property="searchColumn" compareValue="READER_NAME">
+							and	READER_NAME LIKE '%' + #searchWord# + '%'
+						</isEqual>
+						<isEqual property="searchColumn" compareValue="READER_TEAM_NAME">
+							and READER_TEAM_NAME LIKE '%' + #searchWord# + '%' 
+						</isEqual>
+					</isNotEmpty>
+				</isNotEmpty>  
+		<![CDATA[   
+			) AA WHERE RNUM <= #endRowIndex#
+	) TBL WHERE RNUM >   #startRowIndex#
+		]]> 
+  </select>
+  
+  <select id="listAwardBySearchCondition" parameterClass="AwardItemReaderSearchCondition" resultMap="awardItemReaderViewResult">  
+	  SELECT 
+			*
+	  FROM (
+		     SELECT AA.* FROM ( 
+		      
+		         SELECT Row_number() OVER (ORDER BY  
+		         								<isNotEmpty property="sortColumn">
+													<isEqual property="sortColumn" compareValue="READER_NAME">
+														<isEqual property="sortType" compareValue="DESC">
+															READER_NAME DESC ,READ_DATE DESC
+														</isEqual>
+														<isEqual property="sortType" compareValue="ASC">
+															READER_NAME ASC ,READ_DATE DESC
+														</isEqual>
+													</isEqual> 
+													<isEqual property="sortColumn" compareValue="READ_DATE">
+														<isEqual property="sortType" compareValue="DESC">
+															READ_DATE DESC ,READER_NAME ASC
+														</isEqual>
+														<isEqual property="sortType" compareValue="ASC">
+															READ_DATE ASC ,READER_NAME ASC
+														</isEqual>
+													</isEqual> 
+													<isEqual property="sortColumn" compareValue="READER_TEAM_NAME">
+														<isEqual property="sortType" compareValue="DESC">
+															READER_TEAM_NAME DESC ,READER_NAME ASC
+														</isEqual>
+														<isEqual property="sortType" compareValue="ASC">
+															READER_TEAM_NAME ASC ,READER_NAME ASC
+														</isEqual>
+													</isEqual> 
+		         								</isNotEmpty>  
+										         <isEmpty property="sortColumn">
+										          READ_DATE DESC, READER_NAME ASC 
+										         </isEmpty>
+										   ) AS RNUM,
+		          BB.* FROM (
+						select
+						distinct U.USER_NAME  AS READER_NAME , U.user_id as READER_ID , U.TEAM_name AS READER_TEAM_NAME, RD.access_date AS READ_DATE
+						from IKEP4_UT_MENU_LOG RD
+						INNER JOIN  IKEP4_EV_USER U ON RD.user_id = U.user_id
+						inner join IKEP4_UT_MENU M ON M.menu_id = RD.menu_id
+						where M.REQUEST_PARAMETER LIKE '%' + #awardItemId# + '%'
+						and U.user_id != 'admin'
+				) BB
+				where 1=1
+				<isNotEmpty property="searchColumn">
+					<isNotEmpty property="searchWord">
+						<isEqual property="searchColumn" compareValue="READER_NAME">
+							and	READER_NAME LIKE '%' + #searchWord# + '%'
+						</isEqual>
+						<isEqual property="searchColumn" compareValue="READER_TEAM_NAME">
+							and READER_TEAM_NAME LIKE '%' + #searchWord# + '%' 
+						</isEqual>
+					</isNotEmpty>
+				</isNotEmpty>  
+		<![CDATA[   
+			) AA WHERE RNUM <= #endRowIndex#
+	) TBL WHERE RNUM >   #startRowIndex#
+		]]> 
+  </select>
+  
+  <select id="listNoReaderBySearchCondition" parameterClass="AwardItemReaderSearchCondition" resultMap="awardItemReaderViewResult">  
+	  SELECT 
+			*
+	  FROM (
+		     SELECT AA.* FROM ( 
+		      
+		         SELECT Row_number() OVER (ORDER BY  
+		         								<isNotEmpty property="sortColumn">
+													<isEqual property="sortColumn" compareValue="READER_NAME">
+														<isEqual property="sortType" compareValue="DESC">
+															READER_NAME DESC ,READ_DATE DESC
+														</isEqual>
+														<isEqual property="sortType" compareValue="ASC">
+															READER_NAME ASC ,READ_DATE DESC
+														</isEqual>
+													</isEqual> 
+													<isEqual property="sortColumn" compareValue="READ_DATE">
+														<isEqual property="sortType" compareValue="DESC">
+															READ_DATE DESC ,READER_NAME ASC
+														</isEqual>
+														<isEqual property="sortType" compareValue="ASC">
+															READ_DATE ASC ,READER_NAME ASC
+														</isEqual>
+													</isEqual> 
+													<isEqual property="sortColumn" compareValue="READER_TEAM_NAME">
+														<isEqual property="sortType" compareValue="DESC">
+															READER_TEAM_NAME DESC ,READER_NAME ASC
+														</isEqual>
+														<isEqual property="sortType" compareValue="ASC">
+															READER_TEAM_NAME ASC ,READER_NAME ASC
+														</isEqual>
+													</isEqual> 
+		         								</isNotEmpty>  
+										         <isEmpty property="sortColumn">
+										          READ_DATE DESC, READER_NAME ASC 
+										         </isEmpty>
+										   ) AS RNUM,
+		          BB.* FROM (
+						SELECT
+						distinct U.USER_NAME AS READER_NAME , UG.user_id AS READER_ID , B.group_name AS READER_TEAM_NAME, R.regist_date AS READ_DATE 
+						FROM IKEP4_EV_USER_GROUP UG
+						INNER JOIN  IKEP4_EV_GROUP B ON B.GROUP_ID = UG.GROUP_ID
+						INNER JOIN  IKEP4_EV_USER U ON U.user_id=UG.user_id
+						INNER  JOIN  IKEP4_AW_REFERENCE R ON UG.user_id=R.register_id AND R.item_id= #awardItemId#
+						and B.group_type_id = 'G0001'
+				) BB
+				where 1=1
+				<isNotEmpty property="searchColumn">
+					<isNotEmpty property="searchWord">
+						<isEqual property="searchColumn" compareValue="READER_NAME">
+							and	READER_NAME LIKE '%' + #searchWord# + '%'
+						</isEqual>
+						<isEqual property="searchColumn" compareValue="READER_TEAM_NAME">
+							and READER_TEAM_NAME LIKE '%' + #searchWord# + '%' 
+						</isEqual>
+					</isNotEmpty>
+				</isNotEmpty>  
+		<![CDATA[   
+			) AA WHERE RNUM <= #endRowIndex#
+	) TBL WHERE RNUM >   #startRowIndex#
+		]]> 
+  </select>
+  
+   <select id="countReaderBySearchCondition" parameterClass="AwardItemReaderSearchCondition" resultClass="int">  
+	 WITH CTE AS ( /* [award_Item_reader_SqlMap.xml] countReaderBySearchCondition */
+				SELECT *
+				FROM	IKEP4_EV_GROUP
+				WHERE	PORTAL_ID = 'P000001'
+					AND	GROUP_TYPE_ID = 'G0001'
+					AND	GROUP_ID in (
+									select reader_id from IKEP4_AW_ITEM_READER 
+									where reader_type = 'G' 
+									AND board_item_id = #awardItemId#
+	
+									)
+				UNION ALL
+				SELECT	G.*
+				FROM	IKEP4_EV_GROUP G, CTE
+				WHERE	G.PORTAL_ID = 'P000001'
+					AND	G.GROUP_TYPE_ID = 'G0001'
+					AND CTE.GROUP_ID = G.PARENT_GROUP_ID
+			)   
+         SELECT 
+          COUNT(BB.READER_ID) FROM (
+				SELECT
+				distinct U.USER_NAME AS READER_NAME , UG.user_id AS READER_ID , B.group_name AS READER_TEAM_NAME, R.regist_date AS READ_DATE 
+				FROM IKEP4_EV_USER_GROUP UG
+				LEFT JOIN   CTE C  ON UG.group_id= C.group_id 
+				INNER JOIN  IKEP4_EV_GROUP B ON B.GROUP_ID = C.GROUP_ID
+				INNER JOIN  IKEP4_EV_USER U ON U.user_id=UG.user_id
+				LEFT  JOIN  IKEP4_AW_REFERENCE R ON UG.user_id=R.register_id AND R.item_id= #awardItemId#
+				WHERE UG.group_id IN (C.group_id)
+				
+				union  
+				
+				select 
+				distinct U.USER_NAME  AS READER_NAME , READER_ID , U.TEAM_name AS READER_TEAM_NAME, R.regist_date AS READ_DATE
+				from IKEP4_AW_ITEM_READER RD
+				INNER JOIN  IKEP4_EV_USER U ON RD.reader_id = U.user_id
+				LEFT  JOIN  IKEP4_AW_REFERENCE R ON RD.reader_id=R.register_id AND R.item_id= #awardItemId#
+				where RD.reader_type = 'U' 
+				AND RD.board_item_id = #awardItemId#
+				
+				union 
+			
+				select 
+				distinct U.USER_NAME  AS READER_NAME , U.user_id as READER_ID , U.TEAM_name AS READER_TEAM_NAME, R.regist_date AS READ_DATE
+				from IKEP4_AW_ITEM_READER RD
+				LEFT  JOIN  IKEP4_AD_ADDRGROUP AG ON RD.reader_id=AG.addrgroup_id 
+				INNER JOIN  IKEP4_AD_PERSON2GROUP AU ON AG.addrgroup_id =AU.addrgroup_id
+				INNER JOIN  IKEP4_EV_USER U ON AU.person_id = U.user_id
+				LEFT  JOIN  IKEP4_AW_REFERENCE R ON AU.person_id=R.register_id AND R.item_id=  #awardItemId#
+				where RD.reader_type = 'C' 
+				AND RD.board_item_id =  #awardItemId#
+		) BB
+		where read_date is not null
+		<isNotEmpty property="searchColumn">
+			<isNotEmpty property="searchWord">
+				<isEqual property="searchColumn" compareValue="READER_NAME">
+					and	READER_NAME LIKE '%' + #searchWord# + '%'
+				</isEqual>
+				<isEqual property="searchColumn" compareValue="READER_TEAM_NAME">
+					and READER_TEAM_NAME LIKE '%' + #searchWord# + '%' 
+				</isEqual>
+			</isNotEmpty>
+		</isNotEmpty>  
+  </select>
+  
+  <select id="countAwardBySearchCondition" parameterClass="AwardItemReaderSearchCondition" resultClass="int">  
+         SELECT 
+          COUNT(BB.READER_ID) FROM (
+				select
+				distinct U.USER_NAME  AS READER_NAME , U.user_id as READER_ID , U.TEAM_name AS READER_TEAM_NAME, RD.access_date AS READ_DATE
+				from IKEP4_UT_MENU_LOG RD
+				INNER JOIN  IKEP4_EV_USER U ON RD.user_id = U.user_id
+				inner join IKEP4_UT_MENU M ON M.menu_id = RD.menu_id
+				where M.REQUEST_PARAMETER LIKE '%' + #awardItemId# + '%'
+				and U.user_id != 'admin'
+		) BB
+		where 1=1
+		<isNotEmpty property="searchColumn">
+			<isNotEmpty property="searchWord">
+				<isEqual property="searchColumn" compareValue="READER_NAME">
+					and	READER_NAME LIKE '%' + #searchWord# + '%'
+				</isEqual>
+				<isEqual property="searchColumn" compareValue="READER_TEAM_NAME">
+					and READER_TEAM_NAME LIKE '%' + #searchWord# + '%' 
+				</isEqual>
+			</isNotEmpty>
+		</isNotEmpty>  
+  </select>
+  
+  <select id="countNoReaderBySearchCondition" parameterClass="AwardItemReaderSearchCondition" resultClass="int">  
+		SELECT
+		distinct count(*) 
+		FROM IKEP4_EV_USER_GROUP UG
+		INNER JOIN  IKEP4_EV_GROUP B ON B.GROUP_ID = UG.GROUP_ID
+		INNER JOIN  IKEP4_EV_USER U ON U.user_id=UG.user_id
+		INNER  JOIN  IKEP4_AW_REFERENCE R ON UG.user_id=R.register_id AND R.item_id= #awardItemId#
+		and B.group_type_id = 'G0001'
+		
+		<isNotEmpty property="searchColumn">
+			<isNotEmpty property="searchWord">
+				<isEqual property="searchColumn" compareValue="READER_NAME">
+					and	U.USER_NAME LIKE '%' + #searchWord# + '%'
+				</isEqual>
+				<isEqual property="searchColumn" compareValue="READER_TEAM_NAME">
+					and B.GROUP_NAME LIKE '%' + #searchWord# + '%' 
+				</isEqual>
+			</isNotEmpty>
+		</isNotEmpty>  
+  </select>
+  
+  <select id="checkReaderBySearchCondition" parameterClass="AwardItemReaderSearchCondition" resultClass="int">  
+        select count(*) from IKEP4_AW_ITEM_READER
+		where board_item_id = #awardItemId#
+  </select>
+  
+  
+ <insert id="create" parameterClass="AwardItemReader"> 
+    INSERT INTO IKEP4_AW_ITEM_READER ( /* [award_Item_reader_SqlMap.xml] create */
+            item_id
+           ,board_item_id
+           ,reader_id
+           ,reader_type
+     ) VALUES (
+      #itemId#,          
+      #awardItemId#,  
+      #readerId#,  
+      #readerType#  
+    )  
+  </insert>
+
+
+  <select id="readerFlag" parameterClass="AwardItemReader" resultClass="int">
+	  	WITH CTE AS ( /* [award_Item_reader_SqlMap.xml] readerFlag */
+			SELECT *
+			FROM	IKEP4_EV_GROUP
+			WHERE	PORTAL_ID = 'P000001'
+				AND	GROUP_TYPE_ID = 'G0001'
+				AND	GROUP_ID in (
+								select reader_id from IKEP4_AW_ITEM_READER 
+								where reader_type = 'G' 
+								AND board_item_id = #awardItemId#
+								)
+			UNION ALL
+			SELECT	G.*
+			FROM	IKEP4_EV_GROUP G, CTE
+			WHERE	G.PORTAL_ID = 'P000001'
+				AND	G.GROUP_TYPE_ID = 'G0001'
+				AND CTE.GROUP_ID = G.PARENT_GROUP_ID
+		)
+		select count(reader_id) from (
+			SELECT	
+			 C.group_id	as reader_id
+			FROM IKEP4_EV_GROUP B
+			INNER JOIN  CTE C  ON B.GROUP_ID = C.GROUP_ID
+			JOIN  IKEP4_EV_USER_GROUP UG ON C.group_id = UG.group_id AND UG.user_id = #readerId#
+			
+			union  
+			
+			select reader_id from IKEP4_AW_ITEM_READER
+			where reader_type = 'U' 
+			AND board_item_id = #awardItemId#
+			AND reader_id = #readerId#
+			
+			union  
+			
+			select AU.person_id as READER_ID 
+			from IKEP4_AW_ITEM_READER RD
+			LEFT  JOIN  IKEP4_AD_ADDRGROUP AG ON RD.reader_id=AG.addrgroup_id 
+			INNER JOIN  IKEP4_AD_PERSON2GROUP AU ON AG.addrgroup_id =AU.addrgroup_id
+
+			where RD.reader_type = 'C' 
+			AND AU.person_id = #readerId#
+			AND RD.board_item_id =  #awardItemId#
+			
+		) RE 
+  </select>
+  
+
+  <select id="selectReaderCount" parameterClass="AwardItemReader" resultClass="int">
+    SELECT count(reader_id) from IKEP4_AW_ITEM_READER  /* [award_Item_reader_SqlMap.xml] selectReaderCount */
+    WHERE board_item_id= #awardItemId#
+  </select>
+  
+  <delete id="deleteReader" parameterClass="string">  
+ 	DELETE FROM  IKEP4_AW_ITEM_READER /* [award_Item_reader_SqlMap.xml] deleteReader */
+ 	WHERE  board_item_id= #awardItemId# 
+  </delete>
+  
+</sqlMap>   

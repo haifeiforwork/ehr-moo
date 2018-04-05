@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="collpack.collaboration.workspace.dao.congratulations">
+
+	<typeAlias alias="WSCongratulations"			type="com.lgcns.ikep4.collpack.collaboration.workspace.model.Congratulations" />
+	
+  	<select id="listCongratulations" parameterClass="java.util.Map" resultClass="WSCongratulations">
+  		<![CDATA[
+  		/* [Congratulations_SqlMap.xml] collpack.collaboration.workspace.dao.congratulations.listCongratulations */
+  		SELECT 				
+  			A.USER_ID			AS	userId,
+  			A.USER_NAME			AS	userName,
+  			A.BIRTHDAY			AS	birthday, 
+  			A.WEDDING_ANNIV		AS	weddingAnniv,
+  			C.GROUP_NAME		AS	groupName, 
+  			D.JOB_POSITION_NAME	AS	jobPositionName
+		FROM
+			IKEP4_EV_USER A
+			INNER JOIN 		IKEP4_EV_USER_GROUP B 	ON	A.USER_ID = B.USER_ID
+			INNER JOIN 		IKEP4_EV_GROUP C 		ON	B.GROUP_ID = C.GROUP_ID
+			LEFT OUTER JOIN	IKEP4_EV_JOB_POSITION D ON 	A.JOB_POSITION_CODE = D.JOB_POSITION_CODE
+			INNER JOIN IKEP4_WS_MEMBER M ON M.MEMBER_ID=A.USER_ID AND M.WORKSPACE_ID=#workspaceId#
+		WHERE 	
+			A.PORTAL_ID = #portalId#
+			AND A.USER_STATUS IN ('H', 'C')
+			AND C.GROUP_TYPE_ID = 'G0001'
+			AND C.VIEW_OPTION = '1'			
+		]]>
+  		<isNotEmpty property="resultColumn">
+  		<isEqual property="resultColumn" compareValue="BIRTHDAY">
+  		<![CDATA[
+  		AND 				SUBSTR(A.BIRTHDAY,6,LENGTH(A.BIRTHDAY)) >= SUBSTR(#startDate#,6,LENGTH(#startDate#))
+		AND 				SUBSTR(A.BIRTHDAY,6,LENGTH(A.BIRTHDAY)) <= SUBSTR(#endDate#,6,LENGTH(#endDate#))
+		]]>
+		</isEqual>
+		<isEqual property="resultColumn" compareValue="WEDDING_ANNIV">
+		<![CDATA[
+  		AND 				SUBSTR(A.WEDDING_ANNIV,6,LENGTH(A.WEDDING_ANNIV)) >= SUBSTR(#startDate#,6,LENGTH(#startDate#))
+		AND 				SUBSTR(A.WEDDING_ANNIV,6,LENGTH(A.WEDDING_ANNIV)) <= SUBSTR(#endDate#,6,LENGTH(#endDate#))
+		]]>
+  		</isEqual>
+  		</isNotEmpty>
+  		
+  		<isNotEmpty property="resultColumn">
+  		<isEqual property="resultColumn" compareValue="BIRTHDAY">
+  		ORDER BY			A.BIRTHDAY ASC
+		</isEqual>
+		<isEqual property="resultColumn" compareValue="WEDDING_ANNIV">
+  		ORDER BY			A.WEDDING_ANNIV	ASC
+  		</isEqual>
+  		</isNotEmpty>
+  	</select>
+
+</sqlMap>   

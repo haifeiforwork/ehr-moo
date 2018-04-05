@@ -1,0 +1,104 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ko">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Home</title>
+<link rel="stylesheet" type="text/css" href="../css/theme01/jquery_ui_custom.css" />
+<link rel="stylesheet" type="text/css" href="../css/common.css" />
+<link rel="stylesheet" type="text/css" href="../css/theme01/theme.css" />
+<script type="text/javascript" src="../js/jquery/jquery-1.5.1.min.js"></script>
+<script type="text/javascript" src="../js/jquery/jquery-ui-1.8.7.custom.min.js"></script>
+<script type="text/javascript" src="../js/langResource/ko.js"></script>
+<script type="text/javascript">var contextRoot = "/ikep4-webapp";</script>
+<script type="text/javascript" src="../js/common.pack.js"></script>
+<script type="text/javascript">
+function getServerTime() {
+	var time = iKEP.getCurTime();
+	var strTime = time.getFullYear() + iKEP.zerofill(time.getMonth()+1, 2) + iKEP.zerofill(time.getDate(), 2) + iKEP.zerofill(time.getHours(), 2) + iKEP.zerofill(time.getMinutes(), 2) + iKEP.zerofill(time.getSeconds(), 2);	// 20110606155001
+	return strTime;
+}
+
+function createWorldClock(container) {
+	var gmt = "(GMT-09:00)";
+	var city = "뉴욕";
+	var title = "현재시간";
+	
+	var swf = iKEP.getContextRoot()+"/base/swf/portlet/wclock/wclock.swf";
+	var wDate = getServerTime();
+
+	var wxml = iKEP.getContextRoot()+"/base/swf/portlet/wclock/timedata_ko.xml";
+	var param = "gGmt=" + gmt + "&amp;gData=" + wDate + "&amp;gLocale=" + title + "&amp;gXmlfile=" + wxml + "&amp;gCity=" + city;
+	
+	var embedTag = (jQuery.browser["msie"] === true) ? '<object id="embedObj_' + (new Date()).getTime() + '" align="middle" width="300" height="240" codebase="http://fpdownload.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=9.0.0.0" classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000">' +
+			'<param name="allowScriptAccess" value="always"/>' +
+			'<param name="movie" value="' + swf + '?' + param + '"/>' +
+			'<param name="wmode" value="transparent"/>' +	//window
+			'<param name="menu" value="false"/>' +
+			'<param name="scaleMode" value="noScale"/>' +
+			'<param name="showMenu" value="false"/>' +
+			'<param name="align" value="CT"/>' +
+			'<param name="quality" value="high"/>' +
+			'<param name="bgcolor" value="#ffffff"/>' +
+		'</object>' : '<embed align="middle" width="300" height="240"' +
+		' pluginspage="http://www.macromedia.com/go/getflashplayer"' +
+		' type="application/x-shockwave-flash"' +
+		' allowscriptaccess="always"' +
+		' bgcolor="#ffffff"' +
+		' quality="high"' +
+		' menu="false"' +
+		' wmode="transparent"' +	//window
+		' src="' + swf + '?' + param + '"/>';
+	$jq(container).html(embedTag);
+
+	embedTimer = $jq(container).children(":eq(0)")[0];
+}
+
+
+var container, embedTimer;
+var areas = new Array();
+
+(function($){
+	$(document).ready(function() {
+		container = document.getElementById("container");
+		
+		for(var i=0, loopCnt=container.childNodes.length; i<loopCnt; i++) {
+			var node = container.childNodes[i];
+			if(node.nodeType == 1 && node.tagName.toLowerCase() == "div") {
+				areas.push(node);
+			}
+		}
+		
+		createWorldClock(areas[0]);
+		
+		$("#btn1").click(function() {
+			//$("#embedTimer").appendTo($("#container").children("div:eq(0)"));
+			areas[0].appendChild(embedTimer);
+		});
+		
+		$("#btn2").click(function() {
+			//$("#embedTimer").appendTo($("#container").children("div:eq(1)"));
+			areas[1].appendChild(embedTimer);
+		});
+		
+		$("#btn3").click(function() {
+			//$("#embedTimer").appendTo($("#container").children("div:eq(2)"));
+			areas[2].appendChild(embedTimer);
+		});
+	});
+})(jQuery);
+</script>
+</head>
+
+<body class="popup">
+<div id="container" style="height:300px;">
+	<div style="float:left; width:33%; height:100%; border:1px dashed red;"></div>
+	<div style="float:left; width:33%; height:100%; border:1px dashed yellow;"></div>
+	<div style="float:left; width:33%; height:100%; border:1px dashed blue;"></div>
+</div>
+<div>
+	<a id="btn1" href="#a">div1</a>
+	<a id="btn2" href="#a">div2</a>
+	<a id="btn3" href="#a">div3</a>
+</div>
+</body>
+</html>

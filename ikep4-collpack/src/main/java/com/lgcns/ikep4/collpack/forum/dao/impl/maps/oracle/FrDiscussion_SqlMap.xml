@@ -1,0 +1,367 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="collpack.fourm.dao.FrDiscussion" >
+
+	<typeAlias alias = "FrSearch" type="com.lgcns.ikep4.collpack.forum.model.FrSearch"/>
+
+	<typeAlias alias = "FrDiscussion" type="com.lgcns.ikep4.collpack.forum.model.FrDiscussion"/>
+
+  <resultMap id="FrDiscussionResult" class="FrDiscussion" >
+    <result column="DISCUSSION_ID" 			property="discussionId"  />
+    <result column="CATEGORY_ID" 			property="categoryId"  />
+    <result column="TITLE" 					property="title" />
+    <result column="CONTENTS" 				property="contents"  />
+    <result column="IMAGE_ID" 				property="imageId" />
+    <result column="HIT_COUNT" 				property="hitCount"  />
+    <result column="ITEM_COUNT" 			property="itemCount" />
+    <result column="LINEREPLY_COUNT" 		property="linereplyCount" />
+    <result column="PARTICIPATION_COUNT" 	property="participationCount" />
+    <result column="REGISTER_ID" 			property="registerId" />
+    <result column="REGISTER_NAME" 			property="registerName" />
+    <result column="REGIST_DATE" 			property="registDate" />
+    <result column="UPDATER_ID" 			property="updaterId"  />
+    <result column="UPDATER_NAME" 			property="updaterName" />
+    <result column="UPDATE_DATE" 			property="updateDate" />
+    <result column="TEAM_NAME" 				property="teamName" />
+    <result column="JOB_TITLE_NAME" 			property="jobTitleName" />
+    <result column="CATEGORY_NAME" 			property="categoryName" />
+    <result column="MAIL_COUNT" 			property="mailCount" 			/>
+	<result column="MBLOG_COUNT"			property="mblogCount" 			/>
+	<result column="USER_ENGLISH_NAME" 		property="userEnglishName" 		/>
+	<result column="TEAM_ENGLISH_NAME" 		property="teamEnglishName" 		/>
+	<result column="JOB_TITLE_ENGLISH_NAME" property="jobTitleEnglishName" 	/>
+  </resultMap>
+  
+  <resultMap id="FrDiscussionResultByReference" class="FrDiscussion" >
+    <result column="DISCUSSION_ID" 			property="discussionId"  />
+    <result column="CATEGORY_ID" 			property="categoryId"  />
+    <result column="TITLE" 					property="title" />
+    <result column="CONTENTS" 				property="contents"  />
+    <result column="IMAGE_ID" 				property="imageId" />
+    <result column="HIT_COUNT" 				property="hitCount"  />
+    <result column="ITEM_COUNT" 			property="itemCount" />
+    <result column="LINEREPLY_COUNT" 		property="linereplyCount" />
+    <result column="PARTICIPATION_COUNT" 	property="participationCount" />
+    <result column="REGISTER_ID" 			property="registerId" />
+    <result column="REGISTER_NAME" 			property="registerName" />
+    <result column="REGIST_DATE" 			property="registDate" />
+  </resultMap>
+  
+  <sql id="FrDiscussion_Column_List" >
+   	  A.DISCUSSION_ID
+      ,A.CATEGORY_ID
+      ,A.TITLE
+      ,A.CONTENTS
+      ,A.IMAGE_ID
+      ,A.HIT_COUNT
+      ,A.ITEM_COUNT
+      ,A.LINEREPLY_COUNT
+      ,A.PARTICIPATION_COUNT
+      ,A.REGISTER_ID
+      ,A.REGISTER_NAME
+      ,A.REGIST_DATE
+      ,A.UPDATER_ID
+      ,A.UPDATER_NAME
+      ,A.UPDATE_DATE
+      ,C.TEAM_NAME
+	  ,D.JOB_TITLE_NAME
+	  ,(SELECT CATEGORY_NAME FROM IKEP4_FR_CATEGORY WHERE A.CATEGORY_ID = CATEGORY_ID) CATEGORY_NAME
+	  ,A.MAIL_COUNT
+  	  ,A.MBLOG_COUNT
+  	  ,C.USER_ENGLISH_NAME
+  	  ,C.TEAM_ENGLISH_NAME
+  	  ,D.JOB_TITLE_ENGLISH_NAME
+  </sql>
+  
+  <insert id="create" parameterClass="FrDiscussion" >
+    INSERT INTO IKEP4_FR_DISCUSSION (			/* [FrDiscussion_SqlMap.xml] FrDiscussion.create */
+	    DISCUSSION_ID
+	    , CATEGORY_ID
+	    , TITLE
+	    , CONTENTS
+	    , IMAGE_ID
+	    , HIT_COUNT
+	    , ITEM_COUNT
+	    , LINEREPLY_COUNT
+	    , PARTICIPATION_COUNT
+	    , REGISTER_ID
+	    , REGISTER_NAME
+	    , REGIST_DATE
+	    , UPDATER_ID
+	    , UPDATER_NAME
+	    , UPDATE_DATE
+	    , PORTAL_ID
+	    , MAIL_COUNT
+	    , MBLOG_COUNT
+    ) VALUES (
+	    #discussionId#
+	    , #categoryId#
+	    , #title#
+	    , #contents#
+	    , #imageId#
+	    , 0
+	    , 0
+	    , 0
+	    , 1
+	    , #registerId#
+	    , #registerName#
+	    , sysdate
+	    , #updaterId#
+	    , #updaterName#
+	    , sysdate
+	    , #portalId#
+	    , 0
+	    , 0
+    )
+  </insert>
+  
+  
+  <select id="get" resultMap="FrDiscussionResult" parameterClass="String" >
+    SELECT 					/* [FrDiscussion_SqlMap.xml] FrDiscussion.get */
+    
+	      <include refid="FrDiscussion_Column_List" />
+	      
+    FROM IKEP4_FR_DISCUSSION A, IKEP4_EV_USER C, IKEP4_EV_JOB_TITLE D
+    WHERE DISCUSSION_ID = #discussionId#
+     AND A.REGISTER_ID = C.USER_ID
+	AND C.JOB_TITLE_CODE = D.JOB_TITLE_CODE
+  </select>
+  
+  
+   <select id="getCountByUserId" resultClass="int" parameterClass="String" >
+	    SELECT 					/* [FrDiscussion_SqlMap.xml] FrDiscussion.getCountByUserId */
+		      COUNT(DISCUSSION_ID)
+	    FROM IKEP4_FR_DISCUSSION
+	    WHERE REGISTER_ID = #registerId#
+	
+  </select>
+  
+   <select id="list" resultMap="FrDiscussionResult" parameterClass="FrSearch" >
+	     <isNotEmpty property="startRowIndex">
+	     SELECT  						/* [FrDiscussion_SqlMap.xml] FrDiscussion.list */				
+	          		*
+		      FROM    (
+		                SELECT  ROWNUM NUM, F.*
+		                FROM
+		                     (
+		  </isNotEmpty>                
+		                    SELECT
+		                    
+							 <include refid="FrDiscussion_Column_List" />
+							     
+						    FROM IKEP4_FR_DISCUSSION A, IKEP4_EV_USER C, IKEP4_EV_JOB_TITLE D
+						    WHERE A.REGISTER_ID = C.USER_ID
+							AND C.JOB_TITLE_CODE = D.JOB_TITLE_CODE
+							AND A.PORTAL_ID = #portalId#
+							<isNotEmpty prepend="AND" property="categoryId">
+							 	A.CATEGORY_ID = #categoryId#
+							</isNotEmpty>
+							<isNotEmpty prepend="AND" property="userId">
+							 	A.REGISTER_ID = #userId#
+							</isNotEmpty>
+							<isNotEmpty prepend="AND" property="isItem">
+							 	A.ITEM_COUNT &gt; 0
+							</isNotEmpty>
+							<isNotEmpty prepend="AND" property="limitDate" >
+							    A.REGIST_DATE &gt; SYSDATE - #limitDate#
+							</isNotEmpty>
+		 <isNotEmpty property="startRowIndex">				    
+						    ORDER BY A.DISCUSSION_ID DESC
+						 
+						  ) F
+	                WHERE   ROWNUM &lt;= #endRowIndex#
+	              )
+	      WHERE   NUM &gt; #startRowIndex#
+	      </isNotEmpty>
+  </select>
+  
+  <select id="getCountList" resultClass="int" parameterClass="FrSearch" >
+
+        SELECT					/* [FrDiscussion_SqlMap.xml] FrDiscussion.getCountList */	
+		 	COUNT(A.DISCUSSION_ID)
+	    FROM IKEP4_FR_DISCUSSION A
+	    WHERE A.PORTAL_ID = #portalId#
+		<isNotEmpty prepend="AND" property="userId">
+		 	A.REGISTER_ID = #userId#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="categoryId">
+		 	A.CATEGORY_ID = #categoryId#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="isItem">
+		 	A.ITEM_COUNT &gt; 0
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="limitDate" >
+		    A.REGIST_DATE &gt; SYSDATE - #limitDate#
+		</isNotEmpty>
+
+  </select>
+  
+  <select id="listPopular" resultMap="FrDiscussionResult" parameterClass="FrSearch" >
+
+	     SELECT  						/* [FrDiscussion_SqlMap.xml] FrDiscussion.listPopular */				
+	          		*
+		      FROM    (
+		                SELECT  ROWNUM NUM, F.*
+		                FROM
+		                     (
+		                    SELECT
+		                    
+							<include refid="FrDiscussion_Column_List" />
+							     
+						    FROM IKEP4_FR_DISCUSSION A, IKEP4_FR_DISCUSSION_SCORE B, IKEP4_EV_USER C, IKEP4_EV_JOB_TITLE D
+						    WHERE A.REGISTER_ID = C.USER_ID
+							AND C.JOB_TITLE_CODE = D.JOB_TITLE_CODE
+							AND A.DISCUSSION_ID = B.DISCUSSION_ID
+							AND A.PORTAL_ID = #portalId#
+							<isNotEmpty prepend="AND" property="limitDate" >
+							    A.REGIST_DATE &gt; SYSDATE - #limitDate#
+							</isNotEmpty>
+						    ORDER BY B.DISCUSSION_SCORE DESC
+						  ) F
+	                WHERE   ROWNUM &lt;= #endRowIndex#
+	              )
+	      WHERE   NUM &gt; #startRowIndex#
+
+  </select>
+ 
+  <select id="getCountListPopular" resultClass="int" parameterClass="FrSearch" >
+        SELECT						/* [FrDiscussion_SqlMap.xml] FrDiscussion.getCountListPopular */
+			COUNT(A.DISCUSSION_ID)
+	    FROM IKEP4_FR_DISCUSSION A, IKEP4_FR_DISCUSSION_SCORE B
+	    WHERE A.PORTAL_ID = #portalId#
+	    AND A.DISCUSSION_ID = B.DISCUSSION_ID
+		<isNotEmpty prepend="AND" property="limitDate" >
+		    A.REGIST_DATE &gt; SYSDATE - #limitDate#
+		</isNotEmpty>
+
+  </select>
+
+  <update id="update" parameterClass="FrDiscussion" >
+    UPDATE IKEP4_FR_DISCUSSION				/* [FrDiscussion_SqlMap.xml] FrDiscussion.update */
+    SET CATEGORY_ID = #categoryId#,
+      TITLE = #title#,
+      CONTENTS = #contents#,
+      IMAGE_ID = #imageId#,
+      UPDATER_ID = #updaterId#,
+      UPDATER_NAME = #updaterName#,
+      UPDATE_DATE = sysdate
+    WHERE DISCUSSION_ID = #discussionId#
+  </update>
+  
+  <update id="updateHitCount" parameterClass="String" >
+    UPDATE IKEP4_FR_DISCUSSION				/* [FrDiscussion_SqlMap.xml] FrDiscussion.updateHitCount */
+    SET HIT_COUNT = (SELECT NVL(SUM(HIT_COUNT),0) 
+    				FROM IKEP4_FR_ITEM 
+    				WHERE DISCUSSION_ID = #discussionId#
+    				)
+    WHERE DISCUSSION_ID = #discussionId#
+  </update>
+  
+   <update id="updateItemCount" parameterClass="String" >
+    UPDATE IKEP4_FR_DISCUSSION				/* [FrDiscussion_SqlMap.xml] FrDiscussion.updateItemCount */
+    SET ITEM_COUNT = (SELECT NVL(COUNT(ITEM_ID),0) FROM IKEP4_FR_ITEM WHERE DISCUSSION_ID = #discussionId#)
+    WHERE DISCUSSION_ID = #discussionId#
+  </update>
+  
+  <update id="updateLinereplyCount" parameterClass="String" >
+    UPDATE IKEP4_FR_DISCUSSION				/* [FrDiscussion_SqlMap.xml] FrDiscussion.updateItemCount */
+    SET LINEREPLY_COUNT = (
+	    			SELECT NVL(COUNT(ITEM_ID),0) FROM IKEP4_FR_LINEREPLY 
+	    			WHERE ITEM_ID IN (
+	    				SELECT ITEM_ID 
+	    				FROM IKEP4_FR_ITEM 
+	    				WHERE DISCUSSION_ID = #discussionId#
+	    				)
+				    
+				    )
+    WHERE DISCUSSION_ID = #discussionId#
+  </update>
+  
+  <update id="updateParticipationCount" parameterClass="String" >
+    UPDATE IKEP4_FR_DISCUSSION				/* [FrDiscussion_SqlMap.xml] FrDiscussion.updateParticipationCount */
+    SET PARTICIPATION_COUNT = (SELECT  COUNT(distinct(REGISTER_ID)) FROM IKEP4_FR_PARTICIPANT WHERE DISCUSSION_ID = #discussionId# )
+    WHERE DISCUSSION_ID = #discussionId#
+  </update>
+  
+  
+  <update id="updateMailCount" parameterClass="string">
+		   UPDATE IKEP4_FR_DISCUSSION 		/* [FrDiscussion_SqlMap.xml] FrDiscussion.updateMailCount */
+		   SET MAIL_COUNT = MAIL_COUNT + 1
+		   WHERE  DISCUSSION_ID = #discussionId#
+	</update>
+	
+	<update id="updateMblogCount" parameterClass="string">
+		   UPDATE IKEP4_FR_DISCUSSION 		/* [FrDiscussion_SqlMap.xml] FrDiscussion.updateMailCount */
+		   SET MBLOG_COUNT = MBLOG_COUNT + 1
+		   WHERE  DISCUSSION_ID = #discussionId#
+	</update>
+  
+   <delete id="remove" parameterClass="String" >
+    DELETE 				/* [FrDiscussion_SqlMap.xml] FrDiscussion.remove */
+    FROM IKEP4_FR_DISCUSSION
+    WHERE DISCUSSION_ID = #discussionId#
+  </delete>
+  
+   <select id="listDiscussionByReference" resultMap="FrDiscussionResultByReference" parameterClass="FrSearch" >
+	SELECT 			 /* [FrDiscussion_SqlMap.xml] FrDiscussion.listDiscussionByReference */
+	     F.DISCUSSION_ID             
+	    ,F.CATEGORY_ID                 
+	    ,F.TITLE                     
+	    ,F.CONTENTS                
+	    ,F.IMAGE_ID                 
+	    ,F.HIT_COUNT             
+	    ,F.ITEM_COUNT                
+	    ,F.LINEREPLY_COUNT        
+	    ,F.PARTICIPATION_COUNT
+	    ,F.REGISTER_ID             
+	    ,F.REGISTER_NAME         
+	    ,F.REGIST_DATE     
+	  FROM (
+	        SELECT * FROM (
+		         SELECT  DISCUSSION_ID, max(REGIST_DATE) REGIST_DATE 
+		         FROM (
+		         	SELECT                       
+		                  C.DISCUSSION_ID                 
+		                  , A.REGIST_DATE     
+	                FROM (
+	                            SELECT ITEM_ID, REGIST_DATE FROM IKEP4_FR_REFERENCE 
+	                            WHERE REGISTER_ID = #userId# 
+	                       
+	                      ) A, IKEP4_FR_ITEM B, IKEP4_FR_DISCUSSION C
+	                WHERE A.ITEM_ID = B.ITEM_ID
+	                AND B.DISCUSSION_ID     = C.DISCUSSION_ID      
+		        ) 
+		        GROUP BY DISCUSSION_ID
+		        ORDER BY  REGIST_DATE DESC
+	        ) 
+	        WHERE ROWNUM &lt;= #endRowIndex#
+	       ) G, IKEP4_FR_DISCUSSION F
+	WHERE G.DISCUSSION_ID = F.DISCUSSION_ID
+  </select>
+  
+  
+   <select id="listDiscussionByItemCount" resultMap="FrDiscussionResultByReference" parameterClass="FrSearch" >
+	SELECT A.*  /* [FrDiscussion_SqlMap.xml] FrDiscussion.listDiscussionByReference */
+	FROM (
+		SELECT 			
+		    DISCUSSION_ID             
+		    ,CATEGORY_ID                 
+		    ,TITLE                     
+		    ,CONTENTS                
+		    ,IMAGE_ID                 
+		    ,HIT_COUNT             
+		    ,ITEM_COUNT                
+		    ,LINEREPLY_COUNT        
+		    ,PARTICIPATION_COUNT
+		    ,REGISTER_ID             
+		    ,REGISTER_NAME         
+		    ,REGIST_DATE     
+		  FROM  IKEP4_FR_DISCUSSION
+		  WHERE REGIST_DATE &gt; SYSDATE - #limitDate#
+		ORDER BY ITEM_COUNT DESC
+	) A
+	WHERE ROWNUM &lt;= #endRowIndex#
+  </select>
+  
+  
+</sqlMap>

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="com.lgcns.ikep4.support.searchpreprocessor.rank">
+  
+  <typeAlias alias="spRank"       type="com.lgcns.ikep4.support.searchpreprocessor.model.Rank"/>
+  
+  <resultMap class="spRank" id="baseResultMap">
+    <result column="SEARCH_KEYWORD_ID" jdbcType="VARCHAR" property="searchKeywordId" />
+    <result column="SEARCH_RANK" jdbcType="DECIMAL" property="searchRank" />
+    <result column="PRE_SEARCH_RANK" jdbcType="DECIMAL" property="preSearchRank" />
+  </resultMap>
+
+   <sql id="sqlColumnList"> 
+	  SEARCH_KEYWORD_ID, SEARCH_RANK, PRE_SEARCH_RANK
+  </sql> 
+  
+  
+  <select id="get" parameterClass="string" resultMap="baseResultMap">
+    select  
+    	<include refid="com.lgcns.ikep4.support.searchpreprocessor.rank.sqlColumnList" />
+    from IKEP4_SP_RANK
+    where SEARCH_KEYWORD_ID = #searchKeywordId#
+  </select>
+  
+  <select id="exists"  parameterClass="string" resultClass="int">
+    select count(*) 
+    from IKEP4_SP_RANK
+    where SEARCH_KEYWORD_ID = #searchKeywordId#
+  </select>
+  
+  <delete id="remove" parameterClass="string">
+    delete 
+    from IKEP4_SP_RANK
+    where SEARCH_KEYWORD_ID = #searchKeywordId#
+  </delete>
+  
+  <insert id="create" parameterClass="spRank">
+    insert into IKEP4_SP_RANK (
+    	<include refid="com.lgcns.ikep4.support.searchpreprocessor.rank.sqlColumnList" />
+    )
+    values (
+        #searchKeywordId#,
+        #searchRank#,
+        #preSearchRank#
+      )
+  </insert>
+  
+  <update id="update" parameterClass="spRank">
+    update IKEP4_SP_RANK
+    set SEARCH_RANK = #searchRank#,
+        PRE_SEARCH_RANK = #preSearchRank#
+    where SEARCH_KEYWORD_ID = #searchKeywordId#
+  </update>
+  
+   <select id="getRankList" resultMap="baseResultMap">
+    select  
+    	<include refid="com.lgcns.ikep4.support.searchpreprocessor.rank.sqlColumnList" />
+    from IKEP4_SP_RANK
+    order by SEARCH_RANK desc,pre_search_rank desc
+  </select>
+  
+  <delete id="removeAll">
+    delete 
+    from IKEP4_SP_RANK
+  </delete>
+  
+</sqlMap>

@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="lightpack.cafe.category.dao.Category">
+
+	<typeAlias alias="cfCategory" type="com.lgcns.ikep4.lightpack.cafe.category.model.Category" />
+	<typeAlias alias="cfCategorySearchCondition" type="com.lgcns.ikep4.lightpack.cafe.category.search.CategorySearchCondition"/>
+
+	<sql id="sqlColumnList">
+		A.PORTAL_ID				portalId,
+		A.CATEGORY_ID			categoryId,
+		A.CATEGORY_NAME			categoryName,
+		A.CATEGORY_ENGLISH_NAME categoryEnglishName,
+		A.PARENT_ID 			parentId, 
+		A.DESCRIPTION 			description, 
+		A.SORT_ORDER			sortOrder,
+		A.IS_DELETE				isDelete,
+		A.REGISTER_ID			registerId,
+		A.REGISTER_NAME			registerName,
+		A.REGIST_DATE			registDate,
+		A.UPDATER_ID			updaterId,
+		A.UPDATER_NAME			updaterName,
+		A.UPDATE_DATE			updateDate
+	</sql>
+
+	
+	
+	<select id="listByCafeType" parameterClass="Map"  resultClass="cfCategory">
+		SELECT /* [Category_SqlMap.xml] lightpack.cafe.category.dao.Category.listByCafeType */
+			<include refid="lightpack.cafe.category.dao.Category.sqlColumnList" />
+		FROM 
+			IKEP4_CF_CATEGORY A 
+		WHERE 
+			A.PORTAL_ID		=	#portalId#
+			AND A.IS_DELETE	=	0
+		ORDER BY 
+			A.SORT_ORDER,A.CATEGORY_NAME
+	</select>
+	
+	<select id="listCafeCategoryByPortalId" parameterClass="string"  resultClass="cfCategory">
+		SELECT /* [Category_SqlMap.xml] lightpack.cafe.category.dao.Category.listCafeCategoryByPortalId */
+			<include refid="lightpack.cafe.category.dao.Category.sqlColumnList" />
+			,(SELECT COUNT(CATEGORY_ID) FROM IKEP4_CF_CATEGORY WHERE PARENT_ID = A.CATEGORY_ID) AS childCount
+			,(SELECT COUNT(CAFE_ID) FROM IKEP4_CF_CAFE B WHERE B.CATEGORY_ID = A.CATEGORY_ID AND B.CAFE_STATUS IN ('O','WC')) AS cafeCount
+		FROM 
+			IKEP4_CF_CATEGORY A  
+		WHERE 
+			A.PORTAL_ID		=	#portalId#
+			AND A.IS_DELETE	=	0
+		ORDER BY 
+			A.SORT_ORDER, A.CATEGORY_NAME
+	</select>
+	
+	<select id="getDefaultCategoryList" parameterClass="string"  resultClass="cfCategory">
+		SELECT /* [Category_SqlMap.xml] lightpack.cafe.category.dao.Category.getDefaultCategoryList */
+				CATEGORY_ID 			AS categoryId
+		        ,CATEGORY_NAME			AS categoryName
+		        ,CATEGORY_ENGLISH_NAME 	AS categoryEnglishName
+		        ,(
+		          SELECT COUNT(A.CAFE_ID) 
+			        FROM IKEP4_CF_CAFE A 
+			        LEFT OUTER JOIN IKEP4_CF_CATEGORY B
+			        ON A.CATEGORY_ID = B.CATEGORY_ID
+			        WHERE (B.PARENT_ID = C.CATEGORY_ID
+			        OR A.CATEGORY_ID = C.CATEGORY_ID)
+			        AND B.PORTAL_ID = #portalId# AND A.PORTAL_ID = #portalId#
+			        AND B.IS_DELETE = 0 AND A.CAFE_STATUS IN ('O','WC')
+		        ) AS cafeCount
+		        ,(
+		          SELECT COUNT(D.CATEGORY_ID) 
+			      FROM IKEP4_CF_CATEGORY D
+			      WHERE D.PARENT_ID = C.CATEGORY_ID
+		        ) AS childCount
+		FROM IKEP4_CF_CATEGORY C
+		WHERE PARENT_ID IS NULL AND IS_DELETE = 0
+		ORDER BY SORT_ORDER ASC, CATEGORY_NAME ASC
+	</select>
+	
+	<select id="getLowRankCategoryList" parameterClass="java.util.Map"  resultClass="cfCategory">
+		SELECT /* [Category_SqlMap.xml] lightpack.cafe.category.dao.Category.getLowRankCategoryList */
+				CATEGORY_ID 			AS categoryId
+		        ,CATEGORY_NAME			AS categoryName
+		        ,CATEGORY_ENGLISH_NAME 	AS categoryEnglishName
+		FROM IKEP4_CF_CATEGORY 
+		WHERE 
+		<isNotEmpty property="categoryId">
+			PARENT_ID = #categoryId#
+		</isNotEmpty>
+		<isEmpty property="categoryId">
+			PARENT_ID IS NULL
+		</isEmpty>
+		AND IS_DELETE = 0 AND PORTAL_ID = #portalId#
+		ORDER BY SORT_ORDER ASC, CATEGORY_NAME ASC
+	</select>
+	
+	<select id="getCategoryInfo" parameterClass="java.util.Map"  resultClass="cfCategory">
+		SELECT /* [Category_SqlMap.xml] lightpack.cafe.category.dao.Category.getCategoryInfo */
+			<include refid="lightpack.cafe.category.dao.Category.sqlColumnList" />,
+			(
+				SELECT SUBSTR(X.CATNAME,3,LENGTH(X.CATNAME)) as path
+				FROM
+				(
+					SELECT SYS_CONNECT_BY_PATH(category_name,' > ') CATNAME
+					FROM IKEP4_CF_CATEGORY 
+					WHERE CATEGORY_ID = #categoryId# 
+					START WITH PARENT_ID IS NULL
+					CONNECT BY  PARENT_ID = PRIOR CATEGORY_ID
+				)X
+			) AS categoryLocation
+		FROM 
+			IKEP4_CF_CATEGORY A 
+		WHERE 
+			A.CATEGORY_ID = #categoryId#
+			AND A.PORTAL_ID		=	#portalId#
+			AND A.IS_DELETE		=	0
+	</select>
+	<!-- create -->	
+	<insert id="create" parameterClass="cfCategory"> 
+		INSERT INTO IKEP4_CF_CATEGORY /* [Category_SqlMap.xml] lightpack.cafe.category.dao.Category.create */
+		(
+			CATEGORY_ID,
+			PARENT_ID,
+			PORTAL_ID,
+			CATEGORY_NAME,
+			DESCRIPTION,	
+			SORT_ORDER,	
+			IS_DELETE,
+			REGISTER_ID,
+			REGISTER_NAME,
+			REGIST_DATE,
+			UPDATER_ID,	
+			UPDATER_NAME,
+			UPDATE_DATE,
+			CATEGORY_ENGLISH_NAME
+		)  
+		VALUES
+		(
+			#categoryId#,
+			
+			<isEmpty property="parentId">
+		      	NULL,
+		    </isEmpty>
+		    <isNotEmpty property="parentId">
+		      	#parentId#,   
+		    </isNotEmpty>
+      
+			#portalId#,
+			#categoryName#,
+			#description#,
+			(SELECT NVL(MAX(SORT_ORDER),0) FROM IKEP4_CF_CATEGORY WHERE PORTAL_ID = #portalId# AND PARENT_ID = #parentId#)+1,		
+			#isDelete#,
+			#registerId#,
+			#registerName#,
+			sysdate,
+			#updaterId#,
+			#updaterName#,
+			sysdate,
+			#categoryEnglishName#	
+		)		
+	</insert>	
+		
+	<!-- select -->
+	<select id="get" parameterClass="java.lang.String"  resultClass="cfCategory">
+		SELECT /* [Category_SqlMap.xml] lightpack.cafe.category.dao.Category.get */
+    		<include refid="lightpack.cafe.category.dao.Category.sqlColumnList" />	
+		FROM 
+			IKEP4_CF_CATEGORY A 
+		WHERE 
+			A.CATEGORY_ID	=	#categoryId#
+	</select>
+
+
+	<select id="exists" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+	<![CDATA[
+		SELECT /* [Category_SqlMap.xml] lightpack.cafe.category.dao.Category.exists */
+			COUNT(CATEGORY_ID) 
+		FROM 
+			IKEP4_CF_CATEGORY A 
+		WHERE 
+			A.CATEGORY_ID	=	#categoryId#
+	]]>
+	</select>
+
+
+	<!-- update -->
+	<update id="update" parameterClass="cfCategory">
+	<![CDATA[
+		UPDATE 
+			IKEP4_CF_CATEGORY /* [Category_SqlMap.xml] lightpack.cafe.category.dao.Category.update */
+		SET 
+			CATEGORY_NAME	=	#categoryName#,
+			CATEGORY_ENGLISH_NAME = #categoryEnglishName#,
+			DESCRIPTION 	= #description#,
+			UPDATER_ID		=	#updaterId#,
+			UPDATER_NAME	=	#updaterName#,
+			UPDATE_DATE		=	sysdate
+		WHERE 
+			PORTAL_ID		=	#portalId#
+			AND CATEGORY_ID	=	#categoryId#			
+	]]>
+	</update>
+	
+	<update id="updateCategoryOrder" parameterClass="cfCategory">
+	<![CDATA[
+		UPDATE 
+			IKEP4_CF_CATEGORY /* [Category_SqlMap.xml] lightpack.cafe.category.dao.Category.updateCategoryOrder */
+		SET 
+			SORT_ORDER		=	#sortOrder#
+		WHERE 
+			PORTAL_ID		=	#portalId#
+			AND CATEGORY_ID	=	#categoryId#
+	]]>
+	</update>
+
+	<!-- delete -->
+	<update id="logicalDelete" parameterClass="cfCategory">
+	<![CDATA[
+		UPDATE 
+			IKEP4_CF_CATEGORY /* [Category_SqlMap.xml] lightpack.cafe.category.dao.Category.logicalDelete */
+		SET
+			IS_DELETE		=	1,
+			UPDATER_ID		=	#updaterId#,
+			UPDATER_NAME	=	#updaterName#,
+			UPDATE_DATE		=	sysdate			
+		WHERE  
+			CATEGORY_ID		=	#categoryId#
+			AND PORTAL_ID	=	#portalId#
+	]]>
+	</update>
+	
+	<delete id="physicalDelete" parameterClass="java.lang.String">
+	<![CDATA[
+		DELETE FROM 
+			IKEP4_CF_CATEGORY  /* [Category_SqlMap.xml] lightpack.cafe.category.dao.Category.physicalDelete */
+		WHERE 
+			CATEGORY_ID	=	#categoryId#			
+	]]>
+	</delete>
+
+</sqlMap>

@@ -1,0 +1,1220 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="support.customer.dao.basicInfo">
+
+<typeAlias alias="BasicInfoSearchCondition" type="com.lgcns.ikep4.support.customer.search.BasicInfoSearchCondition"/>
+<typeAlias alias="BasicInfoReaderSearchCondition" type="com.lgcns.ikep4.support.customer.search.BasicInfoReaderSearchCondition"/>
+<typeAlias alias="BasicInfo" type="com.lgcns.ikep4.support.customer.model.BasicInfo"/>
+<typeAlias alias="BasicHistory" type="com.lgcns.ikep4.support.customer.model.BasicHistory"/>
+<typeAlias alias="MainPerson" type="com.lgcns.ikep4.support.customer.model.MainPerson"/>
+<typeAlias alias="PersonStatic" type="com.lgcns.ikep4.support.customer.model.PersonStatic"/>
+<typeAlias alias="MainBusiness" type="com.lgcns.ikep4.support.customer.model.MainBusiness"/>
+<typeAlias alias="RelationCompany" type="com.lgcns.ikep4.support.customer.model.RelationCompany"/>
+<typeAlias alias="BuyingInfo" type="com.lgcns.ikep4.support.customer.model.BuyingInfo"/>
+<typeAlias alias="CustomerBasicInfo" type="com.lgcns.ikep4.util.model.CustomerBasicInfo"/>
+<typeAlias alias="CustomerBuyingInfo" type="com.lgcns.ikep4.util.model.CustomerBuyingInfo"/>
+
+<resultMap class="BasicInfo" id="BasicInfoResult">
+	<result column="ROWNUM" 			property="rowNum" />
+	<result column="ID" 				property="id" />
+	<result column="NAME" 				property="name" />
+	<result column="BUSINESS_EMPLOYEE" 	property="businessEmployee" />
+	<result column="REGNO" 				property="regno" />
+	<result column="DIRECTOR" 			property="director" />
+	<result column="MAINCUSTOMER_COUNT" property="maincusomerCount" />
+	<result column="PERSON_COUNT" 		property="personCount" />
+	<result column="COUNSEL_COUNT" 		property="counselCount" />
+	<result column="REGISTER_ID" 	    property="registerId"   	 />
+	<result column="REGISTER_NAME"  	property="registerName" 	 />	
+    <result column="REGIST_DATE"    	property="registDate" 	     />		
+    <result column="JOB_RANK_NAME"          property="user.jobRankName"         jdbcType="VARCHAR" />
+    <result column="TEAM_NAME"              property="user.teamName"            jdbcType="VARCHAR" />
+    <result column="JOB_DUTY_NAME"          property="user.jobDutyName"         jdbcType="VARCHAR" />
+    <result column="JOB_POSITION_NAME"      property="user.jobPositionName"     jdbcType="VARCHAR" />
+    <result column="JOB_TITLE_NAME"         property="user.jobTitleName"        jdbcType="VARCHAR" />  
+    <result column="PICTURE_ID"             property="user.pictureId"           jdbcType="VARCHAR" />   
+    <result column="PROFILE_PICTURE_ID"     property="user.profilePictureId"    jdbcType="VARCHAR" />  
+	<result column="USER_NAME"              property="user.userName"            jdbcType="VARCHAR" />
+	<result column="USER_ENGLISH_NAME"      property="user.userEnglishName"     jdbcType="VARCHAR" />
+	<result column="JOB_TITLE_ENGLISH_NAME" property="user.jobTitleEnglishName" jdbcType="VARCHAR" />
+	<result column="TEAM_ENGLISH_NAME"      property="user.teamEnglishName"     jdbcType="VARCHAR" /> 
+	<result column="HIT_COUNT"      property="hitCount"     />
+</resultMap>
+
+<resultMap class="BasicInfo" id="BasicInfoForSAPResult">
+	<result column="ROWNUM" 			property="rowNum" />
+	<result column="SAP_ID" 			property="sapId" />
+	<result column="NAME" 				property="name" />
+	<result column="REGNO" 				property="regno" />
+	<result column="DIRECTOR" 			property="director" />
+</resultMap>
+
+<resultMap id="basicInfoReaderViewResult" class="com.lgcns.ikep4.support.customer.model.BasicInfoReader">
+    <result column="READER_ID"       property="readerId"         jdbcType="VARCHAR" />
+    <result column="READER_NAME"      property="readerName"     jdbcType="VARCHAR" />
+    <result column="READER_TEAM_NAME" property="readerTeamName"    jdbcType="VARCHAR" />
+    <result column="READ_DATE"          property="readDate"              jdbcType="TIMESTAMP" />
+  </resultMap> 
+
+<resultMap class="BasicInfo" id="BasicInfoForSapExtends">
+	<result column="SAP_ID" 			property="sapId" />
+	<result column="NAME" 				property="name" />
+	<result column="REGNO" 				property="regno" />
+	<result column="CORPORATION_NO" 	property="corporationNo" />
+	<result column="DIRECTOR" 			property="director" />
+	<result column="TYPE" 				property="type" />
+	<result column="JIJONG_TYPE" 		property="jijongType" />
+	<result column="POST_NO" 			property="postNo" />
+	<result column="ADDRESS1" 			property="address1" />
+	<result column="ADDRESS2" 			property="address2" />
+	<result column="TEL_NO" 			property="telNo" />
+	<result column="FAX" 				property="fax" />
+	<result column="E_MAIL" 			property="eMail" />
+</resultMap>
+<resultMap class="BasicHistory" id="ResultBasicHistory">
+	<result column="ID" 					property="id" />
+	<result column="YEAR_DATE" 				property="yearDate" />
+	<result column="YEAR_CONTENT" 			property="yearContent" />
+</resultMap>
+
+<resultMap class="MainPerson" id="ResultMainPerson">
+	<result column="ID" 					property="id" />
+	<result column="NAME" 					property="name" />
+	<result column="JIKWE" 					property="jikwe" />
+	<result column="TEL" 					property="tel" />
+	<result column="E_MAIL" 				property="eMail" />
+	<result column="OFFICER_FLAG" 			property="officerFlag" />
+	<result column="KEYMAN_FLAG" 			property="keymanFlag" />
+</resultMap>
+
+<resultMap class="PersonStatic" id="ResultPersonStatic">
+	<result column="ID" 					property="id" />
+	<result column="MAN_EMPLOYEE1" 			property="manEmployee1" />
+	<result column="MAN_EMPLOYEE2" 			property="manEmployee2" />
+	<result column="MAN_EMPLOYEE3" 			property="manEmployee3" />
+	<result column="MAN_EMPLOYEE4" 			property="manEmployee4" />
+	<result column="WOMAN_EMPLOYEE1" 		property="womanEmployee1" />
+	<result column="WOMAN_EMPLOYEE2" 		property="womanEmployee2" />
+	<result column="WOMAN_EMPLOYEE3" 		property="womanEmployee3" />
+	<result column="WOMAN_EMPLOYEE4" 		property="womanEmployee4" />	
+	<result column="SUM_EMPLOYEE1" 		    property="totalEmployee1" />	
+	<result column="SUM_EMPLOYEE2" 		    property="totalEmployee2" />	
+	<result column="SUM_EMPLOYEE3" 		    property="totalEmployee3" />	
+	<result column="SUM_EMPLOYEE4" 		    property="totalEmployee4" />	
+</resultMap>
+
+<resultMap class="MainBusiness" id="ResultMainBusiness">
+	<result column="ID" 					property="id" />
+	<result column="MAIN_CUSTOMER" 			property="mainCustomer" />
+	<result column="MONTH_AVG" 			    property="monthAvg" />
+	<result column="CHARGE_EMPLOYEE" 	  	property="chargeEmployee" />
+	<result column="MAIN_PRODUCT" 			property="mainProduct" />
+	<result column="SELLING_BUYING_RATE" 	property="sellingBuyingRate" />
+	<result column="CONDITION" 				property="Condition" />
+	<result column="SELLING_BUYING_FLAG" 	property="sellingBuyingFlag" />
+</resultMap>
+
+
+<resultMap class="RelationCompany" id="ResultRelationCompany">
+	<result column="ID" 					property="id" />
+	<result column="RELATION_NAME" 			property="relationName" />
+	<result column="TYPE" 			    	property="type" />
+	<result column="NOTE" 	  				property="note" />
+</resultMap>
+
+
+<resultMap class="BasicInfo" id="BasicInfoResultExtends">
+	<result column="ID" 						property="id" />
+	<result column="SAP_ID" 					property="sapId" />
+	<result column="NAME" 						property="name" />
+	<result column="CEO_NAME"					property="ceoName"/>
+	<result column="REGNO"						property="regno"/>
+	<result column="POST_NO"					property="postNo"/>
+	<result column="DIRECTOR"					property="director"/>
+	<result column="CORPORATION_NO"				property="corporationNo"/>
+	<result column="ADDRESS1"					property="address1"/>
+	<result column="ADDRESS2"					property="address2"/>
+	<result column="TEL_NO"						property="telNo"/>
+	<result column="E_MAIL"						property="eMail"/>
+	<result column="FAX"						property="fax"/>
+	<result column="BUSINESS_EMPLOYEE" 			property="businessEmployee" />
+	<result column="CHARGE"						property="charge"/>
+	<result column="CUSTOMER_GUBUN"				property="customerGubun"/>
+	<result column="SANGJANG_FLAG"				property="sangjangFlag"/>
+	<result column="ESTABLISH_DATE"				property="establishDate"/>
+	<result column="MAIN_BANK"					property="mainBank"/>
+	<result column="SATTLING_MONTH"				property="sattlingMonth"/>
+	<result column="EMPLOYEE_COUNT"				property="employeeCount"/>
+	<result column="SUBDIVISION_GRADE"			property="subdivisionGrade"/>
+	<result column="SELLING_AMT"				property="sellingAmt"/>
+	<result column="BUSINESS_AMT"				property="businessAmt"/>
+	<result column="STOCKHOLDER"				property="stockholder"/>
+	<result column="COMPANY_PERCENT"			property="companyPercent"/>
+	<result column="TYPE"	  					property="type"/>
+	<result column="JIJONG_TYPE"				property="jijongType"/>
+	<result column="MONTH_BUYING"				property="monthBuying"/>
+	<result column="EQUIPMENT_STORE_NAME"		property="equipmentStoreName"/>
+	<result column="EQUIPMENT_STORE_EXPLAN"		property="equipmentStoreExplan"/>
+	<result column="EQUIPMENT_PRINT_NAME"		property="equipmentPrintName"/>
+	<result column="EQUIPMENT_PRINT_EXPLAN"		property="equipmentPrintExplan"/>
+	<result column="EQUIPMENT_ETC_NAME"			property="equipmentEtcName"/>
+	<result column="EQUIPMENT_ETC_EXPLAN"		property="equipmentEtcExplan"/>
+	<result column="HEAD_OFFICE_ADDRESS"		property="headOfficeAddress"/>
+	<result column="FACTORY_ADDRESS1"			property="factoryAddress1"/>
+	<result column="FACTORY_ADDRESS2"			property="factoryAddress2"/>
+	<result column="DELETE_FLAG"				property="deleteFlag"/>
+	<result column="REGISTER_ID" 	    		property="registerId"   	 />
+	<result column="REGISTER_NAME"  			property="registerName" 	 />	
+    <result column="REGIST_DATE"    			property="registDate" 	     />		
+</resultMap>
+
+<resultMap class="BuyingInfo" id="buyingInfoResult">
+	<result column="SAP_ID" 				property="sapId" />
+	<result column="SELLING_GROUP" 			property="sellingGroup" />
+	<result column="CHANNEL" 			    property="channel" />
+	<result column="PRODUCT_LINE" 	  		property="productLine" />
+	<result column="BUSINESS_EMPLOYEE" 	 	property="businessEmployee" />
+</resultMap>
+
+<sql id="sqlColumnList">					
+	    ID,
+	    SAP_ID, 						
+		NAME, 						
+		CEO_NAME,					
+		REGNO,						
+		POST_NO,					
+		DIRECTOR,					
+		CORPORATION_NO,				
+		ADDRESS1,					
+		ADDRESS2,					
+		TEL_NO,						
+		E_MAIL,						
+		FAX,										
+		BUSINESS_EMPLOYEE, 			
+		CHARGE,						
+		CUSTOMER_GUBUN,							
+		SANGJANG_FLAG,				
+		ESTABLISH_DATE,				
+		MAIN_BANK,					
+		SATTLING_MONTH,				
+		EMPLOYEE_COUNT,				
+		SUBDIVISION_GRADE,			
+		SELLING_AMT,				
+		BUSINESS_AMT,				
+		STOCKHOLDER,				
+		COMPANY_PERCENT,			
+		TYPE,	  					
+		JIJONG_TYPE,				
+		MONTH_BUYING,				
+		EQUIPMENT_STORE_NAME,		
+		EQUIPMENT_STORE_EXPLAN,		
+		EQUIPMENT_PRINT_NAME,		
+		EQUIPMENT_PRINT_EXPLAN,		
+		EQUIPMENT_ETC_NAME,			
+		EQUIPMENT_ETC_EXPLAN,		
+		HEAD_OFFICE_ADDRESS,		
+		FACTORY_ADDRESS1,			
+		FACTORY_ADDRESS2,			
+		DELETE_FLAG,				
+		REGISTER_ID, 	    		
+		REGISTER_NAME,  			
+		REGIST_DATE   
+</sql>
+
+<select id="countBySearchCondition" parameterClass="BasicInfoSearchCondition" resultClass="int">
+	SELECT COUNT(*) from (
+		 SELECT	ROW_NUMBER() OVER(ORDER BY
+		 						   <isNotEmpty property="sortColumn">
+		 						   	<isEqual property="sortColumn" compareValue="NAME">
+										<isEqual property="sortType" compareValue="DESC">
+											B.NAME DESC
+										</isEqual>
+										<isEqual property="sortType" compareValue="ASC">
+											B.NAME ASC
+										</isEqual>
+									</isEqual>
+									<isEqual property="sortColumn" compareValue="REGISTER_NAME">
+										<isEqual property="sortType" compareValue="DESC">
+											B.REGISTER_NAME DESC,  B.NAME ASC
+										</isEqual>
+										<isEqual property="sortType" compareValue="ASC">
+											B.REGISTER_NAME ASC,  B.NAME ASC
+										</isEqual>
+									</isEqual>
+									<isEqual property="sortColumn" compareValue="REGIST_DATE">
+										<isEqual property="sortType" compareValue="DESC">
+											B.REGIST_DATE DESC,  B.NAME ASC
+										</isEqual>
+										<isEqual property="sortType" compareValue="ASC">
+											B.REGIST_DATE ASC,  B.NAME ASC
+										</isEqual>
+									</isEqual>
+									<isEqual property="sortColumn" compareValue="BUSINESS_EMPLOYEE">
+										<isEqual property="sortType" compareValue="DESC">
+											B.BUSINESS_EMPLOYEE DESC,  B.NAME ASC
+										</isEqual>
+										<isEqual property="sortType" compareValue="ASC">
+											B.BUSINESS_EMPLOYEE ASC,  B.NAME ASC
+										</isEqual>
+									</isEqual> 
+		 						   </isNotEmpty>
+		 						 <isEmpty property="sortColumn">  
+		 							 B.NAME ASC
+		 						 </isEmpty>
+		 						
+		 						 ) AS ROWNUM ,
+              B.ID,
+			  B.NAME,
+			  B.BUSINESS_EMPLOYEE,
+			  B.REGNO,
+			  B.DIRECTOR,
+	   (SELECT COUNT(*) MAIN_CUSTOMER FROM main_selling  WITH (NOLOCK) WHERE ID = B.ID and delete_flag ='N'  ) AS MAINCUSTOMER_COUNT,	   
+	   (SELECT COUNT(*) CNT FROM person_info  WITH (NOLOCK) where id=B.id and delete_flag = 'N' ) as PERSON_COUNT,
+	   (SELECT COUNT(*) CNT FROM COUNSEL_HISTORY  WITH (NOLOCK) WHERE ID = B.ID and delete_flag ='N') AS COUNSEL_COUNT,
+	   B.REGISTER_ID,
+	   B.REGISTER_NAME,
+	   B.REGIST_DATE	   
+	   FROM BASICINFO_MASTER B WITH (NOLOCK) INNER JOIN IKEP4_EV_USER usr  WITH (NOLOCK)
+	   ON B.REGISTER_ID = usr.USER_ID 
+	   WHERE B.DELETE_FLAG = 'N'
+	   <isNotEmpty property="searchColumn">
+			<isNotEmpty property="searchWord">
+				<isEqual property="searchColumn" compareValue="name">
+					AND 
+					B.NAME LIKE '%' + #searchWord# + '%'
+				</isEqual>
+				<isEqual property="searchColumn" compareValue="businessEmployee">
+					AND 
+					B.BUSINESS_EMPLOYEE LIKE '%' + #searchWord# + '%'
+				</isEqual>
+				<isEqual property="searchColumn" compareValue="regno">
+					AND 
+					REGNO LIKE '%' + #searchWord# + '%'
+				</isEqual>
+			</isNotEmpty>
+	 </isNotEmpty>  
+	  ) D 
+
+
+</select>
+
+
+
+<select id="basicInfoListBySearchCondition" parameterClass="BasicInfoSearchCondition" resultMap="BasicInfoResult">
+		   
+	 SELECT /* [MainSelling_SqlMap.xml] mainSellingListBySearchCondition */
+ *
+  FROM (SELECT AA.*
+          FROM ( /* START========================================= */
+    SELECT	ROW_NUMBER() OVER( ORDER BY
+    							 <isNotEmpty property="sortColumn">
+		 						   	<isEqual property="sortColumn" compareValue="NAME">
+										<isEqual property="sortType" compareValue="DESC">
+											B.NAME DESC
+										</isEqual>
+										<isEqual property="sortType" compareValue="ASC">
+											B.NAME ASC
+										</isEqual>
+									</isEqual>
+									<isEqual property="sortColumn" compareValue="REGISTER_NAME">
+										<isEqual property="sortType" compareValue="DESC">
+											B.REGISTER_NAME DESC,  B.NAME ASC
+										</isEqual>
+										<isEqual property="sortType" compareValue="ASC">
+											B.REGISTER_NAME ASC,  B.NAME ASC
+										</isEqual>
+									</isEqual>
+									<isEqual property="sortColumn" compareValue="REGIST_DATE">
+										<isEqual property="sortType" compareValue="DESC">
+											B.REGIST_DATE DESC,  B.NAME ASC
+										</isEqual>
+										<isEqual property="sortType" compareValue="ASC">
+											B.REGIST_DATE ASC,  B.NAME ASC
+										</isEqual>
+									</isEqual>
+									<isEqual property="sortColumn" compareValue="BUSINESS_EMPLOYEE">
+										<isEqual property="sortType" compareValue="DESC">
+											B.BUSINESS_EMPLOYEE DESC,  B.NAME ASC
+										</isEqual>
+										<isEqual property="sortType" compareValue="ASC">
+											B.BUSINESS_EMPLOYEE ASC,  B.NAME ASC
+										</isEqual>
+									</isEqual> 
+		 						   </isNotEmpty>
+		 						 <isEmpty property="sortColumn">  
+		 							 B.NAME ASC
+		 						 </isEmpty> 
+		 						 ) AS ROWNUM ,
+              B.ID,
+			  B.NAME,
+			  B.BUSINESS_EMPLOYEE,
+			  B.REGNO,
+			  B.DIRECTOR,
+	   (SELECT COUNT(*) MAIN_CUSTOMER FROM main_selling WITH (NOLOCK) WHERE ID = B.ID and delete_flag ='N'  ) AS MAINCUSTOMER_COUNT,
+	   (SELECT COUNT(*) CNT FROM person_info  WITH (NOLOCK) where id=B.id and delete_flag = 'N') as PERSON_COUNT,
+	   (SELECT COUNT(*) CNT FROM COUNSEL_HISTORY  WITH (NOLOCK) WHERE ID = B.ID and delete_flag ='N') AS COUNSEL_COUNT,
+	   B.REGISTER_ID,
+	   B.REGISTER_NAME,
+	   B.REGIST_DATE,
+	   B.HIT_COUNT,
+	    usr.TEAM_NAME          AS TEAM_NAME,  
+	    usr.PICTURE_ID         AS PICTURE_ID, 
+	    usr.PROFILE_PICTURE_ID AS PROFILE_PICTURE_ID,     
+		(SELECT JOB_RANK_NAME FROM IKEP4_EV_JOB_RANK WHERE IKEP4_EV_JOB_RANK.JOB_RANK_CODE = usr.JOB_RANK_CODE) AS JOB_RANK_NAME,
+		(SELECT JOB_DUTY_NAME FROM IKEP4_EV_JOB_DUTY WHERE IKEP4_EV_JOB_DUTY.JOB_DUTY_CODE = usr.JOB_DUTY_CODE) AS JOB_DUTY_NAME,
+		(SELECT JOB_POSITION_NAME FROM IKEP4_EV_JOB_POSITION WHERE IKEP4_EV_JOB_POSITION.JOB_POSITION_CODE = usr.JOB_POSITION_CODE) AS JOB_POSITION_NAME,
+		(SELECT JOB_TITLE_NAME FROM IKEP4_EV_JOB_TITLE WHERE IKEP4_EV_JOB_TITLE.JOB_TITLE_CODE = usr.JOB_TITLE_CODE) AS JOB_TITLE_NAME, 
+	    usr.USER_NAME  AS USER_NAME,
+	    usr.USER_ENGLISH_NAME  AS USER_ENGLISH_NAME,
+	    usr.TEAM_ENGLISH_NAME  AS TEAM_ENGLISH_NAME,  
+	    (SELECT JOB_TITLE_ENGLISH_NAME FROM IKEP4_EV_JOB_TITLE WHERE IKEP4_EV_JOB_TITLE.JOB_TITLE_CODE = usr.JOB_TITLE_CODE) AS JOB_TITLE_ENGLISH_NAME    		   
+	   FROM BASICINFO_MASTER B  WITH (NOLOCK) INNER JOIN IKEP4_EV_USER usr  WITH (NOLOCK)
+	   ON B.REGISTER_ID = usr.USER_ID 
+	   WHERE B.DELETE_FLAG = 'N'
+	   <isNotEmpty property="searchColumn">
+			<isNotEmpty property="searchWord">
+				<isEqual property="searchColumn" compareValue="name">
+					AND 
+					B.NAME LIKE '%' + #searchWord# + '%'
+				</isEqual>
+				<isEqual property="searchColumn" compareValue="businessEmployee">
+					AND 
+					B.BUSINESS_EMPLOYEE LIKE '%' + #searchWord# + '%'
+				</isEqual>
+				<isEqual property="searchColumn" compareValue="regno">
+					AND 
+					REGNO LIKE '%' + #searchWord# + '%'
+				</isEqual>
+			</isNotEmpty>
+			
+	 </isNotEmpty>  
+	   /* ===========================================END */
+       	<![CDATA[   
+                ) AA
+         WHERE ROWNUM <= #endRowIndex# /* 종료  */
+        ) TBL
+		 WHERE ROWNUM > #startRowIndex# /* 시작 */ 
+		
+   ]]> ;	
+
+
+</select>
+
+<select id="getBasicInfo" parameterClass="String" resultMap="BasicInfoResultExtends">
+	SELECT 
+	 <include refid="support.customer.dao.basicInfo.sqlColumnList"/>
+	FROM BASICINFO_MASTER  WITH (NOLOCK)
+	WHERE DELETE_FLAG = 'N'
+	AND ID = #id#
+</select>
+
+ <select id="existsReference" parameterClass="BasicInfo" resultClass="int">
+    SELECT 
+           COUNT(*)
+    FROM   CUSTOMER_INFO_REFERENCE
+    WHERE  DIV_CODE = #divCode#
+    AND    REGISTER_ID = #registerId#
+	AND	   ITEM_ID = #id#
+  </select> 
+  
+  <update id="updateReference" parameterClass="BasicInfo"> 
+    UPDATE CUSTOMER_INFO_REFERENCE 
+    SET REGIST_DATE = CURRENT_TIMESTAMP
+    WHERE DIV_CODE = #divCode#
+    AND REGISTER_ID = #registerId#
+	AND	   ITEM_ID = #id#
+  </update>
+  
+  <insert id="createReference" parameterClass="BasicInfo"> 
+    INSERT INTO CUSTOMER_INFO_REFERENCE 
+           (ITEM_ID, REGISTER_ID, REGIST_DATE, DIV_CODE)
+    VALUES (#id#, #registerId#, CURRENT_TIMESTAMP, #divCode#)
+  </insert>
+  
+  <update id="updateHitCount" parameterClass="BasicInfo"> 
+  	<isNotEmpty property="divCode">
+  		<isEqual property="divCode" compareValue="BM">
+  			 UPDATE BASICINFO_MASTER 
+			 SET    HIT_COUNT = HIT_COUNT + 1
+			 WHERE  ID = #id#
+  		</isEqual>
+  		<isEqual property="divCode" compareValue="PI">
+  			 UPDATE PERSON_INFO 
+			 SET    HIT_COUNT = HIT_COUNT + 1
+			 WHERE  SEQNUM = #id#
+  		</isEqual>
+  		<isEqual property="divCode" compareValue="MS">
+  			 UPDATE MAIN_SELLING 
+			 SET    HIT_COUNT = HIT_COUNT + 1
+			 WHERE  id = #id#
+  		</isEqual>
+  		<isEqual property="divCode" compareValue="CH">
+  			 UPDATE COUNSEL_HISTORY 
+			 SET    HIT_COUNT = HIT_COUNT + 1
+			 WHERE  SEQNUM = #id#
+  		</isEqual>
+  		<isEqual property="divCode" compareValue="QH">
+  			 UPDATE QC_HISTORY 
+			 SET    HIT_COUNT = HIT_COUNT + 1
+			 WHERE  SEQNUM = #id#
+  		</isEqual>
+  		<isEqual property="divCode" compareValue="CL">
+  			 UPDATE CL_HISTORY 
+			 SET    HIT_COUNT = HIT_COUNT + 1
+			 WHERE  SEQNUM = #id#
+  		</isEqual>
+  		<isEqual property="divCode" compareValue="BH">
+  			 UPDATE BI_HISTORY 
+			 SET    HIT_COUNT = HIT_COUNT + 1
+			 WHERE  SEQNUM = #id#
+  		</isEqual>
+  		<isEqual property="divCode" compareValue="RT">
+  			 UPDATE REALTY 
+			 SET    HIT_COUNT = HIT_COUNT + 1
+			 WHERE  SEQNUM = #id#
+  		</isEqual>
+  		<isEqual property="divCode" compareValue="FM">
+  			 UPDATE FINANCE_MASTER 
+			 SET    HIT_COUNT = HIT_COUNT + 1
+			 WHERE  CUSTOMER_INFO_ID = #id#
+  		</isEqual>
+  	</isNotEmpty>
+    
+  </update> 
+
+
+<select id="getHistory" parameterClass="String" resultMap="ResultBasicHistory" >
+
+	SELECT 
+	 ID,
+	 YEAR_DATE,
+	 YEAR_CONTENT
+	FROM BASICINFO_COMPANY_HISTORY  WITH (NOLOCK)
+	WHERE ID = #id#
+
+</select>
+
+<select id="getMainPerson" parameterClass="String" resultMap="ResultMainPerson" >
+
+	SELECT 
+			 ID,
+			 NAME,
+			 JIKWE,
+			 TEL,
+			 E_MAIL,
+			 OFFICER_FLAG,
+			 KEYMAN_FLAG
+	FROM     BASICINFO_MAIN_PERSON  WITH (NOLOCK)
+	WHERE    ID = #id#
+
+</select>
+
+<select id="getPersonStatic" parameterClass="String" resultMap="ResultPersonStatic" >
+
+	SELECT   ID,
+			 MAN_EMPLOYEE1,
+			 MAN_EMPLOYEE2,
+			 MAN_EMPLOYEE3,
+			 MAN_EMPLOYEE4,
+			 WOMAN_EMPLOYEE1,
+			 WOMAN_EMPLOYEE2,
+			 WOMAN_EMPLOYEE3,
+			 WOMAN_EMPLOYEE4,
+			 SUM_EMPLOYEE1,
+			 SUM_EMPLOYEE2,
+			 SUM_EMPLOYEE3,
+			 SUM_EMPLOYEE4
+	FROM     BASICINFO_PERSON_STATIC  WITH (NOLOCK)
+	WHERE    ID = #id#
+
+</select>
+
+<select id="getMainBusiness" parameterClass="String" resultMap="ResultMainBusiness" >
+
+	SELECT 	ID 				
+			,MAIN_CUSTOMER 	
+			,MONTH_AVG 		
+			,CHARGE_EMPLOYEE 
+			,MAIN_PRODUCT 	
+			,SELLING_BUYING_RATE 
+			,CONDITION 			
+			,SELLING_BUYING_FLAG 	
+	FROM     BASICINFO_MAIN_BUSINESS  WITH (NOLOCK)
+	WHERE    ID = #id#
+
+</select>
+
+
+<select id="getRelationCompany" parameterClass="String" resultMap="ResultRelationCompany" >
+
+	SELECT 	    ID, 					
+				RELATION_NAME, 			
+				TYPE, 			    	
+				NOTE 	  	
+	FROM     BASICINFO_RELATION_COMPANY  WITH (NOLOCK)
+	WHERE    ID = #id#
+	ORDER BY RELATION_NAME
+</select>
+
+<update id="saveBasicInfo" parameterClass="BasicInfo">
+	UPDATE BASICINFO_MASTER
+	SET NAME = #name#
+		<isNotEmpty property="sapId">
+		,SAP_ID = #sapId# 		
+		</isNotEmpty>
+		,CEO_NAME = #ceoName#					
+		,REGNO = #regno#						
+		,POST_NO = #postNo#					
+		,DIRECTOR = #director#					
+		,CORPORATION_NO = #corporationNo#				
+		,ADDRESS1 =	#address1#				
+		,ADDRESS2 =  #address2#				
+		,TEL_NO = #telNo#						
+		,E_MAIL = #eMail#						
+		,FAX = #fax#											
+		,BUSINESS_EMPLOYEE = #businessEmployee# 			
+		,CHARGE = #charge#						
+		,CUSTOMER_GUBUN = #customerGubun#						
+		,SANGJANG_FLAG = #sangjangFlag#				
+		,ESTABLISH_DATE = 	#establishDate#				
+		,MAIN_BANK =	 #mainBank#				
+		,SATTLING_MONTH = #sattlingMonth#				
+		,EMPLOYEE_COUNT = #employeeCount#				
+		,SUBDIVISION_GRADE =	#subdivisionGrade#		
+		,SELLING_AMT = 	#sellingAmt#				                                                     
+		,BUSINESS_AMT =	#businessAmt#			
+		,STOCKHOLDER = #stockholder#			                                                
+		,COMPANY_PERCENT = 	#companyPercent#			
+		,TYPE = #type#  					
+		,JIJONG_TYPE = #jijongType#				
+		,MONTH_BUYING =	#monthBuying#				
+		,HEAD_OFFICE_ADDRESS = #headOfficeAddress#		
+		,FACTORY_ADDRESS1 = #factoryAddress1#			
+		,FACTORY_ADDRESS2 = #factoryAddress2#
+		,UPDATER_NAME = #updaterName#
+		,UPDATER_ID = #updaterId#
+		,UPDATE_DATE = CURRENT_TIMESTAMP
+		,DELETE_FLAG= 'N'						  
+	WHERE ID = #id#
+</update>
+
+<delete id="deleteBasicHistory" parameterClass ="String">
+	DELETE FROM 
+	BASICINFO_COMPANY_HISTORY
+	WHERE ID = #id#
+</delete>
+
+<insert id="saveBasicHistory" parameterClass="BasicHistory">
+		INSERT INTO BASICINFO_COMPANY_HISTORY(
+		ID,
+		YEAR_DATE,
+		YEAR_CONTENT
+		)VALUES(
+		#id#,
+		#yearDate#,
+		#yearContent#
+		)
+</insert>
+
+<update  id="saveBasicEquipment" parameterClass="BasicInfo">
+
+	UPDATE BASICINFO_MASTER
+	SET EQUIPMENT_STORE_NAME = #equipmentStoreName#,
+		EQUIPMENT_STORE_EXPLAN = #equipmentStoreExplan#,
+		EQUIPMENT_PRINT_NAME = #equipmentPrintName#,
+		EQUIPMENT_PRINT_EXPLAN = #equipmentPrintExplan#,
+		EQUIPMENT_ETC_NAME = #equipmentEtcName#,
+		EQUIPMENT_ETC_EXPLAN = #equipmentEtcExplan#
+	WHERE ID = #id#
+
+</update>
+
+<delete id="deleteMainPerson1" parameterClass="String">
+	DELETE FROM 
+	BASICINFO_MAIN_PERSON
+	WHERE ID= #id#
+	AND OFFICER_FLAG = 'Y'
+</delete>
+
+<insert id="saveMainPerson1" parameterClass="MainPerson">
+	INSERT INTO BASICINFO_MAIN_PERSON(
+	ID,
+	NAME,
+	JIKWE,
+	TEL,
+	E_MAIL,
+	OFFICER_FLAG
+	)VALUES(
+	#id#,
+	#name#,
+	#jikwe#,
+	#tel#,
+	#eMail#,
+	'Y'
+	)
+</insert>
+
+<delete id="deleteMainPerson2" parameterClass="String">
+	DELETE FROM 
+	BASICINFO_MAIN_PERSON
+	WHERE ID= #id#
+	AND OFFICER_FLAG = 'N'
+</delete>
+
+<insert id="saveMainPerson2" parameterClass="MainPerson">
+	INSERT INTO BASICINFO_MAIN_PERSON(
+	ID,
+	NAME,
+	JIKWE,
+	E_MAIL,
+	OFFICER_FLAG,
+	KEYMAN_FLAG
+	)VALUES(
+	#id#,
+	#name#,
+	#jikwe#,
+	#eMail#,
+	'N',
+	#keymanFlag#
+	)
+</insert>
+<select id="psersonStaticCnt" parameterClass="String" resultClass="int">
+
+	select COUNT(*) from BASICINFO_PERSON_STATIC
+	WHERE ID = #id#
+</select>
+
+<update id="savePersonStatic" parameterClass="PersonStatic">
+	UPDATE BASICINFO_PERSON_STATIC
+	SET MAN_EMPLOYEE1 = #manEmployee1#,
+		MAN_EMPLOYEE2 = #manEmployee2#,
+		MAN_EMPLOYEE3 = #manEmployee3#,
+		MAN_EMPLOYEE4 = #manEmployee4#,
+		WOMAN_EMPLOYEE1 = #womanEmployee1#,
+		WOMAN_EMPLOYEE2 = #womanEmployee2#,
+		WOMAN_EMPLOYEE3 = #womanEmployee3#,
+		WOMAN_EMPLOYEE4 = #womanEmployee4#,
+		SUM_EMPLOYEE1 = #totalEmployee1#, 
+		SUM_EMPLOYEE2 = #totalEmployee2#, 
+		SUM_EMPLOYEE3 = #totalEmployee3#, 
+		SUM_EMPLOYEE4 = #totalEmployee4#
+	WHERE ID = #id#
+</update>
+
+
+<delete id="deleteRelationCompany" parameterClass="String">
+	DELETE FROM 
+	BASICINFO_RELATION_COMPANY
+	WHERE ID= #id#
+</delete>
+
+<insert id="saveRelationCompany" parameterClass="RelationCompany">
+	INSERT INTO BASICINFO_RELATION_COMPANY(
+	ID,
+	RELATION_NAME,
+	TYPE,
+	NOTE
+	)VALUES(
+	#id#,
+	#relationName#,
+	#type#,
+	#note#
+	)
+</insert>
+
+<insert id="createPersonStatic" parameterClass="PersonStatic">
+	INSERT INTO BASICINFO_PERSON_STATIC(
+		MAN_EMPLOYEE1, 
+		MAN_EMPLOYEE2,
+		MAN_EMPLOYEE3, 
+		MAN_EMPLOYEE4, 
+		WOMAN_EMPLOYEE1,
+		WOMAN_EMPLOYEE2,
+		WOMAN_EMPLOYEE3,
+		WOMAN_EMPLOYEE4,
+		SUM_EMPLOYEE1, 
+		SUM_EMPLOYEE2, 
+		SUM_EMPLOYEE3, 
+		SUM_EMPLOYEE4,
+		ID
+	)VALUES(
+		 #manEmployee1#,
+		 #manEmployee2#,
+		 #manEmployee3#,
+		 #manEmployee4#,
+		 #womanEmployee1#,
+		 #womanEmployee2#,
+		 #womanEmployee3#,
+		 #womanEmployee4#,
+		 #totalEmployee1#, 
+		 #totalEmployee2#, 
+		 #totalEmployee3#, 
+		 #totalEmployee4#,
+		 #id#
+	)
+
+</insert>
+
+<delete id="deleteMainBusiness" parameterClass="String">
+	DELETE FROM 
+	BASICINFO_MAIN_BUSINESS
+	WHERE ID= #id#
+</delete>
+
+<insert id="saveMainBusinessBuying" parameterClass="MainBusiness">
+
+	INSERT INTO BASICINFO_MAIN_BUSINESS(
+		ID,
+		MAIN_CUSTOMER,
+		MONTH_AVG,
+		CHARGE_EMPLOYEE,
+		MAIN_PRODUCT,
+		SELLING_BUYING_RATE,
+		CONDITION,
+		SELLING_BUYING_FLAG
+	)
+	VALUES(
+		#id#,
+		#mainCustomer_b#,
+		#monthAvg_b#,
+		#chargeEmployee_b#,
+		#mainProduct_b#,
+		#sellingBuyingRate_b#,
+		#condition_b#,
+		'1'
+	)
+</insert>
+
+<insert id="saveMainBusinessSelling" parameterClass="MainBusiness">
+
+	INSERT INTO BASICINFO_MAIN_BUSINESS(
+		ID,
+		MAIN_CUSTOMER,
+		MONTH_AVG,
+		CHARGE_EMPLOYEE,
+		MAIN_PRODUCT,
+		SELLING_BUYING_RATE,
+		CONDITION,
+		SELLING_BUYING_FLAG
+	)
+	VALUES(
+		#id#,
+		#mainCustomer_s#,
+		#monthAvg_s#,
+		#chargeEmployee_s#,
+		#mainProduct_s#,
+		#sellingBuyingRate_s#,
+		#condition_s#,
+		'2'
+	)
+</insert>
+
+<insert id="createBasicInfo" parameterClass="BasicInfo">
+	INSERT INTO BASICINFO_MASTER(
+		    ID,
+		   <isNotEmpty property="sapId">
+			SAP_ID, 	
+			</isNotEmpty> 						
+			NAME, 						
+			CEO_NAME,					
+			REGNO,						
+			POST_NO,					
+			DIRECTOR,					
+			CORPORATION_NO,				
+			ADDRESS1,					
+			ADDRESS2,					
+			TEL_NO,						
+			E_MAIL,						
+			FAX,									
+			BUSINESS_EMPLOYEE, 			
+			CHARGE,						
+			CUSTOMER_GUBUN,						
+			SANGJANG_FLAG,				
+			ESTABLISH_DATE,				
+			MAIN_BANK,					
+			SATTLING_MONTH,				
+			EMPLOYEE_COUNT,				
+			SUBDIVISION_GRADE,			
+			SELLING_AMT,				
+			BUSINESS_AMT,				
+			STOCKHOLDER,				
+			COMPANY_PERCENT,			
+			TYPE,	  					
+			JIJONG_TYPE,				
+			MONTH_BUYING,				
+			HEAD_OFFICE_ADDRESS,		
+			FACTORY_ADDRESS1,			
+			FACTORY_ADDRESS2,			
+			DELETE_FLAG,
+			UPDATER_ID,
+			UPDATER_NAME,
+			UPDATE_DATE,				
+			REGISTER_ID, 	    		
+			REGISTER_NAME,  			
+			REGIST_DATE   		
+	)
+	VALUES(
+		#id#,
+		<isNotEmpty property="sapId">
+		#sapId#,
+		</isNotEmpty> 
+		#name# ,
+		#ceoName#,
+		#regno#,
+		#postNo#,
+		#director#,
+		#corporationNo#,
+		#address1#,
+		#address2#,
+		#telNo#,
+		#eMail#,
+		#fax#,
+		#businessEmployee# ,
+		#charge#,
+		#customerGubun#,
+		#sangjangFlag#,
+		#establishDate#,
+		#mainBank#,
+		#sattlingMonth#,
+		#employeeCount#,
+		#subdivisionGrade#,
+		#sellingAmt#,
+		#businessAmt#,
+		#stockholder#,
+		#companyPercent#,
+		#type#,
+		#jijongType#,
+		#monthBuying#,
+		#headOfficeAddress#,
+		#factoryAddress1#,
+		#factoryAddress2#,
+		'N',
+		#updaterId#,
+		#updaterName#,
+		CURRENT_TIMESTAMP ,
+		#registerId#   	 ,
+		#registerName# 	 ,	
+		CURRENT_TIMESTAMP 
+	)
+
+
+
+</insert>
+
+<update id="deleteBasicInfo" parameterClass="BasicInfo">
+
+	UPDATE BASICINFO_MASTER
+	SET DELETE_FLAG = 'Y',
+	    UPDATER_ID = #updaterId#,
+	    UPDATER_NAME = #updaterName#,
+	    UPDATE_DATE = CURRENT_TIMESTAMP 
+	WHERE ID = #id#
+
+
+</update>
+
+<select id = "getBuyingInfo" parameterClass="String" resultMap="buyingInfoResult">
+
+	SELECT SAP_ID,
+		   SELLING_GROUP,
+		   CHANNEL,
+		   PRODUCT_LINE,
+		   BUSINESS_EMPLOYEE
+	FROM tmp_BASICINFO_BUYING  WITH (NOLOCK)
+	WHERE SAP_ID = #sapId# 
+
+</select>
+
+<delete id="deleteSapCustomer">
+
+	DELETE FROM tmp_BASICINFO_MASTER
+
+</delete>
+
+<delete id="deleteSapCustomerBuyingInfo">
+	
+	DELETE FROM tmp_BASICINFO_BUYING
+	
+</delete>
+
+<insert id="updateSapCustomer" parameterClass="CustomerBasicInfo">
+
+	INSERT INTO tmp_BASICINFO_MASTER
+	(
+		SAP_ID,
+		NAME,
+		REGNO,
+		CORPORATION_NO,
+		DIRECTOR,
+		TYPE,
+		JIJONG_TYPE,
+		POST_NO,
+		ADDRESS1,
+		ADDRESS2,
+		TEL_NO,
+		FAX,
+		E_MAIL
+		
+	)VALUES(
+		#sapId#,
+		#name#,
+		#regno#,
+		#corporationNo#,
+		#director#,
+		#type#,
+		#jijongType#,
+		#postNo#,
+		#address1#,
+		#address2#,
+		#telNo#,
+		#fax#,
+		#eMail#	
+	)
+</insert>
+
+<insert id="updateSapCustomerBuyingInfo" parameterClass="CustomerBuyingInfo">
+
+	INSERT INTO tmp_BASICINFO_BUYING
+	(	
+		SAP_ID,
+		SELLING_GROUP,
+		CHANNEL,
+		PRODUCT_LINE,
+		CUSTOMER_GROUP2,
+		CUSTOMER_GROUP3,
+		BUSINESS_EMPLOYEE	
+	)VALUES(
+	
+		#sapId#,
+		#sellingGroup#,
+		#channel#,
+		#productLine#,
+		#customerGroup2#,
+		#customerGroup3#,
+		#businessEmployee#	
+	)
+</insert>
+
+
+<select id="countBySearchConditionForSAP" parameterClass="BasicInfoSearchCondition" resultClass="int">
+	SELECT COUNT(*) from (
+		 SELECT	ROW_NUMBER() OVER(ORDER BY NAME  ) AS ROWNUM ,
+		SAP_ID,
+		NAME,
+		REGNO,
+		DIRECTOR
+	   FROM tmp_BASICINFO_MASTER WITH (NOLOCK)
+	   WHERE 1=1
+	   <isNotEmpty property="searchColumn">
+			<isNotEmpty property="searchWord">
+				<isEqual property="searchColumn" compareValue="name">
+					AND 
+					NAME LIKE '%' + #searchWord# + '%'
+				</isEqual>
+				<isEqual property="searchColumn" compareValue="regno">
+					AND 
+					REGNO LIKE '%' + #searchWord# + '%'
+				</isEqual>
+				<isEqual property="searchColumn" compareValue="sapId">
+					AND 
+					SAP_ID LIKE '%' + #searchWord# + '%'
+				</isEqual>
+			</isNotEmpty>
+	 </isNotEmpty>  
+	  ) D 
+
+</select>
+
+<select id="countReaderBySearchCondition" parameterClass="BasicInfoReaderSearchCondition" resultClass="int">
+	SELECT COUNT(*) from 
+		 CUSTOMER_INFO_REFERENCE
+	   WHERE 1=1
+	 <isNotEmpty property="divCode">
+			 AND  DIV_CODE = #divCode#
+  	 </isNotEmpty>
+  	 and item_id = #id#
+  	 and register_id in (select user_id from ikep4_ev_user where user_status = 'C')
+	 <isNotEmpty property="searchColumn">
+			<isNotEmpty property="searchWord">
+				<isEqual property="searchColumn" compareValue="READER_NAME">
+					AND	register_id in (select user_id from IKEP4_EV_USER where user_name like '%' + #searchWord# + '%') 
+				</isEqual>
+				<isEqual property="searchColumn" compareValue="READER_TEAM_NAME">
+					AND	register_id in (select user_id from IKEP4_EV_USER where team_name like '%' + #searchWord# + '%') 
+				</isEqual>
+			</isNotEmpty>
+		</isNotEmpty>  
+
+</select>
+
+<select id="basicInfoListReaderBySearchCondition" parameterClass="BasicInfoReaderSearchCondition" resultMap="basicInfoReaderViewResult">
+	  SELECT 
+			*
+	  FROM (
+		     SELECT AA.* FROM ( 
+		      
+		         SELECT Row_number() OVER (ORDER BY  
+		         								<isNotEmpty property="sortColumn">
+													<isEqual property="sortColumn" compareValue="READER_NAME">
+														<isEqual property="sortType" compareValue="DESC">
+															READER_NAME DESC ,READ_DATE DESC
+														</isEqual>
+														<isEqual property="sortType" compareValue="ASC">
+															READER_NAME ASC ,READ_DATE DESC
+														</isEqual>
+													</isEqual> 
+													<isEqual property="sortColumn" compareValue="READ_DATE">
+														<isEqual property="sortType" compareValue="DESC">
+															READ_DATE DESC ,READER_NAME ASC
+														</isEqual>
+														<isEqual property="sortType" compareValue="ASC">
+															READ_DATE ASC ,READER_NAME ASC
+														</isEqual>
+													</isEqual> 
+													<isEqual property="sortColumn" compareValue="READER_TEAM_NAME">
+														<isEqual property="sortType" compareValue="DESC">
+															READER_TEAM_NAME DESC ,READER_NAME ASC
+														</isEqual>
+														<isEqual property="sortType" compareValue="ASC">
+															READER_TEAM_NAME ASC ,READER_NAME ASC
+														</isEqual>
+													</isEqual> 
+		         								</isNotEmpty>  
+										         <isEmpty property="sortColumn">
+										          READ_DATE DESC, READER_NAME ASC 
+										         </isEmpty>
+										   ) AS RNUM,
+		          BB.* FROM (
+						select
+						distinct U.USER_NAME  AS READER_NAME , RD.REGISTER_ID AS READER_ID , U.TEAM_name AS READER_TEAM_NAME, RD.regist_date AS READ_DATE
+						from CUSTOMER_INFO_REFERENCE RD
+						INNER JOIN  IKEP4_EV_USER U ON RD.register_id = U.user_id
+						where 1=1
+						<isNotEmpty property="divCode">
+								 AND  RD.DIV_CODE = #divCode#
+					  	 </isNotEmpty>
+					  	 and RD.item_id = #id#
+					  	 and U.user_status = 'C'
+				) BB
+				<isNotEmpty property="searchColumn">
+					<isNotEmpty property="searchWord">
+						<isEqual property="searchColumn" compareValue="READER_NAME">
+							WHERE	READER_NAME LIKE '%' + #searchWord# + '%'
+						</isEqual>
+						<isEqual property="searchColumn" compareValue="READER_TEAM_NAME">
+							WHERE READER_TEAM_NAME LIKE '%' + #searchWord# + '%' 
+						</isEqual>
+					</isNotEmpty>
+				</isNotEmpty>  
+		<![CDATA[   
+			) AA WHERE RNUM <= #endRowIndex#
+	) TBL WHERE RNUM >   #startRowIndex#
+		]]> 
+</select>
+
+<select id="listSAPBasicInfobySearchCondition" parameterClass="BasicInfoSearchCondition" resultMap="BasicInfoForSAPResult">
+	SELECT /* [MainSelling_SqlMap.xml] listSAPBasicInfobySearchCondition */
+ *
+  FROM (SELECT AA.*
+          FROM ( /* START========================================= */
+   SELECT	ROW_NUMBER() OVER(ORDER BY NAME  ) AS ROWNUM ,
+		SAP_ID,
+		NAME,
+		REGNO,
+		DIRECTOR
+	   FROM tmp_BASICINFO_MASTER  WITH (NOLOCK)  
+	   WHERE 1=1
+	   <isNotEmpty property="searchColumn">
+			<isNotEmpty property="searchWord">
+				<isEqual property="searchColumn" compareValue="name">
+					AND 
+					NAME LIKE '%' + #searchWord# + '%'
+				</isEqual>
+				<isEqual property="searchColumn" compareValue="regno">
+					AND 
+					REGNO LIKE '%' + #searchWord# + '%'
+				</isEqual>
+				<isEqual property="searchColumn" compareValue="sapId">
+					AND 
+					SAP_ID LIKE '%' + #searchWord# + '%'
+				</isEqual>
+			</isNotEmpty>
+	 </isNotEmpty>  
+	   /* ===========================================END */
+       	<![CDATA[   
+                ) AA
+         WHERE ROWNUM <= #endRowIndex# /* 종료  */
+        ) TBL
+		 WHERE ROWNUM > #startRowIndex# /* 시작 */ 
+		 ORDER BY NAME
+   ]]> ;	
+
+
+</select>
+
+<select id="readBasicInfoForSap" parameterClass="String" resultMap="BasicInfoForSapExtends">
+	SELECT 		
+			SAP_ID, 			
+			NAME, 				
+			REGNO, 				
+			CORPORATION_NO, 	
+			DIRECTOR, 			
+			TYPE, 				
+			JIJONG_TYPE, 		
+			POST_NO, 			
+			ADDRESS1, 			
+			ADDRESS2, 			
+			TEL_NO, 			
+			FAX, 				
+			E_MAIL
+	FROM tmp_BASICINFO_MASTER  WITH (NOLOCK)
+	WHERE SAP_ID = #sapId#
+</select>
+
+<update id="basicInfoSAPSync" parameterClass="String">
+	UPDATE BASICINFO_MASTER
+	SET SAP_ID = B.SAP_ID, 			
+		NAME = B.NAME, 				
+		REGNO = B.REGNO, 				
+		CORPORATION_NO = B.CORPORATION_NO, 	
+		DIRECTOR = B.DIRECTOR, 			
+		TYPE = B.TYPE, 				
+		JIJONG_TYPE = B.JIJONG_TYPE, 		
+		POST_NO = B.POST_NO, 			
+		ADDRESS1 = B.ADDRESS1, 			
+		ADDRESS2 = B.ADDRESS2, 			
+		TEL_NO = B.TEL_NO, 			
+		FAX = B.FAX, 				
+		E_MAIL = B.E_MAIL 	
+	FROM BASICINFO_MASTER A  WITH (NOLOCK) JOIN tmp_BASICINFO_MASTER B  WITH (NOLOCK) ON A.SAP_ID = B.SAP_ID
+	WHERE A.SAP_ID = #sapId#
+</update>
+
+<update id="manInfoSAPSync" parameterClass="String">
+	UPDATE PERSON_INFO
+	SET SAP_ID = B.SAP_ID, 			
+		NAME = B.NAME
+	FROM PERSON_INFO A JOIN tmp_BASICINFO_MASTER B ON A.SAP_ID = B.SAP_ID
+	WHERE A.SAP_ID = #sapId#
+</update>
+
+<update id="mainSellingSAPSync" parameterClass="String">
+	UPDATE MAIN_SELLING
+	SET SAP_ID = B.SAP_ID, 			
+		NAME = B.NAME
+	FROM MAIN_SELLING A JOIN tmp_BASICINFO_MASTER B ON A.SAP_ID = B.SAP_ID
+	WHERE A.SAP_ID = #sapId#
+</update>
+
+<update id="counselHistorySAPSync" parameterClass="String">
+	UPDATE COUNSEL_HISTORY
+	SET SAP_ID = B.SAP_ID, 			
+		NAME = B.NAME
+	FROM COUNSEL_HISTORY A JOIN tmp_BASICINFO_MASTER B ON A.SAP_ID = B.SAP_ID
+	WHERE A.SAP_ID = #sapId#
+</update>
+
+
+
+</sqlMap>

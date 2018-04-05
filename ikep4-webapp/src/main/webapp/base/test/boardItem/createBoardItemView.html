@@ -1,0 +1,443 @@
+
+
+	
+
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ko">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<!--타이틀-->
+
+
+<title>게시판 등록하기 </title>
+<link rel="stylesheet" type="text/css" href="/ikep4-webapp/base/css/layout/layout-default-latest.css" /> 
+<link rel="stylesheet" type="text/css" href="/ikep4-webapp/base/css/theme01/jquery_ui_custom.css" />
+<link rel="stylesheet" type="text/css" href="/ikep4-webapp/base/css/common.css" />
+<link rel="stylesheet" type="text/css" href="/ikep4-webapp/base/css/theme01/theme.css" />
+
+<script type="text/javascript" src="/ikep4-webapp/base/js/jquery/jquery-1.5.2.min.js"></script>
+<script type="text/javascript" src="/ikep4-webapp/base/js/jquery/jquery-ui-1.8.13.min.without.datepicker.js"></script>
+<script type="text/javascript" src="/ikep4-webapp/base/js/jquery/jquery.ui.datepicker.customize.pack.js"></script>
+<!-- <script type="text/javascript" src="/ikep4-webapp/base/js/source/jquery/ui/jquery.ui.datepicker.customize.js"></script> -->
+<script type="text/javascript" src="/ikep4-webapp/base/js/jquery/jquery.jstree.pack.js"></script>
+<script type="text/javascript" src="/ikep4-webapp/base/js/jquery/jquery.validate-1.8.min.js"></script>
+<script type="text/javascript" src="/ikep4-webapp/base/js/jquery/plugins.pack.js"></script>
+<script type="text/javascript">var contextRoot = "/ikep4-webapp";</script>
+<script type="text/javascript" src="/ikep4-webapp/base/js/etc.plugins.pack.js"></script>
+<script type="text/javascript" src="/ikep4-webapp/base/js/langResource/ko.js"></script>
+<script type="text/javascript" src="/ikep4-webapp/base/js/common.pack.js"></script>
+</head>
+
+<body>
+
+
+
+
+
+
+
+ 
+
+ 
+ 
+
+ 
+ 
+<script type="text/javascript" src="/ikep4-webapp/base/js/ckeditor/ckeditor.js"></script>
+<script type="text/javascript" src="/ikep4-webapp/base/js/ckeditor/adapters/jquery.js"></script>    
+
+
+
+
+
+<script type="text/javascript" src="/ikep4-webapp/base/js/plupload/browserplus-min.js"></script>
+
+
+<script type="text/javascript" src="/ikep4-webapp/base/js/plupload/plupload.full.min.js"></script>
+<script type="text/javascript" src="/ikep4-webapp/base/js/plupload/plupload.browserplus.min.js"></script>
+
+<script type="text/javascript" src="/ikep4-webapp/base/js/plupload/src/javascript/plupload.flash.js"></script>
+<script type="text/javascript" src="/ikep4-webapp/base/js/plupload/jquery.plupload.queue.min.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" src="/ikep4-webapp/base/js/upload.controll.js"></script>
+<script type="text/javascript">
+<!--
+var useActXEditor = "Y";
+(function($){
+	var showDatepicker = function() {
+		setTimeout(function() {
+			var $container = $("#ui-datepicker-div");
+			var pos = $container.position();
+			var $cover = $('<div class="activexCover"/>')
+				.css({position:"absolute", top:pos.top, left:pos.left, width:$container.outerWidth(), height:$container.outerHeight()})
+					.insertBefore($container);
+			var $iframeCover = $('<iframe src="about:blank" style="width:100%; height:100%; border:none;"/>').appendTo($cover);
+		}, 0);
+	};
+	var hideDatePicker = function() {
+		$("div.activexCover").remove();
+	};
+	
+	
+	$(document).ready(function() {  
+		if(window.parent.topScroll != null) {
+			window.parent.topScroll(); 	
+		} 
+		
+		if(window.parent.menuMark != null) { 
+			window.parent.menuMark("100000789859");
+		}
+		
+		// editor 초기화
+		initEditorSet();
+		
+		$("input[name=startDate]").attr("readonly", true).datepicker({
+			isActiveX : true,
+			onSelect : function(){
+				var form = $(this)[0].form;
+				var validator = $(form).validate();
+				validator.element(this);
+				validator.element("input[name=endDate]", form);
+			},
+		    showOn: "button",
+		    buttonImage: "/ikep4-webapp/base/images/icon/ic_cal.gif",
+		    buttonImageOnly: true,
+		    buttonText : "게시시작일"
+		});   
+		$("input[name=endDate]").attr("readonly", true).datepicker({
+			isActiveX : true,
+			onSelect : function(){
+				var form = $(this)[0].form;
+				var validator = $(form).validate();
+				validator.element(this);
+				validator.element("input[name=startDate]", form);
+			},
+		    showOn: "button",
+		    buttonImage: "/ikep4-webapp/base/images/icon/ic_cal.gif",
+		    buttonImageOnly: true,
+		    buttonText : "게시종료일"
+		});   
+ 
+		$("a.saveBoardItemButton").click(function() { 
+			$("#boardItemForm").trigger("submit"); 
+			return false;  
+		});
+		
+		new iKEP.Validator("#boardItemForm", {   
+			rules  : {
+				title     : {required : true, rangelength : [1, 100] },
+				startDate : {required : true},
+				endDate   : {required : true, dateGTE : "startDate"}, 
+				tag       : {required : true, tagDuplicate : true}
+			},
+			messages : {
+				title     : {direction : "top",    required : "제목은 필수 입력항목입니다.", rangelength : "제목은 최소 1자 ~ 최대 1024자 내에 입력하셔야 합니다.  "},
+				startDate : {direction : "bottom", required : "게시 시작일자은 필수 입력항목입니다."},
+				endDate   : {direction : "bottom", required : "게시 종료일자은 필수 입력항목입니다.", dateGTE : "게시기간을 올바로 입력하세요."}, 
+				tag       : {direction : "bottom", required : "태그는 필수 입력항목입니다. ", tagDuplicate : "입력된 태그중에 중복된 태그가 존재합니다. "} 
+			},   
+			
+		    submitHandler : function(form) { 
+		    	// ActiveX Editor 사용 여부가 Y인 경우
+		    	if(useActXEditor == "Y"){
+			    	if ($.browser.msie) {
+			    		//태그프리 Mime 데이타 세팅
+			    		var tweBody = document.twe.MimeValue();
+			    		$('input[name="contents"]').val(tweBody);
+			    	}else{
+			    		//ekeditor 데이타 업데이트
+			    		var editor = $("#contents").ckeditorGet(); 
+						editor.updateElement();
+						//에디터 내 이미지 파일 링크 정보 세팅
+						createEditorFileLink("boardItemForm");
+			    	}
+		    	}else{
+		    		//ekeditor 데이타 업데이트
+		    		var editor = $("#contents").ckeditorGet(); 
+					editor.updateElement();
+					//에디터 내 이미지 파일 링크 정보 세팅
+					createEditorFileLink("boardItemForm");
+		    	}
+				
+		    	if(confirm("게시글을 등록 하시겠습니까?")) {
+					fileController.upload(function(isSuccess, files) {
+						if(isSuccess === true) { 
+							if($("input[name=itemDisplayDummy]").attr("checked")) {
+								$("input[name=itemDisplay]").val("1");
+							} else {
+								$("input[name=itemDisplay]").val("0");
+							} 
+							
+							//에디터 감추기
+							if(useActXEditor == "Y"){
+						    	if ($.browser.msie) {
+						    		$("#twe").css("visibility","hidden");
+						    	}
+							}
+							
+							$("body").ajaxLoadStart("button");
+							form.submit();
+						}
+					});
+				}
+		    }
+		}); 
+		
+	    var uploaderOptions = {
+		 	files : [], 
+		 	 
+			maxFileSize : 1048576,   
+			allowExt : "jpg",
+			
+	    	isUpdate : true ,
+	    	onLoad : function() {
+	    		iKEP.iFrameContentResize();
+	    	}
+	    };  
+        
+	    var fileController = new iKEP.FileController("#boardItemForm", "#fileUploadArea", uploaderOptions);
+		
+	 	// ActiveX Editor 사용 여부가 Y인 경우
+	    if(useActXEditor == "Y"){
+		    if (!$.browser.msie) {
+		    	//에디터 로딩 후 현재 페이지 높이 세팅 - iframe 높이 조절
+		    	var editor = $("#contents").ckeditorGet();
+				editor.on("instanceReady",function() {
+					iKEP.iFrameContentResize();
+				});
+				$("input[name=title]").focus();
+	    	}
+	    }else{
+	    	//에디터 로딩 후 현재 페이지 높이 세팅 - iframe 높이 조절
+	    	var editor = $("#contents").ckeditorGet();
+			editor.on("instanceReady",function() {
+				iKEP.iFrameContentResize();
+			});
+			$("input[name=title]").focus();
+	    }
+		 
+	});
+	
+	/* editor 초기화  */
+	initEditorSet = function() {
+		// ActiveX Editor 사용 여부가 Y인 경우
+	    if(useActXEditor == "Y"){
+			// 브라우저가 ie인 경우
+			if ($.browser.msie) {
+				// div 높이, 넓이 세팅
+				var cssObj = {
+			      'height' : '450px',
+			      'width' : '100%'
+			    };
+				$('#editorDiv').css(cssObj);
+
+				// hidden 필드 추가(contents)
+				iKEP.createActiveXEditor("#editorDiv","ko","#contents",0);
+				// ie 세팅
+				$('input[name="msie"]').val('1');
+			}else{
+				// ckeditor 초기화.
+				$("#contents").ckeditor($.extend(fullCkeditorConfig, {"language" : "ko", "popupTitle" : "파일업로드" }));
+				// ie 이외 브라우저 값 세팅
+				$('input[name="msie"]').val('0');
+			}
+	    }else{
+	    	// ckeditor 초기화.
+			$("#contents").ckeditor($.extend(fullCkeditorConfig, {"language" : "ko", "popupTitle" : "파일업로드" }));
+			// ie 이외 브라우저 값 세팅
+			$('input[name="msie"]').val('0');
+	    }
+	};
+		
+})(jQuery);  
+	
+//-->
+</script>
+<script language="JScript" FOR="twe" EVENT="OnKeyDown(event)">
+	/* 태그프리 에디터 줄바꿈 태그 P => br 로 변경하는 메소드 */
+	if (!event.shiftKey && event.keyCode == 13){
+		twe.InsertHtml("<br>");
+		event.returnValue = true; <!-- Active Designer에서의 처리를 막음 -->
+	}
+	if (event.shiftKey && event.keyCode == 13){
+		twe.InsertHtml("<p>");
+		event.returnValue = true; <!-- Active Designer에서의 처리를 막음 -->
+	}		
+</script>
+<script language="JScript" for="twe" event="OnControlInit()">	
+	$jq("input[name=title]").focus();
+</script>
+
+<form id="editorFileUploadParameter" action="null"> 
+	<input name="boardId"  value="100000789859" type="hidden"/> 
+	<input name="interceptorKey"  value="lightpack.board" type="hidden"/> 
+</form> 
+<h1 class="none">컨텐츠영역 </h1> 
+<!--pageTitle Start--> 
+<div id="pageTitle" class="btnline"> 
+	<h2>게시판 개발자 전용</h2> 
+	<div class="blockButton"> 
+		<ul>
+			
+				<li><a class="button saveBoardItemButton" href="#a"><span>저장</span></a></li>
+			  
+			<li><a class="button" href='/ikep4-webapp/lightpack/board/boardItem/listBoardItemView.do?boardId=100000789859&amp;searchConditionString=boardId^100000789859~pageIndex^1~popupYn^false&amp;
+=false'><span>목록 </span></a></li>
+		</ul>
+	</div>	
+</div>  
+<!--//pageTitle End--> 
+<!--blockDetail Start-->
+<div class="blockDetail">
+<form id="boardItemForm" name="boardItemForm" method="post" action="/ikep4-webapp/lightpack/board/boardItem/createBoardItem.do">
+	<input name="boardId"               type="hidden" value="100000789859" />
+	<input name="searchConditionString" type="hidden" value="boardId^100000789859~pageIndex^1~popupYn^false" />
+	<input name="itemDisplay"           type="hidden" value="" /> 
+	<input name="popupYn"               type="hidden" value="false" />
+	<input name="msie"        			type="hidden" value="0" />
+	<table summary="게시판 내용 등록 테이블">
+		<caption></caption>
+		<col style="width: 15%"/>
+		<col style="width: 35%"/>
+		<col style="width: 15%"/>
+		<col style="width: 35%"/>
+		<tbody> 
+		<tr> 
+			
+			<th scope="row">제목 </th>
+			<td colspan="3"> 
+				<div>
+					<input 
+						name="title" 
+						type="text" 
+						class="inputbox" style="width: 80%;" 
+						value="" 
+						size="40" 
+						title="제목 "
+						/> 
+						 
+					
+					   
+						<input 
+							name="itemDisplayDummy" 
+							type="checkbox" 
+							class="checkbox" 
+							value="" 
+							size="40" 
+							
+							title="게시판 공지"
+							/> 
+						게시판 공지 
+					 
+				</div>			
+			</td>  
+		</tr>				
+		<tr>  
+			<th scope="row">작성자</th>
+			<td>
+				
+					  
+					  
+						
+						
+						
+							
+								사용자1 사원 LG Hausys
+							
+							
+												
+					 
+				 
+			</td>  	 
+			<th scope="row">게시기간</th>
+			<td>
+				<div>
+					 
+					<input 
+					name="startDate" 
+					type="text" 
+					class="inputbox datepicker" 
+					value="2011.06.13" size="10" 
+					title="게시시작일"
+					/>   
+					 				
+					 ~	
+					 
+					<input 
+					name="endDate" 
+					type="text" 
+					class="inputbox datepicker" 
+					value="2011.06.14" size="10" 
+					title="게시종료일"
+					/>  
+					 				
+					
+				</div> 	 
+			</td>  
+		</tr>				
+		<tr>  
+			
+			<th scope="row">태그</th>
+			<td colspan="3">
+				<div>
+				<input 
+				name="tag" 
+				type="text" 
+				class="inputbox w40" 
+				value="" 
+				size="40" 
+				title="태그"/>
+				<span class="tdInstruction">※ 태그는 10개까지 등록할 수 있으며, 여러개 입력할 때는 쉼표(,)로 구분해 주세요. </span> 
+				
+				</div> 						
+			</td>		
+			  
+		</tr>
+		<tr>  
+			
+			<td colspan="4" class="ckeditor"> 
+				<div id="editorDiv"">					
+					<textarea id="contents"
+					name="contents" 
+					class="inputbox w100 fullEditor"
+					cols="" 
+					rows="5" 
+					title="게시물의 내용"></textarea>					
+				</div> 				
+			</td> 
+			 
+		</tr>  
+		</tbody> 
+	</table>
+	<div id="fileUploadArea" class="mt10"></div>
+	</form> 
+</div> 
+<!--//blockDetail End-->  									
+<!--blockButton Start-->
+<div class="blockButton"> 
+	<ul> 
+		
+			<li><a class="button saveBoardItemButton" href="#a"><span>저장</span></a></li>
+		  
+		<li><a class="button" href='/ikep4-webapp/lightpack/board/boardItem/listBoardItemView.do?boardId=100000789859&amp;searchConditionString=boardId^100000789859~pageIndex^1~popupYn^false&amp;popupYn=false'><span>목록 </span></a></li>
+	 </ul>
+</div>
+<!--//blockButton End-->  
+
+</body>
+</html>

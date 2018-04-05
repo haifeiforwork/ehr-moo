@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="support.user.group.dao.GroupType" >
+	<typeAlias alias="GroupType" type="com.lgcns.ikep4.support.user.group.model.GroupType"/>
+	<typeAlias alias = "SearchCondition" type="com.lgcns.ikep4.support.user.code.model.AdminSearchCondition"/>
+	
+	<resultMap id="result" class="GroupType">
+		<result property="groupTypeId" column="GROUP_TYPE_ID" />
+		<result property="groupTypeName" column="GROUP_TYPE_NAME" />
+		<result property="groupTypeEnglishName" column="GROUP_TYPE_ENGLISH_NAME" />
+		<result property="registerId" column="REGISTER_ID" />
+		<result property="registerName" column="REGISTER_NAME" />
+		<result property="updaterId" column="UPDATER_ID" />
+		<result property="updaterName" column="UPDATER_NAME" />
+		<result property="registDate" column="REGIST_DATE" />
+		<result property="updateDate" column="UPDATE_DATE" />
+		<result property="num" column="NUM" />
+	</resultMap>
+	
+	<!-- 신규 등록 -->
+	<insert id="insert" parameterClass="GroupType"> 
+	<![CDATA[
+		INSERT INTO /* [GroupType_SqlMap.xml] support.user.group.dao.GroupType.insert */
+			IKEP4_EV_GROUP_TYPE (
+			GROUP_TYPE_ID, 
+			GROUP_TYPE_NAME,
+			GROUP_TYPE_ENGLISH_NAME,
+			REGISTER_ID, 
+			REGISTER_NAME,
+			UPDATER_ID, 
+			UPDATER_NAME,
+			REGIST_DATE, 
+			UPDATE_DATE)
+		VALUES ( 
+			#groupTypeId#,
+			#groupTypeName#,
+			#groupTypeEnglishName#,
+		    #registerId#,
+		    #registerName#,
+		    #updaterId#,
+		    #updaterName#,
+		    NOW(),
+		    NOW())
+	]]>
+   </insert>
+   
+   <!-- 상세정보 -->
+	<select id="select" parameterClass="java.lang.String" resultClass="GroupType">
+	<![CDATA[
+		SELECT /* [GroupType_SqlMap.xml] support.user.group.dao.GroupType.select */
+		    GROUP_TYPE_ID AS groupTypeId,
+		    GROUP_TYPE_NAME AS groupTypeName,
+		    GROUP_TYPE_ENGLISH_NAME AS groupTypeEnglishName,
+		    REGISTER_ID AS registerId,
+		    REGISTER_NAME AS registerName,
+		    UPDATER_ID AS updaterId,
+		    UPDATER_NAME AS updaterName,
+		    REGIST_DATE AS registDate,
+		    UPDATE_DATE AS updateDate
+		FROM 
+		    IKEP4_EV_GROUP_TYPE
+		WHERE
+			GROUP_TYPE_ID = #groupTypeId#
+	]]>
+	</select>
+	
+	<!-- 기존 정보 수정 -->
+	<update id="update" parameterClass="GroupType">
+	<![CDATA[
+		UPDATE /* [GroupType_SqlMap.xml] support.user.group.dao.GroupType.update */
+			IKEP4_EV_GROUP_TYPE
+		SET
+			GROUP_TYPE_NAME = #groupTypeName#,
+			GROUP_TYPE_ENGLISH_NAME = #groupTypeEnglishName#,
+			UPDATER_ID = #updaterId#,
+			UPDATER_NAME = #updaterName#,
+			UPDATE_DATE = NOW()
+		WHERE
+			GROUP_TYPE_ID = #groupTypeId#
+	]]>
+	</update>
+   
+	<!-- 삭제 -->
+	<delete id="delete" parameterClass="java.lang.String">
+	<![CDATA[
+		DELETE /* [GroupType_SqlMap.xml] support.user.group.dao.GroupType.delete */ 
+		FROM IKEP4_EV_GROUP_TYPE
+		WHERE
+			GROUP_TYPE_ID = #groupTypeId#
+	]]>
+	</delete>
+	
+	<!-- 목록 가져오기 -->
+	<select id="selectAll" parameterClass="SearchCondition" resultMap="result">
+		<![CDATA[
+		SELECT				/* [GroupType_SqlMap.xml] support.user.group.dao.GroupType.selectAll */
+							(CASE tbl1.GROUP_TYPE_ID WHEN tbl1.GROUP_TYPE_ID THEN @ROWNUM := @ROWNUM + 1 ELSE @ROWNUM := 1 END) AS NUM,
+							tbl1.*
+		FROM 				( 
+		    				SELECT				GROUP_TYPE_ID,
+											    GROUP_TYPE_NAME,
+											    GROUP_TYPE_ENGLISH_NAME,
+											    REGISTER_ID,
+											    REGISTER_NAME,
+											    UPDATER_ID,
+											    UPDATER_NAME,
+											    REGIST_DATE,
+											    UPDATE_DATE
+							FROM				IKEP4_EV_GROUP_TYPE
+		        			WHERE 				1 = 1
+		]]>
+							<isNotEmpty property="searchWord">
+							<isEqual property="searchColumn" compareValue="title">
+							AND					(UPPER(GROUP_TYPE_NAME) LIKE CONCAT('%', UPPER(#searchWord#), '%') OR UPPER(GROUP_TYPE_ENGLISH_NAME) LIKE CONCAT('%', UPPER(#searchWord#), '%'))
+							</isEqual>
+							<isEqual property="searchColumn" compareValue="id">
+							AND					GROUP_TYPE_ID LIKE CONCAT('%', #searchWord#, '%')
+							</isEqual>
+							</isNotEmpty>
+							<isNotNull property="sortColumn">
+							<isEqual property="sortColumn" compareValue="GROUP_TYPE_ID">
+							<isEqual property="sortType" compareValue="ASC">
+							ORDER BY 			GROUP_TYPE_ID ASC
+							</isEqual>
+							<isEqual property="sortType" compareValue="DESC">
+							ORDER BY 			GROUP_TYPE_ID DESC
+							</isEqual>
+							</isEqual>
+							<isEqual property="sortColumn" compareValue="GROUP_TYPE_NAME">
+							<isEqual property="sortType" compareValue="ASC">
+							ORDER BY 			GROUP_TYPE_NAME ASC
+							</isEqual>
+							<isEqual property="sortType" compareValue="DESC">
+							ORDER BY 			GROUP_TYPE_NAME DESC
+							</isEqual>
+							</isEqual>
+							<isEqual property="sortColumn" compareValue="GROUP_TYPE_ENGLISH_NAME">
+							<isEqual property="sortType" compareValue="ASC">
+							ORDER BY 			GROUP_TYPE_ENGLISH_NAME ASC
+							</isEqual>
+							<isEqual property="sortType" compareValue="DESC">
+							ORDER BY 			GROUP_TYPE_ENGLISH_NAME DESC
+							</isEqual>
+							</isEqual>
+							</isNotNull>
+							<isNull property="sortColumn">
+							ORDER BY 			REGIST_DATE DESC, GROUP_TYPE_ID ASC
+							</isNull>
+		<![CDATA[							
+							LIMIT				#startRowIndex#, #pagePerRecord#
+							) tbl1,
+							(
+							SELECT				@ROWNUM := #startRowIndex#
+							) tbl2
+		]]>
+	</select>
+	
+	<select id="selectCount" parameterClass="SearchCondition" resultClass="int">
+	<![CDATA[
+		SELECT /* [GroupType_SqlMap.xml] support.user.group.dao.GroupType.selectCount */
+			COUNT(*)
+		FROM 
+		    IKEP4_EV_GROUP_TYPE
+        WHERE 1 = 1
+	]]>
+		<isNotEmpty property="searchWord">
+			<isEqual property="searchColumn" compareValue="title">
+				AND	(UPPER(GROUP_TYPE_NAME) LIKE CONCAT('%', UPPER(#searchWord#), '%') OR UPPER(GROUP_TYPE_ENGLISH_NAME) LIKE CONCAT('%', UPPER(#searchWord#), '%'))
+			</isEqual>
+			<isEqual property="searchColumn" compareValue="id">
+				AND	GROUP_TYPE_ID LIKE CONCAT('%', #searchWord#, '%')
+			</isEqual>
+		</isNotEmpty>
+	</select>
+	
+	<select id="selectForList" parameterClass="java.lang.String" resultClass="GroupType">
+	<![CDATA[
+		SELECT /* [GroupType_SqlMap.xml] support.user.group.dao.GroupType.selectForList */
+			GROUP_TYPE_ID AS groupTypeId, 
+			GROUP_TYPE_NAME AS groupTypeName,
+			GROUP_TYPE_ENGLISH_NAME AS groupTypeEnglishName
+		FROM IKEP4_EV_GROUP_TYPE
+	]]>
+	</select>
+
+	<select id="checkId" parameterClass="java.lang.String" resultClass="java.lang.String">
+	<![CDATA[
+		SELECT /* [GroupType_SqlMap.xml] support.user.group.dao.GroupType.checkId */
+			COUNT(GROUP_TYPE_ID)
+		FROM
+			IKEP4_EV_GROUP_TYPE
+		WHERE
+			GROUP_TYPE_ID = #groupTypeId#	
+	]]>
+	</select>
+		
+</sqlMap>

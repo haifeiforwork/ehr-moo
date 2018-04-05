@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="collpack.collaboration.board.board.dao.boardItemVersion">
+
+	<typeAlias alias="wsBoardItemVersion"				type="com.lgcns.ikep4.collpack.collaboration.board.board.model.BoardItemVersion"/>  
+
+	<typeAlias alias="wsBoardItemVersionSearchCondition"		type="com.lgcns.ikep4.collpack.collaboration.board.board.search.BoardItemVersionSearchCondition"/>
+
+	<sql id="sqlColumnList"> 
+		 A.VERSION_ID AS versionId,
+         A.VERSION AS version,
+         A.ITEM_ID AS itemId,
+         A.ITEM_TYPE AS itemType,
+         A.ITEM_DISPLAY AS itemDisplay,
+         A.TITLE AS title,
+         A.CONTENTS AS contents,
+         A.ATTACH_FILE_COUNT AS attachFileCount,
+         A.START_DATE AS startDate,
+         A.END_DATE AS endDate,
+         A.REGISTER_ID AS registerId,
+         U.USER_NAME AS registerName,
+         U.USER_ENGLISH_NAME AS registerEnglishName,
+         J.JOB_TITLE_NAME AS jobTitleName,
+         J.JOB_TITLE_ENGLISH_NAME AS jobTitleEnglishName,
+         A.REGIST_DATE AS registDate
+	</sql>  
+
+	<select id="get" parameterClass="string" resultClass="wsBoardItemVersion"> 
+		SELECT /* [BoardItem_SqlMap.xml] collpack.collaboration.board.board.dao.boardItemVersion.get */
+			<include refid="collpack.collaboration.board.board.dao.boardItemVersion.sqlColumnList" /> 
+		FROM  
+			IKEP4_WS_BD_ITEM_VERSION A,
+			INNER JOIN (
+				SELECT 
+					ITEM_ID,MAX(VERSION) VERSION
+				FROM 
+					IKEP4_WS_BD_ITEM_VERSION
+				WHERE 
+					ITEM_ID=#itemId#
+				GROUP BY 
+					ITEM_ID
+			) B
+				ON A.ITEM_ID = B.ITEM_ID AND AND A.VERSION = B.VERSION
+			INNER JOIN IKEP4_EV_USER U
+               	ON A.REGISTER_ID = U.USER_ID
+            INNER JOIN IKEP4_EV_JOB_TITLE J
+               	ON U.JOB_TITLE_CODE = J.JOB_TITLE_CODE
+		WHERE
+			A.ITEM_ID	=	#itemId#
+	</select>
+	<select id="getVersionItem" parameterClass="string" resultClass="wsBoardItemVersion"> 
+		SELECT /* [BoardItem_SqlMap.xml] collpack.collaboration.board.board.dao.boardItemVersion.get */
+			<include refid="collpack.collaboration.board.board.dao.boardItemVersion.sqlColumnList" /> 
+		FROM  
+			IKEP4_WS_BD_ITEM_VERSION A
+			INNER JOIN IKEP4_EV_USER U
+               	ON A.REGISTER_ID = U.USER_ID
+            INNER JOIN IKEP4_EV_JOB_TITLE J
+               	ON U.JOB_TITLE_CODE = J.JOB_TITLE_CODE
+		WHERE
+			A.VERSION_ID	=	#versionId#
+	</select>
+	<select id="getMaxVersionId" parameterClass="string" resultClass="wsBoardItemVersion"> 
+		SELECT * FROM
+		(
+		SELECT /* [BoardItem_SqlMap.xml] collpack.collaboration.board.board.dao.boardItemVersion.getMaxVersionId */
+			<include refid="collpack.collaboration.board.board.dao.boardItemVersion.sqlColumnList" /> 
+		FROM  
+			IKEP4_WS_BD_ITEM_VERSION A
+			INNER JOIN IKEP4_EV_USER U
+               	ON A.REGISTER_ID = U.USER_ID
+            INNER JOIN IKEP4_EV_JOB_TITLE J
+               	ON U.JOB_TITLE_CODE = J.JOB_TITLE_CODE
+		WHERE
+			A.ITEM_ID	=	#itemId#
+		ORDER BY VERSION DESC
+		) WHERE ROWNUM=1
+	</select>	
+	<select id="exists" parameterClass="string" resultClass="int"> 
+		SELECT /* [BoardItem_SqlMap.xml] collpack.collaboration.board.board.dao.boardItemVersion.exists */
+			COUNT(*)
+		FROM
+			IKEP4_WS_BD_ITEM_VERSION
+		WHERE
+			ITEM_ID = #itemId# 
+	</select> 
+
+	<select id="listBySearchCondition" parameterClass="wsBoardItemVersionSearchCondition" resultClass="wsBoardItemVersion">  
+		SELECT /* [BoardItem_SqlMap.xml] collpack.collaboration.board.board.dao.boardItemVersion.listBySearchCondition */ 
+			*
+		FROM 
+		( 
+			SELECT 
+				ROWNUM AS RNUM, A.* 
+			FROM 
+			( 
+				/* START========================================= */
+				SELECT
+					<include refid="collpack.collaboration.board.board.dao.boardItemVersion.sqlColumnList" /> 
+				FROM    IKEP4_WS_BD_ITEM_VERSION A
+                         INNER JOIN IKEP4_EV_USER U
+			               	ON A.REGISTER_ID = U.USER_ID
+			            INNER JOIN IKEP4_EV_JOB_TITLE J
+			               	ON U.JOB_TITLE_CODE = J.JOB_TITLE_CODE
+				WHERE
+					A.ITEM_ID = #itemId#  
+					<isNotEmpty property="searchColumn">
+					<isEqual property="searchColumn" compareValue="title">
+					AND	A.TITLE LIKE '%' || #searchWord# || '%'
+					</isEqual>
+					<isEqual property="searchColumn" compareValue="registerName">
+					AND	A.REGISTER_NAME LIKE '%' || #searchWord# || '%'
+					</isEqual>
+					</isNotEmpty>
+				ORDER BY version DESC
+				/* ===========================================END  */  
+
+			<![CDATA[   
+			)	A 
+			WHERE
+				ROWNUM <=  #endRowIndex# /* 종료  */
+		) 
+		WHERE
+			RNUM >  #startRowIndex# /* 시작 */
+		]]> 
+	</select>   
+
+
+	<select id="countBySearchCondition" parameterClass="wsBoardItemVersionSearchCondition" resultClass="int">  
+		SELECT /* [Board_SqlMap.xml] collpack.collaboration.board.board.dao.boardItemVersion.countBySearchCondition */ 
+			COUNT(*)
+		FROM
+			IKEP4_WS_BD_ITEM_VERSION
+		WHERE
+			ITEM_ID = #itemId#  
+			<isNotEmpty property="searchColumn">
+			<isEqual property="searchColumn" compareValue="title">
+				AND TITLE LIKE '%' || #searchWord# || '%'
+			</isEqual>
+			<isEqual property="searchColumn" compareValue="registerName">
+				AND REGISTER_NAME LIKE '%' || #searchWord# || '%'
+			</isEqual>
+			</isNotEmpty> 
+	</select> 
+
+	<insert id="create" parameterClass="wsBoardItemVersion"> 
+	INSERT INTO /* [boardItem_SqlMap.xml] collpack.collaboration.board.board.dao.boardItemVersion.insert */
+	IKEP4_WS_BD_ITEM_VERSION 
+	( 
+		VERSION_ID,
+		VERSION,
+		ITEM_ID,
+		ITEM_TYPE,
+		ITEM_DISPLAY,
+		TITLE,
+		CONTENTS,
+		ATTACH_FILE_COUNT,
+		START_DATE,
+		END_DATE,
+		REGISTER_ID,
+		REGISTER_NAME,
+		REGIST_DATE
+	) VALUES (
+		#versionId#,
+		(SELECT NVL(MAX(VERSION+0.1), 1.0) FROM IKEP4_WS_BD_ITEM_VERSION WHERE ITEM_ID = #itemId#),
+		#itemId#,
+		#itemType#,
+		#itemDisplay#,
+		#title#,
+		#contents#,
+		#attachFileCount#,
+		sysdate,
+		sysdate+10000,
+		#registerId#,
+		#registerName#,
+		sysdate
+	) 
+	</insert>
+   
+	<delete id="physicalDelete" parameterClass="string"> 
+		DELETE FROM	 /* [BoardItem_SqlMap.xml] collpack.collaboration.board.board.dao.boardItemVersion.physicalDelete */
+			IKEP4_WS_BD_ITEM_VERSION
+		WHERE
+			ITEM_ID = #itemId# 
+	</delete>    
+  	<delete id="physicalDeleteThread" parameterClass="string"> 
+		DELETE FROM	 /* [BoardItem_SqlMap.xml] collpack.collaboration.board.board.dao.boardItemVersion.physicalDeleteThread */
+			IKEP4_WS_BD_ITEM_VERSION
+		WHERE
+			ITEM_ID IN ( 
+	      		SELECT ITEM_ID 
+		   	 	FROM IKEP4_WS_BD_ITEM
+            	START WITH ITEM_ID =  #itemId# 
+            	CONNECT BY PRIOR ITEM_ID = ITEM_PARENT_ID 
+			)   
+	</delete>  	
+</sqlMap> 

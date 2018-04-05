@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="collpack.assess.dao.AssessmentManagementTarget">
+	<typeAlias alias="AssessmentManagementTargetPK" type="com.lgcns.ikep4.collpack.assess.model.AssessmentManagementTargetPK"/>
+	<typeAlias alias="AssessmentManagementTarget" type="com.lgcns.ikep4.collpack.assess.model.AssessmentManagementTarget"/>
+
+	<resultMap class="AssessmentManagementTarget" id="result">
+		<result column="MODULE_CODE" property="moduleCode" jdbcType="VARCHAR" javaType="String"/>
+		<result column="MODULE_NAME" property="moduleName" jdbcType="VARCHAR" javaType="String"/>
+		<result column="REQUIRED" property="required" jdbcType="NUMBER" javaType="Integer"/>
+		<result column="AVAILABLE" property="available" jdbcType="NUMBER" javaType="Integer"/>
+		<result column="SELECTION" property="selection" jdbcType="NUMBER" javaType="Integer"/>
+	</resultMap>
+
+<!-- Module 입력 -->
+	<insert id="create" parameterClass="AssessmentManagementTarget">
+	<![CDATA[
+		INSERT /* [AssessmentManagementTarget_SqlMap.xml] collpack.assess.dao.AssessmentManagementTarget.create */
+		       INTO IKEP4_AM_TARGET (
+		       MODULE_CODE
+		     , MODULE_NAME
+		     , REQUIRED
+		     , AVAILABLE
+		     , SELECTION
+		     , PORTAL_ID
+		     , REGISTER_ID
+		     , REGIST_DATE
+		       )
+		VALUES (
+		       #moduleCode#
+		     , #moduleName#
+		     , #required#
+		     , #available#
+		     , #selection#
+		     , #portalId#
+		     , #registerId#
+		     , NOW()
+		       )
+	]]>
+	</insert>
+
+<!-- 포털별 Module 리스트 (관리대상 필수인것) -->
+	<select id="listRequiredByPortalId" parameterClass="String" resultMap="result">
+	<![CDATA[
+		SELECT /* [AssessmentManagementTarget_SqlMap.xml] collpack.assess.dao.AssessmentManagementTarget.listRequiredByPortalId */
+		       MODULE_CODE, MODULE_NAME, REQUIRED, AVAILABLE, SELECTION
+		  FROM IKEP4_AM_TARGET
+		 WHERE PORTAL_ID = #portalId#
+		   AND REQUIRED = 0
+		 ORDER BY MODULE_NAME
+	]]>
+	</select>
+
+<!-- 포털별 Module 리스트 (관리대상 필수가 아닌것중 변경이 가능한것) -->
+	<select id="listUnrequiredAvailableByPortalId" parameterClass="String" resultMap="result">
+	<![CDATA[
+		SELECT /* [AssessmentManagementTarget_SqlMap.xml] collpack.assess.dao.AssessmentManagementTarget.listUnrequiredAvailableByPortalId */
+		       MODULE_CODE, MODULE_NAME, REQUIRED, AVAILABLE, SELECTION
+		  FROM IKEP4_AM_TARGET
+		 WHERE PORTAL_ID = #portalId#
+		   AND REQUIRED = 1
+		   AND AVAILABLE = 0
+		 ORDER BY MODULE_NAME
+	]]>
+	</select>
+
+<!-- 포털별 Module 리스트 (관리대상 필수가 아닌것중 변경이 불가능한것) -->
+	<select id="listUnrequiredUnavailableByPortalId" parameterClass="String" resultMap="result">
+	<![CDATA[
+		SELECT /* [AssessmentManagementTarget_SqlMap.xml] collpack.assess.dao.AssessmentManagementTarget.listUnrequiredUnavailableByPortalId */
+		       MODULE_CODE, MODULE_NAME, REQUIRED, AVAILABLE, SELECTION
+		  FROM IKEP4_AM_TARGET
+		 WHERE PORTAL_ID = #portalId#
+		   AND REQUIRED = 1
+		   AND AVAILABLE = 1
+		 ORDER BY MODULE_NAME
+	]]>
+	</select>
+
+<!-- 포털별 Module 사용불가로 변경 (관리대상 필수인것은 제외) -->
+	<update id="updateUnusableByPortalId" parameterClass="AssessmentManagementTarget">
+	<![CDATA[
+		UPDATE /* [AssessmentManagementTarget_SqlMap.xml] collpack.assess.dao.AssessmentManagementTarget.updateUnusableByPortalId */
+		       IKEP4_AM_TARGET
+		   SET SELECTION = 1
+		     , REGISTER_ID = #registerId#
+		     , REGIST_DATE = NOW()
+		 WHERE PORTAL_ID = #portalId#
+		   AND REQUIRED = 1
+		   AND AVAILABLE = 0
+	]]>
+	</update>
+
+<!-- 모듈별 사용가능으로 변경 -->
+	<update id="updateUsableByPortalIdModuleCode" parameterClass="AssessmentManagementTarget">
+	<![CDATA[
+		UPDATE /* [AssessmentManagementTarget_SqlMap.xml] collpack.assess.dao.AssessmentManagementTarget.updateUsableByPortalIdModuleCode */
+		       IKEP4_AM_TARGET
+		   SET SELECTION = 0
+		     , REGISTER_ID = #registerId#
+		     , REGIST_DATE = NOW()
+		 WHERE PORTAL_ID = #portalId#
+	]]>
+		   <isNotEmpty property="moduleCodeCommaString" prepend="AND ">MODULE_CODE IN <iterate property="moduleCodeArray" open="(" conjunction="," close=")">#moduleCodeArray[]#</iterate></isNotEmpty>
+		   <isEmpty property="moduleCodeCommaString" prepend="AND ">1 = 2</isEmpty>
+	</update>
+
+</sqlMap>

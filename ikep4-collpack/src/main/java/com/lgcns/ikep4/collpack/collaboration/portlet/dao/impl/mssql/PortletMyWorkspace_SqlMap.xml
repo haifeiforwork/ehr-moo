@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="collpack.collaboration.portlet.dao.portletMyWorkspace">
+	
+	<typeAlias alias="portletMyWorkspace"	type="com.lgcns.ikep4.collpack.collaboration.portlet.model.PortletMyWorkspace" />
+	 
+  	<sql id="sqlColumnList">
+		WORKSPACE_ID,
+		WORKSPACE_NAME,
+		REGISTER_ID,
+		REGISTER_NAME,
+		REGIST_DATE,
+		UPDATER_ID,
+		UPDATER_NAME,
+		UPDATE_DATE
+  	</sql>
+
+	<!-- ANSI -->
+  	<insert id="create" parameterClass="portletMyWorkspace"> 
+		<![CDATA[
+		INSERT	INTO	IKEP4_WS_PORTLET_MY_WORKSPACE  /* [Portlet_MyWorkspace_SqlMap.xml] collpack.collaboration.portlet.dao.portletMyWorkspace.create */
+		(
+			WORKSPACE_ID,
+			REGISTER_ID,
+			REGISTER_NAME,
+			REGIST_DATE,
+			UPDATER_ID,
+			UPDATER_NAME,
+			UPDATE_DATE
+		)
+		VALUES 				
+		( 
+			#workspaceId#,
+	    	#registerId#,
+	    	#registerName#,
+	    	CURRENT_TIMESTAMP,
+	    	#updaterId#,
+	    	#updaterName#,
+	    	CURRENT_TIMESTAMP
+	    )
+		]]>
+	</insert>
+  	
+  	<!-- ANSI -->
+  	<select id="list" parameterClass="String" resultClass="portletMyWorkspace">  
+  		<![CDATA[
+  		/* [Portlet_MyWorkspace_SqlMap.xml] collpack.collaboration.portlet.dao.portletMyWorkspace.list */
+		SELECT
+			A.WORKSPACE_ID		AS workspaceId,
+			B.WORKSPACE_NAME	AS workspaceName,
+			A.REGISTER_ID		AS registerId,
+			A.REGISTER_NAME		AS registerName,
+			A.REGIST_DATE		AS registDate,
+			A.UPDATER_ID		AS updaterId,
+			A.UPDATER_NAME		AS updaterName,
+			A.UPDATE_DATE		AS updateDate
+ 		FROM				
+ 			IKEP4_WS_PORTLET_MY_WORKSPACE A
+ 			INNER JOIN IKEP4_WS_MEMBER M ON (A.WORKSPACE_ID=M.WORKSPACE_ID AND M.MEMBER_LEVEL IN ('1','2','3','4') and M.MEMBER_ID=#registerId#)
+ 			INNER JOIN IKEP4_WS_WORKSPACE B ON (A.WORKSPACE_ID=B.WORKSPACE_ID AND B.WORKSPACE_STATUS IN ('O','WC'))
+ 		WHERE
+ 			A.REGISTER_ID=#registerId#
+ 		ORDER BY B.WORKSPACE_NAME ASC
+		]]>
+  	</select>   
+  	
+  	<!-- ANSI -->
+  	<select id="listAll" parameterClass="String" resultClass="portletMyWorkspace">  
+  		<![CDATA[
+  		/* [Portlet_MyWorkspace_SqlMap.xml] collpack.collaboration.portlet.dao.portletMyWorkspace.list */
+		SELECT
+			A.WORKSPACE_ID		AS workspaceId,
+			A.WORKSPACE_NAME	AS workspaceName,
+			B.WORKSPACE_ID		AS selWorkspaceId
+ 		FROM				
+ 			IKEP4_WS_WORKSPACE A
+ 			INNER JOIN IKEP4_WS_MEMBER M ON (A.WORKSPACE_ID=M.WORKSPACE_ID AND M.MEMBER_LEVEL IN ('1','2','3','4') and M.MEMBER_ID=#registerId#)
+ 			LEFT OUTER JOIN IKEP4_WS_PORTLET_MY_WORKSPACE B ON (A.WORKSPACE_ID=B.WORKSPACE_ID AND B.REGISTER_ID=#registerId#)
+ 		WHERE
+ 			A.WORKSPACE_STATUS IN ('O','WC')
+ 		ORDER BY A.WORKSPACE_NAME ASC
+		]]>
+  	</select>
+  	
+  	<!-- MS SQL -->
+  	<select id="listItem" parameterClass="Map" resultClass="portletMyWorkspace">  
+  	<![CDATA[
+		SELECT /* [Portlet_MyWorkspace_SqlMap.xml] collpack.collaboration.portlet.dao.portletMyWorkspace.listItem */
+			*  
+		FROM 
+		(
+			SELECT 
+				Row_number() OVER (ORDER BY X.REGIST_DATE DESC) AS RNUM,
+				X.WORKSPACE_ID    AS WORKSPACEID,
+				X.WORKSPACE_NAME  AS WORKSPACENAME,
+				X.BOARD_ID      AS BOARDID,
+				X.BOARD_NAME    AS BOARDNAME,
+				X.ITEM_ID      AS ITEMID,
+				X.TITLE        AS TITLE,
+				X.REGISTER_ID    AS REGISTERID,
+				X.REGIST_DATE     AS ITEMREGISTDATE,
+				E.USER_NAME    AS REGISTERNAME,
+				E.USER_ENGLISH_NAME AS REGISTERENGLISHNAME 
+			FROM 
+			(
+				SELECT  
+					A.WORKSPACE_ID,
+					A.WORKSPACE_NAME,
+					''          AS BOARD_ID,
+					''          AS BOARD_NAME,
+					D.ITEM_ID ,
+					D.TITLE ,
+					D.REGISTER_ID ,
+					D.REGIST_DATE      
+				FROM
+					IKEP4_WS_WORKSPACE A
+					INNER JOIN IKEP4_WS_BD_ANNOUNCE_WORKSPACE C ON ( A.WORKSPACE_ID=C.WORKSPACE_ID)         
+					INNER JOIN IKEP4_WS_BD_ANNOUNCE D ON (C.ITEM_ID=D.ITEM_ID AND D.ITEM_DELETE=0)
+				WHERE 
+					A.WORKSPACE_ID=#workspaceId#
+					AND A.WORKSPACE_STATUS IN ('O','WC') 
+					AND D.REGIST_DATE >= DATEADD(DD, -60, CURRENT_TIMESTAMP)
+
+				UNION ALL
+
+				SELECT
+					A.WORKSPACE_ID ,
+					A.WORKSPACE_NAME,
+					C.BOARD_ID ,
+					C.BOARD_NAME ,
+					D.ITEM_ID ,
+					D.TITLE ,
+					D.REGISTER_ID,
+					D.REGIST_DATE      
+				FROM        
+					IKEP4_WS_WORKSPACE A
+					INNER JOIN IKEP4_WS_BD_BOARD C ON (A.WORKSPACE_ID=C.WORKSPACE_ID AND C.IS_DELETE=0)
+					INNER JOIN IKEP4_WS_BD_ITEM D ON ( C.BOARD_ID=D.BOARD_ID )
+				WHERE
+					A.WORKSPACE_ID=#workspaceId#
+					AND A.WORKSPACE_STATUS IN ('O','WC') 
+					AND D.REGIST_DATE >= DATEADD(DD, -60, CURRENT_TIMESTAMP)
+					AND D.ITEM_DELETE=0
+			) X 
+			INNER JOIN IKEP4_EV_USER E ON (X.REGISTER_ID=E.USER_ID)
+		) TBL
+		WHERE 
+			RNUM <=#listSize#
+	]]> 		
+  	</select>   
+  	
+  	<!-- ANSI -->
+  	<delete id="delete" parameterClass="String"> 
+  		<![CDATA[
+  		/* [Portlet_MyWorkspace_SqlMap.xml] collpack.collaboration.portlet.dao.portletMyWorkspace.delete */
+    	DELETE	FROM 				
+    		IKEP4_WS_PORTLET_MY_WORKSPACE
+    	WHERE 				
+ 			REGISTER_ID=#registerId#
+    	]]>
+  	</delete>  
+  	
+</sqlMap>   

@@ -1,0 +1,682 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ko">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>iKEP 4.00</title>
+<link rel="stylesheet" type="text/css" href="../../css/theme03/jquery_ui_custom.css" />
+<link rel="stylesheet" type="text/css" href="../../css/common.css" />
+<link rel="stylesheet" type="text/css" href="../../css/theme03/theme.css" />
+<script type="text/javascript" src="../../js/jquery/jquery-1.6.2.min.js"></script>
+<script type="text/javascript" src="../../js/jquery/jquery-ui-1.8.13.min.without.datepicker.js"></script>
+<script type="text/javascript" src="../../js/langResource/ko.js"></script>
+<script type="text/javascript" src="../../js/common.pack.js"></script>
+<script type="text/javascript" src="../../js/portlet.js"></script>
+<script type="text/javascript">
+<!--
+(function($) {
+	
+	$(document).ready(function() {
+		$("#divTab_s").tabs();
+		
+		var mainMenu = $("#topMenu");
+		var menuItems = mainMenu.children("ul").children("li");
+		var width = (menuItems.length * $(menuItems[0]).outerWidth());
+		mainMenu.css({width:width + "px"});
+		
+		menuItems.bind("mouseenter mouseleave", function(event) {
+			var el = event.target;
+			switch(el.tagName.toLowerCase()) {
+				case "ul" :
+				case "a" : el = $(el).parent(); break;
+				case "span" : el = $(el).parent().parent(); break;
+				default : el = $(el);
+			}
+			el.children("ul").toggle();
+		});
+		
+		$.each(menuItems.children("ul"), function() {
+			var subMenu = $(this);
+			subMenu.css({left:((subMenu.parent().outerWidth() - subMenu.outerWidth()) / 2 + 1)+"px"});
+		});
+				
+		$("#systemLink").toggle(
+			function(){
+				showSystemLink();
+			},
+			function(){
+				hideSystemLink();
+			}
+		);		
+
+		{	// left quick menu setting --------------------------------------------------
+        	var menuWidth = 300;	// 메뉴 영역의 wrap 사이즈
+    		var $ul = $("#divQuickMenuLeft").find("ul");
+    		
+    		var totalWidth = 0;	// 전체 메뉴 사이즈
+    		$ul.children("li").each(function() { totalWidth += $(this).outerWidth(); });
+
+    		$ul.width(totalWidth);
+    		if(menuWidth < totalWidth) {
+    			var width = 0;
+    			$ul.children("li").each(function() {
+    				if(width + $(this).outerWidth() > menuWidth) return false;
+    				else width += $(this).outerWidth();
+    			});
+    			
+    			menuWidth = width;
+
+    			$ul.css("position", "absolute")
+    				.parent().css("position", "relative")
+    					.width(menuWidth).height($ul.outerHeight())
+    					.siblings(".quick_move_l, .quick_move_r").bind("click", function() {
+    						if($ul.filter(":animated").length > 0) return false;
+    						
+    						var position = $ul.position();
+    						switch(true) {
+    							case $(this).hasClass("quick_move_l") :
+    								var moveLeft = position.left + menuWidth;	// 보여지는 영역 만큼 이동해야할 거리
+    								if(moveLeft > 0) {	// 이동하고 났을때 위치가 보여지는 영역의 right point보다 멀리가면 보정
+    									moveLeft = 0;
+    								}
+    								break;
+    							case $(this).hasClass("quick_move_r") :
+    								var moveLeft = position.left - menuWidth;	// 보여지는 영역 만큼 이동해야할 거리
+    								if(((moveLeft - menuWidth)*-1) > $ul.width()) {	// 이동하고 났을때 위치가 보여지는 영역의 right point보다 멀리가면 보정
+    									moveLeft = (moveLeft*-1) - ($ul.width() - position.left);
+    								}
+    								break;
+    						}
+    						
+    						if(position.left != moveLeft) {
+    							//$ul.css("left", moveLeft+"px");
+    							$ul.animate({left:moveLeft+"px"}, "fast");
+    						}
+    					});
+    		} else {
+    			$ul.parent().siblings().each(function(idx){
+    				if(idx < 2) $(this).hide();
+    				else $(this).css("margin-left", "6px");
+    			});
+    		}
+        }// left quick menu setting --------------------------------------------------end.
+		
+	});
+	
+	makeSystemLayer = function(){
+		
+		var isLayer = false;
+		
+		if($.browser.msie && $.browser.version == "7.0"){
+			isLayer = $("body > div").hasClass('utilmenu_system_layer');
+		}else{
+			isLayer = $(".utilmenu_system div:last-child").hasClass('utilmenu_system_layer');
+		}
+		
+		if(!isLayer){
+			
+			var $systemLayer = $('<div class="utilmenu_system_layer none"><div class="util_close"><a href="#a" id="close_system" onclick="hideSystemLink();"><span>close</span></a></div></div>');
+			
+			if($.browser.msie && $.browser.version == "7.0"){
+				$systemLayer.appendTo(document.body);
+			}else{
+				$(".utilmenu_system").append($systemLayer);
+			}
+		}
+		
+	}
+	
+	hideSystemLink = function(){
+		var $target = $(".utilmenu_system_layer");
+		$(".utilmenu_system").removeClass("selected");
+		if($.browser.safari){
+			$target.hide();
+		}else{
+			$target.hide("blind",  400);			
+		}
+	}
+	
+	showSystemLink = function(){
+		
+		makeSystemLayer();
+		
+		var $target = $(".utilmenu_system_layer");		
+		$(".utilmenu_system").addClass("selected");
+		var $sys = $(".utilmenu_system");
+		
+		if($.browser.msie && $.browser.version == "7.0"){
+			var linkWidth = $sys.width()/2;
+			var linkTop = $sys.offset().top+$sys.innerHeight();
+			var linkLeft = $sys.offset().left+linkWidth-($target.width()/2);
+			$target.css({
+				top:linkTop,
+				left:linkLeft
+			});
+		}
+		
+		getSystemInfo($target);
+		
+		if($.browser.safari){
+			$target.show();
+		}else{
+			$target.show( "blind",  400, function() { getSystemInfo($target); });
+		}
+		
+	}
+	
+	getSystemInfo = function(target){
+				
+		var $target = target
+		var isSystem = $(".utilmenu_system_layer div:first-child").hasClass('utilmenu_box');
+		if(!isSystem){			
+			var url = "./main_system.html";
+			var parms = "";
+			$.ajax({
+				url : url,
+				data : "",
+				type : "post",
+				success : function(result) {
+					$target.prepend(result);
+				},
+				error : function(event, request, settings) { 
+					alert("error");	
+				}
+			});			
+		}
+	}
+		
+})(jQuery);
+-->
+</script>
+</head>
+
+<body>
+<!--skipNavigation Start-->
+<div id="skipNavigation">
+	<p><a href="#LeftContainer">개인화메뉴영역 바로가기</a></p>
+	<p><a href="#topInfo">헤더정보영역 바로가기</a></p>
+	<p><a href="#topMenu">탑메뉴 바로가기</a></p>	
+	<p><a href="#blockHeaderSub">퀵메뉴 바로가기</a></p>
+	<p><a href="#blockMainTop">컨텐츠영역 바로가기</a></p>	
+	<p><a href="#portletWrap">포틀릿영역 바로가기</a></p>
+</div>
+<!--//skipNavigation End-->
+
+<!--wrapper Start-->
+<div id="wrapper">
+
+	<!--LeftContainer Start-->
+	
+	<!--
+	<div id="LeftContainer" class="closed">
+		<h1 class="none">개인화메뉴영역</h1>
+		<div class="LeftContainer_bar">
+			<div class="LeftContainer_bar_closed"><a href="#a"><span>펼치기</span></a></div>
+		</div>
+	</div>
+	-->
+
+	<div id="LeftContainer" class="opened">
+		<h1 class="none">개인화메뉴영역</h1>
+		<div class="perInfo">
+			<table summary="개인정보">
+				<caption></caption>
+				<tbody>
+					<tr>
+						<td width="49"><a href="#a"><img src="../../images/common/temp_img_41x41.gif" alt="image" /></a></td>
+						<td>
+							<div class="perInfo_name">이민정 과장</div>
+							<div class="perInfo_team">UC컨설팅1팀</div>
+							<div class="perInfo_team">서울, GMT+9:00, ko</div>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<div class="conList">		
+			<ul>
+				<li class="opened"><a href="#a"><img src="../../images/icon/ic_menu_place.png" alt="" />My Place</a>
+					<ul>
+						<li class="licurrent"><a href="#a"><img src="../../images/icon/ic_menu_profile.png" alt="" />My Profile</a></li>
+						<li><a href="#a"><img src="../../images/icon/ic_menu_socialblog.png" alt="" />My Social Blog</a></li>
+						<li><a href="#a"><img src="../../images/icon/ic_menu_microblog.png" alt="" />My Microblog</a><span class="bottomline"></span></li>
+						<li><a href="#a"><img src="../../images/icon/ic_menu_teamcoll.png" alt="" />Team Coll</a></li>
+						<li><a href="#a"><img src="../../images/icon/ic_menu_sns.png" alt="" />SNS 그룹</a></li>
+						<li><a href="#a"><img src="../../images/icon/ic_menu_cafe.png" alt="" />Cafe</a></li>									
+					</ul>
+				</li>
+				<li class="opened"><a href="#a"><img src="../../images/icon/ic_menu_history.png" alt="" />My History</a>
+					<ul>
+						<li class="ar docu"><a href="#a">My Profile</a></li>
+						<li class="ar docu"><a href="#a">My Social Blog</a></li>
+						<li class="ar docu"><a href="#a">My Microblog</a></li>
+						<li class="ar docu"><a href="#a">Team Coll</a></li>
+						<li class="ar docu"><a href="#a">Team Coll</a></li>					
+						<li class="ar per"><a href="#a">SNS 그룹</a></li>
+						<li class="ar per"><a href="#a">SNS 그룹</a></li>
+						<li class="ar per"><a href="#a">SNS 그룹</a></li>
+						<li class="ar per"><a href="#a">Cafe</a></li>										
+						<li class="ar per"><a href="#a">Cafe</a></li>										
+					</ul>
+				</li>
+			</ul>
+		</div>		
+		<div class="btn_refresh"><a href="#a"><span>refresh</span></a></div>
+		<div class="LeftContainer_bar">
+			<div class="LeftContainer_bar_opened"><a href="#a"><span>접기</span></a></div>
+		</div>
+	</div>
+	<!--//LeftContainer End-->
+
+
+	<!--blockContainer Start-->
+	<div id="blockContainer" class="layout_2p"><!--layout_1p or layout_2p-->
+
+		<!--blockHeader Start-->
+		<div id="blockHeader">	
+		
+			<!--topInfo Start-->	
+			<div id="topInfo">
+				<h1 class="none">헤더정보영역</h1>
+				<div id="topLogo">
+					<a href="#a"><img src="../../images/common/logo.png" alt="iKEP Logo" /></a>
+				</div>
+				<!--utilMenu Start-->	
+				<div id="utilMenu">
+					<ul>
+						<li class="utilmenu_system"><a href="#a" id="systemLink"><span>system</span></a></li>			
+						<li class="utilmenu_sitemap"><a href="#a"><span>sitemap</span></a></li>
+						<li class="utilmenu_help"><a href="#a"><span>help</span></a></li>
+						<li class="utilmenu_admin"><a href="#a"><span>admin</span></a></li>
+					</ul>
+				</div>
+				<!--//utilMenu End-->				
+				<!--personInfo Start-->					
+				<div id="personInfo">
+					<span class="info_date">2011.01.20 (목)</span>
+					<span class="info_team"><a href="#a">컨설팅팀<span class="info_name">홍길동</span>과장</a></span> 
+					<span class="info_btn"><a href="#a"><span>Logout</span></a></span>
+				</div>
+				<!--//personInfo End-->						
+				<div class="clear"></div>
+			</div>
+			<!--//topInfo End-->
+						
+			<!--topMenu Start-->
+			<div id="topMenu">
+				<h1 class="none">탑메뉴</h1>			
+				<ul>
+					<li><a class="iconMenu_01" href="#work"><span>WORK</span></a></li>
+					<li><a class="iconMenu_02" href="#messages"><span>MESSAGES</span></a>
+						<ul>
+							<li><a target="mainFrame" href="http://www.google.co.kr">ALL MASSAGES HHH</a></li>
+							<li><a href="#a">MAIL</a></li>
+							<li><a href="#a">SMS</a></li>
+							<li><a href="#a">MESSAGING</a></li>
+							<li><a href="#a">ADDRESSBOOK</a></li>
+						</ul>					
+					</li>
+					<li><a class="iconMenu_03" href="#collaboration"><span>COLLABORATION</span></a>
+						<ul>
+							<li><a target="mainFrame" href="http://www.daum.net">ALL MASSAGES</a></li>
+							<li><a href="#a">MAIL</a></li>
+							<li><a href="#a">SMS</a></li>
+							<li><a href="#a">MESSAGING</a></li>
+							<li><a href="#a">ADDRESSBOOK</a></li>
+						</ul>
+					</li>
+					<li><a class="iconMenu_04" href="#knowledge"><span>KNOWLEDGE</span></a></li>
+					<li><a class="iconMenu_05" href="#people"><span>PEOPLE</span></a></li>
+					<li><a class="iconMenu_06" href="#innovation"><span>INNOVATION</span></a></li>	
+					<li><a class="iconMenu_07" href="#analysis"><span>ANALYSIS</span></a></li>																			
+				</ul>
+			</div>
+			<!--//topMenu End-->	
+
+			<!--blockHeaderSub Start-->
+			<div id="blockHeaderSub">
+				<h1 class="none">퀵메뉴</h1>		
+				<div id="divQuickMenuLeft" class="quick_l">
+					<div class="quick_move_l">
+						<a href="#a"><span>left</span></a> <!--더이상 이동할 수 없는 경우는 다음과 같이 class 삽입____<a href="#a" class="disabled"><span>left</span></a>-->
+					</div>
+					<div class="wrap">
+						<ul>
+							<li>
+								<a class="quickic_mail" href="#a"><span>Mail</span></a>
+								<div class="quick_num"><a href="#a"><span>264</span></a></div>
+							</li>
+							<li>
+								<a class="quickic_appr" href="#a"><span>Approval</span></a>
+								<div class="quick_num"><a href="#a"><span>27</span></a></div>
+							</li>
+							<li>
+								<a class="quickic_todo" href="#a"><span>To-DO</span></a>
+								<div class="quick_num"><a href="#a"><span>1</span></a></div>
+							</li>
+							<li><a class="quickic_plan" href="#a"><span>Plan</span></a>
+								<div class="quick_num"><a href="#a"><span></span></a></div>
+							</li>
+							<li><a class="quickic_bbs" href="#a"><span>BBS</span></a>
+								<div class="quick_num"><a href="#a"><span></span></a></div>
+							</li>
+							<li><a class="quickic_sms" href="#a"><span>SMS</span></a>
+								<div class="quick_num"><a href="#a"><span></span></a></div>
+							</li>
+							<li><a class="quickic_msg" href="#a"><span>Message</span></a>
+								<div class="quick_num"><a href="#a"><span></span></a></div>
+							</li>
+							<li><a class="quickic_addr" href="#a"><span>Address</span></a>
+								<div class="quick_num"><a href="#a"><span></span></a></div>
+							</li>
+							<li class="liLast"><a class="quickic_rss" href="#a"><span>RSS</span></a>
+								<div class="quick_num"><a href="#a"><span></span></a></div>
+							</li>
+						</ul>
+					</div>
+					<div class="quick_move_r">
+						<a href="#a"><span>right</span></a> <!--더이상 이동할 수 없는 경우는 다음과 같이 class 삽입____<a href="#a" class="disabled"><span>right</span></a>-->
+					</div>					
+					<div class="quickset">
+						<a href="#a"><span>setting</span></a>
+					</div>
+				</div>
+				<div class="quick_r">
+					<div class="quicktxt">
+						<ul>
+							<li class="quicktxt_personal liFirst"><a href="#a"><span>personal</span></a></li>
+							<li class="quicktxt_recent"><a href="#a"><span>recent</span></a></li>
+							<li class="quicktxt_favorite"><a href="#a"><span>favorite</span></a></li>
+						</ul>					
+					</div>
+					<!--headerSearch Start-->
+					<div class="headerSearch">
+						<div class="headerSearch_sel">
+							<h2 class="none">검색조건</h2>
+							<a class="sel_con" href="#a">사용자<span>select</span></a>
+							<div class="headerSearch_layer none">
+								<ul>
+									<li><a href="#a">사용자</a></li>
+									<li><a href="#a">컨텐츠</a></li>
+								</ul>
+							</div>
+						</div>
+						<input title="검색창" type="text" />
+						<a class="sel_btn" href="#a"><span>검색</span></a>
+						<div class="clear"></div>
+					</div>
+					<!--//headerSearch End-->
+				</div>
+			</div>
+			<!--//blockHeaderSub End-->
+										
+		</div>
+		<!--//blockHeader End-->
+		
+		<!--blockMain Start-->
+		<div id="blockMain">
+			
+			<!--blockMainTop Start-->	
+			<div id="blockMainTop">
+				<h1 class="none">컨텐츠영역</h1>		
+				<div class="mainTop_l">
+					<h2 class="none">Wise Saying</h2> 
+					<div class="mtitle"><img src="../../images/common/mtitle_wisesaying.gif" alt="wise saying" /></div>
+					<img src="../../images/common/img_wisesaying.gif" alt="희망을 품지 않은 자는 절망도 할 수 없다. -조지 버나스 쇼" />
+				</div>
+				<div class="mainTop_m">
+					<!--tab Start-->		
+					<div id="divTab_s" class="iKEP_tab_s">
+						<ul>
+							<li><a href="#tabs-1">Today Focus</a></li>
+							<li><a href="#tabs-2">News</a></li>
+							<li><a href="#tabs-3">Happy Lounge</a></li>
+						</ul>
+						<div class="newslist">
+							<div id="tabs-1">
+								<ul>
+									<li><a href="#a">[자사] '범정부 클라우드 컴퓨팅 센터' 구축</a> <span class="ic_new"><span>new</span></span></li>
+									<li><a href="#a">[업계] IT서비스 내년 하반기부터 본격 수주경쟁 돌입</a></li>
+									<li><a href="#a">[업계] 대형IT서비스,캐피털IT사업 수주</a></li>
+									<li><a href="#a">[업계] 이달내 '스마트워크 포럼' 창립</a></li>
+									<li><a href="#a">[기타] G20 기간 알아두어야 할 것들</a></li>
+								</ul>
+							</div>
+							<div id="tabs-2">
+								두번째 탭 내용
+							</div>
+							<div id="tabs-3">
+								세번째 탭 내용
+							</div>
+						</div>				
+					</div>		
+					<!--//tab End-->
+				</div>
+				<div class="mainTop_r">
+					<h2 class="none">Management Classroom</h2> 
+					<div class="mtitle"><img src="../../images/common/mtitle_management.gif" alt="Management Classroom" /></div>
+					<a href="#a"><img src="../../images/common/img_management.gif" alt="모바일 환경 Closed-Open으로 간다" /></a>
+				</div>	
+				<div class="clear"></div>							
+			</div>
+			<!--//blockMainTop End-->
+					
+			<!--portletWrap Start-->
+			<div id="portletWrap">
+				<h1 class="none">포틀릿영역</h1>
+				
+				<!--portletSetting Start-->
+				<div id="portletSetting">
+					<h2 class="none">포틀릿셋팅</h2>
+					<ul class="po_setbtn">
+						<li class="po_btn_theme"><a href="#a"><span>Theme</span></a></li>
+						<li class="po_btn_portlet"><a href="#a"><span>Portlet</span></a></li>
+					</ul>
+					<div class="clear"></div>				
+				</div>	
+				<!--//portletSetting End-->
+				
+				<!--portlet Start-->
+				<div id="portlet">
+					<div class="maximize"></div>
+					<div class="portlet_l">
+						<!--portletUnit Start-->
+						<div class="portletUnit">
+							<div class="portletUnit_t">
+								<div class="po_title"><h2>축하합니다</h2></div>
+								<div class="po_icon">
+									<ul>
+										<li class="po_icon_edit"><a href="#a"><span>edit</span></a></li>
+										<li class="po_icon_refresh"><a href="#a"><span>refresh</span></a></li>
+										<li class="po_icon_max"><a href="#a"><span>max</span></a></li>
+										<li class="po_icon_fold"><a href="#a"><span>fold</span></a></li>
+										<li class="po_icon_close"><a href="#a"><span>close</span></a></li>
+										<!--
+										<li class="po_icon_more"><a href="#a"><span>more</span></a></li>
+										<li class="po_icon_restore"><a href="#a"><span>restore</span></a></li>
+										<li class="po_icon_config"><a href="#a"><span>config</span></a></li>
+										-->
+									</ul>
+								</div>
+							</div>
+							<div class="portletUnit_c tableList_1">
+								<div class="poEdit none"><!--edit펼침화면 display:none____none 제거시 display 됨-->
+									<div>
+										대상기간 : 
+										<label><input name="" class="radio" title="week" type="radio" value="" />week</label>&nbsp;&nbsp;
+										<label><input name="" class="radio" title="month" type="radio" value="" />month</label>									
+									</div>
+									<div>
+										대상그룹 :
+										<input name="" class="checkbox" title="대상그룹" type="checkbox" value="" />
+										<select name="" title="대상그룹">
+											<option>담당/팀</option>
+										</select>
+									</div>
+									<div class="textRight"><a class="button_s" href="#a"><span>저장</span></a></div>
+								</div>
+								<div class="pTitle_1">
+									생일축하합니다
+								</div>
+								<table summary="생일자 명단">
+									<caption></caption>
+									<tbody>
+										<tr>
+											<th scope="row" class="today"><img src="../../images/icon/ic_birthday.gif" alt="" />  <a href="#a">김길동 부장 (공공/금융ERP컨설팅팀)</a></th>
+											<td class="textRight today"><span class="date">03.15</span></td>
+										</tr>
+										<tr>
+											<th scope="row"><a href="#a">김길동 부장 (UC컨설팅1팀)</a></th>
+											<td class="textRight"><span class="date">03.18</span></td>
+										</tr>										
+									</tbody>
+								</table>
+								<div class="dotline_1"></div>
+								<div class="pTitle_1">
+									결혼기념일을 축하합니다
+								</div>								
+								<table summary="결혼기념일자 명단">
+									<caption></caption>
+									<tbody>
+										<tr>
+											<th scope="row" class="today"><img src="../../images/icon/ic_wedding.gif" alt="" />  <a href="#a">최길동 총괄 CONSULTANT (UC팀)</a></th>
+											<td class="textRight today"><span class="date">03.15</span></td>
+										</tr>
+										<tr>
+											<th scope="row"><a href="#a">김길동 부장 (UC컨설팅1팀)</a></th>
+											<td class="textRight"><span class="date">03.20</span></td>
+										</tr>																				
+									</tbody>
+								</table>								
+								<div class="l_b_corner"></div><div class="r_b_corner"></div>
+							</div>
+						</div>
+						<!--//portletUnit End-->
+					</div>
+					<div class="portlet_c">
+						<!--portletUnit Start-->
+						<div class="portletUnit">
+							<div class="portletUnit_t">
+								<div class="po_title"><h2>My Social Network</h2></div>
+								<div class="po_icon">
+									<ul>
+										<li class="po_icon_edit"><a href="#a"><span>edit</span></a></li>
+										<li class="po_icon_refresh"><a href="#a"><span>refresh</span></a></li>
+										<li class="po_icon_max"><a href="#a"><span>max</span></a></li>
+										<li class="po_icon_fold"><a href="#a"><span>fold</span></a></li>
+										<li class="po_icon_close"><a href="#a"><span>close</span></a></li>
+										<!--
+										<li class="po_icon_more"><a href="#a"><span>more</span></a></li>
+										<li class="po_icon_restore"><a href="#a"><span>restore</span></a></li>
+										<li class="po_icon_config"><a href="#a"><span>config</span></a></li>
+										-->
+									</ul>
+								</div>
+							</div>
+							<div class="portletUnit_c imgList_1">
+								<ul>
+									<li><a href="#a"><img src="../../images/common/photo_50x50.gif" alt="no image" /></a><p><a href="#a">홍길동</a></p></li>
+									<li><a href="#a"><img src="../../images/common/temp_img_50x50_1.gif" alt="image" /></a><p><a href="#a">김태희</a></p></li>
+									<li><a href="#a"><img src="../../images/common/temp_img_50x50_2.gif" alt="image" /></a><p><a href="#a">송혜교</a></p></li>
+									<li><a href="#a"><img src="../../images/common/temp_img_50x50_3.gif" alt="image" /></a><p><a href="#a">김길동</a></p></li>
+									<li><a href="#a"><img src="../../images/common/temp_img_50x50_4.gif" alt="image" /></a><p><a href="#a">최길동</a></p></li>
+									<li><a href="#a"><img src="../../images/common/temp_img_50x50_1.gif" alt="image" /></a><p><a href="#a">김태희</a></p></li>
+									<li><a href="#a"><img src="../../images/common/temp_img_50x50_2.gif" alt="image" /></a><p><a href="#a">송혜교</a></p></li>
+									<li><a href="#a"><img src="../../images/common/temp_img_50x50_3.gif" alt="image" /></a><p><a href="#a">김길동</a></p></li>
+									<li><a href="#a"><img src="../../images/common/temp_img_50x50_5.gif" alt="image" /></a><p><a href="#a">김연아</a></p></li>
+									<li><a href="#a"><img src="../../images/common/temp_img_50x50_6.gif" alt="image" /></a><p><a href="#a">현빈</a></p></li>
+								</ul>
+								<div class="clear"></div>				
+								<div class="l_b_corner"></div><div class="r_b_corner"></div>
+							</div>
+						</div>
+						<!--//portletUnit End-->				
+					</div>
+					<div class="portlet_r">
+						<!--portletUnit Start-->
+						<div class="portletUnit">
+							<div class="portletUnit_t">
+								<div class="po_title"><h2>금주의 일정</h2></div>
+								<div class="po_icon">
+									<ul>
+										<!--
+										<li class="po_icon_edit"><a href="#a"><span>edit</span></a></li>
+										-->
+										<li class="po_icon_refresh"><a href="#a"><span>refresh</span></a></li>
+										<li class="po_icon_max"><a href="#a"><span>max</span></a></li>
+										<li class="po_icon_fold"><a href="#a"><span>fold</span></a></li>
+										<li class="po_icon_close"><a href="#a"><span>close</span></a></li>
+										<!--
+										<li class="po_icon_more"><a href="#a"><span>more</span></a></li>
+										<li class="po_icon_restore"><a href="#a"><span>restore</span></a></li>
+										<li class="po_icon_config"><a href="#a"><span>config</span></a></li>
+										-->
+									</ul>
+								</div>
+							</div>
+							<div class="portletUnit_c po_schedule_w">
+								<div class="blockListTable msgTable">
+									<table summary="">
+										<caption></caption>
+										<thead>
+											<tr>
+												<th scope="col"><span class="fc_day_sun">일</span></th>
+												<th scope="col">월</th>
+												<th scope="col">화</th>
+												<th scope="col">수</th>
+												<th scope="col">목</th>
+												<th scope="col">금</th>
+												<th class="tdLast" scope="col"><span class="colorBlue">토</span></th>
+											</tr>				
+										</thead>
+										<tbody>
+											<tr>
+												<td></td>
+												<td></td>
+												<td></td>
+												<td><span class="pr_schbar_2"></span></td>
+												<td></td>
+												<td></td>
+												<td class="tdLast"></td>
+											</tr>											
+										</tbody>
+									</table>
+								</div>	
+								<div class="pr_schedule_c">							
+									<div class="date">수요일</div>
+									<ul>	
+										<li><span>09:00 ~ 11:00</span> <a href="#a">UI표준/개발 가이드 교육</a></li>
+										<li><span>12:00 ~ 13:00</span> <a href="#a">주간업무보고</a></li>
+										<li><span>15:00 ~ 17:00</span> <a href="#a">자사 솔루션 영업전략 2차 세미나</a></li>
+									</ul>
+								</div>
+								<div class="clear"></div>				
+								<div class="l_b_corner"></div><div class="r_b_corner"></div>
+							</div>
+						</div>
+						<!--//portletUnit End-->				
+					</div>
+					<div class="clear"></div>
+				</div>
+				<!--//portlet End-->
+												
+			</div>
+			<!--//portletWrap End-->
+			
+		</div>
+		<!--//blockMain End-->
+		
+	</div>
+	<!--//blockContainer End-->
+	
+	<!--
+	<div id="blockFooter">
+		<div class="footer">
+			<img src="../../images/common/logo_s.png" alt="LG CNS 로고" />Copyright © 2011. All Rights Reserved. Powered by iKEP4
+		</div>
+	</div>
+	-->
+
+</div>
+<!--//wrapper End-->
+</body>
+</html>

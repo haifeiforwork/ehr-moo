@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="collpack.knowledgehub.dao.KnowledgeMapRecommendList">
+	<typeAlias alias="KnowledgeMapListPK" type="com.lgcns.ikep4.collpack.knowledgehub.model.KnowledgeMapListPK"/>
+	<typeAlias alias="KnowledgeMapList" type="com.lgcns.ikep4.collpack.knowledgehub.model.KnowledgeMapList"/>
+	<typeAlias alias ="Tag" type="com.lgcns.ikep4.support.tagging.model.Tag"/>
+	
+	<resultMap class="KnowledgeMapList" id="result">
+		<result column="ITEM_ID" property="itemId" jdbcType="VARCHAR" javaType="String"/>
+		<result column="ITEM_TYPE" property="itemType" jdbcType="VARCHAR" javaType="String"/>
+		<result column="TAG_ITEM_NAME" property="tagItemName" jdbcType="VARCHAR" javaType="String"/>
+		<result column="TAG_ITEM_CONTENTS" property="tagItemContents" jdbcType="VARCHAR" javaType="String"/>
+		<result column="TAG_ITEM_URL" property="tagItemUrl" jdbcType="VARCHAR" javaType="String"/>
+		<result column="REGISTER_ID" property="registerId" jdbcType="VARCHAR" javaType="String"/>
+		<result column="REGIST_DATE" property="registDate" jdbcType="DATE" javaType="Date"/>
+		<result column="ITEM_TYPE_DISPLAY_NAME" property="itemTypeDisplayName" jdbcType="VARCHAR" javaType="String"/>
+	</resultMap>
+
+	<resultMap class="KnowledgeMapList" extends="result" id="localeResult">
+		<result column="ITEM_ID" property="itemId" jdbcType="VARCHAR" javaType="String"/>
+		<result column="ITEM_TYPE" property="itemType" jdbcType="VARCHAR" javaType="String"/>
+		<result column="TAG_ITEM_NAME" property="tagItemName" jdbcType="VARCHAR" javaType="String"/>
+		<result column="TAG_ITEM_CONTENTS" property="tagItemContents" jdbcType="VARCHAR" javaType="String"/>
+		<result column="TAG_ITEM_URL" property="tagItemUrl" jdbcType="VARCHAR" javaType="String"/>
+		<result column="REGISTER_ID" property="registerId" jdbcType="VARCHAR" javaType="String"/>
+		<result column="REGIST_DATE" property="registDate" jdbcType="DATE" javaType="Date"/>
+		<result column="USER_NAME" property="userName" jdbcType="VARCHAR" javaType="String"/>
+		<result column="USER_ENGLISH_NAME" property="userEnglishName" jdbcType="VARCHAR" javaType="String"/>
+		<result column="TEAM_NAME" property="teamName" jdbcType="VARCHAR" javaType="String"/>
+		<result column="TEAM_ENGLISH_NAME" property="teamEnglishName" jdbcType="VARCHAR" javaType="String"/>
+		<result column="JOB_TITLE_NAME" property="jobTitleName" jdbcType="VARCHAR" javaType="String"/>
+		<result column="JOB_TITLE_ENGLISH_NAME" property="jobTitleEnglishName" jdbcType="VARCHAR" javaType="String"/>
+	</resultMap>
+
+	<sql id="KnowledgeMapRecommendSQL">
+	
+		SELECT TAG_ITEM_ID, TAG_ITEM_TYPE
+		  FROM (
+		  		SELECT Row_number() OVER (ORDER BY FLAG, TAG_ITEM_ID DESC) AS RNUM,
+		  				TAG_ITEM_ID, TAG_ITEM_TYPE
+		  		  FROM (
+		          SELECT A.TAG_ITEM_ID, A.TAG_ITEM_TYPE
+					    FROM    IKEP4_TG_LINK A
+					         JOIN
+					            (SELECT A.TAG_ID,
+					                    A.TAG_ITEM_ID,
+					                    A.TAG_ITEM_TYPE,
+					                    A.TAG_ITEM_SUB_TYPE,
+					                    A.REGISTER_ID,
+					                    A.REGISTER_NAME,
+					                    A.REGIST_DATE,
+					                    B.TAG_NAME,
+					                    C.TAG_ITEM_NAME,
+					                    C.TAG_ITEM_URL,
+					                    C.TAG_ITEM_CONTENTS
+					               FROM IKEP4_TG_LINK A, IKEP4_TG_DICTIONARY B, IKEP4_TG_ITEM C
+					              WHERE     A.TAG_ID = B.TAG_ID
+					                    AND A.TAG_ITEM_ID = C.TAG_ITEM_ID
+					                    AND A.TAG_ITEM_TYPE = C.TAG_ITEM_TYPE
+					                    AND A.TAG_ITEM_ID = #registerId#
+					                    AND A.TAG_ITEM_TYPE = 'PI') B
+					         ON A.tag_id = b.tag_id
+					WHERE 1=1
+					  <isNotEmpty property="portalId" prepend="AND">
+			   				A.PORTAL_ID =  #portalId#
+			   	 	  </isNotEmpty>
+					  <isNotEmpty prepend="AND" property="tagItemType" >
+				    	 <iterate open="(" close=")"  property="tagItemTypes" conjunction="," prepend="A.TAG_ITEM_TYPE IN">
+				           #tagItemTypes[]#
+				          </iterate>
+			    	  </isNotEmpty>
+					GROUP BY A.TAG_ITEM_ID, A.TAG_ITEM_TYPE
+					ORDER BY 1 DESC
+				)
+		       )
+	<![CDATA[
+		 WHERE RNUM <= #endRowIndex#
+	]]>
+	</sql>
+
+<!-- 사용자별 Knowledge 조회 (페이징) -->
+	<select id="listByUserIdPage" parameterClass="Tag" resultMap="localeResult">
+	<![CDATA[
+		/* [KnowledgeMapRecommendList_SqlMap.xml] collpack.knowledgehub.dao.KnowledgeMapRecommendList.listByUserIdPage */
+	]]>
+		WITH MAIN_BODY AS (
+		    <include refid="KnowledgeMapRecommendSQL"/>
+		)
+		SELECT ITM.TAG_ITEM_ID ITEM_ID
+		     , ITM.TAG_ITEM_TYPE ITEM_TYPE
+		     , ITM.TAG_ITEM_NAME TAG_ITEM_NAME
+		     , ITM.TAG_ITEM_CONTENTS TAG_ITEM_CONTENTS
+		     , ITM.TAG_ITEM_URL TAG_ITEM_URL
+		     , ITM.REGISTER_ID REGISTER_ID
+		     , ITM.REGIST_DATE REGIST_DATE
+		     , USR.USER_NAME USER_NAME
+		     , USR.USER_ENGLISH_NAME USER_ENGLISH_NAME
+		     , USR.TEAM_NAME TEAM_NAME
+		     , USR.TEAM_ENGLISH_NAME TEAM_ENGLISH_NAME
+		     , USR.JOB_TITLE_NAME JOB_TITLE_NAME
+		     , USR.JOB_TITLE_ENGLISH_NAME JOB_TITLE_ENGLISH_NAME
+		     , (SELECT DISPLAY_NAME
+		          FROM IKEP4_EV_ITEM_TYPE ZZZ
+		         WHERE ZZZ.ITEM_TYPE_CODE = ITM.TAG_ITEM_TYPE) ITEM_TYPE_DISPLAY_NAME
+		  FROM MAIN_BODY TAG
+		  JOIN IKEP4_TG_ITEM ITM
+		    ON TAG.TAG_ITEM_ID = ITM.TAG_ITEM_ID
+		   AND TAG.TAG_ITEM_TYPE = ITM.TAG_ITEM_TYPE
+		  JOIN (
+		        SELECT USR.USER_ID USER_ID
+		             , USR.USER_NAME USER_NAME, USR.USER_ENGLISH_NAME USER_ENGLISH_NAME
+		             , USR.TEAM_NAME TEAM_NAME, USR.TEAM_ENGLISH_NAME TEAM_ENGLISH_NAME
+		             , JOB.JOB_TITLE_NAME JOB_TITLE_NAME, JOB.JOB_TITLE_ENGLISH_NAME JOB_TITLE_ENGLISH_NAME
+		          FROM IKEP4_EV_USER USR
+		          JOIN IKEP4_EV_JOB_TITLE JOB
+		         USING (JOB_TITLE_CODE)
+		       ) USR
+		    ON ITM.REGISTER_ID = USR.USER_ID
+		 ORDER BY TAG.TAG_ITEM_ID DESC
+	</select>
+
+<!-- 사용자별 Knowledge 조회 (메인화면에서 사용) -->
+	<select id="listByUserIdPageSimple" parameterClass="Tag" resultMap="result">
+	<![CDATA[
+		/* [KnowledgeMapRecommendList_SqlMap.xml] collpack.knowledgehub.dao.KnowledgeMapRecommendList.listByUserIdPageSimple */
+	]]>
+		WITH MAIN_BODY AS (
+		    <include refid="KnowledgeMapRecommendSQL"/>
+		)
+		SELECT ITM.TAG_ITEM_ID ITEM_ID
+		     , ITM.TAG_ITEM_TYPE ITEM_TYPE
+		     , ITM.TAG_ITEM_NAME TAG_ITEM_NAME
+		     , ITM.TAG_ITEM_CONTENTS TAG_ITEM_CONTENTS
+		     , ITM.TAG_ITEM_URL TAG_ITEM_URL
+		     , ITM.REGISTER_ID REGISTER_ID
+		     , ITM.REGIST_DATE REGIST_DATE
+		     , (SELECT DISPLAY_NAME
+		          FROM IKEP4_EV_ITEM_TYPE ZZZ
+		         WHERE ZZZ.ITEM_TYPE_CODE = ITM.TAG_ITEM_TYPE) ITEM_TYPE_DISPLAY_NAME
+		  FROM MAIN_BODY TAG
+		  JOIN IKEP4_TG_ITEM ITM
+		    ON TAG.TAG_ITEM_ID = ITM.TAG_ITEM_ID
+		   AND TAG.TAG_ITEM_TYPE = ITM.TAG_ITEM_TYPE
+		 ORDER BY TAG.TAG_ITEM_ID DESC
+		 
+	</select>
+
+</sqlMap>

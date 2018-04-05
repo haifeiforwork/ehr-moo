@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="lightpack.gallery.dao.boardLinereply">
+  <typeAlias alias="pfBoardLinereply" type="com.lgcns.ikep4.lightpack.gallery.model.BoardLinereply"/>
+  <typeAlias alias="pfBoardLinereplySearchCondition" type="com.lgcns.ikep4.lightpack.gallery.search.BoardLinereplySearchCondition"/>
+  <resultMap id="boardLinereplyResult" class="com.lgcns.ikep4.lightpack.gallery.model.BoardLinereply">
+    <result column="LINEREPLY_ID"        property="linereplyId"       jdbcType="VARCHAR" />
+    <result column="ITEM_ID"             property="itemId"            jdbcType="VARCHAR" />
+    <result column="LINEREPLY_GROUP_ID"  property="linereplyGroupId"  jdbcType="VARCHAR" />
+    <result column="LINEREPLY_PARENT_ID" property="linereplyParentId" jdbcType="VARCHAR" />
+    <result column="STEP"                property="step"              jdbcType="DECIMAL" />
+    <result column="INDENTATION"         property="indentation"       jdbcType="DECIMAL" />
+    <result column="CONTENTS"            property="contents"          jdbcType="VARCHAR" />
+    <result column="LINEREPLY_DELETE"    property="linereplyDelete"   jdbcType="DECIMAL" />
+    <result column="REGISTER_ID"         property="registerId"        jdbcType="VARCHAR" />
+    <result column="REGISTER_NAME"       property="registerName"      jdbcType="VARCHAR" />
+    <result column="REGIST_DATE"         property="registDate"        jdbcType="TIMESTAMP" />
+    <result column="UPDATER_ID"          property="updaterId"         jdbcType="VARCHAR" />
+    <result column="UPDATER_NAME"        property="updaterName"       jdbcType="VARCHAR" />
+    <result column="UPDATE_DATE"         property="updateDate"        jdbcType="TIMESTAMP" /> 
+  </resultMap> 
+  <resultMap id="boardLinereplyExtendResult" extends="boardLinereplyResult" class="com.lgcns.ikep4.lightpack.gallery.model.BoardLinereply">
+    <result column="TEAM_NAME"              property="user.teamName"            jdbcType="VARCHAR" />
+    <result column="JOB_TITLE_NAME"         property="user.jobTitleName"        jdbcType="VARCHAR" />  
+    <result column="PICTURE_ID"             property="user.pictureId"           jdbcType="VARCHAR" />   
+    <result column="PROFILE_PICTURE_ID"     property="user.profilePictureId"    jdbcType="VARCHAR" /> 
+	<result column="USER_NAME"              property="user.userName"            jdbcType="VARCHAR" />
+	<result column="USER_ENGLISH_NAME"      property="user.userEnglishName"     jdbcType="VARCHAR" />
+	<result column="JOB_TITLE_ENGLISH_NAME" property="user.jobTitleEnglishName" jdbcType="VARCHAR" />
+	<result column="TEAM_ENGLISH_NAME"      property="user.teamEnglishName"     jdbcType="VARCHAR" />      
+  </resultMap> 
+  <sql id="sqlColumnList"> 
+    LINEREPLY_ID, 
+    ITEM_ID, 
+    LINEREPLY_GROUP_ID, 
+    LINEREPLY_PARENT_ID, 
+    STEP, 
+    INDENTATION, 
+    CONTENTS, 
+    LINEREPLY_DELETE, 
+    REGISTER_ID, 
+    REGISTER_NAME, 
+    REGIST_DATE, 
+    UPDATER_ID, 
+    UPDATER_NAME, 
+    UPDATE_DATE  
+  </sql> 
+  <sql id="sqlExtendColumnList"> 
+    linereply.LINEREPLY_ID        AS LINEREPLY_ID,       
+    linereply.ITEM_ID             AS ITEM_ID,            
+    linereply.LINEREPLY_GROUP_ID  AS LINEREPLY_GROUP_ID, 
+    linereply.LINEREPLY_PARENT_ID AS LINEREPLY_PARENT_ID,
+    linereply.STEP                AS STEP,               
+    linereply.INDENTATION         AS INDENTATION,        
+    linereply.CONTENTS            AS CONTENTS,           
+    linereply.LINEREPLY_DELETE    AS LINEREPLY_DELETE,   
+    linereply.REGISTER_ID         AS REGISTER_ID,        
+    linereply.REGISTER_NAME       AS REGISTER_NAME,      
+    linereply.REGIST_DATE         AS REGIST_DATE,        
+    linereply.UPDATER_ID          AS UPDATER_ID,         
+    linereply.UPDATER_NAME        AS UPDATER_NAME,       
+    linereply.UPDATE_DATE         AS UPDATE_DATE,   
+    usr.TEAM_NAME                 AS TEAM_NAME,       
+    usr.PICTURE_ID                AS PICTURE_ID, 
+    usr.PROFILE_PICTURE_ID        AS PROFILE_PICTURE_ID, 
+	job.JOB_TITLE_NAME 			  AS JOB_TITLE_NAME,
+    usr.USER_NAME          AS USER_NAME,
+    usr.USER_ENGLISH_NAME  AS USER_ENGLISH_NAME,
+    usr.TEAM_ENGLISH_NAME  AS TEAM_ENGLISH_NAME,  
+    job.JOB_TITLE_ENGLISH_NAME AS JOB_TITLE_ENGLISH_NAME   	
+  </sql>  
+  <!-- ANSI -->
+  <select id="get" parameterClass="string" resultMap="boardLinereplyResult"> 
+    SELECT /* [BoardLinereply_SqlMap.xml] lightpack.gallery.dao.boardLinereply.get */
+    <include refid="lightpack.gallery.dao.boardLinereply.sqlExtendColumnList" />
+	FROM  
+		IKEP4_PF_BD_LINEREPLY linereply 
+		INNER JOIN IKEP4_EV_USER usr ON linereply.REGISTER_ID = usr.USER_ID 
+		LEFT OUTER JOIN IKEP4_EV_JOB_TITLE job ON job.JOB_TITLE_CODE = usr.JOB_TITLE_CODE
+    WHERE linereply.LINEREPLY_ID = #linereplyId# 
+  </select>
+  <!-- ANSI -->
+  <select id="exists" parameterClass="string" resultClass="int"> 
+    SELECT /* [BoardLinereply_SqlMap.xml] lightpack.gallery.dao.boardLinereply.exists */
+    	  COUNT(*)
+    FROM  IKEP4_PF_BD_LINEREPLY
+    WHERE LINEREPLY_ID = #linereplyId# 
+  </select> 
+  
+  <!-- MS SQL -->
+  <select id="listBySearchCondition" parameterClass="pfBoardLinereplySearchCondition" resultMap="boardLinereplyExtendResult">  
+	SELECT /* [BoardLinereply_SqlMap.xml] lightpack.gallery.dao.boardLinereply.listBySearchCondition */ 
+	       *
+	FROM ( 
+	     SELECT A.* FROM ( 
+	         /* START========================================= */
+	         SELECT <include refid="lightpack.gallery.dao.boardLinereply.sqlExtendColumnList" />
+	         		, Row_number() OVER (ORDER BY linereply.LINEREPLY_GROUP_ID DESC, linereply.STEP ASC) AS RNUM
+	         FROM (
+		         SELECT *
+				 FROM  IKEP4_PF_BD_LINEREPLY 
+				 WHERE ITEM_ID = #itemId# 
+			 ) linereply 
+			 INNER JOIN IKEP4_EV_USER usr ON linereply.REGISTER_ID = usr.USER_ID
+			 LEFT OUTER JOIN IKEP4_EV_JOB_TITLE job ON job.JOB_TITLE_CODE = usr.JOB_TITLE_CODE
+			 /* ===========================================END  */ 
+	<![CDATA[   
+	    ) A WHERE RNUM <=  #endRowIndex# /* 종료  */
+	) TBL WHERE RNUM >  #startRowIndex# /* 시작 */
+	]]> 
+  </select>   
+  
+  <!-- ANSI -->
+  <select id="countBySearchCondition" parameterClass="pfBoardLinereplySearchCondition" resultClass="int">  
+	SELECT /* [BoardLinereply_SqlMap.xml] lightpack.gallery.dao.boardLinereply.countBySearchCondition */ COUNT(*) 
+    FROM (
+	    SELECT *
+		FROM  IKEP4_PF_BD_LINEREPLY
+		WHERE ITEM_ID = #itemId# 
+	) linereply INNER JOIN IKEP4_EV_USER usr
+	ON    linereply.REGISTER_ID = usr.USER_ID
+  </select> 
+  
+  <!-- ANSI -->
+  <select id="countChildren" parameterClass="String" resultClass="int">  
+	SELECT /* [BoardLinereply_SqlMap.xml] lightpack.gallery.dao.boardLinereply.countBySearchCondition */ 
+           COUNT(*)
+	FROM   IKEP4_PF_BD_LINEREPLY
+    WHERE  LINEREPLY_PARENT_ID = #linereplyId#  
+  </select> 
+ 
+  <!-- ANSI -->
+  <insert id="create" parameterClass="pfBoardLinereply"> 
+    INSERT INTO IKEP4_PF_BD_LINEREPLY ( /* [boardItem_SqlMap.xml] BoardItem.insert */
+     <include refid="lightpack.gallery.dao.boardLinereply.sqlColumnList" />
+     ) VALUES (
+      #linereplyId#,       
+      #itemId#,          
+      #linereplyGroupId#,  
+      #linereplyParentId#, 
+      #step#,             
+      #indentation#,     
+      #contents#,
+      #linereplyDelete#,
+      #registerId#,
+      #registerName#,
+      CURRENT_TIMESTAMP,
+      #updaterId#,
+      #updaterName#,
+      CURRENT_TIMESTAMP
+    )  
+  </insert>
+  
+  <!-- ANSI -->
+  <update id="update" parameterClass="pfBoardLinereply"> 
+    UPDATE IKEP4_PF_BD_LINEREPLY /* [BoardLinereply_SqlMap.xml] lightpack.gallery.dao.boardLinereply.update */
+    SET   LINEREPLY_ID        = #linereplyId#,       
+          ITEM_ID             = #itemId#,    
+          LINEREPLY_GROUP_ID  = #linereplyGroupId#,
+          LINEREPLY_PARENT_ID = #linereplyParentId#,
+          STEP                = #step#,  
+          INDENTATION         = #indentation#,
+          CONTENTS            = #contents#,
+          LINEREPLY_DELETE    = #linereplyDelete#,
+          UPDATER_ID          = #updaterId#,
+          UPDATER_NAME        = #updaterName#,
+          UPDATE_DATE         = CURRENT_TIMESTAMP 
+    WHERE LINEREPLY_ID = #linereplyId# 
+  </update>
+  
+  <!-- ANSI -->
+  <update id="updateStep" parameterClass="pfBoardLinereply"> 
+    UPDATE IKEP4_PF_BD_LINEREPLY /* [BoardLinereply_SqlMap.xml] lightpack.gallery.dao.boardLinereply.update */
+    SET   STEP = STEP + 1 
+    WHERE LINEREPLY_GROUP_ID = #linereplyGroupId#
+    AND   STEP >= #step#  
+  </update>
+  
+  <!-- ANSI -->
+  <update id="logicalDelete" parameterClass="pfBoardLinereply">  
+    UPDATE IKEP4_PF_BD_LINEREPLY /* [BoardLinereply_SqlMap.xml] lightpack.gallery.dao.boardLinereply.logicalDelete */
+    SET   LINEREPLY_DELETE    = 1,
+          UPDATER_ID          = #updaterId#,
+          UPDATER_NAME        = #updaterName#,
+          UPDATE_DATE         = CURRENT_TIMESTAMP  
+    WHERE LINEREPLY_ID = #linereplyId# 
+  </update>   
+  
+  <!-- ANSI -->
+  <delete id="physicalDelete" parameterClass="string"> 
+    DELETE FROM IKEP4_PF_BD_LINEREPLY /* [BoardLinereply_SqlMap.xml] lightpack.gallery.dao.boardLinereply.physicalDelete */
+    WHERE LINEREPLY_ID = #linereplyId# 
+  </delete>    
+  
+  <!-- MS SQL -->
+  <delete id="physicalDeleteThreadByLinereplyId" parameterClass="string">  
+  	WITH CTE AS (
+  		SELECT	LINEREPLY_ID 
+	    FROM 	IKEP4_PF_BD_LINEREPLY
+        WHERE	LINEREPLY_ID =  #linereplyId# 
+        UNION ALL
+        SELECT	TBL.LINEREPLY_ID 
+	    FROM 	IKEP4_PF_BD_LINEREPLY TBL, CTE
+	    WHERE	CTE.LINEREPLY_ID = TBL.LINEREPLY_PARENT_ID 
+  	)
+ 	DELETE FROM  IKEP4_PF_BD_LINEREPLY /* [BoardLinereply_SqlMap.xml] lightpack.gallery.dao.boardLinereply.physicalDeleteThread */
+ 	WHERE  LINEREPLY_ID IN ( 
+	      	SELECT LINEREPLY_ID 
+		    FROM CTE
+	)   
+  </delete>   
+  
+  <!-- MS SQL -->
+  <delete id="physicalDeleteThreadByItemThread" parameterClass="string"> 
+  	WITH CTE AS (
+  		SELECT	ITEM_ID        
+		FROM	IKEP4_PF_BD_ITEM             
+		WHERE	ITEM_ID =  #itemId#  
+        UNION ALL
+        SELECT	TBL.ITEM_ID        
+		FROM	IKEP4_PF_BD_ITEM TBL, CTE
+	    WHERE	CTE.ITEM_ID = TBL.ITEM_PARENT_ID
+  	) 
+ 	DELETE FROM  IKEP4_PF_BD_LINEREPLY /* [BoardLinereply_SqlMap.xml] lightpack.gallery.dao.boardLinereply.physicalDeleteThreadByItemThread */
+ 	WHERE  LINEREPLY_GROUP_ID IN (
+	SELECT LINEREPLY_GROUP_ID 
+	FROM IKEP4_PF_BD_LINEREPLY WHERE ITEM_ID in (
+		SELECT ITEM_ID        
+		FROM CTE
+		)
+	) 
+  </delete>    
+  
+  <!-- ANSI -->
+  <delete id="physicalDeleteThreadByItemId" parameterClass="string">  
+ 	DELETE FROM  IKEP4_PF_BD_LINEREPLY /* [BoardLinereply_SqlMap.xml] lightpack.gallery.dao.boardLinereply.physicalDeleteThreadByItemId */
+ 	WHERE  LINEREPLY_GROUP_ID IN (
+	      	SELECT LINEREPLY_GROUP_ID
+		    FROM IKEP4_PF_BD_LINEREPLY
+            WHERE ITEM_ID =  #itemId#   
+	)   
+  </delete>    
+</sqlMap>   

@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="com.lgcns.ikep4.servicepack.survey.svRequestLog" >
+  <typeAlias alias="svRequestLog"                type="com.lgcns.ikep4.servicepack.survey.model.RequestLog"/>
+  <typeAlias alias="svRequestLogKey"                type="com.lgcns.ikep4.servicepack.survey.model.RequestLogKey"/>
+  <typeAlias alias="svSurveySearchCondition" type="com.lgcns.ikep4.servicepack.survey.search.SurveySearchCondition"/>
+  
+  <resultMap id="result" class="svRequestLog" >
+	<result column="SEND_SEQ" property="sendSeq" jdbcType="DECIMAL" />
+    <result column="SURVEY_ID" property="surveyId" jdbcType="VARCHAR" />
+    <result column="SEND_OPTION" property="sendOption" jdbcType="DECIMAL" />
+    <result column="SEND_REQUEST_DATE" property="sendRequestDate" jdbcType="TIMESTAMP" />
+    <result column="SEND_START_DATE" property="sendStartDate" jdbcType="TIMESTAMP" />
+    <result column="SEND_END_DATE" property="sendEndDate" jdbcType="TIMESTAMP" />
+    <result column="SEND_SUCCESS_COUNT" property="sendSuccessCount" jdbcType="DECIMAL" />
+    <result column="SEND_TARGET_COUNT" property="sendTargetCount" jdbcType="DECIMAL" />
+    <result column="REGISTER_ID" property="registerId" jdbcType="VARCHAR" />
+    <result column="REGIST_DATE" property="registDate" jdbcType="TIMESTAMP" />
+    <result property="jobTitleName" column="JOB_TITLE_NAME"/>
+	<result property="jobTitleEnglishName" column="JOB_TITLE_ENGLISH_NAME"/>
+	<result property="userName" column="USER_NAME"/>
+	<result property="userEnglishName" column="USER_ENGLISH_NAME"/>
+	<result property="teamName" column="TEAM_NAME"/>
+	<result property="teamEnglishName" column="TEAM_ENGLISH_NAME"/>
+  </resultMap>
+  
+    <sql id="sqlColumnList"> 
+	   s.SEND_SEQ, 
+	   s.SURVEY_ID, 
+	   s.SEND_OPTION, 
+	   s.SEND_REQUEST_DATE, 
+	   s.SEND_START_DATE, 
+	   s.SEND_END_DATE,
+       s.SEND_SUCCESS_COUNT, 
+       s.SEND_TARGET_COUNT, 
+       s.REGISTER_ID, 
+       s.REGIST_DATE,
+       eu.USER_NAME, 
+       eu.USER_ENGLISH_NAME, 
+       eu.TEAM_NAME, 
+       eu.TEAM_ENGLISH_NAME,
+       ejt.JOB_TITLE_NAME, 
+       ejt.JOB_TITLE_ENGLISH_NAME
+  </sql> 
+  
+ <select id="get" parameterClass="svRequestLogKey" resultMap="result"> 
+    SELECT /* [svRequestLog_SqlMap.xml] svRequestLog.get */
+    	 <include refid="com.lgcns.ikep4.servicepack.survey.svRequestLog.sqlColumnList" /> 
+    FROM  IKEP4_SV_REQUEST_LOG s,IKEP4_EV_USER eu,IKEP4_EV_JOB_TITLE ejt
+    WHERE   eu.job_title_code =ejt.job_title_code
+    		and s.REGISTER_ID = eu.user_id
+    		and s.SEND_SEQ = #sendSeq#
+    		and s.SURVEY_ID = #surveyId#
+  </select>
+  
+  <select id="exists" parameterClass="svRequestLogKey" resultClass="int"> 
+    SELECT /* [svRequestLog_SqlMap.xml] svRequestLog.exists */
+    	  COUNT(*)
+    FROM  IKEP4_SV_REQUEST_LOG
+    WHERE SEND_SEQ = #sendSeq#
+    	  and SURVEY_ID = #surveyId#
+  </select> 
+  
+  <select id="maxSeq" parameterClass="string" resultClass="int"> 
+    SELECT /* [svRequestLog_SqlMap.xml] svRequestLog.exists */
+    	  nvl(MAX(SEND_SEQ),0)
+    FROM  IKEP4_SV_REQUEST_LOG
+    WHERE SURVEY_ID = #surveyId#
+  </select> 
+  
+  <select id="listBySearchCondition" parameterClass="svSurveySearchCondition" resultMap="result">  
+	SELECT /* [svRequestLog_SqlMap.xml] svRequestLog.listBySearchCondition */ 
+			*
+	FROM ( 
+	     SELECT  ROWNUM AS RNUM, A.*
+	     FROM ( 
+		         SELECT <include refid="com.lgcns.ikep4.servicepack.survey.svRequestLog.sqlColumnList" /> 
+		         FROM   IKEP4_SV_REQUEST_LOG s,IKEP4_EV_USER eu,IKEP4_EV_JOB_TITLE ejt
+    			 WHERE   eu.job_title_code =ejt.job_title_code
+    					 and s.REGISTER_ID = eu.user_id
+    					 and s.survey_id = #id#
+				 order by REGIST_DATE desc
+	<![CDATA[  
+	    	) A WHERE ROWNUM <=  #endRowIndex# /* 종료  */
+	) WHERE RNUM >  #startRowIndex# /* 시작 */
+	]]> 
+  </select>   
+  
+  
+  <select id="selectListBySurveyId" parameterClass="string" resultMap="result">  
+         SELECT <include refid="com.lgcns.ikep4.servicepack.survey.svRequestLog.sqlColumnList" /> 
+         FROM   IKEP4_SV_REQUEST_LOG s,IKEP4_EV_USER eu,IKEP4_EV_JOB_TITLE ejt
+  			 WHERE   eu.job_title_code =ejt.job_title_code
+  					 and s.REGISTER_ID = eu.user_id
+  					 and s.survey_id = #surveyId#
+		 order by REGIST_DATE desc
+  </select>   
+  
+  
+  <select id="countBySearchCondition" parameterClass="svSurveySearchCondition" resultClass="int">  
+	SELECT /* [Board_SqlMap.xml] svRequestLog.countBySearchCondition */ 
+           COUNT(*)
+	FROM   IKEP4_SV_REQUEST_LOG s,IKEP4_EV_USER eu,IKEP4_EV_JOB_TITLE ejt
+    WHERE   eu.job_title_code =ejt.job_title_code
+    		and s.REGISTER_ID = eu.user_id
+    		and s.survey_id = #id#
+  </select> 
+  
+  
+  <insert id="create" parameterClass="svRequestLog"> 
+    insert into IKEP4_SV_REQUEST_LOG 
+    ( 
+    	SEND_SEQ, 
+      	SURVEY_ID, 
+      	SEND_OPTION, 
+      	SEND_REQUEST_DATE,
+      	SEND_START_DATE, 
+      	SEND_END_DATE, 
+      	SEND_SUCCESS_COUNT, 
+      	SEND_TARGET_COUNT, 
+      	REGISTER_ID,
+      	REGIST_DATE
+    )
+    values 
+    (
+   		#sendSeq#, 
+   		#surveyId#, 
+   		#sendOption#, 
+   		#sendRequestDate#,
+     	#sendStartDate#, 
+     	#sendEndDate#, 
+     	#sendSuccessCount#,
+     	#sendTargetCount#, 
+     	#registerId#, 
+     	#registDate#
+    )
+  </insert>
+  
+  <update id="update" parameterClass="svRequestLog"> 
+    update IKEP4_SV_REQUEST_LOG
+    set SEND_END_DATE = #sendEndDate#,
+        SEND_SUCCESS_COUNT = #sendSuccessCount#
+    where SEND_SEQ = #sendSeq#
+      and SURVEY_ID = #surveyId#
+  </update>
+  
+  <delete id="remove" parameterClass="svRequestLogKey"> 
+    delete from IKEP4_SV_REQUEST_LOG  /* [svRequestLog_SqlMap.xml] svRequestLog.remove */
+    where SEND_SEQ = #sendSeq#
+      and SURVEY_ID = #surveyId#
+  </delete> 
+  
+    <delete id="removeAllBySurveyId" parameterClass="string"> 
+    delete from IKEP4_SV_REQUEST_LOG  /* [svRequestLog_SqlMap.xml] svRequestLog.remove */
+    where SURVEY_ID = #surveyId#
+  </delete>    
+</sqlMap>

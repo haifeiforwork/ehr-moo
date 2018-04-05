@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="workflow.admin.dao.AdminTodoDao">
+	<typeAlias alias="AdminTodo" type="com.lgcns.ikep4.workflow.admin.model.AdminTodo"/>
+	<typeAlias alias="AdminTodoSearchCondition" type="com.lgcns.ikep4.workflow.admin.model.AdminTodoSearchCondition"/>
+
+	<resultMap id="AdminTodoResult" class="AdminTodo">
+		<result property="title" column="TITLE" columnIndex="1"/>
+		<result property="performerId" column="PERFORMER_ID" columnIndex="2"/>
+		<result property="orgId" column="ORG_ID" columnIndex="3"/>
+		<result property="activityId" column="ACTIVITY_ID" columnIndex="4"/>
+		<result property="createDate" column="CREATE_DATE" columnIndex="5"/>
+		<result property="assignDate" column="ASSIGN_DATE" columnIndex="6"/>
+		<result property="instanceId" column="INSTANCE_ID" columnIndex="7"/>
+		<result property="selectDate" column="SELECT_DATE" columnIndex="8"/>
+		<result property="processId" column="PROCESS_ID" columnIndex="9"/>
+		<result property="logId" column="LOG_ID" columnIndex="10"/>
+		<result property="activityName" column="ACTIVITY_NAME" columnIndex="11"/>
+		<result property="dueDate" column="DUE_DATE" columnIndex="12"/>
+		<result property="state" column="STATE" columnIndex="13"/>
+		<result property="processVer" column="PROCESS_VER" columnIndex="14"/>
+	</resultMap>
+	
+	<resultMap id="AdminTodoViewResult" class="AdminTodo">
+		<result property="title" column="TITLE" columnIndex="1"/>
+		<result property="createDate" column="CREATE_DATE" columnIndex="2"/>
+		<result property="activityName" column="ACTIVITY_NAME" columnIndex="3"/>
+		<result property="processName" column="PROCESS_NAME" columnIndex="4"/>
+		<result property="author" column="AUTHOR" columnIndex="5"/>
+		<result property="finishedDate" column="FINISHED_DATE" columnIndex="6"/>
+		<result property="logId" column="LOG_ID" columnIndex="7"/>
+		<result property="state" column="STATE" columnIndex="8"/>
+	</resultMap>
+	
+	<!-- insert -->
+	<insert id="insert" parameterClass="AdminTodo"> 
+      <![CDATA[ 
+      		/* [AdminTodo_SqlMap.xml] workflow.admin.dao.AdminTodoDao.insert */
+          INSERT INTO IKEP4_WF_TODO_LIST (INSTANCE_ID, PROCESS_ID, LOG_ID,TITLE, PROCESS_VER)
+			VALUES (#instanceId#, #processId#, #logId#,#title#, #processVer#)	
+       ]]>
+      <selectKey resultClass="String" keyProperty="logId" type="pre"> 
+         <![CDATA[ 
+               SELECT #logId# AS LOG_ID FROM DUAL 
+            ]]>
+      </selectKey>
+   </insert>
+   
+   <!-- select -->
+	<select id="select" parameterClass="String" resultMap="AdminTodoResult">
+	  <![CDATA[
+	  /* [AdminTodo_SqlMap.xml] workflow.admin.dao.AdminTodoDao.select */
+		   SELECT * FROM IKEP4_WF_TODO_LIST WHERE LOG_ID = #logId#
+	   ]]>
+	</select>
+	
+	<!-- update -->
+	<update id="update" parameterClass="AdminTodo">
+	  <![CDATA[
+	  /* [AdminTodo_SqlMap.xml] workflow.admin.dao.AdminTodoDao.update */
+		   UPDATE IKEP4_WF_TODO_LIST 
+		   SET TITLE = #title# 
+		   WHERE LOG_ID = #logId#
+	   ]]>
+	</update>
+   
+   <!-- delete -->
+   <delete id="delete" parameterClass="String">
+      <![CDATA[
+      	   /* [AdminTodo_SqlMap.xml] workflow.admin.dao.AdminTodoDao.delete */
+	       DELETE FROM IKEP4_WF_TODO_LIST WHERE LOG_ID = #logId#
+	   ]]>
+	</delete>
+	
+	<!-- selectCount -->
+	<select id="selectCount" parameterClass="String" resultClass="java.lang.Integer">
+	  <![CDATA[
+	  	   /* [AdminTodo_SqlMap.xml] workflow.admin.dao.AdminTodoDao.selectCount */
+		   SELECT COUNT(*) FROM IKEP4_WF_TODO_LIST WHERE LOG_ID = #logId#
+	   ]]>
+	</select>
+	
+	<select id="selectAll" resultMap="AdminTodoResult">
+	<![CDATA[	
+	  SELECT   /* [AdminTodo_SqlMap.xml] workflow.admin.dao.AdminTodoDao.selectAll */
+	  *
+	  FROM IKEP4_WF_TODO_LIST
+	  ORDER BY CREATE_DATE
+	]]>
+	</select>
+	
+	<!-- 워크플로우 - 현황관리 - 업무 관리 - 업무관리 리스트 조회조건 -->
+	<sql id="listTodo_Parametercase">
+        
+        <isNotEmpty property="todoAdministrationSearchTitle">
+        	<![CDATA[
+            AND    TITLE LIKE '%' || #todoAdministrationSearchTitle# || '%'
+            ]]>
+        </isNotEmpty>
+        <isNotEmpty property="todoAdministrationSearchUser">
+        	<![CDATA[	
+            AND    AUTHOR LIKE '%' || #todoAdministrationSearchUser# || '%'
+            ]]>
+        </isNotEmpty>
+        <isNotEqual property="todoAdministrationSearchState" compareValue="all">
+        	<![CDATA[
+            AND    STATE = #todoAdministrationSearchState#
+            ]]>
+        </isNotEqual>
+        
+        <isEqual property="todoAdministrationSearchDateFlag" compareValue="start">
+        	<![CDATA[
+            AND   CREATE_DATE BETWEEN #todoAdministrationSearchStartDate# AND DECODE(#todoAdministrationSearchEndDate#,'','9999.99.99',#todoAdministrationSearchEndDate#||' 99:99')
+            ]]>
+        </isEqual>	
+        
+        <isEqual property="todoAdministrationSearchDateFlag" compareValue="end">
+        	<![CDATA[
+            AND   CREATE_DATE BETWEEN DECODE(#todoAdministrationSearchStartDate#,'','0000.00.00',#todoAdministrationSearchStartDate#) AND #todoAdministrationSearchEndDate#
+            ]]>
+        </isEqual>	
+        
+        <isNotEmpty property="sortColumn" >
+        	<![CDATA[
+        	ORDER BY $sortColumn$ $sortType$
+        	]]>
+        </isNotEmpty>
+        
+	</sql>	
+	
+	<!-- 워크플로우 - 현황관리 - 업무 관리 - 업무 리스트 조회 -->
+	<select id="listTodo" parameterClass="AdminTodoSearchCondition" resultMap="AdminTodoViewResult">
+	<![CDATA[
+		SELECT  /* [AdminTodo_SqlMap.xml] workflow.admin.dao.AdminTodoDao.listTodo */
+           *
+    FROM ( 
+         SELECT ROWNUM AS RNUM, A.* FROM ( 
+             SELECT  
+             	LOG_ID,
+             	TITLE,
+             	PROCESS_NAME,
+             	ACTIVITY_NAME,
+             	AUTHOR,
+             	CREATE_DATE,
+             	FINISHED_DATE,
+             	STATE
+             	FROM(
+                SELECT 
+                	  IWTL.LOG_ID,
+                      IWTL.TITLE,
+                      IWP.PROCESS_NAME,
+                      IWTL.ACTIVITY_NAME,
+                      (SELECT USER_NAME FROM IKEP4_EV_USER WHERE USER_ID = IWTL.PERFORMER_ID) AUTHOR,
+                      TO_CHAR(IWTL.CREATE_DATE,'YYYY.MM.DD HH24:MI') CREATE_DATE,
+                      TO_CHAR(IWTL.CREATE_DATE,'YYYY.MM.DD HH24:MI') FINISHED_DATE,
+                      STATE
+                      FROM 
+                      IKEP4_WF_TODO_LIST IWTL,
+                      IKEP4_WF_PROCESS IWP
+                      WHERE IWTL.PROCESS_ID = IWP.PROCESS_ID
+                      AND IWP.PROCESS_STATE = 'ACTIVE'
+              )
+	       	 WHERE 1=1 
+	 ]]>
+    <include refid="listTodo_Parametercase"/>
+    <![CDATA[
+        ) A WHERE ROWNUM <=  #endRowIndex# /* 종료  */
+    ) WHERE RNUM >  #startRowIndex# /* 시작 */
+	]]>
+	</select>
+	
+	<!-- 워크플로우 - 현황관리 - 업무 관리 - 업무 리스트  조회건수 -->
+	<select id="listTodoCount" parameterClass="AdminTodoSearchCondition" resultClass="int">
+	<![CDATA[  
+	/*[AdminTodo_SqlMap.xml] workflow.admin.dao.AdminTodoDao.listTodoCount */
+   	SELECT COUNT(*) FROM(
+        SELECT 
+        	  IWTL.LOG_ID,
+              IWTL.TITLE,
+              IWP.PROCESS_NAME,
+              IWTL.ACTIVITY_NAME,
+              (SELECT USER_NAME FROM IKEP4_EV_USER WHERE USER_ID = IWTL.PERFORMER_ID) AUTHOR,
+              TO_CHAR(IWTL.CREATE_DATE,'YYYY.MM.DD HH24:MI') CREATE_DATE,
+              TO_CHAR(IWTL.CREATE_DATE,'YYYY.MM.DD HH24:MI') FINISHED_DATE,
+              STATE
+              FROM 
+              IKEP4_WF_TODO_LIST IWTL,
+              IKEP4_WF_PROCESS IWP
+              WHERE IWTL.PROCESS_ID = IWP.PROCESS_ID
+              AND IWP.PROCESS_STATE = 'ACTIVE'
+    )
+	WHERE 1=1 
+	]]> 
+	<include refid="listTodo_Parametercase"/>
+    </select> 
+    
+    <!-- 워크플로우 - 현황관리 - 데시보드 - 업무 현황 -->
+	<select id="todoStateCount" parameterClass="AdminTodoSearchCondition" resultClass="java.util.HashMap">
+	<![CDATA[  
+	/* [AdminTodo_SqlMap.xml] workflow.admin.dao.AdminTodoDao.todoStateCount */
+	SELECT  
+    NVL(SUM(DECODE(STATE,'RUNNING',1,0)),0) RUNNING,
+    NVL(SUM(DECODE(STATE,'COMPLETE',1,0)),0) COMPLETE,
+    NVL(SUM(DECODE(STATE,'FAULT',1,0)),0) FAULT
+    FROM(
+        SELECT * FROM(
+            SELECT IWI.TITLE,IWP.PARTITION_ID,IWI.PROCESS_ID,IWTL.STATE 
+            FROM IKEP4_WF_TODO_LIST IWTL,IKEP4_WF_INSTANCE IWI,IKEP4_WF_PROCESS IWP
+            WHERE IWP.PROCESS_ID = IWI.PROCESS_ID
+            AND IWP.PROCESS_VER = IWI.PROCESS_VER
+            AND IWI.INSTANCE_ID = IWTL.INSTANCE_ID
+            AND IWI.PROCESS_ID = IWTL.PROCESS_ID
+        )
+    WHERE 1=1
+    ]]>
+    <isNotEqual property="todoAdministrationSearchPartiton" compareValue="all">
+    	<![CDATA[
+         AND    PARTITION_ID = #todoAdministrationSearchPartiton#
+        ]]>
+    </isNotEqual>
+    <isNotEqual property="todoAdministrationSearchProcess" compareValue="all">
+    	<![CDATA[
+         AND    PROCESS_ID = #todoAdministrationSearchProcess#
+        ]]>
+    </isNotEqual>
+    <![CDATA[
+    )
+    ]]>
+    </select> 
+    
+    <!-- 워크플로우 - 현황관리 - 데시보드 - 최근 진행중인 업무-->
+	<select id="listCurrentTodo" parameterClass="AdminTodoSearchCondition" resultMap="AdminTodoViewResult">
+	<![CDATA[
+	/* [AdminTodo_SqlMap.xml] workflow.admin.dao.AdminTodoDao.listCurrentTodo */
+	SELECT   *
+	  FROM   (SELECT   ROWNUM AS RNUM, A.*
+	            FROM   (  SELECT  
+				            A.LOG_ID,
+				            A.TITLE,
+				            C.PROCESS_NAME,
+				            A.ACTIVITY_NAME,
+				            TO_CHAR(A.CREATE_DATE,'YYYY-MM-DD') CREATE_DATE,
+				            TO_CHAR(A.CREATE_DATE,'YYYY-MM-DD') FINISHED_DATE,
+				            A.STATE,
+				            --(SELECT WM_CONCAT((SELECT USER_NAME FROM IKEP4_EV_USER WHERE USER_ID = IWP.PERFORMER_ID)) FROM IKEP4_WF_PARTICIPANT IWP WHERE IWP.PROCESS_ID = A.PROCESS_ID AND IWP.ACTIVITY_ID = A.ACTIVITY_ID) AUTHOR
+				            (SELECT USER_NAME FROM IKEP4_EV_USER WHERE USER_ID = A.PERFORMER_ID) AUTHOR  
+	                        FROM   IKEP4_WF_TODO_LIST A,
+	                               IKEP4_WF_INSTANCE B,
+	                               IKEP4_WF_PROCESS C
+	                       WHERE       C.PROCESS_ID = B.PROCESS_ID
+	                               AND C.PROCESS_VER = B.PROCESS_VER
+	                               AND B.INSTANCE_ID = A.INSTANCE_ID
+	                               AND B.PROCESS_ID = A.PROCESS_ID
+	 ]]>
+	 <isNotEqual property="todoAdministrationSearchPartiton" compareValue="all">
+    	<![CDATA[
+         AND    C.PARTITION_ID = #todoAdministrationSearchPartiton#
+        ]]>
+    </isNotEqual>
+    <isNotEqual property="todoAdministrationSearchProcess" compareValue="all">
+    	<![CDATA[
+         AND    C.PROCESS_ID = #todoAdministrationSearchProcess#
+        ]]>
+    </isNotEqual>  
+    <![CDATA[                            
+	 ORDER BY   A.CREATE_DATE DESC) A)
+	 WHERE   RNUM <= 5
+	]]>
+    </select> 
+</sqlMap>

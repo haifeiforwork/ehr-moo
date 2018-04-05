@@ -1,0 +1,508 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="who" >
+	<typeAlias alias = "Who" type="com.lgcns.ikep4.collpack.who.model.Who"/>
+	<typeAlias alias = "Pro" type="com.lgcns.ikep4.collpack.who.model.Pro"/>
+	<typeAlias alias = "WhoSearchCondition" type="com.lgcns.ikep4.collpack.who.search.WhoSearchCondition"/>
+	
+	<!-- PROFILE 테이블 조회 결과 -->
+	<resultMap id="result" class="Who">
+		<result property="profileId" column="PROFILE_ID" />
+		<result property="profileGroupId" column="PROFILE_GROUP_ID" />		
+		<result property="name" column="NAME" />
+		<result property="companyName" column="COMPANY_NAME" />
+		<result property="teamName" column="TEAM_NAME" />
+		<result property="jobRankName" column="JOB_RANK_NAME" />
+		<result property="officePhoneno" column="OFFICE_PHONENO" />
+		<result property="mobile" column="MOBILE" />
+		<result property="mail" column="MAIL" />
+		<result property="companyAddress" column="COMPANY_ADDRESS" />
+		<result property="memo" column="MEMO" />		
+		<result property="hitCount" column="HIT_COUNT" />		
+		<result property="version" column="VERSION" />
+		<result property="updateReason" column="UPDATE_REASON" />		
+		<result property="portalId" column="PORTAL_ID" />
+		<result property="tag" column="TAG" />
+		<result property="isNew" column="IS_NEW" />
+		<result property="registerId" column="REGISTER_ID" />
+		<result property="registerName" column="REGISTER_NAME" />		
+		<result property="registerEnglishName" 	column="REGISTER_ENGLISH_NAME"/>
+		<result property="jobTitleName" 	column="JOB_TITLE_NAME" />		
+		<result property="jobTitleEnglishName" 	column="JOB_TITLE_ENGLISH_NAME" />
+		<result property="registerTeamName" 		column="REGISTER_TEAM_NAME" />		
+		<result property="teamEnglishName" 		column="TEAM_ENGLISH_NAME" />
+		<result property="registDate" column="REGIST_DATE" />		
+		<result property="updaterId" column="UPDATER_ID" />
+		<result property="updaterName" column="UPDATER_NAME" />		
+		<result property="updateDate" column="UPDATE_DATE" />
+		<result property="hitDate" column="HIT_DATE" />
+	</resultMap>
+	
+	<!-- HIT 테이블 조회 결과 -->
+	<resultMap id="resultHit" class="Who">
+		<result property="referenceId" column="REFERENCE_ID" />
+		<result property="profileId" column="PROFILE_ID" />
+		<result property="profileGroupId" column="PROFILE_GROUP_ID" />
+		<result property="version" column="VERSION" />	
+		<result property="registerId" column="REGISTER_ID" />	
+		<result property="registDate" column="REGIST_DATE" />
+		<result property="registDate" column="REGIST_DATE" />	
+	</resultMap>
+	
+	<!-- 사용자 조회 결과 -->
+	<resultMap id="resultPro" class="Pro">
+		<result property="tagId" column="TAG_ID" />
+		<result property="tagName" column="TAG_NAME" />
+		<result property="count" column="COUNT" />
+		<result property="userId" column="USER_ID" />
+		<result property="userName" column="USER_NAME" />
+		<result property="userEnglishName" 		column="USER_ENGLISH_NAME" />
+		<result property="jobTitleName" column="JOB_TITLE_NAME"/>
+		<result property="jobTitleEnglishName" 	column="JOB_TITLE_ENGLISH_NAME" />
+		<result property="teamName" column="TEAM_NAME"/>
+		<result property="teamEnglishName" 		column="TEAM_ENGLISH_NAME" />	
+		<result property="mobile" column="MOBILE" />
+		<result property="mail" column="MAIL" />
+		<result property="profilePictureId" column="PROFILE_PICTURE_ID" />
+	</resultMap>	
+		
+	<!-- insert -->
+	<insert id="insert" parameterClass="Who"> 
+      <![CDATA[ 
+			INSERT INTO IKEP4_WW_PROFILE ( 
+				PROFILE_ID,
+				PROFILE_GROUP_ID,
+				NAME,
+				COMPANY_NAME,
+				TEAM_NAME,
+				JOB_RANK_NAME,
+				OFFICE_PHONENO,
+				MOBILE,
+				MAIL,
+				COMPANY_ADDRESS,
+				MEMO,
+				REGISTER_ID,
+				REGISTER_NAME,
+				REGIST_DATE,
+				VERSION,
+				UPDATE_REASON,
+				HIT_COUNT,
+				PORTAL_ID,
+				UPDATER_ID,
+				UPDATER_NAME,
+				UPDATE_DATE
+           	)  VALUES (
+           		#profileId#,
+           		#profileGroupId#,
+           		#name#,
+           		#companyName#,
+           		#teamName#,
+           		#jobRankName#,
+           		#officePhoneno#,
+           		#mobile#,
+           		#mail#,
+           		#companyAddress#,
+           		#memo#,
+           		#registerId#,
+           		#registerName#,
+           		SYSDATE,
+           		#version#,
+           		#updateReason#,
+           		#hitCount#,
+           		#portalId#,
+           		#registerId#,
+           		#registerName#,
+           		SYSDATE
+           	)			     
+       ]]>
+   </insert>
+   
+	<!-- insert -->
+	<insert id="insertHit" parameterClass="Who"> 
+      <![CDATA[ 
+			INSERT INTO IKEP4_WW_REFERENCE ( 
+				REFERENCE_ID,
+				PROFILE_ID,
+				PROFILE_GROUP_ID,
+				VERSION,
+				REGISTER_ID,
+				REGISTER_NAME,
+				REGIST_DATE
+           	)  VALUES (
+           		#referenceId#,
+           		#profileId#,
+           		#profileGroupId#,
+           		#version#,
+           		#registerId#,
+           		#registerName#,
+           		sysdate
+           	)			     
+       ]]>
+   </insert>   
+	
+   <!-- select -->
+	<select id="select" parameterClass="java.lang.String" resultMap="result">
+	  <![CDATA[
+		   SELECT PROFILE_ID,
+		   		PROFILE_GROUP_ID,
+				NAME,
+				COMPANY_NAME,
+				TEAM_NAME,
+				JOB_RANK_NAME,
+				OFFICE_PHONENO,
+				MOBILE,
+				MAIL,
+				COMPANY_ADDRESS,
+				MEMO,
+				VERSION,
+				UPDATE_REASON,				
+				HIT_COUNT,
+				PORTAL_ID,
+				'' TAG,
+				0 IS_NEW,	
+				REGISTER_ID,
+				REGISTER_NAME,
+				'' REGISTER_ENGLISH_NAME,
+				'' JOB_TITLE_NAME,
+				'' JOB_TITLE_ENGLISH_NAME,
+				'' REGISTER_TEAM_NAME,
+				'' TEAM_ENGLISH_NAME,
+				REGIST_DATE,							
+				UPDATER_ID,
+				UPDATER_NAME,
+				UPDATE_DATE,
+				'' HIT_DATE		   
+		   FROM IKEP4_WW_PROFILE 
+		   WHERE PROFILE_ID = #profileId#	   
+	   ]]>
+	</select>		
+	
+   <!-- select -->
+	<select id="selectProfileHistoryList" parameterClass="java.lang.String" resultMap="result">
+	  <![CDATA[
+		   SELECT A.PROFILE_ID,
+		   		A.PROFILE_GROUP_ID,
+		   		A.NAME,
+				A.COMPANY_NAME,
+				A.TEAM_NAME,
+				A.JOB_RANK_NAME,
+				A.OFFICE_PHONENO,
+				A.MOBILE,
+				A.MAIL,
+				A.COMPANY_ADDRESS,
+				A.MEMO,
+				A.VERSION,
+				A.UPDATE_REASON,				
+				A.HIT_COUNT,
+				A.PORTAL_ID,
+				'' TAG,
+				TRUNC(SYSDATE-A.REGIST_DATE) IS_NEW,			
+				A.REGISTER_ID,
+				A.REGISTER_NAME,
+				(SELECT USER_ENGLISH_NAME FROM IKEP4_EV_USER WHERE USER_ID=A.REGISTER_ID) REGISTER_ENGLISH_NAME,
+               (SELECT JOB_TITLE_NAME FROM IKEP4_EV_USER, IKEP4_EV_JOB_TITLE 
+                        WHERE IKEP4_EV_JOB_TITLE.JOB_TITLE_CODE = IKEP4_EV_USER.JOB_TITLE_CODE
+                        AND IKEP4_EV_USER.USER_ID=A.REGISTER_ID) AS JOB_TITLE_NAME,
+               (SELECT JOB_TITLE_ENGLISH_NAME FROM IKEP4_EV_USER, IKEP4_EV_JOB_TITLE 
+                        WHERE IKEP4_EV_JOB_TITLE.JOB_TITLE_CODE = IKEP4_EV_USER.JOB_TITLE_CODE
+                        AND IKEP4_EV_USER.USER_ID=A.REGISTER_ID) AS JOB_TITLE_ENGLISH_NAME,	                     
+               (SELECT TEAM_NAME FROM IKEP4_EV_USER WHERE USER_ID=A.REGISTER_ID) REGISTER_TEAM_NAME,
+               (SELECT TEAM_ENGLISH_NAME FROM IKEP4_EV_USER WHERE USER_ID=A.REGISTER_ID) TEAM_ENGLISH_NAME, 				
+				A.REGIST_DATE,
+				A.UPDATER_ID,
+				A.UPDATER_NAME,
+				A.UPDATE_DATE,
+				'' HIT_DATE	   
+		   FROM IKEP4_WW_PROFILE A
+		   WHERE PROFILE_GROUP_ID = #profileGroupId# 
+		   ORDER BY A.VERSION DESC
+	   ]]>
+	</select>	
+	<select id="selectAlreadyRead" parameterClass="Who" resultClass="int">
+	  <![CDATA[
+		   SELECT COUNT(*)
+		   FROM IKEP4_WW_REFERENCE
+		   WHERE PROFILE_ID= #profileId#
+		   AND REGISTER_ID = #registerId#
+	   ]]>
+	</select>	
+	<select id="selectAlreadyMailExists" parameterClass="Who" resultClass="int">
+	  <![CDATA[
+		   SELECT COUNT(*)
+		   FROM IKEP4_WW_PROFILE
+		   WHERE MAIL= #mail#
+	   ]]>
+	</select>		
+	<select id="selectVersion" parameterClass="Who" resultClass="String">
+	  <![CDATA[
+		   SELECT DECODE(MAX(VERSION),NULL,'0.0',MAX(VERSION)) VERSION
+		   FROM IKEP4_WW_PROFILE
+		   WHERE PROFILE_GROUP_ID = #profileGroupId#		   
+	   ]]>
+	</select>	
+	
+	<select id="selectRecentInputRegisterId" parameterClass="String" resultClass="String">
+	  <![CDATA[
+			SELECT REGISTER_ID FROM IKEP4_WW_PROFILE
+			WHERE PROFILE_ID = (
+				SELECT MAX(PROFILE_ID) FROM IKEP4_WW_PROFILE
+				WHERE PROFILE_GROUP_ID = #profileGroupId#)	   
+	   ]]>
+	</select>
+
+	<select id="selectRecentProfileId" parameterClass="String" resultClass="String">
+	  <![CDATA[
+			SELECT PROFILE_ID FROM IKEP4_WW_PROFILE
+			WHERE PROFILE_ID = (
+				SELECT MAX(PROFILE_ID) FROM IKEP4_WW_PROFILE
+				WHERE PROFILE_GROUP_ID = #profileGroupId#)	   
+	   ]]>
+	</select>
+			
+	<!-- updateHit -->
+	<update id="updateHit" parameterClass="String">
+	  <![CDATA[
+		   UPDATE IKEP4_WW_PROFILE 
+		   SET HIT_COUNT = HIT_COUNT +1 
+		   WHERE PROFILE_ID = #profileId#
+	   ]]>
+	</update>
+	<!-- updateHitDate -->
+	<update id="updateHitDate" parameterClass="Who">
+	  <![CDATA[
+		   UPDATE IKEP4_WW_REFERENCE
+		   SET REGIST_DATE = SYSDATE
+		   WHERE PROFILE_ID = #profileId#
+		   AND REGISTER_ID = #viewId#
+	   ]]>
+	</update>		
+	<!-- update -->
+	<update id="update" parameterClass="Who">
+	  <![CDATA[
+		   UPDATE IKEP4_WW_PROFILE 
+		   SET 	COMPANY_NAME = #companyName#,
+				TEAM_NAME = #teamName#,
+				JOB_RANK_NAME = #jobRankName#,
+				OFFICE_PHONENO = #officePhoneno#,
+				MOBILE = #mobile#,
+				MAIL = #mail#,
+				COMPANY_ADDRESS = #companyAddress#,
+				MEMO = #memo#,		
+				UPDATE_REASON = #updateReason#,					
+			   	UPDATER_ID = #updaterId#, 
+			   	UPDATER_NAME = #updaterName#, 
+			   	UPDATE_DATE = sysdate	
+		   WHERE PROFILE_ID = #profileId#
+	   ]]>
+	</update>	
+   
+   <!-- delete -->
+   <delete id="delete" parameterClass="java.lang.String">
+      <![CDATA[
+	       DELETE FROM IKEP4_WW_PROFILE WHERE PROFILE_ID = #profileId#
+	   ]]>
+	</delete>
+   <!-- delete -->
+   <delete id="deleteReferenceByProfileId" parameterClass="java.lang.String">
+      <![CDATA[
+	       DELETE FROM IKEP4_WW_REFERENCE WHERE PROFILE_ID = #profileId#
+	   ]]>
+	</delete>
+	
+	<!-- selectAll -->
+	<select id="selectAll" parameterClass="WhoSearchCondition" resultMap="result">
+          SELECT  /* [Who_SqlMap.xml] who.selectAll */ *
+	      FROM    (
+	                SELECT  ROWNUM NUM, F.*
+	                FROM
+	                        (
+	                          SELECT   
+	                          		A.PROFILE_ID, 
+									A.PROFILE_GROUP_ID,
+									A.NAME,
+									A.COMPANY_NAME,
+									A.TEAM_NAME,
+									A.JOB_RANK_NAME,
+									A.OFFICE_PHONENO,
+									A.MOBILE,
+									A.MAIL,
+									A.COMPANY_ADDRESS,
+									A.MEMO,
+									A.VERSION,
+									A.UPDATE_REASON,				
+									A.HIT_COUNT,
+									A.PORTAL_ID,
+									'' TAG,									
+									TRUNC(SYSDATE-A.REGIST_DATE) IS_NEW,				
+									A.REGISTER_ID,
+									A.REGISTER_NAME,
+									(SELECT USER_ENGLISH_NAME FROM IKEP4_EV_USER WHERE USER_ID=A.REGISTER_ID) REGISTER_ENGLISH_NAME,
+			                       (SELECT JOB_TITLE_NAME FROM IKEP4_EV_USER, IKEP4_EV_JOB_TITLE 
+			                               WHERE IKEP4_EV_JOB_TITLE.JOB_TITLE_CODE = IKEP4_EV_USER.JOB_TITLE_CODE
+			                               AND IKEP4_EV_USER.USER_ID=A.REGISTER_ID) AS JOB_TITLE_NAME,
+			                       (SELECT JOB_TITLE_ENGLISH_NAME FROM IKEP4_EV_USER, IKEP4_EV_JOB_TITLE 
+			                               WHERE IKEP4_EV_JOB_TITLE.JOB_TITLE_CODE = IKEP4_EV_USER.JOB_TITLE_CODE
+			                               AND IKEP4_EV_USER.USER_ID=A.REGISTER_ID) AS JOB_TITLE_ENGLISH_NAME,	                     
+			                       (SELECT TEAM_NAME FROM IKEP4_EV_USER WHERE USER_ID=A.REGISTER_ID) REGISTER_TEAM_NAME,
+			                       (SELECT TEAM_ENGLISH_NAME FROM IKEP4_EV_USER WHERE USER_ID=A.REGISTER_ID) TEAM_ENGLISH_NAME, 									
+									A.REGIST_DATE,
+									A.UPDATER_ID,
+									A.UPDATER_NAME,
+									A.UPDATE_DATE,
+									NVL((SELECT MAX(REGIST_DATE) FROM IKEP4_WW_REFERENCE WHERE PROFILE_ID=A.PROFILE_ID AND REGISTER_ID = #viewId#),ADD_MONTHS(SYSDATE,-3)) HIT_DATE	
+	                         FROM    IKEP4_WW_PROFILE A
+	                         WHERE  A.PROFILE_ID IN (
+						           		SELECT MAX(PROFILE_ID) PROFILE_ID 
+						       			FROM IKEP4_WW_PROFILE
+						       			GROUP BY PROFILE_GROUP_ID)
+						     AND 	A.PORTAL_ID = #portalId#
+	                         <isNotEmpty prepend="AND" property="registerId">
+							 	A.PROFILE_GROUP_ID IN (
+								    SELECT  DISTINCT PROFILE_GROUP_ID FROM IKEP4_WW_PROFILE WHERE REGISTER_ID = #registerId#
+								)						    	 
+						     </isNotEmpty>	
+	                         <isNotEmpty prepend="AND" property="viewId">
+							 	A.PROFILE_GROUP_ID IN (
+								    SELECT  DISTINCT PROFILE_GROUP_ID FROM IKEP4_WW_REFERENCE WHERE REGISTER_ID = #viewId#
+								)		                         
+						     </isNotEmpty>	
+						     <isEmpty property="searchColumn">						     						       							     
+		                         <isNotEmpty property="localeCode">
+		                         	 <isEqual property="localeCode" compareValue="ko">
+							    	 	AND A.NAME &gt;= #startSortChar# AND A.NAME &lt; #endSortChar#
+							    	 </isEqual>
+		                         	 <isEqual property="localeCode" compareValue="en">
+		                         	 	AND (A.NAME LIKE #startSortChar# || '%' OR A.NAME LIKE LOWER(#startSortChar#) || '%')
+							    	 </isEqual>		
+						             <isEqual property="localeCode" compareValue="enTotal">
+						             	AND ((A.NAME &gt;= #startSortChar# AND A.NAME &lt; #endSortChar#) OR (A.NAME &gt;= LOWER(#startSortChar#) AND A.NAME &lt; LOWER(#endSortChar#)) OR (A.NAME LIKE #endSortChar# || '%' OR A.NAME LIKE LOWER(#endSortChar#) || '%'))
+									 </isEqual>			
+						             <isEqual property="localeCode" compareValue="numTotal">
+						             	AND ((A.NAME &gt;= #startSortChar# AND A.NAME &lt; #endSortChar#) OR (A.NAME LIKE #endSortChar# || '%'))
+									 </isEqual>						    	 				    	 
+							     </isNotEmpty>
+						     </isEmpty>						     	
+							 <isNotEmpty property="searchColumn">
+							 	<isNotEmpty property="searchWord">
+									<isEqual property="searchColumn" compareValue="name">
+										AND	A.NAME LIKE '%' || #searchWord# || '%'
+									</isEqual>
+									<isEqual property="searchColumn" compareValue="memo">
+										AND	A.MEMO LIKE '%' || #searchWord# || '%'
+									</isEqual>									
+									<isEqual property="searchColumn" compareValue="companyName">
+										AND	A.COMPANY_NAME LIKE '%' || #searchWord# || '%'
+									</isEqual>
+									<isEqual property="searchColumn" compareValue="teamName">
+										AND	A.TEAM_NAME LIKE '%' || #searchWord# || '%'
+									</isEqual>	
+									<isEqual property="searchColumn" compareValue="registerName">
+										AND	(A.REGISTER_NAME LIKE '%' || #searchWord# || '%' OR (SELECT USER_ENGLISH_NAME FROM IKEP4_EV_USER WHERE USER_ID=A.REGISTER_ID) LIKE '%' || #searchWord# || '%')
+									</isEqual>	
+								</isNotEmpty>														
+							 </isNotEmpty>
+							 <isEmpty property="searchColumn">
+							 	 <isNotEmpty property="searchWord">
+							 	 	AND	A.NAME LIKE '%' || #searchWord# || '%' 
+							 	 </isNotEmpty>
+							 </isEmpty>			
+							 <isNotEmpty property="viewId">
+							 	ORDER BY HIT_DATE DESC
+							 </isNotEmpty>
+							 <isEmpty property="viewId">
+							 	ORDER BY A.PROFILE_ID DESC
+							 </isEmpty>			     					       				                         						     					     
+
+	                  ) F
+	                WHERE   ROWNUM &lt;= #endRowIndex#
+	              )
+	      WHERE   NUM &gt; #startRowIndex#
+	</select>
+	<select id="countWhoBySearchCondition" parameterClass="WhoSearchCondition" resultClass="int">  
+		SELECT /* [Who_SqlMap.xml] who.countWhoBySearchCondition */ 
+	           COUNT(*)
+        FROM    IKEP4_WW_PROFILE A
+        WHERE  A.PROFILE_ID IN (
+  			SELECT MAX(PROFILE_ID) PROFILE_ID 
+			FROM IKEP4_WW_PROFILE
+			GROUP BY PROFILE_GROUP_ID)
+		AND 	A.PORTAL_ID = #portalId#      
+       	<isNotEmpty prepend="AND" property="registerId">
+		 	A.PROFILE_GROUP_ID IN (
+			    SELECT  DISTINCT PROFILE_GROUP_ID FROM IKEP4_WW_PROFILE WHERE REGISTER_ID = #registerId#
+			)						    	 
+     	</isNotEmpty>	
+        <isNotEmpty prepend="AND" property="viewId">
+		 	A.PROFILE_GROUP_ID IN (
+			    SELECT  DISTINCT PROFILE_GROUP_ID FROM IKEP4_WW_REFERENCE WHERE REGISTER_ID = #viewId#
+			)		                         
+        </isNotEmpty>	
+   		<isEmpty property="searchColumn">						     						       							     
+	        <isNotEmpty property="localeCode">
+	        	<isEqual property="localeCode" compareValue="ko">
+	  	 			AND A.NAME &gt;= #startSortChar# AND A.NAME &lt; #endSortChar#
+	  	 		</isEqual>
+	            <isEqual property="localeCode" compareValue="en">
+	            	AND (A.NAME LIKE #startSortChar# || '%' OR A.NAME LIKE LOWER(#startSortChar#) || '%')
+	  	 		</isEqual>		
+	          	<isEqual property="localeCode" compareValue="enTotal">
+	          		AND ((A.NAME &gt;= #startSortChar# AND A.NAME &lt; #endSortChar#) OR (A.NAME &gt;= LOWER(#startSortChar#) AND A.NAME &lt; LOWER(#endSortChar#)) OR (A.NAME LIKE #endSortChar# || '%' OR A.NAME LIKE LOWER(#endSortChar#) || '%'))
+	 			</isEqual>			
+	          	<isEqual property="localeCode" compareValue="numTotal">
+	          		AND ((A.NAME &gt;= #startSortChar# AND A.NAME &lt; #endSortChar#) OR (A.NAME LIKE #endSortChar# || '%'))
+	 			</isEqual>						    	 				    	 
+	   		</isNotEmpty>	
+	   	</isEmpty>					     	
+		<isNotEmpty property="searchColumn">
+			<isNotEmpty property="searchWord">
+				<isEqual property="searchColumn" compareValue="name">
+					AND	A.NAME LIKE '%' || #searchWord# || '%'
+				</isEqual>
+				<isEqual property="searchColumn" compareValue="memo">
+					AND	A.MEMO LIKE '%' || #searchWord# || '%'
+				</isEqual>									
+				<isEqual property="searchColumn" compareValue="companyName">
+					AND	A.COMPANY_NAME LIKE '%' || #searchWord# || '%'
+				</isEqual>
+				<isEqual property="searchColumn" compareValue="teamName">
+					AND	A.TEAM_NAME LIKE '%' || #searchWord# || '%'
+				</isEqual>	
+				<isEqual property="searchColumn" compareValue="registerName">
+					AND	(A.REGISTER_NAME LIKE '%' || #searchWord# || '%' OR (SELECT USER_ENGLISH_NAME FROM IKEP4_EV_USER WHERE USER_ID=A.REGISTER_ID) LIKE '%' || #searchWord# || '%')
+				</isEqual>
+			</isNotEmpty>											
+		</isNotEmpty>	
+		<isEmpty property="searchColumn">
+		 	 <isNotEmpty property="searchWord">
+		 	 	AND	A.NAME LIKE '%' || #searchWord# || '%' 
+		 	 </isNotEmpty>
+		</isEmpty>				    
+  </select> 
+   <!-- select -->
+	<select id="selectUserInfo" parameterClass="java.lang.String" resultMap="resultPro">
+	  <![CDATA[	
+			SELECT '' TAG_ID,
+				   '' TAG_NAME,
+				   0  COUNT,
+				   A.USER_ID,
+				   A.USER_NAME,
+				   A.USER_ENGLISH_NAME 	USER_ENGLISH_NAME,
+			       (SELECT JOB_TITLE_NAME 
+			       	FROM IKEP4_EV_JOB_TITLE 
+			        WHERE IKEP4_EV_JOB_TITLE.JOB_TITLE_CODE = A.JOB_TITLE_CODE
+			        AND USER_ID=A.USER_ID) AS JOB_TITLE_NAME,
+			       (SELECT JOB_TITLE_ENGLISH_NAME 
+			       	FROM IKEP4_EV_JOB_TITLE 
+			        WHERE IKEP4_EV_JOB_TITLE.JOB_TITLE_CODE = A.JOB_TITLE_CODE
+			        AND USER_ID=A.USER_ID) AS JOB_TITLE_ENGLISH_NAME,			        		               
+			       A.TEAM_NAME,
+			       A.TEAM_ENGLISH_NAME 	TEAM_ENGLISH_NAME,
+			       A.MOBILE,
+			       A.MAIL,
+			       A.PROFILE_PICTURE_ID
+			FROM IKEP4_EV_USER A                      
+			WHERE A.USER_ID=#userId#		      
+	   ]]>
+	</select>	
+</sqlMap>

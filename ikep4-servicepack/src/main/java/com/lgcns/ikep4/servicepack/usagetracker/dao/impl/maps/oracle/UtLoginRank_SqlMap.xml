@@ -1,0 +1,428 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="com.lgcns.ikep4.servicepack.usagetracker.model.utLoginRank" >
+  <typeAlias alias="utLoginRank"    type="com.lgcns.ikep4.servicepack.usagetracker.model.UtLoginRank"/>
+  <typeAlias alias="utStatistics"    		  type="com.lgcns.ikep4.servicepack.usagetracker.model.UtStatistics"/>
+  
+  <resultMap id="result" class="utLoginRank" >
+    <result column="USER_ID" property="userId" jdbcType="VARCHAR" />
+    <result column="MONTH1" property="month1" jdbcType="DECIMAL" />
+    <result column="MONTH2" property="month2" jdbcType="DECIMAL" />
+    <result column="MONTH3" property="month3" jdbcType="DECIMAL" />
+    <result column="MONTH4" property="month4" jdbcType="DECIMAL" />
+    <result column="MONTH5" property="month5" jdbcType="DECIMAL" />
+    <result column="MONTH6" property="month6" jdbcType="DECIMAL" />
+    <result column="MONTH7" property="month7" jdbcType="DECIMAL" />
+    <result column="MONTH8" property="month8" jdbcType="DECIMAL" />
+    <result column="MONTH9" property="month9" jdbcType="DECIMAL" />
+    <result column="MONTH10" property="month10" jdbcType="DECIMAL" />
+    <result column="MONTH11" property="month11" jdbcType="DECIMAL" />
+    <result column="MONTH12" property="month12" jdbcType="DECIMAL" />
+    <result column="PORTAL_ID" property="portalId" jdbcType="VARCHAR" />
+    <result column="REGIST_DATE" property="registDate" jdbcType="TIMESTAMP" />
+  </resultMap>
+  
+  
+   <resultMap id="resultUserBatchReadItems" class="utLoginRank" >
+    <result column="USER_ID" property="userId" jdbcType="VARCHAR" />
+    <result column="MONTH1" property="month1" jdbcType="DECIMAL" />
+    <result column="MONTH2" property="month2" jdbcType="DECIMAL" />
+    <result column="MONTH3" property="month3" jdbcType="DECIMAL" />
+    <result column="MONTH4" property="month4" jdbcType="DECIMAL" />
+    <result column="MONTH5" property="month5" jdbcType="DECIMAL" />
+    <result column="MONTH6" property="month6" jdbcType="DECIMAL" />
+    <result column="MONTH7" property="month7" jdbcType="DECIMAL" />
+    <result column="MONTH8" property="month8" jdbcType="DECIMAL" />
+    <result column="MONTH9" property="month9" jdbcType="DECIMAL" />
+    <result column="MONTH10" property="month10" jdbcType="DECIMAL" />
+    <result column="MONTH11" property="month11" jdbcType="DECIMAL" />
+    <result column="MONTH12" property="month12" jdbcType="DECIMAL" />
+    <result column="PORTAL_ID" property="portalId" jdbcType="VARCHAR" />
+   </resultMap>
+   
+   
+   <resultMap id="resultUser" class="utStatistics" >
+    <result column="USER_ID" property="userId" jdbcType="VARCHAR" />
+    <result column="USAGE_COUNT" property="usageCount" jdbcType="DECIMAL" />
+    <result property="jobTitleName" column="JOB_TITLE_NAME"/>
+	<result property="jobTitleEnglishName" column="JOB_TITLE_ENGLISH_NAME"/>
+	<result property="userName" column="USER_NAME"/>
+	<result property="userEnglishName" column="USER_ENGLISH_NAME"/>
+	<result property="teamName" column="TEAM_NAME"/>
+	<result property="teamEnglishName" column="TEAM_ENGLISH_NAME"/>
+  </resultMap>
+  
+   <sql id="whereClause">
+    <iterate conjunction="or" prepend="where" property="oredCriteria" removeFirstPrepend="iterate">
+      <isEqual compareValue="true" property="oredCriteria[].valid">
+        (
+        <iterate conjunction="and" prepend="and" property="oredCriteria[].criteriaWithoutValue">
+          $oredCriteria[].criteriaWithoutValue[]$
+        </iterate>
+        <iterate conjunction="and" prepend="and" property="oredCriteria[].criteriaWithSingleValue">
+          $oredCriteria[].criteriaWithSingleValue[].condition$
+            #oredCriteria[].criteriaWithSingleValue[].value#
+        </iterate>
+        <iterate conjunction="and" prepend="and" property="oredCriteria[].criteriaWithListValue">
+          $oredCriteria[].criteriaWithListValue[].condition$
+          <iterate close=")" conjunction="," open="(" property="oredCriteria[].criteriaWithListValue[].values">
+            #oredCriteria[].criteriaWithListValue[].values[]#
+          </iterate>
+        </iterate>
+        <iterate conjunction="and" prepend="and" property="oredCriteria[].criteriaWithBetweenValue">
+          $oredCriteria[].criteriaWithBetweenValue[].condition$
+          #oredCriteria[].criteriaWithBetweenValue[].values[0]# and
+          #oredCriteria[].criteriaWithBetweenValue[].values[1]#
+        </iterate>
+        )
+      </isEqual>
+    </iterate>
+  </sql>
+   
+    <sql id="sqlColumnList"> 
+	  USER_ID, MONTH1, MONTH2, MONTH3, MONTH4, MONTH5, MONTH6, MONTH7, MONTH8, MONTH9, MONTH10,MONTH11, MONTH12, PORTAL_ID, REGIST_DATE
+    </sql> 
+    
+ 
+  
+  <!-- read -->
+	 <select id="get" parameterClass="string" resultMap="result"> 
+	    SELECT /* [utLoginRank_SqlMap.xml] utLoginRank.get */
+	    <include refid="com.lgcns.ikep4.servicepack.usagetracker.model.utLoginRank.sqlColumnList" />
+	    FROM IKEP4_UT_LOGIN_RANK
+	    WHERE USER_ID = #userId#
+	 </select>
+  
+  
+  <!-- 존재여부 -->
+	  <select id="exists" parameterClass="string" resultClass="int"> 
+	    SELECT COUNT(*) /* [utLoginRank_SqlMap.xml] utLoginRank.exists */
+	    FROM IKEP4_UT_LOGIN_RANK
+		WHERE USER_ID = #userId#
+	  </select> 
+	  
+	  
+	  <!-- 생성 -->
+	  <insert id="create" parameterClass="utLoginRank"> 
+	    insert into IKEP4_UT_LOGIN_RANK  /* [utLoginRank_SqlMap.xml] utLoginRank.create */
+	    (
+	    	<include refid="com.lgcns.ikep4.servicepack.usagetracker.model.utLoginRank.sqlColumnList" />
+	    )
+	    values (
+	    	#userId#, 
+	    	#month1#, 
+	    	#month2#, 
+	    	#month3#,
+	        #month4#, 
+	        #month5#, 
+	        #month6#, 
+	        #month7#, 
+	        #month8#,
+	        #month9#, 
+	        #month10#, 
+	        #month11#, 
+	        #month12#, 
+	        #portalId#,
+	        #registDate#)
+	  </insert>
+	  
+	  <!-- 수정 -->
+	   <update id="update" parameterClass="utLoginRank" >
+	    update IKEP4_UT_LOGIN_RANK /* [utLoginRank_SqlMap.xml] utLoginRank.update */
+	    set   MONTH1 = #month1#,
+		      MONTH2 = #month2#,
+		      MONTH3 = #month3#,
+		      MONTH4 = #month4#,
+		      MONTH5 = #month5#,
+		      MONTH6 = #month6#,
+		      MONTH7 = #month7#,
+		      MONTH8 = #month8#,
+		      MONTH9 = #month9#,
+		      MONTH10 = #month10#,
+		      MONTH11 = #month11#,
+		      MONTH12 = #month12#,
+		      PORTAL_ID = #portalId#,
+		      REGIST_DATE = #registDate#
+	    where USER_ID = #userId#
+	  </update>
+	  
+	  <!-- 삭제 -->
+	  <delete id="remove" parameterClass="string"> 
+	    delete  /* [utLoginRank_SqlMap.xml] utLoginRank.remove */
+	    from IKEP4_UT_LOGIN_RANK  
+	    WHERE USER_ID = #userId#
+	  </delete>   
+	  
+	  <!-- ikep4_ut_login_log batch read items -->
+	  <select id="selectUserBatchReadItems"  resultMap="resultUserBatchReadItems"> 
+	    select  user_id /* [utLoginRank_SqlMap.xml] utLoginRank.selectUserBatchReadItems */
+	    		,portal_id
+	    		,sum(month1) month1
+	    		,sum(month1+month2) month2 
+	    		,sum(month1+month2+month3) month3
+	    		,sum(month1+month2+month3+month4) month4
+                ,sum(month1+month2+month3+month4+month5) month5
+                ,sum(month1+month2+month3+month4+month5+month6) month6
+                ,sum(month1+month2+month3+month4+month5+month6+month7) month7
+                ,sum(month1+month2+month3+month4+month5+month6+month7+month8) month8
+                ,sum(month1+month2+month3+month4+month5+month6+month7+month8+month9) month9
+                ,sum(month1+month2+month3+month4+month5+month6+month7+month8+month9+month10) month10
+                ,sum(month1+month2+month3+month4+month5+month6+month7+month8+month9+month10+month11) month11
+                ,sum(month1+month2+month3+month4+month5+month6+month7+month8+month9+month10+month11+month12) month12
+		from
+		(
+		    select user_id,portal_id,count(*) month1,0 month2 ,0 month3,0 month4,0 month5,0 month6,0 month7,0 month8,0 month9,0 month10,0 month11,0 month12
+		    from IKEP4_UT_LOGIN_LOG
+		    WHERE trunc(LOGIN_DATE) between trunc(ADD_MONTHS(sysdate-1, -1)) and trunc(sysdate-1)
+		    group by user_id,portal_id
+		    union all
+		    select user_id,portal_id,0 month1,count(*) month2,0 month3,0 month4,0 month5,0 month6,0 month7,0 month8,0 month9,0 month10,0 month11,0 month12
+		    from IKEP4_UT_LOGIN_LOG
+		    WHERE trunc(LOGIN_DATE) between trunc(ADD_MONTHS(sysdate-1, -2)) and trunc(ADD_MONTHS(sysdate-1, -1))
+		    group by user_id,portal_id
+		    union all
+		    select user_id,portal_id,0 month1,0 month2,count(*) month3,0 month4,0 month5,0 month6,0 month7,0 month8,0 month9,0 month10,0 month11,0 month12
+		    from IKEP4_UT_LOGIN_LOG
+		    WHERE trunc(LOGIN_DATE) between trunc(ADD_MONTHS(sysdate-1, -3)) and trunc(ADD_MONTHS(sysdate-1, -2))
+		    group by user_id,portal_id
+		    union all
+		    select user_id,portal_id,0 month1,0 month2,0 month3,count(*) month4,0 month5,0 month6,0 month7,0 month8,0 month9,0 month10,0 month11,0 month12
+		    from IKEP4_UT_LOGIN_LOG
+		    WHERE trunc(LOGIN_DATE) between trunc(ADD_MONTHS(sysdate-1, -4)) and trunc(ADD_MONTHS(sysdate-1, -3))
+		    group by user_id,portal_id
+		    union all
+		    select user_id,portal_id,0 month1,0 month2,0 month3,0 month4,count(*) month5,0 month6,0 month7,0 month8,0 month9,0 month10,0 month11,0 month12
+		    from IKEP4_UT_LOGIN_LOG
+		    WHERE trunc(LOGIN_DATE) between trunc(ADD_MONTHS(sysdate-1, -5)) and trunc(ADD_MONTHS(sysdate-1, -4))
+		    group by user_id,portal_id
+		    union all
+		    select user_id,portal_id,0 month1,0 month2,0 month3,0 month4,0 month5,count(*) month6,0 month7,0 month8,0 month9,0 month10,0 month11,0 month12
+		    from IKEP4_UT_LOGIN_LOG
+		    WHERE trunc(LOGIN_DATE) between trunc(ADD_MONTHS(sysdate-1, -6)) and trunc(ADD_MONTHS(sysdate-1, -5))
+		    group by user_id,portal_id
+		    union all
+		    select user_id,portal_id,0 month1,0 month2,0 month3,0 month4,0 month5,0 month6,count(*) month7,0 month8,0 month9,0 month10,0 month11,0 month12
+		    from IKEP4_UT_LOGIN_LOG
+		    WHERE trunc(LOGIN_DATE) between trunc(ADD_MONTHS(sysdate-1, -7)) and trunc(ADD_MONTHS(sysdate-1, -6))
+		    group by user_id,portal_id
+		    union all
+		    select user_id,portal_id,0 month1,0 month2,0 month3,0 month4,0 month5,0 month6,0 month7,count(*) month8,0 month9,0 month10,0 month11,0 month12
+		    from IKEP4_UT_LOGIN_LOG
+		    WHERE trunc(LOGIN_DATE) between trunc(ADD_MONTHS(sysdate-1, -8)) and trunc(ADD_MONTHS(sysdate-1, -7))
+		    group by user_id,portal_id
+		    union all
+		    select user_id,portal_id,0 month1,0 month2,0 month3,0 month4,0 month5,0 month6,0 month7,0 month8,count(*) month9,0 month10,0 month11,0 month12
+		    from IKEP4_UT_LOGIN_LOG
+		    WHERE trunc(LOGIN_DATE) between trunc(ADD_MONTHS(sysdate-1, -9)) and trunc(ADD_MONTHS(sysdate-1, -8))
+		    group by user_id,portal_id
+		    union all
+		    select user_id,portal_id,0 month1,0 month2,0 month3,0 month4,0 month5,0 month6,0 month7,0 month8,0 month9,count(*) month10,0 month11,0 month12
+		    from IKEP4_UT_LOGIN_LOG
+		    WHERE trunc(LOGIN_DATE) between trunc(ADD_MONTHS(sysdate-1, -10)) and trunc(ADD_MONTHS(sysdate-1, -9))
+		    group by user_id,portal_id
+		    union all
+		    select user_id,portal_id,0 month1,0 month2,0 month3,0 month4,0 month5,0 month6,0 month7,0 month8,0 month9,0 month10,count(*) month11,0 month12
+		    from IKEP4_UT_LOGIN_LOG
+		    WHERE trunc(LOGIN_DATE) between trunc(ADD_MONTHS(sysdate-1, -11)) and trunc(ADD_MONTHS(sysdate-1, -10))
+		    group by user_id,portal_id
+		    union all
+		    select user_id,portal_id,0 month1,0 month2,0 month3,0 month4,0 month5,0 month6,0 month7,0 month8,0 month9,0 month10,0 month11,count(*) month12
+		    from IKEP4_UT_LOGIN_LOG
+		    WHERE trunc(LOGIN_DATE) between trunc(ADD_MONTHS(sysdate-1, -12)) and trunc(ADD_MONTHS(sysdate-1, -11))
+		    group by user_id,portal_id
+		)
+		group by user_id,portal_id
+	 </select> 
+	 
+	 
+	   <!--  최근 한달간 로그인 상세로그 -->
+  <select id="listBySearchCondition1" parameterClass="utSearchCondition" resultMap="resultUser">  
+	SELECT * /* [utLoginRank_SqlMap.xml] utLoginRank.listBySearchCondition1 */
+	FROM ( 
+	     SELECT  ROWNUM AS RNUM, A.*
+	     FROM ( 
+		         SELECT 
+	  			   s.USER_ID, 
+  			 	   s.MONTH1 USAGE_COUNT,
+  			 	   eu.USER_NAME, 
+			       eu.USER_ENGLISH_NAME, 
+			       eu.TEAM_NAME, 
+			       eu.TEAM_ENGLISH_NAME,
+			       ejt.JOB_TITLE_NAME, 
+			       ejt.JOB_TITLE_ENGLISH_NAME
+		         FROM   IKEP4_UT_LOGIN_RANK s,IKEP4_EV_USER eu,IKEP4_EV_JOB_TITLE ejt
+    			 WHERE  eu.job_title_code =ejt.job_title_code
+    					and s.user_id = eu.user_id
+    					and s.PORTAL_ID = eu.PORTAL_ID
+    			 		and s.PORTAL_ID = #portalId#
+    			 		and s.MONTH1 <![CDATA[>=]]>  0
+		 			order by s.MONTH1 DESC
+	    	) A WHERE ROWNUM <![CDATA[<=]]>   #endRowIndex# /* 종료  */
+	) WHERE RNUM <![CDATA[>]]>   #startRowIndex# /* 시작 */
+  </select>   
+  
+  <select id="countBySearchCondition1" parameterClass="utSearchCondition" resultClass="int">  
+	SELECT COUNT(*) /* [utLoginRank_SqlMap.xml] utLoginRank.countBySearchCondition1 */
+	FROM   IKEP4_UT_LOGIN_RANK s,IKEP4_EV_USER eu,IKEP4_EV_JOB_TITLE ejt
+    			 WHERE  eu.job_title_code =ejt.job_title_code
+    					and s.user_id = eu.user_id
+    					and s.PORTAL_ID = eu.PORTAL_ID
+    			 		and s.PORTAL_ID = #portalId#
+	 	   and MONTH1 <![CDATA[>=]]>  0
+  </select> 
+  
+  
+    <select id="listBySearchCondition3" parameterClass="utSearchCondition" resultMap="resultUser">  
+	SELECT * /* [utLoginRank_SqlMap.xml] utLoginRank.listBySearchCondition3 */
+	FROM ( 
+	     SELECT  ROWNUM AS RNUM, A.*
+	     FROM ( 
+		         SELECT 
+	  			   s.USER_ID, 
+  			 	   s.MONTH3 USAGE_COUNT,
+  			 	   eu.USER_NAME, 
+			       eu.USER_ENGLISH_NAME, 
+			       eu.TEAM_NAME, 
+			       eu.TEAM_ENGLISH_NAME,
+			       ejt.JOB_TITLE_NAME, 
+			       ejt.JOB_TITLE_ENGLISH_NAME
+		         FROM   IKEP4_UT_LOGIN_RANK s,IKEP4_EV_USER eu,IKEP4_EV_JOB_TITLE ejt
+    			 WHERE  eu.job_title_code =ejt.job_title_code
+    					and s.user_id = eu.user_id
+    					and s.PORTAL_ID = eu.PORTAL_ID
+    			 		and s.PORTAL_ID = #portalId#
+    			 		and s.MONTH3 <![CDATA[>=]]>  0
+		 			order by s.MONTH3 DESC
+	    	) A WHERE ROWNUM <![CDATA[<=]]>   #endRowIndex# /* 종료  */
+	) WHERE RNUM <![CDATA[>]]>   #startRowIndex# /* 시작 */
+  </select>   
+  
+  <select id="countBySearchCondition3" parameterClass="utSearchCondition" resultClass="int">  
+	SELECT COUNT(*) /* [utLoginRank_SqlMap.xml] utLoginRank.countBySearchCondition3 */
+	FROM    IKEP4_UT_LOGIN_RANK s,IKEP4_EV_USER eu,IKEP4_EV_JOB_TITLE ejt
+    			 WHERE  eu.job_title_code =ejt.job_title_code
+    					and s.user_id = eu.user_id
+    					and s.PORTAL_ID = eu.PORTAL_ID
+    			 		and s.PORTAL_ID = #portalId#
+	 	   and MONTH3 <![CDATA[>=]]>  0
+  </select> 
+  
+  
+    <select id="listBySearchCondition6" parameterClass="utSearchCondition" resultMap="resultUser">  
+	SELECT * /* [utLoginRank_SqlMap.xml] utLoginRank.listBySearchCondition6 */
+	FROM ( 
+	     SELECT  ROWNUM AS RNUM, A.*
+	     FROM ( 
+		         SELECT 
+	  			   s.USER_ID, 
+  			 	   s.MONTH6 USAGE_COUNT,
+  			 	   eu.USER_NAME, 
+			       eu.USER_ENGLISH_NAME, 
+			       eu.TEAM_NAME, 
+			       eu.TEAM_ENGLISH_NAME,
+			       ejt.JOB_TITLE_NAME, 
+			       ejt.JOB_TITLE_ENGLISH_NAME
+		         FROM   IKEP4_UT_LOGIN_RANK s,IKEP4_EV_USER eu,IKEP4_EV_JOB_TITLE ejt
+    			 WHERE  eu.job_title_code =ejt.job_title_code
+    					and s.user_id = eu.user_id
+    					and s.PORTAL_ID = eu.PORTAL_ID
+    			 		and s.PORTAL_ID = #portalId#
+    			 		and s.MONTH6 <![CDATA[>=]]>  0
+		 			order by s.MONTH6 DESC
+	    	) A WHERE ROWNUM <![CDATA[<=]]>   #endRowIndex# /* 종료  */
+	) WHERE RNUM <![CDATA[>]]>   #startRowIndex# /* 시작 */
+  </select>   
+  
+  <select id="countBySearchCondition6" parameterClass="utSearchCondition" resultClass="int">  
+	SELECT COUNT(*) /* [utLoginRank_SqlMap.xml] utLoginRank.countBySearchCondition6 */
+	FROM   IKEP4_UT_LOGIN_RANK s,IKEP4_EV_USER eu,IKEP4_EV_JOB_TITLE ejt
+    			 WHERE  eu.job_title_code =ejt.job_title_code
+    					and s.user_id = eu.user_id
+    					and s.PORTAL_ID = eu.PORTAL_ID
+    			 		and s.PORTAL_ID = #portalId#
+	 	   and MONTH6 <![CDATA[>=]]>  0
+  </select> 
+  
+  
+    <select id="listBySearchCondition12" parameterClass="utSearchCondition" resultMap="resultUser">  
+	SELECT * /* [utLoginRank_SqlMap.xml] utLoginRank.listBySearchCondition12 */
+	FROM ( 
+	     SELECT  ROWNUM AS RNUM, A.*
+	     FROM ( 
+		         SELECT 
+	  			   s.USER_ID, 
+  			 	   s.MONTH12 USAGE_COUNT,
+  			 	   eu.USER_NAME, 
+			       eu.USER_ENGLISH_NAME, 
+			       eu.TEAM_NAME, 
+			       eu.TEAM_ENGLISH_NAME,
+			       ejt.JOB_TITLE_NAME, 
+			       ejt.JOB_TITLE_ENGLISH_NAME
+		         FROM   IKEP4_UT_LOGIN_RANK s,IKEP4_EV_USER eu,IKEP4_EV_JOB_TITLE ejt
+    			 WHERE  eu.job_title_code =ejt.job_title_code
+    					and s.user_id = eu.user_id
+    					and s.PORTAL_ID = eu.PORTAL_ID
+    			 		and s.PORTAL_ID = #portalId#
+    			 		and s.MONTH12 <![CDATA[>=]]>  0
+		 			order by s.MONTH12 DESC
+	    	) A WHERE ROWNUM <![CDATA[<=]]>   #endRowIndex# /* 종료  */
+	) WHERE RNUM <![CDATA[>]]>   #startRowIndex# /* 시작 */
+  </select>   
+  
+  <select id="countBySearchCondition12" parameterClass="utSearchCondition" resultClass="int">  
+	SELECT COUNT(*) /* [utLoginRank_SqlMap.xml] utLoginRank.countBySearchCondition12 */
+	FROM   IKEP4_UT_LOGIN_RANK s,IKEP4_EV_USER eu,IKEP4_EV_JOB_TITLE ejt
+	 WHERE  eu.job_title_code =ejt.job_title_code
+			and s.user_id = eu.user_id
+			and s.PORTAL_ID = eu.PORTAL_ID
+	 		and s.PORTAL_ID = #portalId#
+	 	   and MONTH12 <![CDATA[>=]]>  0
+  </select> 
+  
+  
+  
+    <!--  최근 한달간 로그인 상세로그 -->
+  <select id="listBySearchCondition" parameterClass="utSearchCondition" resultMap="resultUser">  
+	SELECT * /* [utLoginRank_SqlMap.xml] utLoginRank.listBySearchCondition */
+	FROM ( 
+	     SELECT  ROWNUM AS RNUM, A.*
+	     FROM ( 
+		         SELECT 
+		           s.USER_ID,
+		           s.USAGE_COUNT,
+		           eu.USER_NAME, 
+			       eu.USER_ENGLISH_NAME, 
+			       eu.TEAM_NAME, 
+			       eu.TEAM_ENGLISH_NAME,
+			       ejt.JOB_TITLE_NAME, 
+			       ejt.JOB_TITLE_ENGLISH_NAME
+		         FROM   (	select user_id,
+							       PORTAL_ID,
+							       count(*) USAGE_COUNT   
+							from IKEP4_UT_LOGIN_LOG
+							where PORTAL_ID = #portalId#
+							      and  trunc(LOGIN_DATE) between trunc(#startDate#) and trunc(#endDate#)
+							group by user_id,PORTAL_ID  
+		         		)s,IKEP4_EV_USER eu,IKEP4_EV_JOB_TITLE ejt
+    			 WHERE  eu.job_title_code =ejt.job_title_code
+    					and s.user_id = eu.user_id
+    					and s.PORTAL_ID = eu.PORTAL_ID
+				order by USAGE_COUNT desc
+				
+	    	) A WHERE ROWNUM <![CDATA[<=]]>   #endRowIndex# /* 종료  */
+	) WHERE RNUM <![CDATA[>]]>   #startRowIndex# /* 시작 */
+  </select>   
+  
+  <select id="countBySearchCondition" parameterClass="utSearchCondition" resultClass="int">  
+    select count(*) /* [utLoginRank_SqlMap.xml] utLoginRank.countBySearchCondition */
+    from
+    (
+		select user_id   
+		from IKEP4_UT_LOGIN_LOG
+		where PORTAL_ID = #portalId#
+		      and  trunc(LOGIN_DATE) between trunc(#startDate#) and trunc(#endDate#)
+		group by user_id
+	)	
+  </select> 
+  
+</sqlMap>

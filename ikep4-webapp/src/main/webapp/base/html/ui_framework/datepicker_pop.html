@@ -1,0 +1,102 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ko">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Home</title>
+<link rel="stylesheet" type="text/css" href="../../css/guide.css" />
+<link rel="stylesheet" type="text/css" href="../../css/theme01/jquery_ui_custom.css" />
+<link rel="stylesheet" type="text/css" href="../../css/common.css" />
+<link rel="stylesheet" type="text/css" href="../../css/theme01/theme.css" />
+<script type="text/javascript" src="../../js/jquery/jquery-1.6.2.min.js"></script>
+<script type="text/javascript" src="../../js/jquery/jquery-ui-1.8.13.min.without.datepicker.js"></script>
+<script type="text/javascript" src="../../js/jquery/jquery.ui.datepicker.customize.pack.js"></script>
+<!-- <script type="text/javascript" src="../../js/source/jquery/ui/jquery.ui.datepicker.customize.js"></script> -->
+<script type="text/javascript" src="../../js/langResource/ko.js"></script>
+<script type="text/javascript" src="../../js/common.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$(document).ready(function(){		
+		$("#datepicker").datepicker({
+			inline: true,
+			alarmDays : ["2011.04.12", "2011.04.23", "2011.05.01"],
+			onSelect: function(date) { alert(date); }
+		});
+		
+		$("#datepicker10").datepicker($.extend($.extend($.datepicker.regional[iKEPLang.datepicker.langCode], {yearSuffix:""}), {
+			inline: true,
+			changeYear:true,
+			changeMonth : true,			
+			onSelect: function(date) { 
+				alert(date); 
+			},
+			onChangeMonthYear : function(year, month, datepicker) {
+				//alert(date);
+			}
+		}));
+		
+		$("input.datepicker").datepicker({
+			onSelect: function(date, event) {
+				var arrDate = date.split(".");
+				var objDate = new Date(arrDate[0], (arrDate[1]-1), parseInt(arrDate[2], 10) + 6);
+				event.input.next("input.datepicker:eq(0)").val(objDate.getFullYear() + "." + (objDate.getMonth()+1) + "." + objDate.getDate());
+			}
+		});
+		
+		$("#date1").datepicker()
+			.next().eq(0).click(function() { $(this).prev().eq(0).datepicker("show"); });
+		
+		$("#date2" ).datepicker({
+			showOn: "button",
+			buttonImage: "../../images/icon/ic_cal.gif",
+			buttonImageOnly: true
+		});
+		
+		$("#date3").datepicker({
+			showOtherMonths : true,
+			selectOtherMonths: true,
+			hoverWeek : true,
+			maxDate : "2011.04.28"
+		});
+		
+		$("#date4").datepicker({
+			showOtherMonths : true,
+			selectOtherMonths: true,
+			hoverWeek : true,
+			hoverRange : 7,
+			maxDate : "2011.04.18"
+		});
+		
+		$("#date5").datepicker($.extend($.extend($.datepicker.regional[iKEPLang.datepicker.langCode], {yearSuffix:""}), {
+			changeYear:true,
+			changeMonth:true,		
+			onSelect: function(date) { 
+				alert(date); 
+			},
+			showOn: "button",
+			buttonImage: "../../images/icon/ic_cal.gif",
+			buttonImageOnly: true
+		}));
+
+
+	});
+})(jQuery);
+</script>
+</head>
+
+<body class="popup">
+	<div id="datepicker"></div>
+	<div id="datepicker10"></div>
+	<br/><br/>
+	<label>처리 기간 : </label><input class="datepicker" type="text" name="startDate"/> ~ <input class="datepicker" type="text" name="endDate"/>
+	<br/><br/>
+	<label>일자 1 : </label><input type="text" id="date1" name="date"/> <img src="../../images/icon/ic_cal.gif" alt="datepicker" style="cursor:pointer;"/>
+	<br/>
+	<label>일자 2 : </label><input type="text" id="date2" name="date"/>
+	<br/>
+	<label>주간 선택 1 : </label><input type="text" id="date3" name="date" style="width:200px;"/>
+	<br/>
+	<label>주간 선택 2 : </label><input type="text" id="date4" name="date" style="width:200px;"/>
+	<br/>
+	<label>주간 선택 년도표시 : </label><input type="text" id="date5" name="date" style="width:200px;"/>
+</body>
+</html>

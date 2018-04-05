@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="support.abusereporting.dao.arAbuseHistory" >
+	<typeAlias alias = "ArAbuseHistory" 			type="com.lgcns.ikep4.support.abusereporting.model.ArAbuseHistory"/>
+	<typeAlias alias = "ArAbuseSearchCondition" 	type="com.lgcns.ikep4.support.abusereporting.search.ArAbuseSearchCondition"/>
+	<typeAlias alias = "ArAbuseQueryReturn" 		type="com.lgcns.ikep4.support.abusereporting.model.ArAbuseQueryReturn"/>
+	
+	<!-- IKEP4_AR_ABUSE_HISTORY +  테이블 조회 결과 -->
+	<resultMap id="result" class="ArAbuseHistory">
+		<result property="historyId" 			column="HISTORY_ID" 			/>
+		<result property="moduleCode" 			column="MODULE_CODE" 			/>
+		<result property="moduleName" 			column="MODULE_NAME" 			/>
+		<result property="itemId" 				column="ITEM_ID" 				/>
+		<result property="externalTarget" 		column="EXTERNAL_TARGET" 		/>
+		<result property="externalAccount" 		column="EXTERNAL_ACCOUNT" 		/>
+		<result property="keyword" 				column="KEYWORD" 				/>
+		<result property="contents" 			column="CONTENTS" 				/>
+		<result property="registerId" 			column="REGISTER_ID" 			/>
+		<result property="registerName" 		column="REGISTER_NAME" 			/>
+		<result property="registerEnglishName" 	column="REGISTER_ENGLISH_NAME" 	/>
+		<result property="registDate" 			column="REGIST_DATE" 			/>
+		<result property="isDetected" 			column="IS_DETECTED" 			/>
+		<result property="jobTitleName" 		column="JOB_TITLE_NAME" 		/>
+		<result property="jobTitleEnglishName" 	column="JOB_TITLE_ENGLISH_NAME" />
+		<result property="isExternal" 			column="IS_EXTERNAL" 			/>
+		<result property="portalId" 			column="PORTAL_ID" 				/>
+	</resultMap>
+	
+	<resultMap id="queryReturnResult" class="ArAbuseQueryReturn">
+		<result property="keyword" 			column="KEYWORD" 			/>
+		<result property="cnt" 				column="CNT" 				/>
+	</resultMap>
+		
+	<!-- insert -->
+	<insert id="insert" parameterClass="ArAbuseHistory"> 
+      <![CDATA[ 
+           INSERT INTO IKEP4_AR_ABUSE_HISTORY ( /* [ArAbuseHistory_SqlMap.xml] arAbuseHistory.insert */
+           HISTORY_ID, MODULE_CODE, MODULE_NAME, ITEM_ID, EXTERNAL_TARGET, EXTERNAL_ACCOUNT, KEYWORD, 
+           CONTENTS, REGISTER_ID, REGISTER_NAME, REGIST_DATE, IS_DETECTED, PORTAL_ID)  
+           VALUES (#historyId#, #moduleCode#, #moduleName#, #itemId#, #externalTarget#, #externalAccount#, #keyword#, 
+           #contents#, #registerId#, #registerName#, NOW(), #isDetected#, #portalId#)
+       ]]>
+   </insert>
+   
+   <!-- select -->
+	<select id="select" parameterClass="ArAbuseHistory" resultMap="result">
+	  <![CDATA[
+		   SELECT /* [ArAbuseHistory_SqlMap.xml] arAbuseHistory.select */ 
+		   		A.HISTORY_ID,			
+				A.MODULE_CODE,			
+				A.MODULE_NAME,			
+				A.ITEM_ID,				
+				A.EXTERNAL_TARGET,		
+				A.EXTERNAL_ACCOUNT,		
+				A.KEYWORD,				
+				A.CONTENTS,			
+				A.REGISTER_ID,			
+				A.REGIST_DATE,			
+				A.IS_DETECTED,	
+				A.PORTAL_ID,	
+				evUser.USER_NAME			AS REGISTER_NAME,		
+				evUser.USER_ENGLISH_NAME	AS REGISTER_ENGLISH_NAME,		
+				jobTitle.JOB_TITLE_NAME,		
+				jobTitle.JOB_TITLE_ENGLISH_NAME,
+		    	B.IS_EXTERNAL
+		    FROM IKEP4_AR_ABUSE_HISTORY A, IKEP4_AR_MODULE B, IKEP4_EV_USER evUser, IKEP4_EV_JOB_TITLE jobTitle
+		    WHERE A.HISTORY_ID 				= #historyId#
+		      AND A.PORTAL_ID 	 			= #portalId#
+		      AND A.MODULE_CODE 			= B.MODULE_CODE
+		      AND A.REGISTER_ID 			= evUser.USER_ID
+		      AND evUser.JOB_TITLE_CODE 	= jobTitle.JOB_TITLE_CODE
+	   ]]>
+	</select>
+	  
+  <select id="countBySearchconditionForReport" parameterClass="ArAbuseSearchCondition" resultClass="int">  
+		SELECT   /* [ArAbuseHistory_SqlMap.xml] arAbuseHistory.countBySearchconditionForReport */  
+	     COUNT(*)
+	    FROM IKEP4_AR_ABUSE_HISTORY A, IKEP4_AR_MODULE B, IKEP4_EV_USER evUser1, IKEP4_EV_JOB_TITLE jobTitle
+	    WHERE A.MODULE_CODE 			= B.MODULE_CODE
+	      AND A.REGISTER_ID 			= evUser1.USER_ID
+	      AND evUser1.JOB_TITLE_CODE 	= jobTitle.JOB_TITLE_CODE
+		  AND A.PORTAL_ID 	 			= #portalId#
+		<isNotEmpty property="moduleCode">
+			<isNotEqual property="moduleCode" compareValue="ALL">
+	  			AND A.MODULE_CODE 		= #moduleCode#
+			</isNotEqual>
+		</isNotEmpty>
+		<isNotNull property="startDate"><isNotEmpty property="startDate">
+			<isNotNull property="endDate"><isNotEmpty property="endDate">
+				AND DATE_FORMAT(A.REGIST_DATE, '%Y-%m-%d') BETWEEN DATE_FORMAT(#startDate#, '%Y-%m-%d') AND DATE_FORMAT(#endDate#, '%Y-%m-%d')
+			</isNotEmpty></isNotNull>
+		</isNotEmpty></isNotNull>
+		<isNotEmpty property="keyword">
+	  			AND A.CONTENTS 	LIKE CONCAT('%', #keyword#, '%')
+		</isNotEmpty>
+  </select> 
+    
+  <select id="listBySearchconditionForReport" parameterClass="ArAbuseSearchCondition" resultMap="result">  
+		SELECT /* [ArAbuseHistory_SqlMap.xml] arAbuseHistory.listBySearchconditionForReport */ 
+		       *
+		FROM ( 
+		     SELECT ROWNUM AS RNUM, A.* FROM ( 
+		         /* START========================================= */
+					SELECT     
+				   		A.HISTORY_ID,			
+						A.MODULE_CODE,			
+						A.MODULE_NAME,			
+						A.ITEM_ID,				
+						A.EXTERNAL_TARGET,		
+						A.EXTERNAL_ACCOUNT,		
+						A.KEYWORD,				
+						A.CONTENTS,			
+						A.REGISTER_ID,			
+						A.REGIST_DATE,			
+						A.IS_DETECTED,		
+						evUser.USER_NAME			AS REGISTER_NAME,		
+						evUser.USER_ENGLISH_NAME	AS REGISTER_ENGLISH_NAME,		
+						jobTitle.JOB_TITLE_NAME,		
+						jobTitle.JOB_TITLE_ENGLISH_NAME,
+				    	B.IS_EXTERNAL,
+				    	A.PORTAL_ID
+				    FROM IKEP4_AR_ABUSE_HISTORY A, IKEP4_AR_MODULE B, IKEP4_EV_USER evUser, IKEP4_EV_JOB_TITLE jobTitle
+				    WHERE A.MODULE_CODE 			= B.MODULE_CODE
+				      AND A.REGISTER_ID 			= evUser.USER_ID
+				      AND evUser.JOB_TITLE_CODE 	= jobTitle.JOB_TITLE_CODE
+		      		  AND A.PORTAL_ID 	 			= #portalId#
+					<isNotEmpty property="moduleCode">
+						<isNotEqual property="moduleCode" compareValue="ALL">
+				  			AND A.MODULE_CODE 		= #moduleCode#
+						</isNotEqual>
+					</isNotEmpty>
+					<isNotNull property="startDate"><isNotEmpty property="startDate">
+						<isNotNull property="endDate"><isNotEmpty property="endDate">
+							AND DATE_FORMAT(A.REGIST_DATE, '%Y-%m-%d') BETWEEN DATE_FORMAT(#startDate#, '%Y-%m-%d') AND DATE_FORMAT(#endDate#, '%Y-%m-%d')
+						</isNotEmpty></isNotNull>
+					</isNotEmpty></isNotNull>
+					<isNotEmpty property="keyword">
+				  			AND A.CONTENTS 	LIKE CONCAT('%', #keyword#, '%')
+					</isNotEmpty>
+				    ORDER BY A.HISTORY_ID  DESC
+				 /* ===========================================END  */ 
+		<![CDATA[  
+		
+		    ) A WHERE ROWNUM <=  #endRowIndex# /* 종료  */
+		) WHERE RNUM >  #startRowIndex# /* 시작 */
+		]]> 
+  </select> 
+    
+  <select id="listBySearchconditionForStatistics" parameterClass="ArAbuseSearchCondition" resultMap="queryReturnResult">  
+		SELECT   /* [ArAbuseHistory_SqlMap.xml] arAbuseHistory.listBySearchconditionForStatistics */  
+	     B.KEYWORD, COUNT(B.KEYWORD) CNT
+	    FROM IKEP4_AR_ABUSE_HISTORY A, IKEP4_AR_HISTORY_KEY B	    
+	    WHERE A.HISTORY_ID 	= B.HISTORY_ID
+		  AND A.PORTAL_ID	= #portalId#
+		<isNotEmpty property="moduleCode">
+			<isNotEqual property="moduleCode" compareValue="ALL">
+	  			AND A.MODULE_CODE 		= #moduleCode#
+			</isNotEqual>
+		</isNotEmpty>
+		<isNotNull property="startDate"><isNotEmpty property="startDate">
+			<isNotNull property="endDate"><isNotEmpty property="endDate">
+				AND DATE_FORMAT(A.REGIST_DATE, '%Y-%m-%d') BETWEEN DATE_FORMAT(#startDate#, '%Y-%m-%d') AND DATE_FORMAT(#endDate#, '%Y-%m-%d')
+			</isNotEmpty></isNotNull>
+		</isNotEmpty></isNotNull>
+	    GROUP BY B.KEYWORD
+	    ORDER BY COUNT(B.KEYWORD)  DESC
+  </select> 
+  
+	  
+</sqlMap>

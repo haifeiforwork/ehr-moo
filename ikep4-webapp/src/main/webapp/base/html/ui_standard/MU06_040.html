@@ -1,0 +1,413 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ko">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>iKEP 4.00</title>
+<link rel="stylesheet" type="text/css" href="../../css/theme01/jquery_ui_custom.css" />
+<link rel="stylesheet" type="text/css" href="../../css/common.css" />
+<link rel="stylesheet" type="text/css" href="../../css/theme01/theme.css" />
+<script type="text/javascript" src="../../js/jquery/jquery-1.6.2.min.js"></script>
+<script type="text/javascript" src="../../js/jquery/jquery-ui-1.8.13.min.without.datepicker.js"></script>
+<script type="text/javascript" src="../../js/langResource/ko.js"></script>
+<script type="text/javascript" src="../../js/common.pack.js"></script>
+<script type="text/javascript">
+
+var accordion = null;
+(function($) {
+	$(document).ready(function() {
+		$("#accordion").accordion();
+		
+		accordion = new iKEP.Accordion({
+			parent : "#divContainer",
+			//container : "#accordion",
+			cache : true,
+			active : 2,
+			items : [
+				{title:"Item 1", url:"ajax_result/data.json"},
+				{title:"Item 2", url:"/"},
+				{title:"Item 3", url:"ajax_result/html.txt"}
+			],
+			load : function(ui) {
+				//iKEP.debug(arguments);
+			}
+		});
+	});
+})(jQuery);
+
+
+<!--
+(function($) {
+	$(document).ready(function() {
+		$("#divTab_s").tabs();
+		// left menu setting
+		iKEP.setLeftMenu();
+	});
+})(jQuery);
+-->
+</script>
+</head>
+
+<body>
+
+<!--skipNavigation Start-->
+<div id="skipNavigation">
+	<p><a href="#topInfo">헤더정보영역 바로가기</a></p>
+	<p><a href="#topMenu">탑메뉴 바로가기</a></p>	
+	<p><a href="#blockHeaderSub">퀵메뉴 바로가기</a></p>
+	<p><a href="#leftMenu">레프트메뉴 바로가기</a></p>	
+	<p><a href="#mainContents">컨텐츠영역 바로가기</a></p>	
+</div>
+<!--//skipNavigation End-->
+
+<!--wrapper Start-->
+<div id="wrapper">
+
+	<!--blockContainer Start-->
+	<div id="blockContainer">
+
+		<!--blockHeader Start-->
+		<div id="blockHeader">	
+		
+			<!--topInfo Start-->	
+			<div id="topInfo">
+				<h1 class="none">헤더정보영역</h1>
+				<div id="topLogo">
+					<a href="#a"><img src="../../images/common/logo.png" alt="iKEP Logo" /></a>
+				</div>
+			</div>
+			<!--//topInfo End-->
+						
+			<!--topMenu Start-->
+			<div id="topMenu">
+				<h1 class="none">탑메뉴</h1>			
+			</div>
+			<!--//topMenu End-->		
+
+			<!--blockHeaderSub Start-->
+			<div id="blockHeaderSub">
+				<h1 class="none">퀵메뉴</h1>		
+			</div>
+			<!--//blockHeaderSub End-->
+										
+		</div>
+		<!--//blockHeader End-->
+		
+		<!--blockMain Start-->
+		<div id="blockMain">
+
+			<!--leftMenu Start-->
+			<div id="leftMenu">
+				<h1 class="none">레프트메뉴</h1>
+				<h2>Who's Who</h2>
+				<div class="blockButton_2 mb10"> 
+					<a class="button_2" href="#a"><span><img src="../../images/icon/ic_dic.png" alt="" />인물사전 등록</span></a>				
+				</div>					
+				<div class="left_fixed">			
+					<div class="boxList">
+						<p>내가 등록한 인물</p>
+						<a href="#a" class="more"><img src="../../images/common/btn_more.gif" alt="more" /></a>					
+					</div>
+					<div class="boxList_sub">
+						<ul>
+							<li><a href="#a" title="김사현 교수 동국대학교">김사현 교수</a> <img src="../../images/theme/theme01/basic/ic_new.gif" alt="new" /></li>
+							<li><a href="#a" title="이승님 과장 포스코">이승님 과장</a></li>
+							<li><a href="#a" title="홍길동 대리 한국신용평가">홍길동 대리</a></li>
+							<li><a href="#a" title="김사현 교수 포스코">김사현 교수</a></li>
+							<li><a href="#a" title="이승님 과장 동국대학교">이승님 과장</a></li>
+						</ul>
+					</div>		
+					
+					<div class="boxList">
+						<p>내가 조회한 인물</p>
+						<a href="#a" class="more"><img src="../../images/common/btn_more.gif" alt="more" /></a>					
+					</div>
+					<div class="boxList_sub">
+						<ul>
+							<li><a href="#a" title="김사현 교수 동국대학교">김사현 교수</a> <img src="../../images/theme/theme01/basic/ic_new.gif" alt="new" /></li>
+							<li><a href="#a" title="이승님 과장 포스코">이승님 과장</a></li>
+							<li><a href="#a" title="홍길동 대리 한국신용평가">홍길동 대리</a></li>
+							<li><a href="#a" title="김사현 교수 포스코">김사현 교수</a></li>
+							<li><a href="#a" title="이승님 과장 동국대학교">이승님 과장</a></li>
+						</ul>
+					</div>									
+				</div>
+			</div>	
+			<!--//leftMenu End-->
+				
+			<!--mainContents Start-->
+			<div id="mainContents">
+				<h1 class="none">컨텐츠영역</h1>
+				
+				<!--pageTitle Start-->
+				<div id="pageTitle">
+					<h2>인물 상세조회</h2>
+				</div>
+				<!--//pageTitle End-->
+				
+				<!--blockListTable Start-->
+				<div class="whosList">
+					<div class="whosPhoto"><img src="../../images/common/temp_img_100x100.gif" alt="" /></div>
+					<div class="whosInfo">
+						<h4>이연희</h4>
+						<table summary="인물 상세정보 테이블">
+							<caption></caption>						
+							<tbody>
+								<tr>
+									<td colspan="2"><span class="whos_tit">회사</span> : <span>LG CNS</span></td>
+								</tr>
+								<tr>
+									<td width=""><span class="whos_tit">팀</span> : <span>UC 컨설팅팀</span></td>
+									<td width=""><span class="whos_tit">직위</span> : <span>사장</span></td>
+								</tr>
+								<tr>
+									<td width=""><span class="whos_tit">회사전화</span> : <span>02-3777-1254</span></td>
+									<td width=""><span class="whos_tit">전화번호</span> : <span>02-3777-1254</span></td>
+								</tr>
+								<tr>
+									<td colspan="2"><span class="whos_tit">이메일</span> : <span><a href="#">gildong@lgcns.com</a></span></td>
+								</tr>																																																
+								<tr>
+									<td colspan="2"><span class="whos_tit">회사주소</span> : <span>서울시 영등포구 여의도동 19-4번지 여의도빌딩 11층</span></td>
+								</tr>
+
+								<tr>
+									<td colspan="2"><span class="whos_tit">메모</span> : <span>2005년 12월 웅진씽크빅 대표이사 사장</span></td>
+								</tr>																																																
+							</tbody>
+						</table>
+
+						<div class="tableTag">
+							<span class="ic_tag"><span>태그</span></span> 
+							<a href="#a">아이패드</a>, <a href="#a">애플</a>, <a href="#a">아이폰</a>, <a href="#a">태블릿</a>, <a href="#a">PC</a>
+							<span class="rebtn">
+								<a class="ic_modify" href="#a"><span>수정</span></a>
+							</span>
+						</div>
+
+				<!--blockButton Start-->
+				<div class="blockButton"> 
+					<ul>
+						<li><a class="button" href="#a"><span>수정</span></a></li>
+						<li><a class="button" href="#a"><span>삭제</span></a></li>
+						<li><a class="button" href="#a"><span>목록</span></a></li>
+					</ul>
+				</div>
+				<!--//blockButton End-->
+
+					</div>			
+				</div>
+				<!--//blockListTable End-->
+
+				<!--subTitle_2 Start-->
+				<div class="whosSubTitle pt10">
+					<h3>관련 사내 인물</h3>
+				</div>
+				<!--//subTitle_2 End-->
+
+				<!--expert_topList Start-->
+				<div class="whosPhotoList">
+					<div>
+						<div><a href="#a"><img src="../../images/common/temp_img_50x50_1.gif" alt="image" /></a></div>
+						<div class="textCenter mt3">김길동</div>
+					</div>
+					<div>
+						<div><a href="#a"><img src="../../images/common/temp_img_50x50_1.gif" alt="image" /></a></div>
+						<div class="textCenter mt3">김길동</div>
+					</div>
+					<div>
+						<div><a href="#a"><img src="../../images/common/temp_img_50x50_1.gif" alt="image" /></a></div>
+						<div class="textCenter mt3">김길동</div>
+					</div>
+					<div>
+						<div><a href="#a"><img src="../../images/common/temp_img_50x50_1.gif" alt="image" /></a></div>
+						<div class="textCenter mt3">김길동</div>
+					</div>
+					<div>
+						<div><a href="#a"><img src="../../images/common/temp_img_50x50_1.gif" alt="image" /></a></div>
+						<div class="textCenter mt3">김길동</div>
+					</div>
+					<div>
+						<div><a href="#a"><img src="../../images/common/temp_img_50x50_1.gif" alt="image" /></a></div>
+						<div class="textCenter mt3">김길동</div>
+					</div>
+					<div>
+						<div><a href="#a"><img src="../../images/common/temp_img_50x50_1.gif" alt="image" /></a></div>
+						<div class="textCenter mt3">김길동</div>
+					</div>
+					<div>
+						<div><a href="#a"><img src="../../images/common/temp_img_50x50_1.gif" alt="image" /></a></div>
+						<div class="textCenter mt3">김길동</div>
+					</div>
+					<div>
+						<div><a href="#a"><img src="../../images/common/temp_img_50x50_1.gif" alt="image" /></a></div>
+						<div class="textCenter mt3">김길동</div>
+					</div>
+					<div>
+						<div><a href="#a"><img src="../../images/common/temp_img_50x50_1.gif" alt="image" /></a></div>
+						<div class="textCenter mt3">김길동</div>
+					</div>
+					<div>
+						<div><a href="#a"><img src="../../images/common/temp_img_50x50_1.gif" alt="image" /></a></div>
+						<div class="textCenter mt3">김길동</div>
+					</div>
+					<div>
+						<div><a href="#a"><img src="../../images/common/temp_img_50x50_1.gif" alt="image" /></a></div>
+						<div class="textCenter mt3">김길동</div>
+					</div>
+					<div>
+						<div><a href="#a"><img src="../../images/common/temp_img_50x50_1.gif" alt="image" /></a></div>
+						<div class="textCenter mt3">김길동</div>
+					</div>
+					<div>
+						<div><a href="#a"><img src="../../images/common/temp_img_50x50_1.gif" alt="image" /></a></div>
+						<div class="textCenter mt3">김길동</div>
+					</div>
+					<div>
+						<div><a href="#a"><img src="../../images/common/temp_img_50x50_1.gif" alt="image" /></a></div>
+						<div class="textCenter mt3">김길동</div>
+					</div>
+					<div>
+						<div><a href="#a"><img src="../../images/common/temp_img_50x50_1.gif" alt="image" /></a></div>
+						<div class="textCenter mt3">김길동</div>
+					</div>
+					<div>
+						<div><a href="#a"><img src="../../images/common/temp_img_50x50_1.gif" alt="image" /></a></div>
+						<div class="textCenter mt3">김길동</div>
+					</div>
+					<div>
+						<div><a href="#a"><img src="../../images/common/temp_img_50x50_1.gif" alt="image" /></a></div>
+						<div class="textCenter mt3">김길동</div>
+					</div>
+				</div>
+				<div class="clear"></div>
+				<!--//expert_topList End-->
+
+				<!--subTitle_2 Start-->
+				<div class="whosSubTitle pt15">
+					<h3>관련 외부 인물</h3>
+				</div>
+				<!--//subTitle_2 End-->
+
+				<!--expert_topList Start-->
+				<div class="whosPhotoList">
+					<div>
+						<div><a href="#a"><img src="../../images/common/temp_img_50x50_1.gif" alt="image" /></a></div>
+						<div class="textCenter mt3">김길동</div>
+					</div>
+					<div>
+						<div><a href="#a"><img src="../../images/common/temp_img_50x50_1.gif" alt="image" /></a></div>
+						<div class="textCenter mt3">김길동</div>
+					</div>
+					<div>
+						<div><a href="#a"><img src="../../images/common/temp_img_50x50_1.gif" alt="image" /></a></div>
+						<div class="textCenter mt3">김길동</div>
+					</div>
+				</div>
+				<div class="clear"></div>
+				<!--//expert_topList End-->
+
+				<!--subTitle_2 Start-->
+				<div class="whosSubTitle pt15">
+					<h3>수정이력</h3>
+				</div>
+				<!--//subTitle_2 End-->
+
+				<!--blockListTable Start-->
+				<div class="blockListTable">
+					<table summary="수정이력 테이블">
+						<caption></caption>
+						<thead>
+							<tr>
+								<th scope="col" width="3%"><input name="" class="checkbox" title="checkbox" type="checkbox" value="" /></th>
+								<th scope="col" width="5%">버전</th>
+								<th scope="col" width="10%">수정자</th>
+								<th scope="col" width="60%">수정사유</th>
+								<th scope="col" width="15%">수정일자</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td><input name="" class="checkbox" title="checkbox" type="checkbox" value="" /></td>
+								<td>10</td>
+								<td>홍길동</td>
+								<td class="textLeft"><span class="notice"><a href="#a">반도체 클린룸 교육자료</a></span></td>
+								<td>2011.02.10</td>
+							</tr>
+							<tr class="bgSelected">
+								<td><input name="" class="checkbox" title="checkbox" type="checkbox" value="" /></td>
+								<td>9</td>
+								<td>홍길동</td>
+								<td class="textLeft"><a href="#a">신 Dbins.net 오류정리 - 금일 중 확인</a></td>
+								<td>2011.02.10</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<!--//blockListTable End-->	
+										
+				<!--blockButton Start-->
+				<div class="blockButton"> 
+					<ul>
+						<li><a class="button" href="#a"><span>적용</span></a></li>
+					</ul>
+				</div>
+				<!--//blockButton End-->
+
+				<!--layer start-->
+				<div class="layer_02" style="width:200px;">
+					<a class="layer_close" href="#a"><span>close</span></a>
+					<div>
+						<div class="microblog_img">
+							<a href="#a"><img src="../../images/common/temp_img_50x50_2.gif" alt="image" /></a>
+						</div>
+						<div class="microblog_con">
+							<ul class="whos_me">
+								<li><span class="whos_tit">이름</span> : <span>김태희</span></li>
+								<li><span class="whos_tit">부서</span> : <span>해외사업부</span></li>
+								<li><span class="whos_tit">직위</span> : <span>사원</span></li>
+								<li><span class="whos_tit">전화</span> : <span>000-0000-0000</span></li>
+								<li><span class="whos_tit">메일</span> : <span><a href="#a">kim@lgcns.com</a></span></li>
+							</ul>
+						</div>
+						<div class="corporateViewTag">
+							<span class="ic_tag"><span>태그</span></span> 
+							<a href="#a">버나뎃</a>, <a href="#a">RRS</a>, <a href="#a">스티브잡스</a>
+						</div>
+						<div class="clear"></div>
+					</div>		
+				</div>	
+				<!--layer end-->	
+
+				<!--layer start-->
+				<div class="layer_02" style="width:190px; left:500px;">
+					<a class="layer_close" href="#a"><span>close</span></a>
+					<div>
+						<div class="microblog_img">
+							<a href="#a"><img src="../../images/common/temp_img_50x50_2.gif" alt="image" /></a>
+						</div>
+						<div class="microblog_con">
+							<div class="whos_me">
+								<strong>김태희</strong>&nbsp;사원<br />
+								UC컨설팅1팀<br />
+							</div>
+							<div class="more"><img src="../../images/icon/ic_plus_s.gif" alt="" /> <a href="#a">View full Profile</a></div>
+						</div>
+						<div class="clear"></div>
+					</div>		
+				</div>	
+				<!--layer end-->	
+					
+			<!--//mainContents End-->
+			
+			</div>
+		</div>
+		<!--//blockMain End-->
+		
+	</div>
+	<!--//blockContainer End-->
+	
+		
+</div>
+<!--//wrapper End-->
+</body>
+</html>

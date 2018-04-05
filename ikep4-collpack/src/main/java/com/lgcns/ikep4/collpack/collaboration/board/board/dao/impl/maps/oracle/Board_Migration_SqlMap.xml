@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="collpack.collaboration.board.board.dao.boardMigration">
+
+	<typeAlias alias="BoardMigration" type="com.lgcns.ikep4.collpack.collaboration.board.board.model.BoardMigration"/>
+
+	<sql id="sqlColumnList">
+		MIGRATION_ID	as migrationId,
+		BOARD_ID		as boardId,
+		TARGET_WORKSPACE_ID	as targetWorkspaceId,
+		TARGET_PARENT_BOARD_ID	as targetParentBoardId,
+		REGISTER_ID		as registerId,
+		REGISTER_NAME	as registerName,
+		REGIST_DATE		as registDate
+	</sql> 
+
+
+	<select id="exists" parameterClass="Map" resultClass="int">
+		SELECT /* [Board_Migration_SqlMap.xml] collpack.collaboration.board.board.dao.boardMigration.exists */
+			COUNT(*)
+		FROM
+			IKEP4_WS_BD_BOARD
+		WHERE
+			BOARD_ID = #boardId#
+	</select>
+	<insert id="create" parameterClass="BoardMigration"> 
+	INSERT INTO /* [boardItem_SqlMap.xml] collpack.collaboration.board.board.dao.boardMigration.insert */
+	IKEP4_WS_MIGRATION
+	( 
+		MIGRATION_ID,	BOARD_ID,		TARGET_WORKSPACE_ID,	TARGET_PARENT_BOARD_ID,
+		REGISTER_ID,	REGISTER_NAME,	REGIST_DATE,			MIGRATION_STATUS
+	) VALUES (
+		#migrationId#,	#boardId#,		#targetWorkspaceId#,	#targetParentBoardId#,
+		#registerId#,	#registerName#,	sysdate,	0
+	) 
+	</insert>
+	<delete id="remove" parameterClass="String">
+		DELETE	FROM 
+			IKEP4_WS_MIGRATION /* [board_SqlMap.xml] collpack.collaboration.board.board.dao.boardMigration.remove */
+		WHERE
+			BOARD_ID = #boardId#
+	</delete>
+</sqlMap>

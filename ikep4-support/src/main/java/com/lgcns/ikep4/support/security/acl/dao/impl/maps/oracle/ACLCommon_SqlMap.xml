@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="support.user.security.acl.dao.ACLCommon">
+
+	<select id="listUserDetailPermission" parameterClass="java.util.Map" resultClass="com.lgcns.ikep4.support.user.member.model.User">
+	/* [ACLCommon_SqlMap.xml] support.user.security.acl.dao.ACLCommon.listUserDetailPermission */
+	<![CDATA[
+		SELECT
+			A.USER_ID  userId,
+			A.USER_NAME  userName,
+			A.TEAM_NAME  teamName,
+			A.USER_ENGLISH_NAME  userEnglishName,
+			A.TEAM_ENGLISH_NAME  teamEnglishName,
+			A.MAIL  mail,
+			A.MOBILE  mobile,
+			A.EMP_NO  empNo,
+			D.JOB_TITLE_NAME jobTitleName,
+			D.JOB_TITLE_ENGLISH_NAME jobTitleEnglishName
+		FROM
+			IKEP4_EV_USER A
+				JOIN IKEP4_EV_JOB_TITLE D ON A.JOB_TITLE_CODE = D.JOB_TITLE_CODE  
+		WHERE A.PORTAL_ID = #portalId#
+		  AND A.USER_ID 
+	]]>
+	<dynamic prepend="IN">
+		<iterate property="assignUserIdList" open="(" conjunction="," close=")">	
+			#assignUserIdList[]#
+		</iterate>
+	</dynamic> 
+	</select>
+	
+	<select id="listGroupDetailPermission" parameterClass="java.util.Map" resultClass="com.lgcns.ikep4.support.user.group.model.Group">
+	/* [ACLCommon_SqlMap.xml] support.user.security.acl.dao.ACLCommon.listGroupDetailPermission */
+	<![CDATA[
+		SELECT
+		    a.GROUP_ID  groupId,
+		    a.GROUP_NAME  groupName,
+		    a.GROUP_ENGLISH_NAME  groupEnglishName,
+		    b.GROUP_TYPE_NAME  groupTypeName
+		FROM
+			IKEP4_EV_GROUP a inner join 
+      		IKEP4_EV_GROUP_TYPE b on a.group_type_id = b.group_type_id
+       WHERE a.PORTAL_ID = #portalId#
+       	 AND a.GROUP_ID
+	]]>
+	<dynamic prepend="IN">
+		<iterate property="groupIdPermissionList" open="(" conjunction="," close=")">
+			#groupIdPermissionList[]#
+		</iterate>
+	</dynamic> 
+	</select>
+	
+	<select id="listRoleDetailPermission" parameterClass="java.util.Map" resultClass="com.lgcns.ikep4.support.user.role.model.Role">
+	/* [ACLCommon_SqlMap.xml] support.user.security.acl.dao.ACLCommon.listRoleDetailPermission */
+	<![CDATA[
+		SELECT
+			ROLE_ID  roleId,
+			ROLE_NAME  roleName
+		FROM
+			IKEP4_EV_ROLE
+		WHERE PORTAL_ID = #portalId#
+		  AND ROLE_ID 
+	]]>
+	<dynamic prepend="IN">
+		<iterate property="roleIdList" open="(" conjunction="," close=")">
+			#roleIdList[]#
+		</iterate>
+	</dynamic> 
+	</select>
+	
+	<select id="listJobClassDetailPermission" parameterClass="java.util.Map" resultClass="com.lgcns.ikep4.support.user.code.model.JobClass">
+	/* [ACLCommon_SqlMap.xml] support.user.security.acl.dao.ACLCommon.listJobClassDetailPermission */
+	<![CDATA[
+		SELECT
+			JOB_CLASS_CODE  jobClassCode, 
+    		JOB_CLASS_NAME  jobClassName
+		FROM
+			IKEP4_EV_JOB_CLASS
+		WHERE PORTAL_ID = #portalId#
+		  AND JOB_CLASS_CODE
+	]]>
+	<dynamic prepend="IN">
+		<iterate property="jobClassCodeList" open="(" conjunction="," close=")">
+			#jobClassCodeList[]#
+		</iterate>
+	</dynamic> 
+	</select>
+	
+	<select id="listJobDutyDetailPermission" parameterClass="java.util.Map" resultClass="com.lgcns.ikep4.support.user.code.model.JobDuty">
+	/* [ACLCommon_SqlMap.xml] support.user.security.acl.dao.ACLCommon.listJobDutyDetailPermission */
+	<![CDATA[
+		SELECT
+			JOB_DUTY_CODE  jobDutyCode,
+   			JOB_DUTY_NAME  jobDutyName
+		FROM
+			IKEP4_EV_JOB_DUTY
+		WHERE PORTAL_ID = #portalId#
+		  AND JOB_DUTY_CODE
+	]]>
+	<dynamic prepend="IN">
+		<iterate property="jobDutyCodeList" open="(" conjunction="," close=")">
+			#jobDutyCodeList[]#
+		</iterate>
+	</dynamic> 
+	</select>
+</sqlMap>

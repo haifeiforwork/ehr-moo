@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="collpack.ideation.dao.IdReference" >
+
+<typeAlias alias = "IdReference" type="com.lgcns.ikep4.collpack.ideation.model.IdReference"/>
+
+  <resultMap id="IdReferenceResult" class="IdReference" >
+    <result column="REGISTER_ID" property="registerId" />
+    <result column="REGIST_DATE" property="registDate" />
+    <result column="ITEM_ID" property="itemId"  />
+  </resultMap>
+   
+   <!-- ANSI -->
+   <insert id="create" parameterClass="IdReference" >
+    INSERT 						/* [IdReference_SqlMap.xml] collpack.ideation.dao.IdReference.create */
+    INTO IKEP4_ID_REFERENCE (
+	    REGISTER_ID
+	    , REGIST_DATE
+	    , ITEM_ID
+    ) VALUES (
+	    #registerId#
+	    , CURRENT_TIMESTAMP
+	    , #itemId#
+    )
+  </insert>
+  
+  <!-- ANSI -->
+   <select id="exists" resultClass="int" parameterClass="IdReference" >
+    SELECT 					/* [IdReference_SqlMap.xml] collpack.ideation.dao.IdReference.getCount */
+	   	 COUNT(ITEM_ID)
+    FROM IKEP4_ID_REFERENCE
+    WHERE REGISTER_ID = #registerId#
+    	AND ITEM_ID = #itemId#
+  </select>
+  
+  <!-- ANSI -->
+  <select id="list" resultMap="IdReferenceResult" parameterClass="String" >
+    SELECT					/* [IdReference_SqlMap.xml] collpack.ideation.dao.IdReference.list */
+   	 REGISTER_ID
+   	 , REGIST_DATE
+   	 , ITEM_ID
+    FROM IKEP4_ID_REFERENCE
+    WHERE ITEM_ID = #itemId#
+  </select>
+  
+  <!-- ANSI -->
+  <select id="listUserId" resultClass="String" parameterClass="String" >
+    SELECT					/* [IdReference_SqlMap.xml] collpack.ideation.dao.IdReference.listUserId */
+   	 REGISTER_ID
+    FROM IKEP4_ID_REFERENCE
+    WHERE ITEM_ID = #itemId#
+  </select>
+  
+  <!-- ANSI -->
+  <delete id="remove" parameterClass="IdReference" >
+    DELETE 					/* [IdReference_SqlMap.xml] collpack.ideation.dao.IdReference.remove */
+    FROM IKEP4_ID_REFERENCE
+    WHERE REGISTER_ID = #registerId#
+     	AND ITEM_ID = #itemId#
+  </delete>
+   
+   <!-- ANSI -->
+   <delete id="removebyItemId" parameterClass="String" >
+    DELETE 					/* [IdReference_SqlMap.xml] collpack.ideation.dao.IdReference.removebyItemId */
+    FROM IKEP4_ID_REFERENCE
+    WHERE ITEM_ID = #itemId#
+  </delete>
+  
+  
+</sqlMap>

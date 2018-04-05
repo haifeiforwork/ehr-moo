@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="socialpack.socialanalyzer.dao.sociality" >
+	<typeAlias alias = "Sociality" type="com.lgcns.ikep4.socialpack.socialanalyzer.model.Sociality"/>
+	<typeAlias alias = "SocialAnalyzerSearchCondition" type="com.lgcns.ikep4.socialpack.socialanalyzer.search.SocialAnalyzerSearchCondition"/>
+	
+	<!-- 테이블 조회 결과 -->
+	<resultMap id="socialityResult" class="Sociality">
+		<result property="userId"              column="USER_ID"               />
+		<result property="indexSociality"      column="INDEX_SOCIALITY"       />
+		<result property="indexInfluence"      column="INDEX_INFLUENCE"       />
+		<result property="indexFellowship"     column="INDEX_FELLOWSHIP"      />
+		<result property="rankSociality"       column="RANK_SOCIALITY"        />
+		<result property="rankInfluence"       column="RANK_INFLUENCE"        />
+		<result property="rankFellowship"      column="RANK_FELLOWSHIP"       />
+		<result property="followerCount"       column="FOLLOWER_COUNT"        />
+		<result property="followingCount"      column="FOLLOWING_COUNT"       />
+		<result property="bothFollowingCount"  column="BOTH_FOLLOWING_COUNT"  />
+		<result property="tweetCount"          column="TWEET_COUNT"           />
+		<result property="retweetCount"        column="RETWEET_COUNT"         />
+		<result property="blogVisitCount"      column="BLOG_VISIT_COUNT"      />
+		<result property="mblogGroupCount"     column="MBLOG_GROUP_COUNT"     />
+		<result property="guestbookCount"      column="GUESTBOOK_COUNT"       />
+		<result property="updateDate"          column="UPDATE_DATE"           />
+		<result property="userName"            column="USER_NAME"             />
+		<result property="userEnglishName"     column="USER_ENGLISH_NAME"     />
+		<result property="teamName"            column="TEAM_NAME"             />
+		<result property="teamEnglishName"     column="TEAM_ENGLISH_NAME"     />
+		<result property="jobTitleName"        column="JOB_TITLE_NAME"        />
+		<result property="jobTitleEnglishName" column="JOB_TITLE_ENGLISH_NAME"/>
+		<result property="rNum"                column="RNUM"                  />
+		<result property="topPercent"          column="TOP_PERCENT"           />
+		<result property="profileVisitCount"   column="PROFILE_VISIT_COUNT"   />
+		<result property="picturePath"           column="PICTURE_PATH"             />
+		<result property="profilePicturePath"           column="PROFILE_PICTURE_PATH"             />
+	</resultMap>
+	
+	<!-- ANSI -->
+	<insert id="create" parameterClass="Sociality"> 
+      <![CDATA[ 
+           INSERT INTO IKEP4_SN_SOCIALITY (/* [Sociality_SqlMap.xml] Sociality.create */
+           		USER_ID, INDEX_SOCIALITY, INDEX_INFLUENCE, INDEX_FELLOWSHIP, RANK_SOCIALITY, 
+				RANK_INFLUENCE, RANK_FELLOWSHIP, FOLLOWER_COUNT, FOLLOWING_COUNT, BOTH_FOLLOWING_COUNT, 
+				TWEET_COUNT, RETWEET_COUNT, BLOG_VISIT_COUNT, MBLOG_GROUP_COUNT, GUESTBOOK_COUNT, 
+				UPDATE_DATE, PROFILE_VISIT_COUNT)  
+           VALUES (#userId#, #indexSociality#, #indexInfluence#, #indexFellowship#, #rankSociality#, 
+				#rankInfluence#, #rankFellowship#, #followerCount#, #followingCount#, #bothFollowingCount#, 
+				#tweetCount#, #retweetCount#, #blogVisitCount#, #mblogGroupCount#, #guestbookCount#, 
+				CURRENT_TIMESTAMP, #profileVisitCount#)
+       ]]>
+   </insert>
+   	
+   	<!-- ANSI -->
+	<select id="get" parameterClass="java.lang.String" resultMap="socialityResult">
+	  <![CDATA[
+		   SELECT /* [Sociality_SqlMap.xml] Sociality.get */
+				  A.*,
+				  B.USER_NAME,                
+				  B.USER_ENGLISH_NAME,        
+				  B.TEAM_NAME,           
+				  B.TEAM_ENGLISH_NAME,   
+				  B.PICTURE_PATH,
+		          B.PROFILE_PICTURE_PATH,
+				  C.JOB_TITLE_NAME,       
+				  C.JOB_TITLE_ENGLISH_NAME,
+				  0 AS RNUM,
+				  '' AS TOP_PERCENT
+		     FROM IKEP4_SN_SOCIALITY A,
+		          IKEP4_EV_USER B, 
+                  IKEP4_EV_JOB_TITLE C
+		    WHERE A.USER_ID = #userId#
+		      AND A.USER_ID = B.USER_ID
+		      AND B.JOB_TITLE_CODE = C.JOB_TITLE_CODE
+		      AND B.PORTAL_ID = C.PORTAL_ID
+	   ]]>
+	</select>
+	
+	<!-- ANSI -->
+	<update id="update" parameterClass="Sociality">
+	  <![CDATA[
+		   UPDATE IKEP4_SN_SOCIALITY /* [Sociality_SqlMap.xml] Sociality.update */ 
+		      SET INDEX_SOCIALITY      = #indexSociality#,    
+				  INDEX_INFLUENCE      = #indexInfluence#,    
+				  INDEX_FELLOWSHIP     = #indexFellowship#,   
+				  RANK_SOCIALITY       = #rankSociality#,     
+				  RANK_INFLUENCE       = #rankInfluence#,     
+				  RANK_FELLOWSHIP      = #rankFellowship#,    
+				  FOLLOWER_COUNT       = #followerCount#,     
+				  FOLLOWING_COUNT      = #followingCount#,    
+				  BOTH_FOLLOWING_COUNT = #bothFollowingCount#,
+				  TWEET_COUNT          = #tweetCount#,        
+				  RETWEET_COUNT        = #retweetCount#,      
+				  BLOG_VISIT_COUNT     = #blogVisitCount#,    
+				  MBLOG_GROUP_COUNT    = #mblogGroupCount#,   
+				  GUESTBOOK_COUNT      = #guestbookCount#,
+				  UPDATE_DATE          = CURRENT_TIMESTAMP,
+				  PROFILE_VISIT_COUNT  = #profileVisitCount#
+		    WHERE USER_ID = #userId#
+	   ]]>
+	</update>
+   
+   <!-- ANSI -->
+   <delete id="remove" parameterClass="java.lang.String">
+      <![CDATA[
+	       DELETE FROM IKEP4_SN_SOCIALITY /* [Sociality_SqlMap.xml] Sociality.remove */ 
+	        WHERE USER_ID = #userId#
+	   ]]>
+	</delete>
+	
+	<!-- ANSI -->
+	<select id="count" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+	  <![CDATA[
+		   SELECT /* [Sociality_SqlMap.xml] Sociality.count */ 
+		   		  COUNT(1) 
+		     FROM IKEP4_SN_SOCIALITY 
+		    WHERE USER_ID = #userId#
+	   ]]>
+	</select>
+	
+	<!-- MS SQL -->
+	<!-- //랭킹 조회 검색수 -->
+	<select id="countSociality" parameterClass="SocialAnalyzerSearchCondition" resultClass="java.lang.Integer">
+	  <![CDATA[
+		   SELECT /* [Sociality_SqlMap.xml] Sociality.countSociality */ 
+		   		  COUNT(1)
+		     FROM IKEP4_SN_SOCIALITY A
+		          INNER JOIN IKEP4_EV_USER B 
+		          	ON A.USER_ID = B.USER_ID
+                  INNER JOIN IKEP4_EV_JOB_TITLE C
+                  	ON B.JOB_TITLE_CODE = C.JOB_TITLE_CODE
+		      		AND B.PORTAL_ID = C.PORTAL_ID
+	  ]]>
+			<isNotEmpty property="searchText">
+	  <![CDATA[ 
+			  AND (B.USER_NAME LIKE '%' + #searchText# + '%' OR B.USER_ENGLISH_NAME LIKE '%' + #searchText# + '%')
+	  ]]> 
+			</isNotEmpty>
+	</select>
+   
+    <!-- MS SQL -->
+    <!-- //랭킹 조회 검색 -->
+	<select id="listSociality" parameterClass="SocialAnalyzerSearchCondition" resultMap="socialityResult">
+	  <![CDATA[
+		   SELECT /* [Sociality_SqlMap.xml] Sociality.listSociality */
+	       		  *
+			 FROM (SELECT 
+			 			  A.* 
+	     			 FROM (/* START========================================= */		   
+						   SELECT Row_number() OVER (	]]>
+						   								<isEqual property="sortType" compareValue="A">
+												   		<![CDATA[ 
+													   		ORDER BY A.INDEX_SOCIALITY DESC
+												    	]]>
+														</isEqual>
+									  					<isEqual property="sortType" compareValue="B">
+												   		<![CDATA[ 
+													   		ORDER BY A.INDEX_SOCIALITY ASC
+												    	]]>
+														</isEqual>
+									  					<isEqual property="sortType" compareValue="C">
+												   		<![CDATA[ 
+													   		ORDER BY A.INDEX_INFLUENCE DESC
+												    	]]>
+														</isEqual>
+									  					<isEqual property="sortType" compareValue="D">
+												   		<![CDATA[ 
+													   		ORDER BY A.INDEX_INFLUENCE ASC
+												    	]]>
+														</isEqual>
+									  					<isEqual property="sortType" compareValue="E">
+												   		<![CDATA[ 
+													   		ORDER BY A.INDEX_FELLOWSHIP DESC
+												    	]]>
+														</isEqual>
+									  					<isEqual property="sortType" compareValue="F">
+												   		<![CDATA[ 
+													   		ORDER BY A.INDEX_FELLOWSHIP ASC
+												    	]]>
+														</isEqual>) AS RNUM,
+														<![CDATA[ 
+						   		  A.*,
+								  B.USER_NAME,                
+								  B.USER_ENGLISH_NAME,        
+								  B.TEAM_NAME,           
+								  B.TEAM_ENGLISH_NAME,   
+								  B.PICTURE_PATH,
+		          				  B.PROFILE_PICTURE_PATH,
+								  C.JOB_TITLE_NAME,       
+								  C.JOB_TITLE_ENGLISH_NAME,
+								  'TOP ' + CONVERT(NVARCHAR, ROUND(CONVERT(FLOAT, A.RANK_SOCIALITY)*100/#recordCount#, 2)) + '%' AS TOP_PERCENT
+						     FROM IKEP4_SN_SOCIALITY A
+						          INNER JOIN IKEP4_EV_USER B
+						          	ON A.USER_ID = B.USER_ID
+				                  INNER JOIN IKEP4_EV_JOB_TITLE C
+				                  	ON B.JOB_TITLE_CODE = C.JOB_TITLE_CODE
+						      		AND B.PORTAL_ID = C.PORTAL_ID
+	  ]]>
+					   	<isNotEmpty property="searchText">
+	  					<![CDATA[ 
+					  	  	  AND (B.USER_NAME LIKE '%' + #searchText# + '%' OR B.USER_ENGLISH_NAME LIKE '%' + #searchText# + '%')
+	  					]]> 
+						</isNotEmpty>
+	<![CDATA[ 
+			 			   /* ===========================================END  */
+						 ) A
+	       		   WHERE RNUM <= #endRowIndex# /* 종료  */
+				  ) TBL
+			WHERE RNUM > #startRowIndex# /* 시작 */
+	  ]]>
+	</select>
+	
+	<!-- MS SQL -->
+	<!-- //나의 랭킹 -->
+	<select id="getMyRanking" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+	  <![CDATA[
+		   SELECT /* [Sociality_SqlMap.xml] Sociality.getMyRanking */
+				  ISNULL((SELECT RANK_SOCIALITY FROM IKEP4_SN_SOCIALITY WHERE USER_ID = #userId#),
+				  	  (SELECT COUNT(1)+1 FROM IKEP4_SN_SOCIALITY)
+					 )
+	   ]]>
+	</select>
+	
+	<!-- //배치 -->
+	<procedure id="batchSociality"> 
+		exec dbo.IKEP4_SN_CALC_SOCIALITY 
+	</procedure> 
+</sqlMap>

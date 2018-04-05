@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="support.user.code.dao.OperationCode" >
+	<typeAlias alias = "OperationCode" type="com.lgcns.ikep4.support.user.code.model.OperationCode"/>
+	<typeAlias alias = "SearchCondition" type="com.lgcns.ikep4.support.user.code.model.AdminSearchCondition"/>
+
+	<resultMap id="result" class="OperationCode">
+		<result property="operationId" column="OPERATION_ID" columnIndex="1"/>
+		<result property="operationName" column="OPERATION_NAME" columnIndex="2"/>
+		<result property="description" column="DESCRIPTION" columnIndex="3"/>
+		<result property="registerId" column="REGISTER_ID" columnIndex="4"/>
+		<result property="registerName" column="REGISTER_NAME" columnIndex="5"/>
+		<result property="updaterId" column="UPDATER_ID" columnIndex="6"/>
+		<result property="updaterName" column="UPDATER_NAME" columnIndex="7"/>
+		<result property="registDate" column="REGIST_DATE" columnIndex="8"/>
+		<result property="updateDate" column="UPDATE_DATE" columnIndex="9"/>
+		<result property="num" column="NUM" columnIndex="10"/>
+	</resultMap>
+	
+	<resultMap id="getResult" class="OperationCode">
+		<result property="operationId" column="OPERATION_ID" columnIndex="1"/>
+		<result property="operationName" column="OPERATION_NAME" columnIndex="2"/>
+		<result property="description" column="DESCRIPTION" columnIndex="3"/>
+		<result property="registerId" column="REGISTER_ID" columnIndex="4"/>
+		<result property="registerName" column="REGISTER_NAME" columnIndex="5"/>
+		<result property="updaterId" column="UPDATER_ID" columnIndex="6"/>
+		<result property="updaterName" column="UPDATER_NAME" columnIndex="7"/>
+		<result property="registDate" column="REGIST_DATE" columnIndex="8"/>
+		<result property="updateDate" column="UPDATE_DATE" columnIndex="9"/>
+	</resultMap>
+	
+	<!-- 신규 등록 -->
+	<insert id="insert" parameterClass="OperationCode"> 
+	<![CDATA[
+		INSERT INTO /* [OperationCode_SqlMap.xml] support.user.code.dao.OperationCode.insert */
+			IKEP4_EV_OPERATION (
+			OPERATION_ID, 
+			OPERATION_NAME, 
+			DESCRIPTION,
+			REGISTER_ID, 
+			REGISTER_NAME,
+			UPDATER_ID, 
+			UPDATER_NAME,
+			REGIST_DATE, 
+			UPDATE_DATE)
+		VALUES ( 
+			#operationId#,
+			#operationName#,
+			#description#,
+		    #registerId#,
+		    #registerName#,
+		    #updaterId#,
+		    #updaterName#,
+		    SYSDATE, 
+		    SYSDATE)
+	]]>
+   </insert>
+   
+   <!-- 상세정보 -->
+	<select id="select" parameterClass="java.lang.String" resultMap="getResult">
+	<![CDATA[
+		SELECT /* [OperationCode_SqlMap.xml] support.user.code.dao.OperationCode.select */
+		    OPERATION_ID,
+		    OPERATION_NAME,
+		    DESCRIPTION,
+		    REGISTER_ID,
+		    REGISTER_NAME,
+		    UPDATER_ID,
+		    UPDATER_NAME,
+		    REGIST_DATE,
+		    UPDATE_DATE
+		FROM 
+		    IKEP4_EV_OPERATION
+		WHERE
+			OPERATION_ID = #operationId#
+	]]>
+	</select>
+	
+	<!-- 기존 정보 수정 -->
+	<update id="update" parameterClass="OperationCode">
+	<![CDATA[
+		UPDATE /* [OperationCode_SqlMap.xml] support.user.code.dao.OperationCode.update */
+			IKEP4_EV_OPERATION
+		SET
+			OPERATION_NAME = #operationName#,
+			DESCRIPTION = #description#,
+			UPDATER_ID = #updaterId#,
+			UPDATER_NAME = #updaterName#,
+			UPDATE_DATE = SYSDATE
+		WHERE
+			OPERATION_ID = #operationId#
+	]]>
+	</update>
+   
+	<!-- 삭제 -->
+	<delete id="delete" parameterClass="java.lang.String">
+	<![CDATA[
+		DELETE /* [OperationCode_SqlMap.xml] support.user.code.dao.OperationCode.delete */
+		FROM IKEP4_EV_OPERATION
+		WHERE
+			OPERATION_ID = #operationId#
+	]]>
+	</delete>
+	
+	<!-- 목록 가져오기 -->
+	<select id="selectAll" parameterClass="SearchCondition" resultMap="result">
+	<![CDATA[
+		SELECT /* [OperationCode_SqlMap.xml] support.user.code.dao.OperationCode.selectAll */
+		    *
+		FROM 
+		( 
+		    SELECT 
+		        ROWNUM AS NUM, 
+		        A.* 
+		    FROM 
+		    ( 
+				SELECT 
+				    A.OPERATION_ID AS OPERATION_ID,
+				    B.ITEM_MESSAGE AS OPERATION_NAME,
+				    A.DESCRIPTION AS DESCRIPTION,
+				    A.REGISTER_ID AS REGISTER_ID,
+				    A.REGISTER_NAME AS REGISTER_NAME,
+				    A.UPDATER_ID AS UPDATER_ID,
+				    A.UPDATER_NAME AS UPDATER_NAME,
+				    A.REGIST_DATE AS REGIST_DATE,
+				    A.UPDATE_DATE AS UPDATE_DATE
+				FROM 
+				    IKEP4_EV_OPERATION A
+				    JOIN IKEP4_I18N_MESSAGE B
+				    ON A.OPERATION_ID = B.ITEM_ID
+				    AND B.FIELD_NAME = #fieldName#
+				    AND B.LOCALE_CODE = #userLocaleCode#
+		        WHERE 1 = 1
+	]]>
+		<isNotEmpty property="searchWord">
+			<isEqual property="searchColumn" compareValue="title">
+				AND	UPPER(OPERATION_NAME) LIKE '%' || UPPER(#searchWord#) || '%'
+			</isEqual>
+			<isEqual property="searchColumn" compareValue="id">
+				AND	OPERATION_ID LIKE '%' || #searchWord# || '%'
+			</isEqual>
+		</isNotEmpty>
+	    <isNotNull property="sortColumn">
+			<isEqual property="sortColumn" compareValue="OPERATION_ID">
+				<isEqual property="sortType" compareValue="ASC">
+					ORDER BY OPERATION_ID ASC
+				</isEqual>
+				<isEqual property="sortType" compareValue="DESC">
+					ORDER BY OPERATION_ID DESC
+				</isEqual>
+			</isEqual>
+			<isEqual property="sortColumn" compareValue="OPERATION_NAME">
+				<isEqual property="sortType" compareValue="ASC">
+					ORDER BY OPERATION_NAME ASC
+				</isEqual>
+				<isEqual property="sortType" compareValue="DESC">
+					ORDER BY OPERATION_NAME DESC
+				</isEqual>
+			</isEqual>
+		</isNotNull>
+		<isNull property="sortColumn">
+			ORDER BY REGIST_DATE DESC, OPERATION_ID ASC
+		</isNull>
+	<![CDATA[
+		    ) A 
+		    WHERE ROWNUM <=  #endRowIndex# /* 종료  */
+		) 
+		WHERE NUM >  #startRowIndex# /* 시작 */
+	]]>
+	</select>
+
+	<select id="selectCount" parameterClass="SearchCondition" resultClass="int">
+	<![CDATA[
+		SELECT /* [OperationCode_SqlMap.xml] support.user.code.dao.OperationCode.selectCount */ 
+			COUNT(*)
+		FROM 
+			IKEP4_EV_OPERATION A
+		    JOIN IKEP4_I18N_MESSAGE B
+		    ON A.OPERATION_ID = B.ITEM_ID
+		    AND B.FIELD_NAME = #fieldName#
+		    AND B.LOCALE_CODE = #userLocaleCode#
+        WHERE 1 = 1
+	]]>
+		<isNotEmpty property="searchWord">
+			<isEqual property="searchColumn" compareValue="title">
+				AND	UPPER(A.OPERATION_NAME) LIKE '%' || UPPER(#searchWord#) || '%'
+			</isEqual>
+			<isEqual property="searchColumn" compareValue="id">
+				AND	A.OPERATION_ID LIKE '%' || #searchWord# || '%'
+			</isEqual>
+		</isNotEmpty>
+	</select>
+	
+	<select id="checkId" parameterClass="java.lang.String" resultClass="java.lang.String">
+	<![CDATA[
+		SELECT /* [OperationCode_SqlMap.xml] support.user.code.dao.OperationCode.checkId */
+			COUNT(OPERATION_ID)
+		FROM
+			IKEP4_EV_OPERATION
+		WHERE
+			OPERATION_ID = #operationId#	
+	]]>
+	</select>
+		
+</sqlMap>

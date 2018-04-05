@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="com.lgcns.ikep4.approval.admin.dao.ApprAdminConfig" >
+	<typeAlias alias="apprAdminConfig" type="com.lgcns.ikep4.approval.admin.model.ApprAdminConfig"/>
+	
+	<insert id="adminConfigCreate" parameterClass="apprAdminConfig"> 
+      <![CDATA[ 
+           INSERT INTO IKEP4_APPR_CONFIG 
+           		  (CONFIG_ID, IS_REFERENCE, IS_RESERVATION, IS_ARBITRARY_DECISION, 
+           		   IS_PASSWORD, IS_OVERALL, IS_EXAM, IS_REF_MSG, IS_RECEIVE, IS_USE_SIGN, IS_UPDATE_LINE,
+           		   IS_UPDATE_DOC, IS_UPDATE_READ, IS_CANCEL, RECEPTION_TYPE ,
+           	       REGISTER_ID, REGISTER_NAME, REGIST_DATE, UPDATER_ID, UPDATER_NAME, UPDATE_DATE,
+           	       IS_POST_APPROVAL, IS_PRE_VIEW, IS_MESSAGE_OPEN, DOC_NO_METHOD, PORTAL_ID, IS_READ_ALL,LINE_VIEW_TYPE
+           	       )
+           VALUES (#configId#, #isReference#, #isReservation#, #isArbitraryDecision#, 
+           		   #isPassword#, #isOverall#, #isExam#, #isRefMsg#, #isReceive#, #isUseSign#, #isUpdateLine#, 
+           		   #isUpdateDoc#, #isUpdateRead#, #isCancel#, #receptionType#, 
+           		   #registerId#, #registerName#, GETDATE(), 
+           		   #registerId#, #registerName#, GETDATE(),
+           		   #isPostApproval#,#isPreView#,#isMessageOpen#,#docNoMethod#, #portalId#, #isReadAll#,#lineViewType#
+           		   )
+       ]]>
+  	</insert>
+	
+	<update id="adminConfigUpdate" parameterClass="apprAdminConfig">
+	  <![CDATA[
+		   	UPDATE 	IKEP4_APPR_CONFIG 
+		   	SET 	IS_REFERENCE 			= #isReference# 	
+		   		  , IS_RESERVATION  		= #isReservation#
+		   		  , IS_ARBITRARY_DECISION 	= #isArbitraryDecision#
+		   		  , IS_PASSWORD 			= #isPassword#
+		   		  , IS_OVERALL 				= #isOverall#
+		   		  ,	IS_EXAM 				= #isExam#
+		   		  ,	IS_REF_MSG 				= #isRefMsg#
+		   		  ,	IS_RECEIVE 				= #isReceive#
+		   		  ,	IS_USE_SIGN 			= #isUseSign#
+		   		  ,	IS_UPDATE_LINE 			= #isUpdateLine#
+		   		  ,	IS_UPDATE_DOC 			= #isUpdateDoc#
+		   		  ,	IS_UPDATE_READ 			= #isUpdateRead#
+		   		  ,	IS_CANCEL 				= #isCancel#
+		   		  ,	RECEPTION_TYPE 			= #receptionType#
+		   		  ,	UPDATER_ID 				= #registerId#
+			   	  , UPDATE_DATE 			= GETDATE() 
+			   	  , IS_POST_APPROVAL		= #isPostApproval#
+			   	  , IS_PRE_VIEW				= #isPreView#
+			   	  , IS_MESSAGE_OPEN			= #isMessageOpen#
+			   	  , DOC_NO_METHOD			= #docNoMethod#
+			   	  , IS_READ_ALL				= #isReadAll#
+			   	  , LINE_VIEW_TYPE			= #lineViewType#
+		   	WHERE 	CONFIG_ID 				= #configId#
+		   	  AND   PORTAL_ID 				= #portalId#
+	   ]]>
+	</update>
+	
+	<select id="adminConfigDetail" parameterClass="java.lang.String" resultClass="apprAdminConfig">
+	  <![CDATA[
+		   	SELECT  CONFIG_ID configId,
+		   			IS_REFERENCE isReference,
+		   			IS_RESERVATION isReservation,
+		   			IS_ARBITRARY_DECISION isArbitraryDecision,
+		   			IS_PASSWORD isPassword,
+		   			IS_OVERALL isOverall,
+		   			IS_EXAM isExam,
+		   			IS_REF_MSG isRefMsg,
+		   			IS_RECEIVE isReceive,
+		   			IS_USE_SIGN isUseSign,
+		   			IS_UPDATE_LINE isUpdateLine,
+		   			IS_UPDATE_DOC isUpdateDoc,
+		   			IS_UPDATE_READ isUpdateRead,
+		   			IS_CANCEL isCancel,
+		   			RECEPTION_TYPE receptionType,
+		   			IS_POST_APPROVAL isPostApproval, 
+		   			IS_PRE_VIEW isPreView, 
+		   			IS_MESSAGE_OPEN isMessageOpen, 
+		   			DOC_NO_METHOD docNoMethod,
+		   			IS_READ_ALL isReadAll,
+		   			LINE_VIEW_TYPE lineViewType
+			FROM 	IKEP4_APPR_CONFIG
+			WHERE 	PORTAL_ID 				= #portalId#
+	   ]]>
+	</select>
+	
+	
+</sqlMap>

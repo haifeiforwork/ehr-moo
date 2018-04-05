@@ -1,0 +1,399 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ko">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>iKEP 4.00</title>
+<link rel="stylesheet" type="text/css" href="../../css/theme01/jquery_ui_custom.css" />
+<link rel="stylesheet" type="text/css" href="../../css/common.css" />
+<link rel="stylesheet" type="text/css" href="../../css/theme01/theme.css" />
+<script type="text/javascript" src="../../js/jquery/jquery-1.6.2.min.js"></script>
+<script type="text/javascript" src="../../js/jquery/jquery-ui-1.8.13.min.without.datepicker.js"></script>
+<script type="text/javascript" src="../../js/jquery/plugins.pack.js"></script>
+<script type="text/javascript" src="../../js/langResource/ko.js"></script>
+<script type="text/javascript" src="../../js/common.pack.js"></script>
+<script type="text/javascript">
+(function($) {
+	$(document).ready(function() {	
+		// left menu setting
+		iKEP.setLeftMenu();		
+	});
+})(jQuery);
+</script>
+<script type="text/javascript">
+<!--
+var unselect;
+(function($){
+	
+	$(document).ready(function() {
+		
+		$("#categorys").sortable({			
+			start: function(e,ui){
+				clearSelect();
+            },
+			stop: function(e,ui){
+				sortArray();
+            },
+            placeholder: "ui-state-highlight",
+			revert:true
+		});
+		
+		$("#categorys > li").live({
+		    "click" : function(event){
+		    	selectItem(event.target);
+		    }
+		});
+		
+		$( "#categorys" ).disableSelection();
+		
+		$("#btnAdd").click(function() {
+			clearSelect();
+			addCatetory();
+		});
+		
+		$("#btnModify").click(function() {
+			modifyCatetory();
+		});
+		
+		$("#btnDelete").click(function() {
+			deleteCatetory();
+		});
+		
+		$("#btnCancel").click(function() {
+			clearSelect();
+			dialog.dialog("close");
+		});
+		
+		$.template("tmplCategoryOrder", '<li class="ui-state-default">${id}</li>');
+		$.template("tmplCategoryItem", '<li class="ui-state-default" id="${id}"><span class="ui-icon ui-icon-arrowthick-2-n-s" name="${name}"></span>${name}</li>');
+		$.template("tmplCategoryName", '<span class="ui-icon ui-icon-arrowthick-2-n-s" name="${name}"></span>${name}');
+		
+		$("#btnSave").click(function() {
+			var categoryName = $("input[name=name]", "#divCategoryItemControll").val();
+			var lastCnt = $(".orderBox li:last-child").text();
+			lastCnt++;
+			switch(categoryItemAction) {
+				case "add" :
+					//ajax : save
+					
+					// ajax success callback process					
+					var data = {id:lastCnt, name:categoryName};
+					$(".orderBox").append($.tmpl("tmplCategoryOrder",data));
+					$("#categorys").append($.tmpl("tmplCategoryItem",data));					
+					break;
+				case "modify" :
+					//ajax : save
+					var data = {name:categoryName};
+					$("#"+currCategoryId).empty();
+					$("#"+currCategoryId).append($.tmpl("tmplCategoryName",data));
+					clearSelect();
+					break;
+			}
+			
+			$("#divCategoryItemControll").dialog("close");
+		});
+		
+	});
+		
+	sortArray = function(){		
+		$("#categorys").sortable("refresh");
+		iKEP.debug($("#categorys").sortable("serialize"));
+		var result = $("#categorys").sortable("toArray");
+		alert("drop or delete 종료 후 " + result);
+	}
+	
+	selectItem = function(item) {
+		unselect();
+		if(isToggle(item)){
+			clearSelect();
+		}else{
+			$(item).addClass("ui-selected");
+			currCategoryId = $(item).attr("id");
+			showBtn();
+		}
+	}
+	
+	isToggle = function(item){		
+		if(currCategoryId == null){
+			return false;			
+		}else{
+			if(currCategoryId == $(item).attr("id")){
+				return true;
+			}else{
+				return false;
+			}
+		}
+	}
+	
+	showBtn = function(){
+		$("#modifyLi").show();
+		$("#deleteLi").show();
+	}
+	
+	hideBtn = function(){
+		$("#modifyLi").hide();
+		$("#deleteLi").hide();
+	}
+	
+	unselect = function() {		
+		$("#categorys > li").removeClass("ui-selected");
+	}
+	
+	addCatetory = function(){
+		showCategoryItemDialog("add");
+	}
+	
+	modifyCatetory = function(){
+		showCategoryItemDialog("modify");
+	}
+	
+	deleteCatetory = function(){
+		$("#"+currCategoryId).remove();
+		$(".orderBox li:last-child").remove();
+		alert("id = " + currCategoryId + " 삭제");
+		sortArray();
+	}
+	
+	clearSelect = function(){
+		currCategoryId = null;
+		unselect();
+		hideBtn();
+	}
+	
+	var currCategoryId = null;
+	var dialog = null;
+	var categoryItemAction = "";
+	function showCategoryItemDialog(flag) {
+		categoryItemAction = flag;
+		var dialogTitle = categoryItemAction == "add" ? "Category 등록" : "Category 수정";
+		
+		if(dialog == null) {
+			dialog = $("#divCategoryItemControll").dialog({
+				title : dialogTitle,
+				modal : true,
+				resizable : false,
+				width : 400,
+				height : 130,
+				open : function() {
+					switch(categoryItemAction) {
+						case "add" :
+							$("input[name=name]", this).val("");
+							break;
+						case "modify" :
+							var categoryName = $("#"+currCategoryId+" span:first-child").attr("name");
+							$("input[name=name]", this).val(categoryName);
+							break;
+					}
+				}
+			});
+		} else {
+			if(dialog.dialog("isOpen")) dialog.dialog("close");
+			
+			dialog.dialog("option", "title", dialogTitle)
+				.dialog("open");
+			
+		}
+		
+	}
+	
+})(jQuery);
+-->
+</script>
+</head>
+
+<body>
+
+<!--skipNavigation Start-->
+<div id="skipNavigation">
+	<p><a href="#topInfo">헤더정보영역 바로가기</a></p>
+	<p><a href="#topMenu">탑메뉴 바로가기</a></p>	
+	<p><a href="#blockHeaderSub">퀵메뉴 바로가기</a></p>
+	<p><a href="#leftMenu">레프트메뉴 바로가기</a></p>	
+	<p><a href="#mainContents">컨텐츠영역 바로가기</a></p>	
+</div>
+<!--//skipNavigation End-->
+
+<!--wrapper Start-->
+<div id="wrapper">
+
+	<!--blockContainer Start-->
+	<div id="blockContainer">
+
+		<!--blockHeader Start-->
+		<div id="blockHeader">	
+		
+			<!--topInfo Start-->	
+			<div id="topInfo">
+				<h1 class="none">헤더정보영역</h1>
+				<div id="topLogo">
+					<a href="#a"><img src="../../images/common/logo.png" alt="iKEP Logo" /></a>
+				</div>
+			</div>
+			<!--//topInfo End-->
+						
+			<!--topMenu Start-->
+			<div id="topMenu">
+				<h1 class="none">탑메뉴</h1>			
+			</div>
+			<!--//topMenu End-->		
+
+			<!--blockHeaderSub Start-->
+			<div id="blockHeaderSub">
+				<h1 class="none">퀵메뉴</h1>		
+			</div>
+			<!--//blockHeaderSub End-->
+										
+		</div>
+		<!--//blockHeader End-->
+		
+		<!--blockMain Start-->
+		<div id="blockMain">
+
+			<!--leftMenu Start-->
+			<div id="leftMenu" class="leftMenu_QnA">
+				<h1 class="none">레프트메뉴</h1>	
+				<h2>Q&amp;A</h2>
+				<div class="left_fixed">
+					<div class="myqna">
+						<div><img src="../../images/icon/ic_per_03.gif" alt="" /> <a href="#a">나의 질문 : <span class="myqna_num">14</span></a></div>
+						<div><img src="../../images/icon/ic_per_04.gif" alt="" /> <a href="#a">나의 답변 : <span>2</span></a></div>
+					</div>				
+					<ul>		
+						<li class="liFirst no_child"><a href="#a">긴급질문</a></li>
+						<li class="no_child"><a href="#a">미해결질문</a></li>
+						<li class="no_child"><a href="#a">Best Q&amp;A</a></li>
+						<li class="opened licurrent"><a href="#a">Category</a>
+							<ul class="qnalist_sub">
+								<li class="qnalist"><a href="#a">생산</a></li>
+								<li class="qnalist"><a href="#a">마케팅</a></li>
+								<li class="qnalist"><a href="#a">인사/노무</a></li>
+								<li class="qnalist"><a href="#a">IT</a></li>
+								<li class="qnalist"><a href="#a">신기술</a></li>
+								<li class="qnalist"><a href="#a">SW공학</a></li>
+								<li class="qnalist licurrent"><a href="#a">모바일 플랫폼</a></li>
+								<li class="qnalist"><a href="#a">어학학습</a></li>
+								<li class="liLast qnalist"><a href="#a">경제/재테크</a></li>
+							</ul>	
+						</li>
+						<li class="opened"><a href="#a">Administration</a>
+							<ul>
+								<li class="liLast no_child"><a href="#a">Category 관리</a></li>
+							</ul>
+						</li>				
+					</ul>
+				</div>
+			</div>	
+			<!--//leftMenu End-->
+				
+			<!--mainContents Start-->
+			<div id="mainContents" >
+				<h1 class="none">컨텐츠영역</h1>
+
+				<!--pageTitle Start-->
+				<div id="pageTitle">
+					<h2>Category 관리</h2>
+				</div>
+				<!--//pageTitle End-->
+				
+				<!--blockDetail Start-->	
+				<div class="blockDetail clear">
+					<table summary="Category 관리 테이블">
+						<caption></caption>
+						<tbody>
+							<tr>
+								<th scope="col" width="18%" class="textCenter">순번</th>
+								<th scope="col" width="*" class="textCenter">Category명</th>
+							</tr>
+						</tbody>						
+					</table>
+					<div style="min-width:700px;width:100%;">
+						<div style="float:left;width:18%;">
+							<ul class="orderBox">
+								<li class="ui-state-default">1</li>
+								<li class="ui-state-default">2</li>
+								<li class="ui-state-default">3</li>
+								<li class="ui-state-default">4</li>
+								<li class="ui-state-default">5</li>
+								<li class="ui-state-default">6</li>
+								<li class="ui-state-default">7</li>
+								<li class="ui-state-default">8</li>
+							</ul>
+						</div>
+						<div style="float:left;width:82%;">
+							<ul class="list-selectable" id="categorys">
+								<li class="ui-state-default" id="categoryId_1"><span class="ui-icon ui-icon-arrowthick-2-n-s" name="생산"></span>생산</li>
+								<li class="ui-state-default" id="categoryId_2"><span class="ui-icon ui-icon-arrowthick-2-n-s" name="마케팅"></span>마케팅</li>
+								<li class="ui-state-default" id="categoryId_3"><span class="ui-icon ui-icon-arrowthick-2-n-s" name="인사/노무"></span>인사/노무</li>
+								<li class="ui-state-default" id="categoryId_4"><span class="ui-icon ui-icon-arrowthick-2-n-s" name="IT/신기술"></span>IT/신기술</li>
+								<li class="ui-state-default" id="categoryId_5"><span class="ui-icon ui-icon-arrowthick-2-n-s" name="모바일 플랫폼"></span>모바일 플랫폼</li>
+								<li class="ui-state-default" id="categoryId_6"><span class="ui-icon ui-icon-arrowthick-2-n-s" name="재무/회계"></span>재무/회계</li>
+								<li class="ui-state-default" id="categoryId_7"><span class="ui-icon ui-icon-arrowthick-2-n-s" name="경제/재테크"></span>경제/재테크</li>
+								<li class="ui-state-default" id="categoryId_8"><span class="ui-icon ui-icon-arrowthick-2-n-s" name="SW공학"></span>SW공학</li>
+							</ul>
+						</div>
+						<div class="clear"></div>
+					</div>
+				</div>
+				<!--//blockDetail End-->	
+														
+				<!--blockButton Start-->
+				<div class="blockButton"> 
+					<ul>
+						<li><a id="btnAdd" class="button" href="#a"><span>등록</span></a></li>
+						<li id="modifyLi" style="display:none;"><a id="btnModify" class="button" href="#a"><span>수정</span></a></li>
+						<li id="deleteLi" style="display:none;"><a id="btnDelete" class="button" href="#a"><span>삭제</span></a></li>							
+					</ul>
+				</div>
+				<!--//blockButton End-->						
+
+				<!--directive Start-->
+				<div class="directive"> 
+					<ul>
+						<li><span>Category 목록은 Drag &amp; Drop으로 이동할 수 있습니다.</span></li>																		
+					</ul>
+				</div>
+				<!--//directive End-->					
+			</div>
+			<!--//mainContents End-->
+			<div class="clear"></div>
+		</div>
+		<!--//blockMain End-->
+		
+	</div>
+	<!--//blockContainer End-->
+		
+</div>
+<!--//wrapper End-->
+<div id="divCategoryItemControll" style="display:none;">
+	<form action="">
+		<!--blockDetail Start-->
+		<div class="blockDetail">
+			<table summary="Category 등록">
+				<caption></caption>
+				<tbody>
+					<tr>
+						<th scope="row" width="28%">Category 명</th>
+						<td width="*">
+							<input name="name" title="Category" class="inputbox w95" type="text" />
+						</td>
+					</tr>						
+				</tbody>
+			</table>
+		</div>
+		<!--//blockDetail End-->
+		
+		<!--tableBottom Start-->
+		<div class="tableBottom">										
+			<!--blockButton Start-->
+			<div class="blockButton"> 
+				<ul>
+					<li><a id="btnSave" class="button" href="#a"><span>저장</span></a></li>
+					<li><a id="btnCancel" class="button" href="#a"><span>취소</span></a></li>
+				</ul>
+			</div>
+			<!--//blockButton End-->
+		</div>
+		<!--//tableBottom End-->
+	</form>
+</div>
+</body>
+</html>

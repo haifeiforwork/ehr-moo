@@ -1,0 +1,234 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ko">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>iKEP 4.00</title>
+<link rel="stylesheet" type="text/css" href="../../css/theme01/jquery_ui_custom.css" />
+<link rel="stylesheet" type="text/css" href="../../css/common.css" />
+<link rel="stylesheet" type="text/css" href="../../css/theme01/theme.css" />
+<script type="text/javascript" src="../../js/jquery/jquery-1.6.2.min.js"></script>
+<script type="text/javascript" src="../../js/jquery/jquery-ui-1.8.13.min.without.datepicker.js"></script>
+<script type="text/javascript" src="../../js/langResource/ko.js"></script>
+<script type="text/javascript" src="../../js/common.pack.js"></script>
+<script type="text/javascript">
+(function($) {
+	$(document).ready(function() {	
+		// left menu setting
+		iKEP.setLeftMenu();		
+	});
+})(jQuery);
+</script>
+<script type="text/javascript"> 
+<!--
+ 
+(function($) {
+		
+	$(document).ready(function () {
+	
+		/** 상당 메뉴 스크립트 시작 **/
+		var mainMenu = $("#topMenu");
+		var menuItems = mainMenu.children("ul").children("li");
+		var width = (menuItems.length * $(menuItems[0]).outerWidth());
+		mainMenu.css({width:width + "px"});
+		
+		menuItems.bind("mouseenter mouseleave", function(event) {
+			switch(event.type) {
+				case "mouseenter" : $(this).children("ul").show(); break;
+				case "mouseleave" : $(this).children("ul").hide(); break;
+			}
+		});
+		
+		$.each(menuItems.children("ul"), function() {
+			var subMenu = $(this);
+			subMenu.css({left:((subMenu.parent().outerWidth() - subMenu.outerWidth()) / 2 + 1)+"px"});
+		});
+		/** 상당 메뉴 스크립트 끝 **/
+	}); 
+
+	
+})(jQuery);
+-->
+</script>
+
+</head>
+
+<body class="bg_leftline">
+
+<!--skipNavigation Start-->
+<div id="skipNavigation">
+	<p><a href="#topInfo">헤더정보영역 바로가기</a></p>
+	<p><a href="#topMenu">탑메뉴 바로가기</a></p>	
+	<p><a href="#blockHeaderSub">퀵메뉴 바로가기</a></p>
+	<p><a href="#leftMenu">레프트메뉴 바로가기</a></p>	
+	<p><a href="#mainContents">컨텐츠영역 바로가기</a></p>	
+</div>
+<!--//skipNavigation End-->
+
+<!--wrapper Start-->
+<div id="wrapper">
+
+	<!--blockContainer Start-->
+	<div id="blockContainer">
+		
+		<!--blockMain Start-->
+		<div id="blockMain">
+
+			<!--leftMenu Start-->
+			<div id="leftMenu">
+				<h1 class="none">레프트메뉴</h1>	
+				<h2>Portal Management</h2>
+				<div class="left_fixed">	
+					<ul>			
+						<li class="liFirst licurrent"><a href="#a">Personal</a>
+							<ul>
+								<li class="no_child"><a href="#a">My To-Do</a></li>
+								<li class="no_child licurrent"><a href="#a">완료한 업무</a></li>
+								<li class="no_child"><a href="#a">지시한 업무</a></li>		
+								<li class="no_child liLast"><a href="#a">작업 등록</a></li>							
+							</ul>					
+						</li>
+						<li class="opened"><a href="#a">Report</a>
+							<ul>
+								<li class="no_child liLast"><a href="#a">개인업무 현황</a></li>
+							</ul>
+						</li>				
+						<li class="opened"><a href="#a">Administrator</a>
+							<ul>
+								<li class="no_child"><a href="#a">연계시스템</a></li>
+								<li class="no_child liLast"><a href="#a">연계업무</a></li>
+							</ul>
+						</li>					
+					</ul>
+				</div>
+			</div>	
+			<!--//leftMenu End-->
+				
+			<!--mainContents Start-->
+			<div id="mainContents">
+				<h1 class="none">컨텐츠영역</h1>
+				
+				<!--pageTitle Start-->
+				<div id="pageTitle">
+					<h2>로고 이미지 설정</h2>
+				</div>
+				<!--//pageTitle End-->
+				
+				<!--blockDetail Start-->
+				<div class="blockDetail">
+					<table summary="게시판등록">
+						<caption></caption>
+						<tbody>
+							<tr>
+								<th scope="row" width="18%">포탈명</th>
+								<td width="82%">
+									<input name="" title="포탈명" class="inputbox w100" type="text" value="메인포탈 (수정불가)" />
+								</td>
+							</tr>
+							<tr>
+								<th scope="row" width="18%">로고 이미지</th>
+								<td width="82%">
+									<input name="input7" type="file" class="file w70" title="" />&nbsp;
+									<span class="tdInstruction">※ 권장이미지 크기(108x22)</span>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<!--//blockDetail End-->
+				
+				<!--subTitle_2 Start-->
+				<div class="subTitle_2 noline">
+					<h3>로고 이미지 Preview</h3>
+				</div>
+				<!--//subTitle_2 End-->
+				
+				<div class="login_preview">
+				
+					<!--blockHeader Start-->
+					<div id="blockHeader">	
+					
+						<!--topInfo Start-->	
+						<div id="topInfo">
+							<h1 class="none">헤더정보영역</h1>
+							<div id="topLogo">
+								<a target="mainFrame" href="Main_main.html"><img src="../../images/common/logo.png" alt="iKEP Logo" /></a>
+							</div>
+							<!--utilMenu Start-->	
+							<div id="utilMenu">
+								<ul>
+									<li class="utilmenu_system"><a href="#a" id="systemLink"><span>system</span></a></li>			
+									<li class="utilmenu_sitemap"><a href="#a"><span>sitemap</span></a></li>
+									<li class="utilmenu_help"><a href="#a"><span>help</span></a></li>
+									<li class="utilmenu_admin"><a href="#a"><span>admin</span></a></li>
+								</ul>
+							</div>
+							<!--//utilMenu End-->				
+							<!--personInfo Start-->					
+							<div id="personInfo">
+								<span class="info_date">2011.01.20 (목)</span>
+								<span class="info_team"><a href="#a">컨설팅팀<span class="info_name">홍길동</span>과장</a></span> 
+								<span class="info_btn"><a href="#a"><span>Logout</span></a></span>
+							</div>
+							<!--//personInfo End-->						
+							<div class="clear"></div>
+						</div>
+						<!--//topInfo End-->
+									
+						<!--topMenu Start-->
+						<div id="topMenu">
+							<h1 class="none">탑메뉴</h1>			
+							<ul>
+								<li><a class="iconMenu_01" href="#work"><span>WORK</span></a></li>
+								<li><a class="iconMenu_02" href="#messages"><span>MESSAGES</span></a>
+									<ul>
+										<li><a target="mainFrame" href="http://www.google.co.kr">ALL MASSAGES HHH</a></li>
+										<li><a href="#a">MAIL</a></li>
+										<li><a href="#a">SMS</a></li>
+										<li><a href="#a">MESSAGING</a></li>
+										<li><a href="#a">ADDRESSBOOK</a></li>
+									</ul>					
+								</li>
+								<li><a class="iconMenu_03" href="#collaboration"><span>COLLABORATION</span></a>
+									<ul>
+										<li><a target="mainFrame" href="http://www.daum.net">ALL MASSAGES</a></li>
+										<li><a href="#a">MAIL</a></li>
+										<li><a href="#a">SMS</a></li>
+										<li><a href="#a">MESSAGING</a></li>
+										<li><a href="#a">ADDRESSBOOK</a></li>
+									</ul>
+								</li>
+								<li><a class="iconMenu_04" href="#knowledge"><span>KNOWLEDGE</span></a></li>
+								<li><a class="iconMenu_05" href="#people"><span>PEOPLE</span></a></li>
+								<li><a class="iconMenu_06" href="#innovation"><span>INNOVATION</span></a></li>																				
+							</ul>
+						</div>
+						<!--//topMenu End-->	
+						
+					</div>
+					<!--blockHeader End-->
+				</div>
+				
+				<!--blockButton Start-->
+				<div class="blockButton"> 
+					<ul>
+						<li><a class="button" href="#a"><span>저장</span></a></li>
+						<li><a class="button" href="#a"><span>수정</span></a></li>
+					</ul>
+				</div>
+				<!--//blockButton End-->
+
+																	
+			</div>
+			<!--//mainContents End-->
+			<div class="clear"></div>
+		</div>
+		<!--//blockMain End-->
+		
+	</div>
+	<!--//blockContainer End-->
+	
+		
+</div>
+<!--//wrapper End-->
+</body>
+</html>

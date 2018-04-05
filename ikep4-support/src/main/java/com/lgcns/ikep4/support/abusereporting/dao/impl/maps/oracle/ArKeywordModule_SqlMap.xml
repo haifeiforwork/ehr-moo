@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="support.abusereporting.dao.arKeywordModule" >
+	<typeAlias alias = "ArKeywordModule" 	type="com.lgcns.ikep4.support.abusereporting.model.ArKeywordModule"/>
+	<typeAlias alias = "ArModule" 			type="com.lgcns.ikep4.support.abusereporting.model.ArModule"/>
+	
+	<!-- IKEP4_AR_KEYWORD_MODULE 테이블 조회 결과 -->
+	<resultMap id="result" class="ArKeywordModule">
+		<result property="moduleCode" 		column="MODULE_CODE" 		/>
+		<result property="keyword" 			column="KEYWORD" 			/>
+		<result property="portalId" 		column="PORTAL_ID" 			/>
+	</resultMap>
+	
+	<!-- IKEP4_AR_MODULE 테이블 조회 결과 -->
+	<resultMap id="moduleResult" class="ArModule">
+		<result property="moduleCode" 		column="MODULE_CODE" 		/>
+		<result property="moduleName" 		column="MODULE_NAME" 		/>
+		<result property="registerId" 		column="REGISTER_ID" 		/>
+		<result property="registerName" 	column="REGISTER_NAME" 		/>
+		<result property="registDate" 		column="REGIST_DATE" 		/>
+	</resultMap>
+  
+  <sql id="sqlArModuleColumnList">
+    MODULE_CODE, 
+    MODULE_NAME,
+    REGISTER_ID, 
+    REGISTER_NAME, 
+    REGIST_DATE 
+  </sql> 
+	
+	<!-- insert -->
+	<insert id="insert" parameterClass="ArKeywordModule"> 
+      <![CDATA[ 
+           INSERT INTO IKEP4_AR_KEYWORD_MODULE ( /* [ArKeywordModule_SqlMap.xml] arKeywordModule.insert */
+           MODULE_CODE, KEYWORD, PORTAL_ID)  
+           VALUES (#moduleCode#, #keyword#, #portalId#)
+       ]]>
+   </insert>
+   	
+   <!-- deleteBykeyword -->
+   <delete id="deleteByKeyword" parameterClass="ArKeywordModule">
+      <![CDATA[
+	       DELETE FROM IKEP4_AR_KEYWORD_MODULE   /* [ArKeywordModule_SqlMap.xml] arKeywordModule.deleteByKeyword */ 
+	       WHERE KEYWORD 	 = #keyword#
+		     AND PORTAL_ID 	 = #portalId#
+	   ]]>
+	</delete>
+	
+  <select id="listByKeyword" parameterClass="ArKeywordModule" resultMap="moduleResult">    
+			SELECT   /* [ArKeywordModule_SqlMap.xml] arKeywordModule.listByKeyword */  
+	    		<include refid="support.abusereporting.dao.arKeywordModule.sqlArModuleColumnList" />
+			FROM ( 
+					SELECT B.* 
+					FROM IKEP4_AR_KEYWORD_MODULE A, IKEP4_AR_MODULE B
+					WHERE A.KEYWORD 	= #keyword#
+		     		  AND A.PORTAL_ID 	= #portalId#
+					  AND A.MODULE_CODE = B.MODULE_CODE
+				)				
+			ORDER BY MODULE_NAME ASC
+  </select> 
+  
+  <select id="listByModuleCode" parameterClass="ArKeywordModule" resultClass="java.lang.String">   
+	SELECT KEYWORD    /* [ArKeywordModule_SqlMap.xml] arKeywordModule.listByModuleCode */  
+	FROM IKEP4_AR_KEYWORD_MODULE
+	WHERE MODULE_CODE 	= #moduleCode#
+	  AND PORTAL_ID		= #portalId#
+  </select> 
+  
+</sqlMap>

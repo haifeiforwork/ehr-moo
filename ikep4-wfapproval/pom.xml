@@ -1,0 +1,68 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.lgcns.ikep4</groupId>
+		<artifactId>ikep4-parent</artifactId>
+		<version>0.0.1</version>
+		<relativePath>../ikep4-parent/pom.xml</relativePath>
+	</parent>
+	<groupId>com.lgcns.ikep4</groupId>
+	<artifactId>ikep4-wfapproval</artifactId>
+	<version>0.0.1</version>
+	<packaging>jar</packaging>
+	<name>[iKEP4-BIZ] wfapproval</name>
+	<description>iKEP4 Workflow Approval Project</description>
+	
+	<dependencies>
+		<!-- ikep4 inner dependency -->
+		<dependency>
+			<groupId>com.lgcns.ikep4</groupId>
+			<artifactId>ikep4-workflow</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>net.sf.log4jdbc</groupId>
+			<artifactId>log4jdbc3</artifactId>
+			<version>1.2beta2</version>
+			<type>jar</type>
+			<scope>compile</scope>
+		</dependency>
+		
+		<!-- Servlet API -->
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+	</dependencies>
+	<build>
+		<finalName>${project.artifactId}-${project.version}</finalName>
+		<resources>
+			<resource>
+				<directory>${basedir}/src/main/java</directory>
+				<includes>
+					<include>**/*.xml</include>
+					<include>**/*.properties</include>
+				</includes>
+			</resource>
+			<resource>
+				<directory>${basedir}/src/main/resources</directory>
+				<includes>
+					<include>**/*.xml</include>
+					<include>**/*.properties</include>
+				</includes>
+			</resource>
+		</resources>
+	</build>
+</project>

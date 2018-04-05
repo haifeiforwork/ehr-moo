@@ -1,0 +1,362 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ko">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>iKEP 4.00</title>
+<link rel="stylesheet" type="text/css" href="../../css/theme01/jquery_ui_custom.css" />
+<link rel="stylesheet" type="text/css" href="../../css/common.css" />
+<link rel="stylesheet" type="text/css" href="../../css/theme01/theme.css" />
+<script type="text/javascript" src="../../js/jquery/jquery-1.6.2.min.js"></script>
+<script type="text/javascript" src="../../js/jquery/jquery-ui-1.8.13.min.without.datepicker.js"></script>
+<script type="text/javascript" src="../../js/calendar/fullcalendar.js"></script>
+<script type="text/javascript" src="../../js/langResource/ko.js"></script>
+<script type="text/javascript" src="../../js/common.pack.js"></script>
+<script type="text/javascript"> 
+(function($){
+	$(document).ready(function(){	
+		// left menu setting
+		 iKEP.setLeftMenu();
+		 	
+		$("#datepicker").datepicker({
+			inline: true,
+			onSelect: function(date) { alert(date); }
+		}); 
+	});
+})(jQuery);
+</script>
+</head>
+<body>
+<!--skipNavigation Start-->
+<div id="skipNavigation">
+	<p><a href="#topInfo">헤더정보영역 바로가기</a></p>
+	<p><a href="#topMenu">탑메뉴 바로가기</a></p>	
+	<p><a href="#blockHeaderSub">퀵메뉴 바로가기</a></p>
+	<p><a href="#leftMenu">레프트메뉴 바로가기</a></p>	
+	<p><a href="#mainContents">컨텐츠영역 바로가기</a></p>	
+</div>
+<!--//skipNavigation End-->
+
+<!--wrapper Start-->
+<div id="wrapper">
+
+	<!--blockContainer Start-->
+	<div id="blockContainer">
+
+		<!--blockHeader Start-->
+		<div id="blockHeader">	
+		
+			<!--topInfo Start-->	
+			<div id="topInfo">
+				<h1 class="none">헤더정보영역</h1>
+				<div id="topLogo">
+					<a href="#a"><img src="../../images/common/logo.png" alt="iKEP Logo" /></a>
+				</div>
+			</div>
+			<!--//topInfo End-->
+						
+			<!--topMenu Start-->
+			<div id="topMenu">
+				<h1 class="none">탑메뉴</h1>			
+			</div>
+			<!--//topMenu End-->		
+
+			<!--blockHeaderSub Start-->
+			<div id="blockHeaderSub">
+				<h1 class="none">퀵메뉴</h1>		
+			</div>
+			<!--//blockHeaderSub End-->
+										
+		</div>
+		<!--//blockHeader End-->
+		
+		<!--blockMain Start-->
+		<div id="blockMain">
+
+			<!--leftMenu Start-->
+			<div id="leftMenu">
+				<h1 class="none">레프트메뉴</h1>	
+				<h2>Planner</h2>		
+				<div class="mb10">
+					<input class="inputbox" type="text" size="22" />
+					<a href="#a" class="ic_search valign_middle"><span>검색</span></a>
+				</div>						
+				<div id="datepicker"></div>
+				<div class="blockBlank_10px"></div>
+				<div class="left_fixed">
+					<ul>		
+						<li class="liFirst opened licurrent"><a href="#a">내 일정관리</a>
+							<ul>
+								<li class="no_child licurrent"><a href="#a"><img src="../../images/icon/ic_arrow_2.gif" alt="" /> 나의 일정</a></li>
+								<li class="no_child"><a href="#a"><img src="../../images/icon/ic_person.gif" alt="" /> 김원희 부장 일정</a></li>
+								<li class="liLast no_child"><a href="#a"><img src="../../images/icon/ic_person.gif" alt="" /> 이태수 전무 일정</a></li>
+							</ul>
+						</li>
+					</ul>
+					<div class="planner_leftbtn">
+						<span class="btn_planner_import"><a href="#a">일정 Import</a></span>
+						<span class="btn_planner_export"><a href="#a">일정 Export</a></span>
+					</div>					
+					<ul>
+						<li class="liFirst opened"><a href="#a">팀 일정관리</a>
+							<ul>
+								<li class="no_child"><a href="#a">UC컨설팅1팀</a></li>
+								<li class="no_child"><a href="#a">안드로이드TFT</a></li>
+								<li class="no_child"><a href="#a">옵티머스시험지원</a></li>
+								<li class="no_child"><a href="#a">품질성능개선PRJ</a></li>
+								<li class="liLast no_child"><a href="#a">즐거운책읽기</a></li>
+							</ul>
+						</li>	
+						<li class="no_child"><a href="#a">위임관리</a></li>
+						<li class="no_child liLast"><a href="#a">관리메뉴</a></li>					
+					</ul>
+				</div>
+			</div>	
+			<!--//leftMenu End-->
+				
+			<!--mainContents Start-->
+			<div id="mainContents" >
+				<h1 class="none">컨텐츠영역</h1>
+				
+				<!--아래의 div 내용을 fullcalendar.js에 적용-->
+				
+				<!--calendar Start-->
+				<div class="fc" id="calendar">
+					<table class="fc-header"  style="width:100%;" summary="테이블상단">
+						<caption></caption>
+						<tbody>
+							<tr>
+								<td class="fc-header-left">
+									<span>UC컨설팅1팀 <strong>홍길동</strong> 대리</span>
+									<a class="button_s" href="#a"><span>오늘</span></a>
+								</td>
+								<td class="fc-header-center">
+									<span class="fc-button-prev"><a href="#a"><span class="none">이전</span></a></span>
+									<div class="fc-header-title">
+									<h2>2011.04</h2>
+									</div>
+									<span class="fc-button-next"><a href="#a"><span class="none">다음</span></a></span>
+								</td>
+								<td class="fc-header-right">
+									<ul>
+										<li><a class="button_s selected" href="#a"><span>일간</span></a></li>
+										<li style="margin-left:-1px;"><a class="button_s" href="#a"><span>주간</span></a></li>
+										<li style="margin-left:-1px;"><a class="button_s" href="#a"><span>월간</span></a></li>
+										<li style="margin-left:-1px;"><a class="button_s" href="#a"><span>목록</span></a></li>
+									</ul>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+
+					<div style="position: relative; -moz-user-select: none;" class="fc-view fc-view-agendaDay fc-agenda">
+						<table cellspacing="0" class="fc-agenda-days fc-border-separate" style="width: 100%;">
+							<thead>
+								<tr class="fc-first fc-last">
+									<th colspan="2" class="fc-wed fc-col0 fc-widget-header"><span class="num">04.06</span> (수)</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr class="fc-first fc-last">
+									<th class="fc-agenda-axis fc-widget-header fc-first">&nbsp;</th>
+									<td class="fc-wed fc-col0 fc-widget-content fc-state-highlight fc-today"><div style="height: 671px;">
+											<div class="fc-day-content">
+												<div style="position: relative;">&nbsp;</div>
+											</div>
+										</div>
+									</td>
+								</tr>
+							</tbody>
+						</table>						
+						<div style="position: absolute; z-index: 2; left: 0pt; width: 100%; top:25px;">
+							<div style="position: absolute; z-index: 8; top: 0pt; left: 0pt;"></div>
+							<table cellspacing="0" class="fc-agenda-allday" style="width: 100%;">
+								<tbody>
+									<tr>
+										<th class="fc-widget-header fc-agenda-axis" style="width: 50px;">종일</th>
+										<td><div class="fc-day-content">
+												<div style="position: relative; height: 0px;"></div>
+											</div>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+							<div class="fc-agenda-divider fc-widget-header">
+								<div class="fc-agenda-divider-inner"></div>
+							</div>
+							<div style="position: absolute; width: 100%; overflow-x: hidden; overflow-y: auto; height: 630px;">
+								<div style="position: relative; width: 100%; overflow: hidden;">
+									<div style="position: absolute; z-index: 8; top: 0pt; left: 0pt;">
+										<div style="position: absolute; z-index: 8; top: 440px; left: 62px; width:200px; height: 82px;" class="fc-event fc-event-skin fc-event-vert fc-event-draggable fc-corner-top fc-corner-bottom ui-draggable ui-resizable">
+											<div class="fc-event-inner fc-event-skin">
+												<div class="fc-event-head fc-event-skin">
+													<div class="fc-event-time">17:30</div>
+												</div>
+												<div class="fc-event-content">
+													<div class="fc-event-title">Meeting</div>
+												</div>
+												<div class="fc-event-bg"></div>
+											</div>
+											<div class="ui-resizable-handle ui-resizable-s">=</div>
+										</div>
+										<div style="position: absolute; z-index: 8; top: 503px; left:100px; width:300px; height: 82px;" class="fc-event fc-event-skin fc-event-vert fc-event-draggable fc-corner-top fc-corner-bottom ui-draggable ui-resizable">
+											<div class="fc-event-inner fc-event-skin">
+												<div class="fc-event-head fc-event-skin">
+													<div class="fc-event-time">19:00 - 21:00</div>
+												</div>
+												<div class="fc-event-content">
+													<div class="fc-event-title">Daily Meeting</div>
+												</div>
+												<div class="fc-event-bg"></div>
+											</div>
+											<div class="ui-resizable-handle ui-resizable-s">=</div>
+										</div>
+									</div>
+									<table cellspacing="0" style="width: 100%;" class="fc-agenda-slots">
+										<tbody>
+											<tr class="fc-slot0 ">
+												<th class="fc-agenda-axis fc-widget-header" style="width: 50px;">07:00</th>
+												<td class="fc-widget-content"><div style="position: relative;">&nbsp;</div></td>
+											</tr>
+											<tr class="fc-slot1 fc-minor">
+												<th class="fc-agenda-axis fc-widget-header">&nbsp;</th>
+												<td class="fc-widget-content"><div style="position: relative;">&nbsp;</div></td>
+											</tr>
+											<tr class="fc-slot2 ">
+												<th class="fc-agenda-axis fc-widget-header">08:00</th>
+												<td class="fc-widget-content"><div style="position: relative;">&nbsp;</div></td>
+											</tr>
+											<tr class="fc-slot3 fc-minor">
+												<th class="fc-agenda-axis fc-widget-header">&nbsp;</th>
+												<td class="fc-widget-content"><div style="position: relative;">&nbsp;</div></td>
+											</tr>
+											<tr class="fc-slot4 ">
+												<th class="fc-agenda-axis fc-widget-header">09:00</th>
+												<td class="fc-widget-content"><div style="position: relative;">&nbsp;</div></td>
+											</tr>
+											<tr class="fc-slot5 fc-minor">
+												<th class="fc-agenda-axis fc-widget-header">&nbsp;</th>
+												<td class="fc-widget-content"><div style="position: relative;">&nbsp;</div></td>
+											</tr>
+											<tr class="fc-slot6 ">
+												<th class="fc-agenda-axis fc-widget-header">10:00</th>
+												<td class="fc-widget-content"><div style="position: relative;">&nbsp;</div></td>
+											</tr>
+											<tr class="fc-slot7 fc-minor">
+												<th class="fc-agenda-axis fc-widget-header">&nbsp;</th>
+												<td class="fc-widget-content"><div style="position: relative;">&nbsp;</div></td>
+											</tr>
+											<tr class="fc-slot8 ">
+												<th class="fc-agenda-axis fc-widget-header">11:00</th>
+												<td class="fc-widget-content"><div style="position: relative;">&nbsp;</div></td>
+											</tr>
+											<tr class="fc-slot9 fc-minor">
+												<th class="fc-agenda-axis fc-widget-header">&nbsp;</th>
+												<td class="fc-widget-content"><div style="position: relative;">&nbsp;</div></td>
+											</tr>
+											<tr class="fc-slot10 ">
+												<th class="fc-agenda-axis fc-widget-header">12:00</th>
+												<td class="fc-widget-content"><div style="position: relative;">&nbsp;</div></td>
+											</tr>
+											<tr class="fc-slot11 fc-minor">
+												<th class="fc-agenda-axis fc-widget-header">&nbsp;</th>
+												<td class="fc-widget-content"><div style="position: relative;">&nbsp;</div></td>
+											</tr>
+											<tr class="fc-slot12 ">
+												<th class="fc-agenda-axis fc-widget-header">13:00</th>
+												<td class="fc-widget-content"><div style="position: relative;">&nbsp;</div></td>
+											</tr>
+											<tr class="fc-slot13 fc-minor">
+												<th class="fc-agenda-axis fc-widget-header">&nbsp;</th>
+												<td class="fc-widget-content"><div style="position: relative;">&nbsp;</div></td>
+											</tr>
+											<tr class="fc-slot14 ">
+												<th class="fc-agenda-axis fc-widget-header">14:00</th>
+												<td class="fc-widget-content"><div style="position: relative;">&nbsp;</div></td>
+											</tr>
+											<tr class="fc-slot15 fc-minor">
+												<th class="fc-agenda-axis fc-widget-header">&nbsp;</th>
+												<td class="fc-widget-content"><div style="position: relative;">&nbsp;</div></td>
+											</tr>
+											<tr class="fc-slot16 ">
+												<th class="fc-agenda-axis fc-widget-header">15:00</th>
+												<td class="fc-widget-content"><div style="position: relative;">&nbsp;</div></td>
+											</tr>
+											<tr class="fc-slot17 fc-minor">
+												<th class="fc-agenda-axis fc-widget-header">&nbsp;</th>
+												<td class="fc-widget-content"><div style="position: relative;">&nbsp;</div></td>
+											</tr>
+											<tr class="fc-slot18 ">
+												<th class="fc-agenda-axis fc-widget-header">16:00</th>
+												<td class="fc-widget-content"><div style="position: relative;">&nbsp;</div></td>
+											</tr>
+											<tr class="fc-slot19 fc-minor">
+												<th class="fc-agenda-axis fc-widget-header">&nbsp;</th>
+												<td class="fc-widget-content"><div style="position: relative;">&nbsp;</div></td>
+											</tr>
+											<tr class="fc-slot20 ">
+												<th class="fc-agenda-axis fc-widget-header">17:00</th>
+												<td class="fc-widget-content"><div style="position: relative;">&nbsp;</div></td>
+											</tr>
+											<tr class="fc-slot21 fc-minor">
+												<th class="fc-agenda-axis fc-widget-header">&nbsp;</th>
+												<td class="fc-widget-content"><div style="position: relative;">&nbsp;</div></td>
+											</tr>
+											<tr class="fc-slot22 ">
+												<th class="fc-agenda-axis fc-widget-header">18:00</th>
+												<td class="fc-widget-content"><div style="position: relative;">&nbsp;</div></td>
+			
+											</tr>
+											<tr class="fc-slot23 fc-minor">
+												<th class="fc-agenda-axis fc-widget-header">&nbsp;</th>
+												<td class="fc-widget-content"><div style="position: relative;">&nbsp;</div></td>
+											</tr>
+											<tr class="fc-slot24 ">
+												<th class="fc-agenda-axis fc-widget-header">19:00</th>
+												<td class="fc-widget-content"><div style="position: relative;">&nbsp;</div></td>
+											</tr>
+											<tr class="fc-slot25 fc-minor">
+												<th class="fc-agenda-axis fc-widget-header">&nbsp;</th>
+												<td class="fc-widget-content"><div style="position: relative;">&nbsp;</div></td>
+											</tr>
+											<tr class="fc-slot24 ">
+												<th class="fc-agenda-axis fc-widget-header">20:00</th>
+												<td class="fc-widget-content"><div style="position: relative;">&nbsp;</div></td>
+											</tr>
+											<tr class="fc-slot25 fc-minor">
+												<th class="fc-agenda-axis fc-widget-header">&nbsp;</th>
+												<td class="fc-widget-content"><div style="position: relative;">&nbsp;</div></td>
+											</tr>
+											<tr class="fc-slot24 ">
+												<th class="fc-agenda-axis fc-widget-header">21:00</th>
+												<td class="fc-widget-content"><div style="position: relative;">&nbsp;</div></td>
+											</tr>
+											<tr class="fc-slot25 fc-minor">
+												<th class="fc-agenda-axis fc-widget-header">&nbsp;</th>
+												<td class="fc-widget-content"><div style="position: relative;">&nbsp;</div></td>
+											</tr>																											
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+
+				</div>
+				<!--//calendar End-->
+
+
+											
+			</div>
+			<!--//mainContents End-->
+			<div class="clear"></div>
+		</div>
+		<!--//blockMain End-->
+		
+	</div>
+	<!--//blockContainer End-->
+	
+		
+</div>
+<!--//wrapper End-->
+</body>
+</html>

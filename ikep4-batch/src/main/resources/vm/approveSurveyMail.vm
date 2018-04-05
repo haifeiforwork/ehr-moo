@@ -1,0 +1,45 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ko">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>iKEP 4.00</title>
+<style type="text/css"> 
+* { margin:0; padding:0; }
+body { font:75%/1.5em Tahoma, '돋움', 'Dotum'; color:#555; background:#fff; height:100%; }
+html { height:100%; }
+ul {list-style:none;}
+a:link, a:visited, a:active { color:#3378bd; text-decoration:none; }
+a:hover { text-decoration:underline; }
+hr { display: none; }
+h1 { font-size:1.2em; }
+img { border:none;}
+option { padding-right: 0.5em;}
+legend { display:none; }
+fieldset { border:none; }
+.survey_mail { width:80%; text-align:center; background-color:#f9fbff; }
+.survey_mail_t { padding:30px 18px 16px;margin-bottom:10px;border:3px solid #cddbf0; }
+.survey_mail_t h3 { text-align:center;font-size:1.4em;color:#111;padding-bottom:18px;border-bottom:1px solid #cccccc;font-weight:normal; }
+.survey_mail_t h3 span { font-weight:bold;}
+.survey_mail_t p { margin:40px 0 18px;padding-bottom:40px;border-bottom:1px solid #cccccc; text-align:left; }
+.survey_mail_btn { text-align:center;}
+a.button_Smail, a.button_Smail span { position:relative; margin-right:4px; display:inline-block; border:0; white-space:nowrap; background:url(${url}/base/images/theme/theme01/basic/btn_Smail.gif) no-repeat;vertical-align:middle; overflow:visible; }
+a.button_Smail { text-decoration:none; padding:0; background-position:left top; }
+a.button_Smail span { height:45px; left:24px;color:#fff;font-size:1.2em;font-weight:bold;padding:0 12px 0 0;line-height:48px; *line-height:48px;background-position:right top; cursor:pointer; }
+a.button_Smail img { padding:0 0 0 12px; *padding:0 0 0 12px; vertical-align:middle; }
+</style>
+</head>
+<body>
+	<!--survey_mail_t Start-->
+	<div class="survey_mail survey_mail_t">				
+		<h3><span>설문제목</span>${survey.title}</h3>
+		<p>${sendLog.receiverName}님 안녕하세요. ${user.jobTitleName} ${user.teamName}입니다.<br /><br />
+		설문이 상신 되었습니다. 승인 처리하여 주십시요.</p>
+		<div class="survey_mail_btn">
+			<a class="button_Smail" href="${url}/servicepack/survey/approve/readApprove.do?surveyId=${survey.surveyId}" target="_pop"><span>설문 승인<img src="${url}/base/images/icon/ic_Smail_arrow.gif" alt="" /></span></a>
+		</div>
+	</div>
+	<!--//survey_mail_t End-->
+		
+<!--//wrapper End-->
+</body>
+</html>

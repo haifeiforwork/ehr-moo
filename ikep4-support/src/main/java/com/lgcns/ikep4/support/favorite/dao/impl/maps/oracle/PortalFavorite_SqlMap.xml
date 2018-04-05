@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="EUC-KR"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="support.favorite">
+
+	<typeAlias alias="comfavorite" type="com.lgcns.ikep4.support.favorite.model.PortalFavorite" />
+	<typeAlias alias="comfavoriteSearchCondition" type="com.lgcns.ikep4.support.favorite.model.PortalFavoriteSearchCondition"/>
+
+	<resultMap id="favoriteDocumentResult" class="comfavorite">
+		<result property="favoriteId" column="favorite_id" />
+		<result property="targetId" column="target_id" />
+		<result property="subId" column="sub_id" />
+		<result property="registerId" column="register_id" />
+		<result property="registerName" column="register_name" />
+		<result property="registerEnglishName" column="register_english_name" />
+		<result property="registDate" column="regist_date" />
+		<result property="module" column="module" />
+		<result property="type" column="type" />
+		<result property="title" column="title" />
+		<result property="hitCount" column="hit_count" />
+		<result property="recommendCount" column="recommend_count" />
+		<result property="linereplyCount" column="linereply_count" />
+	</resultMap>
+	
+	
+	<resultMap id="favoritePeopleResult" class="comfavorite">
+		<result property="favoriteId" column="favorite_id" />
+		<result property="targetId" column="target_id" />
+		<result property="registerId" column="register_id" />
+		<result property="registerName" column="register_name" />
+		<result property="registDate" column="regist_date" />
+		<result property="title" column="title" />
+		<result property="englishTitle" column="english_title" />
+		<result property="teamName" column="team_name" />
+		<result property="teamEnglishName" column="team_english_name" />
+		<result property="mobile" column="mobile" />
+		<result property="mail" column="mail" />
+		<result property="officePhoneNo" column="office_phone_no" />
+		<result property="jobTitleName" column="job_title_name" />
+		<result property="jobTitleEnglishName" column="job_title_english_name" />
+		<result property="picturePath" column="picture_path" />
+		<result property="profilePicturePath" column="profile_picture_path" />
+		<result property="empNo" column="emp_no" />
+		<result property="followId" column="follow_id" />
+	</resultMap>
+	
+	
+
+	<insert id="insert" parameterClass="comfavorite">
+		INSERT INTO IKEP4_AS_FAVORITE (
+		   FAVORITE_ID, TYPE, ITEM_TYPE_CODE, 
+			   TARGET_ID, TARGET_TITLE, TARGET_URL, 
+			   REGISTER_ID, REGISTER_NAME, REGIST_DATE, 
+			   UPDATER_ID, UPDATER_NAME, UPDATE_DATE)
+		values(#favoriteId#, #type#, #itemTypeCode#,
+				#targetId#, #targetTitle#, #targetUrl#,
+				#registerId#, #registerName#, SYSDATE,
+				#updaterId#, #updaterName#, SYSDATE)		
+	</insert>
+	
+	
+	<select id="select" parameterClass="String" resultClass="comfavorite">
+		SELECT 
+			FAVORITE_ID, TYPE, ITEM_TYPE_CODE, 
+			   TARGET_ID, TARGET_TITLE, TARGET_URL, 
+			   REGISTER_ID, REGISTER_NAME, REGIST_DATE, 
+			   UPDATER_ID, UPDATER_NAME, UPDATE_DATE
+		FROM IKEP4_AS_FAVORITE
+		WHERE FAVORITE_ID = #favoriteId#
+	</select>
+	
+	<select id="exists" parameterClass="comfavorite" resultClass="comfavorite">
+		SELECT 
+			FAVORITE_ID, TYPE, ITEM_TYPE_CODE, 
+			   TARGET_ID, TARGET_TITLE, TARGET_URL, 
+			   REGISTER_ID, REGISTER_NAME, REGIST_DATE, 
+			   UPDATER_ID, UPDATER_NAME, UPDATE_DATE
+		FROM IKEP4_AS_FAVORITE
+		WHERE TARGET_ID = #targetId#
+		AND REGISTER_ID = #registerId#
+	</select>
+	
+	
+	<delete id="delete" parameterClass="comfavorite">
+		DELETE FROM IKEP4_AS_FAVORITE
+		<isNotEmpty property="favoriteId">
+			WHERE FAVORITE_ID = #favoriteId#
+		</isNotEmpty>
+		<isEmpty property="favoriteId">
+			WHERE TARGET_ID = #targetId#
+				AND REGISTER_ID = #registerId#
+		</isEmpty>
+    </delete>
+	
+	
+  	
+  	<select id="listBySearchConditionForDocument" parameterClass="comfavoriteSearchCondition" resultMap="favoriteDocumentResult">  
+  		<![CDATA[
+		SELECT			/* [Favorite_SqlMap.xml] favorite.listBySearchConditionForDocument */
+						*
+		FROM 			(
+	     				SELECT			 
+	     					ROWNUM AS RNUM, AA.* 
+	     				FROM 			(
+					         			SELECT			A.FAVORITE_ID, 
+					         							A.TARGET_ID, 
+					         							B.SUB_ID, 
+														B.REGISTER_ID, 
+														B.REGISTER_NAME, 
+														C.USER_ENGLISH_NAME REGISTER_ENGLISH_NAME, 
+														B.REGIST_DATE,
+														B.MODULE,
+														B.TYPE,
+														B.TITLE,
+														B.HIT_COUNT,
+														B.RECOMMEND_COUNT,
+														B.LINEREPLY_COUNT 
+										FROM   			IKEP4_AS_FAVORITE A
+					         				INNER JOIN		IKEP4_VW_DOCUMENT B
+					         					ON				A.TARGET_ID = B.ITEM_ID
+					         				INNER JOIN		IKEP4_EV_USER C
+					         					ON				B.REGISTER_ID = C.USER_ID
+							 			WHERE  			A.REGISTER_ID  = #registerId#
+							 							 AND A.TYPE='CONTENTS' 
+		]]>
+										<isNotEmpty property="searchWord">
+											<isEqual property="searchColumn" compareValue="title">
+												AND	UPPER(B.TITLE) LIKE UPPER('%' || #searchWord# || '%')
+											</isEqual>
+										</isNotEmpty>
+										<isNotEmpty property="moduleCodeList">
+								 			<iterate property="moduleCodeList" prepend="AND B.MODULE IN" open="(" close=")" conjunction="," >  
+												#moduleCodeList[]#   
+											</iterate>  
+										</isNotEmpty>
+										ORDER BY A.REGIST_DATE DESC
+		<![CDATA[
+	    								) AA
+	    				WHERE 			ROWNUM <= #endRowIndex#		 
+						)
+		WHERE 			RNUM > #startRowIndex#
+		]]>
+  	</select>   
+  	
+  	
+  	<select id="countBySearchConditionForDocument" parameterClass="comfavoriteSearchCondition" resultClass="int">  
+  		<![CDATA[
+		SELECT 			/* [Favorite_SqlMap.xml] favorite.countBySearchConditionForDocument */ 
+           				COUNT(*)
+										FROM   			IKEP4_AS_FAVORITE A
+					         				INNER JOIN		IKEP4_VW_DOCUMENT B
+					         					ON				A.TARGET_ID = B.ITEM_ID
+					         				INNER JOIN		IKEP4_EV_USER C
+					         					ON				B.REGISTER_ID = C.USER_ID
+							 			WHERE  			A.REGISTER_ID  = #registerId#
+							 							AND A.TYPE='CONTENTS' 
+		]]>
+										<isNotEmpty property="searchWord">
+											<isEqual property="searchColumn" compareValue="title">
+												AND	UPPER(B.TITLE) LIKE UPPER('%' || #searchWord# || '%')
+											</isEqual>
+										</isNotEmpty>
+										<isNotEmpty property="moduleCodeList">
+											<iterate property="moduleCodeList" prepend="AND B.MODULE IN" open="(" close=")" conjunction="," >  
+												#moduleCodeList[]#   
+											</iterate>
+										</isNotEmpty>
+  	</select> 
+  	
+  	<select id="listBySearchConditionForPeople" parameterClass="comfavoriteSearchCondition" resultMap="favoritePeopleResult">  
+  		<![CDATA[
+		SELECT			/* [Favorite_SqlMap.xml] favorite.listBySearchConditionForPeople */
+						*
+		FROM 			(
+	     				SELECT			 
+	     					ROWNUM AS RNUM, AA.* 
+	     				FROM 			(
+					         			SELECT			A.FAVORITE_ID, 
+					         							A.TARGET_ID, 
+														B.USER_NAME TITLE,
+														B.USER_ENGLISH_NAME ENGLISH_TITLE,
+														B.REGISTER_ID, 
+														B.REGISTER_NAME, 
+														B.REGIST_DATE,
+														B.TEAM_NAME,
+														B.TEAM_ENGLISH_NAME,
+														B.MAIL,
+														B.MOBILE,
+														B.OFFICE_PHONE_NO,
+														B.PICTURE_PATH,
+														B.PROFILE_PICTURE_PATH,
+														B.EMP_NO,
+														C.JOB_TITLE_NAME,
+														C.JOB_TITLE_ENGLISH_NAME,
+														D.USER_ID FOLLOW_ID
+										FROM   			IKEP4_AS_FAVORITE A
+					         				INNER JOIN		IKEP4_EV_USER B
+					         					ON				A.TARGET_ID = B.USER_ID
+					         				INNER JOIN		IKEP4_EV_JOB_TITLE C
+					         					ON				B.JOB_TITLE_CODE = C.JOB_TITLE_CODE
+					         				LEFT OUTER JOIN        IKEP4_MB_FOLLOW D
+                                            	ON                (A.TARGET_ID = D.FOLLOWING_USER_ID  AND D.USER_ID  = #registerId#)
+                                        WHERE  			A.TYPE  = 'PEOPLE'
+							 							AND A.REGISTER_ID  = #registerId#
+							 						
+		]]>
+										<isNotEmpty property="searchWord">
+											<isEqual property="searchColumn" compareValue="title">
+												AND	UPPER(B.USER_NAME) LIKE UPPER('%' || #searchWord# || '%')
+											</isEqual>
+										</isNotEmpty>
+										ORDER BY A.REGIST_DATE DESC
+		<![CDATA[
+	    								) AA
+	    				WHERE 			ROWNUM <= #endRowIndex#		 
+						)
+		WHERE 			RNUM > #startRowIndex#
+		]]>
+  	</select>   
+  	
+  	<select id="countBySearchConditionForPeople" parameterClass="comfavoriteSearchCondition" resultClass="int">  
+  		<![CDATA[
+		SELECT 			/* [Favorite_SqlMap.xml] favorite.countBySearchConditionForPeople */ 
+           				COUNT(*)
+										FROM   			IKEP4_AS_FAVORITE A
+					         				INNER JOIN		IKEP4_EV_USER B
+					         					ON				A.TARGET_ID = B.USER_ID
+					         				INNER JOIN		IKEP4_EV_JOB_TITLE C
+					         					ON				B.JOB_TITLE_CODE = C.JOB_TITLE_CODE
+					         				LEFT OUTER JOIN        IKEP4_MB_FOLLOW D
+                                            	ON                (A.TARGET_ID = D.FOLLOWING_USER_ID  AND D.USER_ID  = #registerId#)
+							 			WHERE  			A.TYPE  = 'PEOPLE'
+							 							AND A.REGISTER_ID  = #registerId#
+		]]>
+										<isNotEmpty property="searchWord">
+											<isEqual property="searchColumn" compareValue="title">
+												AND	UPPER(B.USER_NAME) LIKE UPPER('%' || #searchWord# || '%')
+											</isEqual>
+										</isNotEmpty>
+  	</select> 
+
+    
+</sqlMap>
+

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="socialpack.microblogging.dao.setting" >
+	<typeAlias alias = "Setting" type="com.lgcns.ikep4.socialpack.microblogging.model.Setting"/>
+	
+	<!-- IKEP4_MB_SETTING 테이블 조회 결과 -->
+	<resultMap id="result" class="Setting">
+		<result property="userId" 				column="USER_ID" 				/>
+		<result property="maxFeedCount" 		column="MAX_FEED_COUNT" 		/>
+		<result property="maxFavoriteCount" 	column="MAX_FAVORITE_COUNT" 	/>
+		<result property="feedsAtATime" 		column="FEEDS_AT_A_TIME" 		/>
+		<result property="registDate" 			column="REGIST_DATE" 			/>
+		<result property="updaterId" 			column="UPDATER_ID" 			/>
+		<result property="updateDate" 			column="UPDATE_DATE" 			/>
+	</resultMap>
+	
+	<!-- insert -->
+	<insert id="insert" parameterClass="Setting"> 
+      <![CDATA[ 
+           INSERT INTO IKEP4_MB_SETTING ( /* [Setting_SqlMap.xml] setting.insert */
+           USER_ID, MAX_FEED_COUNT, MAX_FAVORITE_COUNT, FEEDS_AT_A_TIME, REGIST_DATE, UPDATER_ID, UPDATE_DATE)  
+           VALUES (#userId#, #maxFeedCount#, #maxFavoriteCount#, #feedsAtATime#, sysdate, #updaterId#, sysdate)
+       ]]>
+   </insert>
+   
+	<!-- update -->
+	<update id="update" parameterClass="Setting">
+	  <![CDATA[
+		   UPDATE IKEP4_MB_SETTING  /* [Setting_SqlMap.xml] setting.update */
+		   SET  MAX_FEED_COUNT 		= #maxFeedCount#,
+		   		MAX_FAVORITE_COUNT 	= #maxFavoriteCount#,
+		   		FEEDS_AT_A_TIME 	= #feedsAtATime#,
+		   		UPDATER_ID 			= #updaterId#,
+		   		UPDATE_DATE 		= sysdate
+		   WHERE USER_ID = #userId#
+	   ]]>
+	</update>
+	
+   <!-- select -->
+	<select id="select" parameterClass="java.lang.String" resultMap="result">
+	  <![CDATA[
+		   SELECT /* [Setting_SqlMap.xml] setting.select */ 
+		    * FROM IKEP4_MB_SETTING WHERE USER_ID = #id#
+	   ]]>
+	</select>
+	   
+   <!-- delete -->
+   <delete id="delete" parameterClass="java.lang.String">
+      <![CDATA[
+	       DELETE FROM IKEP4_MB_SETTING   /* [Setting_SqlMap.xml] setting.delete */ 
+	       WHERE USER_ID = #id#
+	   ]]>
+	</delete>
+	
+	<!-- selectCount -->
+	<select id="selectCount" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+	  <![CDATA[
+			SELECT /* [Setting_SqlMap.xml] setting.selectCount */ 
+			 COUNT(*) 
+			FROM IKEP4_MB_SETTING 
+			WHERE USER_ID = #id#
+	   ]]>
+	</select>
+	
+</sqlMap>

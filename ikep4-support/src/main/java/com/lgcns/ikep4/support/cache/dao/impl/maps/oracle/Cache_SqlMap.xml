@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="support.cache">
+
+	<typeAlias alias = "CacheData" type="com.lgcns.ikep4.support.cache.model.CacheData"/>
+
+	<select id="getPortlet" parameterClass="string" resultClass="CacheData">
+	  <![CDATA[
+	        /* [Cache_SqlMap.xml] support.cache.getPortlet */
+	  		SELECT
+	  			PORTLET_ID  portletId,
+	  			CACHE_YN  portletCacheYn,  
+				CACHE_LIVE_SECOND  cacheLiveSecond,
+				CACHE_MAX_COUNT   cacheMaxCount,
+			    decode(CACHE_NAME_STR, '', '', 'Cachename-'||CACHE_NAME_STR||'-portlet') cacheNameStr,
+				decode(CACHE_NAME_STR, '', '', 'Cachemode-'||CACHE_NAME_STR||'-portlet') cacheModeStr,
+				decode(CACHE_NAME_STR, '', '', 'Elementkey-'||CACHE_NAME_STR||'-portlet') elementKeyStr
+			  FROM IKEP4_PO_PORTLET
+			 WHERE PORTLET_ID = #portletId#
+	   ]]>
+	</select>
+	
+	<select id="getPortal" parameterClass="string" resultClass="CacheData">
+	  <![CDATA[
+	        /* [Cache_SqlMap.xml] support.cache.getPortlet */
+	  		SELECT
+	  			PORTAL_ID  portalId,
+	  			CACHE_YN  portalCacheYn
+			  FROM IKEP4_PO_PORTAL
+			 WHERE PORTAL_ID = #portalId#
+	   ]]>
+	</select>
+	
+	<select id="listPortletConfigId" parameterClass="java.util.HashMap" resultClass="CacheData">
+	 	<![CDATA[
+  			/* [Cache_SqlMap.xml] portal.admin.screen.portal.listPortal */
+			Select 
+			    C.portlet_config_id  portletConfigId
+			  From Ikep4_Po_Page_Layout A Inner Join
+			       Ikep4_Po_Layout B On A.Layout_Id = B.Layout_Id Inner Join
+			       Ikep4_Po_Portlet_Config C On C.Page_Layout_Id = A.Page_Layout_Id Inner Join
+			       Ikep4_Po_Portlet D On C.Portlet_Id = D.Portlet_Id Inner Join
+			       Ikep4_Po_Page E On A.Page_Id = E.Page_Id Inner Join
+			       ikep4_po_system F on E.System_Code = F.System_Code
+			 where A.Owner_Id = #userId#
+			   And B.Common = 0
+			   And 'Cachename-'||D.CACHE_NAME_STR||'-portlet' = #cacheNameStr#
+			   And F.Portal_Id = #portalId#
+			Union All
+			Select 
+			    I.Portlet_Config_Id  portletConfigId
+			  From Ikep4_Po_Page_Layout G Inner Join
+			       Ikep4_Po_Layout H On G.Layout_Id = H.Layout_Id Inner Join
+			       Ikep4_Po_Portlet_Config I On I.Page_Layout_Id = G.Page_Layout_Id Inner Join
+			       Ikep4_Po_Portlet J On I.Portlet_Id = J.Portlet_Id Inner Join
+			       Ikep4_Po_Page K On G.Page_Id = K.Page_Id Inner Join
+			       Ikep4_Po_System L On K.System_Code = L.System_Code
+			 Where H.Common = 1
+			   And 'Cachename-'||J.CACHE_NAME_STR||'-portlet' = #cacheNameStr#
+			   and L.Portal_Id = #portalId#		 
+		]]>
+	</select>
+</sqlMap>

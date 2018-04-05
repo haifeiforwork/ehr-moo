@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="collpack.kms.board.dao.boardAssessItem">
+	<typeAlias alias="kmsBoardAssessItem"                type="com.lgcns.ikep4.collpack.kms.board.model.BoardAssessItem"/>
+
+	<resultMap id="boardAssessItem" class="com.lgcns.ikep4.collpack.kms.board.model.BoardAssessItem" >
+		<result column="ITEM_ID"           property="itemId"               jdbcType="VARCHAR" />
+		<result column="ASSESS_ITEM"       property="assessItem"           jdbcType="DECIMAL" />
+		<result column="ASSESS_NAME"       property="assessName"           jdbcType="VARCHAR" /> 
+		<result column="ASSESS_MARK"       property="assessMark"           jdbcType="DECIMAL" />
+		<result column="ITEM_DISPLAY"      property="itemDisplay"          jdbcType="VARCHAR" />
+	</resultMap>
+
+	<!-- ANSI -->
+	<select id="listAssessItem" parameterClass="String" resultMap="boardAssessItem">    
+		SELECT   /* [Board_Assess_Item_SqlMap.xml] collpack.kms.board.dao.boardItem.listAssessItem */  
+				A.ITEM_ID,
+				C.ASSESS_ITEM,
+				C.ASSESS_NAME,
+				C.ASSESS_MARK,
+				B.ITEM_DISPLAY
+		FROM IKEP4_KMS_BD_ITEM A
+		     INNER JOIN IKEP4_KMS_BD_ASSESS_ITEM_MAP B ON A.ITEM_ID = B.ITEM_ID
+			 INNER JOIN IKEP4_KMS_BD_ASSESS_ITEM C ON B.ASSESS_ITEM = C.ASSESS_ITEM
+		WHERE A.ITEM_ID = #itemId#
+	    ORDER BY C.ASSESS_ITEM
+	</select> 		
+	
+	<insert id="createAssessItem" parameterClass="kmsBoardAssessItem"> 
+			INSERT INTO IKEP4_KMS_BD_ASSESS_ITEM_MAP /* [Board_Assess_Item_SqlMap.xml] collpack.kms.board.dao.boardItem.createAssessItem*/
+			            ( item_id,
+						  assess_item )
+				 VALUES ( #itemId#, 
+				          #assessItem#)
+	</insert>
+	
+	<update id="updateAssessItem" parameterClass="kmsBoardAssessItem"> 
+			UPDATE IKEP4_KMS_BD_ASSESS_ITEM_MAP /* [Board_Assess_Item_SqlMap.xml] collpack.kms.board.dao.boardItem.updateAssessItem*/
+			   SET item_display = #itemDisplay# 
+			 WHERE item_id = #itemId#
+			   AND assess_item = #assessItem#
+	</update>	
+	
+	<delete id="deleteAssessItem" parameterClass="String">
+		DELETE FROM IKEP4_KMS_BD_ASSESS_ITEM_MAP /* [Board_Assess_Item_SqlMap.xml] collpack.kms.board.dao.boardItem.deleteAssessItem*/
+		WHERE 
+			ITEM_ID = #itemId# 
+	</delete>
+	
+	<!-- ANSI -->
+	<select id="countIsAssessor" parameterClass="string" resultClass="int"> 
+		SELECT /* [Board_Assess_Item_SqlMap.xml] collpack.kms.board.dao.boardItem.countIsAssessor */
+				COUNT(*) 
+  		  FROM IKEP4_KMS_BD_ITEM A
+               INNER JOIN IKEP4_KMS_BD_BOARD B 	ON A.BOARD_ID = B.BOARD_ID
+ 		 WHERE A.ITEM_DELETE = 0
+   		   AND B.IS_DELETE = 0
+   		   AND A.STATUS = 2
+   		   AND A.EXPERT_ID = #userId#
+	</select> 
+	
+	<select id="countIsKeyInfoAssessor" parameterClass="string" resultClass="int"> 
+		SELECT /* [Board_Assess_Item_SqlMap.xml] collpack.kms.board.dao.boardItem.countIsKeyInfoAssessor */
+				COUNT(*) 
+  		  FROM ikep4_kms_key_info_permission
+ 		 WHERE user_id = #userId#
+ 		 and view_yn = 'Y'
+	</select> 
+</sqlMap> 

@@ -1,0 +1,63 @@
+<html>
+<head>
+<title>main window</title>
+<meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+<script type="text/javascript" src="etc.plugins.pack.js"></script>
+<script type="text/javascript">
+function addEvent(element, eventType, handler) {
+	if(element.addEventListener) {
+		element.addEventListener(eventType, handler, false);
+		return true;
+	} else if(element.attachEvent) {
+		return element.attachEvent("on"+eventType, handler);
+	} else {
+		return false;
+	}
+}
+
+function debugData(data, type) {
+	console.log("=========================================================");
+	console.log(JSON.stringify(data));
+	switch(type) {
+		case "popup" : console.log(data == popupParam);
+			break;
+		case "iframe" : console.log(data == iframeParam);
+			break;
+	}
+	console.log("=========================================================");
+	
+	document.getElementById("inputText").value = data.arr[2];
+}
+
+var data = {paramType:"main data", d:[0, 1, "한글"]};
+var popupParam = {paramType:"popup", arr:[0, 1, "한글"]};
+var iframeParam = {paramType:"iframe", arr:[0, 1, "한글"]};
+
+addEvent(window, "load", function() {
+	
+	addEvent(document.getElementById("btnPopupOpen"), "click", function() {
+		var winPopup = window.open("popup.html", "winPopup");
+		setTimeout(function() {
+			winPopup.param = popupParam;
+		}, 1000);
+	});
+	
+	addEvent(document.getElementById("btnCreateIFrame"), "click", function() {
+		var iFrame = document.createElement("IFrame");
+		document.body.appendChild(iFrame);
+		iFrame.src = "iframe.html";
+		
+		addEvent(iFrame, "load", function() {
+			iFrame.contentWindow.param = iframeParam;
+		});
+	});
+});
+</script>
+</head>
+
+<body>
+<button id="btnPopupOpen">window open</button>
+<button id="btnCreateIFrame">create IFrame</button>
+<input id="inputText" type="text" value="" size="10"/>
+</body>
+</html>

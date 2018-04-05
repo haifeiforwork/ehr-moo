@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="lightpack.cafe.cafe.dao.CafePortletLayout">
+
+	<typeAlias alias="CafePortletLayout" type="com.lgcns.ikep4.lightpack.cafe.cafe.model.CafePortletLayout"/>
+  
+	<sql id="sqlColumnList"> 
+	    PORTLET_LAYOUT_ID	AS portletLayoutId, 
+	    PORTLET_ID	AS portletId, 
+	    COL_INDEX	AS colIndex,
+	    ROW_INDEX	AS rowIndex,
+	    IS_BOARD_PORTLET AS isBoardPortlet,
+	    CAFE_ID AS cafeId,
+	    BOARD_ID	AS boardId
+	</sql>  
+    
+	<select id="get" parameterClass="java.lang.String" resultClass="CafePortletLayout"> 
+		SELECT 
+			/* [CafePortletLayout_SqlMap.xml] lightpack.cafe.cafe.dao.CafePortletLayout.get */
+			<include refid="lightpack.cafe.cafe.dao.CafePortletLayout.sqlColumnList" /> 
+		FROM  
+			IKEP4_CF_PORTLET_LAYOUT
+    	WHERE
+    		PORTLET_LAYOUT_ID = #portletLayoutId#  
+	</select>
+  
+	<select id="exists" parameterClass="java.lang.String" resultClass="int"> 
+		SELECT /* [CafePortletLayout_SqlMap.xml] lightpack.cafe.cafe.dao.CafePortletLayout.exists */
+			COUNT(*)
+		FROM  
+			IKEP4_CF_PORTLET_LAYOUT
+		WHERE
+			PORTLET_LAYOUT_ID = #portletLayoutId# 
+	</select> 
+  
+	<select id="listByCafe" parameterClass="java.lang.String" resultClass="CafePortletLayout">  
+		SELECT /* [CafePortletLayout_SqlMap.xml] lightpack.cafe.cafe.dao.CafePortletLayout.listByCafe */ 
+			<include refid="lightpack.cafe.cafe.dao.CafePortletLayout.sqlColumnList" /> 
+		FROM   
+			IKEP4_CF_PORTLET_LAYOUT 
+		WHERE  
+			CAFE_ID = #cafeId# 
+		ORDER BY 
+			ROW_INDEX
+	</select> 
+	<select id="listLayoutByCafe" parameterClass="String" resultClass="CafePortletLayout">
+		SELECT /* [CafePortletLayout_SqlMap.xml] lightpack.cafe.cafe.dao.CafePortletLayout.listLayoutByCafe */
+		    PORTLET_LAYOUT_ID	AS portletLayoutId, 
+		    PORTLET_ID	AS portletId, 
+		    COL_INDEX	AS colIndex,
+		    ROW_INDEX	AS rowIndex,
+		    IS_BOARD_PORTLET AS isBoardPortlet,
+		    CAFE_ID AS cafeId,
+		    BOARD_ID	AS boardId
+		FROM 
+			IKEP4_CF_PORTLET_LAYOUT
+		WHERE
+			CAFE_ID = #cafeId#
+		ORDER BY COL_INDEX,ROW_INDEX
+	</select>  
+	<select id="countByCafe" parameterClass="java.lang.String" resultClass="int">  
+		SELECT /* [CafePortletLayout_SqlMap.xml] lightpack.cafe.cafe.dao.CafePortletLayout.countByCafe */ 
+           COUNT(*)
+		FROM
+			IKEP4_CF_PORTLET_LAYOUT 
+		WHERE
+			CAFE_ID = #cafeId# 
+		ORDER BY ROW_INDEX
+  	</select>
+ 
+	<insert id="create" parameterClass="CafePortletLayout"> 
+	<![CDATA[ 
+		INSERT INTO IKEP4_CF_PORTLET_LAYOUT /* [CafePortletLayout_SqlMap.xml] lightpack.cafe.cafe.dao.CafePortletLayout.create */
+		( 
+		    PORTLET_LAYOUT_ID,	
+		    CAFE_ID, 
+		    PORTLET_ID,			
+		    COL_INDEX,
+		    ROW_INDEX,			
+		    IS_BOARD_PORTLET,		
+		    BOARD_ID
+		) VALUES (
+			#portletLayoutId#,	
+			#cafeId#, 
+			#portletId#,		
+			#colIndex#, 
+			#rowIndex#,			
+			#isBoardPortlet#,		
+			#boardId#
+		)
+	]]>		
+	</insert>
+	
+	<update id="update" parameterClass="CafePortletLayout"> 
+		UPDATE IKEP4_CF_PORTLET_LAYOUT 
+			/* [CafePortletLayout_SqlMap.xml] lightpack.cafe.cafe.dao.CafePortletLayout.update */
+    	SET 
+    		CAFE_ID     = #cafeId#,
+          	PORTLET_ID    = #portletId#,
+          	COL_INDEX    = #colIndex#,
+          	ROW_INDEX    = #rowIndex#          	
+		WHERE 
+			PORTLET_LAYOUT_ID = #portletLayoutId# 
+	</update>
+ 
+	<delete id="physicalDelete" parameterClass="java.lang.String"> 
+		DELETE FROM IKEP4_CF_PORTLET_LAYOUT 
+			/* [CafePortletLayout_SqlMap.xml] lightpack.cafe.cafe.dao.CafePortletLayout.physicalDelete */
+		WHERE
+			PORTLET_LAYOUT_ID = #portletLayoutId# 
+	</delete>
+	
+	<delete id="physicalDeleteByCafeId" parameterClass="java.lang.String"> 
+		DELETE FROM IKEP4_CF_PORTLET_LAYOUT 
+			/* [CafePortletLayout_SqlMap.xml] lightpack.cafe.cafe.dao.CafePortletLayout.physicalDeleteByCafeId */
+		WHERE
+			CAFE_ID = #cafeId# 
+	</delete>  
+	  
+</sqlMap> 

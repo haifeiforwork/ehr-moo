@@ -1,0 +1,58 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ko">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Home</title>
+<link rel="stylesheet" type="text/css" href="../../css/guide.css" />
+<link rel="stylesheet" type="text/css" href="../../css/theme01/jquery_ui_custom.css" />
+<link rel="stylesheet" type="text/css" href="../../css/common.css" />
+<link rel="stylesheet" type="text/css" href="../../css/theme01/theme.css" />
+<script type="text/javascript" src="../../js/jquery/jquery-1.6.2.min.js"></script>
+<script type="text/javascript" src="../../js/jquery/jquery-ui-1.8.13.min.without.datepicker.js"></script>
+<script type="text/javascript" src="../../js/langResource/ko.js"></script>
+<script type="text/javascript" src="../../js/common.pack.js"></script>
+<script type="text/javascript">
+var unselect;
+(function($){
+	$(document).ready(function() {
+		$(".list-selectable").selectable({
+			stop : function(event, ui) {
+				//iKEP.debug($(".ui-selected", this));
+			},
+			unselected : function(event, ui) {
+				//iKEP.debug(ui);
+			}
+		});
+	});
+	
+	unselect = function() {
+		$('.list-selectable > li').removeClass('ui-selected');
+	};
+})(jQuery);
+</script>
+<style type="text/css">
+	.list-selectable { list-style-type: none; margin: 0; padding: 0; width: 60%; }
+	.list-selectable li { margin: 3px; padding: 0.4em; font-size: 1.4em; height: 18px; border:1px solid #eee; }
+	.list-selectable .ui-selecting { background: #FECA40; }
+	.list-selectable .ui-selected { background: #F39814; color: white; }
+	
+</style>
+
+</head>
+
+<body class="popup">
+	<div>
+		interaction : <a onclick="unselect()">unselectAll</a>
+	</div>
+	<ul class="list-selectable">
+		<li>item 1</li>
+		<li>item 2</li>
+		<li>item 3</li>
+		<li>item 4</li>
+		<li>item 5</li>
+		<li>item 6</li>
+		<li>item 7</li>
+		<li>item 8</li>
+	</ul>
+</body>
+</html>

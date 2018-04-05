@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="com.lgcns.ikep4.servicepack.usagetracker.utMenuLog" >
+
+  <typeAlias alias="utMenuLog"                type="com.lgcns.ikep4.servicepack.usagetracker.model.UtMenuLog"/>
+  <typeAlias alias="utMenuLogKey"             type="java.lang.String"/>
+  <typeAlias alias="utSearchCondition"             type="com.lgcns.ikep4.servicepack.usagetracker.search.UtSearchCondition"/>
+  <typeAlias alias="utSearchUtil"             type="com.lgcns.ikep4.servicepack.usagetracker.util.SearchUtil"/>
+  
+  <resultMap id="result" class="utMenuLog" >
+    <result column="MENU_ACCESS_ID" jdbcType="VARCHAR" property="menuAccessId" />
+    <result column="MENU_ID" jdbcType="VARCHAR" property="menuId" />
+    <result column="PORTAL_ID" jdbcType="VARCHAR" property="portalId" />
+    <result column="USER_ID" jdbcType="VARCHAR" property="userId" />
+    <result column="ACCESS_DATE" jdbcType="TIMESTAMP" property="accessDate" />
+  </resultMap>
+  
+  
+    <resultMap id="resultUser" class="utMenuLog" >
+    <result column="MENU_ACCESS_ID" jdbcType="VARCHAR" property="menuAccessId" />
+    <result column="MENU_ID" jdbcType="VARCHAR" property="menuId" />
+    <result column="PORTAL_ID" jdbcType="VARCHAR" property="portalId" />
+    <result column="USER_ID" jdbcType="VARCHAR" property="userId" />
+    <result column="ACCESS_DATE" jdbcType="TIMESTAMP" property="accessDate" />
+    <result property="jobTitleName" column="JOB_TITLE_NAME"/>
+	<result property="jobTitleEnglishName" column="JOB_TITLE_ENGLISH_NAME"/>
+	<result property="userName" column="USER_NAME"/>
+	<result property="userEnglishName" column="USER_ENGLISH_NAME"/>
+	<result property="teamName" column="TEAM_NAME"/>
+	<result property="teamEnglishName" column="TEAM_ENGLISH_NAME"/>
+  </resultMap>
+
+
+  <resultMap id="resultMenuUser" class="utMenuLog" >
+    <result column="MENU_ACCESS_ID" jdbcType="VARCHAR" property="menuAccessId" />
+    <result column="MENU_ID" jdbcType="VARCHAR" property="menuId" />
+    <result column="PORTAL_ID" jdbcType="VARCHAR" property="portalId" />
+    <result column="USER_ID" jdbcType="VARCHAR" property="userId" />
+    <result column="ACCESS_DATE" jdbcType="TIMESTAMP" property="accessDate" />
+    <result property="jobTitleName" column="JOB_TITLE_NAME"/>
+	<result property="jobTitleEnglishName" column="JOB_TITLE_ENGLISH_NAME"/>
+	<result property="userName" column="USER_NAME"/>
+	<result property="userEnglishName" column="USER_ENGLISH_NAME"/>
+	<result property="teamName" column="TEAM_NAME"/>
+	<result property="teamEnglishName" column="TEAM_ENGLISH_NAME"/>
+	<result property="menuName" column="MENU_NAME"/>
+  </resultMap>
+
+
+
+
+  <sql id="whereClause">
+    <iterate conjunction="or" prepend="where" property="oredCriteria" removeFirstPrepend="iterate">
+      <isEqual compareValue="true" property="oredCriteria[].valid">
+        (
+        <iterate conjunction="and" prepend="and" property="oredCriteria[].criteriaWithoutValue">
+          $oredCriteria[].criteriaWithoutValue[]$
+        </iterate>
+        <iterate conjunction="and" prepend="and" property="oredCriteria[].criteriaWithSingleValue">
+          $oredCriteria[].criteriaWithSingleValue[].condition$
+            #oredCriteria[].criteriaWithSingleValue[].value#
+        </iterate>
+        <iterate conjunction="and" prepend="and" property="oredCriteria[].criteriaWithListValue">
+          $oredCriteria[].criteriaWithListValue[].condition$
+          <iterate close=")" conjunction="," open="(" property="oredCriteria[].criteriaWithListValue[].values">
+            #oredCriteria[].criteriaWithListValue[].values[]#
+          </iterate>
+        </iterate>
+        <iterate conjunction="and" prepend="and" property="oredCriteria[].criteriaWithBetweenValue">
+          $oredCriteria[].criteriaWithBetweenValue[].condition$
+          #oredCriteria[].criteriaWithBetweenValue[].values[0]# and
+          #oredCriteria[].criteriaWithBetweenValue[].values[1]#
+        </iterate>
+        )
+      </isEqual>
+    </iterate>
+  </sql>
+        
+  <sql id="sqlColumnList"> 
+	  s.MENU_ACCESS_ID, 
+	  s.MENU_ID, 
+	  s.PORTAL_ID, 
+	  s.USER_ID, 
+	  s.ACCESS_DATE
+  </sql> 
+  
+ <select id="get" parameterClass="utMenuLogKey" resultMap="result"> 
+    SELECT /* [utMenuLog_SqlMap.xml] utMenuLog.get */
+    	<include refid="com.lgcns.ikep4.servicepack.usagetracker.utMenuLog.sqlColumnList" />
+   from IKEP4_UT_MENU_LOG s
+    where MENU_ACCESS_ID = #menuAccessId#
+  </select>
+  
+  <select id="exists" parameterClass="utMenuLogKey" resultClass="int"> 
+    SELECT COUNT(*) /* [utMenuLog_SqlMap.xml] utMenuLog.exists */
+    from IKEP4_UT_LOGIN_LOG
+    where LOGIN_HISTORY_ID = #loginHistoryId#
+  </select> 
+  
+  <insert id="create" parameterClass="utMenuLog"> 
+    insert into IKEP4_UT_MENU_LOG (MENU_ACCESS_ID, MENU_ID, PORTAL_ID, USER_ID, ACCESS_DATE) /* [utMenuLog_SqlMap.xml] utMenuLog.create */
+    values (#menuAccessId#, #menuId#, #portalId#, #userId#,
+      #accessDate#)
+  </insert>
+  <update id="update" parameterClass="utMenuLog"> 
+    update IKEP4_UT_MENU_LOG /* [utMenuLog_SqlMap.xml] utMenuLog.update */
+    set MENU_ID = #menuId#,
+      PORTAL_ID = #portalId#,
+      USER_ID = #userId#,
+      ACCESS_DATE = #accessDate#
+    where MENU_ACCESS_ID = #menuAccessId#
+  </update>
+  
+  <delete id="remove" parameterClass="utMenuLogKey"> 
+    delete from IKEP4_UT_MENU_LOG /* [utMenuLog_SqlMap.xml] utMenuLog.remove */
+    where MENU_ACCESS_ID = #menuAccessId#
+  </delete>  
+  
+    <!--  최근 한달간 로그인 상세로그 -->
+  <select id="listBySearchCondition" parameterClass="utSearchCondition" resultMap="resultMenuUser">  
+	SELECT * /* [utMenuLog_SqlMap.xml] utMenuLog.listBySearchCondition */
+	FROM ( 
+	     SELECT  ROWNUM AS RNUM, A.*
+	     FROM ( 
+		         SELECT 
+		           <include refid="com.lgcns.ikep4.servicepack.usagetracker.utMenuLog.sqlColumnList" />,
+		           eu.USER_NAME, 
+			       eu.USER_ENGLISH_NAME, 
+			       eu.TEAM_NAME, 
+			       eu.TEAM_ENGLISH_NAME,
+			       ejt.JOB_TITLE_NAME, 
+			       ejt.JOB_TITLE_ENGLISH_NAME,
+			       m.menu_name
+		         FROM   IKEP4_UT_MENU_LOG s,IKEP4_UT_MENU m,IKEP4_EV_USER eu,IKEP4_EV_JOB_TITLE ejt
+    			 WHERE s.menu_id =  m.menu_id
+  			 		    and eu.job_title_code =ejt.job_title_code
+    					and s.user_id = eu.user_id
+    					and s.PORTAL_ID = eu.PORTAL_ID
+    			 		and s.PORTAL_ID = #portalId#
+    			        and s.MENU_ID = #menuId#
+    			 		and  trunc(s.ACCESS_DATE) between trunc(#startDate#) and trunc(#endDate#)
+				order by s.ACCESS_DATE desc
+	    	) A WHERE ROWNUM <![CDATA[<=]]>   #endRowIndex# /* 종료  */
+	) WHERE RNUM <![CDATA[>]]>   #startRowIndex# /* 시작 */
+  </select>   
+  
+  <select id="countBySearchCondition" parameterClass="utSearchCondition" resultClass="int">  
+	SELECT COUNT(*) /* [utMenuLog_SqlMap.xml] utMenuLog.countBySearchCondition */
+	FROM   IKEP4_UT_MENU_LOG s,IKEP4_UT_MENU m,IKEP4_EV_USER eu,IKEP4_EV_JOB_TITLE ejt
+	 WHERE s.menu_id =  m.menu_id
+		    and eu.job_title_code =ejt.job_title_code
+			and s.user_id = eu.user_id
+			and s.PORTAL_ID = eu.PORTAL_ID
+	 		and s.PORTAL_ID = #portalId#
+	        and s.MENU_ID = #menuId#
+	 		and  trunc(s.ACCESS_DATE) between trunc(#startDate#) and trunc(#endDate#)
+  </select> 
+  
+  
+      <!--  최근 한달간 로그인 상세로그 -->
+  <select id="excelMenuListBySearchCondition" parameterClass="utSearchCondition" resultMap="resultMenuUser">  
+		SELECT  /* [utMenuLog_SqlMap.xml] utMenuLog.excelMenuListBySearchCondition */
+           <include refid="com.lgcns.ikep4.servicepack.usagetracker.utMenuLog.sqlColumnList" />,
+           eu.USER_NAME, 
+	       eu.USER_ENGLISH_NAME, 
+	       eu.TEAM_NAME, 
+	       eu.TEAM_ENGLISH_NAME,
+	       ejt.JOB_TITLE_NAME, 
+	       ejt.JOB_TITLE_ENGLISH_NAME,
+	       m.menu_name
+         FROM   IKEP4_UT_MENU_LOG s,IKEP4_UT_MENU m,IKEP4_EV_USER eu,IKEP4_EV_JOB_TITLE ejt
+  			 WHERE  s.menu_id =  m.menu_id
+  			 		and eu.job_title_code =ejt.job_title_code
+  					and s.user_id = eu.user_id
+  					and s.PORTAL_ID = eu.PORTAL_ID
+  			 		and s.PORTAL_ID = #portalId#
+  			        and s.MENU_ID = #menuId#
+  			 		and  trunc(s.ACCESS_DATE) between trunc(#startDate#) and trunc(#endDate#)
+		order by s.ACCESS_DATE desc
+  </select> 
+  
+</sqlMap>

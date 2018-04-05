@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="com.lgcns.ikep4.support.searchpreprocessor.batchLog">
+  
+  <typeAlias alias="spBatchLog"       type="com.lgcns.ikep4.support.searchpreprocessor.model.BatchLog"/>
+  <typeAlias alias="spSearchCondition" type="com.lgcns.ikep4.support.searchpreprocessor.search.SpSearchCondition"/>
+  
+  <resultMap class="spBatchLog" id="baseResultMap">
+    <result column="ID" jdbcType="VARCHAR" property="id" />
+    <result column="RESULT" jdbcType="VARCHAR" property="result" />
+    <result column="START_DATE" jdbcType="TIMESTAMP" property="startDate" />
+    <result column="END_DATE" jdbcType="TIMESTAMP" property="endDate" />
+    <result column="DESCRIPTION" jdbcType="VARCHAR" property="description" />
+    <result column="NAME" jdbcType="VARCHAR" property="name" />
+  </resultMap>
+
+   <sql id="sqlColumnList"> 
+	  ID, RESULT, START_DATE, END_DATE, DESCRIPTION, NAME
+  </sql> 
+  
+  <!-- ANSI -->
+  <insert id="create" parameterClass="spBatchLog">
+    insert into IKEP4_SP_BATCH_LOG (
+    	<include refid="com.lgcns.ikep4.support.searchpreprocessor.batchLog.sqlColumnList" />
+    )
+    values (
+        #id#,
+        #result#,
+        #startDate#,
+        #endDate#,
+        #description#,
+        #name#
+      )
+  </insert>
+  	
+  <!-- MS SQL -->
+   <select id="listBySearchCondition" parameterClass="spSearchCondition" resultMap="baseResultMap">  
+	SELECT /* [dbRole_SqlMap.xml] dbRole.listBySearchCondition */ 
+	       *
+	FROM ( 
+	     SELECT  A.* FROM ( 
+	         /* START========================================= */
+	         SELECT Row_number() OVER (order by  START_DATE desc) AS RNUM,
+	         		<include refid="com.lgcns.ikep4.support.searchpreprocessor.batchLog.sqlColumnList" /> 
+	         FROM   IKEP4_SP_BATCH_LOG 
+			 WHERE  1 = 1 
+			<isNotEmpty property="searchColumn">
+				AND	name = #searchColumn#
+			</isNotEmpty> 	
+			 /* ===========================================END  */ 
+	<![CDATA[  
+	
+	    ) A WHERE RNUM <=  #endRowIndex# /* 종료  */ 
+	) TBL WHERE RNUM >  #startRowIndex# /* 시작 */
+	]]> 
+  </select>   
+  
+  <!-- ANSI -->
+  <select id="countBySearchCondition" parameterClass="spSearchCondition" resultClass="int">  
+	SELECT /* [dbRole_SqlMap.xml] dbRole.countBySearchCondition */ 
+           COUNT(*)
+	FROM   IKEP4_SP_BATCH_LOG
+	WHERE  1 = 1 
+	<isNotEmpty property="searchColumn">
+		AND name = #searchColumn#
+	</isNotEmpty> 
+  </select> 
+  
+</sqlMap>

@@ -1,0 +1,314 @@
+<?xml version="1.0" encoding="EUC-KR"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="support.fileupload.filecheck">
+
+	
+	<typeAlias alias="fileCheck"
+		type="com.lgcns.ikep4.support.fileupload.model.FileCheck" />
+		
+	<!-- MS SQL -->
+	<select id="checkBoard" parameterClass="fileCheck" resultClass="fileCheck">
+		SELECT '' fileId 
+    </select>
+    
+    <!-- MS SQL -->
+    <select id="checkPlanner" parameterClass="fileCheck" resultClass="fileCheck">
+	<![CDATA[
+		SELECT #itemId# "itemId", #userId# "userId", 'Y' "isAuth"
+		WHERE EXISTS
+		  (SELECT schedule_id
+		  FROM ikep4_sd_schedule
+		  WHERE schedule_id = #itemId#
+		  AND SCHEDULE_PUBLIC = 0
+		  )
+		OR EXISTS
+		  (SELECT TOP 1 a.schedule_id
+		  FROM ikep4_sd_schedule a
+		  LEFT JOIN ikep4_sd_participant b
+		  ON (b.schedule_id = a.schedule_id)
+		  WHERE a.schedule_id = #itemId#
+		  AND SCHEDULE_PUBLIC = 1
+		  AND #userId# IN (a.register_id, b.target_user_id)
+		  ) 
+	]]>
+    </select>
+    
+    <!-- ANSI -->
+    <select id="checkSocialBlog" parameterClass="fileCheck" resultClass="fileCheck">
+		SELECT 
+			ITEM.ITEM_ID AS ITEM_ID
+			ITEM.REGISTER_ID AS USER_ID
+		FROM  IKEP4_SB_BD_ITEM ITEM
+		WHERE 
+		<dynamic>
+							
+			<!-- 해당 블로그 글 ItemId 해당 글만 조회시 사용 -->
+			<isNotEmpty property="itemId" prepend="AND">
+				ITEM.ITEM_ID = #itemId#
+			</isNotEmpty>
+					
+			<!-- 공개 비공개 관련 글 조회시 사용 0 공개만 1 비공개까지 -->
+			<isNotEmpty property="isAuth">
+				<isEqual property="isAuth" compareValue="N" prepend="AND">
+					ITEM.READ_PERMISSION = 0
+				</isEqual>
+			</isNotEmpty>
+					
+		</dynamic>
+    </select>
+    
+    <!-- MS SQL -->
+    <select id="checkMicroBlog" parameterClass="fileCheck" resultClass="java.lang.Integer">
+		SELECT /* [FileCheck_SqlMap.xml] filecheck.checkMicroBlog */
+			COUNT (A.AUTH)
+  		FROM 
+  		(
+	  		SELECT mblog.MBLOG_ID AS AUTH
+	          FROM IKEP4_MB_MBLOG mblog
+	         WHERE mblog.MBLOG_ID 			= #itemId#
+	           AND (mblog.MBGROUP_ID IS NULL OR LEN (mblog.MBGROUP_ID) = 0)
+	           
+	        UNION
+	        
+	        SELECT mblog.MBLOG_ID AS AUTH
+	          FROM IKEP4_MB_MBLOG mblog, IKEP4_MB_MBGROUP_MEMBER mbgroupMember
+	         WHERE mblog.MBLOG_ID 			= #itemId#
+	           AND mblog.MBGROUP_ID 		= mbgroupmember.MBGROUP_ID
+	           AND mbgroupMember.MEMBER_ID 	= #userId#
+	           AND mbgroupmember.STATUS 	= '1'
+	           
+	        UNION
+	        
+	        SELECT mbgroup.MBGROUP_ID AS AUTH
+	          FROM IKEP4_MB_MBGROUP mbgroup
+	         WHERE mbgroup.MBGROUP_ID 		= #itemId#
+       ) A
+    </select>
+    
+    <!-- MS SQL -->
+    <select id="checkQA" parameterClass="fileCheck" resultClass="fileCheck">
+		SELECT '' fileId 
+    </select>
+	
+	<!-- MS SQL -->
+	<select id="checkForum" parameterClass="fileCheck" resultClass="fileCheck">
+		SELECT '' fileId 
+    </select>
+    
+    <!-- ANSI -->
+    <select id="checkTodo" parameterClass="fileCheck" resultClass="java.lang.Integer">
+	  <![CDATA[
+		   SELECT /* [FileCheck_SqlMap.xml] FileCheck.checkTodo */ 
+		   		  COUNT(1) 
+		     FROM IKEP4_TD_TASK A,
+			      IKEP4_TD_TASK_USER B
+			WHERE A.TASK_ID = SUBSTRING(#itemId#, 
+										1, 
+										CASE WHEN CHARINDEX('_', #itemId#) - 1 = -1 THEN LENGTH(#itemId#)
+											 ELSE CHARINDEX('_', #itemId#) - 1 END
+										) 
+			  AND A.TASK_ID = B.TASK_ID
+			  AND (A.DIRECTOR_ID = #userId# OR B.WORKER_ID = #userId#)     
+	   ]]>
+    </select>
+    
+    <!-- MS SQL -->
+    <select id="checkMessage" parameterClass="fileCheck" resultClass="java.lang.Integer">
+    	WITH TBL AS (
+    		SELECT A.GROUP_ID 
+            FROM IKEP4_EV_GROUP A, IKEP4_EV_USER_GROUP B 
+            WHERE A.GROUP_ID = B.GROUP_ID
+            AND A.GROUP_TYPE_ID = 'G0001'
+            AND B.USER_ID = #userId#
+    	),
+    	CTE AS (
+    		SELECT *
+            FROM IKEP4_EV_GROUP 
+            WHERE GROUP_ID IN ( SELECT GROUP_ID FROM TBL )
+            UNION ALL
+            SELECT G.*
+            FROM IKEP4_EV_GROUP G, CTE
+            WHERE CTE.PARENT_GROUP_ID = G.GROUP_ID
+    	)
+		SELECT COUNT(*) /* [FileCheck_SqlMap.xml] filecheck.checkMessage */
+    	FROM IKEP4_ME_MESSAGE
+    	WHERE MESSAGE_ID IN ( SELECT MESSAGE_ID 
+                                FROM IKEP4_ME_SENDBOX 
+                               WHERE MESSAGE_ID = #itemId#
+                                 AND USER_ID = #userId#
+                               UNION ALL 
+                              SELECT MESSAGE_ID 
+                                FROM IKEP4_ME_STOREBOX 
+                               WHERE MESSAGE_ID = #itemId#
+                                 AND USER_ID = #userId#  
+                               UNION ALL 
+                              SELECT MESSAGE_ID 
+                                FROM IKEP4_ME_RECEIVEBOX
+                               WHERE MESSAGE_ID = #itemId#
+                                 AND USER_ID IN (SELECT group_id FROM CTE
+				                                 UNION 
+				                                 SELECT #userId# ) )
+    </select>
+    
+    <!-- MS SQL -->
+    <select id="checkWorkManual" parameterClass="fileCheck" resultClass="fileCheck">
+		SELECT '' fileId 
+    </select>
+    
+    <!-- MS SQL -->
+    <select id="checkWhosWho" parameterClass="fileCheck" resultClass="fileCheck">
+		SELECT '' fileId 
+    </select>
+    
+    <!-- MS SQL -->
+    <select id="checkCorporateVocabulary" parameterClass="fileCheck" resultClass="fileCheck">
+		SELECT '' fileId 
+    </select>
+    
+    <!-- MS SQL -->
+    <select id="checkSurvey" parameterClass="fileCheck" resultClass="fileCheck">
+		SELECT '' fileId 
+    </select>
+    
+    <!-- MS SQL -->
+    <select id="checkIdeation" parameterClass="fileCheck" resultClass="fileCheck">
+		SELECT '' fileId 
+    </select>
+    
+    <!-- MS SQL -->
+    <select id="checkWorkspace" parameterClass="fileCheck" resultClass="fileCheck">
+		SELECT '' fileId 
+    </select>
+    
+    <!-- ANSI -->
+    <select id="checkWorkspaceBoard" parameterClass="fileCheck" resultClass="fileCheck">
+		<![CDATA[
+		SELECT  /* [FileCheck_SqlMap.xml] filecheck.checkWorkspaceBoard */ 
+			COUNT(PERM) AS CNT
+		FROM 
+		(
+			SELECT 
+				CASE
+					WHEN A.FOLLOW_BOARD_PERMISSION = 0 THEN 
+						CASE
+							WHEN A.READ_PERMISSION='1' THEN 1
+							WHEN A.READ_PERMISSION='2' AND C.MEMBER_LEVEL <='4' THEN 1
+							WHEN A.READ_PERMISSION='3' AND C.MEMBER_LEVEL <='3' THEN 1
+							ELSE 0
+						END 
+					WHEN A.FOLLOW_BOARD_PERMISSION = 1 THEN 
+						CASE
+							WHEN B.READ_PERMISSION='1' THEN 1
+							WHEN B.READ_PERMISSION='2' AND C.MEMBER_LEVEL <='4' THEN 1
+							WHEN B.READ_PERMISSION='3' AND C.MEMBER_LEVEL <='3' THEN 1
+							WHEN B.WRITE_PERMISSION='1' THEN 1
+							WHEN B.WRITE_PERMISSION='2' AND C.MEMBER_LEVEL <='4' THEN 1
+							WHEN B.WRITE_PERMISSION='3' AND C.MEMBER_LEVEL <='3' THEN 1
+							ELSE 0
+						END
+					ELSE 0 
+				END PERM
+			FROM
+				IKEP4_WS_BD_ITEM A
+				INNER JOIN IKEP4_WS_BD_BOARD B ON (A.BOARD_ID=B.BOARD_ID)
+				INNER JOIN IKEP4_WS_MEMBER C ON (B.WORKSPACE_ID=C.WORKSPACE_ID AND C.MEMBER_LEVEL IN ('1','2','3','4') AND C.MEMBER_ID=#userId#)
+			WHERE A.ITEM_ID = #itemId# 
+		
+			UNION ALL
+			SELECT 
+				CASE
+					WHEN A.FOLLOW_BOARD_PERMISSION = 0 THEN 
+						CASE
+							WHEN A.READ_PERMISSION='1' THEN 1
+							WHEN A.READ_PERMISSION='2' AND C.MEMBER_LEVEL <='4' THEN 1
+							WHEN A.READ_PERMISSION='3' AND C.MEMBER_LEVEL <='3' THEN 1
+							ELSE 0
+						END 
+					WHEN A.FOLLOW_BOARD_PERMISSION = 1 THEN 
+						CASE
+							WHEN B.READ_PERMISSION='1' THEN 1
+							WHEN B.READ_PERMISSION='2' AND C.MEMBER_LEVEL <='4' THEN 1
+							WHEN B.READ_PERMISSION='3' AND C.MEMBER_LEVEL <='3' THEN 1
+							WHEN B.WRITE_PERMISSION='1' THEN 1
+							WHEN B.WRITE_PERMISSION='2' AND C.MEMBER_LEVEL <='4' THEN 1
+							WHEN B.WRITE_PERMISSION='3' AND C.MEMBER_LEVEL <='3' THEN 1
+							ELSE 0
+						END
+					ELSE 0 
+				END PERM
+			FROM
+				IKEP4_WS_BD_ITEM A
+				INNER JOIN IKEP4_WS_BD_BOARD B ON (A.BOARD_ID=B.BOARD_ID)
+				INNER JOIN IKEP4_WS_MEMBER C ON (B.WORKSPACE_ID=C.WORKSPACE_ID AND C.MEMBER_LEVEL IN ('1','2','3','4') AND C.MEMBER_ID=#userId#)
+				INNER JOIN IKEP4_WS_BD_ITEM_VERSION D ON (A.ITEM_ID=D.ITEM_ID AND D.VERSION_ID= #itemId#)
+			WHERE B.VERSION_MANAGE=1
+		) TBL
+	]]>		
+    </select>
+    
+    <!-- ANSI -->
+    <select id="checkWorkspaceWeekly" parameterClass="fileCheck" resultClass="fileCheck">
+		SELECT /* [FILECHECK_SQLMAP.XML] filecheck.checkWorkspaceWeekly */ 
+			COUNT(CNT) AS CNT
+		FROM 
+		(
+			SELECT
+				COUNT(A.ITEM_ID) AS CNT
+			FROM
+				IKEP4_WS_BD_WEEKLY A
+				INNER JOIN IKEP4_WS_MEMBER B ON (B.WORKSPACE_ID=A.WORKSPACE_ID AND B.MEMBER_LEVEL IN ('1','2','3','4') AND B.MEMBER_ID=#userId#)
+			WHERE 
+				A.ITEM_ID = #itemId# 
+				AND A.IS_SUMMARY=0
+		
+			UNION ALL 
+		
+			SELECT
+				COUNT(A.ITEM_ID) AS CNT
+			FROM
+				IKEP4_WS_BD_WEEKLY A
+				INNER JOIN 
+				(
+					SELECT
+						G.GROUP_ID, G.PARENT_GROUP_ID , W.WORKSPACE_ID
+					FROM 
+						IKEP4_WS_WORKSPACE W 
+						INNER JOIN IKEP4_EV_GROUP G ON (W.TEAM_ID= G.GROUP_ID AND G.GROUP_TYPE_ID='G0001')
+				) B ON (A.WORKSPACE_ID=B.WORKSPACE_ID)
+				INNER JOIN IKEP4_WS_WORKSPACE C ON (C.TEAM_ID=B.PARENT_GROUP_ID)
+				INNER JOIN IKEP4_WS_MEMBER D ON (D.WORKSPACE_ID=C.WORKSPACE_ID AND D.MEMBER_LEVEL IN ('1','2','3','4') AND D.MEMBER_ID=#userId#)
+			WHERE 
+				A.ITEM_ID =  #itemId# 
+				AND A.IS_SUMMARY=1
+		) TBL
+    </select>
+    
+    <!-- ANSI -->
+    <select id="checkWorkspaceAnnounce" parameterClass="fileCheck" resultClass="fileCheck">
+		SELECT  /* [FileCheck_SqlMap.xml] filecheck.checkWorkspaceAnnounce */ COUNT(A.ITEM_ID)
+    	FROM
+    		IKEP4_WS_BD_ANNOUNCE A
+    		INNER JOIN IKEP4_WS_BD_ANNOUNCE_WORKSPACE B ON (A.ITEM_ID=B.ITEM_ID)
+    		INNER JOIN IKEP4_WS_MEMBER C ON (C.WORKSPACE_ID=B.WORKSPACE_ID AND C.MEMBER_LEVEL IN ('1','2','3','4') AND C.MEMBER_ID=#userId#)
+    	 WHERE A.ITEM_ID = #itemId#	
+    </select>
+    
+    <!-- MS SQL -->
+    <select id="checkKms" parameterClass="fileCheck" resultClass="fileCheck">
+		SELECT '' fileId 
+    </select>
+    
+    <!-- ANSI -->
+    <select id="getBoardId" parameterClass="string" resultClass="string">
+    	SELECT  /* [FileCheck_SqlMap.xml] filecheck.getBoardId */ BOARD_ID
+    	FROM   IKEP4_BD_ITEM WHERE ITEM_ID = #itemId#		
+    </select>
+    
+    
+    <select id="getItemAuthor" parameterClass="string" resultClass="string">
+    	SELECT  /* [FileCheck_SqlMap.xml] filecheck.getItemAuthor */ REGISTER_ID
+    	FROM   IKEP4_BD_ITEM WHERE ITEM_ID = #itemId#		
+    </select>
+</sqlMap>
+

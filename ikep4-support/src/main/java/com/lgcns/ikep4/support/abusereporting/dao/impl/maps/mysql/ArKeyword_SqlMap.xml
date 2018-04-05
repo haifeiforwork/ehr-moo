@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="support.abusereporting.dao.arKeyword" >
+	<typeAlias alias = "ArKeyword" type="com.lgcns.ikep4.support.abusereporting.model.ArKeyword"/>
+	<typeAlias alias = "ArAbuseSearchCondition" 	type="com.lgcns.ikep4.support.abusereporting.search.ArAbuseSearchCondition"/>
+	
+	<!-- IKEP4_AR_KEYWORD 테이블 조회 결과 -->
+	<resultMap id="result" class="ArKeyword">
+		<result property="keyword" 			column="KEYWORD" 			/>
+		<result property="portalId" 		column="PORTAL_ID" 			/>
+		<result property="registerId" 		column="REGISTER_ID" 		/>
+		<result property="registerName" 	column="REGISTER_NAME" 		/>
+		<result property="registDate" 		column="REGIST_DATE" 		/>
+	</resultMap>
+	
+	<!-- insert -->
+	<insert id="insert" parameterClass="ArKeyword"> 
+      <![CDATA[ 
+           INSERT INTO IKEP4_AR_KEYWORD ( /* [ArKeyword_SqlMap.xml] arKeyword.insert */
+           KEYWORD, PORTAL_ID, REGISTER_ID, REGISTER_NAME, REGIST_DATE)  
+           VALUES (#keyword#, #portalId#, #registerId#, #registerName#, NOW())
+       ]]>
+   </insert>
+   
+   <!-- select -->
+	<select id="select" parameterClass="ArKeyword" resultMap="result">
+	  <![CDATA[
+		   SELECT /* [ArKeyword_SqlMap.xml] arKeyword.select */ 
+		    * 
+		    FROM IKEP4_AR_KEYWORD 
+		    WHERE KEYWORD 	= #keyword#
+		      AND PORTAL_ID = #portalId#
+	   ]]>
+	</select>
+	  	   
+   <!-- delete -->
+   <delete id="delete" parameterClass="ArKeyword">
+      <![CDATA[
+	       DELETE FROM IKEP4_AR_KEYWORD   /* [ArKeyword_SqlMap.xml] arKeyword.delete */ 
+	       WHERE KEYWORD 	= #keyword#
+		     AND PORTAL_ID 	= #portalId#
+	   ]]>
+	</delete>
+
+	<!-- selectCount -->
+	<select id="selectCount" parameterClass="ArKeyword" resultClass="java.lang.Integer">
+	  <![CDATA[
+		   SELECT /* [ArKeyword_SqlMap.xml] arKeyword.selectCount */ 
+		   COUNT(KEYWORD) 
+		   FROM IKEP4_AR_KEYWORD  
+		   WHERE KEYWORD 	= #keyword#
+		     AND PORTAL_ID 	= #portalId#
+	   ]]>
+	</select>
+	
+  <select id="list" parameterClass="ArAbuseSearchCondition" resultClass="java.lang.String">    
+	SELECT   /* [ArKeyword_SqlMap.xml] arKeyword.list */  
+		DISTINCT(A.KEYWORD) 
+	FROM IKEP4_AR_KEYWORD A, IKEP4_AR_KEYWORD_MODULE B, IKEP4_AR_MODULE C
+	WHERE A.KEYWORD 	= B.KEYWORD
+	  AND A.PORTAL_ID 	= B.PORTAL_ID
+	  AND A.PORTAL_ID 	= #portalId#
+	  AND B.MODULE_CODE = C.MODULE_CODE
+		<isNotEmpty property="moduleCode">
+			<isNotEqual property="moduleCode" compareValue="ALL">
+		 			AND C.MODULE_CODE 		= #moduleCode#
+			</isNotEqual>
+		</isNotEmpty>
+		<isNotEmpty property="searchWord">
+		 			AND A.KEYWORD 	LIKE CONCAT('%', #searchWord#, '%')
+		</isNotEmpty>
+	ORDER BY KEYWORD ASC
+  </select> 
+  
+</sqlMap>

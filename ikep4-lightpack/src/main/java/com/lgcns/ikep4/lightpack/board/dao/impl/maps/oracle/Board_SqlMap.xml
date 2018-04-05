@@ -1,0 +1,360 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="lightpack.board.dao.board">
+  <typeAlias alias="Board" type="com.lgcns.ikep4.lightpack.board.model.Board"/>
+  <resultMap id="boardResult" class="com.lgcns.ikep4.lightpack.board.model.Board"> 
+    <result column="BOARD_ID"           jdbcType="VARCHAR" property="boardId" />
+    <result column="BOARD_PARENT_ID"    jdbcType="VARCHAR" property="boardParentId" />
+    <result column="SORT_ORDER"         jdbcType="DECIMAL" property="sortOrder" />
+    <result column="BOARD_NAME"         jdbcType="VARCHAR" property="boardName" />
+    <result column="BOARD_ROOT_ID"      jdbcType="VARCHAR" property="boardRootId" />
+    <result column="BOARD_DESCRIPTION"  jdbcType="VARCHAR" property="boardDescription" />
+    <result column="BOARD_TYPE"         jdbcType="VARCHAR" property="boardType" />
+    <result column="URL"                jdbcType="VARCHAR" property="url" />
+    <result column="LIST_TYPE"          jdbcType="VARCHAR" property="listType" />
+    <result column="ANONYMOUS"          jdbcType="DECIMAL" property="anonymous" />
+    <result column="RSS"                jdbcType="DECIMAL" property="rss" />
+    <result column="FILE_SIZE"          jdbcType="DECIMAL" property="fileSize" />
+    <result column="IMAGE_FILE_SIZE"    jdbcType="DECIMAL" property="imageFileSize" />
+    <result column="IMAGE_WIDTH"        jdbcType="DECIMAL" property="imageWidth" />
+    <result column="PAGE_NUM"           jdbcType="DECIMAL" property="pageNum" />
+    <result column="DOC_POPUP"          jdbcType="DECIMAL" property="docPopup" />
+    <result column="REPLY"              jdbcType="DECIMAL" property="reply" />
+    <result column="LINEREPLY"          jdbcType="DECIMAL" property="linereply" />
+    <result column="RESTRICTION_TYPE"   jdbcType="VARCHAR" property="restrictionType" />
+    <result column="READ_PERMISSION"    jdbcType="DECIMAL" property="readPermission" />
+    <result column="WRITE_PERMISSION"   jdbcType="DECIMAL" property="writePermission" /> 
+    <result column="BOARD_POPUP"        jdbcType="DECIMAL" property="boardPopup" /> 
+    <result column="FILE_ATTACH_OPTION" jdbcType="DECIMAL" property="fileAttachOption" />
+    <result column="ALLOW_TYPE"         jdbcType="VARCHAR" property="allowType" /> 
+    <result column="PORTAL_ID"          jdbcType="VARCHAR" property="portalId" />
+    <result column="PORTLET"            jdbcType="NUMBER"  property="portlet" />
+    <result column="BOARD_DELETE"       jdbcType="NUMBER"  property="boardDelete" />
+    <result column="REGISTER_ID"        jdbcType="VARCHAR" property="registerId" />
+    <result column="REGISTER_NAME"      jdbcType="VARCHAR" property="registerName" />
+    <result column="REGIST_DATE"        jdbcType="DATE"    property="registDate" />
+    <result column="UPDATER_ID"         jdbcType="VARCHAR" property="updaterId" />
+    <result column="UPDATER_NAME"       jdbcType="VARCHAR" property="updaterName" />
+    <result column="UPDATE_DATE"        jdbcType="DATE"    property="updateDate" />
+    <result column="BOARD_ENGLISH_NAME"         jdbcType="VARCHAR" property="boardEnglishName" />
+    <result column="BOARD_ENGLISH_DESCRIPTION"  jdbcType="VARCHAR" property="boardEnglishDescription" />
+  </resultMap>                          
+  <resultMap id="boardIndentationResult" extends="boardResult" class="com.lgcns.ikep4.lightpack.board.model.Board"> 
+    <result column="INDENTATION" jdbcType="VARCHAR" property="indentation" /> 
+    <result column="HAS_CHILDREN" jdbcType="DECIMAL" property="hasChildren" />
+  </resultMap> 
+  <resultMap id="boardResultEx" extends="boardResult"  class="com.lgcns.ikep4.lightpack.board.model.Board">  
+    <result column="HAS_CHILDREN" jdbcType="DECIMAL" property="hasChildren" />
+  </resultMap>  
+  
+  <sql id="sqlColumnList">
+    BOARD_ID, 
+    BOARD_PARENT_ID,
+    SORT_ORDER, 
+    BOARD_NAME, 
+    BOARD_ROOT_ID, 
+    BOARD_DESCRIPTION, 
+    BOARD_TYPE, 
+    URL, 
+    LIST_TYPE, 
+    ANONYMOUS,
+    RSS, 
+    FILE_SIZE, 
+    IMAGE_FILE_SIZE, 
+    IMAGE_WIDTH, 
+    PAGE_NUM, 
+    DOC_POPUP, 
+    REPLY, 
+    LINEREPLY, 
+    RESTRICTION_TYPE, 
+    READ_PERMISSION, 
+    WRITE_PERMISSION,  
+    BOARD_POPUP,     
+    FILE_ATTACH_OPTION,
+    ALLOW_TYPE,        
+    PORTAL_ID, 
+    PORTLET,
+    BOARD_DELETE,
+    REGISTER_ID, 
+    REGISTER_NAME, 
+    REGIST_DATE, 
+    UPDATER_ID, 
+    UPDATER_NAME, 
+    UPDATE_DATE,
+    BOARD_ENGLISH_NAME,
+    BOARD_ENGLISH_DESCRIPTION
+  </sql> 
+
+
+  <select id="getParents" parameterClass="string" resultMap="boardResult">
+	SELECT /* [Board_SqlMap.xml] lightpack.board.dao.board.getParents */
+	      <include refid="lightpack.board.dao.board.sqlColumnList" />  
+ 	FROM (
+		SELECT LEVEL AS LEV, <include refid="lightpack.board.dao.board.sqlColumnList" />
+		FROM  IKEP4_BD_BOARD
+		WHERE BOARD_DELETE = 0
+		START WITH BOARD_ID =  #boardId#
+		CONNECT BY PRIOR BOARD_PARENT_ID = BOARD_ID
+	)  
+	ORDER BY LEV DESC
+  </select>
+  
+  <select id="getChildren" parameterClass="string" resultMap="boardResult">
+	SELECT /* [Board_SqlMap.xml] lightpack.board.dao.board.getChildren */
+	       <include refid="lightpack.board.dao.board.sqlColumnList" />
+ 	FROM  IKEP4_BD_BOARD
+	WHERE BOARD_PARENT_ID = #boardId#
+	AND   BOARD_DELETE = 0
+  </select>
+  
+  <select id="readHasPermissionBoard" parameterClass="string" resultMap="boardResult"> 
+	SELECT /* [Board_SqlMap.xml] lightpack.board.dao.board.get */  *
+	FROM (
+		SELECT  <include refid="lightpack.board.dao.board.sqlColumnList" />
+		FROM   IKEP4_BD_BOARD 
+		WHERE  BOARD_ROOT_ID = #boardRootId#
+		AND    BOARD_PARENT_ID IS NULL 
+		AND    BOARD_TYPE = 0
+		AND    BOARD_DELETE = 0
+		ORDER BY SORT_ORDER ASC
+	) WHERE ROWNUM = 1
+  </select>
+  
+  <select id="get" parameterClass="string" resultMap="boardResult">
+    SELECT /* [Board_SqlMap.xml] lightpack.board.dao.board.get */ 
+    <include refid="lightpack.board.dao.board.sqlColumnList" />
+    FROM  IKEP4_BD_BOARD
+    WHERE BOARD_ID = #boardId#
+  </select>
+  
+  <select id="nextDeletedBoard" resultMap="boardResult">
+    SELECT /* [Board_SqlMap.xml] lightpack.board.dao.board.nextDeletedBoard */ 
+    <include refid="lightpack.board.dao.board.sqlColumnList" />
+    FROM  IKEP4_BD_BOARD
+    WHERE BOARD_DELETE = 1
+    AND   ROWNUM = 1
+  </select>
+  
+  <select id="exists" parameterClass="string" resultClass="int">
+    SELECT /* [Board_SqlMap.xml] lightpack.board.dao.board.exists */
+    	  COUNT(*)
+    FROM  IKEP4_BD_BOARD
+    WHERE BOARD_ID = #boardId#
+  </select>
+  
+  
+  <select id="listBySelectedBoardForPublicBoard" parameterClass="string" resultMap="boardResult"> 
+	SELECT /* [Board_SqlMap.xml] lightpack.board.dao.board.listBySelectedBoardForPublicBoard */ 
+	       <include refid="lightpack.board.dao.board.sqlColumnList"/>
+	FROM   IKEP4_BD_BOARD  A
+	WHERE  PORTLET = 1 
+	AND    BOARD_DELETE = 0
+	ORDER BY SORT_ORDER ASC
+  </select>
+  
+  <select id="listByBoardRootId" parameterClass="map" resultMap="boardIndentationResult"> 
+    SELECT  /* [Board_SqlMap.xml] lightpack.board.dao.board.listByBoardRootId */  * 
+    FROM (
+		SELECT
+		       LEVEL AS INDENTATION,
+		       (SELECT COUNT(*) FROM IKEP4_BD_BOARD B WHERE A.BOARD_ID = B.BOARD_PARENT_ID) AS HAS_CHILDREN,
+		       <include refid="lightpack.board.dao.board.sqlColumnList"/>
+		FROM IKEP4_BD_BOARD  A
+		WHERE  BOARD_ROOT_ID = #boardRootId# 
+		AND    PORTAL_Id = #portalId#
+		AND    BOARD_DELETE = 0
+	    START WITH BOARD_PARENT_ID is null
+	    CONNECT BY PRIOR BOARD_ID = BOARD_PARENT_ID 
+		ORDER SIBLINGS BY SORT_ORDER 
+	)      
+  </select>
+  
+  <select id="listBoardTypeBoard" resultMap="boardResult"> 
+	SELECT /* [Board_SqlMap.xml] lightpack.board.dao.board.listBoardTypeBoard */ 
+	      <include refid="lightpack.board.dao.board.sqlColumnList"/>
+	FROM  IKEP4_BD_BOARD 
+	WHERE BOARD_TYPE = 0
+	AND   BOARD_DELETE = 0
+	ORDER BY BOARD_NAME
+  </select>
+  
+  <select id="listChildrenBoard" parameterClass="string" resultMap="boardResultEx">
+	SELECT /* [Board_SqlMap.xml] lightpack.board.dao.board.listChildrenBoard */ 
+	<include refid="lightpack.board.dao.board.sqlColumnList"/>,
+	       (SELECT COUNT(*) FROM IKEP4_BD_BOARD B WHERE A.BOARD_ID = B.BOARD_PARENT_ID) AS HAS_CHILDREN
+    FROM   IKEP4_BD_BOARD A
+    <isNotEmpty>
+		WHERE BOARD_PARENT_ID = #boardId#
+		AND   BOARD_DELETE = 0
+	</isNotEmpty>
+    <isEmpty>
+		WHERE BOARD_PARENT_ID IS NULL
+		AND   BOARD_DELETE = 0
+	</isEmpty>	
+    ORDER BY SORT_ORDER ASC
+  </select>
+  
+  <select id="listChildrenBoardPortal" parameterClass="map" resultMap="boardResultEx">
+	SELECT /* [Board_SqlMap.xml] lightpack.board.dao.board.listChildrenBoard */ 
+	<include refid="lightpack.board.dao.board.sqlColumnList"/>,
+	       (SELECT COUNT(*) FROM IKEP4_BD_BOARD B WHERE A.BOARD_ID = B.BOARD_PARENT_ID) AS HAS_CHILDREN
+    FROM   IKEP4_BD_BOARD A
+    <isNotEmpty property="boardId">
+		WHERE BOARD_PARENT_ID = #boardId#
+		AND   BOARD_DELETE = 0
+	</isNotEmpty>
+    <isEmpty property="boardId">
+		WHERE BOARD_PARENT_ID IS NULL
+		AND   BOARD_DELETE = 0
+	</isEmpty>	
+		AND    PORTAL_ID = #portalId#
+    ORDER BY SORT_ORDER ASC
+  </select>
+  
+  
+  <insert id="create" parameterClass="Board">
+    INSERT INTO IKEP4_BD_BOARD ( /* [board_SqlMap.xml] lightpack.board.dao.board.insert */
+     <include refid="lightpack.board.dao.board.sqlColumnList" />
+    ) VALUES (
+      #boardId#,
+      #boardParentId#,   
+      <isNotEmpty property="boardParentId">
+			 (SELECT NVL(MAX(SORT_ORDER), -1) + 1 FROM IKEP4_BD_BOARD WHERE BOARD_PARENT_ID = #boardParentId#),  
+	  </isNotEmpty>
+      <isEmpty property="boardParentId">
+			 (SELECT NVL(MAX(SORT_ORDER), -1) + 1 FROM IKEP4_BD_BOARD WHERE BOARD_PARENT_ID IS NULL),  
+	  </isEmpty>  
+      #boardName#,        
+      #boardRootId#,      
+      #boardDescription#, 
+      #boardType#,        
+      #url#,    
+      #listType#,         
+      #anonymous#,        
+      #rss#,    
+      #fileSize#,         
+      #imageFileSize#,    
+      #imageWidth#,       
+      #pageNum#,
+      #docPopup#,         
+      #reply#,  
+      #linereply#,        
+      #restrictionType#,  
+      #readPermission#,   
+      #writePermission#,  
+      #boardPopup#, 
+      #fileAttachOption#,  
+      #allowType#, 
+      #portalId#,   
+      #portlet#,     
+      #boardDelete#, 
+      #registerId#,       
+      #registerName#,     
+      SYSDATE,       
+      #updaterId#,        
+      #updaterName#,      
+      SYSDATE,
+      #boardEnglishName#,
+      #boardEnglishDescription#
+    )
+  </insert>
+  
+  <update id="updateBoardDeleteField" parameterClass="map">
+    UPDATE IKEP4_BD_BOARD /* [board_SqlMap.xml] lightpack.board.dao.board.updateBoardDeleteField */
+    SET    BOARD_DELETE  =  #status#
+    WHERE  BOARD_ID = #boardId#
+  </update>  
+   
+  <update id="updateMove" parameterClass="Board">
+    UPDATE IKEP4_BD_BOARD /* [board_SqlMap.xml] lightpack.board.dao.board.updateMove */
+    SET    BOARD_PARENT_ID  =  #boardParentId#,
+           SORT_ORDER       =  #sortOrder#, 
+           UPDATER_ID       =  #updaterId#,
+           UPDATER_NAME     =  #updaterName#,
+           UPDATE_DATE      =  SYSDATE  
+    WHERE  BOARD_ID = #boardId#
+  </update>   
+  <update id="updateRemovePortlet">
+    UPDATE IKEP4_BD_BOARD /* [board_SqlMap.xml] lightpack.board.dao.board.updateRemovePortlet */
+    SET    PORTLET  = 0
+  </update>   
+  <update id="updateSetupPortlet" parameterClass="string">
+    UPDATE IKEP4_BD_BOARD /* [board_SqlMap.xml] lightpack.board.dao.board.updateSetupPortlet */
+    SET    PORTLET  = 1 
+    WHERE  BOARD_ID = #boardId#
+  </update>   
+  <update id="updateSortOderIncrease" parameterClass="Board">
+    UPDATE IKEP4_BD_BOARD /* [board_SqlMap.xml] lightpack.board.dao.board.updateSortOderIncrease */
+    SET    SORT_ORDER      =  SORT_ORDER + 1
+    WHERE  1 = 1
+    <isEmpty property="boardParentId">
+    AND  BOARD_PARENT_ID IS NULL
+    </isEmpty>
+    <isNotEmpty property="boardParentId">
+    AND  BOARD_PARENT_ID = #boardParentId#
+    </isNotEmpty>
+    AND    SORT_ORDER &gt;= #sortOrder#
+  </update>  
+  <update id="updateSortOderDecrease" parameterClass="Board">
+    UPDATE IKEP4_BD_BOARD /* [board_SqlMap.xml] lightpack.board.dao.board.updateSortOderDecrease */
+    SET    SORT_ORDER      =  SORT_ORDER - 1
+    WHERE  1 = 1
+    <isEmpty property="boardParentId">
+    AND  BOARD_PARENT_ID IS NULL
+    </isEmpty>
+    <isNotEmpty property="boardParentId">
+    AND  BOARD_PARENT_ID = #boardParentId#
+    </isNotEmpty>
+    AND    SORT_ORDER &gt; #sortOrder#
+  </update>  
+  
+  <update id="update" parameterClass="Board">
+    UPDATE IKEP4_BD_BOARD /* [board_SqlMap.xml] lightpack.board.dao.board.update */
+    SET    BOARD_ID           =  #boardId#,
+           BOARD_PARENT_ID    =  #boardParentId#,
+           SORT_ORDER         =  #sortOrder#,
+           BOARD_NAME         =  #boardName#,
+           BOARD_ROOT_ID      =  #boardRootId#,
+           BOARD_DESCRIPTION  =  #boardDescription#,
+           BOARD_TYPE         =  #boardType#,
+           URL                =  #url#,
+           LIST_TYPE          =  #listType#,
+           ANONYMOUS          =  #anonymous#,
+           RSS                =  #rss#,
+           FILE_SIZE          =  #fileSize#,
+           IMAGE_FILE_SIZE    =  #imageFileSize#,
+           IMAGE_WIDTH        =  #imageWidth#,
+           PAGE_NUM           =  #pageNum#,
+           DOC_POPUP          =  #docPopup#,
+           REPLY              =  #reply#,
+           LINEREPLY          =  #linereply#,
+           RESTRICTION_TYPE   =  #restrictionType#,
+           READ_PERMISSION    =  #readPermission#,
+           WRITE_PERMISSION   =  #writePermission#, 
+           BOARD_POPUP        =  #boardPopup#,
+    	   FILE_ATTACH_OPTION =  #fileAttachOption#,   
+   		   ALLOW_TYPE         =  #allowType#,  
+           PORTAL_ID          =  #portalId#, 
+           PORTLET            =  #portlet#,
+           BOARD_DELETE       =  #boardDelete#,
+           UPDATER_ID         =  #updaterId#,
+           UPDATER_NAME       =  #updaterName#,
+           UPDATE_DATE        =  SYSDATE ,
+           BOARD_ENGLISH_NAME =  #boardEnglishName#,
+      	   BOARD_ENGLISH_DESCRIPTION =  #boardEnglishDescription# 
+    WHERE  BOARD_ID = #boardId#
+  </update> 
+  <delete id="physicalDelete" parameterClass="string">
+    DELETE FROM IKEP4_BD_BOARD /* [board_SqlMap.xml] lightpack.board.dao.board.physicalDelete */
+    WHERE  BOARD_ID = #boardId#
+  </delete>
+  
+  <select id="selectBoardMenuType" resultClass="String">
+  	select val from ikep4_bd_config where code = 'MENU_TYPE'
+  </select>
+  
+  <update id="updateBoardMenuType" parameterClass="String">
+  	update ikep4_bd_config set val = #type#
+  	where code = 'MENU_TYPE'
+  </update>  
+</sqlMap>

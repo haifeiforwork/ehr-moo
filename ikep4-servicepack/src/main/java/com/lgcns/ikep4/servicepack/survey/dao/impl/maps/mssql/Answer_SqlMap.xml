@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="com.lgcns.ikep4.servicepack.survey.svAnswer" >
+  <typeAlias alias="svAnswer"                type="com.lgcns.ikep4.servicepack.survey.model.Answer"/>
+  
+  <resultMap id="result" class="svAnswer" >
+    <result column="ANSWER_ID" property="answerId" jdbcType="VARCHAR" />
+    <result column="QUESTION_ID" property="questionId" jdbcType="VARCHAR" />
+    <result column="ANSWER_SEQ" property="answerSeq" jdbcType="DECIMAL" />
+    <result column="TITLE" property="title" jdbcType="VARCHAR" />
+    <result column="JOIN_QUESTION_IDS" property="joinQuestionIds" jdbcType="VARCHAR" />
+    <result column="REGISTER_ID" property="registerId" jdbcType="VARCHAR" />
+    <result column="REGISTER_NAME" property="registerName" jdbcType="VARCHAR" />
+    <result column="REGIST_DATE" property="registDate" jdbcType="TIMESTAMP"/>
+    <result column="UPDATER_ID" property="updaterId" jdbcType="VARCHAR" />
+    <result column="UPDATER_NAME" property="updaterName" jdbcType="VARCHAR" />
+    <result column="UPDATE_DATE" property="updateDate" jdbcType="TIMESTAMP" />
+    <result property="jobTitleName" column="JOB_TITLE_NAME"/>
+	<result property="jobTitleEnglishName" column="JOB_TITLE_ENGLISH_NAME"/>
+	<result property="userName" column="USER_NAME"/>
+	<result property="userEnglishName" column="USER_ENGLISH_NAME"/>
+	<result property="teamName" column="TEAM_NAME"/>
+	<result property="teamEnglishName" column="TEAM_ENGLISH_NAME"/>
+  </resultMap>
+  
+ <resultMap id="result2" class="svAnswer" >
+    <result column="QUESTION_GROUP_SEQ" property="questionGroupSeq" jdbcType="DECIMAL" />
+    <result column="QUESTION_SEQ" jdbcType="DECIMAL" property="questionSeq" />
+    <result column="ANSWER_SEQ" property="answerSeq" jdbcType="DECIMAL" />
+    <result column="QUESTION_ID" property="questionId" jdbcType="VARCHAR" />
+    <result column="ANSWER_ID" property="answerId" jdbcType="VARCHAR" />
+    <result column="TITLE" property="title" jdbcType="VARCHAR" />
+    <result column="JOIN_QUESTION_IDS" property="joinQuestionIds" jdbcType="VARCHAR" />
+  </resultMap>
+  
+    <sql id="sqlColumnList"> 
+	   s.ANSWER_ID, 
+	   s.QUESTION_ID, 
+	   s.ANSWER_SEQ,
+	   s.TITLE, 
+	   s.JOIN_QUESTION_IDS,
+       s.REGISTER_ID, 
+       s.REGISTER_NAME,
+       s.REGIST_DATE, 
+       s.UPDATER_ID, 
+       s.UPDATER_NAME, 
+       s.UPDATE_DATE,
+       eu.USER_NAME, 
+       eu.USER_ENGLISH_NAME, 
+       eu.TEAM_NAME, 
+       eu.TEAM_ENGLISH_NAME,
+       ejt.JOB_TITLE_NAME, 
+       ejt.JOB_TITLE_ENGLISH_NAME
+  </sql> 
+  
+ <!-- ANSI -->
+ <select id="get" parameterClass="string" resultMap="result"> 
+    SELECT /* [svAnswer_SqlMap.xml] svAnswer.get */
+	   s.ANSWER_ID, 
+	   s.QUESTION_ID, 
+	   s.ANSWER_SEQ,
+	   s.TITLE,
+	   s.JOIN_QUESTION_IDS,
+       s.REGISTER_ID, 
+       s.REGISTER_NAME,
+       s.REGIST_DATE, 
+       s.UPDATER_ID, 
+       s.UPDATER_NAME, 
+       s.UPDATE_DATE,
+       eu.USER_NAME, 
+       eu.USER_ENGLISH_NAME, 
+       eu.TEAM_NAME, 
+       eu.TEAM_ENGLISH_NAME,
+      isnull(ejd.JOB_DUTY_NAME, ejt.JOB_TITLE_NAME) AS JOB_TITLE_NAME , 
+      '' AS JOB_TITLE_ENGLISH_NAME
+    FROM  IKEP4_SV_ANSWER s 
+    	INNER JOIN IKEP4_EV_USER eu on s.REGISTER_ID = eu.user_id
+        left outer join IKEP4_EV_JOB_TITLE ejt  on eu.job_title_code =ejt.job_title_code
+        left outer join IKEP4_EV_JOB_DUTY ejd  on eu.job_duty_code = ejd.job_duty_code
+    WHERE  ANSWER_ID = #answerId#
+  </select>
+  
+  <!-- ANSI -->
+  <select id="exists" parameterClass="string" resultClass="int"> 
+    SELECT /* [svAnswer_SqlMap.xml] svAnswer.exists */
+    	  COUNT(*)
+    FROM  IKEP4_SV_ANSWER
+    WHERE ANSWER_ID = #answerId#
+  </select> 
+  
+   <!-- MSSQL -->
+  <select id="maxAnswerSeq" parameterClass="string" resultClass="int"> 
+    SELECT /* [svQuestion_SqlMap.xml] svQuestion.exists */
+    	  ISNULL(MAX(ANSWER_SEQ),0)
+    FROM  IKEP4_SV_ANSWER
+    WHERE QUESTION_ID = #questionId#
+  </select> 
+  
+   <!-- ANSI -->
+    <select id="getAllByQuestionId" parameterClass="String" resultMap="result"> 
+    SELECT /* [svQuestionGroup_SqlMap.xml] svQuestionGroup.get */
+	   s.ANSWER_ID, 
+	   s.QUESTION_ID, 
+	   s.ANSWER_SEQ,
+	   s.TITLE, 
+	   s.JOIN_QUESTION_IDS,
+       s.REGISTER_ID, 
+       s.REGISTER_NAME,
+       s.REGIST_DATE, 
+       s.UPDATER_ID, 
+       s.UPDATER_NAME, 
+       s.UPDATE_DATE,
+       eu.USER_NAME, 
+       eu.USER_ENGLISH_NAME, 
+       eu.TEAM_NAME, 
+       eu.TEAM_ENGLISH_NAME,
+      isnull(ejd.JOB_DUTY_NAME, ejt.JOB_TITLE_NAME) AS JOB_TITLE_NAME , 
+      '' AS JOB_TITLE_ENGLISH_NAME
+    FROM  IKEP4_SV_ANSWER s 
+    	INNER JOIN IKEP4_EV_USER eu on s.REGISTER_ID = eu.user_id
+        left outer join IKEP4_EV_JOB_TITLE ejt  on eu.job_title_code =ejt.job_title_code
+        left outer join IKEP4_EV_JOB_DUTY ejd  on eu.job_duty_code = ejd.job_duty_code
+    WHERE   QUESTION_ID = #questionId#
+  	order by s.ANSWER_SEQ asc       
+  </select>
+  
+   <!-- ANSI -->
+  <insert id="create" parameterClass="svAnswer"> 
+    INSERT INTO IKEP4_SV_ANSWER ( /* [svAnswer_SqlMap.xml] svAnswer.insert */
+       ANSWER_ID, 
+	   QUESTION_ID, 
+	   ANSWER_SEQ,
+	   TITLE, 
+       REGISTER_ID, 
+       REGISTER_NAME,
+       REGIST_DATE, 
+       UPDATER_ID, 
+       UPDATER_NAME, 
+       UPDATE_DATE
+     ) VALUES (
+        #answerId#, 
+        #questionId#, 
+        #answerSeq#,
+        #title#, 
+        #registerId#,
+        #registerName#, 
+        #registDate#, 
+        #updaterId#, 
+        #updaterName#,
+        #updateDate#
+    )
+  </insert>
+  
+   <!-- ANSI -->
+  <update id="update" parameterClass="svAnswer"> 
+    update IKEP4_SV_ANSWER
+    set QUESTION_ID = #questionId#,
+        ANSWER_SEQ = #answerSeq#,
+        TITLE = #title#,
+        UPDATER_ID = #updaterId#,
+        UPDATER_NAME = #updaterName#,
+        UPDATE_DATE = #updateDate#
+    where ANSWER_ID = #answerId#
+  </update>
+  
+  <update id="updateJoinQuestion" parameterClass="svAnswer"> 
+    update IKEP4_SV_ANSWER
+    set join_QUESTION_IDs = #joinQuestionIds#
+    where ANSWER_ID = #answerId#
+  </update>
+  
+  
+ <update id="removeJoinQuestion" parameterClass="string"> 
+	update IKEP4_SV_ANSWER  set join_QUESTION_IDs = NULL
+	where question_id in (
+		select question_id from IKEP4_SV_QUESTION 
+		where question_group_id in (
+			select question_group_id from IKEP4_SV_GROUP where survey_id=#surveyId#
+		)
+	)
+  </update>
+	
+   <!-- ANSI -->
+  <delete id="remove" parameterClass="string"> 
+    delete from IKEP4_SV_ANSWER  /* [svAnswer_SqlMap.xml] svAnswer.remove */
+    where ANSWER_ID =  #answerId#
+  </delete>    
+  
+   <!-- ANSI -->
+   <delete id="removeAllByQuestionId" parameterClass="string"> 
+    delete from IKEP4_SV_ANSWER  /* [svAnswer_SqlMap.xml] svAnswer.remove */
+    where QUESTION_ID = #questionId#
+  </delete> 
+  
+   <!-- ANSI -->
+   <delete id="removeAllByGroupId" parameterClass="string"> 
+    delete from IKEP4_SV_ANSWER  /* [svAnswer_SqlMap.xml] svAnswer.remove */
+    where QUESTION_ID in(
+     	select QUESTION_ID 
+     	FROM IKEP4_SV_QUESTION
+    	WHERE QUESTION_GROUP_ID = #questionGroupId#
+    )
+  </delete>  
+  
+   <!-- ANSI -->
+  <delete id="removeAllBySurveyId" parameterClass="string"> 
+    delete from IKEP4_SV_ANSWER  /* [svAnswer_SqlMap.xml] svAnswer.remove */
+    where QUESTION_ID in(
+     	select QUESTION_ID 
+     	FROM IKEP4_SV_QUESTION sq,IKEP4_SV_GROUP sqg
+    	WHERE sq.QUESTION_GROUP_ID = sqg.QUESTION_GROUP_ID 
+    		  AND survey_id = #surveyId#
+    )
+  </delete>  
+  
+ <select id="getJoinSelectTypeAnswer" parameterClass="String" resultMap="result2"> 
+	select /* [svQuestionGroup_SqlMap.xml] getJoinSelectTypeAnswer */
+		G.question_group_seq as QUESTION_GROUP_SEQ, 
+		Q.question_seq as  QUESTION_SEQ ,
+		0 as ANSWER_SEQ,
+	 	Q.question_id as QUESTION_ID,
+	 	'' as ANSWER_ID, 
+	 	Q.title as TITLE ,
+	 	'' as JOIN_QUESTION_IDS 
+	from IKEP4_SV_QUESTION Q 
+		inner join IKEP4_SV_GROUP G on Q.question_group_id=G.question_group_id
+	where Q.question_group_id in (
+		select question_group_id from IKEP4_SV_GROUP where survey_id=#surveyId#
+	)
+	and Q.question_type like 'A%'
+
+	union all
+	
+	select 
+		G.question_group_seq as QUESTION_GROUP_SEQ,
+		Q.question_seq as  QUESTION_SEQ, 
+		A.answer_seq as ANSWER_SEQ,
+		Q.question_id as QUESTION_ID, 
+		A.answer_id as ANSWER_ID ,
+		A.title as TITLE ,
+	 	A.JOIN_QUESTION_IDS as JOIN_QUESTION_IDS 
+	from IKEP4_SV_ANSWER A 
+	inner join IKEP4_SV_QUESTION Q on Q.question_id=A.question_id
+	inner join IKEP4_SV_GROUP G on Q.question_group_id=G.question_group_id
+	where A.question_id in (
+		select question_id from IKEP4_SV_QUESTION 
+		where question_group_id in (
+			select question_group_id from IKEP4_SV_GROUP where survey_id=#surveyId#
+		)
+		and question_type like 'A%'
+	)
+	order by QUESTION_GROUP_SEQ, QUESTION_SEQ, ANSWER_SEQ    
+  </select>
+  
+	<update id="updateAnswerTitle" parameterClass="map">
+	  <isNotEmpty property="targeAnswerId">
+		UPDATE IKEP4_SV_ANSWER
+		SET title  = #title#
+		WHERE answer_id  = #targeAnswerId#
+	  </isNotEmpty>
+	  <isNotEmpty property="targeQuestionId">
+		UPDATE IKEP4_SV_QUESTION
+		SET title  = #title#
+		WHERE question_id  = #targeQuestionId#
+	  </isNotEmpty>
+	</update>
+  
+</sqlMap>

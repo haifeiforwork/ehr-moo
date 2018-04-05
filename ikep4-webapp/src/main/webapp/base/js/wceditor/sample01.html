@@ -1,0 +1,45 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ko">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<style>
+    body{ont:12px 돋움,Dotum,sans-serif; color:#333;}
+</style>    
+<link rel="stylesheet" href="css/editor.css" />
+<script type="text/javascript" src="/ikep4-webapp/base/js/jquery/jquery-1.6.2.min.js"></script>
+<script type="text/javascript" src="/ikep4-webapp/base/js/common.pack.js"></script>
+<script type="text/javascript" src="js/editor.js"></script>
+<script type="text/javascript">
+	
+(function($) {
+	var wceditorCurstomToolbar = {
+	    toolbar : [
+	        ["newpage"],
+	        ["forecolor","backcolor"],
+	        ["bold","italic","strikethrough","underline"],
+	        ["link"]
+	   	],
+	    width : "500px",
+	    height : "50px"
+	    
+	};
+    
+	//WCEditor.button.forecolor.ifrmLeft = "50px";
+	
+    $(document).ready(function(){
+		//$("#idContent").wceditor(wceditorCurstomToolbar);
+		//wceditorBaseToolbar.miniMode = true;
+		//wceditorBaseToolbar.height="150px";
+		$("#idContent").wceditor(wceditorMaxToolbar);
+	});
+})(jQuery);
+	
+</script>
+</head>
+<body>
+    <textarea name="idContent" id="idContent"></textarea>
+    <input type="button" value="save" onclick="WCEditor.saveContent(true);" />
+    <input type="button" value="view" onclick="alert($jq('textarea[name=idContent]').val());" />
+    <input type="button" value="test" onclick='$jq("#editDiv").css("height", "700px");' />
+</body>
+</html>

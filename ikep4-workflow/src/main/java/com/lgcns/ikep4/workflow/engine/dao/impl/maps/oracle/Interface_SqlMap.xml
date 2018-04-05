@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="com.lgcns.ikep4.workflow.engine.model.InterfaceBean" >
+	<typeAlias alias = "InterfaceBean" type="com.lgcns.ikep4.workflow.engine.model.InterfaceBean"/>
+
+   
+	<select id="com.lgcns.ikep4.workflow.engine.model.InterfaceBean.readInterface" resultClass="InterfaceBean">
+      	<![CDATA[ 
+      		/* [Interface_SqlMap.xml] com.lgcns.ikep4.workflow.engine.model.InterfaceBean.readInterface */
+      		SELECT 
+   				SEQ_ID AS seqId, INTERFACE_TYPE AS interfaceType, SYSTEM_CODE AS systemCode, PROCESS_ID AS processId, 
+   				ACTIVITY_ID AS activityId, USER_ID AS userId, SCREEN_URL AS screenUrl, TITLE AS title,
+				APP_KEY01 AS appKey01, APP_KEY02 AS appKey02, APP_KEY03 AS appKey03, APP_KEY04 AS appKey04, APP_KEY05 AS appKey05, 
+				APP_KEY06 AS appKey06, APP_KEY07 AS appKey07, APP_KEY08 AS appKey08, APP_KEY09 AS appKey09, APP_KEY10 AS appKey10, 
+				PARAMETER AS parameter, to_char(EXECUTE_DATE, 'YYYYMMDDHH24MISS') AS executeDate, to_char(CREATE_DATE, 'YYYYMMDDHH24MISS') AS createDate, FLAG AS flag 
+      		  FROM IKEP4_WF_INTERFACE
+      		 WHERE FLAG = 'N'
+       	]]>
+   	</select>  
+   	
+   	<insert id="com.lgcns.ikep4.workflow.engine.model.InterfaceBean.insertInterface" parameterClass="InterfaceBean">
+   		<![CDATA[
+			/* [Interface_SqlMap.xml] com.lgcns.ikep4.workflow.engine.model.InterfaceBean.insertInterface */
+			
+   			INSERT INTO IKEP4_WF_INTERFACE (
+   				SEQ_ID, INTERFACE_TYPE, SYSTEM_CODE, PROCESS_ID, ACTIVITY_ID, USER_ID, SCREEN_URL, TITLE,
+				APP_KEY01, APP_KEY02, APP_KEY03, APP_KEY04, APP_KEY05, APP_KEY06, APP_KEY07, APP_KEY08, APP_KEY09, APP_KEY10, 
+				PARAMETER, EXECUTE_DATE, CREATE_DATE, FLAG
+   			) VALUES (
+	   			#seqId#, #interfaceType#, #systemCode#, #processId#, #activityId#, #userId#, #screenUrl#, #title#,
+				#appKey01#, #appKey02#, #appKey03#, #appKey04#, #appKey05#, #appKey06#, #appKey07#, #appKey08#, #appKey09#, #appKey10#, 
+				#parameter#, #executeDate#, #createDate#, 'N'
+   			)
+   		]]>
+   	</insert>
+   	
+   	<update id="com.lgcns.ikep4.workflow.engine.model.InterfaceBean.updateFlag" parameterClass="InterfaceBean">
+   		<![CDATA[
+			/* [Interface_SqlMap.xml] com.lgcns.ikep4.workflow.engine.model.InterfaceBean.updateFlag */
+			
+			UPDATE 	IKEP4_WF_INTERFACE
+			   SET	FLAG = #flag#
+			 WHERE	SEQ_ID = #seqId#
+   		]]>
+   	</update>
+</sqlMap>

@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="com.lgcns.ikep4.approval.admin.dao.ApprOfficialConfig" >
+
+	<typeAlias alias="apprOfficialConfig" type="com.lgcns.ikep4.approval.admin.model.ApprOfficialConfig"/>
+	
+	
+	<!--코드관리 테이블 조회 결과 -->
+	<resultMap id="apprOfficialConfigResult" class="apprOfficialConfig" >
+		<result property="configId" 			column="CONFIG_ID" />
+		<result property="portalId" 	column="PORTAL_ID" />
+		<result property="headerTitle" 	    column="HEADER_TITLE" />
+		<result property="headerHeight" 	    column="HEADER_HEIGHT" />
+		<result property="headerType" 		column="HEADER_TYPE" />
+		<result property="headerImgId" 		column="HEADER_IMG_ID" />
+		<result property="headerAlign"			column="HEADER_ALIGN" />
+		<result property="footerTitle"		column="FOOTER_TITLE" />
+		<result property="footerHeight"			column="FOOTER_HEIGHT" />
+		<result property="footerType" 		column="FOOTER_TYPE" />
+		<result property="footerImgId" 		column="FOOTER_IMG_ID" />
+		<result property="footerAlign" 		column="FOOTER_ALIGN" />
+		<result property="companyName" 		column="COMPANY_NAME" />
+		<result property="companyAddress" 		column="COMPANY_ADDRESS" />
+		<result property="companyZipCode" 		column="COMPANY_ZIPCODE" />
+		<result property="companyTel" 		column="COMPANY_TEL" />
+		<result property="companyFax" 		column="COMPANY_FAX" />
+		<result property="sealId" 		column="SEAL_ID" />
+		<result property="registerId" 		column="REGISTER_ID" />
+		<result property="registerName" 		column="REGISTER_NAME" />
+		<result property="registDate" 		column="REGIST_DATE" />
+	</resultMap>
+	
+	<sql id="sqlColumnList">
+		  	CONFIG_ID, 
+			PORTAL_ID, 
+			HEADER_TITLE, 
+		   	HEADER_HEIGHT, 
+		   	HEADER_TYPE, 
+		   	HEADER_IMG_ID, 
+		   	HEADER_ALIGN, 
+		   	FOOTER_TITLE, 
+		   	FOOTER_HEIGHT, 
+		   	FOOTER_TYPE, 
+		   	FOOTER_IMG_ID, 
+		   	FOOTER_ALIGN, 
+		   	COMPANY_NAME, 
+		   	COMPANY_ADDRESS, 
+		   	COMPANY_ZIPCODE, 
+		   	COMPANY_TEL, 
+		   	COMPANY_FAX, 
+		   	SEAL_ID, 
+		   	REGISTER_ID, 
+		   	REGISTER_NAME, 
+		   	REGIST_DATE
+	</sql>
+	
+	
+	<select id="get" parameterClass="String" resultMap="apprOfficialConfigResult">
+		/* [ApprOfficialConfig_SqlMap.xml] get */
+		
+		SELECT 
+			<include refid="sqlColumnList" /> 
+		FROM 	IKEP4_APPR_OFFICIAL_CONFIG 
+	</select>
+	
+		
+	<insert id="create" parameterClass="apprOfficialConfig">
+		/* [ApprOfficialConfig_SqlMap.xml] create */
+		
+           INSERT INTO IKEP4_APPR_OFFICIAL_CONFIG 
+           (
+           		  <include refid="sqlColumnList" /> 
+           )
+           VALUES (
+           		#configId#,
+           		#portalId#,
+           		#headerTitle#,
+           		#headerHeight#,
+           		#headerType#,
+           		#headerImgId#,
+           		#headerAlign#,
+           		#footerTitle#,
+           		#footerHeight#,
+           		#footerType#,
+           		#footerImgId#,
+           		#footerAlign#,
+           		#companyName#,
+           		#companyAddress#,
+           		#companyZipCode#,
+           		#companyTel#,
+           		#companyFax#,
+           		#sealId#,
+           		#registerId#,
+           		#registerName#,
+				SYSDATE)
+   	</insert>
+   
+   	<update id="update" parameterClass="apprOfficialConfig">
+   		/* [ApprOfficialConfig_SqlMap.xml] update */
+   		
+		   	UPDATE 	IKEP4_APPR_OFFICIAL_CONFIG 
+		   	SET 	
+			
+			<isNotEmpty property="headerTitle">
+				HEADER_TITLE = #headerTitle#,
+			</isNotEmpty>
+			<isNotEmpty property="headerHeight">
+				HEADER_HEIGHT = #headerHeight#,
+			</isNotEmpty>
+			<isNotEmpty property="headerType">
+				HEADER_TYPE = #headerType#,
+			</isNotEmpty>
+			<isNotEmpty property="headerImgId">
+				HEADER_IMG_ID = #headerImgId#,
+			</isNotEmpty>
+			<isNotEmpty property="headerAlign">
+				HEADER_ALIGN = #headerAlign#,
+			</isNotEmpty>
+			<isNotEmpty property="footerTitle">
+				FOOTER_TITLE = #footerTitle#,
+			</isNotEmpty>
+			<isNotEmpty property="footerHeight">
+				FOOTER_HEIGHT = #footerHeight#,
+			</isNotEmpty>
+			<isNotEmpty property="footerType">
+				FOOTER_TYPE = #footerType#,
+			</isNotEmpty>
+			<isNotEmpty property="footerImgId">
+				FOOTER_IMG_ID = #footerImgId#,
+			</isNotEmpty>
+			<isNotEmpty property="footerAlign">
+				FOOTER_ALIGN = #footerAlign#,
+			</isNotEmpty>
+			<isNotEmpty property="companyName">
+				COMPANY_NAME = #companyName#,
+			</isNotEmpty>
+			<isNotEmpty property="companyAddress">
+				COMPANY_ADDRESS = #companyAddress#,
+			</isNotEmpty>
+			<isNotEmpty property="companyZipCode">
+				COMPANY_ZIPCODE = #companyZipCode#,
+			</isNotEmpty>
+			<isNotEmpty property="companyTel">
+				COMPANY_TEL = #companyTel#,
+			</isNotEmpty>
+			<isNotEmpty property="companyFax">
+				COMPANY_FAX = #companyFax#,
+			</isNotEmpty>
+			<isNotEmpty property="sealId">
+				SEAL_ID = #sealId#,
+			</isNotEmpty>
+			
+			REGISTER_ID 	= #registerId#,
+			REGISTER_NAME 	= #registerName#,
+			REGIST_DATE 	= SYSDATE
+		   	WHERE 	CONFIG_ID = #configId#
+	</update>
+	
+	<update id="deleteImgFile" parameterClass="java.util.Map">
+   		/* [ApprOfficialConfig_SqlMap.xml] deleteImgFile */
+   		
+		   	UPDATE 	IKEP4_APPR_OFFICIAL_CONFIG 
+		   	SET 	
+			
+			<isEqual property="type" compareValue="header">
+				HEADER_IMG_ID = '',
+			</isEqual>
+			<isEqual property="type" compareValue="footer">
+				FOOTER_IMG_ID = '',
+			</isEqual>
+			<isEqual property="type" compareValue="seal">
+				SEAL_ID = '',
+			</isEqual>
+			
+			REGISTER_ID 	= #registerId#,
+			REGISTER_NAME 	= #registerName#,
+			REGIST_DATE 	= SYSDATE
+		   	WHERE 	CONFIG_ID = #configId#
+	</update>
+	
+	
+</sqlMap>

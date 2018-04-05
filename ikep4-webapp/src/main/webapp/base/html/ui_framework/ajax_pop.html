@@ -1,0 +1,77 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ko">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Home</title>
+<link rel="stylesheet" type="text/css" href="../../css/guide.css" />
+<link rel="stylesheet" type="text/css" href="../../css/theme01/jquery_ui_custom.css" />
+<link rel="stylesheet" type="text/css" href="../../css/common.css" />
+<link rel="stylesheet" type="text/css" href="../../css/theme01/theme.css" />
+<script type="text/javascript" src="../../js/jquery/jquery-1.6.2.min.js"></script>
+<script type="text/javascript" src="../../js/jquery/jquery-ui-1.8.13.min.without.datepicker.js"></script>
+<script type="text/javascript" src="../../js/langResource/ko.js"></script>
+<script type="text/javascript" src="../../js/common.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$(document).ready(function() {
+		$(".button > a").bind("click", function(event) {
+			event.preventDefault();
+
+			switch($(this).attr("href").replace("#", "")) {
+				case "load" :
+					$("#divAjaxResult").load("./ajax_result/html.txt");
+					break;
+				case "get" :
+					$.get("./ajax_result/data.json", function(result) {						
+						$("#divAjaxResult").text(result);
+					});
+					break;
+				case "ajax1" :
+					$.ajax({
+						url : "./ajax_result/data.json",
+						data : {userid:"atena", name:"아테나"},
+						type : "post",
+						dataType : "html",
+						success : function(result) {
+							$("#divAjaxResult").html(result);
+						}
+					});
+					break;
+				case "ajax2" :
+					$.ajax({
+						url : "./ajax_result/html.txt",
+						data : {userid:"atena", name:"아테나"},
+						type : "post",
+						success : function(result) {
+							$("#divAjaxResult").html(result);
+						}
+					});
+					break;
+				case "ajax3" :
+					$.ajax({
+						url : "./ajax_result/reg.do",
+						data : $("#fmUserInfo").serialize(),
+						type : "post",
+						success : function(result) {
+							//$("#divAjaxResult").html(result);
+						}
+					});
+					break;
+			}
+		});
+	});
+})(jQuery);
+</script>
+</head>
+
+<body class="popup">
+	<div class="button">user interaction : <a href="#load">load</a> <a href="#get">get</a> <a href="#ajax1">ajax 1</a> <a href="#ajax2">ajax 2</a> <a href="#ajax3">ajax 3</a></div>
+	<form id="fmUserInfo" style="margin:5px; padding:10px; line-height:200%; border:1px dashed #ddd;">
+		<input name="age" type="hidden" value="30"/>
+		<span style="display:inline-block; width:80px;">이름</span> : <input name="name" type="text" value="수애"/><br/>
+		<span style="display:inline-block; width:80px;">전화번호</span> : <input name="tel" type="text" value="010-1234-5678"/>
+	</form>
+	<h5>ajax result :</h5>
+	<div id="divAjaxResult" style="min-height:30px; padding:10px; border:1px solid #ccc;"></div>
+</body>
+</html>

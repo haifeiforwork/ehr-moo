@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="support.user.code.dao.ItemType" >
+	<typeAlias alias = "ItemType" type="com.lgcns.ikep4.support.user.code.model.ItemType"/>
+	<typeAlias alias = "SearchCondition" type="com.lgcns.ikep4.support.user.code.model.AdminSearchCondition"/>
+
+	<resultMap id="result" class="ItemType">
+		<result property="num" column="NUM" />
+		<result property="itemTypeCode" column="ITEM_TYPE_CODE" />
+		<result property="itemTypeName" column="ITEM_TYPE_NAME" />
+		<result property="registerId" column="REGISTER_ID" />
+		<result property="registerName" column="REGISTER_NAME" />
+		<result property="updaterId" column="UPDATER_ID" />
+		<result property="updaterName" column="UPDATER_NAME" />
+		<result property="registDate" column="REGIST_DATE" />
+		<result property="updateDate" column="UPDATE_DATE" />
+	</resultMap>
+	
+	<resultMap id="getResult" class="ItemType">
+		<result property="itemTypeCode" column="ITEM_TYPE_CODE" columnIndex="1"/>
+		<result property="itemTypeName" column="ITEM_TYPE_NAME" columnIndex="2"/>
+		<result property="thumbnailWidthSize" column="THUMBNAIL_WIDTH_SIZE" />
+		<result property="thumbnailHeightSize" column="THUMBNAIL_HEIGHT_SIZE" />
+		<result property="displayName" column="DISPLAY_NAME" />
+		<result property="registerId" column="REGISTER_ID" columnIndex="3"/>
+		<result property="registerName" column="REGISTER_NAME" columnIndex="4"/>
+		<result property="updaterId" column="UPDATER_ID" columnIndex="5"/>
+		<result property="updaterName" column="UPDATER_NAME" columnIndex="6"/>
+		<result property="registDate" column="REGIST_DATE" columnIndex="7"/>
+		<result property="updateDate" column="UPDATE_DATE" columnIndex="8"/>
+	</resultMap>
+	
+	<!-- 신규 등록 -->
+	<insert id="insert" parameterClass="ItemType"> 
+	<![CDATA[
+		INSERT INTO /* [ItemType_SqlMap.xml] support.user.code.dao.ItemType.insert */
+			IKEP4_EV_ITEM_TYPE (
+			ITEM_TYPE_CODE,
+			ITEM_TYPE_NAME, 
+			THUMBNAIL_WIDTH_SIZE,
+			THUMBNAIL_HEIGHT_SIZE,
+			DISPLAY_NAME,
+			REGISTER_ID, 
+			REGISTER_NAME,
+			UPDATER_ID,
+			UPDATER_NAME,
+			REGIST_DATE, 
+			UPDATE_DATE)
+		VALUES ( 
+			#itemTypeCode#,
+			#itemTypeName#,
+			#thumbnailWidthSize#,
+			#thumbnailHeightSize#,
+			#displayName#,
+		    #registerId#,
+		    #registerName#,
+		    #updaterId#,
+		    #updaterName#,
+		    NOW(), NOW())
+	]]>
+	</insert>
+   
+   <!-- 상세정보 -->
+	<select id="select" parameterClass="java.lang.String" resultMap="getResult">
+	<![CDATA[
+		SELECT /* [ItemType_SqlMap.xml] support.user.code.dao.ItemType.select */
+		    ITEM_TYPE_CODE,
+		    ITEM_TYPE_NAME,
+		    THUMBNAIL_WIDTH_SIZE,
+			THUMBNAIL_HEIGHT_SIZE,
+			DISPLAY_NAME,
+		    REGISTER_ID,
+		    REGISTER_NAME,
+		    UPDATER_ID,
+		    UPDATER_NAME,
+		    REGIST_DATE,
+		    UPDATE_DATE
+		FROM 
+		    IKEP4_EV_ITEM_TYPE
+		WHERE
+		    ITEM_TYPE_CODE = #itemTypeCode#
+	]]>
+	</select>
+	
+	<!-- 기존 정보 수정 -->
+	<update id="update" parameterClass="ItemType">
+	<![CDATA[
+		UPDATE /* [ItemType_SqlMap.xml] support.user.code.dao.ItemType.update */
+			IKEP4_EV_ITEM_TYPE
+		SET
+			ITEM_TYPE_NAME = #itemTypeName#,
+			THUMBNAIL_WIDTH_SIZE = #thumbnailWidthSize#,
+			THUMBNAIL_HEIGHT_SIZE = #thumbnailHeightSize#,
+			DISPLAY_NAME = #displayName#,
+			UPDATER_ID = #updaterId#,
+			UPDATER_NAME = #updaterName#,
+			UPDATE_DATE = NOW()
+		WHERE
+			ITEM_TYPE_CODE = #itemTypeCode#
+	]]>
+	</update>
+   
+	<!-- 삭제 -->
+	<delete id="delete" parameterClass="java.lang.String">
+	<![CDATA[
+		DELETE /* [ItemType_SqlMap.xml] support.user.code.dao.ItemType.delete */ 
+		FROM IKEP4_EV_ITEM_TYPE
+		WHERE
+			ITEM_TYPE_CODE = #itemTypeCode#
+	]]>
+	</delete>
+	
+	<!-- 목록 가져오기 -->
+	<select id="selectAll" parameterClass="SearchCondition" resultMap="result">
+		<![CDATA[
+		SELECT				/* [ItemType_SqlMap.xml] support.user.code.dao.ItemType.selectAll */
+							(CASE tbl1.ITEM_TYPE_CODE WHEN tbl1.ITEM_TYPE_CODE THEN @ROWNUM := @ROWNUM + 1 ELSE @ROWNUM := 1 END) AS NUM,
+		    				tbl1.*
+		FROM				( 
+		    				SELECT				ITEM_TYPE_CODE,
+											    ITEM_TYPE_NAME,
+											    REGISTER_ID,
+											    REGISTER_NAME,
+											    UPDATER_ID,
+											    UPDATER_NAME,
+											    REGIST_DATE,
+											    UPDATE_DATE
+							FROM 				IKEP4_EV_ITEM_TYPE 
+							WHERE 				1 = 1
+		]]>
+							<isNotEmpty property="searchWord">
+							<isEqual property="searchColumn" compareValue="title">
+							AND					UPPER(ITEM_TYPE_NAME) LIKE CONCAT('%', UPPER(#searchWord#), '%')
+							</isEqual>
+							<isEqual property="searchColumn" compareValue="id">
+							AND					ITEM_TYPE_CODE LIKE CONCAT('%', #searchWord#, '%')
+							</isEqual>
+							</isNotEmpty>
+						    <isNotNull property="sortColumn">
+							<isEqual property="sortColumn" compareValue="ITEM_TYPE_CODE">
+							<isEqual property="sortType" compareValue="ASC">
+							ORDER BY 			ITEM_TYPE_CODE ASC
+							</isEqual>
+							<isEqual property="sortType" compareValue="DESC">
+							ORDER BY 			ITEM_TYPE_CODE DESC
+							</isEqual>
+							</isEqual>
+							<isEqual property="sortColumn" compareValue="ITEM_TYPE_NAME">
+							<isEqual property="sortType" compareValue="ASC">
+							ORDER BY 			ITEM_TYPE_NAME ASC
+							</isEqual>
+							<isEqual property="sortType" compareValue="DESC">
+							ORDER BY 			ITEM_TYPE_NAME DESC
+							</isEqual>
+							</isEqual>
+							</isNotNull>
+							<isNull property="sortColumn">
+							ORDER BY 			REGIST_DATE DESC, ITEM_TYPE_CODE ASC
+							</isNull>
+		<![CDATA[
+							LIMIT				#startRowIndex#, #pagePerRecord#
+							) tbl1,
+							(
+							SELECT				@ROWNUM := #startRowIndex#
+							) tbl2
+		]]>
+	</select>
+
+	<select id="selectCount" parameterClass="SearchCondition" resultClass="int">
+	<![CDATA[
+		SELECT /* [ItemType_SqlMap.xml] support.user.code.dao.ItemType.selectCount */ 
+		    COUNT(*)
+		FROM 
+		    IKEP4_EV_ITEM_TYPE
+		WHERE 1 = 1
+	]]>
+	<isNotEmpty property="searchWord">
+		<isEqual property="searchColumn" compareValue="title">
+		AND	UPPER(ITEM_TYPE_NAME) LIKE CONCAT('%', UPPER(#searchWord#), '%')
+		</isEqual>
+		<isEqual property="searchColumn" compareValue="id">
+		AND	ITEM_TYPE_CODE LIKE CONCAT('%', #searchWord#, '%')
+		</isEqual>
+	</isNotEmpty>
+	</select>
+	
+	<select id="checkCode" parameterClass="java.lang.String" resultClass="java.lang.String">
+	<![CDATA[
+		SELECT /* [ItemType_SqlMap.xml] support.user.code.dao.ItemType.checkCode */
+			COUNT(ITEM_TYPE_CODE)
+		FROM
+			IKEP4_EV_ITEM_TYPE
+		WHERE
+			ITEM_TYPE_CODE = #itemTypeCode#	
+	]]>
+	</select>
+		
+</sqlMap>

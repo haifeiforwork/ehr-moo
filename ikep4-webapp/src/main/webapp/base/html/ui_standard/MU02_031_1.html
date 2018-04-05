@@ -1,0 +1,315 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ko">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>iKEP 4.00</title>
+<link rel="stylesheet" type="text/css" href="../../css/theme01/jquery_ui_custom.css" />
+<link rel="stylesheet" type="text/css" href="../../css/common.css" />
+<link rel="stylesheet" type="text/css" href="../../css/theme01/theme.css" />
+<script type="text/javascript" src="../../js/jquery/jquery-1.6.2.min.js"></script>
+<script type="text/javascript" src="../../js/jquery/jquery-ui-1.8.13.min.without.datepicker.js"></script>
+<script type="text/javascript" src="../../js/jquery/plugins.pack.js"></script>
+<script type="text/javascript" src="../../js/langResource/ko.js"></script>
+<script type="text/javascript" src="../../js/common.pack.js"></script>
+<script type="text/javascript">
+var $portlets;
+var currLayout = "3";	// 3 / 2l / 2r
+var activePortlets = [
+	{id:"P003", layout:"r", seq:0},
+	{id:"P002", layout:"l", seq:2},
+	{id:"P007", layout:"l", seq:0},
+	{id:"P001", layout:"r", seq:1},
+	{id:"P005", layout:"l", seq:1}
+];
+
+(function($){
+	var $portletLayout;
+	var htmlPortletLayout = '<div class="floatLeft move_btn"><ul style="min-width:118px; min-height:100px;"></ul></div>';
+	var tplPortlet = $.template(null, '<li><a href="#a" title="\${id}">\${desc}</a></li>');
+	
+	function setPortletSortable() {
+		var $divSortable = $portletLayout.children(".move_btn").children("ul");
+		$divSortable.sortable({
+			revert: true,
+			connectWith: $divSortable,
+			placeholder: "ui-state-highlight",
+			forcePlaceholderSize: true
+		});
+	}
+	
+	function getPortletItem(portletId) {	// portlet item result: checkbox element
+		var result = null;
+		$portlets.each(function() {
+			if(portletId == $(this).val()) {
+				result = this;
+				return false;
+			}
+		})
+		return result;
+	}
+	
+	$(document).ready(function(event) {
+		$portletLayout = $("#portletLayout");
+		$portlets = $("input", "#ulPortletItems");
+		
+		$("input[name=layout]").each(function() {
+			if($(this).val() == currLayout) {
+				$(this).attr("checked", "checked");
+				switch($(this).val()) {
+					case "2l" :
+						$portletLayout.prepend(htmlPortletLayout);
+						$portletLayout.children("div:eq(1)").children("div:eq(1)").addClass("move_fixed_c2").removeClass("move_fixed_c");
+						break;
+					case "2r" :
+						$portletLayout.append(htmlPortletLayout);
+						$portletLayout.children("div:eq(0)").children("div:eq(1)").addClass("move_fixed_c2").removeClass("move_fixed_c");
+						break;
+					case "3" :
+						$portletLayout.append(htmlPortletLayout);
+						$portletLayout.prepend(htmlPortletLayout);
+						$portletLayout.children("div:eq(1)").children("div:eq(1)").addClass("move_fixed_c").removeClass("move_fixed_c2");
+						break;
+				}
+				return false;
+			}
+		})
+		
+		var $ulLayout = $portletLayout.children(".move_btn").children("ul");
+		$.each(activePortlets, function(){	// 활성화 되어 있는 포틀릿 생성
+			var $portletItem = $(getPortletItem(this.id)).attr("checked", "checked");
+			var portletInfo = $.extend(this, {desc:$portletItem.attr("title")});
+			var $ul = null;
+			switch(portletInfo.layout) {
+				case "l" : $ul = $ulLayout.eq(0); break;
+				case "r" : $ul = $ulLayout.eq(1); break;
+			}
+			
+			var $displayPortlets = $ul.children();
+			var $appendPortlet = null;
+			if($displayPortlets.length > 0) {	// 해당 영역에 포틀릿이 있으면 순번에 맞춰 추가
+				$displayPortlets.each(function() {
+					if(portletInfo.seq < $.data(this, "seq")) {
+						$appendPortlet = $.tmpl(tplPortlet, portletInfo);
+						$.data($appendPortlet[0], {portletId:portletInfo.id, seq:portletInfo.seq});
+						$(this).before($appendPortlet);
+						return false;
+					}
+				});
+			}
+			
+			if($appendPortlet == null) {	// 포틀릿이 추가 되지 않았으면 해당 영역으 마지막에 추가
+				$appendPortlet = $.tmpl(tplPortlet, portletInfo);
+				$.data($appendPortlet[0], {portletId:portletInfo.id, seq:portletInfo.seq});
+				$ul.append($appendPortlet);
+			}
+		});
+		
+		
+		setPortletSortable();
+		$("input[name=layout]").click(function(event) {	// 레이아웃 설정 radio 버튼 클릭하면...
+			var layout = $(this).val();
+			if(layout == currLayout) return false;
+			
+			$portletLayout.children(".move_btn").children("ul").sortable("destroy");	// layout 이 변경 되므로 sortable 삭제
+			
+			switch(layout) {
+				case "2l" :
+					switch(currLayout) {
+						case "2r" : $portletLayout.children("div:eq(1)").prependTo($portletLayout); break;
+						case "3" : $portletLayout.children("div:eq(2)").find("li").appendTo($portletLayout.children("div:eq(0)").children()).end().end().remove();
+							$portletLayout.children("div:eq(1)").children("div:eq(1)").addClass("move_fixed_c2").removeClass("move_fixed_c");
+							break;
+					}
+					break;
+				case "2r" :
+					switch(currLayout) {
+						case "2l" : $portletLayout.children("div:eq(0)").appendTo($portletLayout); break;
+						case "3" : $portletLayout.children("div:eq(0)").find("li").appendTo($portletLayout.children("div:eq(2)").children()).end().end().remove();
+							$portletLayout.children("div:eq(0)").children("div:eq(1)").addClass("move_fixed_c2").removeClass("move_fixed_c");
+							break;
+					}
+					break;
+				case "3" :
+					switch(currLayout) {
+						case "2l" : $portletLayout.append(htmlPortletLayout); break;
+						case "2r" : $portletLayout.prepend(htmlPortletLayout); break;
+					}
+					$portletLayout.children("div:eq(1)").children("div:eq(1)").addClass("move_fixed_c").removeClass("move_fixed_c2");
+					break;
+			}
+			currLayout = layout;
+			setPortletSortable();	// sortable 재설정
+		});
+		
+		$("#ulPortletItems").click(function(event) {
+			if(event.target.tagName.toLowerCase() == "input") {
+				$portletItem = $(event.target);
+				if($portletItem.attr("checked") == true) {	// 생성
+					var $ul = $portletLayout.children(".move_btn").children("ul").eq(0);
+					$appendPortlet = $.tmpl(tplPortlet, {id:$portletItem.val(), desc:$portletItem.attr("title")});
+					$.data($appendPortlet[0], "portletId", $portletItem.val());
+					$ul.prepend($appendPortlet);
+				} else {
+					$portletLayout.children(".move_btn").children("ul").find("li").each(function() {
+						if($.data(this, "portletId") == $portletItem.val()) {
+							$(this).remove();
+							return false;
+						}
+					});
+				}
+			}
+		});
+		
+		$("#btnSave").click(function() {
+			var portletSet = [[], []];
+			if(confirm("저장하시겠습니까?")) {
+				var $layouts = $portletLayout.children(".move_btn");
+				$layouts.each(function() {
+					var $layout = $(this);
+					var arr = null;
+					
+					if($layout.prev().length == 0) arr = portletSet[0];
+					else arr = portletSet[1];
+					
+					$layout.find("li").each(function(idx) {
+						arr.push({portletId:$.data(this, "portletId"), seq:idx});
+					});
+					
+				});
+				
+				iKEP.debug(portletSet);	// 저장할 데이타
+			}
+		});
+	});
+})(jQuery);
+</script>
+</head>
+
+<body>
+
+<!-- Modal window Start -->
+<!-- 사용시class="none"으로 설정 -->
+<div class="" id="layer_p" title="블로그 관리">
+
+	<div class="blog_layout">
+		
+		<!--leftMenu Start-->
+		<div class="floatLeft blog_left">
+			<h1 class="none">블로그 관리 레프트메뉴</h1>
+			<div class="blog_leftmenu">	
+				<ul>
+					<li><a href="#a">메뉴관리</a>
+						<ul>
+							<li><a href="#a">카테고리 관리</a></li>
+						</ul>
+					</li>
+					<li><a href="#a">디자인 설정</a>
+						<ul>
+							<li class="licurrent"><a href="#a">화면 배치 관리</a></li>
+							<li><a href="#a">화면 배경 관리</a></li>
+						</ul>
+					</li>
+					<li><a href="#a">통계관리</a>
+						<ul>
+							<li><a href="#a">방문자 통계</a></li>
+						</ul>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<!--//leftMenu End-->
+		
+		<div class="floatRight" style="width:724px;">
+			<div class="blog_layout_contents">
+				
+				<!--layout_select Start-->
+				<div class="blog_layout_Stitle">
+					<ul class="floatLeft">
+						<li><span>Layout 선택</span></li>
+					</ul>
+					<div class="floatRight">
+						<a id="btnSave" class="button_s" href="#a"><span>저장</span></a>
+					</div>
+					<div class="clear"></div>
+				</div>
+				
+				<div class="blog_layout_select">
+					<table summary="Layout 선택테이블">
+						<caption></caption>
+						<tbody>
+							<tr>
+								<td width="25%" class="Ytd">
+									<img src="../../images/common/layout_p01.gif" alt="현재 사용중인 Layout" />
+									<div class="select_txt">현재 사용중인 Layout</div>	
+								</td>
+								<td width="25%" class="borderR">
+									<img src="../../images/common/layout_p02.gif" alt="2단 메뉴형(좌)" />
+									<div class="select_txt">
+										<label><input name="layout" type="radio" class="radio" title="2단 메뉴형(좌)" value="2l"  />2단 메뉴형(좌)</label>
+									</div>
+								</td>
+								<td width="25%" class="borderR">
+									<img src="../../images/common/layout_p03.gif" alt="2단 메뉴형(우)" />
+									<div class="select_txt">
+										<label><input name="layout" type="radio" class="radio" title="2단 메뉴형(우)" value="2r"  />2단 메뉴형(우)</label>
+									</div>
+								</td>
+								<td width="25%">
+									<img src="../../images/common/layout_p04.gif" alt="3단 좌우 메뉴형" />
+									<div class="select_txt">
+										<label><input name="layout" type="radio" class="radio" title="3단 좌우 메뉴형" value="3" />3단 좌우 메뉴형</label>
+									</div>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<!--//layout_select End-->
+				
+				<!--layout_portlet Start-->
+				<div class="blog_layout_Stitle">
+					<ul>
+						<li><span>포틀릿 배치</span></li>
+					</ul>
+					<div class="clear"></div>
+				</div>
+				
+				<div class="layout_portlet">
+					<div class="floatLeft layout_portletList">
+						<div class="portletList_title">포틀릿 목록</div>
+						<div class="portletList_s">
+							<ul id="ulPortletItems">
+							    <!--  이곳 수정 -->
+								<li><label><input class="checkbox" title="개인 프로필" type="checkbox" value="P001" /> 개인 프로필</label></li>
+								<li><label><input class="checkbox" title="카테고리" type="checkbox" value="P002" /> 카테고리</label></li>
+								<li><label><input class="checkbox" title="Activity" type="checkbox" value="P003" /> Activity</label></li>
+								<li><label><input class="checkbox" title="포스팅 달력" type="checkbox" value="P004" /> 포스팅 달력</label></li>
+								<li><label><input class="checkbox" title="Following 정보" type="checkbox" value="P005" /> Following 정보</label></li>
+								<li><label><input class="checkbox" title="최근 댓글" type="checkbox" value="P006" /> 최근 댓글</label></li>
+								<li><label><input class="checkbox" title="태그 클라우드" type="checkbox" value="P007" /> 태그 클라우드</label></li>
+							</ul>
+						</div>
+					</div>
+					
+					<!--div class="floatLeft">
+						<a href="#a" class="layout_portlet_btn"><span>포틀릿 배치 버튼</span></a>
+					</div-->
+					
+					<div id="portletLayout" class="floatRight layout_portlet_move">
+						<div class="floatLeft move_fixed">
+							<div class="floatLeft move_fixed3_L"></div>
+							<div class="floatLeft move_fixed3_c"><span>Contents 영역(Fixed)</span></div>
+							<div class="floatLeft move_fixed3_R"></div>
+						</div>
+					</div>
+				</div>
+				<!--//layout_portlet End-->
+			</div>
+		</div>
+		
+	</div>
+	
+</div>	
+<!-- //Modal window End -->
+</body>
+</html>

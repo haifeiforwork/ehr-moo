@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="support.note.noteSharedUser">
+  <typeAlias alias="NoteSearchCondition" type="com.lgcns.ikep4.support.note.search.NoteSearchCondition" />
+  <typeAlias alias="User" type="com.lgcns.ikep4.support.user.member.model.User"/>	
+	<resultMap id="result" class="User">
+		<result property="userId" column="USER_ID" />
+		<result property="portalId" column="PORTAL_ID" />
+		<result property="userName" column="USER_NAME" />
+		<result property="userEnglishName" column="USER_ENGLISH_NAME" />
+		<result property="teamName" column="TEAM_NAME" />
+		<result property="teamEnglishName" column="TEAM_ENGLISH_NAME" />
+		<result property="jobTitleCode" column="JOB_TITLE_CODE" />
+		<result property="jobTitleName" column="JOB_TITLE_NAME" />
+		<result property="jobTitleEnglishName" column="JOB_TITLE_ENGLISH_NAME" />
+		<result property="mail" column="MAIL" />
+	</resultMap>
+
+   <!-- 사용자 관리화면용 상세정보 -->
+	<select id="listBySharedUser" parameterClass="NoteSearchCondition" resultMap="result">
+	<![CDATA[
+		SELECT /* [NoteSharedUser_SqlMap.xml] support.note.noteSharedUser.listBySharedUser */
+			  shar.USER_ID
+			, shar.PORTAL_ID
+		    , USER_NAME
+		    , USER_ENGLISH_NAME
+		    , TEAM_NAME
+		    , TEAM_ENGLISH_NAME
+		    , sub.JOB_TITLE_CODE
+		    , (SELECT JOB_TITLE_NAME 
+		         FROM IKEP4_EV_JOB_TITLE insa 
+		        WHERE insa.JOB_TITLE_CODE = sub.JOB_TITLE_CODE) AS JOB_TITLE_NAME
+		    , (SELECT JOB_TITLE_ENGLISH_NAME 
+		         FROM IKEP4_EV_JOB_TITLE insa 
+		        WHERE insa.JOB_TITLE_CODE = sub.JOB_TITLE_CODE) AS JOB_TITLE_ENGLISH_NAME
+		    , MAIL	
+		FROM IKEP4_NO_FOLDER fold, IKEP4_NO_SHARE shar, IKEP4_EV_USER sub		
+		where fold.PORTAL_ID = #portalId#
+		and fold.USER_ID = #userId#
+		and fold.FOLDER_ID = #folderId#
+		and fold.FOLDER_ID = shar.FOLDER_ID 
+		and shar.USER_ID = sub.USER_ID
+	]]>
+	</select>
+	    
+	<insert id="createSharedUser" parameterClass="java.util.Map">
+  	/* [[NoteSharedUser_SqlMap.xml] support.note.noteSharedUser.createSharedUser */
+    INSERT INTO IKEP4_NO_SHARE ( 
+     		FOLDER_ID,
+		    USER_ID,
+		    PORTAL_ID ,
+		    REGISTER_ID ,
+		    REGISTER_NAME ,
+		    REGIST_DATE 
+    ) VALUES (
+      #folderId#,
+      #userId#,
+      #portalId#,
+      #registerId#,       
+      #registerName#,     
+      now()       
+    )
+  	</insert>
+  
+	<delete id="physicalDeleteSharedUser" parameterClass="String"> 
+	<![CDATA[
+		/* [NoteSharedUser_SqlMap.xml] support.note.NoteSharedUser.physicalDeleteSharedUser */
+		DELETE 
+		FROM 
+			IKEP4_NO_SHARE
+		WHERE FOLDER_ID = #folderId#
+    	]]>
+	</delete>
+</sqlMap>

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="com.lgcns.ikep4.approval.work.dao.ApprNotice" >
+	<typeAlias alias="apprNotice" type="com.lgcns.ikep4.approval.work.model.ApprNotice"/>
+	
+	<insert id="noticeCreate" parameterClass="apprNotice"> 
+      <![CDATA[ 
+           INSERT INTO IKEP4_APPR_NOTICE 
+           		  (USER_ID, USAGE, NOTICE_METHOD, NOTICE_ARRIVAL, NOTICE_FINISH, NOTICE_REJECT
+           	     , NOTICE_RETURN, REGIST_DATE, UPDATE_DATE,PORTAL_ID)
+           VALUES (#userId#, #usage#,#noticeMethod#, #noticeArrival#, #noticeFinish#, #noticeReject#
+           		 , #noticeReturn#, GETDATE(), GETDATE(),#portalId#)
+       ]]>
+  	</insert>
+	
+	<update id="noticeUpdate" parameterClass="apprNotice">
+	  <![CDATA[
+		   	UPDATE 	IKEP4_APPR_NOTICE 
+		   	SET 	NOTICE_METHOD 	= #noticeMethod# 	
+		   		  , NOTICE_ARRIVAL  = #noticeArrival#
+		   		  , NOTICE_FINISH 	= #noticeFinish#
+		   		  , NOTICE_REJECT 	= #noticeReject#
+		   		  , NOTICE_RETURN 	= #noticeReturn#
+		   		  ,	USAGE 			= #usage#
+			   	  , UPDATE_DATE 	= GETDATE() 
+		   	WHERE 	USER_ID 		= #userId#
+		   	  AND   PORTAL_ID		= #portalId#
+	   ]]>
+	</update>
+	
+	<update id="noticeUpdateUsage" parameterClass="apprNotice">
+	  <![CDATA[
+		   	UPDATE 	IKEP4_APPR_NOTICE 
+		   	SET 	USAGE 			= #usage#
+			   	  , UPDATE_DATE 	= GETDATE() 
+		   	WHERE 	USER_ID 		= #userId#
+		      AND   PORTAL_ID		= #portalId#
+	   ]]>
+	</update>
+	
+	<select id="noticeDetail" parameterClass="map" resultClass="apprNotice">
+	  <![CDATA[
+		   	SELECT  USER_ID userId,
+		   			USAGE usage,
+		   			NOTICE_METHOD noticeMethod,
+		   			NOTICE_ARRIVAL noticeArrival,
+		   			NOTICE_FINISH noticeFinish,
+		   			NOTICE_REJECT noticeReject,
+		   			NOTICE_RETURN noticeReturn
+			FROM 	IKEP4_APPR_NOTICE
+			WHERE 	USER_ID 		= #userId#
+			  AND   PORTAL_ID		= #portalId#
+	   ]]>
+	</select>
+	
+</sqlMap>

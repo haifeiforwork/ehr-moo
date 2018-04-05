@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="support.user.userTheme.userTheme" >
+	<typeAlias alias = "UserTheme" type="com.lgcns.ikep4.support.user.userTheme.model.UserTheme"/>
+	
+	<resultMap id="userThemeResult" class="UserTheme">
+		<result property="themeId" column="THEME_ID"/>
+		<result property="userId" column="USER_ID"/>
+		<result property="registerId" column="REGISTER_ID"/>
+		<result property="registerName" column="REGISTER_NAME"/>
+		<result property="registDate" column="REGIST_DATE"/>
+		<result property="updaterId" column="UPDATER_ID"/>
+		<result property="updaterName" column="UPDATER_NAME"/>
+		<result property="updateDate" column="UPDATE_DATE"/>
+	</resultMap>
+	
+	<resultMap id="themeResult" class="UserTheme">
+		<result property="themeId" column="THEME_ID"/>
+		<result property="themeName" column="THEME_NAME"/>
+		<result property="description" column="DESCRIPTION"/>
+		<result property="portalId" column="PORTAL_ID"/>
+		<result property="defaultOption" column="DEFAULT_OPTION"/>
+		<result property="cssPath" column="CSS_PATH"/>
+		<result property="previewImageId" column="PREVIEW_IMAGE_ID"/>
+		<result property="registerId" column="REGISTER_ID"/>
+		<result property="registerName" column="REGISTER_NAME"/>
+		<result property="registDate" column="REGIST_DATE"/>
+		<result property="updaterId" column="UPDATER_ID"/>
+		<result property="updaterName" column="UPDATER_NAME"/>
+		<result property="updateDate" column="UPDATE_DATE"/>
+	</resultMap>
+	
+	<select id="getUserTheme" parameterClass="String" resultMap="userThemeResult">
+	  <![CDATA[
+	  	   /* [UserTheme_SqlMap.xml] support.user.userTheme.userTheme.getUserTheme */
+		   SELECT 
+		   	   THEME_ID, 
+		   	   USER_ID, 
+		   	   REGISTER_ID, 
+		   	   REGISTER_NAME, 
+		   	   REGIST_DATE, 
+		   	   UPDATER_ID, 
+		   	   UPDATER_NAME, 
+		   	   UPDATE_DATE
+		   	 FROM IKEP4_PO_USER_THEME 
+		   	WHERE USER_ID = #userId#
+	   ]]>
+	</select>
+	
+	<insert id="createUserTheme" parameterClass="UserTheme"> 
+      <![CDATA[
+      	   /* [UserTheme_SqlMap.xml] support.user.userTheme.userTheme.createUserTheme */ 
+           INSERT INTO IKEP4_PO_USER_THEME (THEME_ID, USER_ID, REGISTER_ID, REGISTER_NAME, REGIST_DATE, UPDATER_ID, UPDATER_NAME, UPDATE_DATE)  
+           VALUES (#themeId#, #userId#, #registerId#, #registerName#, NOW(), #updaterId#, #updaterName#, NOW())
+       ]]>
+   </insert>
+   
+   <update id="updateUserTheme" parameterClass="UserTheme">
+	  <![CDATA[
+	  	   /* [UserTheme_SqlMap.xml] support.user.userTheme.userTheme.updateUserTheme */
+		   UPDATE IKEP4_PO_USER_THEME
+		   SET THEME_ID = #themeId#,
+			   UPDATER_ID = #updaterId#, 
+		   	   UPDATER_NAME = #updaterName#,  
+			   UPDATE_DATE = NOW() 
+		   WHERE USER_ID = #userId#
+	   ]]>
+	</update>
+	
+	<select id="getTheme" parameterClass="java.util.HashMap" resultMap="themeResult">
+	  <![CDATA[
+	  	   /* [UserTheme_SqlMap.xml] support.user.userTheme.userTheme.getTheme */
+		   SELECT 
+		   	   THEME_ID, 
+		   	   THEME_NAME, 
+		   	   DESCRIPTION, 
+		   	   PORTAL_ID, 
+		   	   DEFAULT_OPTION, 
+		   	   CSS_PATH, 
+		   	   PREVIEW_IMAGE_ID, 
+		   	   REGISTER_ID, 
+		   	   REGISTER_NAME, 
+		   	   REGIST_DATE, 
+		   	   UPDATER_ID, 
+		   	   UPDATER_NAME, 
+		   	   UPDATE_DATE 
+		   	 FROM IKEP4_PO_THEME 
+		   	WHERE THEME_ID = #themeId#
+		   	  AND PORTAL_ID = #portalId#
+	   ]]>
+	</select>
+	
+	<select id="getDefaultTheme" parameterClass="String" resultMap="themeResult">
+	  <![CDATA[
+	  	   /* [UserTheme_SqlMap.xml] support.user.userTheme.userTheme.getDefaultTheme */
+		   SELECT 
+		   	   THEME_ID, 
+		   	   THEME_NAME, 
+		   	   DESCRIPTION, 
+		   	   PORTAL_ID, 
+		   	   DEFAULT_OPTION, 
+		   	   CSS_PATH, 
+		   	   PREVIEW_IMAGE_ID, 
+		   	   REGISTER_ID, 
+		   	   REGISTER_NAME, 
+		   	   REGIST_DATE, 
+		   	   UPDATER_ID, 
+		   	   UPDATER_NAME, 
+		   	   UPDATE_DATE 
+		   	 FROM IKEP4_PO_THEME 
+		   	WHERE PORTAL_ID = #portalId#
+		   	  AND DEFAULT_OPTION = 1
+	   ]]>
+	</select>
+</sqlMap>

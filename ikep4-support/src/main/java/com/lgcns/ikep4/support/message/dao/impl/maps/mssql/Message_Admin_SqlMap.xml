@@ -1,0 +1,374 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="support.message.messageAdmin">
+
+    <typeAlias alias="MessageAdmin" type="com.lgcns.ikep4.support.message.model.MessageAdmin" />
+    <resultMap class="com.lgcns.ikep4.support.message.model.MessageAdmin" id="result">		
+		<result column="MAX_MONTH_FILESIZE"    property="maxMonthFilesize"   jdbcType="DECIMAL" /> 
+		<result column="MAX_STORED_FILESIZE"   property="maxStoredFilesize"  jdbcType="DECIMAL" /> 
+		<result column="MAX_ATTACH_FILESIZE"   property="maxAttachFilesize"  jdbcType="DECIMAL" /> 
+		<result column="MAX_RECEIVER_COUNT"    property="maxReceiverCount"   jdbcType="DECIMAL" /> 
+		<result column="KEEP_DAYS"             property="keepDays"           jdbcType="DECIMAL" /> 
+		<result column="DISK_SIZE"             property="diskSize"           jdbcType="DECIMAL" /> 
+		<result column="MANAGER_ALARM_RATIO"   property="managerAlarmRatio"  jdbcType="DECIMAL" /> 
+		<result column="USE_MONTH_FILESIZE"    property="useMonthFilesize"   jdbcType="DECIMAL" /> 
+		<result column="USE_STORED_FILESIZE"   property="useStoredFilesize"  jdbcType="DECIMAL" /> 
+		<result column="NOW_MONTH"             property="nowMonth"           jdbcType="DECIMAL" /> 
+	</resultMap>
+	
+	<!-- MSSQL -->
+    <select id="get" parameterClass="String" resultMap="result">
+    	SELECT /* [Message_Admin_SqlMap.xml] messageAdmin.get */
+    		MAX_MONTH_FILESIZE
+    		, MAX_STORED_FILESIZE
+    		, MAX_ATTACH_FILESIZE
+    		, MAX_RECEIVER_COUNT
+    		, KEEP_DAYS
+    		, DISK_SIZE
+    		, MANAGER_ALARM_RATIO
+    		, null as USE_MONTH_FILESIZE
+    		, ISNULL((SELECT ROUND (SUM (ATTACH_SIZE) / 1024, 0)
+	             	FROM IKEP4_ME_MESSAGE insc, IKEP4_ME_STOREBOX insd
+	            	WHERE insc.MESSAGE_ID = insd.MESSAGE_ID),0
+    		   ) as USE_STORED_FILESIZE
+    		, null as NOW_MONTH
+		FROM IKEP4_ME_SETTING
+		WHERE PORTAL_ID = #portalId#
+	</select>
+	
+	<!-- MSSQL -->
+	<select id="getUserAdmin" parameterClass="String" resultMap="result">
+    	SELECT /* [Message_Admin_SqlMap.xml] messageAdmin.get */
+    		ISNULL((SELECT MAX_MONTH_FILESIZE 
+                   FROM IKEP4_ME_USER_FILESIZE insa
+                  WHERE sub.USER_ID = insa.USER_ID
+                ),main.MAX_MONTH_FILESIZE
+             ) AS MAX_MONTH_FILESIZE
+    		, MAX_STORED_FILESIZE
+    		, MAX_ATTACH_FILESIZE
+    		, MAX_RECEIVER_COUNT
+    		, KEEP_DAYS
+    		, DISK_SIZE
+    		, MANAGER_ALARM_RATIO
+    		, ISNULL((SELECT ROUND(SUM(ATTACH_SIZE)/1024,0)
+                     FROM IKEP4_ME_MESSAGE insb
+                    WHERE (SEND_DATE &gt;= CONVERT(NCHAR(10), CURRENT_TIMESTAMP, 120)  
+						   AND SEND_DATE &lt; CONVERT(NCHAR(10), DATEADD(DD, 1, CURRENT_TIMESTAMP), 120))  
+                      AND insb.SENDER_ID = sub.USER_ID
+                 ),0
+            ) AS USE_MONTH_FILESIZE
+    		, ISNULL((SELECT ROUND(SUM(ATTACH_SIZE)/1024,0)
+                     FROM IKEP4_ME_MESSAGE insc, IKEP4_ME_STOREBOX insd
+                    WHERE insc.MESSAGE_ID = insd.MESSAGE_ID 
+                      AND insd.USER_ID = sub.USER_ID
+                 ),0
+            ) AS USE_STORED_FILESIZE
+            , CONVERT(NUMERIC, DATEPART(MM, CURRENT_TIMESTAMP)) as NOW_MONTH
+		FROM IKEP4_ME_SETTING main, IKEP4_EV_USER sub
+        WHERE main.PORTAL_ID = sub.PORTAL_ID
+        AND USER_ID = #userId#
+	</select>
+	
+	<!-- ANSI -->
+	<select id="exists" parameterClass="string" resultClass="int">
+    	SELECT /* [Message_Admin_SqlMap.xml] messageAdmin.exists */
+	    	  COUNT(*)
+	    FROM  IKEP4_ME_SETTING
+	    WHERE PORTAL_ID = #portalId#
+	</select> 
+	
+	<!-- ANSI -->
+	<insert id="create" parameterClass="MessageAdmin">
+	    INSERT INTO IKEP4_ME_SETTING ( /* [Message_Admin_SqlMap.xml] messageAdmin.create */ 
+	    	PORTAL_ID
+	    	, MAX_MONTH_FILESIZE
+    		, MAX_STORED_FILESIZE
+    		, MAX_ATTACH_FILESIZE
+    		, MAX_RECEIVER_COUNT
+    		, KEEP_DAYS
+    		, DISK_SIZE
+    		, MANAGER_ALARM_RATIO
+	    ) VALUES (
+			#portalId#
+			, #maxMonthFilesize#
+			, #maxStoredFilesize#
+			, #maxAttachFilesize#
+			, #maxReceiverCount#
+			, #keepDays#
+			, #diskSize#
+			, #managerAlarmRatio#
+		)
+	</insert>
+	
+	<!-- ANSI -->
+	<update id="update" parameterClass="MessageAdmin">
+		UPDATE IKEP4_ME_SETTING /* [Message_Admin_SqlMap.xml] messageAdmin.update */
+	    	SET  PORTAL_ID = PORTAL_ID
+	    	<isNotEmpty property="maxMonthFilesize">
+	    	, MAX_MONTH_FILESIZE =  #maxMonthFilesize#
+	    	</isNotEmpty>
+	    	<isNotEmpty property="maxStoredFilesize">
+	    	, MAX_STORED_FILESIZE =  #maxStoredFilesize#
+	    	</isNotEmpty>
+	    	<isNotEmpty property="maxAttachFilesize">
+	    	, MAX_ATTACH_FILESIZE = #maxAttachFilesize#
+	    	</isNotEmpty>
+	    	<isNotEmpty property="maxReceiverCount">
+	    	, MAX_RECEIVER_COUNT = #maxReceiverCount#
+	    	</isNotEmpty>
+	    	<isNotEmpty property="keepDays">
+	    	, KEEP_DAYS = #keepDays#
+	    	</isNotEmpty>
+	    	<isNotEmpty property="diskSize">
+	    	, DISK_SIZE = #diskSize#
+	    	</isNotEmpty>
+	    	<isNotEmpty property="managerAlarmRatio">
+	    	, MANAGER_ALARM_RATIO = #managerAlarmRatio#
+	    	</isNotEmpty>
+	    WHERE PORTAL_ID = #portalId#
+	</update>
+	
+	<!-- ANSI -->
+	<delete id="remove" parameterClass="string">
+		DELETE FROM IKEP4_ME_SETTING /* [Message_Admin_SqlMap.xml] messageAdmin.remove */
+		WHERE PORTAL_ID = #portalId#
+	</delete> 
+	
+    <typeAlias alias="MessageMonitor" type="com.lgcns.ikep4.support.message.model.MessageMonitor" />
+    <resultMap class="com.lgcns.ikep4.support.message.model.MessageMonitor" id="resultMonitor">		
+		<result column="RNUM"                 property="rnum"              jdbcType="DECIMAL" /> 
+		<result column="USER_NAME"            property="userName"          jdbcType="VARCHAR" /> 
+		<result column="USER_ENGLISH_NAME"    property="userEnglishName"   jdbcType="VARCHAR" /> 
+		<result column="TEAM_NAME"            property="teamName"          jdbcType="VARCHAR" /> 
+		<result column="TEAM_ENGLISH_NAME"    property="teamEnglishName"   jdbcType="VARCHAR" /> 
+		<result column="USE_MONTH_FILESIZE"   property="useMonthFilesize"  jdbcType="DECIMAL" /> 
+		<result column="USE_STORED_FILESIZE"  property="useStoredFilesize" jdbcType="DECIMAL" /> 
+	</resultMap>
+	<typeAlias alias="MessageMonitorSearchCondition" type="com.lgcns.ikep4.support.message.search.MessageMonitorSearchCondition"/>
+	
+	<!-- MS SQL -->
+	<select id="getUserVolumnInfoList" parameterClass="MessageMonitorSearchCondition" resultMap="resultMonitor">
+	    <![CDATA[
+	    SELECT /* [Message_Admin_SqlMap.xml] messageAdmin.getUserVolumnInfoList */
+	       	*
+		FROM ( 
+		    SELECT A.SEQ_NO AS RNUM, A.* FROM ( 
+		        /* START========================================= */
+				SELECT Row_number() OVER (	]]>
+											ORDER BY 
+											<isNotEmpty property="sortColumn" >
+												<isEqual property="sortColumn" compareValue="USE_MONTH_FILESIZE">
+													<isEqual property="sortType" compareValue="ASC">
+														USE_MONTH_FILESIZE ASC,
+													</isEqual>
+													<isEqual property="sortType" compareValue="DESC">
+														USE_MONTH_FILESIZE DESC,
+													</isEqual>
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="USE_STORED_FILESIZE">
+													<isEqual property="sortType" compareValue="ASC">
+														USE_STORED_FILESIZE ASC,
+													</isEqual>
+													<isEqual property="sortType" compareValue="DESC">
+														USE_STORED_FILESIZE DESC,
+													</isEqual>
+												</isEqual>
+											</isNotEmpty>
+												main.USER_ID 
+											<![CDATA[ ) as SEQ_NO
+					, USER_NAME	, USER_ENGLISH_NAME
+					, TEAM_NAME	, TEAM_ENGLISH_NAME
+					, ISNULL(USE_MONTH_FILESIZE,0) AS USE_MONTH_FILESIZE
+					, ISNULL(USE_STORED_FILESIZE,0) AS USE_STORED_FILESIZE
+				FROM IKEP4_EV_USER main LEFT OUTER JOIN (
+				    SELECT USER_ID
+				        , SUM(CASE WHEN CODE = 'M' THEN USE_FILESIZE ELSE 0 END) AS USE_MONTH_FILESIZE
+				        , SUM(CASE WHEN CODE = 'S' THEN USE_FILESIZE ELSE 0 END) AS USE_STORED_FILESIZE
+				    FROM (
+				            SELECT SENDER_ID as USER_ID
+				             , ROUND(SUM(ATTACH_SIZE)/1024, 0) as USE_FILESIZE, 'M' as CODE
+				              FROM IKEP4_ME_MESSAGE insb
+				             WHERE SEND_DATE >= CONVERT(DATETIME, CONVERT(CHAR(6), CURRENT_TIMESTAMP, 112) + '01')
+				             AND ATTACH_SIZE > 0
+				             GROUP BY SENDER_ID
+				            UNION ALL 
+				             SELECT USER_ID
+				                 , ROUND(SUM(ATTACH_SIZE)/1024, 0) as USE_FILESIZE, 'S' as CODE
+				              FROM IKEP4_ME_MESSAGE insc, IKEP4_ME_STOREBOX insd
+				             WHERE insc.MESSAGE_ID = insd.MESSAGE_ID 
+				             AND ATTACH_SIZE > 0
+				             GROUP BY USER_ID
+				    ) TBL
+				    GROUP BY USER_ID
+				) sub ON  ( main.USER_ID = sub.USER_ID )
+				WHERE main.USER_ID = sub.USER_ID 
+				AND PORTAL_ID = #portalId#	
+				]]>
+				<isNotEmpty property="userName">
+					AND (UPPER(main.USER_NAME) LIKE '%' + UPPER(#userName# )+ '%' OR UPPER(main.USER_ENGLISH_NAME) LIKE '%' + UPPER(#userName#) + '%')
+				</isNotEmpty>
+				/* ===========================================END  */ 
+			<![CDATA[  
+			    ) A WHERE SEQ_NO <=  #endRowIndex# /* 종료  */
+			) TBL2 WHERE RNUM >  #startRowIndex# /* 시작 */
+			]]> 	
+	</select>
+	
+	<!-- MSSQL -->
+	<select id="countUserVolumnInfoList" parameterClass="MessageMonitorSearchCondition" resultClass="int">  
+    	SELECT /* [Message_Admin_SqlMap.xml] messageAdmin.countUserVolumnInfoList */
+    		COUNT(*)
+		<isNotEmpty property="userName">
+		FROM IKEP4_EV_USER main
+		WHERE PORTAL_ID = #portalId#
+		AND (UPPER(main.USER_NAME) LIKE '%' + UPPER(#userName#) + '%' OR UPPER(USER_ENGLISH_NAME) LIKE '%' + UPPER(#userName#) + '%')
+		</isNotEmpty>
+		<isEmpty property="userName">
+		<![CDATA[
+		FROM IKEP4_EV_USER main, (
+				    SELECT USER_ID
+				        , SUM(CASE WHEN CODE = 'M' THEN USE_FILESIZE ELSE 0 END) AS USE_MONTH_FILESIZE
+				        , SUM(CASE WHEN CODE = 'S' THEN USE_FILESIZE ELSE 0 END) AS USE_STORED_FILESIZE
+				    FROM (
+				            SELECT SENDER_ID as USER_ID
+				             , ROUND(SUM(ATTACH_SIZE)/1024, 0) as USE_FILESIZE, 'M' as CODE
+				              FROM IKEP4_ME_MESSAGE insb
+				             WHERE SEND_DATE >= CONVERT(DATETIME, CONVERT(CHAR(6), CURRENT_TIMESTAMP, 112) + '01')
+				             AND ATTACH_SIZE > 0
+				             GROUP BY SENDER_ID
+				            UNION ALL 
+				             SELECT USER_ID
+				                 , ROUND(SUM(ATTACH_SIZE)/1024, 0) as USE_FILESIZE, 'S' as CODE
+				              FROM IKEP4_ME_MESSAGE insc, IKEP4_ME_STOREBOX insd
+				             WHERE insc.MESSAGE_ID = insd.MESSAGE_ID 
+				             AND ATTACH_SIZE > 0
+				             GROUP BY USER_ID
+				    ) TBL
+				    GROUP BY USER_ID
+				) sub 
+				WHERE main.USER_ID = sub.USER_ID 
+				AND PORTAL_ID = #portalId#	
+		]]> 
+		</isEmpty>
+    </select>
+    
+    <typeAlias alias="MessageChart" type="com.lgcns.ikep4.support.message.model.MessageChart" />
+    <resultMap class="com.lgcns.ikep4.support.message.model.MessageChart" id="resultChart">		
+		<result column="REGIST_DATE" property="registDate" jdbcType="VARCHAR" /> 
+		<result column="FILESIZE"    property="filesize"   jdbcType="DECIMAL" /> 
+	</resultMap>
+	
+	<!-- MSSQL -->
+	<select id="messageWeekChartList" resultMap="resultChart">
+		<![CDATA[  
+		SELECT /* [Message_Admin_SqlMap.xml] messageAdmin.messageWeekChartList */
+		                     MAX (REGIST_DATE) AS REGIST_DATE,
+		                      ROUND (SUM (FILESIZE) / 1024, 0) AS FILESIZE
+		                 FROM IKEP4_ME_DAY_FILESIZE
+		                WHERE DATEDIFF(DAY, REGIST_DATE, CURRENT_TIMESTAMP) < 210
+		             GROUP BY DATEPART(WW, REGIST_DATE)
+		             ORDER BY REGIST_DATE
+		]]>
+	</select>	
+	
+	<!-- MSSQL -->
+	<select id="messageDayChartList" resultMap="resultChart">	
+		<![CDATA[  
+		SELECT /* [Message_Admin_SqlMap.xml] messageAdmin.messageDayChartList */
+		                   REGIST_DATE, ROUND (FILESIZE / 1024, 0) AS FILESIZE
+		               FROM IKEP4_ME_DAY_FILESIZE
+		              WHERE DATEDIFF(DAY, REGIST_DATE, CURRENT_TIMESTAMP) < 31
+			ORDER BY REGIST_DATE
+		]]>
+	</select>
+	
+	<!-- MS SQL -->
+	<delete id="deleteReceiveReadBatch" >
+		<![CDATA[  
+			DELETE FROM IKEP4_ME_MESSAGE_READ 
+			  /* [Message_Admin_SqlMap.xml] messageAdmin.deleteReceiveReadBatch */ 
+			  WHERE  MESSAGE_ID IN (SELECT suba.MESSAGE_ID 
+			         FROM   IKEP4_ME_MESSAGE suba, 
+			          (SELECT insb.USER_ID, 
+			            CONVERT(DATETIME, CONVERT(NVARCHAR, 
+			                  CURRENT_TIMESTAMP, 23)) 
+			            - KEEP_DAYS 
+			            AS 
+			            DEL_DAY 
+			           FROM   IKEP4_ME_SETTING insa, 
+			            IKEP4_EV_USER insb 
+			           WHERE  insa.PORTAL_ID = insb.PORTAL_ID) subb 
+			         WHERE  suba.SENDER_ID = subb.USER_ID 
+			          AND suba.SEND_DATE <= subb.DEL_DAY) 
+		]]>
+	</delete>
+	
+	<!-- MSSQL -->
+	<delete id="deleteReceiveboxBatch" >
+		<![CDATA[  
+			DELETE FROM IKEP4_ME_RECEIVEBOX /* [Message_Admin_SqlMap.xml] messageAdmin.deleteReceiveboxBatch */
+			WHERE (USER_ID, MESSAGE_ID) IN (
+			SELECT main.USER_ID, main.MESSAGE_ID
+			FROM IKEP4_ME_RECEIVEBOX main, IKEP4_ME_MESSAGE suba,
+			    ( SELECT insb.USER_ID, CONVERT(DATETIME, CONVERT(NVARCHAR, CURRENT_TIMESTAMP, 23)) - KEEP_DAYS as DEL_DAY
+			        FROM IKEP4_ME_SETTING insa, IKEP4_EV_USER insb
+			       WHERE insa.PORTAL_ID = insb.PORTAL_ID) subb
+			WHERE main.MESSAGE_ID = suba.MESSAGE_ID
+			AND   main.USER_ID = subb.USER_ID
+			AND   suba.SEND_DATE <= subb.DEL_DAY
+			)
+		]]>
+	</delete>
+	
+	<!-- MSSQL -->
+	<delete id="deleteSendboxBatch" >
+		<![CDATA[  
+			DELETE FROM IKEP4_ME_SENDBOX /* [Message_Admin_SqlMap.xml] messageAdmin.deleteSendboxBatch */
+			WHERE (USER_ID, MESSAGE_ID) IN (
+			SELECT main.USER_ID, main.MESSAGE_ID
+			FROM IKEP4_ME_SENDBOX main, IKEP4_ME_MESSAGE suba,
+			    ( SELECT insb.USER_ID, CONVERT(DATETIME, CONVERT(NVARCHAR, GETDATE(), 23)) - KEEP_DAYS as DEL_DAY
+			        FROM IKEP4_ME_SETTING insa, IKEP4_EV_USER insb
+			       WHERE insa.PORTAL_ID = insb.PORTAL_ID) subb
+			WHERE main.MESSAGE_ID = suba.MESSAGE_ID
+			AND   main.USER_ID = subb.USER_ID
+			AND   suba.SEND_DATE <= subb.DEL_DAY
+			)
+		]]>
+	</delete>
+	
+	<!-- ANSI -->
+	<delete id="deleteMessageBatch" >
+		<![CDATA[  
+			DELETE FROM IKEP4_ME_MESSAGE /* [Message_Admin_SqlMap.xml] messageAdmin.deleteMessageBatch */
+			WHERE MESSAGE_ID NOT IN (
+			SELECT MESSAGE_ID FROM IKEP4_ME_RECEIVEBOX
+			UNION ALL
+			SELECT MESSAGE_ID FROM IKEP4_ME_SENDBOX
+			UNION ALL
+			SELECT MESSAGE_ID FROM IKEP4_ME_STOREBOX 
+			) 
+		]]>
+	</delete>
+	
+	<!-- MS SQL -->
+	<delete id="deleteDayFilesizeBatch" >
+		<![CDATA[  
+			DELETE FROM IKEP4_ME_DAY_FILESIZE /* [Message_Admin_SqlMap.xml] messageAdmin.deleteDayFilesizeBatch */
+			WHERE REGIST_DATE = CONVERT(NVARCHAR, CURRENT_TIMESTAMP, 23)
+		]]>
+	</delete>
+	
+	<!-- MS SQL -->
+	<insert id="createDayFilesizeBatch">
+		<![CDATA[  
+			INSERT INTO IKEP4_ME_DAY_FILESIZE /* [Message_Admin_SqlMap.xml] messageAdmin.createDayFilesizeBatch */
+			SELECT ev.PORTAL_ID, CONVERT(NVARCHAR, CURRENT_TIMESTAMP, 23) AS REGIST_DATE, ROUND(SUM(ATTACH_SIZE)/1024, 0) AS FILESIZE
+			FROM IKEP4_ME_MESSAGE me
+				 INNER JOIN IKEP4_EV_USER ev
+					ON me.SENDER_ID = ev.USER_ID
+			GROUP BY ev.PORTAL_ID
+		]]>
+	</insert>
+</sqlMap>

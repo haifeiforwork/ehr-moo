@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="support.message.messageSpecialUser">
+
+    <typeAlias alias="MessageSpecialUser" type="com.lgcns.ikep4.support.message.model.MessageSpecialUser" />
+    <typeAlias alias="MessageMonitorSearchCondition" type="com.lgcns.ikep4.support.message.search.MessageMonitorSearchCondition"/>
+    <resultMap class="com.lgcns.ikep4.support.message.model.MessageSpecialUser" id="result">		
+		<result column="USER_ID"                   property="userId"                 jdbcType="VARCHAR" /> 
+		<result column="USER_NAME"                 property="userName"               jdbcType="VARCHAR" /> 
+		<result column="USER_ENGLISH_NAME"         property="userEnglishName"        jdbcType="VARCHAR" /> 
+		<result column="TEAM_NAME"                 property="teamName"               jdbcType="VARCHAR" /> 
+		<result column="TEAM_ENGLISH_NAME"         property="teamEnglishName"        jdbcType="VARCHAR" /> 
+		<result column="JOB_POSITION_NAME"         property="jobPositionName"        jdbcType="VARCHAR" /> 
+		<result column="JOB_POSITION_ENGLISH_NAME" property="jobPositionEnglishName" jdbcType="VARCHAR" /> 
+		<result column="MAX_MONTH_FILESIZE"        property="maxMonthFilesize"       jdbcType="DECIMAL" /> 
+		<result column="REGIST_DATE"               property="registDate"             jdbcType="TIMESTAMP" /> 
+	</resultMap> 
+	
+    <select id="get" parameterClass="String" resultMap="result">
+    	SELECT /* [Message_SpecialUser_SqlMap.xml] messageSpecialUser.get */
+		    main.USER_ID
+		    , USER_NAME, USER_ENGLISH_NAME
+		    , TEAM_NAME, TEAM_ENGLISH_NAME
+		    , (SELECT JOB_POSITION_NAME 
+		         FROM IKEP4_EV_JOB_POSITION insa 
+		        WHERE insa.JOB_POSITION_CODE = sub.JOB_POSITION_CODE) AS JOB_POSITION_NAME
+		    , (SELECT JOB_POSITION_ENGLISH_NAME 
+		         FROM IKEP4_EV_JOB_POSITION insa 
+		        WHERE insa.JOB_POSITION_CODE = sub.JOB_POSITION_CODE) AS JOB_POSITION_ENGLISH_NAME	
+		    , MAX_MONTH_FILESIZE
+		    , main.REGIST_DATE
+		FROM IKEP4_ME_USER_FILESIZE main, IKEP4_EV_USER sub
+		WHERE main.USER_ID = sub.USER_ID
+		AND main.USER_ID = #userId#
+	</select>
+	
+	<select id="exists" parameterClass="string" resultClass="int">
+    	SELECT /* [Message_SpecialUser_SqlMap.xml] messageSpecialUser.exists */
+	    	  COUNT(*)
+	    FROM  IKEP4_ME_USER_FILESIZE
+	    WHERE USER_ID = #userId#
+	</select> 
+	
+	<insert id="create" parameterClass="MessageSpecialUser">
+	    INSERT INTO IKEP4_ME_USER_FILESIZE ( /* [Message_SpecialUser_SqlMap.xml] messageSpecialUser.create */
+	    	USER_ID
+	    	, MAX_MONTH_FILESIZE
+    		, REGIST_DATE
+	    ) VALUES (
+			#userId#
+			, #maxMonthFilesize#
+			, NOW()
+		)
+	</insert>
+	
+	<update id="update" parameterClass="MessageSpecialUser">
+		UPDATE IKEP4_ME_USER_FILESIZE /* [Message_SpecialUser_SqlMap.xml] messageSpecialUser.update */
+	    	SET MAX_MONTH_FILESIZE =  #maxMonthFilesize#
+	    	  , REGIST_DATE = NOW()
+	    WHERE USER_ID = #userId#
+	</update>
+	
+	<delete id="remove" parameterClass="string">
+		DELETE FROM IKEP4_ME_USER_FILESIZE /* [Message_SpecialUser_SqlMap.xml] messageSpecialUser.remove */
+		WHERE USER_ID = #userId#
+	</delete> 
+	
+	
+	
+	<select id="getSpecialUserList" parameterClass="MessageMonitorSearchCondition" resultMap="result">
+	    SELECT /* [Message_SpecialUser_SqlMap.xml] messageSpecialUser.getSpecialUserList */
+	       	*
+		FROM ( 
+		        /* START========================================= */
+		    	SELECT main.USER_ID
+				    , USER_NAME, USER_ENGLISH_NAME
+				    , TEAM_NAME, TEAM_ENGLISH_NAME
+				    , (SELECT JOB_POSITION_NAME 
+				         FROM IKEP4_EV_JOB_POSITION insa 
+				        WHERE insa.JOB_POSITION_CODE = sub.JOB_POSITION_CODE) AS JOB_POSITION_NAME
+				    , (SELECT JOB_POSITION_ENGLISH_NAME 
+				         FROM IKEP4_EV_JOB_POSITION insa 
+				        WHERE insa.JOB_POSITION_CODE = sub.JOB_POSITION_CODE) AS JOB_POSITION_ENGLISH_NAME
+				    , MAX_MONTH_FILESIZE
+				    , main.REGIST_DATE
+				FROM IKEP4_ME_USER_FILESIZE main, IKEP4_EV_USER sub
+				WHERE main.USER_ID = sub.USER_ID
+				<isNotEmpty property="userName">
+					AND (UPPER(sub.USER_NAME) LIKE CONCAT('%', UPPER(#userName#), '%') OR UPPER(sub.USER_ENGLISH_NAME) LIKE CONCAT('%', UPPER(#userName#), '%'))
+				</isNotEmpty>
+				/* ===========================================END  */ 
+			<![CDATA[  
+			) A LIMIT #startRowIndex#, #pagePerRecord#
+			]]> 	
+	</select>
+	
+	<select id="countSpecialUserList" parameterClass="MessageMonitorSearchCondition" resultClass="int">  
+    	SELECT /* [Message_SpecialUser_SqlMap.xml] messageSpecialUser.countSpecialUserList */
+    		COUNT(*)
+		FROM IKEP4_ME_USER_FILESIZE main, IKEP4_EV_USER sub
+		WHERE main.USER_ID = sub.USER_ID
+		<isNotEmpty property="userName">
+			AND (UPPER(sub.USER_NAME) LIKE CONCAT('%', UPPER(#userName#), '%') OR UPPER(sub.USER_ENGLISH_NAME) LIKE CONCAT('%', UPPER(#userName#), '%'))
+		</isNotEmpty>
+    </select>
+    
+</sqlMap>

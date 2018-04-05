@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="support.note">
+
+	<typeAlias alias="Note" type="com.lgcns.ikep4.support.note.model.Note" />
+	<typeAlias alias="NoteSearchCondition" type="com.lgcns.ikep4.support.note.search.NoteSearchCondition"/>
+	
+	<resultMap class="com.lgcns.ikep4.support.note.model.Note" id="result">
+		<result column="FOLDER_ID"           	property="folderId"         jdbcType="VARCHAR" /> 
+		<result column="NOTE_ID"               	property="noteId"           jdbcType="VARCHAR" /> 
+		<result column="TITLE"         			property="title"        	jdbcType="VARCHAR" /> 
+		<result column="CONTENTS"              	property="contents"         jdbcType="CLOB" /> 
+		<result column="NOTE_DELETE"           	property="noteDelete"       jdbcType="DECIMAL" /> 
+	    <result column="IMAGE_FILE_ID"          property="imageFileId"      jdbcType="VARCHAR" />   
+		<result column="PORTAL_ID"        		property="portalId"       	jdbcType="VARCHAR" /> 
+		<result column="PRIORITY"         		property="priority"        	jdbcType="DECIMAL" /> 
+		<result column="REGISTER_ID"            property="registerId"       jdbcType="VARCHAR" /> 
+		<result column="REGISTER_NAME"          property="registerName"     jdbcType="VARCHAR" /> 
+		<result column="REGIST_DATE"            property="registDate"       jdbcType="TIMESTAMP" /> 
+		<result column="UPDATER_ID"           	property="updaterId"        jdbcType="VARCHAR" /> 
+		<result column="UPDATER_NAME"   		property="updaterName"   	jdbcType="VARCHAR" /> 
+		<result column="UPDATE_DATE"            property="updateDate"       jdbcType="TIMESTAMP" /> 
+	</resultMap>  
+	<resultMap id="resultExtend" extends="result"  class="com.lgcns.ikep4.support.note.model.Note" >
+	    <result column="TEXT_CONTENTS"          property="textContents"      jdbcType="VARCHAR" />   
+		<result column="FOLDER_NAME"           	property="folderName"         		jdbcType="VARCHAR" /> 
+	    <result column="JOB_RANK_NAME"          property="user.jobRankName"         jdbcType="VARCHAR" />
+	    <result column="TEAM_NAME"              property="user.teamName"            jdbcType="VARCHAR" />
+	    <result column="JOB_DUTY_NAME"          property="user.jobDutyName"         jdbcType="VARCHAR" />
+	    <result column="JOB_POSITION_NAME"      property="user.jobPositionName"     jdbcType="VARCHAR" />
+	    <result column="JOB_TITLE_NAME"         property="user.jobTitleName"        jdbcType="VARCHAR" />  
+	    <result column="PICTURE_ID"             property="user.pictureId"           jdbcType="VARCHAR" />   
+	    <result column="PROFILE_PICTURE_ID"     property="user.profilePictureId"    jdbcType="VARCHAR" />  
+		<result column="USER_NAME"              property="user.userName"            jdbcType="VARCHAR" />
+		<result column="USER_ENGLISH_NAME"      property="user.userEnglishName"     jdbcType="VARCHAR" />
+		<result column="JOB_TITLE_ENGLISH_NAME" property="user.jobTitleEnglishName" jdbcType="VARCHAR" />
+		<result column="TEAM_ENGLISH_NAME"      property="user.teamEnglishName"     jdbcType="VARCHAR" />	
+	</resultMap>
+		
+	<sql id="sqlColumnList">
+		NOTE_ID,
+		FOLDER_ID, 
+		TITLE,
+		CONTENTS,
+		NOTE_DELETE,
+    	IMAGE_FILE_ID, 
+		PORTAL_ID,
+		PRIORITY,
+		REGISTER_ID,
+		REGISTER_NAME,
+		REGIST_DATE,
+		UPDATER_ID,
+		UPDATER_NAME,
+		UPDATE_DATE
+	</sql>
+	<sql id="sqlExtendColumnList"> 
+	  	fold.FOLDER_ID		   AS FOLDER_ID,
+	  	fold.FOLDER_NAME	   AS FOLDER_NAME,
+	    note.NOTE_ID           AS NOTE_ID,     
+	    note.TITLE             AS TITLE,               
+	    note.CONTENTS          AS CONTENTS,              
+	    note.TEXT_CONTENTS     AS TEXT_CONTENTS,       
+	    note.NOTE_DELETE       AS NOTE_DELETE,  
+	    note.IMAGE_FILE_ID	   AS IMAGE_FILE_ID,   
+	    note.PORTAL_ID         AS PORTAL_ID, 
+		note.PRIORITY          AS PRIORITY,
+	    note.REGISTER_ID       AS REGISTER_ID,       
+	    note.REGISTER_NAME     AS REGISTER_NAME,     
+	    note.REGIST_DATE       AS REGIST_DATE,       
+	    note.UPDATER_ID        AS UPDATER_ID,        
+	    note.UPDATER_NAME      AS UPDATER_NAME,      
+	    note.UPDATE_DATE       AS UPDATE_DATE,  
+	    usr.TEAM_NAME          AS TEAM_NAME,  
+	    usr.PICTURE_ID         AS PICTURE_ID, 
+	    usr.PROFILE_PICTURE_ID AS PROFILE_PICTURE_ID,
+		(SELECT JOB_RANK_NAME FROM IKEP4_EV_JOB_RANK WHERE IKEP4_EV_JOB_RANK.JOB_RANK_CODE = usr.JOB_RANK_CODE) AS JOB_RANK_NAME,
+		(SELECT JOB_DUTY_NAME FROM IKEP4_EV_JOB_DUTY WHERE IKEP4_EV_JOB_DUTY.JOB_DUTY_CODE = usr.JOB_DUTY_CODE) AS JOB_DUTY_NAME,
+		(SELECT JOB_POSITION_NAME FROM IKEP4_EV_JOB_POSITION WHERE IKEP4_EV_JOB_POSITION.JOB_POSITION_CODE = usr.JOB_POSITION_CODE) AS JOB_POSITION_NAME,
+		(SELECT JOB_TITLE_NAME FROM IKEP4_EV_JOB_TITLE WHERE IKEP4_EV_JOB_TITLE.JOB_TITLE_CODE = usr.JOB_TITLE_CODE) AS JOB_TITLE_NAME, 
+	    usr.USER_NAME  AS USER_NAME,
+	    usr.USER_ENGLISH_NAME  AS USER_ENGLISH_NAME,
+	    usr.TEAM_ENGLISH_NAME  AS TEAM_ENGLISH_NAME,  
+	    (SELECT JOB_TITLE_ENGLISH_NAME FROM IKEP4_EV_JOB_TITLE WHERE IKEP4_EV_JOB_TITLE.JOB_TITLE_CODE = usr.JOB_TITLE_CODE) AS JOB_TITLE_ENGLISH_NAME   
+	</sql>  
+  
+	
+  	<insert id="create" parameterClass="Note"> 
+	    INSERT INTO IKEP4_NO_NOTE ( /* [Note_SqlMap.xml] support.note.create */	     
+	     <include refid="support.note.sqlColumnList" />
+	     ) VALUES (
+	      #noteId#, 
+	      #folderId#, 
+	      #title#, 
+	      #contents#,
+	      #noteDelete#,
+      	  #imageFileId#,
+	      #portalId#, 
+	      #priority#, 
+	      #registerId#, 
+	      #registerName#, 
+	      NOW(), 
+	      #updaterId#, 
+	      #updaterName#, 
+	      NOW()
+	    ) 
+  	</insert>
+  
+	<delete id="folderDeleteStore" parameterClass="string">
+		/* [Note_SqlMap.xml] note.folderDeleteStore */
+		DELETE FROM IKEP4_NO_NOTE 
+		 WHERE FOLDER_ID = #folderId#
+	</delete>	
+		
+  	<select id="get" parameterClass="string" resultMap="resultExtend"> 
+	    SELECT 	/* [Note_SqlMap.xml] support.note.get */
+	          	<include refid="support.note.sqlExtendColumnList" />
+		FROM  	IKEP4_NO_FOLDER fold, IKEP4_NO_NOTE note INNER JOIN IKEP4_EV_USER usr
+		ON    	note.REGISTER_ID = usr.USER_ID
+	    WHERE 	fold.FOLDER_ID = note.FOLDER_ID
+	    AND		note.NOTE_ID = #noteId# 
+  	</select>
+  
+  	<update id="update" parameterClass="Note"> 
+	    UPDATE IKEP4_NO_NOTE /* [Note_SqlMap.xml] support.note.update */
+	    SET   <isNotEmpty property="folderId"       >FOLDER_ID         = #folderId#,       	</isNotEmpty>
+	          <isNotEmpty property="title"          >TITLE             = #title#,          	</isNotEmpty>
+	          <isNotEmpty property="noteDelete"     >NOTE_DELETE       = #noteDelete#,     	</isNotEmpty>
+	          <isNotEmpty property="priority"      	>PRIORITY          = #priority#,     	</isNotEmpty>
+	          <isNotEmpty property="contents"       >CONTENTS          = #contents#,       	</isNotEmpty>
+	          IMAGE_FILE_ID     = #imageFileId#,
+	          UPDATER_ID        = #updaterId#,
+	          UPDATER_NAME      = #updaterName#,
+	          UPDATE_DATE       = NOW()
+	    WHERE NOTE_ID = #noteId# 
+	    AND	  REGISTER_ID = #userId# 
+ 	 </update>
+  
+  	<update id="logicalDelete" parameterClass="Note"> 
+	    UPDATE IKEP4_NO_NOTE /* [Note_SqlMap.xml] support.note.logicalDelete */
+	    SET    NOTE_DELETE = 1,
+	           UPDATER_ID          = #updaterId#,
+	           UPDATER_NAME        = #updaterName#,
+	           UPDATE_DATE         = NOW()   
+	    WHERE NOTE_ID = #noteId# 
+  	</update>
+  
+  	<update id="restorationNote" parameterClass="Note"> 
+	    UPDATE IKEP4_NO_NOTE /* [Note_SqlMap.xml] support.note.logicalDelete */
+	    SET    NOTE_DELETE = 0,
+	           UPDATER_ID          = #updaterId#,
+	           UPDATER_NAME        = #updaterName#,
+	           UPDATE_DATE         = NOW()   
+	    WHERE NOTE_ID = #noteId# 
+  	</update>
+  
+  	<delete id="physicalDelete" parameterClass="Note"> 
+	    DELETE 	FROM IKEP4_NO_NOTE /* [Note_SqlMap.xml] support.note.physicalDelete */
+	    WHERE 	NOTE_ID = #noteId# 
+  	</delete>
+  
+  	<select id="listBySearchCondition" parameterClass="NoteSearchCondition" resultMap="resultExtend">
+	/* [Note_SqlMap.xml] support.note.listBySearchCondition */ 
+    SELECT * FROM(	
+      SELECT * FROM(   
+         SELECT <include refid="support.note.sqlExtendColumnList" />
+         FROM   IKEP4_NO_FOLDER fold,
+         		IKEP4_NO_NOTE note 
+         		INNER JOIN IKEP4_EV_USER usr ON note.REGISTER_ID = usr.USER_ID 
+         		LEFT OUTER JOIN IKEP4_NO_SHARE shar ON note.FOLDER_ID = shar.FOLDER_ID AND shar.USER_ID = #userId#
+		 WHERE  fold.FOLDER_ID = note.FOLDER_ID
+		<isEqual property="folderId" compareValue="D">
+			 AND note.NOTE_DELETE = 1
+		</isEqual>
+		<isNotEqual property="folderId" compareValue="D">
+   		 	AND	note.NOTE_DELETE = 0
+   		 	<isNotEqual property="folderId" compareValue="A">
+	   		 	<isEqual property="folderId" compareValue="I">
+	   		 	AND    note.PRIORITY = 1
+	   		 	</isEqual>
+	   		 	<isNotEqual property="folderId" compareValue="I">
+	   		 	AND fold.FOLDER_ID = #folderId#
+	   		 	</isNotEqual>
+  		 	</isNotEqual>
+   		</isNotEqual> 
+   		<isNotEmpty property="searchType">
+	   		<isEqual property="searchType" compareValue="S">
+				AND shar.USER_ID IS NOT NULL
+			</isEqual>
+	   		<isEqual property="searchType" compareValue="U">
+				AND fold.USER_ID = #userId#
+			</isEqual>
+		</isNotEmpty>
+   		<isEmpty property="searchType">
+			AND fold.USER_ID = #userId#
+		</isEmpty>
+		<isNotEmpty property="searchWord">
+			AND	( UPPER(note.TITLE) LIKE CONCAT('%', UPPER(#searchWord#), '%')
+				  OR
+				  UPPER(note.TEXT_CONTENTS) LIKE CONCAT('%', UPPER(#searchWord#), '%')				  
+				)
+		</isNotEmpty>	
+		<isNotEmpty property="sortColumn">
+		ORDER BY
+			<isEqual property="sortColumn" compareValue="TITLE">
+				<isEqual property="sortType" compareValue="DESC">
+					note.TITLE DESC,
+				</isEqual>
+				<isEqual property="sortType" compareValue="ASC">
+					note.TITLE ASC,
+				</isEqual>
+				note.REGIST_DATE DESC
+			</isEqual> 
+			<isEqual property="sortColumn" compareValue="REGIST_DATE">
+				<isEqual property="sortType" compareValue="DESC">
+					note.REGIST_DATE DESC,
+				</isEqual>
+				<isEqual property="sortType" compareValue="ASC">
+					note.REGIST_DATE ASC,
+				</isEqual>
+				note.TITLE ASC
+			</isEqual> 
+		</isNotEmpty>  
+		<![CDATA[
+		LIMIT #startRowIndex#, #pagePerRecord#
+		]]>
+		) B
+	  ) C
+  	</select>   
+   
+  	<select id="countBySearchCondition" parameterClass="NoteSearchCondition" resultClass="int">  
+	/* [Note_SqlMap.xml] support.note.countBySearchCondition */      
+    SELECT COUNT(*)
+    FROM   (     		
+			SELECT 	note.note_id
+			FROM   	IKEP4_NO_FOLDER fold,
+					IKEP4_NO_NOTE  note 
+					INNER JOIN IKEP4_EV_USER usr ON note.REGISTER_ID = usr.USER_ID   
+         			LEFT OUTER JOIN IKEP4_NO_SHARE shar ON note.FOLDER_ID = shar.FOLDER_ID AND shar.USER_ID = #userId#
+		 	WHERE  	fold.FOLDER_ID = note.FOLDER_ID
+		 	<isEqual property="folderId" compareValue="D">
+			 	AND note.NOTE_DELETE = 1
+			</isEqual>
+			<isNotEqual property="folderId" compareValue="D">
+	   		 	AND	note.NOTE_DELETE = 0
+	   		 	<isNotEqual property="folderId" compareValue="A">
+		   		 	<isEqual property="folderId" compareValue="I">
+		   		 	AND    note.PRIORITY = 1
+		   		 	</isEqual>
+		   		 	<isNotEqual property="folderId" compareValue="I">
+		   		 	AND fold.FOLDER_ID = #folderId#
+		   		 	</isNotEqual>
+	  		 	</isNotEqual>	
+	   		</isNotEqual> 
+	   		<isNotEmpty property="searchType">
+		   		<isEqual property="searchType" compareValue="S">
+					AND shar.USER_ID IS NOT NULL
+				</isEqual>
+		   		<isEqual property="searchType" compareValue="U">
+					AND fold.USER_ID = #userId#
+				</isEqual>
+			</isNotEmpty>
+	   		<isEmpty property="searchType">
+				AND fold.USER_ID = #userId#
+			</isEmpty>
+			<isNotEmpty property="searchWord">
+			AND	( UPPER(note.TITLE) LIKE CONCAT('%', UPPER(#searchWord#), '%')
+				  OR
+				  UPPER(note.TEXT_CONTENTS) LIKE CONCAT('%', UPPER(#searchWord#), '%')				 
+				)
+			</isNotEmpty>
+		) AA	
+  	</select>   
+  
+    <select id="getPortalHost" resultClass="java.lang.String" parameterClass="string">
+    <![CDATA[	
+    	SELECT /* [Note_SqlMap.xml] support.note.getPortalHost */ 
+    			PORTAL_HOST as portalHost
+    	FROM 	IKEP4_PO_PORTAL
+    	WHERE 	PORTAL_ID = #portalId#
+	]]>
+    </select>
+</sqlMap>

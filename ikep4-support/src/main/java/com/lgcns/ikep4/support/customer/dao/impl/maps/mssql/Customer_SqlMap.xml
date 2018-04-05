@@ -1,0 +1,528 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="support.customer.dao.customer">
+	<typeAlias alias="ManInfoItemSearchCondition" type="com.lgcns.ikep4.support.customer.search.ManInfoItemSearchCondition" />
+	<typeAlias alias="ManInfoItem" type="com.lgcns.ikep4.support.customer.model.ManInfoItem" />
+	<typeAlias alias="ManFamily" type="com.lgcns.ikep4.support.customer.model.ManFamily" />
+	<typeAlias alias="ManCareer" type="com.lgcns.ikep4.support.customer.model.ManCareer" />
+	<typeAlias alias="customer" type="com.lgcns.ikep4.support.customer.model.Customer" />
+
+	<resultMap id="manInfoItemResult" class="com.lgcns.ikep4.support.customer.model.ManInfoItem">
+		<result column="ROWNUM" 		property="rowNum" 			jdbcType="VARCHAR" />
+		<result column="SEQNUM" 		property="seqNum" 			jdbcType="DECIMAL" />
+		<result column="ID" 			property="customerId" 		jdbcType="VARCHAR" />
+		<result column="COMPANY" 		property="customerName" 	jdbcType="VARCHAR" />
+		<result column="NAME" 			property="man" 				jdbcType="VARCHAR" />
+		<result column="JIKWE" 			property="jobTitle" 		jdbcType="VARCHAR" />
+		<result column="TEL" 			property="phone" 			jdbcType="VARCHAR" />
+		<result column="CELLPHONE" 		property="cellPhone" 		jdbcType="VARCHAR" />
+		<result column="ARMY" 			property="army" 			jdbcType="VARCHAR" />
+		<result column="NATIVE_PLACE" 	property="nativeArea" 		jdbcType="VARCHAR" />
+		<result column="NATIVE_SCHOOL1" property="nativeHighschool" jdbcType="VARCHAR" />
+		<result column="NATIVE_SCHOOL2" property="nativeUniversity" jdbcType="VARCHAR" />
+		<result column="NATIVE_SCHOOL3" property="nativeEtcSchool"	jdbcType="VARCHAR" />
+		<result column="HOME_ADRESS" 	property="homeAddress" 		jdbcType="VARCHAR" />
+		<result column="E_MAIL" 		property="email" 			jdbcType="VARCHAR" />
+		<result column="SAJIN_SYS" 		property="sajinSys" 		jdbcType="VARCHAR" />
+		<result column="BIRTH" 			property="birthday" 		jdbcType="VARCHAR" />
+		<result column="RELIGION" 		property="religion" 		jdbcType="VARCHAR" />
+		<result column="CIGARETTE" 		property="cigarette" 		jdbcType="VARCHAR" />
+		<result column="HOBBY" 			property="hobby" 			jdbcType="VARCHAR" />
+		<result column="DRINK" 			property="drink" 			jdbcType="VARCHAR" />
+		<result column="ETC" 			property="etc" 				jdbcType="VARCHAR" />
+		<result column="REGISTER_ID" 	property="registerId" 		jdbcType="VARCHAR" />
+		<result column="REGISTER_NAME" 	property="registerName" 	jdbcType="VARCHAR" />
+		<result column="REGIST_DATE" 	property="registDate" 		jdbcType="VARCHAR" />
+	</resultMap>
+
+
+	<resultMap  id="manInfoExtendsResult" extends="manInfoItemResult" class="com.lgcns.ikep4.support.customer.model.ManInfoItem" >
+		<result column="JOB_RANK_NAME"          property="user.jobRankName"         jdbcType="VARCHAR" />
+	    <result column="TEAM_NAME"              property="user.teamName"            jdbcType="VARCHAR" />
+	    <result column="JOB_DUTY_NAME"          property="user.jobDutyName"         jdbcType="VARCHAR" />
+	    <result column="JOB_POSITION_NAME"      property="user.jobPositionName"     jdbcType="VARCHAR" />
+	    <result column="JOB_TITLE_NAME"         property="user.jobTitleName"        jdbcType="VARCHAR" />  
+	    <result column="PICTURE_ID"             property="user.pictureId"           jdbcType="VARCHAR" />   
+	    <result column="PROFILE_PICTURE_ID"     property="user.profilePictureId"    jdbcType="VARCHAR" />  
+		<result column="USER_NAME"              property="user.userName"            jdbcType="VARCHAR" />
+		<result column="USER_ENGLISH_NAME"      property="user.userEnglishName"     jdbcType="VARCHAR" />
+		<result column="JOB_TITLE_ENGLISH_NAME" property="user.jobTitleEnglishName" jdbcType="VARCHAR" />
+		<result column="TEAM_ENGLISH_NAME"      property="user.teamEnglishName"     jdbcType="VARCHAR" /> 
+		<result column="HIT_COUNT"      property="hitCount"     jdbcType="VARCHAR" />
+	</resultMap>
+	<resultMap id="manFamilyResult" class="com.lgcns.ikep4.support.customer.model.ManInfoItem">
+		<result column="ROWNUM" property="rowNum" jdbcType="VARCHAR" />
+		<result column="SEQNUM" property="seqNum" jdbcType="VARCHAR" />
+		<result column="FAMILYNUM" property="familyNum" jdbcType="VARCHAR" />
+		<result column="FAMILY_RELATION" property="familyRelation" jdbcType="VARCHAR" />
+		<result column="FAMILY_NAME" property="familyName" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<resultMap id="manCareerResult"
+		class="com.lgcns.ikep4.support.customer.model.ManInfoItem">
+		<result column="ROWNUM" property="rowNum" jdbcType="VARCHAR" />
+		<result column="SEQNUM" property="seqNum" jdbcType="VARCHAR" />
+		<result column="CAREERNUM" property="careernum" jdbcType="VARCHAR" />
+		<result column="MAIN_CAREER" property="mainCareer" jdbcType="VARCHAR" />
+		<result column="PRE_CAREER" property="preCareer" jdbcType="VARCHAR" />
+		<result column="MAIN_BUSINESS" property="mainBusiness" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<resultMap id="customerResult" class="customer">
+		<result column="ID" property="id" jdbcType="VARCHAR" />
+		<result column="NAME" property="name" jdbcType="VARCHAR" />
+		<result column="REGNO" property="regno" jdbcType="VARCHAR" />
+		<result column="DIRECTOR" property="director" jdbcType="VARCHAR" />
+		
+	</resultMap>
+
+
+	<sql id="sqlColumnList">
+		ID
+		,COMPANY
+		,NAME
+		,JIKWE
+		,TEL
+		,CELLPHONE
+		,ARMY
+		,NATIVE_PLACE
+		,NATIVE_SCHOOL1
+		,NATIVE_SCHOOL2
+		,NATIVE_SCHOOL3
+		,HOME_ADRESS
+		,E_MAIL
+		,SAJIN_SYS
+		,BIRTH
+		,RELIGION
+		,CIGARETTE
+		,HOBBY
+		,DRINK
+		,ETC
+		,DELETE_FLAG
+		,OVERSEA
+		,UPDATER_ID
+		,UPDATER_NAME
+		,UPDATE_DATE
+		,REGISTER_ID
+		,REGISTER_NAME
+		,REGIST_DATE
+ </sql>
+
+	<select id="manInfoItemBySearchCondition" parameterClass="ManInfoItemSearchCondition" resultMap="manInfoExtendsResult">
+		SELECT /* [Customer_SqlMap.xml]
+		manInfoItem.manInfoItemBySearchCondition */
+		*
+		FROM (
+		SELECT A.* FROM (
+		/*
+		START========================================= */
+		SELECT ROW_NUMBER()
+		OVER(ORDER BY 
+				<isNotEmpty property="sortColumn">
+			    <isEqual property="sortColumn" compareValue="NAME">
+					<isEqual property="sortType" compareValue="DESC">
+						NAME DESC
+					</isEqual>
+					<isEqual property="sortType" compareValue="ASC">
+						NAME ASC
+					</isEqual>
+				</isEqual>
+				<isEqual property="sortColumn" compareValue="COMPANY">
+					<isEqual property="sortType" compareValue="DESC">
+						COMPANY DESC
+					</isEqual>
+					<isEqual property="sortType" compareValue="ASC">
+						COMPANY ASC
+					</isEqual>
+				</isEqual>
+				<isEqual property="sortColumn" compareValue="REGISTER_NAME">
+					<isEqual property="sortType" compareValue="DESC">
+						item.REGISTER_NAME DESC,  NAME ASC
+					</isEqual>
+					<isEqual property="sortType" compareValue="ASC">
+						item.REGISTER_NAME ASC,  NAME ASC
+					</isEqual>
+				</isEqual>
+				<isEqual property="sortColumn" compareValue="REGIST_DATE">
+					<isEqual property="sortType" compareValue="DESC">
+						item.REGIST_DATE DESC, NAME ASC
+					</isEqual>
+					<isEqual property="sortType" compareValue="ASC">
+						item.REGIST_DATE ASC,  NAME ASC
+					</isEqual>
+				</isEqual>
+				</isNotEmpty>
+				 <isEmpty property="sortColumn">  
+					 NAME ASC
+				 </isEmpty> 
+			  ) AS ROWNUM
+		,item.SEQNUM
+		,item.ID
+		,item.COMPANY
+		,item.NAME
+		,item.JIKWE
+		,item.TEL
+		,item.CELLPHONE
+		,item.ARMY
+		,item.NATIVE_PLACE
+		,item.NATIVE_SCHOOL1
+		,item.NATIVE_SCHOOL2
+		,item.NATIVE_SCHOOL3
+		,item.HOME_ADRESS
+		,item.E_MAIL
+		,item.SAJIN_SYS
+		,item.BIRTH
+		,item.RELIGION
+		,item.CIGARETTE
+		,item.HOBBY
+		,item.DRINK
+		,item.ETC
+		,item.REGISTER_ID
+		,item.REGISTER_NAME
+		,item.REGIST_DATE
+		,item.HIT_COUNT
+		,usr.TEAM_NAME          AS TEAM_NAME,  
+	    usr.PICTURE_ID         AS PICTURE_ID, 
+	    usr.PROFILE_PICTURE_ID AS PROFILE_PICTURE_ID,     
+		(SELECT JOB_RANK_NAME FROM IKEP4_EV_JOB_RANK WITH (NOLOCK) WHERE IKEP4_EV_JOB_RANK.JOB_RANK_CODE = usr.JOB_RANK_CODE) AS JOB_RANK_NAME,
+		(SELECT JOB_DUTY_NAME FROM IKEP4_EV_JOB_DUTY WITH (NOLOCK) WHERE IKEP4_EV_JOB_DUTY.JOB_DUTY_CODE = usr.JOB_DUTY_CODE) AS JOB_DUTY_NAME,
+		(SELECT JOB_POSITION_NAME FROM IKEP4_EV_JOB_POSITION WITH (NOLOCK) WHERE IKEP4_EV_JOB_POSITION.JOB_POSITION_CODE = usr.JOB_POSITION_CODE) AS JOB_POSITION_NAME,
+		(SELECT JOB_TITLE_NAME FROM IKEP4_EV_JOB_TITLE WITH (NOLOCK) WHERE IKEP4_EV_JOB_TITLE.JOB_TITLE_CODE = usr.JOB_TITLE_CODE) AS JOB_TITLE_NAME, 
+	    usr.USER_NAME  AS USER_NAME,
+	    usr.USER_ENGLISH_NAME  AS USER_ENGLISH_NAME,
+	    usr.TEAM_ENGLISH_NAME  AS TEAM_ENGLISH_NAME,  
+	    (SELECT JOB_TITLE_ENGLISH_NAME FROM IKEP4_EV_JOB_TITLE WITH (NOLOCK) WHERE IKEP4_EV_JOB_TITLE.JOB_TITLE_CODE = usr.JOB_TITLE_CODE) AS JOB_TITLE_ENGLISH_NAME    		   
+	  
+		FROM PERSON_INFO item WITH (NOLOCK) INNER JOIN IKEP4_EV_USER usr WITH (NOLOCK)
+	    ON item.REGISTER_ID = usr.USER_ID 
+		WHERE DELETE_FLAG = 'N'
+		AND 1=1
+		<isNotEmpty property="searchColumn">
+			<isNotEmpty property="searchWord">
+				<isEqual property="searchColumn" compareValue="company">
+					AND
+					item.COMPANY LIKE '%' + #searchWord# + '%'
+				</isEqual>
+				<isEqual property="searchColumn" compareValue="man">
+					AND item.NAME
+					LIKE '%' + #searchWord# + '%'
+				</isEqual>
+				<isEqual property="searchColumn" compareValue="id">
+					AND item.ID
+					LIKE '%' + #searchWord# + '%'
+				</isEqual>
+			</isNotEmpty>
+		</isNotEmpty>
+		/* ===========================================END */  
+		<![CDATA[   
+		    ) A WHERE ROWNUM <=  #endRowIndex# /* 종료  */
+		) TBL WHERE ROWNUM >  #startRowIndex# /* 시작 */ 
+	    ]]>
+	</select>
+
+	<select id="countBySearchCondition" parameterClass="ManInfoItemSearchCondition" resultClass="int">
+		SELECT /* [Customer_SqlMap.xml] */
+		COUNT(*)
+		FROM PERSON_INFO item WITH (NOLOCK) INNER JOIN IKEP4_EV_USER usr WITH (NOLOCK)
+	    ON item.REGISTER_ID = usr.USER_ID 
+		WHERE
+		DELETE_FLAG = 'N'
+		AND 1=1
+		<isNotEmpty property="searchColumn">
+			<isNotEmpty property="searchWord">
+				<isEqual property="searchColumn" compareValue="company">
+					AND
+					item.COMPANY LIKE '%' + #searchWord# + '%'
+			</isEqual>
+				<isEqual property="searchColumn" compareValue="man">
+					AND item.NAME
+					LIKE '%' + #searchWord# + '%'
+			</isEqual>
+			<isEqual property="searchColumn" compareValue="id">
+					AND item.ID
+					LIKE '%' + #searchWord# + '%'
+			</isEqual>
+			</isNotEmpty>
+		</isNotEmpty>
+	</select>
+
+
+	<select id="getManInfo" parameterClass="int" resultMap="manInfoItemResult">
+		SELECT
+		ROW_NUMBER() OVER(ORDER BY NAME ASC) AS ROWNUM
+		,SEQNUM
+		,ID
+		,COMPANY
+		,NAME
+		,JIKWE
+		,TEL
+		,CELLPHONE
+		,ARMY
+		,NATIVE_PLACE
+		,NATIVE_SCHOOL1
+		,NATIVE_SCHOOL2
+		,NATIVE_SCHOOL3
+		,HOME_ADRESS
+		,E_MAIL
+		,SAJIN_SYS
+		,BIRTH
+		,RELIGION
+		,CIGARETTE
+		,HOBBY
+		,DRINK
+		,ETC
+		,REGISTER_ID
+		,REGISTER_NAME
+		,REGIST_DATE
+		FROM PERSON_INFO WITH (NOLOCK)
+		WHERE DELETE_FLAG = 'N'
+		AND OVERSEA=''
+		AND
+		SEQNUM=#itemId#
+  </select>
+
+
+	<select id="getManFamily" parameterClass="string" resultMap="manFamilyResult">
+		SELECT ROW_NUMBER() OVER(ORDER BY FAMILYNUM ASC) AS ROWNUM
+		,SEQNUM
+		,FAMILYNUM
+		,FAMILY_RELATION
+		,FAMILY_NAME
+		FROM PERSON_FAMILY WITH (NOLOCK)
+		WHERE
+		SEQNUM=#itemId#
+		ORDER BY FAMILYNUM;
+  </select>
+
+	<select id="getManCareer" parameterClass="string" resultMap="manCareerResult">
+		SELECT ROW_NUMBER() OVER(ORDER BY CAREERNUM ASC) AS ROWNUM
+		,SEQNUM
+		,CAREERNUM
+		,MAIN_CAREER
+		,PRE_CAREER
+		,MAIN_BUSINESS
+		FROM PERSON_CAREER WITH (NOLOCK)
+		WHERE SEQNUM=#itemId#
+		ORDER BY CAREERNUM;
+  </select>
+  
+  <select id="getCustomerId" parameterClass="string" resultMap="customerResult">
+		SELECT ID,
+			   NAME,
+			   REGNO,
+			   DIRECTOR
+		FROM BASICINFO_MASTER WITH (NOLOCK)
+		WHERE NAME LIKE '%' + #customerName# + '%'
+  </select>
+  
+
+
+  <select id="getSeqNum" parameterClass="ManInfoItem" resultClass="int">
+		SELECT SEQNUM
+		FROM PERSON_INFO WITH (NOLOCK)
+		WHERE COMPANY=#customerName#
+		AND NAME=#man#	
+  </select>
+  
+  <select id="getUserName" parameterClass="java.lang.String" resultClass="java.lang.String">
+  	SELECT USER_NAME
+  	FROM IKEP4_EV_USER WITH (NOLOCK)
+  	WHERE USER_ID = #id#
+  </select>
+ 
+
+	<update id="updateManInfo" parameterClass="ManInfoItem">
+		UPDATE PERSON_INFO /*
+		[Customer_SqlMap.xml] manInfoItem.updateManInfo */
+		SET COMPANY = #customerName#
+		,ID = #customerId#
+		,NAME = #man#
+		,JIKWE = #jobTitle#
+		,TEL = #phone#
+		,CELLPHONE = #cellPhone#
+		,ARMY = #army#
+		,NATIVE_PLACE = #nativeArea#
+		,NATIVE_SCHOOL1 = #nativeHighschool#
+		,NATIVE_SCHOOL2 = #nativeUniversity#
+		,NATIVE_SCHOOL3 = #nativeEtcSchool#
+		,HOME_ADRESS = #homeAddress#
+		,E_MAIL = #email#		
+		<isNotEmpty property="sajinSys"> ,SAJIN_SYS = #sajinSys# </isNotEmpty>
+		,BIRTH = #birthday#
+		,RELIGION = #religion#
+		,CIGARETTE = #cigarette#
+		,HOBBY = #hobby#
+		,DRINK = #drink#
+		,ETC = #etc#
+		,UPDATER_ID = #updaterId#
+		,UPDATER_NAME = #updaterName#
+		,UPDATE_DATE = CURRENT_TIMESTAMP
+		WHERE SEQNUM = #seqNum# 
+  </update>
+
+
+	<update id="updateManInfoFamily" parameterClass="ManFamily">
+		UPDATE
+		PERSON_FAMILY /* [Customer_SqlMap.xml]
+		manInfoItem.updateManInfoFamily
+		*/
+		SET FAMILY_RELATION = #familyRelation#
+		,FAMILY_NAME = #familyName#
+		WHERE SEQNUM = #itemId#
+		AND FAMILYNUM = #familyNum# 
+  </update>
+
+	<delete id="deleteManInfoFamily" parameterClass="string">
+		DELETE FROM
+		PERSON_FAMILY /* [Customer_SqlMap.xml] manInfoItem.deleteManInfoFamily */
+		WHERE SEQNUM = #itemId#
+  </delete>
+
+	<update id="updateManInfoCareer" parameterClass="ManCareer">
+		UPDATE
+		PERSON_CAREER /* [Customer_SqlMap.xml]
+		manInfoItem.updateManInfoCareer
+		*/
+		SET MAIN_CAREER = #mainCareer#
+		,PRE_CAREER = #preCareer#
+		,MAIN_BUSINESS = #mainBusiness#
+		WHERE SEQNUM = #itemId#
+		AND CAREERNUM =
+		#careerNum# 
+  </update>
+
+	<delete id="deleteManInfoCareer" parameterClass="string">
+		DELETE FROM
+		PERSON_CAREER /* [Customer_SqlMap.xml]	manInfoItem.deleteManInfoCareer */
+		WHERE SEQNUM = #itemId#
+	</delete>
+
+
+	<insert id="createManInfo" parameterClass="ManInfoItem">
+		INSERT INTO PERSON_INFO ( /* [Customer_SqlMap.xml]
+		manInfoItem.createManInfo */
+		<include refid="support.customer.dao.customer.sqlColumnList" />
+		) VALUES (
+		#customerId#,
+		#customerName#,
+		#man#,
+		#jobTitle#,
+		#phone#,
+		#cellPhone#,
+		#army#,
+		#nativeArea#,
+		#nativeHighschool#,
+		#nativeUniversity#,
+		#nativeEtcSchool#,
+		#homeAddress#,
+		#email#,
+		#sajinSys#,
+		#birthday#,
+		#religion#,
+		#cigarette#,
+		#hobby#,
+		#drink#,
+		#etc#,
+		#deleteFlag#,
+		#oversea#,
+		#updaterId#,
+		#updaterName#,
+		CURRENT_TIMESTAMP,
+		#registerId#,
+		#registerName#,
+		CURRENT_TIMESTAMP
+		)
+
+	</insert>
+	
+	
+	
+		<insert id="createManFamily" parameterClass="ManFamily">
+		INSERT INTO PERSON_FAMILY ( /* [Customer_SqlMap.xml] manInfoItem.createManFamily */
+			SEQNUM,
+			FAMILYNUM,
+			FAMILY_RELATION,
+			FAMILY_NAME,
+			UPDATER_ID,
+			UPDATE_DATE,
+			REGISTER_ID,
+			REGIST_DATE
+		) VALUES (
+		#itemId#,
+		#familyNum#,
+		#familyRelation#,
+		#familyName#,
+		#updaterId#,
+		CURRENT_TIMESTAMP,
+		#registerId#,
+		CURRENT_TIMESTAMP
+		)
+
+	</insert>
+	
+	
+	<insert id="createManCareer" parameterClass="ManCareer">
+		INSERT INTO PERSON_CAREER ( /* [Customer_SqlMap.xml] manInfoItem.createManCareer */
+			SEQNUM,
+			CAREERNUM,
+			MAIN_CAREER,
+			PRE_CAREER,
+			MAIN_BUSINESS,
+			UPDATER_ID,
+			UPDATE_DATE,
+			REGISTER_ID,
+			REGIST_DATE
+		) VALUES (
+		#itemId#,
+		#careerNum#,
+		#mainCareer#,
+		#preCareer#,
+		#mainBusiness#,
+		#updaterId#,
+		CURRENT_TIMESTAMP,
+		#registerId#,
+		CURRENT_TIMESTAMP
+		)
+
+	</insert>
+	
+	<update id="deleteManInfo" parameterClass="ManInfoItem">
+		UPDATE PERSON_INFO /* [Customer_SqlMap.xml] manInfoItem.updateManInfoCareer */
+		SET DELETE_FLAG = 'Y'
+		,UPDATER_ID = #updaterId#
+		,UPDATER_NAME = #updaterName#
+		,UPDATE_DATE = CURRENT_TIMESTAMP
+		WHERE SEQNUM = #seqNum#
+  </update>
+ 
+   <update id="syncCustomerName" parameterClass="ManInfoItem">
+
+	UPDATE PERSON_INFO
+	SET COMPANY = #customerName#
+	WHERE ID = #customerId#
+
+    </update>
+	
+	
+  <select id="checkAccess" parameterClass="String" resultClass="int">
+		
+		SELECT count(distinct B.USER_ID)
+		  FROM IKEP4_EV_USER_ROLE A
+		  LEFT OUTER JOIN IKEP4_EV_USER B
+		    ON A.USER_ID = B.USER_ID
+		  LEFT OUTER JOIN IKEP4_EV_USER_GROUP C
+		    ON B.USER_ID = C.USER_ID
+		  LEFT OUTER JOIN IKEP4_EV_GROUP D
+		    ON C.GROUP_ID = D.GROUP_ID
+		  LEFT OUTER JOIN IKEP4_EV_JOB_TITLE E
+		    ON B.JOB_TITLE_CODE = E.JOB_TITLE_CODE
+		 WHERE A.ROLE_ID in ('100001059165', '100000803133','100001089851' )
+		   AND C.REPRESENT_GROUP = '1'
+		   and b.user_id = #userId#
+				
+  </select>
+
+
+
+
+</sqlMap> 

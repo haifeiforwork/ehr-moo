@@ -1,0 +1,511 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ko">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>iKEP4.0</title>
+<link rel="stylesheet" type="text/css" href="../../css/theme02/jquery_ui_custom.css" />
+<link rel="stylesheet" type="text/css" href="../../css/common.css" />
+<link rel="stylesheet" type="text/css" href="../../css/theme02/theme.css" />
+<script type="text/javascript" src="../../js/jquery/jquery-1.6.2.min.js"></script>
+<script type="text/javascript" src="../../js/jquery/jquery-ui-1.8.13.min.without.datepicker.js"></script>
+<script type="text/javascript" src="../../js/langResource/ko.js"></script>
+<script type="text/javascript" src="../../js/common.pack.js"></script>
+<script type="text/javascript" src="../../js/jquery/jquery.layout-latest.js"></script>
+
+
+<script type="text/javascript">
+<!--
+
+(function($) {
+	// 레이아웃 변수들
+	var outerLayout, middleLayout, innerLayout; 
+
+	$(document).ready(function () { 
+		
+		outerLayout = $('body').layout({ 
+			center__paneSelector:	".outer-center" 
+		,	west__paneSelector:		".outer-west" 
+		,	east__paneSelector:		".outer-east"
+		,	resizerClass:			"resizer"	// default = 'ui-layout-resizer'
+		,	togglerClass:			"toggler"
+		,   west__onresize:			resizeWestPaneScroll  // west resize 시 호출
+		,   west__onopen_start:		function () { showMySpace(); }
+		,	west__size:				164
+		,	west__spacing_open:		6
+		,   west__spacing_closed:	6
+		,	west__resizable:		false
+		,	west__slidable:			false
+		,	west__initClosed:       true
+		,	spacing_open:			0 // ALL panes
+		,	south__size:			0
+		, 	south__spacing_open:	0
+		,	south__initClosed:       true
+		,	south__closable:		false
+		,	south__slidable:		false
+		,	south__resizable:		false
+		}); 
+
+		middleLayout = $('div.outer-center').layout({ 
+			center__paneSelector:	".middle-center" 
+		,	west__paneSelector:		".middle-west" 
+		,	east__paneSelector:		".middle-east" 
+		,	west__size:				0 
+		,	east__size:				0 
+		,	spacing_open:			0  // ALL panes
+		,	spacing_closed:			0 // ALL panes
+		}); 
+		
+		innerLayout = $('div.middle-center').layout({ 
+			center__paneSelector:	".inner-center"
+		,	west__paneSelector:		".inner-west" 
+		,	east__paneSelector:		".inner-east" 
+		,	west__size:				0 
+		,	east__size:				0 
+		,	north__resizable:		false
+		,	north__closable:		false
+		,	spacing_open:			0  // ALL panes
+		,	spacing_closed:			0  // ALL panes
+		}); 
+		
+		
+		/** 상당 메뉴 스크립트 시작 **/
+		var mainMenu = $("#topMenu");
+		var width = 0, $menuItems = mainMenu.children("ul").children("li");
+		$menuItems.each(function() { width += $(this).outerWidth(); });
+		//var width = ($menuItems.length * $($menuItems[0]).outerWidth());
+		mainMenu.css({width:width + "px"});
+		
+		$menuItems.bind("mouseenter mouseleave", function(event) {
+			switch(event.type) {
+				case "mouseenter" : $(this).children("ul").show(); break;
+				case "mouseleave" : $(this).children("ul").hide(); break;
+			}
+		});
+		
+		$.each($menuItems.children("ul"), function() {
+			var subMenu = $(this);
+			subMenu.css({left:((subMenu.parent().outerWidth() - subMenu.outerWidth()) / 2 + 1)+"px"});
+		});
+		/** 상당 메뉴 스크립트 끝 **/
+		
+		// system 스크립트
+		$("#systemLink").click(
+			function(){
+				showSystemLink();
+			}
+		);	
+		
+		// personal box 스크립트
+		$("#personalBoxClose").click(
+			function(){
+				hidePersonalBox();
+			}
+		);
+			
+		{	// left quick menu setting --------------------------------------------------
+        	var menuWidth = 300;	// 메뉴 영역의 wrap 사이즈
+    		var $ul = $("#divQuickMenuLeft").find("ul");
+    		
+    		var totalWidth = 0;	// 전체 메뉴 사이즈
+    		$ul.children("li").each(function() { totalWidth += $(this).outerWidth(); });
+
+    		$ul.width(totalWidth);
+    		if(menuWidth < totalWidth) {
+    			var width = 0;
+    			$ul.children("li").each(function() {
+    				if(width + $(this).outerWidth() > menuWidth) return false;
+    				else width += $(this).outerWidth();
+    			});
+    			
+    			menuWidth = width;
+
+    			$ul.css("position", "absolute")
+    				.parent().css("position", "relative")
+    					.width(menuWidth).height($ul.outerHeight())
+    					.siblings(".quick_move_l, .quick_move_r").bind("click", function() {
+    						if($ul.filter(":animated").length > 0) return false;
+    						
+    						var position = $ul.position();
+    						switch(true) {
+    							case $(this).hasClass("quick_move_l") :
+    								var moveLeft = position.left + menuWidth;	// 보여지는 영역 만큼 이동해야할 거리
+    								if(moveLeft > 0) {	// 이동하고 났을때 위치가 보여지는 영역의 right point보다 멀리가면 보정
+    									moveLeft = 0;
+    								}
+    								break;
+    							case $(this).hasClass("quick_move_r") :
+    								var moveLeft = position.left - menuWidth;	// 보여지는 영역 만큼 이동해야할 거리
+    								if(((moveLeft - menuWidth)*-1) > $ul.width()) {	// 이동하고 났을때 위치가 보여지는 영역의 right point보다 멀리가면 보정
+    									moveLeft = (moveLeft*-1) - ($ul.width() - position.left);
+    								}
+    								break;
+    						}
+    						
+    						if(position.left != moveLeft) {
+    							//$ul.css("left", moveLeft+"px");
+    							$ul.animate({left:moveLeft+"px"}, "fast");
+    						}
+    					});
+    		} else {
+    			$ul.parent().siblings().each(function(idx){
+    				if(idx < 2) $(this).hide();
+    				else $(this).css("margin-left", "6px");
+    			});
+    		}
+        }// left quick menu setting --------------------------------------------------end.
+	}); 
+	
+	/* 개인영역 높이 조절 */
+	resizeWestPaneScroll = function(){
+		var westPaneHeight = $(".outer-west").height();
+		var personalHeight = $(".perInfo").outerHeight()+5;
+		$(".conList").height(westPaneHeight-personalHeight);		
+	}
+	
+	/* 개인영역 펼치기 */
+	showMySpace = function(){
+		
+		var $target = $("#LeftContainer");
+		$target.empty();
+		var url = "./Main_MySpace.html";
+		var parms = "";
+		$.ajax({
+			url : url,
+			data : "",
+			type : "post",
+			success : function(result) {
+				$target.html(result);
+			},
+			error : function(event, request, settings) { 
+				alert("error");	
+			}
+		});	
+	}
+	
+	/** System 정보 스크립트 시작 **/
+	var callSystemInfo = false;  // 시스템 정보 ajax 호출 여부, 초기 false 호출후 true, system 정보는 한번만 가져온다.
+	
+	/* system 레이어 닫기 */
+	hideSystemLink = function(){
+		var $target = $(".utilmenu_system_layer");
+		$(".utilmenu_system").removeClass("selected");
+		$target.hide();
+	}
+	
+	
+	/* system 레이어 열기 */
+	showSystemLink = function(){
+		
+		if(!callSystemInfo){				
+			var $systemLayer = $('<div class="utilmenu_system_layer none"><div class="util_close"><a href="#a" id="close_system" onclick="hideSystemLink();"><span>close</span></a></div></div>');
+			
+			if($.browser.msie && $.browser.version == "7.0"){
+				$systemLayer.appendTo(document.body);
+			}else{
+				$(".utilmenu_system").append($systemLayer);
+			}
+		}
+		
+		var $target = $(".utilmenu_system_layer");		
+		$(".utilmenu_system").addClass("selected");
+		var $sys = $(".utilmenu_system");
+		
+		if($.browser.msie && $.browser.version == "7.0"){
+			var linkWidth = $sys.width()/2;
+			var linkTop = $sys.offset().top+$sys.innerHeight();
+			var linkLeft = $sys.offset().left+linkWidth-($target.width()/2);
+			$target.css({
+				top:linkTop,
+				left:linkLeft
+			});
+		}
+		
+		getSystemInfo($target);
+		
+		$target.show();
+		
+	}
+	
+	/* system 정보 ajax로 가져오기 */
+	getSystemInfo = function(target){					
+		var $target = target;
+		if(!callSystemInfo){
+			callSystemInfo = true;
+			var url = "./main_system.html";
+			var parms = "";
+			$.ajax({				
+				url : url,
+				data : "",
+				type : "post",
+				success : function(result) {
+					$target.prepend(result);					
+				},
+				error : function(event, request, settings) { 
+					alert("error");
+					callSystemInfo = false;
+					hideSystemLink();
+				}
+			});			
+		}		
+	}
+	
+	/** System 정보 스크립트 끝 **/
+	
+	/** Personal Service 스크립트 시작 **/
+	
+	/* Personal Service Layer Box 보이기 */
+	showPersonalBox = function(action){
+		
+		var $personalBox = $("#personalBox");
+		var $personalBoxTitle = $("#personalBoxTitle");	
+				
+		if(action == "personal"){
+			$personalBox.removeClass("quicktxt_recentBox quicktxt_favoriteBox").addClass("quicktxt_personalBox");
+			$personalBoxTitle.removeClass("quicktxt_tit_recent quicktxt_tit_favorite").addClass("quicktxt_tit_personal");
+			$personalBoxTitle.children("span").html("Personal");
+			getPersonalInfo("personal");
+		}else if(action == "recent"){
+			$personalBox.removeClass("quicktxt_personalBox quicktxt_favoriteBox").addClass("quicktxt_recentBox");
+			$personalBoxTitle.removeClass("quicktxt_tit_personal quicktxt_tit_favorite").addClass("quicktxt_tit_recent");
+			$personalBoxTitle.children("span").html("Recent");			
+			getPersonalInfo("recent");
+		}else{
+			$personalBox.removeClass("quicktxt_personalBox quicktxt_recentBox").addClass("quicktxt_favoriteBox");
+			$personalBoxTitle.removeClass("quicktxt_tit_personal quicktxt_tit_recent").addClass("quicktxt_tit_favorite");
+			$personalBoxTitle.children("span").html("Favorite");
+			getPersonalInfo("favorite");
+		}		
+		
+		$personalBox.show();
+		
+	}
+	
+	/* Personal Service Layer Box 닫기 */
+	hidePersonalBox = function(){
+		$("#personalBoxContent").empty();
+		$("#personalBox").hide();
+	}
+	
+	/* Personal Service 정보 ajax로 가져오기 */
+	getPersonalInfo = function(action){					
+		var $personalBoxContent = $("#personalBoxContent");
+		$personalBoxContent.empty();
+		var url = "";
+		var parms = "";
+		if(action == "personal"){
+			url = "./Main_personal.html";
+		}else if(action == "recent"){
+			url = "./Main_recent.html";
+		}else{
+			url = "./Main_favorite.html";
+		}				
+		
+		$.ajax({				
+			url : url,
+			data : "",
+			type : "post",
+			success : function(result) {
+				$personalBoxContent.html(result);
+			},
+			error : function(event, request, settings) { 
+				alert("error");	
+			}
+		});			
+		
+	}	
+	
+	/* Personal Service Document ajax로 가져오기 */
+	var peraonalDialog = null;
+	viewPersonalDocument = function(url, el){
+		var title = $(el).text();
+		var width = $(window).width()*0.7;
+		var height = $(window).height()*0.7;
+		peraonalDialog = new iKEP.Dialog({
+			title: title,
+			url: url,
+			width:width,
+			height:height,
+			modal: true
+		});
+	}
+	
+	/** Personal Service 스크립트 끝 **/
+	
+
+})(jQuery);
+-->
+</script>
+
+
+</head> 
+<body>
+<!--skipNavigation Start-->
+<div id="skipNavigation">
+	<p><a href="#topInfo">헤더정보영역 바로가기</a></p>
+	<p><a href="#topMenu">탑메뉴 바로가기</a></p>	
+	<p><a href="#blockHeaderSub">퀵메뉴 바로가기</a></p>
+	<p><a href="#blockMainTop">컨텐츠영역 바로가기</a></p>	
+	<p><a href="#portletWrap">포틀릿영역 바로가기</a></p>
+</div>
+<!--//skipNavigation End-->
+<div class="outer-center">
+	<div class="middle-center">
+		<div class="ui-layout-north">
+		
+			<!--wrapper Start-->
+			<div id="wrapper">
+			
+				<!--blockContainer Start-->
+				<div id="blockContainer">
+			
+					<!--blockHeader Start-->
+					<div id="blockHeader">	
+					
+						<!--topInfo Start-->	
+						<div id="topInfo">
+							<h1 class="none">헤더정보영역</h1>
+							<div id="topLogo">
+								<a target="mainFrame" href="Main_main_T02.html"><img src="../../images/common/logo.png" alt="iKEP Logo" /></a>
+							</div>
+							<!--utilMenu Start-->	
+							<div id="utilMenu">
+								<ul>
+									<li class="utilmenu_system"><a href="#a" id="systemLink"><span>system</span></a></li>			
+									<li class="utilmenu_sitemap"><a href="#a"><span>sitemap</span></a></li>
+									<li class="utilmenu_help"><a href="#a"><span>help</span></a></li>
+									<li class="utilmenu_admin"><a href="#a"><span>admin</span></a></li>
+								</ul>
+							</div>
+							<!--//utilMenu End-->				
+							<!--personInfo Start-->					
+							<div id="personInfo">
+								<span class="info_date">2011.01.20 (목)</span>
+								<span class="info_team"><a href="#a">컨설팅팀<span class="info_name">홍길동</span>과장</a></span> 
+								<span class="info_btn"><a href="#a"><span>Logout</span></a></span>
+							</div>
+							<!--//personInfo End-->						
+							<div class="clear"></div>
+						</div>
+						<!--//topInfo End-->
+									
+						<!--topMenu Start-->
+						<div id="topMenu">
+							<h1 class="none">탑메뉴</h1>			
+							<ul>
+								<li><a class="iconMenu_01" href="#work"><span>WORK</span></a></li>
+								<li><a class="iconMenu_02" href="#messages"><span>MESSAGES</span></a>
+									<ul>
+										<li><a target="mainFrame" href="http://www.google.co.kr">ALL MASSAGES HHH</a></li>
+										<li><a href="#a">MAIL</a></li>
+										<li><a href="#a">SMS</a></li>
+										<li><a href="#a">MESSAGING</a></li>
+										<li><a href="#a">ADDRESSBOOK</a></li>
+									</ul>					
+								</li>
+								<li><a class="iconMenu_03" href="#collaboration"><span>COLLABORATION</span></a>
+									<ul>
+										<li><a target="mainFrame" href="http://www.daum.net">ALL MASSAGES</a></li>
+										<li><a href="#a">MAIL</a></li>
+										<li><a href="#a">SMS</a></li>
+										<li><a href="#a">MESSAGING</a></li>
+										<li><a href="#a">ADDRESSBOOK</a></li>
+									</ul>
+								</li>
+								<li><a class="iconMenu_04" href="#knowledge"><span>KNOWLEDGE</span></a></li>
+								<li><a class="iconMenu_05" href="#people"><span>PEOPLE</span></a></li>
+								<li><a class="iconMenu_06" href="#innovation"><span>INNOVATION</span></a></li>
+								<li><a class="iconMenu_07" href="#analysis"><span>ANALYSIS</span></a></li>																				
+							</ul>
+						</div>
+						<!--//topMenu End-->	
+			
+						<!--blockHeaderSub Start-->
+						<div id="blockHeaderSub">
+							<h1 class="none">퀵메뉴</h1>		
+							<div id="divQuickMenuLeft" class="quick_l">
+								<div class="quick_move_l">
+									<a href="#a"><span>left</span></a> <!--더이상 이동할 수 없는 경우는 다음과 같이 class 삽입____<a href="#a" class="disabled"><span>left</span></a>-->
+								</div>
+								<div class="wrap">
+									<ul>
+										<li>
+											<a class="quickic_mail" href="#a"><span>Mail</span></a>
+											<div class="quick_num"><a href="#a"><span>264</span></a></div>
+										</li>
+										<li>
+											<a class="quickic_appr" href="#a"><span>Approval</span></a>
+											<div class="quick_num"><a href="#a"><span>27</span></a></div>
+										</li>
+										<li>
+											<a class="quickic_todo" href="#a"><span>To-DO</span></a>
+											<div class="quick_num"><a href="#a"><span>1</span></a></div>
+										</li>
+										<li><a class="quickic_plan" href="#a"><span>Plan</span></a></li>
+										<li><a class="quickic_bbs" href="#a"><span>BBS</span></a></li>
+										<li><a class="quickic_sms" href="#a" onclick="javascript: smsPopup();"><span>SMS</span></a></li>
+										<li><a class="quickic_msg" href="#a"><span>Message</span></a></li>
+									</ul>
+								</div>
+								<div class="quick_move_r">
+									<a href="#a"><span>right</span></a> <!--더이상 이동할 수 없는 경우는 다음과 같이 class 삽입____<a href="#a" class="disabled"><span>right</span></a>-->
+								</div>					
+								<div class="quickset">
+									<a href="#a"><span>setting</span></a>
+								</div>
+							</div>
+							<div class="quick_r">
+								<div class="quicktxt">
+									<ul>
+										<li class="quicktxt_personal liFirst"><a href="#a" onclick="showPersonalBox('personal');"><span>personal</span></a></li>
+										<li class="quicktxt_recent"><a href="#a" onclick="showPersonalBox('recent');"><span>recent</span></a></li>
+										<li class="quicktxt_favorite"><a href="#a" onclick="showPersonalBox('favorite');"><span>favorite</span></a></li>
+									</ul>
+									<div class="quicktxt_personalBox none" id="personalBox">
+										<div class="quicktxt_menuBox">
+											<div class="quicktxt_tit_personal" id="personalBoxTitle"><span>Personal</span><a href="#a" id="personalBoxClose"><img src="../../images/icon/ic_close_layer.gif" alt="" /></a></div>
+											<div id="personalBoxContent"></div>
+										</div>
+									</div>			
+								</div>
+								<!--headerSearch Start-->
+								<div class="headerSearch">
+									<div class="headerSearch_sel">
+										<h2 class="none">검색조건</h2>
+										<a class="sel_con" href="#a">사용자<span>select</span></a>
+										<div class="headerSearch_layer none">
+											<ul>
+												<li><a href="#a">사용자</a></li>
+												<li><a href="#a">컨텐츠</a></li>
+											</ul>
+										</div>
+									</div>
+									<input title="검색창" type="text" />
+									<a class="sel_btn" href="#a"><span>검색</span></a>
+									<div class="clear"></div>
+								</div>
+								<!--//headerSearch End-->
+							</div>
+						</div>
+						<!--//blockHeaderSub End-->
+													
+					</div>
+					<!--//blockHeader End-->
+					
+				</div>
+				<!--//blockContainer End-->
+				
+				
+			
+			</div>
+			<!--//wrapper End-->
+
+		</div>
+		<iframe id="mainFrame" name="mainFrame" class="inner-center" width="100%" height="600" frameborder="0" scrolling="auto" src="Main_main_T02.html" title="메인 컨텐츠영역"></iframe>
+	</div> 
+</div> 
+
+<div class="outer-west">
+	<div id="LeftContainer" class="opened" style="width:164px;"></div>
+</div>
+</body> 
+</html> 

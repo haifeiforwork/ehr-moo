@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="com.lgcns.ikep4.workflow.engine.model.SplitTrackBean" >
+	<typeAlias alias = "SplitTrackBean" type="com.lgcns.ikep4.workflow.engine.model.SplitTrackBean"/>
+
+   
+
+   	<!-- ANSI -->
+   	<insert id="com.lgcns.ikep4.workflow.engine.model.SplitTrackBean.insertSplitTrack" parameterClass="SplitTrackBean">
+   		<![CDATA[
+			/* [SplitTrack_SqlMap.xml] com.lgcns.ikep4.workflow.engine.model.InterfaceBean.insertInterface */
+			
+   			INSERT INTO IKEP4_WF_SPLIT (
+   				SPLIT_SEQ, INSTANCE_ID, SPLIT_ID, PARENT_SPLIT_ID, LOG_ID, IS_COMPLETE 
+   			) VALUES (
+	   			#splitSeq#, #instanceId#, #splitId#, #parentSplitId#, #logId#, 'N'
+   			)
+   		]]>
+   	</insert>
+   	
+   	<!-- ANSI -->
+   	<update id="com.lgcns.ikep4.workflow.engine.model.SplitTrackBean.updateSplitTrack" parameterClass="SplitTrackBean">
+   		
+			/* [SplitTrack_SqlMap.xml] com.lgcns.ikep4.workflow.engine.model.SplitTrackBean.updateSplitTrack */
+			
+			UPDATE 	IKEP4_WF_SPLIT
+			   SET	LOG_ID = #logId#
+			    	,IS_COMPLETE = #isComplete#
+			 WHERE	SPLIT_SEQ IS NOT NULL
+	        <isNotEmpty property="instanceId">
+			   AND	INSTANCE_ID = #instanceId#
+			</isNotEmpty> 	
+	        <isNotEmpty property="splitId">
+			   AND	SPLIT_ID = #splitId#
+			</isNotEmpty> 					   
+   					
+   	</update>
+</sqlMap>

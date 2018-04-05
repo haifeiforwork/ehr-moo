@@ -1,0 +1,270 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ko">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="../../css/guide.css" />
+<link rel="stylesheet" type="text/css" href="../../css/theme01/jquery_ui_custom.css" />
+<link rel="stylesheet" type="text/css" href="../../css/common.css" />
+<link rel="stylesheet" type="text/css" href="../../css/theme01/theme.css" />
+<title>Home</title></head>
+<body>
+<!--guideWrapper Start-->
+<div id="guideConFrame">
+
+	<p class="g_date mb10"><strong>2011.5.12</strong></p>
+	<div class="mb10"><strong>변경사항을 다음과 같이 공지합니다. 아래 사항 확인 후  각 유닛별 UI Standard html 확인 후 변경해 주십시요.</strong></div>
+	
+	<div class="g_title">1. 목록형 스타일 변경</div>
+	<img src="../../images/guide/s1.jpg" alt="" /><br /><br />
+	<br /><br />
+	<div class="g_title">2. 일반 화면 스타일 변경</div>
+	<img src="../../images/guide/s2.jpg" alt="" /><br /><br />
+	<br /><br />
+	<div class="g_title">3. 상세 내용보기 스타일 변경</div>
+	<div class="g_con">
+		상세 내용 스타일은 아래의 유닛이 해당됩니다.<br />
+		게시판, Q&A, Collobation(일반게시판, 공지사항, 주간보고), 포럼, 아이디어, SocialBlog, Cafe <br/>
+	</div>	
+	<img src="../../images/guide/s3.jpg" alt="" /><br/>
+	<img src="../../images/guide/s4.jpg" alt="" />
+	
+	<br/><br/>
+	<p class="g_date mb10">2011.5.4</p>
+	<div class="mb10">변경사항을 다음과 같이 공지합니다. 아래 사항 외에도 가이드의 최종 html을 수시로 확인하여 주시기 바랍니다.</div>
+
+	<div class="g_title">1. Leftmenu 소스 확인</div>
+	<div class="g_con">
+		Leftmenu의 첫번째 depth는 하위메뉴가 default로 opened 되어있어야 한다.<br />
+		잘 안 된 케이스가 많으므로 모든 화면 점검요망 (소스는 해당 html을 참고)<br />
+		예) &lt;li class=&quot;licurrent opened liFirst&quot;&gt;, &lt;li class=&quot;opened&quot;&gt; <br /><br />
+		<img src="../../images/guide/img_03.gif" alt="" /><br /><br />
+	</div>	
+
+	<div class="g_title">2. Q&amp;A와 Cafe의 서브화면 LeftMenu 소스 추가</div>
+	<div class="g_con">
+		Leftmenu에서 2depth 중 화살표 표시가 나오는 부분의 ul에 다음 class를 삽입한다. &lt;ul class=&quot;qnalist_sub&quot;&gt;  (소스는 해당 html을 참고)<br /><br />
+	</div>	
+		
+	<div class="g_title">3. 검색영역 디자인 변경</div>
+	<div class="g_con">
+		아래의 검색창을 사용한 모든 화면은 다음과 같이 변경한다. (소스는 해당 html을 참고)<br /><br />
+		<img src="../../images/guide/img_02.gif" alt="" /><br /><br />
+	</div>	
+	
+	<div class="g_title">4. mainContents 표기방식 변경</div>
+	<div class="g_con">
+		모든 페이지에서 mainContents를 검색하여 찾은 후 다음과 같이 변경한다. (기존의 mainContents_1~4는 모두 삭제)<br /><br />
+		<p>유형 1. &lt;div id=&quot;mainContents&quot;&gt;</p>
+		- 아래 페이지를 제외한 모든 화면<br /><br />
+		<p>유형 2. &lt;div id=&quot;mainContents&quot; class=&quot;conPadding_1&quot;&gt;</p>
+		- 예) Team Collaboration (Collaboration 중 왼쪽메뉴의 폭이 좁은 화면이 모두 해당됨) <br /><br />
+		<img src="../../images/guide/img_01.gif" alt="" />	<br /><br />
+		<p>유형 3. &lt;div id=&quot;mainContents&quot; class=&quot;conPadding_2&quot;&gt;</p>
+		- 예) Social Blog, MicroBlogging (Left Menu가 없고 좌우 여백이 같은 경우가 해당됨)<br /><br />
+		<p>유형 4. &lt;div id=&quot;mainContents&quot; class=&quot;conPPS&quot;&gt;</p>
+		- 예) Personal Portal Service<br /><br />
+	</div>	
+	
+	<p class="g_date mb10">2011.4.20</p>
+
+	<div class="g_title">테이블 Ellipsis 기능 사용법</div>
+	<div class="g_con">
+		ellipsis 기능을 쓰기 위해서는 말줄임 대상이 되는 내용을 다음 class로 지정해야 한다. &lt;div class=&quot;ellipsis&quot;&gt;내용&lt;/div&gt; <br />
+		이 때 주의할 점은 class를 td내에 쓰지 말고 별도 div나 p 태그 등으로 감싸야 한다.<br />
+		또한 td 내에는 width를 반드시 표기하여야 한다.		
+	</div>	
+		
+	
+	<!--blockDetail Start-->
+	<div class="blockDetail">
+		<table summary="일반게시판">
+			<caption></caption>
+			<tbody>
+				<tr>
+					<th scope="row" width="18%">Ellipsis 사용방법</th>
+					<td width="32%"><div class="ellipsis">ellipsis 기능을 쓰기 위해서는 말줄임 대상이 되는 내용을 다음 class로 지정해야 한다.</div></td>
+					<th scope="row" width="18%">제목</th>
+					<td width="32%">내용</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	<!--//blockDetail End-->
+	<div class="mb20">
+		&lt;div class=&quot;blockDetail&quot;&gt;<br />
+		<span style="padding-left:10px;"></span>&lt;table summary=&quot;일반게시판&quot;&gt;<br />
+		<span style="padding-left:20px;"></span>&lt;caption&gt;&lt;/caption&gt;<br />
+		<span style="padding-left:20px;"></span>&lt;tbody&gt;<br />
+		<span style="padding-left:30px;"></span>&lt;tr&gt;<br />
+		<span style="padding-left:40px;"></span>&lt;th scope=&quot;row&quot; <span class="txtPoint">width=&quot;18%&quot;</span>&gt;Ellipsis 사용방법&lt;/th&gt;<br />
+		<span style="padding-left:40px;"></span>&lt;td <span class="txtPoint">width=&quot;32%&quot;</span>&gt;<span class="txtPoint">&lt;div class=&quot;ellipsis&quot;&gt;</span>ellipsis 기능을 쓰기 위해서는 말줄임 대상이 되는 내용을 다음 class로 지정해야 한다.<span class="txtPoint">&lt;/div&gt;</span>&lt;/td&gt;<br />
+		<span style="padding-left:40px;"></span>&lt;th scope=&quot;row&quot; <span class="txtPoint">width=&quot;18%&quot;</span>&gt;제목&lt;/th&gt;<br />
+		<span style="padding-left:40px;"></span>&lt;td <span class="txtPoint">width=&quot;32%&quot;</span>&gt;내용&lt;/td&gt;<br />
+		<span style="padding-left:30px;"></span>&lt;/tr&gt;<br />
+		<span style="padding-left:20px;"></span>&lt;/tbody&gt;<br />
+		<span style="padding-left:10px;"></span>&lt;/table&gt;<br />
+		&lt;/div&gt;
+	</div>
+
+<p class="g_date mb10">2011.3.25</p>
+	<div class="mb10">변경사항을 다음과 같이 공지합니다.</div>
+	
+	<div class="g_title">1. new 아이콘</div>
+	<div class="g_con">
+		변경전 : &lt;img src=&quot;../../images/theme/theme01/basic/ic_new.gif&quot; alt=&quot;new&quot; /&gt; <br />
+		변경후 : &lt;span class=&quot;ic_new&quot;&gt;&lt;span&gt;new&lt;/span&gt;&lt;/span&gt;
+	</div>	
+
+	<div class="g_title">2. 태그 아이콘</div>
+	<div class="g_con">
+		변경전 : &lt;img src=&quot;../../images/theme/theme01/basic/ic_tag.gif&quot; alt=&quot;태그&quot; /&gt;<br />
+		변경후 : &lt;span class=&quot;ic_tag&quot;&gt;&lt;span&gt;태그&lt;/span&gt;&lt;/span&gt;
+	</div>	
+
+	<div class="g_title">3. 첨부 아이콘</div>
+	<div class="g_con">
+		변경전 : &lt;img src=&quot;../../images/theme/theme01/basic/ic_attach.gif&quot; alt=&quot;첨부&quot; /&gt;<br />
+		변경후 : &lt;img src=&quot;../../images/icon/ic_attach.gif&quot; alt=&quot;첨부&quot; /&gt;<br /><br />
+		변경전 : &lt;img src=&quot;../../images/icon/ic_attach_b.gif&quot; alt=&quot;첨부파일&quot; /&gt;<br />
+		변경후 : &lt;img src=&quot;../../images/icon/ic_attach.gif&quot; alt=&quot;첨부&quot; /&gt;
+	</div>	
+
+	<div class="g_title">4. 팝업 닫기버튼</div>
+	<div class="g_con">
+		변경전 : &lt;a href=&quot;#a&quot;&gt;&lt;img src=&quot;../../images/icon/ic_close_popup.gif&quot; alt=&quot;닫기&quot; /&gt;&lt;/a&gt; <br />
+		변경후 : &lt;a href=&quot;#a&quot;&gt;&lt;span&gt;닫기&lt;/span&gt;&lt;/a&gt;
+	</div>
+		
+	<div class="g_title">5. 검색 아이콘</div>
+	<div class="g_con">
+		변경전 : &lt;a href=&quot;#a&quot;&gt;&lt;img src=&quot;../../images/theme/theme01/basic/ic_search.gif&quot; alt=&quot;검색&quot; /&gt;&lt;/a&gt;<br />
+		변경후 : &lt;a href=&quot;#a&quot; class=&quot;ic_search&quot;&gt;&lt;span&gt;검색&lt;/span&gt;&lt;/a&gt;
+	</div>
+
+	<div class="g_title">6. 검색영역 내의 search 버튼</div>
+	<div class="g_con">
+		변경전 : &lt;div class=&quot;searchBtn&quot;&gt;&lt;a href=&quot;#a&quot;&gt;&lt;img src=&quot;../../images/theme/theme01/basic/btn_search.gif&quot; alt=&quot;조회&quot; /&gt;&lt;/a&gt;&lt;/div&gt;<br />
+		변경후 : &lt;div class=&quot;searchBtn&quot;&gt;&lt;a href=&quot;#a&quot;&gt;&lt;span&gt;Search&lt;/span&gt;&lt;/a&gt;&lt;/div&gt;
+	</div>
+	
+	<div class="g_title">7. 이름, 조회, 추천 등의 사이에 들어가는 bar</div>
+	<div class="g_con">
+		변경전 : &lt;img src=&quot;../../images/theme/theme01/basic/bar_pageNum.gif&quot; alt=&quot;&quot; /&gt;<br />
+		변경후 : &lt;img src=&quot;../../images/common/bar_info.gif&quot; alt=&quot;&quot; /&gt;
+	</div>
+	
+	<div class="g_title">8. 아이콘과 함께 쓰는 작은 버튼은 반드시 영문만 쓰고 class="button_ic"로 한다. class="button_s"의 버튼은 한글만 쓴다.</div>
+	<div class="g_con">
+		변경전 : &lt;a class=&quot;button_s&quot; href=&quot;#a&quot;&gt;<br />
+		변경후 : &lt;a class=&quot;button_ic&quot; href=&quot;#a&quot;&gt;
+	</div>
+	
+	<div class="g_title">9. Q&amp;A 아이콘</div>
+	<div class="g_con">
+		변경전 : &lt;img src=&quot;../../images/theme/theme01/basic/ic_qna_q.gif&quot; alt=&quot;question&quot; /&gt;<br />
+		변경후 : &lt;span class=&quot;ic_qna_q&quot;&gt;&lt;span&gt;Question&lt;/span&gt;&lt;/span&gt;<br /><br />
+		변경전 : &lt;img src=&quot;../../images/theme/theme01/basic/ic_qna_a.gif&quot; alt=&quot;answer&quot; /&gt;<br />
+		변경후 : &lt;span class=&quot;ic_qna_a&quot;&gt;&lt;span&gt;Answer&lt;/span&gt;&lt;/span&gt;<br /><br />
+		변경전 : &lt;img src=&quot;../../images/theme/theme01/basic/ic_qna_q_2.gif&quot; alt=&quot;question&quot; /&gt;<br />
+		변경후 : &lt;span class=&quot;ic_qna_q_2&quot;&gt;&lt;span&gt;Question&lt;/span&gt;&lt;/span&gt;<br /><br />
+		변경전 : &lt;img src=&quot;../../images/theme/theme01/basic/ic_qna_a_2.gif&quot; alt=&quot;answer&quot; /&gt;<br />
+		변경후 : &lt;span class=&quot;ic_qna_a_2&quot;&gt;&lt;span&gt;Answer&lt;/span&gt;&lt;/span&gt;
+	</div>		
+
+	<div class="g_title">10. 페이지 네비게이션</div>
+	<div class="g_con">
+		변경전 : <br />
+		&lt;div class=&quot;pageNum&quot;&gt; <br />
+		<span style="padding-left:10px;"></span>&lt;ul&gt;<br />
+		<span style="padding-left:20px;"></span>&lt;li&gt;&lt;a href=&quot;#a&quot; onclick=&quot;doSomething(); return false;&quot;&gt;&lt;img src=&quot;../../images/theme/theme01/basic/btn_page_first.gif&quot; alt=&quot;첫페이지&quot; /&gt;&lt;/a&gt;&lt;/li&gt;<br />
+		<span style="padding-left:20px;"></span>&lt;li&gt;&lt;a href=&quot;#a&quot; onclick=&quot;doSomething(); return false;&quot;&gt;&lt;img src=&quot;../../images/theme/theme01/basic/btn_page_pre.gif&quot; alt=&quot;이전페이지&quot; /&gt;&lt;/a&gt;&lt;/li&gt;<br />
+		<span style="padding-left:20px;"></span>&lt;li&gt;&lt;span class=&quot;liFirst&quot;&gt;&lt;a href=&quot;#a&quot; onclick=&quot;doSomething(); return false;&quot;&gt;1&lt;/a&gt;&lt;/span&gt;&lt;/li&gt;<br />
+		<span style="padding-left:20px;"></span>&lt;li&gt;&lt;span&gt;&lt;a href=&quot;#a&quot; onclick=&quot;doSomething(); return false;&quot;&gt;2&lt;/a&gt;&lt;/span&gt;&lt;/li&gt;<br />
+		<span style="padding-left:20px;"></span>&lt;li&gt;&lt;span&gt;&lt;a href=&quot;#a&quot; onclick=&quot;doSomething(); return false;&quot;&gt;3&lt;/a&gt;&lt;/span&gt;&lt;/li&gt;<br />
+		<span style="padding-left:20px;"></span>&lt;li&gt;&lt;span&gt;&lt;a href=&quot;#a&quot; onclick=&quot;doSomething(); return false;&quot;&gt;4&lt;/a&gt;&lt;/span&gt;&lt;/li&gt;<br />
+		<span style="padding-left:20px;"></span>&lt;li&gt;&lt;span&gt;5&lt;/span&gt;&lt;/li&gt;<br />
+		<span style="padding-left:20px;"></span>&lt;li&gt;&lt;span&gt;&lt;a href=&quot;#a&quot; onclick=&quot;doSomething(); return false;&quot;&gt;6&lt;/a&gt;&lt;/span&gt;&lt;/li&gt;<br />
+		<span style="padding-left:20px;"></span>&lt;li&gt;&lt;span&gt;&lt;a href=&quot;#a&quot; onclick=&quot;doSomething(); return false;&quot;&gt;7&lt;/a&gt;&lt;/span&gt;&lt;/li&gt;<br />
+		<span style="padding-left:20px;"></span>&lt;li&gt;&lt;span&gt;&lt;a href=&quot;#a&quot; onclick=&quot;doSomething(); return false;&quot;&gt;8&lt;/a&gt;&lt;/span&gt;&lt;/li&gt;<br />
+		<span style="padding-left:20px;"></span>&lt;li&gt;&lt;span&gt;&lt;a href=&quot;#a&quot; onclick=&quot;doSomething(); return false;&quot;&gt;9&lt;/a&gt;&lt;/span&gt;&lt;/li&gt;<br />
+		<span style="padding-left:20px;"></span>&lt;li&gt;&lt;span class=&quot;liLast&quot;&gt;&lt;a href=&quot;#a&quot; onclick=&quot;doSomething(); return false;&quot;&gt;10&lt;/a&gt;&lt;/span&gt;&lt;/li&gt;<br />
+		<span style="padding-left:20px;"></span>&lt;li&gt;&lt;a href=&quot;#a&quot; onclick=&quot;doSomething(); return false;&quot;&gt;&lt;img src=&quot;../../images/theme/theme01/basic/btn_page_next.gif&quot; alt=&quot;다음페이지&quot; /&gt;&lt;/a&gt;&lt;/li&gt;<br />
+		<span style="padding-left:20px;"></span>&lt;li&gt;&lt;a href=&quot;#a&quot; onclick=&quot;doSomething(); return false;&quot;&gt;&lt;img src=&quot;../../images/theme/theme01/basic/btn_page_last.gif&quot; alt=&quot;마지막페이지&quot; /&gt;&lt;/a&gt;&lt;/li&gt;<br />
+		<span style="padding-left:10px;"></span>&lt;/ul&gt;<br />
+		&lt;/div&gt;<br />
+		<br />
+		변경후 : <br />
+		&lt;div class=&quot;pageNum&quot;&gt; <br />
+		<span style="padding-left:10px;"></span>&lt;ul&gt;<br />
+		<span style="padding-left:20px;"></span>&lt;li&gt;&lt;a class=&quot;btn_page_first&quot; href=&quot;#a&quot; onclick=&quot;doSomething(); return false;&quot;&gt;&lt;span&gt;첫페이지&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;<br />
+		<span style="padding-left:20px;"></span>&lt;li&gt;&lt;a class=&quot;btn_page_pre&quot; href=&quot;#a&quot; onclick=&quot;doSomething(); return false;&quot;&gt;&lt;span&gt;이전페이지&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;<br />
+		<span style="padding-left:20px;"></span>&lt;li&gt;&lt;span class=&quot;liFirst&quot;&gt;&lt;a href=&quot;#a&quot; onclick=&quot;doSomething(); return false;&quot;&gt;1&lt;/a&gt;&lt;/span&gt;&lt;/li&gt;<br />
+		<span style="padding-left:20px;"></span>&lt;li&gt;&lt;span&gt;&lt;a href=&quot;#a&quot; onclick=&quot;doSomething(); return false;&quot;&gt;2&lt;/a&gt;&lt;/span&gt;&lt;/li&gt;<br />
+		<span style="padding-left:20px;"></span>&lt;li&gt;&lt;span&gt;&lt;a href=&quot;#a&quot; onclick=&quot;doSomething(); return false;&quot;&gt;3&lt;/a&gt;&lt;/span&gt;&lt;/li&gt;<br />
+		<span style="padding-left:20px;"></span>&lt;li&gt;&lt;span&gt;&lt;a href=&quot;#a&quot; onclick=&quot;doSomething(); return false;&quot;&gt;4&lt;/a&gt;&lt;/span&gt;&lt;/li&gt;<br />
+		<span style="padding-left:20px;"></span>&lt;li&gt;&lt;span&gt;5&lt;/span&gt;&lt;/li&gt;<br />
+		<span style="padding-left:20px;"></span>&lt;li&gt;&lt;span&gt;&lt;a href=&quot;#a&quot; onclick=&quot;doSomething(); return false;&quot;&gt;6&lt;/a&gt;&lt;/span&gt;&lt;/li&gt;<br />
+		<span style="padding-left:20px;"></span>&lt;li&gt;&lt;span&gt;&lt;a href=&quot;#a&quot; onclick=&quot;doSomething(); return false;&quot;&gt;7&lt;/a&gt;&lt;/span&gt;&lt;/li&gt;<br />
+		<span style="padding-left:20px;"></span>&lt;li&gt;&lt;span&gt;&lt;a href=&quot;#a&quot; onclick=&quot;doSomething(); return false;&quot;&gt;8&lt;/a&gt;&lt;/span&gt;&lt;/li&gt;<br />
+		<span style="padding-left:20px;"></span>&lt;li&gt;&lt;span&gt;&lt;a href=&quot;#a&quot; onclick=&quot;doSomething(); return false;&quot;&gt;9&lt;/a&gt;&lt;/span&gt;&lt;/li&gt;<br />
+		<span style="padding-left:20px;"></span>&lt;li&gt;&lt;span class=&quot;liLast&quot;&gt;&lt;a href=&quot;#a&quot; onclick=&quot;doSomething(); return false;&quot;&gt;10&lt;/a&gt;&lt;/span&gt;&lt;/li&gt;<br />
+		<span style="padding-left:20px;"></span>&lt;li&gt;&lt;a class=&quot;btn_page_next&quot; href=&quot;#a&quot; onclick=&quot;doSomething(); return false;&quot;&gt;&lt;span&gt;다음페이지&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;<br />
+		<span style="padding-left:20px;"></span>&lt;li&gt;&lt;a class=&quot;btn_page_last&quot; href=&quot;#a&quot; onclick=&quot;doSomething(); return false;&quot;&gt;&lt;span&gt;마지막페이지&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;<br />
+		<span style="padding-left:10px;"></span>&lt;/ul&gt;<br />
+		&lt;/div&gt;
+	</div>				
+		
+	<div class="g_title">11. 버튼 불필요한 div 삭제 (&lt;div class=&quot;tableBottom&quot;&gt;)</div>
+	<div class="g_con">
+		<p>변경전 : </p>
+		<p> &lt;!--tableBottom Start--&gt;<br />
+		&lt;div class=&quot;tableBottom&quot;&gt; <br />
+		<span style="padding-left:10px;"></span>&lt;!--blockButton Start--&gt;<br />
+		<span style="padding-left:10px;"></span>&lt;div class=&quot;blockButton&quot;&gt; <br />
+		<span style="padding-left:20px;"></span>&lt;ul&gt;<br />
+		<span style="padding-left:30px;"></span>&lt;li&gt;&lt;a class=&quot;button&quot; href=&quot;#a&quot;&gt;&lt;span&gt;삭제&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;<br />
+		<span style="padding-left:30px;"></span>&lt;li&gt;&lt;a class=&quot;button&quot; href=&quot;#a&quot;&gt;&lt;span&gt;목록&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;<br />
+		<span style="padding-left:20px;"></span>&lt;/ul&gt;<br />
+		<span style="padding-left:10px;"></span>&lt;/div&gt;<br />
+		<span style="padding-left:10px;"></span>&lt;!--//blockButton End--&gt;<br />
+		&lt;/div&gt;<br />
+		&lt;!--//tableBottom End--&gt;<br />
+		<br />
+		변경후 :<br />		
+		&lt;!--blockButton Start--&gt;<br />
+		&lt;div class=&quot;blockButton&quot;&gt; <br />
+		<span style="padding-left:10px;"></span>&lt;ul&gt;<br />
+		<span style="padding-left:20px;"></span>&lt;li&gt;&lt;a class=&quot;button&quot; href=&quot;#a&quot;&gt;&lt;span&gt;삭제&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;<br />
+		<span style="padding-left:20px;"></span>&lt;li&gt;&lt;a class=&quot;button&quot; href=&quot;#a&quot;&gt;&lt;span&gt;목록&lt;/span&gt;&lt;/a&gt;&lt;/li&gt;<br />
+		<span style="padding-left:10px;"></span>&lt;/ul&gt;<br />
+		&lt;/div&gt;<br />
+		&lt;!--//blockButton End--&gt;</p>
+	</div>
+	
+		
+	<p class="g_date mb10">2011.1.10</p>
+	
+	<div class="g_title">1. 주석규칙</div>
+	<div class="g_con">
+		영문으로 양쪽 끝 띄어쓰기 없이 다음과 같이 Start, //, End를 표기함<br />
+		Start와 End는 반드시 동시에 표기함
+		<div class="UI_source">
+			&lt;!--skipNavigation Start--&gt;<br />
+			&lt;!--//skipNavigation End--&gt;
+		</div>
+	</div>	
+	
+	<div class="g_title">2. Doctype, charset 규칙</div>
+	<div class="g_con">
+		<div class="UI_source">
+			&lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD XHTML 1.0 Transitional//EN&quot; &quot;http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd&quot;&gt;<br />
+			&lt;html xmlns=&quot;http://www.w3.org/1999/xhtml&quot; xml:lang=&quot;ko&quot;&gt;<br />
+			&lt;head&gt;<br />
+			&lt;meta http-equiv=&quot;Content-Type&quot; content=&quot;text/html; charset=utf-8&quot; /&gt;
+		</div>	
+	</div>	
+	
+</div>
+<!--//guideWrapper End-->
+</body>
+</html>

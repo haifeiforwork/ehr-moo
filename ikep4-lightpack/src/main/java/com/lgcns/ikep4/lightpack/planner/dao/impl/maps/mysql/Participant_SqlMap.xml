@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="lightpack.planner.dao.Participant" >
+	<typeAlias alias = "Participant" type="com.lgcns.ikep4.lightpack.planner.model.Participant"/>
+	
+	<resultMap id="participantResult" class="Participant">
+		<result property="scheduleId" column="scheduleId"/>
+		<result property="targetUserId" column="targetUserId"/>
+		<result property="targetType" column="targetType"/>
+		<result property="isAccept" column="isAccept"/>
+		<result property="abscentReason" column="abscentReason"/>	
+		<result property="targetUserInfo" column="targetUserInfo"/>	
+	</resultMap>
+		
+	<!-- insert -->
+	<insert id="insert" parameterClass="Participant"> 
+		<![CDATA[
+		INSERT INTO				IKEP4_SD_PARTICIPANT 
+								(
+								SCHEDULE_ID,
+								TARGET_USER_ID,
+								TARGET_TYPE,
+								PARTICIPATION,
+								ABSENCE_REASON
+								) 
+		VALUES 					(
+								#scheduleId#,
+								#targetUserId#,
+								#targetType#,
+								#isAccept#,
+								#abscentReason#
+								)
+		]]>
+   	</insert>	
+   
+	<!-- insert list -->
+   	<insert id="insertList" parameterClass="map">
+   		<![CDATA[
+   		INSERT INTO 		IKEP4_SD_PARTICIPANT 
+   							(
+   							SCHEDULE_ID,
+   							TARGET_USER_ID,
+   							TARGET_TYPE,
+   							PARTICIPATION,
+   							ABSENCE_REASON
+   							) 
+		VALUES
+		]]>
+   							<iterate conjunction="," property="items">		
+		   					(
+		   					#items[].scheduleId#,
+		   					#items[].targetUserId#,
+		   					#items[].targetType#,
+		   					#items[].isAccept#,
+		   					#items[].abscentReason#
+		   					)
+							</iterate>	
+   	</insert>
+   
+	<!-- insert list -->
+	<insert id="insertListWithScheduleId" parameterClass="map"> 
+		<![CDATA[
+		INSERT INTO			IKEP4_SD_PARTICIPANT 
+							(
+							SCHEDULE_ID,
+							TARGET_USER_ID,
+							TARGET_TYPE,
+							PARTICIPATION,
+							ABSENCE_REASON
+							) 
+	  	VALUES 
+	  	]]>
+   							<iterate conjunction="," property="items">	
+		  					(
+		  					#scheduleId#,
+		  					#items[].targetUserId#,
+		  					#items[].targetType#,
+		  					#items[].isAccept#,
+		  					#items[].abscentReason#
+		  					)
+							</iterate>	
+   	</insert>
+   
+   	<!-- select -->
+	<select id="select" parameterClass="java.lang.String" resultClass="Participant">
+	  	<![CDATA[
+
+	   	]]>
+	</select>
+	
+   	<!-- select list -->
+	<select id="selectList" parameterClass="java.lang.String" resultClass="Participant">
+	  	<![CDATA[
+		SELECT				A.SCHEDULE_ID AS scheduleId, 
+							A.TARGET_USER_ID AS targetUserId, 
+							A.TARGET_TYPE AS targetType,
+							A.PARTICIPATION AS isAccept, 
+							A.ABSENCE_REASON AS abscentReason, 
+							B.MAIL AS mail,
+    						B.USER_NAME AS targetUserName, 
+    						B.USER_ENGLISH_NAME AS targetUserEnglishName,
+    						C.JOB_TITLE_NAME AS targetUserJobTitleName, 
+    						B.TEAM_NAME AS targetUserTeamName,
+    						C.JOB_TITLE_ENGLISH_NAME AS targetUserJobTitleEnglishName, 
+    						B.TEAM_ENGLISH_NAME AS targetUserTeamEnglishName, 
+    						CONCAT(B.USER_NAME, ' ', C.JOB_TITLE_NAME, ' ', B.TEAM_NAME) AS targetuserInfo,
+    						CONCAT(B.USER_ENGLISH_NAME, ' ', C.JOB_TITLE_ENGLISH_NAME, ' ', B.TEAM_ENGLISH_NAME) targetuserEnglishInfo,
+    						B.MOBILE AS targetUserMobile
+    	FROM   				IKEP4_SD_PARTICIPANT A
+       	INNER JOIN 			IKEP4_EV_USER B
+		ON 					B.USER_ID = A.TARGET_USER_ID
+		INNER JOIN 			IKEP4_EV_JOB_TITLE C
+		ON 					C.JOB_TITLE_CODE = B.JOB_TITLE_CODE
+		WHERE  				SCHEDULE_ID = #scheduleId#
+	   	]]>
+	</select>
+	
+	<!-- update -->
+	<update id="update" parameterClass="Participant">
+	  	<![CDATA[
+
+	   	]]>
+	</update>
+	
+	<!-- updateAcceptInfo -->
+	<update id="updateAcceptInfo" parameterClass="map">
+	  	<![CDATA[
+		UPDATE				IKEP4_SD_PARTICIPANT
+		SET 				PARTICIPATION = #isAccept#,
+		  					ABSENCE_REASON = #reason#
+		WHERE 				SCHEDULE_ID = #scheduleId#
+		AND 				TARGET_USER_ID = #targetUserId#
+		AND 				TARGET_TYPE = 1		
+	   	]]>
+	</update>
+	
+	<!-- getList -->
+	<select id="getList" resultClass="Participant">
+	  	<![CDATA[
+
+	   	]]>
+	</select>
+	
+   	<!-- delete -->
+   	<delete id="delete" parameterClass="java.lang.String">
+      	<![CDATA[
+		DELETE
+		FROM				IKEP4_SD_PARTICIPANT
+		WHERE				SCHEDULE_ID = #userId#			
+	   	]]>
+	</delete>
+	
+</sqlMap>

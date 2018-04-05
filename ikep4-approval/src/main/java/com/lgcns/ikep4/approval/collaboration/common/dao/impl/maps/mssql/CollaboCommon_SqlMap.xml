@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="com.lgcns.ikep4.approval.collaboration.common.dao.CollaboCommonDao" >
+	
+	<resultMap id="mailAddrMap" class="java.util.HashMap">
+		<result property="mail"			column="MAIL"		    jdbcType="java.lang.String"/>
+		<result property="userName"		column="USER_NAME"		    jdbcType="java.lang.String"/>
+	</resultMap>
+	
+	<select id="getUserMailAddrList" parameterClass="java.util.Map" resultMap="mailAddrMap">
+		/* [ColaboCommon_SqlMap.xml] colaboCommon.getUserMailAddrList */
+		SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
+		SELECT MAIL
+		     , USER_NAME
+		  FROM IKEP4_EV_USER
+		 WHERE EMP_NO
+		 <iterate prepend="IN" property="mailTargetEmpNoList" open="(" close=")" conjunction=","> 
+		 	#mailTargetEmpNoList[]#
+		 </iterate>
+		
+	</select>
+	
+	<select id="getUserMailAddr" parameterClass="String" resultClass="String">
+		/* [ColaboCommon_SqlMap.xml] colaboCommon.getUserMailAddrList */
+		SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
+		SELECT MAIL
+		  FROM IKEP4_EV_USER
+		 WHERE EMP_NO = #empNO#
+	</select>
+	
+</sqlMap>

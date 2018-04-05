@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="portal.admin.screen.portalSystemUrl">
+	<typeAlias alias="PortalSystemUrl" 					type="com.lgcns.ikep4.portal.admin.screen.model.PortalSystemUrl" />
+	<typeAlias alias="PortalSystemUrlSearchCondition"	type="com.lgcns.ikep4.portal.admin.screen.search.PortalSystemUrlSearchCondition" />
+	
+  	<resultMap id="result" class="PortalSystemUrl">
+  		<result column="NUM" 				property="updateDate"		columnIndex="1" />
+	    <result column="SYSTEM_URL_ID"      property="systemUrlId"      columnIndex="2" />
+	    <result column="SYSTEM_URL_NAME"	property="systemUrlName"	columnIndex="3" />
+	    <result column="URL"        		property="url"       		columnIndex="4" />
+	    <result column="REGISTER_ID"      	property="registerId"     	columnIndex="5" />
+	    <result column="REGISTER_NAME"    	property="registerName"   	columnIndex="6" />
+	    <result column="REGIST_DATE"      	property="registDate"     	columnIndex="7" />
+	    <result column="UPDATER_ID"       	property="updaterId"      	columnIndex="8" />
+	    <result column="UPDATER_NAME"     	property="updaterName"    	columnIndex="9" />
+	    <result column="UPDATE_DATE"      	property="updateDate"     	columnIndex="10" /> 
+  	</resultMap> 
+  	<resultMap id="getResult" class="PortalSystemUrl">
+	    <result column="SYSTEM_URL_ID"      property="systemUrlId"      columnIndex="1" />
+	    <result column="SYSTEM_URL_NAME"	property="systemUrlName"	columnIndex="2" />
+	    <result column="URL"        		property="url"       		columnIndex="3" />
+	    <result column="REGISTER_ID"      	property="registerId"     	columnIndex="4" />
+	    <result column="REGISTER_NAME"    	property="registerName"   	columnIndex="5" />
+	    <result column="REGIST_DATE"      	property="registDate"     	columnIndex="6" />
+	    <result column="UPDATER_ID"       	property="updaterId"      	columnIndex="7" />
+	    <result column="UPDATER_NAME"     	property="updaterName"    	columnIndex="8" />
+	    <result column="UPDATE_DATE"      	property="updateDate"     	columnIndex="9" />
+  	</resultMap> 
+  
+  	<sql id="sqlColumnList">
+	    SYSTEM_URL_ID, 
+	    SYSTEM_URL_NAME, 
+	    URL,
+	    REGISTER_ID, 
+	    REGISTER_NAME, 
+	    REGIST_DATE, 
+	    UPDATER_ID, 
+	    UPDATER_NAME,
+	    UPDATE_DATE,
+	    PORTAL_ID
+  	</sql>
+  	
+  	<insert id="create" parameterClass="PortalSystemUrl"> 
+		<![CDATA[
+		/* [PortalSystemUrl_SqlMap.xml] portal.admin.screen.portalSystemUrl.create */
+		INSERT	INTO	IKEP4_PO_SYSTEM_URL 
+						(
+		]]>
+						<include refid="portal.admin.screen.portalSystemUrl.sqlColumnList" />
+		<![CDATA[
+						)
+		VALUES 			( 
+						#systemUrlId#,
+						#systemUrlName#,
+						#url#,
+					    #registerId#,
+					    #registerName#,
+					    SYSDATE,
+					    #updaterId#,
+					    #updaterName#,
+					    SYSDATE,
+					    #portalId#
+					    )
+		]]>
+	</insert>
+  	
+  	<select id="listBySearchCondition" parameterClass="PortalSystemUrlSearchCondition" resultMap="result">  
+  		<![CDATA[
+  		/* [PortalSystemUrl_SqlMap.xml] portal.admin.screen.portalSystemUrl.listBySearchCondition */
+		SELECT			*
+		FROM 			(
+	     				SELECT			ROWNUM AS NUM,
+					     				C.SYSTEM_URL_ID, 
+									    C.SYSTEM_URL_NAME, 
+									    C.URL,
+									    C.REGISTER_ID, 
+									    C.REGISTER_NAME, 
+									    TO_CHAR(C.REGIST_DATE, 'YYYY-MM-DD') AS REGIST_DATE, 
+									    C.UPDATER_ID, 
+									    C.UPDATER_NAME,
+									    TO_CHAR(C.UPDATE_DATE, 'YYYY-MM-DD') AS UPDATE_DATE
+	     				FROM 			(
+					         			SELECT			A.SYSTEM_URL_ID, 
+											    		B.ITEM_MESSAGE AS SYSTEM_URL_NAME, 
+											    		A.URL,
+											    		A.REGISTER_ID, 
+												    	A.REGISTER_NAME, 
+												    	A.REGIST_DATE, 
+												    	A.UPDATER_ID, 
+												    	A.UPDATER_NAME,
+												    	A.UPDATE_DATE
+					         			FROM   			IKEP4_PO_SYSTEM_URL A
+					         			LEFT JOIN		IKEP4_I18N_MESSAGE B
+					         			ON				A.SYSTEM_URL_ID = B.ITEM_ID
+					         			AND 			B.FIELD_NAME = #fieldName#
+										AND 			B.LOCALE_CODE = #userLocaleCode#
+							 			WHERE  			A.PORTAL_ID = #portalId#
+		]]>
+							 			<isNotEmpty property="searchColumn">
+										<isEqual prepend="AND" property="searchColumn" compareValue="systemUrlName">
+														UPPER(B.ITEM_MESSAGE) LIKE UPPER('%' || #searchWord# || '%')
+										</isEqual>
+										<isEqual prepend="AND" property="searchColumn" compareValue="url">
+														UPPER(A.URL) LIKE UPPER('%' || #searchWord# || '%')
+										</isEqual>
+										</isNotEmpty>
+							    		<isNotEmpty property="sortColumn">
+							    		<isEqual property="sortColumn" compareValue="A.SYSTEM_URL_ID">
+							    		<isEqual property="sortType" compareValue="ASC">
+										ORDER BY 		A.SYSTEM_URL_ID ASC
+										</isEqual>
+										<isEqual property="sortType" compareValue="DESC">
+										ORDER BY 		A.SYSTEM_URL_ID DESC
+										</isEqual>
+										</isEqual>
+							    		<isEqual property="sortColumn" compareValue="A.SYSTEM_URL_NAME">
+							    		<isEqual property="sortType" compareValue="ASC">
+										ORDER BY 		A.SYSTEM_URL_NAME ASC
+										</isEqual>
+										<isEqual property="sortType" compareValue="DESC">
+										ORDER BY 		A.SYSTEM_URL_NAME DESC
+										</isEqual>
+										</isEqual>
+										<isEqual property="sortColumn" compareValue="A.URL">
+							    		<isEqual property="sortType" compareValue="ASC">
+										ORDER BY 		A.URL ASC
+										</isEqual>
+										<isEqual property="sortType" compareValue="DESC">
+										ORDER BY 		A.URL DESC
+										</isEqual>
+										</isEqual>
+							    		</isNotEmpty>
+							    		<isEmpty property="sortColumn">
+							    		ORDER BY 		A.REGIST_DATE DESC
+							    		</isEmpty>
+		<![CDATA[
+	    								) C
+	    				WHERE 			ROWNUM <= #endRowIndex#		 
+						)
+		WHERE 			NUM > #startRowIndex#
+		]]>
+  	</select>   
+  	<select id="countBySearchCondition" parameterClass="PortalSystemUrlSearchCondition" resultClass="int">  
+  		<![CDATA[
+  		/* [PortalSystemUrl_SqlMap.xml] portal.admin.screen.portalSystemUrl.countBySearchCondition */ 
+		SELECT 			COUNT(A.SYSTEM_URL_ID)
+		FROM   			IKEP4_PO_SYSTEM_URL A
+		LEFT JOIN		IKEP4_I18N_MESSAGE B
+		ON				A.SYSTEM_URL_ID = B.ITEM_ID
+		AND 			B.FIELD_NAME = #fieldName#
+		AND 			B.LOCALE_CODE = #userLocaleCode#
+		WHERE  			A.PORTAL_ID = #portalId#
+		]]>
+   		<isNotEmpty property="searchColumn">
+		<isEqual prepend="AND" property="searchColumn" compareValue="systemUrlName">
+						UPPER(B.ITEM_MESSAGE) LIKE UPPER('%' || #searchWord# || '%')
+		</isEqual>
+		<isEqual prepend="AND" property="searchColumn" compareValue="url">
+						UPPER(A.URL) LIKE UPPER('%' || #searchWord# || '%')
+		</isEqual>
+		</isNotEmpty>
+  	</select> 
+	<select id="read" parameterClass="java.util.Map" resultMap="getResult"> 
+		<![CDATA[
+		/* [PortalSystemUrl_SqlMap.xml] portal.admin.screen.portalSystemUrl.read */
+		SELECT 			A.SYSTEM_URL_ID AS SYSTEM_URL_ID, 
+						B.ITEM_MESSAGE AS SYSTEM_URL_NAME, 
+						A.URL AS URL, 
+						A.REGISTER_ID AS REGISTER_ID, 
+						A.REGISTER_NAME AS REGISTER_NAME, 
+						TO_CHAR(A.REGIST_DATE, 'YYYY-MM-DD') AS REGIST_DATE, 
+						A.UPDATER_ID AS UPDATER_ID, 
+						A.UPDATER_NAME AS UPDATER_NAME, 
+						TO_CHAR(A.UPDATE_DATE, 'YYYY-MM-DD') AS UPDATE_DATE 
+		FROM 			IKEP4_PO_SYSTEM_URL A
+		INNER JOIN 		IKEP4_I18N_MESSAGE B
+		ON 				A.SYSTEM_URL_ID = B.ITEM_ID
+		AND 			B.FIELD_NAME = #fieldName#
+		AND 			B.LOCALE_CODE = #localeCode#
+		WHERE 			A.SYSTEM_URL_ID = #systemUrlId#
+    	]]>
+ 	</select>
+ 	<select id="readSystemUrlId" parameterClass="String" resultClass="String"> 
+		<![CDATA[
+		/* [PortalSystemUrl_SqlMap.xml] portal.admin.screen.portalSystemUrl.readSystemUrlId */
+    	SELECT			SYSTEM_URL_ID 
+    	FROM  			IKEP4_PO_SYSTEM_URL
+    	WHERE 			URL = #url# 
+    	]]>
+ 	</select>
+ 	
+ 	<update id="update" parameterClass="PortalSystemUrl"> 
+ 		<![CDATA[
+ 		/* [PortalSystemUrl_SqlMap.xml] portal.admin.screen.portalSystemUrl.update */
+    	UPDATE			IKEP4_PO_SYSTEM_URL 
+    	SET				SYSTEM_URL_NAME = #systemUrlName#,
+		    			URL = #url#,
+		    			UPDATER_ID = #updaterId#,
+		    			UPDATER_NAME = #updaterName#,
+		    			UPDATE_DATE = SYSDATE
+    	WHERE			SYSTEM_URL_ID = #systemUrlId# 
+    	]]>
+  	</update>
+  
+  	<delete id="delete" parameterClass="string"> 
+  		<![CDATA[
+  		/* [PortalSystemUrl_SqlMap.xml] portal.admin.screen.portalSystemUrl.delete */
+    	DELETE 
+    	FROM 			IKEP4_PO_SYSTEM_URL
+    	WHERE 			SYSTEM_URL_ID = #systemUrlId# 
+    	]]>
+  	</delete>  
+</sqlMap>   

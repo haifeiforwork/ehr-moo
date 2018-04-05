@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="support.user.code.dao.ClassCode" >
+	<typeAlias alias = "ClassCode" type="com.lgcns.ikep4.support.user.code.model.ClassCode"/>
+	<typeAlias alias = "SearchCondition" type="com.lgcns.ikep4.support.user.code.model.AdminSearchCondition"/>
+
+	<resultMap id="result" class="ClassCode">
+		<result property="classId" column="CLASS_ID" columnIndex="1"/>
+		<result property="className" column="CLASS_NAME" columnIndex="2"/>
+		<result property="description" column="DESCRIPTION" columnIndex="3"/>
+		<result property="registerId" column="REGISTER_ID" columnIndex="4"/>
+		<result property="registerName" column="REGISTER_NAME" columnIndex="5"/>
+		<result property="updaterId" column="UPDATER_ID" columnIndex="6"/>
+		<result property="updaterName" column="UPDATER_NAME" columnIndex="7"/>
+		<result property="registDate" column="REGIST_DATE" columnIndex="8"/>
+		<result property="updateDate" column="UPDATE_DATE" columnIndex="9"/>
+		<result property="num" column="NUM" columnIndex="10"/>		
+	</resultMap>
+	
+	<resultMap id="getResult" class="ClassCode">
+		<result property="classId" column="CLASS_ID" columnIndex="1"/>
+		<result property="className" column="CLASS_NAME" columnIndex="2"/>
+		<result property="description" column="DESCRIPTION" columnIndex="3"/>
+		<result property="registerId" column="REGISTER_ID" columnIndex="4"/>
+		<result property="registerName" column="REGISTER_NAME" columnIndex="5"/>
+		<result property="updaterId" column="UPDATER_ID" columnIndex="6"/>
+		<result property="updaterName" column="UPDATER_NAME" columnIndex="7"/>
+		<result property="registDate" column="REGIST_DATE" columnIndex="8"/>
+		<result property="updateDate" column="UPDATE_DATE" columnIndex="9"/>
+	</resultMap>
+	
+	<!-- 신규 등록 -->
+	<insert id="insert" parameterClass="ClassCode"> 
+	<![CDATA[
+		INSERT INTO /* [Class_SqlMap.xml] support.user.code.dao.ClassCode.insert */
+			IKEP4_EV_CLASS (
+			CLASS_ID, 
+			CLASS_NAME, 
+			DESCRIPTION,
+			REGISTER_ID, 
+			REGISTER_NAME,
+			UPDATER_ID, 
+			UPDATER_NAME,
+			REGIST_DATE, 
+			UPDATE_DATE)
+		VALUES ( 
+			#classId#,
+			#className#,
+			#description#,
+		    #registerId#,
+		    #registerName#,
+		    #updaterId#,
+		    #updaterName#,
+		    SYSDATE, 
+		    SYSDATE)
+	]]>
+   </insert>
+   
+   <!-- 상세정보 -->
+	<select id="select" parameterClass="java.lang.String" resultMap="getResult">
+	<![CDATA[
+		SELECT /* [Class_SqlMap.xml] support.user.code.dao.ClassCode.select */
+		    CLASS_ID,
+		    CLASS_NAME,
+		    DESCRIPTION,
+		    REGISTER_ID,
+		    REGISTER_NAME,
+		    UPDATER_ID,
+		    UPDATER_NAME,
+		    REGIST_DATE,
+		    UPDATE_DATE
+		FROM 
+		    IKEP4_EV_CLASS
+		WHERE
+			CLASS_ID = #classId#
+	]]>
+	</select>
+	
+	<!-- 기존 정보 수정 -->
+	<update id="update" parameterClass="ClassCode">
+	<![CDATA[
+		UPDATE /* [Class_SqlMap.xml] support.user.code.dao.ClassCode.update */
+			IKEP4_EV_CLASS
+		SET
+			CLASS_NAME = #className#,
+			DESCRIPTION = #description#,
+			UPDATER_ID = #updaterId#,
+			UPDATER_NAME = #updaterName#,
+			UPDATE_DATE = SYSDATE
+		WHERE
+			CLASS_ID = #classId#
+	]]>
+	</update>
+   
+	<!-- 삭제 -->
+	<delete id="delete" parameterClass="java.lang.String">
+	<![CDATA[
+		DELETE /* [Class_SqlMap.xml] support.user.code.dao.ClassCode.delete */ 
+		FROM IKEP4_EV_CLASS
+		WHERE
+			CLASS_ID = #classId#
+	]]>
+	</delete>
+	
+	<!-- 목록 가져오기 -->
+	<select id="selectAll" parameterClass="SearchCondition" resultMap="result">
+	<![CDATA[
+		SELECT /* [Class_SqlMap.xml] support.user.code.dao.ClassCode.selectAll */
+		    *
+		FROM 
+		( 
+		    SELECT 
+		        ROWNUM AS NUM, 
+		        A.* 
+		    FROM 
+		    ( 
+				SELECT 
+					A.CLASS_ID AS CLASS_ID,
+					B.ITEM_MESSAGE AS CLASS_NAME,
+					A.DESCRIPTION AS DESCRIPTION,
+					A.REGISTER_ID AS REGISTER_ID,
+					A.REGISTER_NAME AS REGISTER_NAME,
+					A.UPDATER_ID AS UPDATER_ID,
+					A.UPDATER_NAME AS UPDATER_NAME,
+					TO_CHAR(A.REGIST_DATE, 'YYYY-MM-DD') AS REGIST_DATE,
+					TO_CHAR(A.UPDATE_DATE, 'YYYY-MM-DD') AS UPDATE_DATE
+				FROM 
+					IKEP4_EV_CLASS A
+					JOIN IKEP4_I18N_MESSAGE B
+					ON A.CLASS_ID = B.ITEM_ID
+					AND B.FIELD_NAME = 'className'
+					AND B.LOCALE_CODE = 'ko'
+		        WHERE 1 = 1
+	]]>
+		<isNotEmpty property="searchWord">
+			<isEqual property="searchColumn" compareValue="title">
+				AND	UPPER(CLASS_NAME) LIKE '%' || UPPER(#searchWord#) || '%'
+			</isEqual>
+			<isEqual property="searchColumn" compareValue="id">
+				AND	CLASS_ID LIKE '%' || #searchWord# || '%'
+			</isEqual>
+		</isNotEmpty>
+	    <isNotNull property="sortColumn">
+			<isEqual property="sortColumn" compareValue="CLASS_ID">
+				<isEqual property="sortType" compareValue="ASC">
+					ORDER BY CLASS_ID ASC
+				</isEqual>
+				<isEqual property="sortType" compareValue="DESC">
+					ORDER BY CLASS_ID DESC
+				</isEqual>
+			</isEqual>
+			<isEqual property="sortColumn" compareValue="CLASS_NAME">
+				<isEqual property="sortType" compareValue="ASC">
+					ORDER BY CLASS_NAME ASC
+				</isEqual>
+				<isEqual property="sortType" compareValue="DESC">
+					ORDER BY CLASS_NAME DESC
+				</isEqual>
+			</isEqual>
+		</isNotNull>
+		<isNull property="sortColumn">
+			ORDER BY REGIST_DATE DESC, CLASS_ID ASC
+		</isNull>
+	<![CDATA[
+		    ) A 
+		    WHERE ROWNUM <=  #endRowIndex# /* 종료  */
+		) 
+		WHERE NUM >  #startRowIndex# /* 시작 */
+	]]>
+	</select>
+
+	<select id="selectCount" parameterClass="SearchCondition" resultClass="int">
+	<![CDATA[
+		SELECT /* [Class_SqlMap.xml] support.user.code.dao.ClassCode.selectCount */ 
+			COUNT(*)
+		FROM 
+			IKEP4_EV_CLASS A
+			JOIN IKEP4_I18N_MESSAGE B
+			ON A.CLASS_ID = B.ITEM_ID
+			AND B.FIELD_NAME = #fieldName#
+			AND B.LOCALE_CODE = #userLocaleCode#
+	        WHERE 1 = 1
+	]]>
+		<isNotEmpty property="searchWord">
+			<isEqual property="searchColumn" compareValue="title">
+				AND	UPPER(A.CLASS_NAME) LIKE '%' || UPPER(#searchWord#) || '%'
+			</isEqual>
+			<isEqual property="searchColumn" compareValue="id">
+				AND	A.CLASS_ID LIKE '%' || #searchWord# || '%'
+			</isEqual>
+		</isNotEmpty>
+	</select>
+	
+	<select id="checkId" parameterClass="java.lang.String" resultClass="java.lang.String">
+	<![CDATA[
+		SELECT /* [Class_SqlMap.xml] support.user.code.dao.ClassCode.checkId */
+			COUNT(CLASS_ID)
+		FROM
+			IKEP4_EV_CLASS
+		WHERE
+			CLASS_ID = #classId#	
+	]]>
+	</select>
+	
+	<select id="checkName" parameterClass="java.lang.String" resultClass="java.lang.String">
+	<![CDATA[
+		SELECT /* [Class_SqlMap.xml] support.user.code.dao.ClassCode.checkName */
+			COUNT(CLASS_ID)
+		FROM
+			IKEP4_EV_CLASS
+		WHERE
+			CLASS_NAME = #className#	
+	]]>
+	</select>
+		
+</sqlMap>

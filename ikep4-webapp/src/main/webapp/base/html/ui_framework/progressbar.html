@@ -1,0 +1,294 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ko">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Home</title>
+<link rel="stylesheet" type="text/css" href="../../css/guide.css" />
+<link rel="stylesheet" type="text/css" href="../../css/theme01/jquery_ui_custom.css" />
+<link rel="stylesheet" type="text/css" href="../../css/common.css" />
+<link rel="stylesheet" type="text/css" href="../../css/theme01/theme.css" />
+<link type="text/css" rel="stylesheet" href="../../css/syntaxhighlighter_3.0.83/shCoreDefault.css"/>
+<script type="text/javascript" src="../../js/jquery/jquery-1.6.2.min.js"></script>
+<script type="text/javascript" src="../../js/jquery/jquery-ui-1.8.13.min.without.datepicker.js"></script>
+<script type="text/javascript" src="../../js/syntaxhighlighter_3.0.83/shCore.js"></script>
+<script type="text/javascript" src="../../js/syntaxhighlighter_3.0.83/shBrushJScript.js"></script>
+<script type="text/javascript" src="../../js/langResource/ko.js"></script>
+<script type="text/javascript" src="../../js/common.pack.js"></script>
+<style>
+	.barText {
+    color: #000;
+    position: absolute;
+    text-align: center;
+    line-height: 2.0em;
+	}
+</style>
+<script type="text/javascript">
+var val = 0;
+var handle = 0;
+var update;
+
+(function($){
+	$(document).ready(function() {
+		SyntaxHighlighter.highlight();
+		
+		$("#progressbar0").progressbar({
+			value: 45
+		});
+		
+		$("#progressbar").progressbar({
+			value:val,
+			create: function(event, ui) {
+				val = 0;
+				$(this).progressbar({value:val});		
+				$("<span class='barText'>&nbsp;</span>")
+				.css({"width":$("#progressbar").width(),"height":$("#progressbar").height()})
+				.appendTo($("#progressbar > div")[0]);
+			}
+		});
+		
+		$("#run").click(function(){
+			if(this.value=="start"){
+				handle=setInterval("update()",100);
+				this.value="stop";
+			} else {
+				clearInterval(handle);
+				this.value="start";
+			}
+		});
+    
+		$("#reset").click(function(){
+			val=0;
+			$("#progressbar").progressbar({value:val});
+			$("#progressbar").find(".barText").html("");
+		});
+	});
+	
+	update = function (){
+		var max=100;
+		var progress = $("#progressbar").progressbar({value:++val});
+		var nowVal = progress.attr("aria-valuenow");
+		var innerdiv=$("#progressbar > div");//progress.children().eq(0);
+		
+		if(nowVal==14){
+			//iKEP.debug(progress.progressbar("widget"));			
+		}
+		
+		var width=Math.round(nowVal/max*100);
+		innerdiv.css("width",width+"%");	
+		$("#progressbar").find(".barText").html(width+" %");
+		    
+	    if(val==100){
+	      clearInterval(handle);
+	      $("#run").val("start");
+	      val=0;
+	    }
+	};
+})(jQuery);
+</script>
+</head>
+
+<body>
+<!--guideWrapper Start-->
+<div id="guideConFrame">
+
+	<div class="guideConTitle"><h2>Progressbar</h2><a class="refer" target="_blank" href="http://jqueryui.com/demos/progressbar/">reference</a></div>
+	
+	<!--UI_sample_area Start-->
+	<h4>UI sample</h4>
+	<a target="_blank" href="progressbar_pop.html">New Window</a>
+	<div class="UI_sample">
+		
+		<!--UI_sample Start-->
+		<div>
+			<p>예제 1</p>
+			<div id="progressbar0"></div>			
+		</div>
+		<div class="UI_sum">
+			진행율을 정의된 값으로 표시한 예제.
+		</div>
+		<br/>
+		<div>
+			<p>예제 2</p>
+			<div id="progressbar"></div><br/>
+			<input type='button' id='run' value='start'/>
+			<input type='button' id='reset' value='reset'/>
+		</div>
+		<div class="UI_sum">
+			진행율을 시작과 끝 이벤트를 부여하여 진행율을 표시하게 만든 예제.<br/>			
+		</div>
+		<!--//UI_sample End-->
+	</div>
+	<!--//UI_sample_area End-->
+
+	<!--UI_source Start-->
+	<h4>View source</h4>
+	<div class="UI_source">
+		<pre class="brush: js;">
+			/* 예제 1 스크립트 */
+			$(document).ready(function() {
+			 $("#progressbar0").progressbar({
+			  value: 45
+			 });
+			});
+			
+			/* 예제 1 HTML */
+			&lt;div id="progressbar0"&gt;&lt;/div&gt;
+			
+			******************************************************
+			
+			/* 예제 2 스크립트 */
+			var val = 0;
+			var handle = 0;
+			$(document).ready(function() {
+				// 프로그레스바 설정
+				$("#progressbar").progressbar({
+					value:val,
+					// 프로그레스바 생성시 실행되는 이벤트
+					create: function(event, ui) { 
+					 	val = 0;
+					 	$(this).progressbar({value:val});
+					 	// 프로그레스바 실행율을 표시하기 위한 TEXT 생성	
+					 	$("&lt;span class='barText'&gt;&nbsp;&lt;/span&gt;")
+					 	.css({"width":$("#progressbar").width(),"height":$("#progressbar").height()})
+					 	.appendTo($("#progressbar > div")[0]);
+					}
+			});
+			
+			// 실행율 start 버튼 클릭시 실행되는 이벤트 설정		
+			$("#run").click(function(){
+				if(this.value=="start"){
+					handle=setInterval("update()",100);
+					this.value="stop";					
+				}else{
+					clearInterval(handle);
+					this.value="start";
+				}
+			});
+			
+			// 실행율 reset 버튼 클릭시 실행되는 이벤트 설정
+			$("#reset").click(function(){
+				val=0;
+				$("#progressbar").progressbar({value:val});
+					$("#progressbar").find(".barText").html("");
+				});
+			});
+			
+			// start 버튼 클릭시 0.1초 단위로 실행되는 메소드
+			function update(){
+				var max=100;
+				var progress = $("#progressbar").progressbar({value:++val});				
+				var nowVal = progress.attr("aria-valuenow");
+				var innerdiv=$("#progressbar > div");//progress.children().eq(0);				
+				
+				var width=Math.round(nowVal/max*100);
+				innerdiv.css("width",width+"%");	
+				$("#progressbar").find(".barText").html(width+" %");
+				
+				if(val==100){
+					clearInterval(handle);
+					$("#run").val("start");
+					val=0;
+				}
+			}
+			
+			/* 예제 2 HTML */
+			&lt;div id="progressbar"&gt;&lt;/div&gt;&lt;br/&gt;
+			&lt;input type='button' id='run' value='start'/&gt;
+			&lt;input type='button' id='reset' value='reset'/&gt;		  
+		</pre>
+	</div>	
+	<!--UI_source End-->	
+
+	<!--Method Start-->	
+	<h4>Attribute</h4>
+	<div class="UI_method">
+		<ul>
+			<li><span><b>Attribute</b> : progressbar 객체가 생성된 div 태그에 생성되어지는 Attribute 속성입니다. </span>
+				<ul>
+					<li>aria-valuemin : progressbar 최소값</li>
+					<li>aria-valuemax : progressbar 최대값</li>
+					<li>aria-valuenow : progressbar 현재값</li>
+				</ul>
+			</li>
+		</ul>
+	</div>
+	<!--//Method End-->
+	
+	<!-- //Event Start -->
+	<h4>Event</h4>
+	<div class="UI_method">
+		<ul>
+			<li><span><b>create</b></span>&nbsp;&nbsp;&nbsp;Type: progressbarcreate
+				<ul>
+					<li>이 이벤트는 progressbar가 만들어질 때 실행됩니다.<br/><br/></li>
+					<li>
+						Code examples<br/><br/>
+						progressbar가 이벤트가 만들어질 callback 함수로 만들어지는 예제.
+						<pre class="brush: js;">
+							$( ".selector" ).progressbar({
+	   						create: function(event, ui) { ... }
+							});
+						</pre>
+					</li>
+					<li>
+						progressbar Type인 progressbarcreate에 의해 바인딩되어 만들어지는 예제.
+						<pre class="brush: js;">
+							$( ".selector" ).bind( "progressbarcreate", function(event, ui) {
+							  ...
+							});
+						</pre>
+					</li>
+				</ul>
+			</li>
+			<li><span><b>change</b></span>&nbsp;&nbsp;&nbsp;Type: progressbarchange
+				<ul>
+					<li>이 이벤트는 progressbar가 변경될 때 실행됩니다.<br/><br/></li>
+					<li>
+						Code examples<br/><br/>
+						progressbar가 이벤트가 변경될때 callback 함수로 만들어지는 예제.
+						<pre class="brush: js;">
+							$( ".selector" ).progressbar({
+	   						change: function(event, ui) { ... }
+							});
+						</pre>
+					</li>
+					<li>
+						progressbar Type인 progressbarcreate에 의해 바인딩되어 변경되는 예제.
+						<pre class="brush: js;">
+							$( ".selector" ).bind( "progressbarchange", function(event, ui) {
+							  ...
+							});
+						</pre>
+					</li>
+				</ul>
+			</li>
+			<li><span><b>complete</b></span>&nbsp;&nbsp;&nbsp;Type: progressbarcomplete
+				<ul>
+					<li>이 이벤트는 progressbar가 max값 100이 될때 실행됩니다.<br/><br/></li>
+					<li>
+						Code examples<br/><br/>
+						progressbar가 이벤트가 왼료될때 callback 함수로 만들어지는 예제.
+						<pre class="brush: js;">
+							$( ".selector" ).progressbar({
+	   						complete: function(event, ui) { ... }
+							});
+						</pre>
+					</li>
+					<li>
+						progressbar Type인 progressbarcreate에 의해 바인딩되어 완료되는 예제.
+						<pre class="brush: js;">
+							$( ".selector" ).bind( "progressbarcomplete", function(event, ui) {
+							  ...
+							});
+						</pre>
+					</li>
+				</ul>
+			</li>
+		</ul>	
+	</div>
+	<!-- //Event End -->
+	
+</div>
+<!--//guideWrapper End-->
+</body>
+</html>

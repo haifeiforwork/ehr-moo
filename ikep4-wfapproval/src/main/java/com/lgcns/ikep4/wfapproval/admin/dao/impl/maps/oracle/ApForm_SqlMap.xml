@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="com.lgcns.ikep4.wfapproval.admin.dao.ApForm" >
+	<typeAlias alias="ApForm" 					type="com.lgcns.ikep4.wfapproval.admin.model.ApForm"/>
+	<typeAlias alias="ApFormSearchCondition" 	type="com.lgcns.ikep4.wfapproval.admin.search.ApFormSearchCondition"/>
+	
+	<!-- 양식 마스터 테이블 조회 결과 -->
+	<resultMap id="ApFormResult" class="ApForm" groupBy="formId">
+		<result property="formId" 			column="FORM_ID" 			jdbcType="VARCHAR"/>
+		<result property="formName" 		column="FORM_NAME" 			jdbcType="VARCHAR"/>
+		<result property="formClassCd" 		column="FORM_CLASS_CD" 		jdbcType="VARCHAR"/>
+		<result property="formTypeCd" 		column="FORM_TYPE_CD" 		jdbcType="VARCHAR"/>
+		<result property="formDesc" 		column="FORM_DESC" 			jdbcType="VARCHAR"/>
+		<result property="isUse" 			column="IS_USE" 			jdbcType="VARCHAR"/>
+		<result property="registUserId"		column="REGIST_USER_ID" 	jdbcType="VARCHAR"/>
+		<result property="registDate" 		column="REGIST_DATE" 		jdbcType="DATE"/>
+		<result property="modifyUserId" 	column="MODIFY_USER_ID" 	jdbcType="VARCHAR"/>
+		<result property="modifyDate" 		column="MODIFY_DATE" 		jdbcType="DATE"/>
+	</resultMap>
+	
+	<sql id="sqlColumnList"> 
+		FORM_ID 			AS formId
+		, FORM_NAME 		AS formName
+		, FORM_CLASS_CD 	AS formClassCd
+		, FORM_TYPE_CD 		AS formTypeCd
+		, IKEP4_FN_AP_CODE_NAME(FORM_TYPE_CD) AS formTypeName
+		, IKEP4_FN_AP_CODE_NAME(FORM_CLASS_CD) AS formClassName
+		, FORM_DESC 		AS formDesc
+		, IS_USE 			AS isUse
+		, REGIST_USER_ID 	AS registUserId
+		, REGIST_DATE 		AS registDate
+		, MODIFY_USER_ID 	AS modifyUserId
+		, MODIFY_DATE		AS modifyDate
+	</sql>
+	
+	<!-- insert -->
+	<insert id="create" parameterClass="ApForm"> 
+      <![CDATA[ 
+           INSERT INTO IKEP4_AP_FORM_MASTER 
+           		  (FORM_ID, FORM_NAME, FORM_CLASS_CD, FORM_TYPE_CD, FORM_DESC
+           	     , IS_USE, REGIST_USER_ID, REGIST_DATE, MODIFY_USER_ID, MODIFY_DATE)
+           VALUES (#formId#, #formName#, #formClassCd#, #formTypeCd#, #formDesc#
+           		 , #isUse#, #registUserId#, SYSDATE, #modifyUserId#, SYSDATE)
+       ]]>
+   </insert>
+   
+   <!-- select -->
+	<select id="select" parameterClass="java.lang.String" resultMap="ApFormResult">
+	  <![CDATA[
+		   	SELECT * FROM IKEP4_AP_FORM_MASTER WHERE FORM_ID = #formId#
+	   ]]>
+	</select>
+	
+	<!-- update -->
+	<update id="update" parameterClass="ApForm">
+	  <![CDATA[
+		   	UPDATE 	IKEP4_AP_FORM_MASTER 
+		   	SET 	FORM_CLASS_CD 	= #formClassCd#
+				  , FORM_TYPE_CD 	= #formTypeCd#
+				  , FORM_NAME 		= #formName#
+			   	  , FORM_DESC 		= #formDesc#
+			   	  , IS_USE 			= #isUse#
+			   	  , MODIFY_USER_ID 	= #modifyUserId# 
+			   	  , MODIFY_DATE 	= SYSDATE 
+		   	WHERE 	FORM_ID 		= #formId#
+	   ]]>
+	</update>
+   
+   <!-- delete -->
+   <delete id="delete" parameterClass="java.lang.String">
+      <![CDATA[
+	       	DELETE FROM IKEP4_AP_FORM_MASTER WHERE FORM_ID = #formId#
+	   ]]>
+	</delete>
+	
+	<!-- selectAll -->
+	<select id="selectAll" resultMap="ApFormResult">
+		SELECT * FROM IKEP4_AP_FORM_MASTER ORDER BY REGIST_DATE DESC
+	</select>
+	
+	<!-- selectFormList -->
+	<select id="selectFormList" resultMap="ApFormResult">
+	  <![CDATA[
+		   	SELECT iafm.* 
+			FROM   IKEP4_AP_FORM_MASTER   iafm
+			     , IKEP4_AP_FORM_TEMPLATE iaft
+			WHERE  iafm.form_id = iaft.form_id
+			AND    iafm.is_use = 'Y'
+			ORDER BY iafm.regist_date DESC
+	   ]]>
+	</select>
+	
+	<!-- selectCount -->
+	<select id="selectCount" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+	  <![CDATA[
+		   	SELECT COUNT(FORM_ID) FROM IKEP4_AP_FORM_MASTER WHERE FORM_ID = #formId#
+	   ]]>
+	</select>
+	
+	<sql id="getApFormSearchSql">
+	    <isNotEmpty property="formTypeCd">
+				AND	FORM_TYPE_CD = #formTypeCd#
+		</isNotEmpty>
+		<isNotEmpty property="formClassCd">
+				AND	FORM_CLASS_CD = #formClassCd#
+		</isNotEmpty>
+		<isNotEmpty property="formName">
+				AND	FORM_NAME LIKE '%' || #formName# || '%'
+		</isNotEmpty>
+	</sql>
+	
+	<select id="listApFormAll" parameterClass="ApFormSearchCondition" resultClass="ApForm">
+	/* [ApForm_SqlMap.xml] listApFormAll */
+	
+	SELECT *
+	FROM ( 
+	     SELECT ROWNUM AS RNUM, A.* FROM ( 
+	         /* START========================================= */
+	         SELECT <include refid="sqlColumnList" />
+	         FROM   IKEP4_AP_FORM_MASTER 
+			 WHERE  1 = 1 
+			<include refid="getApFormSearchSql"/>
+		    <isNotEmpty property="sortColumn" >ORDER BY $sortColumn$ $sortType$</isNotEmpty>
+			 /* ===========================================END  */ 
+	<![CDATA[  
+	
+	    ) A WHERE ROWNUM <=  #endRowIndex# /* 종료  */
+	) WHERE RNUM >  #startRowIndex# /* 시작 */
+	]]> 
+  </select>   
+  <select id="countApFormAll" parameterClass="ApFormSearchCondition" resultClass="int">
+  	/* [ApForm_SqlMap.xml] countApFormAll */
+	
+	SELECT COUNT(FORM_ID)
+	FROM   IKEP4_AP_FORM_MASTER
+	WHERE  1 = 1 
+	<include refid="getApFormSearchSql"/>
+  </select>
+  
+  <select id="listApFormSelect" parameterClass="ApFormSearchCondition" resultClass="ApForm">
+  	/* [ApForm_SqlMap.xml] listApFormSelect */
+	
+	SELECT *
+	FROM ( 
+	     SELECT ROWNUM AS RNUM, A.* FROM ( 
+	         /* START========================================= */
+	         SELECT <include refid="sqlColumnList" />
+	         FROM   (SELECT iafm.*
+			         FROM   ikep4_ap_form_master      iafm
+                          , ikep4_ap_form_template    iaft
+					 WHERE  iafm.form_id = iaft.form_id
+					 AND    iafm.is_use = 'Y')
+			 WHERE  1 = 1
+			<include refid="getApFormSearchSql"/>
+		    <isNotEmpty property="sortColumn" >ORDER BY $sortColumn$ $sortType$</isNotEmpty>
+			 /* ===========================================END  */ 
+	<![CDATA[  
+	
+	    ) A WHERE ROWNUM <=  #endRowIndex# /* 종료  */
+	) WHERE RNUM >  #startRowIndex# /* 시작 */
+	]]> 
+  </select>   
+  <select id="countApFormSelect" parameterClass="ApFormSearchCondition" resultClass="int">
+  	/* [ApForm_SqlMap.xml] countApFormSelect */
+	
+	SELECT COUNT(iafm.FORM_ID)
+	FROM   IKEP4_AP_FORM_MASTER   iafm
+	     , IKEP4_AP_FORM_TEMPLATE iaft
+	WHERE  iafm.form_id = iaft.form_id
+	AND    iafm.is_use = 'Y'
+	<include refid="getApFormSearchSql"/>
+  </select>
+	
+</sqlMap>

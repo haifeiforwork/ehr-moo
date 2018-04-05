@@ -1,0 +1,505 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ko">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>iKEP 4.00</title>
+<link rel="stylesheet" type="text/css" href="../../css/theme01/jquery_ui_custom.css" />
+<link rel="stylesheet" type="text/css" href="../../css/common.css" />
+<link rel="stylesheet" type="text/css" href="../../css/theme01/theme.css" />
+<script type="text/javascript" src="../../js/jquery/jquery-1.6.2.min.js"></script>
+<script type="text/javascript" src="../../js/jquery/jquery-ui-1.8.13.min.without.datepicker.js"></script>
+<script type="text/javascript" src="../../js/calendar/fullcalendar.js"></script>
+<script type="text/javascript" src="../../js/langResource/ko.js"></script>
+<script type="text/javascript" src="../../js/common.pack.js"></script>
+<script type="text/javascript"> 
+(function($){
+	$(document).ready(function(){	
+		// left menu setting
+		 iKEP.setLeftMenu();
+		 
+		$("#datepicker").datepicker({
+			inline: true,
+			onSelect: function(date) { alert(date); }
+		}); 
+	});
+})(jQuery);
+</script>
+</head>
+<body>
+<!--skipNavigation Start-->
+<div id="skipNavigation">
+	<p><a href="#topInfo">헤더정보영역 바로가기</a></p>
+	<p><a href="#topMenu">탑메뉴 바로가기</a></p>	
+	<p><a href="#blockHeaderSub">퀵메뉴 바로가기</a></p>
+	<p><a href="#leftMenu">레프트메뉴 바로가기</a></p>	
+	<p><a href="#mainContents">컨텐츠영역 바로가기</a></p>	
+</div>
+<!--//skipNavigation End-->
+
+<!--wrapper Start-->
+<div id="wrapper">
+
+	<!--blockContainer Start-->
+	<div id="blockContainer">
+
+		<!--blockHeader Start-->
+		<div id="blockHeader">	
+		
+			<!--topInfo Start-->	
+			<div id="topInfo">
+				<h1 class="none">헤더정보영역</h1>
+				<div id="topLogo">
+					<a href="#a"><img src="../../images/common/logo.png" alt="iKEP Logo" /></a>
+				</div>
+			</div>
+			<!--//topInfo End-->
+						
+			<!--topMenu Start-->
+			<div id="topMenu">
+				<h1 class="none">탑메뉴</h1>			
+			</div>
+			<!--//topMenu End-->		
+
+			<!--blockHeaderSub Start-->
+			<div id="blockHeaderSub">
+				<h1 class="none">퀵메뉴</h1>		
+			</div>
+			<!--//blockHeaderSub End-->
+										
+		</div>
+		<!--//blockHeader End-->
+		
+		<!--blockMain Start-->
+		<div id="blockMain">
+
+			<!--leftMenu Start-->
+			<div id="leftMenu">
+				<h1 class="none">레프트메뉴</h1>	
+				<h2>Planner</h2>
+				<div class="mb10">
+					<input class="inputbox" type="text" size="22" />
+					<a href="#a" class="ic_search valign_middle"><span>검색</span></a>
+				</div>	
+				<div id="datepicker"></div>
+				<div class="blockBlank_10px"></div>
+				<div class="left_fixed">
+					<ul>		
+						<li class="liFirst opened licurrent"><a href="#a">내 일정관리</a>
+							<ul>
+								<li class="no_child licurrent"><a href="#a"><img src="../../images/icon/ic_arrow_2.gif" alt="" /> 나의 일정</a></li>
+								<li class="no_child"><a href="#a"><img src="../../images/icon/ic_person.gif" alt="" /> 김원희 부장 일정</a></li>
+								<li class="liLast no_child"><a href="#a"><img src="../../images/icon/ic_person.gif" alt="" /> 이태수 전무 일정</a></li>
+							</ul>
+						</li>
+					</ul>
+					<div class="planner_leftbtn">
+						<span class="btn_planner_import"><a href="#a">일정 Import</a></span>
+						<span class="btn_planner_export"><a href="#a">일정 Export</a></span>
+					</div>					
+					<ul>
+						<li class="liFirst opened"><a href="#a">팀 일정관리</a>
+							<ul>
+								<li class="no_child"><a href="#a">UC컨설팅1팀</a></li>
+								<li class="no_child"><a href="#a">안드로이드TFT</a></li>
+								<li class="no_child"><a href="#a">옵티머스시험지원</a></li>
+								<li class="no_child"><a href="#a">품질성능개선PRJ</a></li>
+								<li class="liLast no_child"><a href="#a">즐거운책읽기</a></li>
+							</ul>
+						</li>	
+						<li class="no_child"><a href="#a">위임관리</a></li>
+						<li class="no_child liLast"><a href="#a">관리메뉴</a></li>					
+					</ul>
+				</div>
+			</div>	
+			<!--//leftMenu End-->
+				
+			<!--mainContents Start-->
+			<div id="mainContents" >
+				<h1 class="none">컨텐츠영역</h1>
+
+				<!--
+				<div id="pageTitle">
+					<div class="tableSearchIn">
+						<img src="../../images/icon/ic_per_06.gif" alt="" /> 이름 <input type="text" class="inputbox" title="이름" name="" value="" size="20" />
+						<a href="#a" class="ic_search valign_middle"><span>검색</span></a>
+					</div>
+				</div>
+				-->
+				
+				
+				
+				<!--아래의 div 내용을 fullcalendar.js에 적용-->
+
+				<div class="fc" id="calendar">
+					<table class="fc-header"  style="width:100%;" summary="테이블상단">
+						<caption></caption>
+						<tbody>
+							<tr>
+								<td class="fc-header-left">
+									<span class="ic_planner_my"><span class="none">나의 일정</span></span>
+									<!--<span class="ic_planner_entrust"><span class="none">위임자 일정</span></span>
+									<span class="ic_planner_workspace"><span class="none">팀 공유일정</span></span>
+									<span class="ic_planner_other"><span class="none">다른 사용자 일정</span></span>-->
+									<span>UC컨설팅1팀 <strong>홍길동</strong> 대리</span>
+									<a class="button_s" href="#a"><span>오늘</span></a>
+								</td>
+								<td class="fc-header-center">
+									<span class="fc-button-prev"><a href="#a"><span class="none">이전</span></a></span>
+									<div class="fc-header-title">
+									<h2>2011.04</h2>
+									</div>
+									<span class="fc-button-next"><a href="#a"><span class="none">다음</span></a></span>
+								</td>
+								<td class="fc-header-right">
+									<ul>
+										<li><a class="button_s" href="#a"><span>일간</span></a></li>
+										<li style="margin-left:-1px;"><a class="button_s" href="#a"><span>주간</span></a></li>
+										<li style="margin-left:-1px;"><a class="button_s selected" href="#a"><span>월간</span></a></li>
+										<li style="margin-left:-1px;"><a class="button_s" href="#a"><span>목록</span></a></li>
+									</ul>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+
+					<div class="fc-content" style="position: relative; min-height: 1px;">
+						<div class="fc-view fc-view-month fc-grid" style="position: relative; -moz-user-select: none;">
+							<table class="fc-border-separate" style="width: 100%;" cellspacing="0">
+								<thead>
+									<tr class="fc-first fc-last">
+										<th style="width: 127px;" class="fc-sun fc-widget-header fc-first">일</th>
+										<th style="width: 127px;" class="fc-mon fc-widget-header">월</th>
+										<th style="width: 127px;" class="fc-tue fc-widget-header">화</th>
+										<th style="width: 127px;" class="fc-wed fc-widget-header">수</th>
+										<th style="width: 127px;" class="fc-thu fc-widget-header">목</th>
+										<th style="width: 127px;" class="fc-fri fc-widget-header">금</th>
+										<th class="fc-sat fc-widget-header fc-last">토</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr class="fc-week0 fc-first">
+										<td class="fc-sun fc-widget-content fc-day0 fc-first fc-other-month"><div style="min-height: 108px;">
+												<div class="fc-day-number">27</div>
+												<div class="fc-day-content">
+													<div style="position: relative; height: 36px;">&nbsp;</div>
+												</div>
+											</div></td>
+										<td class="fc-mon fc-widget-content fc-day1 fc-other-month"><div>
+												<div class="fc-day-number">28</div>
+												<div class="fc-day-content">
+													<div style="position: relative;">&nbsp;</div>
+												</div>
+											</div></td>
+										<td class="fc-tue fc-widget-content fc-day2 fc-other-month"><div>
+												<div class="fc-day-number">29</div>
+												<div class="fc-day-content">
+													<div style="position: relative;">&nbsp;</div>
+												</div>
+											</div></td>
+										<td class="fc-wed fc-widget-content fc-day3 fc-other-month"><div>
+												<div class="fc-day-number">30</div>
+												<div class="fc-day-content">
+													<div style="position: relative;">&nbsp;</div>
+												</div>
+											</div></td>
+										<td class="fc-thu fc-widget-content fc-day4 fc-other-month"><div>
+												<div class="fc-day-number">31</div>
+												<div class="fc-day-content">
+													<div style="position: relative;">&nbsp;</div>
+												</div>
+											</div></td>
+										<td class="fc-fri fc-widget-content fc-day5"><div>
+												<div class="fc-day-number">1</div>
+												<div class="fc-day-content">
+													<div style="position: relative;">&nbsp;</div>
+												</div>
+											</div></td>
+										<td class="fc-sat fc-widget-content fc-day6 fc-last"><div>
+												<div class="fc-day-number">2</div>
+												<div class="fc-day-content">
+													<div style="position: relative;">&nbsp;</div>
+												</div>
+											</div></td>
+									</tr>
+									<tr class="fc-week1">
+										<td class="fc-sun fc-widget-content fc-day7 fc-first"><div style="min-height: 107px;">
+												<div class="fc-day-number">3</div>
+												<div class="fc-day-content">
+													<div style="position: relative; height: 36px;">&nbsp;</div>
+												</div>
+											</div></td>
+										<td class="fc-mon fc-widget-content fc-day8"><div>
+												<div class="fc-day-number">4</div>
+												<div class="fc-day-content">
+													<div style="position: relative;">&nbsp;</div>
+												</div>
+											</div></td>
+										<td class="fc-tue fc-widget-content fc-day9"><div>
+												<div class="fc-day-number">5</div>
+												<div class="fc-day-content">
+													<div style="position: relative;">&nbsp;</div>
+												</div>
+											</div></td>
+										<td class="fc-wed fc-widget-content fc-day10 fc-state-highlight fc-today"><div>
+												<div class="fc-day-number">6</div>
+												<div class="fc-day-content">
+													<div style="position: relative;">&nbsp;</div>
+												</div>
+											</div></td>
+										<td class="fc-thu fc-widget-content fc-day11"><div>
+												<div class="fc-day-number">7</div>
+												<div class="fc-day-content">
+													<div style="position: relative;">&nbsp;</div>
+												</div>
+											</div></td>
+										<td class="fc-fri fc-widget-content fc-day12"><div>
+												<div class="fc-day-number">8</div>
+												<div class="fc-day-content">
+													<div style="position: relative;">&nbsp;</div>
+												</div>
+											</div></td>
+										<td class="fc-sat fc-widget-content fc-day13 fc-last"><div>
+												<div class="fc-day-number">9</div>
+												<div class="fc-day-content">
+													<div style="position: relative;">&nbsp;</div>
+												</div>
+											</div></td>
+									</tr>
+									<tr class="fc-week2">
+										<td class="fc-sun fc-widget-content fc-day14 fc-first"><div style="min-height: 107px;">
+												<div class="fc-day-number">10</div>
+												<div class="fc-day-content">
+													<div style="position: relative; height: 18px;">&nbsp;</div>
+												</div>
+											</div></td>
+										<td class="fc-mon fc-widget-content fc-day15"><div>
+												<div class="fc-day-number">11</div>
+												<div class="fc-day-content">
+													<div style="position: relative;">&nbsp;</div>
+												</div>
+											</div></td>
+										<td class="fc-tue fc-widget-content fc-day16"><div>
+												<div class="fc-day-number">12</div>
+												<div class="fc-day-content">
+													<div style="position: relative;">&nbsp;</div>
+												</div>
+											</div></td>
+										<td class="fc-wed fc-widget-content fc-day17"><div>
+												<div class="fc-day-number">13</div>
+												<div class="fc-day-content">
+													<div style="position: relative;">&nbsp;</div>
+												</div>
+											</div></td>
+										<td class="fc-thu fc-widget-content fc-day18"><div>
+												<div class="fc-day-number">14</div>
+												<div class="fc-day-content">
+													<div style="position: relative;">&nbsp;</div>
+												</div>
+											</div></td>
+										<td class="fc-fri fc-widget-content fc-day19"><div>
+												<div class="fc-day-number">15</div>
+												<div class="fc-day-content">
+													<div style="position: relative;">&nbsp;</div>
+												</div>
+											</div></td>
+										<td class="fc-sat fc-widget-content fc-day20 fc-last"><div>
+												<div class="fc-day-number">16</div>
+												<div class="fc-day-content">
+													<div style="position: relative;">&nbsp;</div>
+												</div>
+											</div></td>
+									</tr>
+									<tr class="fc-week3">
+										<td class="fc-sun fc-widget-content fc-day21 fc-first"><div style="min-height: 107px;">
+												<div class="fc-day-number">17</div>
+												<div class="fc-day-content">
+													<div style="position: relative; height: 0px;">&nbsp;</div>
+												</div>
+											</div></td>
+										<td class="fc-mon fc-widget-content fc-day22"><div>
+												<div class="fc-day-number">18</div>
+												<div class="fc-day-content">
+													<div style="position: relative;">&nbsp;</div>
+												</div>
+											</div></td>
+										<td class="fc-tue fc-widget-content fc-day23"><div>
+												<div class="fc-day-number">19</div>
+												<div class="fc-day-content">
+													<div style="position: relative;">&nbsp;</div>
+												</div>
+											</div></td>
+										<td class="fc-wed fc-widget-content fc-day24"><div>
+												<div class="fc-day-number">20</div>
+												<div class="fc-day-content">
+													<div style="position: relative;">&nbsp;</div>
+												</div>
+											</div></td>
+										<td class="fc-thu fc-widget-content fc-day25"><div>
+												<div class="fc-day-number">21</div>
+												<div class="fc-day-content">
+													<div style="position: relative;">&nbsp;</div>
+												</div>
+											</div></td>
+										<td class="fc-fri fc-widget-content fc-day26"><div>
+												<div class="fc-day-number">22</div>
+												<div class="fc-day-content">
+													<div style="position: relative;">&nbsp;</div>
+												</div>
+											</div></td>
+										<td class="fc-sat fc-widget-content fc-day27 fc-last"><div>
+												<div class="fc-day-number">23</div>
+												<div class="fc-day-content">
+													<div style="position: relative;">&nbsp;</div>
+												</div>
+											</div></td>
+									</tr>
+									<tr class="fc-week4">
+										<td class="fc-sun fc-widget-content fc-day28 fc-first"><div style="min-height: 107px;">
+												<div class="fc-day-number">24</div>
+												<div class="fc-day-content">
+													<div style="position: relative; height: 18px;">&nbsp;</div>
+												</div>
+											</div></td>
+										<td class="fc-mon fc-widget-content fc-day29"><div>
+												<div class="fc-day-number">25</div>
+												<div class="fc-day-content">
+													<div style="position: relative;">&nbsp;</div>
+												</div>
+											</div></td>
+										<td class="fc-tue fc-widget-content fc-day30"><div>
+												<div class="fc-day-number">26</div>
+												<div class="fc-day-content">
+													<div style="position: relative;">&nbsp;</div>
+												</div>
+											</div></td>
+										<td class="fc-wed fc-widget-content fc-day31"><div>
+												<div class="fc-day-number">27</div>
+												<div class="fc-day-content">
+													<div style="position: relative;">&nbsp;</div>
+												</div>
+											</div></td>
+										<td class="fc-thu fc-widget-content fc-day32"><div>
+												<div class="fc-day-number">28</div>
+												<div class="fc-day-content">
+													<div style="position: relative;">&nbsp;</div>
+												</div>
+											</div></td>
+										<td class="fc-fri fc-widget-content fc-day33"><div>
+												<div class="fc-day-number">29</div>
+												<div class="fc-day-content">
+													<div style="position: relative;">&nbsp;</div>
+												</div>
+											</div></td>
+										<td class="fc-sat fc-widget-content fc-day34 fc-last"><div>
+												<div class="fc-day-number">30</div>
+												<div class="fc-day-content">
+													<div style="position: relative;">&nbsp;</div>
+												</div>
+											</div></td>
+									</tr>
+									<tr class="fc-week5 fc-last">
+										<td class="fc-sun fc-widget-content fc-day35 fc-first fc-other-month"><div style="min-height: 107px;">
+												<div class="fc-day-number">1</div>
+												<div class="fc-day-content">
+													<div style="position: relative; height: 0px;">&nbsp;</div>
+												</div>
+											</div></td>
+										<td class="fc-mon fc-widget-content fc-day36 fc-other-month"><div>
+												<div class="fc-day-number">2</div>
+												<div class="fc-day-content">
+													<div style="position: relative;">&nbsp;</div>
+												</div>
+											</div></td>
+										<td class="fc-tue fc-widget-content fc-day37 fc-other-month"><div>
+												<div class="fc-day-number">3</div>
+												<div class="fc-day-content">
+													<div style="position: relative;">&nbsp;</div>
+												</div>
+											</div></td>
+										<td class="fc-wed fc-widget-content fc-day38 fc-other-month"><div>
+												<div class="fc-day-number">4</div>
+												<div class="fc-day-content">
+													<div style="position: relative;">&nbsp;</div>
+												</div>
+											</div></td>
+										<td class="fc-thu fc-widget-content fc-day39 fc-other-month"><div>
+												<div class="fc-day-number">5</div>
+												<div class="fc-day-content">
+													<div style="position: relative;">&nbsp;</div>
+												</div>
+											</div></td>
+										<td class="fc-fri fc-widget-content fc-day40 fc-other-month"><div>
+												<div class="fc-day-number">6</div>
+												<div class="fc-day-content">
+													<div style="position: relative;">&nbsp;</div>
+												</div>
+											</div></td>
+										<td class="fc-sat fc-widget-content fc-day41 fc-last fc-other-month"><div>
+												<div class="fc-day-number">7</div>
+												<div class="fc-day-content">
+													<div style="position: relative;">&nbsp;</div>
+												</div>
+											</div></td>
+									</tr>
+								</tbody>
+							</table>
+							<div style="position: absolute; z-index: 8; top: 5px; left: 0pt;">
+								<div class="fc-event fc-event-skin fc-event-hori fc-event-draggable fc-corner-left" style="position: absolute; z-index: 8; left: 643px; width: 256px; top: 36px;">
+									<div class="fc-event-inner fc-event-skin"><span class="fc-event-title">Long Event</span></div>
+								</div>
+								<div class="fc-event fc-event-skin fc-event-hori fc-event-draggable fc-corner-left fc-corner-right" style="position: absolute; z-index: 8; left: 643px; width: 121px; top: 54px;">
+									<div class="fc-event-inner fc-event-skin"><span class="fc-event-title">All Day Event</span></div>
+									<div class="ui-resizable-handle ui-resizable-e">&nbsp;&nbsp;&nbsp;</div>
+								</div>
+								<div class="fc-event fc-event-skin fc-event-hori fc-event-draggable fc-corner-right" style="position: absolute; z-index: 8; left: 0px; width: 253px; top: 145px;">
+									<div class="fc-event-inner fc-event-skin"><span class="fc-event-title">Long Event</span></div>
+									<div class="ui-resizable-handle ui-resizable-e">&nbsp;&nbsp;&nbsp;</div>
+								</div>
+								<div class="fc-event fc-event-skin fc-event-hori fc-event-draggable fc-corner-left fc-corner-right" style="position: absolute; z-index: 8; left: 387px; width: 121px; top: 145px;">
+									<div class="fc-event-inner fc-event-skin"><span class="fc-event-time">10:30a</span><span class="fc-event-title">Meeting</span></div>
+									<div class="ui-resizable-handle ui-resizable-e">&nbsp;&nbsp;&nbsp;</div>
+								</div>
+								<div class="fc-event fc-event-skin fc-event-hori fc-event-draggable fc-corner-left fc-corner-right" style="position: absolute; z-index: 8; left: 515px; width: 121px; top: 145px;">
+									<div class="fc-event-inner fc-event-skin"><span class="fc-event-time">7p</span><span class="fc-event-title">주간보고</span></div>
+									<div class="ui-resizable-handle ui-resizable-e">&nbsp;&nbsp;&nbsp;</div>
+								</div>
+								<div class="fc-event fc-event-skin fc-event-hori fc-event-draggable fc-corner-left fc-corner-right" style="position: absolute; z-index: 8; left: 387px; width: 121px; top: 163px;">
+									<div class="fc-event-inner fc-event-skin"><span class="fc-event-time">12p</span><span class="fc-event-title">Lunch</span></div>
+									<div class="ui-resizable-handle ui-resizable-e">&nbsp;&nbsp;&nbsp;</div>
+								</div>
+								<div class="fc-event fc-event-skin fc-event-hori fc-event-draggable fc-corner-left fc-corner-right" style="position: absolute; z-index: 8; left: 3px; width: 121px; top: 163px;">
+									<div class="fc-event-inner fc-event-skin"><span class="fc-event-time">4p</span><span class="fc-event-title">Repeating Event</span></div>
+									<div class="ui-resizable-handle ui-resizable-e">&nbsp;&nbsp;&nbsp;</div>
+								</div>
+								<div class="fc-event fc-event-skin1 fc-event-hori fc-event-draggable fc-corner-left fc-corner-right ui-draggable" style="position: absolute; z-index: 8; left: 3px; width: 121px; top: 253px; -moz-user-select: none;">
+									<div class="fc-event-inner fc-event-skin1"><span class="cal_color_11 cal_color_box"></span><span class="fc-event-time">4p</span><span class="fc-event-title">Repeating Event</span></div>
+									<div class="ui-resizable-handle ui-resizable-e">&nbsp;&nbsp;&nbsp;</div>
+								</div>
+								<div class="fc-event" style="position: absolute; z-index: 8; left: 3px; width: 121px; top: 271px;">
+									<span class="cal_color_11 cal_color_box"></span><a href="#a">14:00 회의실 예약</a>
+								</div>
+								<div class="fc-event" style="position: absolute; z-index: 8; left: 643px; width: 121px; top: 253px;">
+									<span class="cal_color_22 cal_color_box"></span><a href="#a">10:30 일정회의</a>
+								</div>
+								<div class="fc-event" style="position: absolute; z-index: 8; left: 643px; width: 121px; top: 271px;">
+									<span class="cal_color_08 cal_color_box"></span><a href="#a">14:00 시안보고</a>
+								</div>																	
+							</div>
+						</div>
+					</div>
+				</div>			
+											
+			</div>
+			<!--//mainContents End-->
+			<div class="clear"></div>
+		</div>
+		<!--//blockMain End-->
+		
+	</div>
+	<!--//blockContainer End-->
+	
+		
+</div>
+<!--//wrapper End-->
+</body>
+</html>

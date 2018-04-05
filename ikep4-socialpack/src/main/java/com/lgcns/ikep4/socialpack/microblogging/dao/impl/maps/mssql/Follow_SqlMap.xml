@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="socialpack.microblogging.dao.follow" >
+	<typeAlias alias = "Follow" type="com.lgcns.ikep4.socialpack.microblogging.model.Follow"/>
+	
+	<!-- IKEP4_MB_FOLLOW 테이블 조회 결과 -->
+	<resultMap id="result" class="Follow">
+		<result property="userId" 			column="USER_ID" 			/>
+		<result property="followingUserId" 	column="FOLLOWING_USER_ID" 	/>
+		<result property="registDate" 		column="REGIST_DATE" 		/>
+		<result property="picturePath" 		column="PICTURE_PATH" 		/>
+		<result property="profilePicturePath" 		column="PROFILE_PICTURE_PATH" 		/>
+	</resultMap>
+	
+	<!-- ANSI -->
+	<!-- insert -->
+	<insert id="insert" parameterClass="Follow"> 
+      <![CDATA[ 
+           INSERT INTO IKEP4_MB_FOLLOW ( /* [Follow_SqlMap.xml] follow.insert */
+           USER_ID, FOLLOWING_USER_ID, REGIST_DATE)  
+           VALUES (#userId#, #followingUserId#, CURRENT_TIMESTAMP)
+       ]]>
+   </insert>
+   
+   <!-- ANSI -->
+   <!-- delete -->
+   <delete id="delete" parameterClass="Follow">
+      <![CDATA[
+	       DELETE FROM IKEP4_MB_FOLLOW   /* [Follow_SqlMap.xml] follow.delete */ 
+	       WHERE USER_ID = #userId# AND FOLLOWING_USER_ID = #followingUserId# 
+	   ]]>
+	</delete>
+	
+	<!-- ANSI -->
+	<!-- selectFollowing -->
+	<select id="selectFollowing" parameterClass="Follow" resultMap="result">
+	  <![CDATA[
+		   SELECT /* [Follow_SqlMap.xml] selectFollowing */ 
+		    	A.*, 
+			    C.PICTURE_PATH,
+				C.PROFILE_PICTURE_PATH 
+		    FROM IKEP4_MB_FOLLOW A INNER JOIN IKEP4_EV_USER C
+		    	ON A.FOLLOWING_USER_ID = C.USER_ID
+		   WHERE A.USER_ID = #userId# 
+		   ORDER BY A.REGIST_DATE DESC
+	   ]]>
+	</select>
+	
+	<!-- ANSI -->
+	<!-- selectFollower -->
+	<select id="selectFollower" parameterClass="Follow" resultMap="result">
+	  <![CDATA[
+		   SELECT /* [Follow_SqlMap.xml] selectFollower */ 
+		   /*+ INDEX(A IDX_MB_FOLLOW_IE1) */ 
+		   		A.*, 
+			    C.PICTURE_PATH,
+				C.PROFILE_PICTURE_PATH  
+		   FROM IKEP4_MB_FOLLOW A INNER JOIN IKEP4_EV_USER C
+		   		ON A.USER_ID = C.USER_ID
+		   WHERE A.FOLLOWING_USER_ID = #followingUserId# 
+		   ORDER BY A.REGIST_DATE DESC
+	   ]]>
+	</select>
+	
+	<!-- ANSI -->
+	<!-- selectBothFollowing -->
+	<select id="selectBothFollowing" parameterClass="java.util.Map" resultMap="result">
+	  <![CDATA[
+			SELECT /* [Follow_SqlMap.xml] selectBothFollowing */ 
+			 	A.*,
+			 	C.PICTURE_PATH,
+				C.PROFILE_PICTURE_PATH  
+			FROM
+				IKEP4_MB_FOLLOW A INNER JOIN IKEP4_MB_FOLLOW B
+					ON A.FOLLOWING_USER_ID = B.FOLLOWING_USER_ID
+					INNER JOIN IKEP4_EV_USER C
+		   			ON A.FOLLOWING_USER_ID = C.USER_ID
+			WHERE A.USER_ID = #userId#
+			AND B.USER_ID = #ownerId#
+	   ]]>
+	</select>
+	
+	<!-- ANSI -->
+	<!-- selectBothFollower -->
+	<select id="selectBothFollower" parameterClass="java.util.Map" resultMap="result">
+	  <![CDATA[
+			SELECT /* [Follow_SqlMap.xml] selectBothFollower */ 
+			/*+ USE_NL(A B) INDEX(A A(USER_ID, FOLLOWING_USER_I)) INDEX(B B(USER_ID, FOLLOWING_USER_I))*/
+			 	A.*,
+			 	C.PICTURE_PATH,
+				C.PROFILE_PICTURE_PATH  
+			FROM
+				IKEP4_MB_FOLLOW A INNER JOIN IKEP4_MB_FOLLOW B
+					ON A.USER_ID = B.USER_ID
+					INNER JOIN IKEP4_EV_USER C
+		   			ON A.USER_ID = C.USER_ID
+			WHERE A.FOLLOWING_USER_ID = #userId#
+			AND B.FOLLOWING_USER_ID = #ownerId#
+	   ]]>
+	</select>
+	
+	<!-- ANSI -->
+	<!-- selectCount -->
+	<select id="selectCount" parameterClass="Follow" resultClass="java.lang.Integer">
+	  <![CDATA[
+			SELECT /* [Follow_SqlMap.xml] follow.selectCount */ 
+			 COUNT(*) 
+			FROM IKEP4_MB_FOLLOW 
+			WHERE USER_ID = #userId# 
+			AND  FOLLOWING_USER_ID =#followingUserId#
+	   ]]>
+	</select>
+	
+	<!-- ANSI -->
+	<select id="selectMyFollowingCount" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+	  <![CDATA[
+			SELECT /* [Follow_SqlMap.xml] mblog.selectMyFollowingCount */ 
+			 COUNT(*) 
+			FROM IKEP4_MB_FOLLOW 
+			WHERE USER_ID = #id#
+	   ]]>
+	</select>
+	
+	<!-- ANSI -->
+	<select id="selectMyFollowerCount" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+	  <![CDATA[
+			SELECT /* [Follow_SqlMap.xml] mblog.selectMyFollowerCount */ 
+			 COUNT(*) 
+			FROM IKEP4_MB_FOLLOW 
+			WHERE FOLLOWING_USER_ID = #id#
+	   ]]>
+	</select>
+	
+	
+</sqlMap>

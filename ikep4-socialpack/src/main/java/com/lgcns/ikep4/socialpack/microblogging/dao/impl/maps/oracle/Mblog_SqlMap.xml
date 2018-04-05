@@ -1,0 +1,1713 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="socialpack.microblogging.dao.mblog" >
+	<typeAlias alias = "Mblog" type="com.lgcns.ikep4.socialpack.microblogging.model.Mblog"/>
+	<typeAlias alias = "QueryReturn" type="com.lgcns.ikep4.socialpack.microblogging.model.QueryReturn"/>
+	<typeAlias alias = "User"  type="com.lgcns.ikep4.support.user.member.model.User"/>
+	<typeAlias alias = "MblogSearchCondition" type="com.lgcns.ikep4.socialpack.microblogging.search.MblogSearchCondition"/>
+	
+	<!-- IKEP4_MB_MBLOG 테이블 조회 결과 -->
+	<resultMap id="result" class="Mblog">
+		<result property="mblogId" 				column="MBLOG_ID" 				/>
+		<result property="mblogType" 			column="MBLOG_TYPE" 			/>
+		<result property="parentMblogId" 		column="PARENT_MBLOG_ID" 		/>
+		<result property="threadId" 			column="THREAD_ID" 				/>
+		<result property="mbgroupId" 			column="MBGROUP_ID" 			/>
+		<result property="retweetMblogId" 		column="RETWEET_MBLOG_ID" 		/>
+		<result property="contents" 			column="CONTENTS" 				/>
+		<result property="isRetweetAllowed" 	column="IS_RETWEET_ALLOWED" 	/>
+		<result property="registerId" 			column="REGISTER_ID" 			/>
+		<result property="registerName" 		column="REGISTER_NAME" 			/>
+		<result property="registerEnglishName" 	column="REGISTER_ENGLISH_NAME" 	/>
+		<result property="registDate" 			column="REGIST_DATE" 			/>
+		<result property="contentsDisplay" 		column="CONTENTS_DISPLAY" 		/>
+		<result property="isFavorite" 			column="ISFAVORITE" 			/>
+		<result property="picturePath" 		column="PICTURE_PATH" 		/>
+		<result property="profilePicturePath" 		column="PROFILE_PICTURE_PATH" 		/>
+	</resultMap>
+	
+  <sql id="sqlColumnList"> 
+    MBLOG_ID, 
+    MBLOG_TYPE, 
+    PARENT_MBLOG_ID, 
+    THREAD_ID, 
+    MBGROUP_ID, 
+    RETWEET_MBLOG_ID, 
+    CONTENTS, 
+    IS_RETWEET_ALLOWED, 
+    REGISTER_ID, 
+    REGISTER_NAME,
+    REGISTER_ENGLISH_NAME,
+    REGIST_DATE, 
+    CONTENTS_DISPLAY,
+    ISFAVORITE,
+    PICTURE_PATH,
+	PROFILE_PICTURE_PATH
+  </sql>  
+	
+	<resultMap id="fileRealNameExtendsResult" class="Mblog" extends="result">
+		<result property="displayCode" 		column="DISPLAY_CODE" 	/>
+		<result property="addonCode" 		column="ADDON_CODE" 	/>
+		<result property="sourceLink" 		column="SOURCE_LINK" 	/>
+		<result property="fileRealName" 	column="FILE_REAL_NAME" />
+	</resultMap>
+	
+	<resultMap id="userResult" class="User">
+		<result property="userId" 			column="USER_ID" 			/>
+		<result property="userName" 		column="USER_NAME" 			/>
+		<result property="userEnglishName" 	column="USER_ENGLISH_NAME" 	/>
+		<result property="teamName" 		column="TEAM_NAME" 			/>
+		<result property="teamEnglishName" 	column="TEAM_ENGLISH_NAME" 	/>
+		<result property="pictureId" 		column="PICTURE_ID" 		/>
+		<result property="profilePictureId" column="PROFILE_PICTURE_ID" />
+		<result property="expertField" 		column="EXPERT_FIELD" 		/>
+		<result property="isFollowing" 		column="ISFOLLOWING" 		/>
+		<result property="picturePath" 		column="PICTURE_PATH" 		/>
+		<result property="profilePicturePath" 		column="PROFILE_PICTURE_PATH" 		/>
+	</resultMap>
+		
+	<resultMap id="addonFileResult" class="Mblog">
+		<result property="displayCode" 		column="DISPLAY_CODE" 	/>
+		<result property="fileRealName" 	column="FILE_REAL_NAME" />
+	</resultMap>
+		
+  <sql id="sqlUserColumnList"> 
+	USER_ID,
+	USER_NAME, 
+	USER_ENGLISH_NAME,
+	TEAM_NAME,
+	TEAM_ENGLISH_NAME,
+	PICTURE_ID,
+	PROFILE_PICTURE_ID,
+    EXPERT_FIELD,
+    ISFOLLOWING,
+    PICTURE_PATH,
+	PROFILE_PICTURE_PATH
+  </sql>  
+	
+	<resultMap id="queryReturnResult" class="QueryReturn">
+		<result property="days" 			column="DAYS" 			/>
+		<result property="cnt" 				column="CNT" 			/>
+	</resultMap>
+		
+  <sql id="sqlQueryReturnColumnList"> 
+	DAYS,
+	CNT
+  </sql>  
+  
+  
+	<!-- insert -->
+	<insert id="insert" parameterClass="Mblog"> 
+      <![CDATA[ 
+           INSERT INTO IKEP4_MB_MBLOG ( /* [Mblog_SqlMap.xml] mblog.insert */ 
+           MBLOG_ID, MBLOG_TYPE, PARENT_MBLOG_ID, THREAD_ID, MBGROUP_ID, RETWEET_MBLOG_ID, CONTENTS, IS_RETWEET_ALLOWED, REGISTER_ID, REGISTER_NAME, REGIST_DATE, CONTENTS_DISPLAY
+           )  
+           VALUES (#mblogId#, #mblogType#, #parentMblogId#, #threadId#, #mbgroupId#, #retweetMblogId#, #contents#, #isRetweetAllowed#, #registerId#, #registerName#, sysdate, #contentsDisplay#)
+       ]]>
+   </insert>
+   
+   <!-- select -->
+	<select id="select" parameterClass="java.lang.String" resultMap="result">
+	  <![CDATA[
+		   SELECT /* [Mblog_SqlMap.xml] mblog.select */ 
+		   	mblog.MBLOG_ID, 
+			mblog.MBLOG_TYPE, 
+			mblog.PARENT_MBLOG_ID, 
+			mblog.THREAD_ID, 
+			mblog.MBGROUP_ID, 
+			mblog.RETWEET_MBLOG_ID, 
+			mblog.CONTENTS, 
+			mblog.IS_RETWEET_ALLOWED, 
+			mblog.REGISTER_ID, 
+			mblog.REGIST_DATE, 
+			mblog.CONTENTS_DISPLAY,
+			evUser.USER_NAME 			AS REGISTER_NAME,
+			evUser.USER_ENGLISH_NAME 	AS REGISTER_ENGLISH_NAME, 
+			evUser.PICTURE_PATH,
+			evUser.PROFILE_PICTURE_PATH ,
+			''  AS ISFAVORITE 
+		   FROM IKEP4_MB_MBLOG mblog,  IKEP4_EV_USER evUser 
+		   WHERE mblog.MBLOG_ID 	= #id#
+		     AND mblog.REGISTER_ID 	= evUser.USER_ID
+	   ]]>
+	</select>
+	   
+   <!-- delete -->
+   <delete id="delete" parameterClass="java.lang.String">
+      <![CDATA[
+	       DELETE FROM IKEP4_MB_MBLOG  /* [Mblog_SqlMap.xml] mblog.delete */ 
+	       WHERE MBLOG_ID = #id#
+	   ]]>
+	</delete>
+	
+	<select id="selectTimelineList" parameterClass="MblogSearchCondition" resultMap="result">  
+		SELECT /* [Mblog_SqlMap.xml] mblog.selectTimelineList */ 
+    			<include refid="socialpack.microblogging.dao.mblog.sqlColumnList" />
+		FROM ( 
+		     SELECT A.* 
+		     FROM ( 
+				     SELECT B.MBLOG_ID, 
+							B.MBLOG_TYPE, 
+							B.PARENT_MBLOG_ID, 
+							B.THREAD_ID, 
+							B.MBGROUP_ID, 
+							B.RETWEET_MBLOG_ID, 
+							B.CONTENTS, 
+							B.IS_RETWEET_ALLOWED, 
+							B.REGISTER_ID, 
+							B.REGIST_DATE, 
+							B.CONTENTS_DISPLAY,
+							evUser.USER_NAME 			AS REGISTER_NAME,
+							evUser.USER_ENGLISH_NAME 	AS REGISTER_ENGLISH_NAME,
+							evUser.PICTURE_PATH,
+							evUser.PROFILE_PICTURE_PATH ,
+							(SELECT MBLOG_ID FROM IKEP4_MB_FAVORITE WHERE USER_ID = #loginId# AND MBLOG_ID =B.MBLOG_ID ) AS ISFAVORITE 
+				     FROM ( 
+					         /* START========================================= */
+					         SELECT 
+								   	mblog.*
+					         FROM   IKEP4_MB_MBLOG mblog
+							<isParameterPresent prepend=", ">
+								<isNotEmpty property="registerOnly">
+									<isEqual property="registerOnly" compareValue="N">
+									 (
+					                    SELECT #ownerId# as USER_ID FROM DUAL
+					                    UNION
+					                    SELECT FOLLOWING_USER_ID as USER_ID 
+					                    FROM IKEP4_MB_FOLLOW
+					                    WHERE USER_ID = #ownerId#
+					                 ) userlist
+									</isEqual>
+								</isNotEmpty>
+							</isParameterPresent >
+							 WHERE  
+								<isEqual property="registerOnly" compareValue="N">
+									mblog.REGISTER_ID = userlist.USER_ID 
+								</isEqual>
+								<isEqual property="registerOnly" compareValue="Y">
+						 			mblog.REGISTER_ID = #ownerId#
+								</isEqual>
+							<isNotEmpty property="standardMblogId">
+								<isEqual property="standardType" compareValue="pre">
+					                 AND mblog.MBLOG_ID <![CDATA[ <  ]]> #standardMblogId#
+								</isEqual>
+								<isEqual property="standardType" compareValue="post">
+					                 AND mblog.MBLOG_ID <![CDATA[ >  ]]> #standardMblogId#
+								</isEqual>
+							</isNotEmpty>
+							   AND (mblog.MBGROUP_ID IS NULL OR length(mblog.MBGROUP_ID) = 0)
+							   
+							 UNION
+							 
+		                     SELECT 
+								   	mblog.*
+		                     FROM   IKEP4_MB_MBTAG mbtag, IKEP4_MB_MBLOG2TAG mblog2tag, IKEP4_MB_MBLOG mblog
+		                     WHERE
+							 	   mblog.MBLOG_ID           = mblog2tag.MBLOG_ID
+		                       AND mblog2tag.MBTAG_ID		= mbtag.MBTAG_ID
+		                       AND mblog2tag.PORTAL_ID		= mbtag.PORTAL_ID
+		                       AND mbtag.MBTAG_TYPE         = '0'
+		                       AND mbtag.MBTAG_NAME         = #ownerId#  
+							<isNotEmpty property="standardMblogId">
+								<isEqual property="standardType" compareValue="pre">
+					                 AND mblog.MBLOG_ID <![CDATA[ <  ]]> #standardMblogId#
+								</isEqual>
+								<isEqual property="standardType" compareValue="post">
+					                 AND mblog.MBLOG_ID <![CDATA[ >  ]]> #standardMblogId#
+								</isEqual>
+							</isNotEmpty>
+		                       AND (mblog.MBGROUP_ID IS NULL OR length(mblog.MBGROUP_ID) = 0)
+							 /* ===========================================END  */ 
+				    ) B, IKEP4_EV_USER evUser
+				    WHERE B.REGISTER_ID 		= evUser.USER_ID
+			        ORDER BY B.MBLOG_ID DESC
+		    ) A 
+			<isNotEmpty property="standardType">
+				<isEqual property="standardType" compareValue="pre">
+    				WHERE ROWNUM <![CDATA[  <=  ]]> #fetchSize# /* fetchSize  */
+				</isEqual>
+			</isNotEmpty>
+		)
+	</select>   
+	
+	<select id="selectThreadList" parameterClass="MblogSearchCondition" resultMap="result">  
+		SELECT /* [Mblog_SqlMap.xml] mblog.selectThreadList */ 
+    			<include refid="socialpack.microblogging.dao.mblog.sqlColumnList" />
+		FROM ( 
+			SELECT 
+			   	mblog.MBLOG_ID, 
+				mblog.MBLOG_TYPE, 
+				mblog.PARENT_MBLOG_ID, 
+				mblog.THREAD_ID, 
+				mblog.MBGROUP_ID, 
+				mblog.RETWEET_MBLOG_ID, 
+				mblog.CONTENTS, 
+				mblog.IS_RETWEET_ALLOWED, 
+				mblog.REGISTER_ID, 
+				mblog.REGIST_DATE, 
+				mblog.CONTENTS_DISPLAY,
+				evUser.USER_NAME 			AS REGISTER_NAME,
+				evUser.USER_ENGLISH_NAME 	AS REGISTER_ENGLISH_NAME,
+				evUser.PICTURE_PATH,
+				evUser.PROFILE_PICTURE_PATH ,
+				(SELECT MBLOG_ID FROM IKEP4_MB_FAVORITE WHERE USER_ID = #loginId# AND MBLOG_ID = mblog.MBLOG_ID ) AS ISFAVORITE
+			FROM ( 
+			     SELECT A.THREAD_ID 
+			     FROM ( 
+			         /* START========================================= */
+			         SELECT mblog.THREAD_ID
+	                 FROM   IKEP4_MB_MBLOG mblog
+					<isParameterPresent prepend=", ">
+						<isNotEmpty property="registerOnly">
+							<isEqual property="registerOnly" compareValue="N">
+							 (
+			                    SELECT #ownerId# as USER_ID FROM DUAL
+			                    UNION
+			                    SELECT FOLLOWING_USER_ID as USER_ID 
+			                    FROM IKEP4_MB_FOLLOW
+			                    WHERE USER_ID = #ownerId#
+			                 ) userlist
+							</isEqual>
+						</isNotEmpty>
+					</isParameterPresent >
+					 WHERE  
+							mblog.MBLOG_TYPE 	= '0'
+							<isEqual property="registerOnly" compareValue="N">
+								AND mblog.REGISTER_ID = userlist.USER_ID 
+							</isEqual>
+							<isEqual property="registerOnly" compareValue="Y">
+					 			AND mblog.REGISTER_ID = #ownerId#
+							</isEqual>
+							<isNotEmpty property="standardMblogId">
+								<isEqual property="standardType" compareValue="pre">
+					                 AND mblog.THREAD_ID <![CDATA[ <  ]]> #standardMblogId#
+								</isEqual>
+								<isEqual property="standardType" compareValue="post">
+					                 AND mblog.THREAD_ID <![CDATA[ >  ]]> #standardMblogId#
+								</isEqual>
+							</isNotEmpty>
+						    AND (mblog.MBGROUP_ID IS NULL OR length(mblog.MBGROUP_ID) = 0)
+	                 ORDER BY mblog.THREAD_ID DESC
+					 /* ===========================================END  */ 
+			    ) A 
+				<isNotEmpty property="standardType">
+					<isEqual property="standardType" compareValue="pre">
+	    				WHERE ROWNUM <![CDATA[  <=  ]]> #fetchSize# /* fetchSize  */
+					</isEqual>
+				</isNotEmpty>
+			) B,  IKEP4_MB_MBLOG mblog,  IKEP4_EV_USER evUser
+        	WHERE B.THREAD_ID 			= mblog.THREAD_ID
+        	  AND mblog.REGISTER_ID 	= evUser.USER_ID 
+			  AND (mblog.MBGROUP_ID IS NULL OR length(mblog.MBGROUP_ID) = 0)
+        	ORDER BY mblog.THREAD_ID DESC, mblog.MBLOG_TYPE ASC, mblog.MBLOG_ID ASC
+		)
+	</select>   
+	
+	<select id="selectGroupTimelineList" parameterClass="MblogSearchCondition" resultMap="result">  
+		SELECT /* [Mblog_SqlMap.xml] mblog.selectGroupTimelineList */ 
+    			<include refid="socialpack.microblogging.dao.mblog.sqlColumnList" />
+		FROM ( 
+		     SELECT 
+				   	A.MBLOG_ID, 
+					A.MBLOG_TYPE, 
+					A.PARENT_MBLOG_ID, 
+					A.THREAD_ID, 
+					A.MBGROUP_ID, 
+					A.RETWEET_MBLOG_ID, 
+					A.CONTENTS, 
+					A.IS_RETWEET_ALLOWED, 
+					A.REGISTER_ID, 
+					A.REGIST_DATE, 
+					A.CONTENTS_DISPLAY,
+					evUser.USER_NAME 			AS REGISTER_NAME,
+					evUser.USER_ENGLISH_NAME 	AS REGISTER_ENGLISH_NAME, 
+					evUser.PICTURE_PATH,
+					evUser.PROFILE_PICTURE_PATH ,
+					(SELECT MBLOG_ID FROM IKEP4_MB_FAVORITE WHERE USER_ID = #loginId# AND MBLOG_ID = A.MBLOG_ID ) AS ISFAVORITE
+		     FROM ( 
+			         /* START========================================= */
+			         SELECT mblog.*
+                     FROM   IKEP4_MB_MBLOG mblog , IKEP4_MB_MBLOG2TAG mblog2tag, IKEP4_MB_MBTAG mbtag  
+                     WHERE  mblog.MBLOG_ID      = mblog2tag.MBLOG_ID  
+                       AND  mblog2tag.MBTAG_ID 	= mbtag.MBTAG_ID 
+		               AND  mblog2tag.PORTAL_ID	= mbtag.PORTAL_ID
+                       AND  mbtag.MBTAG_TYPE   	= '0' 
+                       AND  mbtag.MBTAG_NAME	= #mbgroupId#
+					<isNotEmpty property="standardMblogId">
+						<isEqual property="standardType" compareValue="pre">
+			                 AND mblog.MBLOG_ID <![CDATA[ <  ]]> #standardMblogId#
+						</isEqual>
+						<isEqual property="standardType" compareValue="post">
+			                 AND mblog.MBLOG_ID <![CDATA[ >  ]]> #standardMblogId#
+						</isEqual>
+					</isNotEmpty>
+					
+                     UNION        
+                         
+                     SELECT mblog.*
+                     FROM   IKEP4_MB_MBLOG mblog 
+                     WHERE  mblog.MBGROUP_ID  			= #mbgroupId#
+					<isNotEmpty property="standardMblogId">
+						<isEqual property="standardType" compareValue="pre">
+			                 AND mblog.MBLOG_ID <![CDATA[ <  ]]> #standardMblogId#
+						</isEqual>
+						<isEqual property="standardType" compareValue="post">
+			                 AND mblog.MBLOG_ID <![CDATA[ >  ]]> #standardMblogId#
+						</isEqual>
+					</isNotEmpty>
+					 /* ===========================================END  */ 
+		    ) A,  IKEP4_EV_USER evUser
+		    WHERE A.REGISTER_ID 	= evUser.USER_ID 
+	        ORDER BY A.MBLOG_ID DESC
+		)
+		<isNotEmpty property="standardType">
+			<isEqual property="standardType" compareValue="pre">
+   				WHERE ROWNUM <![CDATA[  <=  ]]> #fetchSize# /* fetchSize  */
+			</isEqual>
+		</isNotEmpty>
+	</select>   
+	
+	<select id="selectGroupThreadList" parameterClass="MblogSearchCondition" resultMap="result">  
+		SELECT /* [Mblog_SqlMap.xml] mblog.selectGroupThreadList */ 
+    			<include refid="socialpack.microblogging.dao.mblog.sqlColumnList" />
+		FROM ( 
+			SELECT 
+				   	mblog.MBLOG_ID, 
+					mblog.MBLOG_TYPE, 
+					mblog.PARENT_MBLOG_ID, 
+					mblog.THREAD_ID, 
+					mblog.MBGROUP_ID, 
+					mblog.RETWEET_MBLOG_ID, 
+					mblog.CONTENTS, 
+					mblog.IS_RETWEET_ALLOWED, 
+					mblog.REGISTER_ID, 
+					mblog.REGIST_DATE, 
+					mblog.CONTENTS_DISPLAY,
+					evUser.USER_NAME 			AS REGISTER_NAME,
+					evUser.USER_ENGLISH_NAME 	AS REGISTER_ENGLISH_NAME, 
+					evUser.PICTURE_PATH,
+					evUser.PROFILE_PICTURE_PATH ,
+					(SELECT MBLOG_ID FROM IKEP4_MB_FAVORITE WHERE USER_ID = #loginId# AND MBLOG_ID = mblog.MBLOG_ID ) AS ISFAVORITE
+			FROM ( 
+			     SELECT B.THREAD_ID 
+			     FROM ( 
+					     SELECT A.THREAD_ID 
+					     FROM ( 
+					         /* START========================================= */
+		                     SELECT mblog.THREAD_ID
+		                     FROM   IKEP4_MB_MBLOG mblog , IKEP4_MB_MBLOG2TAG mblog2tag, IKEP4_MB_MBTAG mbtag  
+		                     WHERE  mblog.MBLOG_ID		= mblog2tag.MBLOG_ID  
+		                       AND  mblog2tag.MBTAG_ID	= mbtag.MBTAG_ID 
+		                       AND  mblog2tag.PORTAL_ID	= mbtag.PORTAL_ID
+		                       AND  mbtag.MBTAG_TYPE	= '0' 
+		                       AND  mbtag.MBTAG_NAME	= #mbgroupId#
+		                       AND  mblog.MBLOG_TYPE	= '0'
+								<isNotEmpty property="standardMblogId">
+									<isEqual property="standardType" compareValue="pre">
+						                 AND mblog.THREAD_ID <![CDATA[ <  ]]> #standardMblogId#
+									</isEqual>
+									<isEqual property="standardType" compareValue="post">
+						                 AND mblog.THREAD_ID <![CDATA[ >  ]]> #standardMblogId#
+									</isEqual>
+								</isNotEmpty>
+								
+		                     UNION        
+		                         
+		                     SELECT mblog.THREAD_ID
+		                     FROM   IKEP4_MB_MBLOG mblog
+		                     WHERE  mblog.MBGROUP_ID	= #mbgroupId#
+		                       AND  mblog.MBLOG_TYPE			= '0'
+								<isNotEmpty property="standardMblogId">
+									<isEqual property="standardType" compareValue="pre">
+						                 AND mblog.THREAD_ID <![CDATA[ <  ]]> #standardMblogId#
+									</isEqual>
+									<isEqual property="standardType" compareValue="post">
+						                 AND mblog.THREAD_ID <![CDATA[ >  ]]> #standardMblogId#
+									</isEqual>
+								</isNotEmpty>
+							 /* ===========================================END  */ 
+					    ) A 
+			            ORDER BY A.THREAD_ID DESC
+			    ) B 
+				<isNotEmpty property="standardType">
+					<isEqual property="standardType" compareValue="pre">
+	    				WHERE ROWNUM <![CDATA[  <=  ]]> #fetchSize# /* fetchSize  */
+					</isEqual>
+				</isNotEmpty>
+			) C,  IKEP4_MB_MBLOG mblog,  IKEP4_EV_USER evUser
+        	WHERE C.THREAD_ID 			= mblog.THREAD_ID
+        	  AND mblog.REGISTER_ID 	= evUser.USER_ID 
+        	ORDER BY mblog.THREAD_ID DESC, mblog.MBLOG_TYPE ASC, mblog.MBLOG_ID ASC
+		)
+	</select>   
+	
+	<select id="selectTimelineAllList" parameterClass="MblogSearchCondition" resultMap="result">  
+		SELECT /* [Mblog_SqlMap.xml] mblog.selectTimelineAllList */ 
+    			<include refid="socialpack.microblogging.dao.mblog.sqlColumnList" />
+		FROM ( 
+		     SELECT A.* 
+		     FROM ( 
+			         /* START========================================= */
+			         SELECT 
+						   	mblog.MBLOG_ID, 
+							mblog.MBLOG_TYPE, 
+							mblog.PARENT_MBLOG_ID, 
+							mblog.THREAD_ID, 
+							mblog.MBGROUP_ID, 
+							mblog.RETWEET_MBLOG_ID, 
+							mblog.CONTENTS, 
+							mblog.IS_RETWEET_ALLOWED, 
+							mblog.REGISTER_ID, 
+							mblog.REGIST_DATE, 
+							mblog.CONTENTS_DISPLAY,
+							evUser.USER_NAME 			AS REGISTER_NAME,
+							evUser.USER_ENGLISH_NAME 	AS REGISTER_ENGLISH_NAME, 
+							evUser.PICTURE_PATH,
+							evUser.PROFILE_PICTURE_PATH ,
+							(SELECT MBLOG_ID FROM IKEP4_MB_FAVORITE WHERE USER_ID = #loginId# AND MBLOG_ID = mblog.MBLOG_ID ) AS ISFAVORITE
+			         FROM   IKEP4_MB_MBLOG mblog,  IKEP4_EV_USER evUser
+					 WHERE  
+					 		mblog.REGISTER_ID 	= evUser.USER_ID
+	                        AND (mblog.MBGROUP_ID IS NULL OR length(mblog.MBGROUP_ID) = 0) 
+						<isNotEmpty property="standardMblogId">
+							<isEqual property="standardType" compareValue="pre">
+				                 AND mblog.MBLOG_ID <![CDATA[ <  ]]> #standardMblogId#
+							</isEqual>
+							<isEqual property="standardType" compareValue="post">
+				                 AND mblog.MBLOG_ID <![CDATA[ >  ]]> #standardMblogId#
+							</isEqual>
+						</isNotEmpty>
+	                 ORDER BY mblog.MBLOG_ID DESC
+					 /* ===========================================END  */ 
+		    ) A 
+			<isNotEmpty property="standardType">
+				<isEqual property="standardType" compareValue="pre">
+		    		WHERE ROWNUM <![CDATA[  <=  ]]> #fetchSize# /* fetchSize  */
+				</isEqual>
+			</isNotEmpty>
+		)
+	</select>   
+	
+	<select id="selectThreadAllList" parameterClass="MblogSearchCondition" resultMap="result">  
+		SELECT /* [Mblog_SqlMap.xml] mblog.selectThreadAllList */ 
+    			<include refid="socialpack.microblogging.dao.mblog.sqlColumnList" />
+		FROM ( 
+			SELECT 
+				   	mblog.MBLOG_ID, 
+					mblog.MBLOG_TYPE, 
+					mblog.PARENT_MBLOG_ID, 
+					mblog.THREAD_ID, 
+					mblog.MBGROUP_ID, 
+					mblog.RETWEET_MBLOG_ID, 
+					mblog.CONTENTS, 
+					mblog.IS_RETWEET_ALLOWED, 
+					mblog.REGISTER_ID, 
+					mblog.REGIST_DATE, 
+					mblog.CONTENTS_DISPLAY,
+					evUser.USER_NAME 			AS REGISTER_NAME,
+					evUser.USER_ENGLISH_NAME 	AS REGISTER_ENGLISH_NAME, 
+					evUser.PICTURE_PATH,
+					evUser.PROFILE_PICTURE_PATH ,
+					(SELECT MBLOG_ID FROM IKEP4_MB_FAVORITE WHERE USER_ID = #loginId# AND MBLOG_ID = mblog.MBLOG_ID ) AS ISFAVORITE
+			FROM ( 
+				     SELECT A.THREAD_ID 
+				     FROM ( 
+				         /* START========================================= */
+				         SELECT mblog.THREAD_ID
+		                 FROM   IKEP4_MB_MBLOG mblog
+						 WHERE  mblog.MBLOG_TYPE = '0'
+						   AND (mblog.MBGROUP_ID IS NULL OR length(mblog.MBGROUP_ID) = 0) 
+							<isNotEmpty property="standardMblogId">
+								<isEqual property="standardType" compareValue="pre">
+					                 AND mblog.THREAD_ID <![CDATA[ <  ]]> #standardMblogId#
+								</isEqual>
+								<isEqual property="standardType" compareValue="post">
+					                 AND mblog.THREAD_ID <![CDATA[ >  ]]> #standardMblogId#
+								</isEqual>
+							</isNotEmpty>
+		                 ORDER BY mblog.THREAD_ID DESC
+						 /* ===========================================END  */ 
+				    ) A 
+					<isNotEmpty property="standardType">
+						<isEqual property="standardType" compareValue="pre">
+					    	WHERE ROWNUM <![CDATA[  <=  ]]> #fetchSize# /* fetchSize  */
+						</isEqual>
+					</isNotEmpty>
+			) B,  IKEP4_MB_MBLOG mblog,  IKEP4_EV_USER evUser
+        	WHERE B.THREAD_ID 			= mblog.THREAD_ID
+        	  AND mblog.REGISTER_ID 	= evUser.USER_ID
+			  AND (mblog.MBGROUP_ID IS NULL OR length(mblog.MBGROUP_ID) = 0) 
+        	ORDER BY mblog.THREAD_ID DESC, mblog.MBLOG_TYPE ASC
+		)
+	</select>   
+	
+	<select id="selectAddonListByAddonType" parameterClass="MblogSearchCondition" resultMap="fileRealNameExtendsResult">  
+		SELECT /* [Mblog_SqlMap.xml] mblog.selectAddonListByAddonType */ 
+    			<include refid="socialpack.microblogging.dao.mblog.sqlColumnList" /> , ADDON_CODE, DISPLAY_CODE, SOURCE_LINK, FILE_REAL_NAME
+		FROM ( 
+		     SELECT A.* 
+		     FROM ( 
+			         /* START========================================= */
+                     SELECT mblog.MBLOG_ID, 
+							mblog.MBLOG_TYPE, 
+							mblog.PARENT_MBLOG_ID, 
+							mblog.THREAD_ID, 
+							mblog.MBGROUP_ID, 
+							mblog.RETWEET_MBLOG_ID, 
+							mblog.CONTENTS, 
+							mblog.IS_RETWEET_ALLOWED, 
+							mblog.REGISTER_ID, 
+							mblog.REGIST_DATE, 
+							mblog.CONTENTS_DISPLAY,
+							evUser.USER_NAME AS REGISTER_NAME,
+							evUser.USER_ENGLISH_NAME AS REGISTER_ENGLISH_NAME, 
+							evUser.PICTURE_PATH,
+							evUser.PROFILE_PICTURE_PATH ,
+							(SELECT MBLOG_ID FROM IKEP4_MB_FAVORITE WHERE USER_ID = #loginId# AND MBLOG_ID = mblog.MBLOG_ID ) AS ISFAVORITE,
+                     		mbaddon.ADDON_CODE, mbaddon.DISPLAY_CODE, mbaddon.SOURCE_LINK,
+                     		(select dmfile.FILE_REAL_NAME from IKEP4_DM_FILE dmfile where mbaddon.SOURCE_LINK     = dmfile.FILE_ID) FILE_REAL_NAME
+                     FROM   IKEP4_MB_MBLOG mblog, IKEP4_MB_MBLOG2ADDON mblog2addon, IKEP4_MB_ADDON mbaddon,  IKEP4_EV_USER evUser
+                     WHERE  mblog.REGISTER_ID		= #ownerId#
+                        AND mblog.MBLOG_ID			= mblog2addon.MBLOG_ID
+                        AND mblog2addon.ADDON_CODE	= mbaddon.ADDON_CODE
+                        AND mbaddon.ADDON_TYPE		= #addonType#
+                        AND mblog.REGISTER_ID 	= evUser.USER_ID 
+					<isNotEmpty property="standardMblogId">
+						<isEqual property="standardType" compareValue="pre">
+							 AND (  ( mblog.MBLOG_ID  = #standardMblogId# AND mbaddon.ADDON_CODE <![CDATA[ <  ]]> #standardAddonCode# ) 
+                                     OR mblog.MBLOG_ID  <![CDATA[ <  ]]> #standardMblogId#
+                                 )
+						</isEqual>
+						<isEqual property="standardType" compareValue="post">
+							 AND (  ( mblog.MBLOG_ID  = #standardMblogId# AND mbaddon.ADDON_CODE <![CDATA[ >  ]]> #standardAddonCode# ) 
+                                     OR mblog.MBLOG_ID  <![CDATA[ >  ]]> #standardMblogId#
+                                 )
+						</isEqual>
+					</isNotEmpty>
+					    AND (mblog.MBGROUP_ID IS NULL OR length(mblog.MBGROUP_ID) = 0)
+                     ORDER BY mblog.MBLOG_ID DESC, mbaddon.ADDON_CODE DESC
+					 /* ===========================================END  */ 
+		    ) A 
+			<isNotEmpty property="standardType">
+				<isEqual property="standardType" compareValue="pre">
+			    	WHERE ROWNUM <![CDATA[  <=  ]]> #fetchSize# /* fetchSize  */
+				</isEqual>
+			</isNotEmpty>
+		)
+	</select>   
+
+	<select id="selectGroupAddonListByAddonType" parameterClass="MblogSearchCondition" resultMap="fileRealNameExtendsResult">  
+		SELECT /* [Mblog_SqlMap.xml] mblog.selectGroupAddonListByAddonType */ 
+    			<include refid="socialpack.microblogging.dao.mblog.sqlColumnList" /> , ADDON_CODE, DISPLAY_CODE, SOURCE_LINK, FILE_REAL_NAME
+		FROM ( 
+		     SELECT A.* 
+		     FROM ( 
+			         /* START========================================= */
+                     SELECT 
+					   	mblog.MBLOG_ID, 
+						mblog.MBLOG_TYPE, 
+						mblog.PARENT_MBLOG_ID, 
+						mblog.THREAD_ID, 
+						mblog.MBGROUP_ID, 
+						mblog.RETWEET_MBLOG_ID, 
+						mblog.CONTENTS, 
+						mblog.IS_RETWEET_ALLOWED, 
+						mblog.REGISTER_ID, 
+						mblog.REGIST_DATE, 
+						mblog.CONTENTS_DISPLAY,
+						evUser.USER_NAME AS REGISTER_NAME,
+						evUser.USER_ENGLISH_NAME AS REGISTER_ENGLISH_NAME,
+						evUser.PICTURE_PATH,
+						evUser.PROFILE_PICTURE_PATH ,
+                     	(SELECT MBLOG_ID FROM IKEP4_MB_FAVORITE WHERE USER_ID = #loginId# AND MBLOG_ID = mblog.MBLOG_ID ) AS ISFAVORITE,
+                     	mbaddon.ADDON_CODE, mbaddon.DISPLAY_CODE, mbaddon.SOURCE_LINK,
+                     	(select dmfile.FILE_REAL_NAME from IKEP4_DM_FILE dmfile where mbaddon.SOURCE_LINK     = dmfile.FILE_ID) FILE_REAL_NAME
+                     FROM   IKEP4_MB_MBLOG mblog, IKEP4_MB_MBLOG2ADDON mblog2addon, IKEP4_MB_ADDON mbaddon,  IKEP4_EV_USER evUser
+                     WHERE  mblog.MBLOG_ID			= mblog2addon.MBLOG_ID
+                        AND mblog2addon.ADDON_CODE	= mbaddon.ADDON_CODE
+                        AND mbaddon.ADDON_TYPE		= #addonType#
+	                    AND mblog.MBGROUP_ID		= #mbgroupId#
+	                    AND mblog.REGISTER_ID 		= evUser.USER_ID 
+					<isNotEmpty property="standardMblogId">
+						<isEqual property="standardType" compareValue="pre">
+							 AND (  ( mblog.MBLOG_ID  = #standardMblogId# AND mbaddon.ADDON_CODE <![CDATA[ <  ]]> #standardAddonCode# ) 
+                                     OR mblog.MBLOG_ID  <![CDATA[ <  ]]> #standardMblogId#
+                                 )
+						</isEqual>
+						<isEqual property="standardType" compareValue="post">
+							 AND (  ( mblog.MBLOG_ID  = #standardMblogId# AND mbaddon.ADDON_CODE <![CDATA[ >  ]]> #standardAddonCode# ) 
+                                     OR mblog.MBLOG_ID  <![CDATA[ >  ]]> #standardMblogId#
+                                 )
+						</isEqual>
+					</isNotEmpty>
+                     ORDER BY mblog.MBLOG_ID DESC, mbaddon.ADDON_CODE DESC
+					 /* ===========================================END  */ 
+		    ) A 
+			<isNotEmpty property="standardType">
+				<isEqual property="standardType" compareValue="pre">
+			    	WHERE ROWNUM <![CDATA[  <=  ]]> #fetchSize# /* fetchSize  */
+				</isEqual>
+			</isNotEmpty>
+		)
+	</select>   
+		
+	<select id="selectRetwitByMeList" parameterClass="MblogSearchCondition" resultMap="result">  
+		SELECT /* [Mblog_SqlMap.xml] mblog.selectRetwitByMeList */ 
+    			<include refid="socialpack.microblogging.dao.mblog.sqlColumnList" />
+		FROM ( 
+		     SELECT A.* 
+		     FROM ( 
+			         /* START========================================= */
+			         SELECT 
+						   	mblog.MBLOG_ID, 
+							mblog.MBLOG_TYPE, 
+							mblog.PARENT_MBLOG_ID, 
+							mblog.THREAD_ID, 
+							mblog.MBGROUP_ID, 
+							mblog.RETWEET_MBLOG_ID, 
+							mblog.CONTENTS, 
+							mblog.IS_RETWEET_ALLOWED, 
+							mblog.REGISTER_ID, 
+							mblog.REGIST_DATE, 
+							mblog.CONTENTS_DISPLAY,
+							evUser.USER_NAME 			AS REGISTER_NAME,
+							evUser.USER_ENGLISH_NAME 	AS REGISTER_ENGLISH_NAME, 
+							evUser.PICTURE_PATH,
+							evUser.PROFILE_PICTURE_PATH ,
+							(SELECT MBLOG_ID FROM IKEP4_MB_FAVORITE WHERE USER_ID = #loginId# AND MBLOG_ID = mblog.MBLOG_ID ) AS ISFAVORITE
+			         FROM   IKEP4_MB_MBLOG mblog,  IKEP4_EV_USER evUser
+					 WHERE  mblog.REGISTER_ID 	= #ownerId#
+					    AND mblog.REGISTER_ID 	= evUser.USER_ID
+				 	    AND length(mblog.RETWEET_MBLOG_ID) > 0  
+					<isNotEmpty property="standardMblogId">
+						<isEqual property="standardType" compareValue="pre">
+			                 AND mblog.MBLOG_ID <![CDATA[ <  ]]> #standardMblogId#
+						</isEqual>
+						<isEqual property="standardType" compareValue="post">
+			                 AND mblog.MBLOG_ID <![CDATA[ >  ]]> #standardMblogId#
+						</isEqual>
+					</isNotEmpty>
+					    AND (mblog.MBGROUP_ID IS NULL OR length(mblog.MBGROUP_ID) = 0)
+	                 ORDER BY mblog.MBLOG_ID DESC
+					 /* ===========================================END  */ 
+		    ) A 
+			<isNotEmpty property="standardType">
+				<isEqual property="standardType" compareValue="pre">
+		    		WHERE ROWNUM <![CDATA[  <=  ]]> #fetchSize# /* fetchSize  */
+				</isEqual>
+			</isNotEmpty>
+		)
+	</select>   
+		
+	<select id="selectRetwitByOtherList" parameterClass="MblogSearchCondition" resultMap="result">  
+		SELECT /* [Mblog_SqlMap.xml] mblog.selectRetwitByOtherList */ 
+    			<include refid="socialpack.microblogging.dao.mblog.sqlColumnList" />
+		FROM ( 
+		     SELECT A.* 
+		     FROM ( 
+                     SELECT 
+						   	mblog.MBLOG_ID, 
+							mblog.MBLOG_TYPE, 
+							mblog.PARENT_MBLOG_ID, 
+							mblog.THREAD_ID, 
+							mblog.MBGROUP_ID, 
+							mblog.RETWEET_MBLOG_ID, 
+							mblog.CONTENTS, 
+							mblog.IS_RETWEET_ALLOWED, 
+							mblog.REGISTER_ID, 
+							mblog.REGIST_DATE, 
+							mblog.CONTENTS_DISPLAY,
+							evUser.USER_NAME 			AS REGISTER_NAME,
+							evUser.USER_ENGLISH_NAME 	AS REGISTER_ENGLISH_NAME, 
+							evUser.PICTURE_PATH,
+							evUser.PROFILE_PICTURE_PATH ,
+							(SELECT MBLOG_ID FROM IKEP4_MB_FAVORITE WHERE USER_ID = #loginId# AND MBLOG_ID = mblog.MBLOG_ID ) AS ISFAVORITE
+                     FROM   
+                     (
+				         /* START========================================= */
+				         SELECT DISTINCT mblog.MBLOG_ID
+				         FROM   IKEP4_MB_MBLOG mblog, IKEP4_MB_MBLOG mblog2  
+						 WHERE  mblog.REGISTER_ID 	= #ownerId#
+					 		AND mblog.MBLOG_ID 		= mblog2.RETWEET_MBLOG_ID 
+						<isNotEmpty property="standardMblogId">
+							<isEqual property="standardType" compareValue="pre">
+				                 AND mblog.MBLOG_ID <![CDATA[ <  ]]> #standardMblogId#
+							</isEqual>
+							<isEqual property="standardType" compareValue="post">
+				                 AND mblog.MBLOG_ID <![CDATA[ >  ]]> #standardMblogId#
+							</isEqual>
+						</isNotEmpty>
+						    AND (mblog.MBGROUP_ID IS NULL OR length(mblog.MBGROUP_ID) = 0)
+		                 ORDER BY mblog.MBLOG_ID DESC
+						 /* ===========================================END  */ 
+                     )  A,  IKEP4_MB_MBLOG mblog,  IKEP4_EV_USER evUser
+                     WHERE A.MBLOG_ID         	= mblog.MBLOG_ID 
+                       AND mblog.REGISTER_ID	= evUser.USER_ID 
+                     ORDER BY mblog.MBLOG_ID DESC
+		    ) A 
+			<isNotEmpty property="standardType">
+				<isEqual property="standardType" compareValue="pre">
+    				WHERE ROWNUM <![CDATA[  <=  ]]> #fetchSize# /* fetchSize  */
+				</isEqual>
+			</isNotEmpty>
+		)
+	</select>   
+	
+	<select id="selectRetwitFromOutsideList" parameterClass="MblogSearchCondition" resultMap="result">  
+		SELECT /* [Mblog_SqlMap.xml] mblog.selectRetwitFromOutsideList */ 
+    			<include refid="socialpack.microblogging.dao.mblog.sqlColumnList" />
+		FROM ( 
+		     SELECT A.* 
+		     FROM ( 
+			         /* START========================================= */			         
+                     SELECT mblog.MBLOG_ID, 
+							mblog.MBLOG_TYPE, 
+							mblog.PARENT_MBLOG_ID, 
+							mblog.THREAD_ID, 
+							mblog.MBGROUP_ID, 
+							mblog.RETWEET_MBLOG_ID, 
+							mblog.CONTENTS, 
+							mblog.IS_RETWEET_ALLOWED, 
+							mblog.REGISTER_ID, 
+							mblog.REGIST_DATE, 
+							mblog.CONTENTS_DISPLAY,
+							evUser.USER_NAME 			AS REGISTER_NAME,
+							evUser.USER_ENGLISH_NAME 	AS REGISTER_ENGLISH_NAME, 
+							evUser.PICTURE_PATH,
+							evUser.PROFILE_PICTURE_PATH ,
+							(SELECT MBLOG_ID FROM IKEP4_MB_FAVORITE WHERE USER_ID = #loginId# AND MBLOG_ID = mblog.MBLOG_ID ) AS ISFAVORITE
+                     FROM   IKEP4_MB_MBLOG mblog , IKEP4_MB_MBLOG mblog2  ,  IKEP4_EV_USER evUser
+                     WHERE  mblog.RETWEET_MBLOG_ID 		= mblog2.MBLOG_ID
+                       AND  mblog.MBGROUP_ID 	= #mbgroupId#
+                       AND (mblog.MBGROUP_ID <![CDATA[ <>  ]]> mblog2.MBGROUP_ID OR mblog2.MBGROUP_ID IS NULL)
+                       AND  mblog.REGISTER_ID 	= evUser.USER_ID 
+					<isNotEmpty property="standardMblogId">
+						<isEqual property="standardType" compareValue="pre">
+			                 AND mblog.MBLOG_ID <![CDATA[ <  ]]> #standardMblogId#
+						</isEqual>
+						<isEqual property="standardType" compareValue="post">
+			                 AND mblog.MBLOG_ID <![CDATA[ >  ]]> #standardMblogId#
+						</isEqual>
+					</isNotEmpty>
+	                 ORDER BY mblog.MBLOG_ID DESC
+					 /* ===========================================END  */ 
+		    ) A 
+			<isNotEmpty property="standardType">
+				<isEqual property="standardType" compareValue="pre">
+		    		WHERE ROWNUM <![CDATA[  <=  ]]> #fetchSize# /* fetchSize  */
+				</isEqual>
+			</isNotEmpty>
+		)
+	</select>   
+		
+	<select id="selectRetwitToOutsideList" parameterClass="MblogSearchCondition" resultMap="result">  
+		SELECT /* [Mblog_SqlMap.xml] mblog.selectRetwitToOutsideList */ 
+    			<include refid="socialpack.microblogging.dao.mblog.sqlColumnList" />
+		FROM ( 
+		     SELECT A.* 
+		     FROM ( 
+			         /* START========================================= */	
+                     SELECT mblog.MBLOG_ID, 
+							mblog.MBLOG_TYPE, 
+							mblog.PARENT_MBLOG_ID, 
+							mblog.THREAD_ID, 
+							mblog.MBGROUP_ID, 
+							mblog.RETWEET_MBLOG_ID, 
+							mblog.CONTENTS, 
+							mblog.IS_RETWEET_ALLOWED, 
+							mblog.REGISTER_ID, 
+							mblog.REGIST_DATE, 
+							mblog.CONTENTS_DISPLAY,
+							evUser.USER_NAME 			AS REGISTER_NAME,
+							evUser.USER_ENGLISH_NAME 	AS REGISTER_ENGLISH_NAME, 
+							evUser.PICTURE_PATH,
+							evUser.PROFILE_PICTURE_PATH ,
+							(SELECT MBLOG_ID FROM IKEP4_MB_FAVORITE WHERE USER_ID = #loginId# AND MBLOG_ID = mblog.MBLOG_ID ) AS ISFAVORITE
+                     FROM   IKEP4_MB_MBLOG mblog, IKEP4_MB_MBLOG mblog2,  IKEP4_EV_USER evUser  
+                     WHERE  mblog.MBLOG_ID 		= mblog2.RETWEET_MBLOG_ID 
+                       AND  mblog.MBGROUP_ID 	= #mbgroupId#
+                       AND (mblog.MBGROUP_ID <![CDATA[ <>  ]]> mblog2.MBGROUP_ID OR mblog2.MBGROUP_ID IS NULL)
+                       AND  mblog.REGISTER_ID 	= evUser.USER_ID
+					<isNotEmpty property="standardMblogId">
+						<isEqual property="standardType" compareValue="pre">
+			                 AND mblog.MBLOG_ID <![CDATA[ <  ]]> #standardMblogId#
+						</isEqual>
+						<isEqual property="standardType" compareValue="post">
+			                 AND mblog.MBLOG_ID <![CDATA[ >  ]]> #standardMblogId#
+						</isEqual>
+					</isNotEmpty>
+	                 ORDER BY mblog.MBLOG_ID DESC
+					 /* ===========================================END  */ 
+		    ) A 
+			<isNotEmpty property="standardType">
+				<isEqual property="standardType" compareValue="pre">
+		    		WHERE ROWNUM <![CDATA[  <=  ]]> #fetchSize# /* fetchSize  */
+				</isEqual>
+			</isNotEmpty>
+		)
+	</select>   
+		
+	<select id="selectMyMentionList" parameterClass="MblogSearchCondition" resultMap="result">  
+		SELECT /* [Mblog_SqlMap.xml] mblog.selectMyMentionList */ 
+    			<include refid="socialpack.microblogging.dao.mblog.sqlColumnList" />
+		FROM ( 
+		     SELECT A.* 
+		     FROM ( 
+			         /* START========================================= */			         
+                     SELECT mblog.MBLOG_ID, 
+							mblog.MBLOG_TYPE, 
+							mblog.PARENT_MBLOG_ID, 
+							mblog.THREAD_ID, 
+							mblog.MBGROUP_ID, 
+							mblog.RETWEET_MBLOG_ID, 
+							mblog.CONTENTS, 
+							mblog.IS_RETWEET_ALLOWED, 
+							mblog.REGISTER_ID, 
+							mblog.REGIST_DATE, 
+							mblog.CONTENTS_DISPLAY,
+							evUser.USER_NAME 			AS REGISTER_NAME,
+							evUser.USER_ENGLISH_NAME 	AS REGISTER_ENGLISH_NAME, 
+							evUser.PICTURE_PATH,
+							evUser.PROFILE_PICTURE_PATH ,
+							(SELECT MBLOG_ID FROM IKEP4_MB_FAVORITE WHERE USER_ID = #loginId# AND MBLOG_ID = mblog.MBLOG_ID ) AS ISFAVORITE
+                     FROM   IKEP4_MB_MBTAG mbtag, IKEP4_MB_MBLOG2TAG mblog2tag, IKEP4_MB_MBLOG mblog,  IKEP4_EV_USER evUser
+                     WHERE mblog.MBLOG_ID           = mblog2tag.MBLOG_ID
+                       AND mblog2tag.MBTAG_ID		= mbtag.MBTAG_ID
+		               AND mblog2tag.PORTAL_ID		= mbtag.PORTAL_ID
+                       AND mbtag.MBTAG_TYPE     	= '0'
+                       AND (mbtag.MBTAG_NAME     	= #ownerId# 
+                       		OR mbtag.MBTAG_NAME     = #ownerGroupId# 
+                       		)
+					   AND (mblog.MBGROUP_ID IS NULL OR length(mblog.MBGROUP_ID) = 0)
+					   AND  mblog.REGISTER_ID 	= evUser.USER_ID
+					<isNotEmpty property="standardMblogId">
+						<isEqual property="standardType" compareValue="pre">
+			                 AND mblog.MBLOG_ID <![CDATA[ <  ]]> #standardMblogId#
+						</isEqual>
+						<isEqual property="standardType" compareValue="post">
+			                 AND mblog.MBLOG_ID <![CDATA[ >  ]]> #standardMblogId#
+						</isEqual>
+					</isNotEmpty>
+	        		ORDER BY mblog.MBLOG_ID DESC
+					 /* ===========================================END  */ 
+		    ) A 
+			<isNotEmpty property="standardType">
+				<isEqual property="standardType" compareValue="pre">
+    				WHERE ROWNUM <![CDATA[  <=  ]]> #fetchSize# /* fetchSize  */
+				</isEqual>
+			</isNotEmpty>
+		)
+	</select>   
+	
+	<select id="selectFavoriteList" parameterClass="MblogSearchCondition" resultMap="result">  
+		SELECT /* [Mblog_SqlMap.xml] mblog.selectFavoriteList */ 
+    			<include refid="socialpack.microblogging.dao.mblog.sqlColumnList" />
+		FROM ( 
+		     SELECT A.* 
+		     FROM ( 
+			         /* START========================================= */
+			         SELECT mblog.MBLOG_ID, 
+							mblog.MBLOG_TYPE, 
+							mblog.PARENT_MBLOG_ID, 
+							mblog.THREAD_ID, 
+							mblog.MBGROUP_ID, 
+							mblog.RETWEET_MBLOG_ID, 
+							mblog.CONTENTS, 
+							mblog.IS_RETWEET_ALLOWED, 
+							mblog.REGISTER_ID, 
+							mblog.REGIST_DATE, 
+							mblog.CONTENTS_DISPLAY,
+							evUser.USER_NAME 			AS REGISTER_NAME,
+							evUser.USER_ENGLISH_NAME 	AS REGISTER_ENGLISH_NAME, 
+							evUser.PICTURE_PATH,
+							evUser.PROFILE_PICTURE_PATH ,
+							(SELECT MBLOG_ID FROM IKEP4_MB_FAVORITE WHERE USER_ID = #loginId# AND MBLOG_ID = mblog.MBLOG_ID ) AS ISFAVORITE
+			         FROM   IKEP4_MB_MBLOG mblog, IKEP4_MB_FAVORITE mbfavorite,  IKEP4_EV_USER evUser
+					 WHERE  mbfavorite.USER_ID 	= #ownerId#
+                 	   AND  mblog.MBLOG_ID 		= mbfavorite.MBLOG_ID
+					   AND (mblog.MBGROUP_ID IS NULL OR length(mblog.MBGROUP_ID) = 0)
+        	  		   AND  mblog.REGISTER_ID 	= evUser.USER_ID 					   
+					<isNotEmpty property="standardMblogId">
+						<isEqual property="standardType" compareValue="pre">
+			                 AND mblog.MBLOG_ID <![CDATA[ <  ]]> #standardMblogId#
+						</isEqual>
+						<isEqual property="standardType" compareValue="post">
+			                 AND mblog.MBLOG_ID <![CDATA[ >  ]]> #standardMblogId#
+						</isEqual>
+					</isNotEmpty>
+	                 ORDER BY mblog.MBLOG_ID DESC
+					 /* ===========================================END  */ 
+		    ) A 
+			<isNotEmpty property="standardType">
+				<isEqual property="standardType" compareValue="pre">
+    				WHERE ROWNUM <![CDATA[  <=  ]]> #fetchSize# /* fetchSize  */
+				</isEqual>
+			</isNotEmpty>
+		)
+	</select>   
+	
+	<!-- selectCount -->
+	<select id="selectCount" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+	  <![CDATA[
+		   SELECT /* [Mblog_SqlMap.xml] mblog.selectCount */ 
+		   COUNT(MBLOG_ID) 
+		   FROM IKEP4_MB_MBLOG WHERE MBLOG_ID = #id#
+	   ]]>
+	</select>
+	
+	<select id="selectTweetListByTag" parameterClass="MblogSearchCondition" resultMap="result">  
+		SELECT /* [Mblog_SqlMap.xml] mblog.selectTweetListByTag */ 
+    			<include refid="socialpack.microblogging.dao.mblog.sqlColumnList" />
+		FROM ( 
+		     SELECT A.* 
+		     FROM ( 
+			         /* START========================================= */
+			         SELECT mblog.MBLOG_ID, 
+							mblog.MBLOG_TYPE, 
+							mblog.PARENT_MBLOG_ID, 
+							mblog.THREAD_ID, 
+							mblog.MBGROUP_ID, 
+							mblog.RETWEET_MBLOG_ID, 
+							mblog.CONTENTS, 
+							mblog.IS_RETWEET_ALLOWED, 
+							mblog.REGISTER_ID, 
+							mblog.REGIST_DATE, 
+							mblog.CONTENTS_DISPLAY,
+							evUser.USER_NAME 			AS REGISTER_NAME,
+							evUser.USER_ENGLISH_NAME 	AS REGISTER_ENGLISH_NAME, 
+							evUser.PICTURE_PATH,
+							evUser.PROFILE_PICTURE_PATH ,
+							(SELECT MBLOG_ID FROM IKEP4_MB_FAVORITE WHERE USER_ID = #loginId# AND MBLOG_ID = mblog.MBLOG_ID ) AS ISFAVORITE
+			         FROM  IKEP4_MB_MBTAG mbtag, IKEP4_MB_MBLOG2TAG mblog2tag, IKEP4_MB_MBLOG mblog,  IKEP4_EV_USER evUser
+					 WHERE mbtag.MBTAG_TYPE 		= #mbtagType#
+					   AND lower(mbtag.MBTAG_NAME) 	like '%' || lower(#searchWord#) || '%'
+					   AND mbtag.MBTAG_ID 			= mblog2tag.MBTAG_ID
+				 	   AND mbtag.PORTAL_ID 			= mblog2tag.PORTAL_ID
+	  		  	  	   AND mbtag.PORTAL_ID 			= #portalId#
+					   AND mblog2tag.MBLOG_ID 		= mblog.MBLOG_ID
+					   AND (mblog.MBGROUP_ID IS NULL OR length(mblog.MBGROUP_ID) = 0)
+        	  		   AND  mblog.REGISTER_ID 		= evUser.USER_ID 
+					<isNotEmpty property="standardMblogId">
+						<isEqual property="standardType" compareValue="pre">
+			                 AND mblog.MBLOG_ID <![CDATA[ <  ]]> #standardMblogId#
+						</isEqual>
+						<isEqual property="standardType" compareValue="post">
+			                 AND mblog.MBLOG_ID <![CDATA[ >  ]]> #standardMblogId#
+						</isEqual>
+					</isNotEmpty>
+	                 ORDER BY mblog.MBLOG_ID DESC
+					 /* ===========================================END  */ 
+		    ) A 
+			<isNotEmpty property="standardType">
+				<isEqual property="standardType" compareValue="pre">
+    				WHERE ROWNUM <![CDATA[  <=  ]]> #fetchSize# /* fetchSize  */
+				</isEqual>
+			</isNotEmpty>
+		)
+	</select>   
+	
+	<select id="selectUserListByHashTag" parameterClass="MblogSearchCondition" resultMap="userResult">  
+		SELECT /* [Mblog_SqlMap.xml] mblog.selectUserListByHashTag */ 
+    			<include refid="socialpack.microblogging.dao.mblog.sqlUserColumnList" />
+		FROM ( 
+             SELECT evUser.*, (SELECT follow.FOLLOWING_USER_ID FROM IKEP4_MB_FOLLOW follow WHERE follow.USER_ID = #loginId# AND evUser.USER_ID = follow.FOLLOWING_USER_ID ) AS ISFOLLOWING 
+             FROM ( 
+                     /* START========================================= */
+                     SELECT distinct( mblog.REGISTER_ID )
+                     FROM  IKEP4_MB_MBTAG mbtag, IKEP4_MB_MBLOG2TAG mblog2tag, IKEP4_MB_MBLOG mblog
+                     WHERE mbtag.MBTAG_TYPE 		= '1'
+                       AND lower(mbtag.MBTAG_NAME) 	like '%' || lower(#searchWord#) || '%'
+                       AND mbtag.MBTAG_ID 			= mblog2tag.MBTAG_ID
+				 	   AND mbtag.PORTAL_ID 			= mblog2tag.PORTAL_ID
+	  		  	  	   AND mbtag.PORTAL_ID 			= #portalId#
+                       AND mblog2tag.MBLOG_ID 		= mblog.MBLOG_ID
+					   AND (mblog.MBGROUP_ID IS NULL OR length(mblog.MBGROUP_ID) = 0)
+                     ORDER BY  mblog.REGISTER_ID DESC
+                     /* ===========================================END  */ 
+            ) A,  IKEP4_EV_USER evUser
+            WHERE A.REGISTER_ID = evUser.USER_ID
+			<isNotEmpty property="standardUserId">
+				<isEqual property="standardType" compareValue="pre">
+	                 AND A.REGISTER_ID <![CDATA[ <  ]]> #standardUserId#
+				</isEqual>
+				<isEqual property="standardType" compareValue="post">
+	                 AND A.REGISTER_ID <![CDATA[ >  ]]> #standardUserId#
+				</isEqual>
+			</isNotEmpty>
+			<isNotEmpty property="standardType">
+				<isEqual property="standardType" compareValue="pre">
+				  AND ROWNUM  <![CDATA[  <=  ]]> #fetchSize# /* fetchSize  */
+				</isEqual>
+			</isNotEmpty>
+				  ORDER BY  A.REGISTER_ID DESC
+		)
+	</select>   
+	
+	<select id="selectUserListByMentionTag" parameterClass="MblogSearchCondition" resultMap="userResult">  
+		SELECT /* [Mblog_SqlMap.xml] mblog.selectUserListByMentionTag */  
+    			<include refid="socialpack.microblogging.dao.mblog.sqlUserColumnList" />
+		FROM ( 
+             SELECT A.*, (SELECT follow.FOLLOWING_USER_ID FROM IKEP4_MB_FOLLOW follow WHERE follow.USER_ID = #loginId# AND A.USER_ID = follow.FOLLOWING_USER_ID ) AS ISFOLLOWING
+             FROM ( 
+                     /* START========================================= */
+                     SELECT *
+                     FROM   IKEP4_EV_USER evUser
+                     WHERE lower(evUser.USER_ID) like  '%' || lower(#searchWord#) || '%'
+	  		  	  	   AND evUser.PORTAL_ID 			= #portalId#
+					<isNotEmpty property="standardUserId">
+						<isEqual property="standardType" compareValue="pre">
+			                 AND evUser.USER_ID <![CDATA[ <  ]]> #standardUserId#
+						</isEqual>
+						<isEqual property="standardType" compareValue="post">
+			                 AND evUser.USER_ID <![CDATA[ >  ]]> #standardUserId#
+						</isEqual>
+					</isNotEmpty>
+                     ORDER BY  evUser.USER_ID DESC
+                     /* ===========================================END  */ 
+            ) A
+			<isNotEmpty property="standardType">
+				<isEqual property="standardType" compareValue="pre">
+          			WHERE ROWNUM  <![CDATA[  <=  ]]> #fetchSize# /* fetchSize  */
+				</isEqual>
+			</isNotEmpty>
+		)
+	</select>   
+	
+	
+	<select id="selectTweetListByGroupTag" parameterClass="MblogSearchCondition" resultMap="result">  
+		SELECT /* [Mblog_SqlMap.xml] mblog.selectTweetListByGroupTag */ 
+    			<include refid="socialpack.microblogging.dao.mblog.sqlColumnList" />
+		FROM ( 
+		     SELECT A.MBLOG_ID, 
+					A.MBLOG_TYPE, 
+					A.PARENT_MBLOG_ID, 
+					A.THREAD_ID, 
+					A.MBGROUP_ID, 
+					A.RETWEET_MBLOG_ID, 
+					A.CONTENTS, 
+					A.IS_RETWEET_ALLOWED, 
+					A.REGISTER_ID, 
+					A.REGIST_DATE, 
+					A.CONTENTS_DISPLAY,
+					evUser.USER_NAME 			AS REGISTER_NAME,
+					evUser.USER_ENGLISH_NAME 	AS REGISTER_ENGLISH_NAME, 
+					evUser.PICTURE_PATH,
+					evUser.PROFILE_PICTURE_PATH ,
+					(SELECT MBLOG_ID FROM IKEP4_MB_FAVORITE WHERE USER_ID = #loginId# AND MBLOG_ID = A.MBLOG_ID ) AS ISFAVORITE 
+		     FROM ( 
+			         /* START========================================= */
+			         SELECT mblog.*
+			         FROM   IKEP4_MB_MBTAG mbtag, IKEP4_MB_MBLOG2TAG mblog2tag, IKEP4_MB_MBLOG mblog
+					 WHERE  mbtag.MBTAG_TYPE 		= #mbtagType#
+						AND lower(mbtag.MBTAG_NAME) like '%' || lower(#searchWord#) || '%'
+						AND mbtag.MBTAG_ID 			= mblog2tag.MBTAG_ID
+				 		AND mbtag.PORTAL_ID 		= mblog2tag.PORTAL_ID
+	  		  	  	    AND mbtag.PORTAL_ID 		= #portalId#
+						AND mblog2tag.MBLOG_ID 		= mblog.MBLOG_ID
+	                    AND mblog.MBGROUP_ID		= #mbgroupId#
+					<isNotEmpty property="standardMblogId">
+						<isEqual property="standardType" compareValue="pre">
+			                 AND mblog.MBLOG_ID <![CDATA[ <  ]]> #standardMblogId#
+						</isEqual>
+						<isEqual property="standardType" compareValue="post">
+			                 AND mblog.MBLOG_ID <![CDATA[ >  ]]> #standardMblogId#
+						</isEqual>
+					</isNotEmpty>
+					
+					UNION
+					
+			         SELECT mblog.*
+			         FROM   IKEP4_MB_MBTAG mbtag, IKEP4_MB_MBLOG2TAG mblog2tag, IKEP4_MB_MBLOG mblog, IKEP4_MB_MBTAG mbtag2, IKEP4_MB_MBLOG2TAG mblog2tag2
+					 WHERE  mbtag.MBTAG_TYPE 		= #mbtagType#
+						AND lower(mbtag.MBTAG_NAME) like '%' || lower(#searchWord#) || '%'
+						AND mbtag.MBTAG_ID 			= mblog2tag.MBTAG_ID
+				 		AND mbtag.PORTAL_ID 		= mblog2tag.PORTAL_ID
+	  		  	  	    AND mbtag.PORTAL_ID 		= #portalId#
+						AND mblog2tag.MBLOG_ID 		= mblog.MBLOG_ID
+						
+						AND mbtag2.MBTAG_TYPE 		= '0'
+						AND mbtag2.MBTAG_NAME 		= #mbgroupId#
+						AND mbtag2.MBTAG_ID 		= mblog2tag2.MBTAG_ID
+						AND mblog2tag2.MBLOG_ID 	= mblog.MBLOG_ID
+					<isNotEmpty property="standardMblogId">
+						<isEqual property="standardType" compareValue="pre">
+			                 AND mblog.MBLOG_ID <![CDATA[ <  ]]> #standardMblogId#
+						</isEqual>
+						<isEqual property="standardType" compareValue="post">
+			                 AND mblog.MBLOG_ID <![CDATA[ >  ]]> #standardMblogId#
+						</isEqual>
+					</isNotEmpty>
+					 /* ===========================================END  */ 
+		    ) A, IKEP4_EV_USER evUser 
+			WHERE A.REGISTER_ID 		= evUser.USER_ID 
+	        ORDER BY A.MBLOG_ID DESC
+	    ) 
+		<isNotEmpty property="standardType">
+			<isEqual property="standardType" compareValue="pre">
+   				WHERE ROWNUM <![CDATA[  <=  ]]> #fetchSize# /* fetchSize  */
+			</isEqual>
+		</isNotEmpty>
+	</select>   
+	
+	<select id="selectUserListByGroupHashTag" parameterClass="MblogSearchCondition" resultMap="userResult">  
+		SELECT /* [Mblog_SqlMap.xml] mblog.selectUserListByGroupHashTag */ 
+    			<include refid="socialpack.microblogging.dao.mblog.sqlUserColumnList" />
+		FROM ( 
+             SELECT evUser.*, (SELECT follow.FOLLOWING_USER_ID FROM IKEP4_MB_FOLLOW follow WHERE follow.USER_ID = #loginId# AND evUser.USER_ID = follow.FOLLOWING_USER_ID ) AS ISFOLLOWING 
+             FROM ( 
+			     SELECT A.* 
+			     FROM ( 
+	                     /* START========================================= */
+	                     SELECT distinct( mblog.REGISTER_ID ) AS REGISTER_ID, '' AS ISFOLLOWING
+	                     FROM   IKEP4_MB_MBTAG mbtag, IKEP4_MB_MBLOG2TAG mblog2tag, IKEP4_MB_MBLOG mblog
+	                     WHERE  mbtag.MBTAG_TYPE 		= '1'
+	                        AND lower(mbtag.MBTAG_NAME) like '%' || lower(#searchWord#) || '%'
+	                        AND mbtag.MBTAG_ID 			= mblog2tag.MBTAG_ID
+				 			AND mbtag.PORTAL_ID 		= mblog2tag.PORTAL_ID
+	  		  	  	   		AND mbtag.PORTAL_ID 		= #portalId#
+	                        AND mblog2tag.MBLOG_ID 		= mblog.MBLOG_ID							
+		                    AND mblog.MBGROUP_ID		= #mbgroupId#
+	                        
+						UNION
+	                        
+	                     SELECT distinct( mblog.REGISTER_ID ) AS REGISTER_ID, '' AS ISFOLLOWING
+	                     FROM   IKEP4_MB_MBTAG mbtag, IKEP4_MB_MBLOG2TAG mblog2tag, IKEP4_MB_MBLOG mblog, IKEP4_MB_MBTAG mbtag2, IKEP4_MB_MBLOG2TAG mblog2tag2
+	                     WHERE  mbtag.MBTAG_TYPE 		= '1'
+	                        AND lower(mbtag.MBTAG_NAME) like '%' || lower(#searchWord#) || '%'
+	                        AND mbtag.MBTAG_ID 			= mblog2tag.MBTAG_ID
+				 			AND mbtag.PORTAL_ID 		= mblog2tag.PORTAL_ID
+	  		  	  	   		AND mbtag.PORTAL_ID 		= #portalId#
+	                        AND mblog2tag.MBLOG_ID 		= mblog.MBLOG_ID
+							
+							AND mbtag2.MBTAG_TYPE 		= '0'
+							AND mbtag2.MBTAG_NAME 		= #mbgroupId#
+							AND mbtag2.MBTAG_ID 		= mblog2tag2.MBTAG_ID
+							AND mblog2tag2.MBLOG_ID 	= mblog.MBLOG_ID
+	                     /* ===========================================END  */ 
+	            ) A
+	            ORDER BY  A.REGISTER_ID DESC
+            ) B,  IKEP4_EV_USER evUser
+            WHERE B.REGISTER_ID = evUser.USER_ID
+			<isNotEmpty property="standardUserId">
+				<isEqual property="standardType" compareValue="pre">
+	                 AND B.REGISTER_ID <![CDATA[ <  ]]> #standardUserId#
+				</isEqual>
+				<isEqual property="standardType" compareValue="post">
+	                 AND B.REGISTER_ID <![CDATA[ >  ]]> #standardUserId#
+				</isEqual>
+			</isNotEmpty>
+			<isNotEmpty property="standardType">
+				<isEqual property="standardType" compareValue="pre">
+				  AND ROWNUM  <![CDATA[  <=  ]]> #fetchSize# /* fetchSize  */
+				</isEqual>
+			</isNotEmpty>
+				  ORDER BY  B.REGISTER_ID DESC
+		)
+	</select>   
+	
+	<select id="selectUserListByGroupMentionTag" parameterClass="MblogSearchCondition" resultMap="userResult">  
+		SELECT /* [Mblog_SqlMap.xml] mblog.selectUserListByGroupMentionTag */  
+    			<include refid="socialpack.microblogging.dao.mblog.sqlUserColumnList" />
+		FROM ( 
+             SELECT A.*, (SELECT follow.FOLLOWING_USER_ID FROM IKEP4_MB_FOLLOW follow WHERE follow.USER_ID = #loginId# AND A.USER_ID = follow.FOLLOWING_USER_ID ) AS ISFOLLOWING 
+             FROM ( 
+                     /* START========================================= */
+                     SELECT evUser.*
+                     FROM   IKEP4_EV_USER evUser, IKEP4_MB_MBGROUP_MEMBER mbgroupMember
+                     WHERE  lower(evUser.USER_ID) like  '%' || lower(#searchWord#) || '%'
+                     
+                       AND  mbgroupmember.MBGROUP_ID  	= #mbgroupId#
+                       AND  mbgroupmember.STATUS		= '1'
+                       AND  evUser.USER_ID				= mbgroupMember.MEMBER_ID
+	  		  	  	   AND  evUser.PORTAL_ID 			= #portalId#
+                     
+					<isNotEmpty property="standardUserId">
+						<isEqual property="standardType" compareValue="pre">
+			                 AND evUser.USER_ID <![CDATA[ <  ]]> #standardUserId#
+						</isEqual>
+						<isEqual property="standardType" compareValue="post">
+			                 AND evUser.USER_ID <![CDATA[ >  ]]> #standardUserId#
+						</isEqual>
+					</isNotEmpty>
+                     ORDER BY  evUser.USER_ID DESC
+                     /* ===========================================END  */ 
+            ) A
+			<isNotEmpty property="standardType">
+				<isEqual property="standardType" compareValue="pre">
+          			WHERE ROWNUM  <![CDATA[  <=  ]]> #fetchSize# /* fetchSize  */
+				</isEqual>
+			</isNotEmpty>
+		)
+	</select>   
+	
+	
+	<select id="selectParentNReplyListByMblogId" parameterClass="MblogSearchCondition" resultMap="result">  
+		SELECT /* [Mblog_SqlMap.xml] mblog.selectParentNReplyListByMblogId */ 
+    			<include refid="socialpack.microblogging.dao.mblog.sqlColumnList" />
+        FROM   (  
+				SELECT  mblog.MBLOG_ID, 
+						mblog.MBLOG_TYPE, 
+						mblog.PARENT_MBLOG_ID, 
+						mblog.THREAD_ID, 
+						mblog.MBGROUP_ID, 
+						mblog.RETWEET_MBLOG_ID, 
+						mblog.CONTENTS, 
+						mblog.IS_RETWEET_ALLOWED, 
+						mblog.REGISTER_ID, 
+						mblog.REGIST_DATE, 
+						mblog.CONTENTS_DISPLAY,
+						evUser.USER_NAME 			AS REGISTER_NAME,
+						evUser.USER_ENGLISH_NAME 	AS REGISTER_ENGLISH_NAME, 
+						evUser.PICTURE_PATH,
+						evUser.PROFILE_PICTURE_PATH ,
+						(SELECT MBLOG_ID FROM IKEP4_MB_FAVORITE WHERE USER_ID = #loginId# AND MBLOG_ID = mblog.MBLOG_ID ) AS ISFAVORITE
+		        FROM   IKEP4_MB_MBLOG mblog,  IKEP4_EV_USER evUser
+		        WHERE  mblog.REGISTER_ID 	= evUser.USER_ID   
+		          AND  (
+					       mblog.MBLOG_ID = #mblogId#
+				           OR  mblog.PARENT_MBLOG_ID = #mblogId#
+				           OR  mblog.MBLOG_ID = 
+				                        (
+					                        SELECT PARENT_MBLOG_ID
+					                        FROM   IKEP4_MB_MBLOG  
+					                        WHERE  MBLOG_ID = #mblogId#
+				                        )
+		               )
+	            )A
+		ORDER BY A.MBLOG_ID ASC
+	</select>   
+	
+	<select id="selectRetweetUserListByMblogId" parameterClass="MblogSearchCondition" resultMap="userResult">  
+		SELECT /* [Mblog_SqlMap.xml] mblog.selectRetweetUserListByMblogId */  
+    			<include refid="socialpack.microblogging.dao.mblog.sqlUserColumnList" />
+		FROM ( 
+             SELECT evUser.*, (SELECT follow.FOLLOWING_USER_ID FROM IKEP4_MB_FOLLOW follow WHERE follow.USER_ID = #loginId# AND evUser.USER_ID = follow.FOLLOWING_USER_ID ) AS ISFOLLOWING
+             FROM  
+             (
+                 SELECT distinct (mblog.REGISTER_ID)
+                 FROM   IKEP4_MB_MBLOG mblog  
+                 WHERE  mblog.RETWEET_MBLOG_ID = #mblogId#
+             )A ,  IKEP4_EV_USER evUser
+             WHERE A.REGISTER_ID = evUser.USER_ID
+		)
+	</select>   
+	
+	<select id="selectRetweetStatisticsByMblogId" parameterClass="java.lang.String" resultMap="queryReturnResult">  
+		SELECT /* [Mblog_SqlMap.xml] mblog.selectRetweetStatisticsByMblogId */  
+    			<include refid="socialpack.microblogging.dao.mblog.sqlQueryReturnColumnList" />
+		FROM ( 
+                    SELECT A.DAYS, COUNT(*) CNT
+                    FROM
+                     (                     
+                        SELECT TO_CHAR( (SELECT mblog.REGIST_DATE
+                                         FROM    IKEP4_MB_MBLOG mblog  
+                                         WHERE  mblog.MBLOG_ID = #id#) + (level - 1),'YYYYMMDD') REGIST_DATE
+                               , level-1 DAYS
+                        FROM DUAL CONNECT BY level <![CDATA[ <=  ]]> 11     
+                    ) A,
+                    (
+                         SELECT  TO_CHAR(mblog.REGIST_DATE, 'YYYYMMDD') REGIST_DATE
+                         FROM   IKEP4_MB_MBLOG mblog  
+                         WHERE  mblog.RETWEET_MBLOG_ID = #id#
+                     ) B
+                    WHERE A.REGIST_DATE <![CDATA[ >=  ]]> B.REGIST_DATE
+                      AND A.REGIST_DATE <![CDATA[ <=  ]]> TO_CHAR(SYSDATE, 'YYYYMMDD') 
+                    GROUP BY A.DAYS
+                    ORDER BY A.DAYS
+		)
+	</select>   
+	
+	<select id="selectMentionedUserListByMblogId" parameterClass="MblogSearchCondition" resultMap="userResult">  
+		SELECT /* [Mblog_SqlMap.xml] mblog.selectMentionedUserListByMblogId */  
+    			<include refid="socialpack.microblogging.dao.mblog.sqlUserColumnList" />
+		FROM ( 
+             SELECT evUser.*, (SELECT follow.FOLLOWING_USER_ID FROM IKEP4_MB_FOLLOW follow WHERE follow.USER_ID = #loginId# AND evUser.USER_ID = follow.FOLLOWING_USER_ID ) AS ISFOLLOWING
+             FROM ( 
+                     /* START========================================= */
+                     SELECT distinct(mbtag.MBTAG_NAME) USER_ID
+                     FROM    IKEP4_MB_MBLOG mblog,  IKEP4_MB_MBLOG2TAG mblog2tag, IKEP4_MB_MBTAG mbtag
+                     WHERE mblog.MBLOG_ID = #mblogId#
+                            AND mblog.MBLOG_ID 		=  mblog2tag.MBLOG_ID
+				 			AND mbtag.PORTAL_ID 	= mblog2tag.PORTAL_ID
+                            AND mblog2tag.MBTAG_ID 	= mbtag.MBTAG_ID
+                            AND mbtag.MBTAG_TYPE 	= '0'
+                     /* ===========================================END  */ 
+            ) A,  IKEP4_EV_USER evUser 
+            WHERE A.USER_ID = evUser.USER_ID
+		)
+	</select>   
+	
+	<select id="selectUserInfoByUserId" parameterClass="MblogSearchCondition" resultMap="userResult">  
+		SELECT /* [Mblog_SqlMap.xml] mblog.selectUserInfoByUserId */  
+    			<include refid="socialpack.microblogging.dao.mblog.sqlUserColumnList" />
+		FROM ( 
+             SELECT evUser.*, (SELECT follow.FOLLOWING_USER_ID FROM IKEP4_MB_FOLLOW follow WHERE follow.USER_ID = #loginId# AND evUser.USER_ID = follow.FOLLOWING_USER_ID ) AS ISFOLLOWING
+             FROM IKEP4_EV_USER evUser 
+             WHERE evUser.USER_ID = #memberId#
+		)
+	</select>   
+	
+	<!-- selectMyTweetCount -->
+	<select id="selectMyTweetCount" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+	  <![CDATA[
+			SELECT /* [Mblog_SqlMap.xml] mblog.selectMyTweetCount */ 
+			 COUNT(*) 
+			FROM IKEP4_MB_MBLOG 
+			WHERE REGISTER_ID = #id#
+			  AND (MBGROUP_ID IS NULL OR length(MBGROUP_ID) = 0) 
+	   ]]>
+	</select>
+	
+	<select id="selectTimelineListUserOnly" parameterClass="MblogSearchCondition" resultMap="result">  
+		SELECT /* [Mblog_SqlMap.xml] mblog.selectTimelineListUserOnly */ 
+    			<include refid="socialpack.microblogging.dao.mblog.sqlColumnList" />
+		FROM ( 
+		     SELECT A.* 
+		     FROM ( 
+				     SELECT B.MBLOG_ID, 
+							B.MBLOG_TYPE, 
+							B.PARENT_MBLOG_ID, 
+							B.THREAD_ID, 
+							B.MBGROUP_ID, 
+							B.RETWEET_MBLOG_ID, 
+							B.CONTENTS, 
+							B.IS_RETWEET_ALLOWED, 
+							B.REGISTER_ID, 
+							B.REGIST_DATE, 
+							B.CONTENTS_DISPLAY,
+							evUser.USER_NAME 			AS REGISTER_NAME,
+							evUser.USER_ENGLISH_NAME 	AS REGISTER_ENGLISH_NAME,
+							evUser.PICTURE_PATH,
+							evUser.PROFILE_PICTURE_PATH ,
+							(SELECT MBLOG_ID FROM IKEP4_MB_FAVORITE WHERE USER_ID = #loginId# AND MBLOG_ID =B.MBLOG_ID ) AS ISFAVORITE 
+				     FROM ( 
+					         /* START========================================= */
+					         SELECT 
+								   	mblog.*
+					         FROM   IKEP4_MB_MBLOG mblog
+							 WHERE  
+						 			mblog.REGISTER_ID = #ownerId#
+							<isNotEmpty property="standardMblogId">
+								<isEqual property="standardType" compareValue="pre">
+					                 AND mblog.MBLOG_ID <![CDATA[ <  ]]> #standardMblogId#
+								</isEqual>
+								<isEqual property="standardType" compareValue="post">
+					                 AND mblog.MBLOG_ID <![CDATA[ >  ]]> #standardMblogId#
+								</isEqual>
+							</isNotEmpty>
+							   AND (mblog.MBGROUP_ID IS NULL OR length(mblog.MBGROUP_ID) = 0)
+							   
+							 /* ===========================================END  */ 
+				    ) B, IKEP4_EV_USER evUser
+				    WHERE B.REGISTER_ID 		= evUser.USER_ID
+			        ORDER BY B.MBLOG_ID DESC
+		    ) A 
+    		WHERE ROWNUM <![CDATA[  <=  ]]> #fetchSize# /* fetchSize  */
+		)
+	</select>   
+	
+	<select id="selectFollowingList" parameterClass="MblogSearchCondition" resultMap="userResult">  
+		SELECT /* [Mblog_SqlMap.xml] mblog.selectFollowingList */ 
+    			<include refid="socialpack.microblogging.dao.mblog.sqlUserColumnList" />
+		FROM ( 
+             SELECT evUser.*, evUser.USER_ID AS ISFOLLOWING
+             FROM ( 
+                     /* START========================================= */
+                     SELECT followA.FOLLOWING_USER_ID
+                     FROM   IKEP4_MB_FOLLOW followA
+					<isNotEmpty property="bothFollow">
+						<isEqual property="bothFollow" compareValue="Y">
+			                 ,IKEP4_MB_FOLLOW followB
+						</isEqual>
+					</isNotEmpty>
+                     WHERE  followA.USER_ID = #ownerId#
+					<isNotEmpty property="bothFollow">
+						<isEqual property="bothFollow" compareValue="Y">
+							AND followB.USER_ID = #loginId#
+							AND followA.FOLLOWING_USER_ID =  followB.FOLLOWING_USER_ID 
+						</isEqual>
+					</isNotEmpty>
+				<isNotEmpty property="standardUserId">
+					<isEqual property="standardType" compareValue="pre">
+		                 AND followA.FOLLOWING_USER_ID <![CDATA[ <  ]]> #standardUserId#
+					</isEqual>
+					<isEqual property="standardType" compareValue="post">
+		                 AND followA.FOLLOWING_USER_ID <![CDATA[ >  ]]> #standardUserId#
+					</isEqual>
+				</isNotEmpty>
+                     ORDER BY  followA.FOLLOWING_USER_ID DESC
+                     /* ===========================================END  */ 
+            ) A,  IKEP4_EV_USER evUser
+            WHERE A.FOLLOWING_USER_ID = evUser.USER_ID
+				<isNotEmpty property="standardType">
+					<isEqual property="standardType" compareValue="pre">
+				  AND ROWNUM  <![CDATA[  <=  ]]> #fetchSize# /* fetchSize  */
+					</isEqual>
+				</isNotEmpty>
+				  ORDER BY  A.FOLLOWING_USER_ID DESC
+		)
+	</select>   
+	
+	<select id="selectFollowerList" parameterClass="MblogSearchCondition" resultMap="userResult">  
+		SELECT /* [Mblog_SqlMap.xml] mblog.selectFollowerList */ 
+    			<include refid="socialpack.microblogging.dao.mblog.sqlUserColumnList" />
+		FROM ( 
+             SELECT evUser.*, (SELECT follow.FOLLOWING_USER_ID FROM IKEP4_MB_FOLLOW follow WHERE follow.USER_ID = #loginId# AND evUser.USER_ID = follow.FOLLOWING_USER_ID ) AS ISFOLLOWING
+             FROM ( 
+                     /* START========================================= */
+                     SELECT /*+ index ( followA IDX_MB_FOLLOW_IE1) */ followA.USER_ID
+                     FROM   IKEP4_MB_FOLLOW followA
+					<isNotEmpty property="bothFollow">
+						<isEqual property="bothFollow" compareValue="Y">
+			                 ,IKEP4_MB_FOLLOW followB
+						</isEqual>
+					</isNotEmpty>
+                     WHERE  followA.FOLLOWING_USER_ID = #ownerId#
+					<isNotEmpty property="bothFollow">
+						<isEqual property="bothFollow" compareValue="Y">
+							AND followB.FOLLOWING_USER_ID = #loginId#
+							AND followA.USER_ID =  followB.USER_ID 
+						</isEqual>
+					</isNotEmpty>
+				<isNotEmpty property="standardUserId">
+					<isEqual property="standardType" compareValue="pre">
+		                 AND followA.USER_ID <![CDATA[ <  ]]> #standardUserId#
+					</isEqual>
+					<isEqual property="standardType" compareValue="post">
+		                 AND followA.USER_ID <![CDATA[ >  ]]> #standardUserId#
+					</isEqual>
+				</isNotEmpty>
+                     ORDER BY  followA.USER_ID DESC
+                     /* ===========================================END  */ 
+            ) A,  IKEP4_EV_USER evUser
+            WHERE A.USER_ID = evUser.USER_ID
+				<isNotEmpty property="standardType">
+					<isEqual property="standardType" compareValue="pre">
+				  AND ROWNUM  <![CDATA[  <=  ]]> #fetchSize# /* fetchSize  */
+					</isEqual>
+				</isNotEmpty>
+				  ORDER BY  A.USER_ID DESC
+		)
+	</select>   
+
+	<!-- selectGroupTweetCount -->
+	<select id="selectGroupTweetCount" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+	  <![CDATA[
+			SELECT /* [Mblog_SqlMap.xml] mblog.selectGroupTweetCount */ 
+			 COUNT(*) 
+			FROM IKEP4_MB_MBLOG 
+			WHERE MBGROUP_ID = #id#
+	   ]]>
+	</select>
+
+	<select id="selectUserIdForAutoComplete" parameterClass="MblogSearchCondition" resultClass="java.lang.String">  
+		SELECT /* [Mblog_SqlMap.xml] mblog.selectUserIdForAutoComplete */ 
+          USER_ID
+        FROM (
+             SELECT USER_ID, min(TYPE)
+            FROM (
+                     SELECT mbtag.MBTAG_NAME as USER_ID, max(mblog.REGIST_DATE)  REGIST_DATE, '1' as TYPE
+                     FROM   IKEP4_MB_MBLOG mblog , IKEP4_MB_MBLOG2TAG mblog2tag, IKEP4_MB_MBTAG mbtag  
+                     WHERE  mblog.MBLOG_ID			= mblog2tag.MBLOG_ID  
+                       AND  mblog2tag.MBTAG_ID		= mbtag.MBTAG_ID 
+		               AND  mblog2tag.PORTAL_ID		= mbtag.PORTAL_ID
+                       AND  mbtag.MBTAG_TYPE		= '0' 
+                       AND  mblog.REGISTER_ID		= #loginId#
+                       AND  mbtag.MBTAG_NAME 	like #memberId#||'%'
+                       AND  mblog.REGIST_DATE <![CDATA[  >=  ]]>  (add_months(SYSDATE,-1))
+                       GROUP BY mbtag.MBTAG_NAME
+                       
+                   UNION    
+                       
+                   SELECT  FOLLOWING_USER_ID as USER_ID,  REGIST_DATE, '2' as TYPE
+                    FROM IKEP4_MB_FOLLOW 
+                   WHERE USER_ID =  #loginId# 
+                     AND FOLLOWING_USER_ID 		like #memberId#||'%'
+                      
+              ) A
+              GROUP BY USER_ID
+              ORDER BY min(TYPE) ASC, max(REGIST_DATE) DESC
+        ) B             
+        WHERE ROWNUM   <![CDATA[  <=  ]]>  10 
+        ORDER BY USER_ID
+	</select>   
+	
+	<select id="selectRecentFileListByAddonType" parameterClass="MblogSearchCondition" resultMap="addonFileResult">  
+		SELECT /* [Mblog_SqlMap.xml] mblog.selectRecentFileListByAddonType */ 
+    			DISPLAY_CODE, FILE_REAL_NAME
+		FROM ( 
+		     SELECT A.* 
+		     FROM ( 
+			         /* START========================================= */
+                     SELECT mbaddon.DISPLAY_CODE, (select dmfile.FILE_REAL_NAME from IKEP4_DM_FILE dmfile where mbaddon.SOURCE_LINK     = dmfile.FILE_ID) FILE_REAL_NAME
+                     FROM   IKEP4_MB_MBLOG mblog, IKEP4_MB_MBLOG2ADDON mblog2addon, IKEP4_MB_ADDON mbaddon
+                     WHERE  mblog.REGISTER_ID         = #loginId#
+                       AND  mblog.MBLOG_ID            = mblog2addon.MBLOG_ID
+                       AND  mblog2addon.ADDON_CODE    = mbaddon.ADDON_CODE
+                       AND  mbaddon.ADDON_TYPE        = #addonType#                        
+                      GROUP BY mbaddon.DISPLAY_CODE, mbaddon.SOURCE_LINK
+                      ORDER BY max(mblog.REGIST_DATE) DESC
+					 /* ===========================================END  */ 
+		    ) A 
+			  WHERE ROWNUM  <![CDATA[  <=  ]]> 10 /* fetchSize  */
+		)
+	</select>   
+		
+	<select id="selectWorkspaceTimelineList" parameterClass="MblogSearchCondition" resultMap="result">  
+		SELECT /* [Mblog_SqlMap.xml] mblog.selectWorkspaceTimelineList */ 
+    			<include refid="socialpack.microblogging.dao.mblog.sqlColumnList" />
+		FROM ( 
+		     SELECT A.* 
+		     FROM ( 
+			         /* START========================================= */
+			         SELECT mblog.MBLOG_ID, 
+							mblog.MBLOG_TYPE, 
+							mblog.PARENT_MBLOG_ID, 
+							mblog.THREAD_ID, 
+							mblog.MBGROUP_ID, 
+							mblog.RETWEET_MBLOG_ID, 
+							mblog.CONTENTS, 
+							mblog.IS_RETWEET_ALLOWED, 
+							mblog.REGISTER_ID, 
+							mblog.REGIST_DATE, 
+							mblog.CONTENTS_DISPLAY,
+							evUser.USER_NAME 			AS REGISTER_NAME,
+							evUser.USER_ENGLISH_NAME 	AS REGISTER_ENGLISH_NAME, 
+							evUser.PICTURE_PATH,
+							evUser.PROFILE_PICTURE_PATH ,
+							(SELECT MBLOG_ID FROM IKEP4_MB_FAVORITE WHERE USER_ID = #loginId# AND MBLOG_ID = mblog.MBLOG_ID ) AS ISFAVORITE
+			         FROM   IKEP4_MB_MBLOG mblog,  IKEP4_EV_USER evUser  
+						    , 
+							 (
+			                    SELECT MEMBER_ID as USER_ID 
+			                    FROM IKEP4_WS_MEMBER
+			                    WHERE WORKSPACE_ID = #workspaceId#
+			                      AND MEMBER_LEVEL IN ('1','2','3','4') 
+			                 ) userlist
+					 WHERE mblog.REGISTER_ID 	= evUser.USER_ID
+					   AND mblog.REGISTER_ID 	= userlist.USER_ID 
+					<isNotEmpty property="standardMblogId">
+						<isEqual property="standardType" compareValue="pre">
+			                 AND mblog.MBLOG_ID <![CDATA[ <  ]]> #standardMblogId#
+						</isEqual>
+						<isEqual property="standardType" compareValue="post">
+			                 AND mblog.MBLOG_ID <![CDATA[ >  ]]> #standardMblogId#
+						</isEqual>
+					</isNotEmpty>
+					   AND (mblog.MBGROUP_ID IS NULL OR length(mblog.MBGROUP_ID) = 0)
+	                 ORDER BY mblog.MBLOG_ID DESC
+					 /* ===========================================END  */ 
+		    ) A 
+			<isNotEmpty property="standardType">
+				<isEqual property="standardType" compareValue="pre">
+    				WHERE ROWNUM <![CDATA[  <=  ]]> #fetchSize# /* fetchSize  */
+				</isEqual>
+			</isNotEmpty>
+		)
+	</select>   
+	
+	<select id="selectTeamTimelineList" parameterClass="MblogSearchCondition" resultMap="result">  
+		SELECT /* [Mblog_SqlMap.xml] mblog.selectMyMentionList */ 
+    			<include refid="socialpack.microblogging.dao.mblog.sqlColumnList" />
+		FROM ( 
+		     SELECT A.* 
+		     FROM ( 
+			         /* START========================================= */			         
+                     SELECT mblog.MBLOG_ID, 
+							mblog.MBLOG_TYPE, 
+							mblog.PARENT_MBLOG_ID, 
+							mblog.THREAD_ID, 
+							mblog.MBGROUP_ID, 
+							mblog.RETWEET_MBLOG_ID, 
+							mblog.CONTENTS, 
+							mblog.IS_RETWEET_ALLOWED, 
+							mblog.REGISTER_ID, 
+							mblog.REGIST_DATE, 
+							mblog.CONTENTS_DISPLAY,
+							evUser.USER_NAME 			AS REGISTER_NAME,
+							evUser.USER_ENGLISH_NAME 	AS REGISTER_ENGLISH_NAME, 
+							evUser.PICTURE_PATH,
+							evUser.PROFILE_PICTURE_PATH ,
+							(SELECT MBLOG_ID FROM IKEP4_MB_FAVORITE WHERE USER_ID = #loginId# AND MBLOG_ID = mblog.MBLOG_ID ) AS ISFAVORITE
+                     FROM   IKEP4_MB_MBTAG mbtag, IKEP4_MB_MBLOG2TAG mblog2tag, IKEP4_MB_MBLOG mblog,  IKEP4_EV_USER evUser
+                     WHERE mblog.MBLOG_ID           = mblog2tag.MBLOG_ID
+                       AND mblog2tag.MBTAG_ID		= mbtag.MBTAG_ID
+		               AND mblog2tag.PORTAL_ID		= mbtag.PORTAL_ID
+                       AND mbtag.MBTAG_TYPE     	= '0'
+                       AND mbtag.MBTAG_NAME     	= #ownerGroupId# 
+					   AND (mblog.MBGROUP_ID IS NULL OR length(mblog.MBGROUP_ID) = 0)
+					   AND mblog.REGISTER_ID 		= evUser.USER_ID
+					<isNotEmpty property="standardMblogId">
+						<isEqual property="standardType" compareValue="pre">
+			                 AND mblog.MBLOG_ID <![CDATA[ <  ]]> #standardMblogId#
+						</isEqual>
+						<isEqual property="standardType" compareValue="post">
+			                 AND mblog.MBLOG_ID <![CDATA[ >  ]]> #standardMblogId#
+						</isEqual>
+					</isNotEmpty>
+	        		ORDER BY mblog.MBLOG_ID DESC
+					 /* ===========================================END  */ 
+		    ) A 
+			<isNotEmpty property="standardType">
+				<isEqual property="standardType" compareValue="pre">
+    				WHERE ROWNUM <![CDATA[  <=  ]]> #fetchSize# /* fetchSize  */
+				</isEqual>
+			</isNotEmpty>
+		)
+	</select>   
+	
+	<select id="selectFollowingTimelineList" parameterClass="MblogSearchCondition" resultMap="result">  
+		SELECT /* [Mblog_SqlMap.xml] mblog.selectWorkspaceTimelineList */ 
+    			<include refid="socialpack.microblogging.dao.mblog.sqlColumnList" />
+		FROM ( 
+		     SELECT A.* 
+		     FROM ( 
+			         /* START========================================= */
+			         SELECT mblog.MBLOG_ID, 
+							mblog.MBLOG_TYPE, 
+							mblog.PARENT_MBLOG_ID, 
+							mblog.THREAD_ID, 
+							mblog.MBGROUP_ID, 
+							mblog.RETWEET_MBLOG_ID, 
+							mblog.CONTENTS, 
+							mblog.IS_RETWEET_ALLOWED, 
+							mblog.REGISTER_ID, 
+							mblog.REGIST_DATE, 
+							mblog.CONTENTS_DISPLAY,
+							evUser.USER_NAME 			AS REGISTER_NAME,
+							evUser.USER_ENGLISH_NAME 	AS REGISTER_ENGLISH_NAME, 
+							evUser.PICTURE_PATH,
+							evUser.PROFILE_PICTURE_PATH ,
+							(SELECT MBLOG_ID FROM IKEP4_MB_FAVORITE WHERE USER_ID = #loginId# AND MBLOG_ID = mblog.MBLOG_ID ) AS ISFAVORITE
+			         FROM   IKEP4_MB_MBLOG mblog,  IKEP4_EV_USER evUser  
+							, 
+							 (
+			                    SELECT FOLLOWING_USER_ID as USER_ID 
+			                    FROM IKEP4_MB_FOLLOW
+			                    WHERE USER_ID = #ownerId#
+			                 ) userlist
+					 WHERE  mblog.REGISTER_ID 	= evUser.USER_ID 
+					   AND	mblog.REGISTER_ID 	= userlist.USER_ID 
+					<isNotEmpty property="standardMblogId">
+						<isEqual property="standardType" compareValue="pre">
+			                 AND mblog.MBLOG_ID <![CDATA[ <  ]]> #standardMblogId#
+						</isEqual>
+						<isEqual property="standardType" compareValue="post">
+			                 AND mblog.MBLOG_ID <![CDATA[ >  ]]> #standardMblogId#
+						</isEqual>
+					</isNotEmpty>
+					   AND (mblog.MBGROUP_ID IS NULL OR length(mblog.MBGROUP_ID) = 0)
+	                 ORDER BY mblog.MBLOG_ID DESC
+					 /* ===========================================END  */ 
+		    ) A 
+			<isNotEmpty property="standardType">
+				<isEqual property="standardType" compareValue="pre">
+    				WHERE ROWNUM <![CDATA[  <=  ]]> #fetchSize# /* fetchSize  */
+				</isEqual>
+			</isNotEmpty>
+		)
+	</select>   
+	
+	
+</sqlMap>

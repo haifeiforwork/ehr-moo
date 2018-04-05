@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="portal.portlet.portletWiseSaying">
+	<typeAlias alias="PortletWiseSaying"					type="com.lgcns.ikep4.portal.portlet.model.PortletWiseSaying" />
+	<typeAlias alias="PortletWiseSayingSearchCondition"		type="com.lgcns.ikep4.framework.web.SearchCondition" />
+	
+  	<resultMap id="result" class="PortletWiseSaying">
+  		<result column="NUM" 							property="num"							columnIndex="1" />
+	    <result column="WISE_SAYING_ID"      			property="wiseSayingId"      			columnIndex="2" />
+	    <result column="WRITER_NAME"					property="writerName"					columnIndex="3" />
+	    <result column="WRITER_ENGLISH_NAME"        	property="writerEnglishName"       		columnIndex="4" />
+	    <result column="WISE_SAYING_CONTENTS"      		property="wiseSayingContents"     		columnIndex="5" />
+	    <result column="WISE_SAYING_ENGLISH_CONTENTS"	property="wiseSayingEnglishContents"	columnIndex="6" />
+	    <result column="IMAGE_FILE_ID"      			property="imageFileId"     				columnIndex="7" />
+	    <result column="REGISTER_ID"       				property="registerId"      				columnIndex="8" />
+	    <result column="REGISTER_NAME"     				property="registerName"    				columnIndex="9" />
+	    <result column="REGIST_DATE"      				property="registDate"     				columnIndex="10" />
+	    <result column="UPDATER_ID"       				property="updaterId"      				columnIndex="11" />
+	    <result column="UPDATER_NAME"     				property="updaterName"    				columnIndex="12" />
+	    <result column="UPDATE_DATE"      				property="updateDate"     				columnIndex="13" />
+	    <result column="USAGE"      					property="usage"     					columnIndex="14" /> 
+  	</resultMap>
+  	<resultMap id="getResult" class="PortletWiseSaying">
+	    <result column="WISE_SAYING_ID"      			property="wiseSayingId"      			columnIndex="1" />
+	    <result column="WRITER_NAME"					property="writerName"					columnIndex="2" />
+	    <result column="WRITER_ENGLISH_NAME"        	property="writerEnglishName"       		columnIndex="3" />
+	    <result column="WISE_SAYING_CONTENTS"      		property="wiseSayingContents"     		columnIndex="4" />
+	    <result column="WISE_SAYING_ENGLISH_CONTENTS"	property="wiseSayingEnglishContents"	columnIndex="5" />
+	    <result column="IMAGE_FILE_ID"      			property="imageFileId"     				columnIndex="6" />
+	    <result column="USAGE"      					property="usage"     					columnIndex="7" />
+  	</resultMap>
+  
+  	<sql id="sqlColumnList">
+	    WISE_SAYING_ID,
+		WRITER_NAME,
+		WRITER_ENGLISH_NAME,
+		WISE_SAYING_CONTENTS,
+		WISE_SAYING_ENGLISH_CONTENTS,
+		IMAGE_FILE_ID,
+		REGISTER_ID,
+		REGISTER_NAME,
+		REGIST_DATE,
+		UPDATER_ID,
+		UPDATER_NAME,
+		UPDATE_DATE,
+		USAGE
+  	</sql>
+  	
+  	<!-- ANSI -->
+  	<insert id="create" parameterClass="PortletWiseSaying"> 
+		<![CDATA[
+		/* [PortletWiseSaying_SqlMap.xml] portal.portlet.portletWiseSaying.create */
+		INSERT	INTO		IKEP4_PO_PORTLET_WISE_SAYING 
+							(
+		]]>
+							<include refid="portal.portlet.portletWiseSaying.sqlColumnList" />
+		<![CDATA[
+							)
+		VALUES 				( 
+							#wiseSayingId#,
+							#writerName#,
+							#writerEnglishName#,
+							#wiseSayingContents#,
+							#wiseSayingEnglishContents#,
+							#imageFileId#,
+					    	#registerId#,
+					    	#registerName#,
+					    	CURRENT_TIMESTAMP,
+					    	#updaterId#,
+					    	#updaterName#,
+					    	CURRENT_TIMESTAMP,
+					    	#usage#
+					    	)
+		]]>
+	</insert>
+  	
+  	<!-- MS SQL -->
+  	<select id="listBySearchCondition" parameterClass="PortletWiseSayingSearchCondition" resultMap="result">  
+  		<![CDATA[
+  		/* [PortletWiseSaying_SqlMap.xml] portal.portlet.portletWiseSaying.listBySearchCondition */
+		SELECT				*
+		FROM 				(
+	     					SELECT				NUM,
+					     						WISE_SAYING_ID,
+												WRITER_NAME,
+												WRITER_ENGLISH_NAME,
+												WISE_SAYING_CONTENTS,
+												WISE_SAYING_ENGLISH_CONTENTS,
+												IMAGE_FILE_ID,
+												REGISTER_ID,
+												REGISTER_NAME,
+												CONVERT(NVARCHAR, REGIST_DATE, 23) AS REGIST_DATE,
+												UPDATER_ID,
+												UPDATER_NAME,
+												CONVERT(NVARCHAR, UPDATE_DATE, 23) AS UPDATE_DATE,
+												USAGE
+	     					FROM 				(
+	     										SELECT				Row_number() OVER 	(	]]>
+															<isNotEmpty property="sortColumn">
+													    		<isEqual property="sortColumn" compareValue="WRITER_NAME">
+														    		<isEqual property="sortType" compareValue="ASC">
+																	ORDER BY 			WRITER_NAME ASC
+																	</isEqual>
+																	<isEqual property="sortType" compareValue="DESC">
+																	ORDER BY 			WRITER_NAME DESC
+																	</isEqual>
+																</isEqual>
+													    		<isEqual property="sortColumn" compareValue="WISE_SAYING_CONTENTS">
+														    		<isEqual property="sortType" compareValue="ASC">
+																	ORDER BY 			WISE_SAYING_CONTENTS ASC
+																	</isEqual>
+																	<isEqual property="sortType" compareValue="DESC">
+																	ORDER BY 			WISE_SAYING_CONTENTS DESC
+																	</isEqual>
+																</isEqual>
+																<isEqual property="sortColumn" compareValue="USAGE">
+														    		<isEqual property="sortType" compareValue="ASC">
+																	ORDER BY 			USAGE ASC
+																	</isEqual>
+																	<isEqual property="sortType" compareValue="DESC">
+																	ORDER BY 			USAGE DESC
+																	</isEqual>
+																</isEqual>
+												    		</isNotEmpty>
+												    		<isEmpty property="sortColumn">
+												    		ORDER BY 			REGIST_DATE DESC
+												    		</isEmpty>
+	     																					<![CDATA[	)	AS NUM,
+	     															WISE_SAYING_ID,
+																	WRITER_NAME,
+																	WRITER_ENGLISH_NAME,
+																	WISE_SAYING_CONTENTS,
+																	WISE_SAYING_ENGLISH_CONTENTS,
+																	IMAGE_FILE_ID,
+																	REGISTER_ID,
+																	REGISTER_NAME,
+																	REGIST_DATE,
+																	UPDATER_ID,
+																	UPDATER_NAME,
+																	UPDATE_DATE,
+																	USAGE
+	     										FROM				IKEP4_PO_PORTLET_WISE_SAYING
+									    		) TBL
+	    					WHERE 				NUM <= #endRowIndex#		 
+							) TBL2
+		WHERE 				NUM > #startRowIndex#
+		]]>
+  	</select>   
+  	
+  	<!-- ANSI -->
+  	<select id="countBySearchCondition" parameterClass="PortletWiseSayingSearchCondition" resultClass="int">  
+  		<![CDATA[
+  		/* [PortletWiseSaying_SqlMap.xml] portal.portlet.portletWiseSaying.countBySearchCondition */
+		SELECT 				COUNT(WISE_SAYING_ID)
+		FROM   				IKEP4_PO_PORTLET_WISE_SAYING
+		]]>
+  	</select> 
+  	
+  	<!-- ANSI -->
+  	<select id="countByList" resultClass="int">  
+  		<![CDATA[
+  		/* [PortletWiseSaying_SqlMap.xml] portal.portlet.portletWiseSaying.countByList */
+		SELECT 				COUNT(WISE_SAYING_ID)
+		FROM   				IKEP4_PO_PORTLET_WISE_SAYING
+		WHERE	USAGE = 1
+		]]>
+  	</select> 
+  	
+  	<!-- ANSI -->
+	<select id="get" parameterClass="string" resultMap="getResult"> 
+		<![CDATA[
+		/* [PortletWiseSaying_SqlMap.xml] portal.portlet.portletWiseSaying.get */
+    	SELECT				WISE_SAYING_ID,
+							WRITER_NAME,
+							WRITER_ENGLISH_NAME,
+							WISE_SAYING_CONTENTS,
+							WISE_SAYING_ENGLISH_CONTENTS,
+							IMAGE_FILE_ID,
+							USAGE
+    	FROM  				IKEP4_PO_PORTLET_WISE_SAYING
+    	WHERE 				WISE_SAYING_ID = #wiseSayingId# 
+    	]]>
+ 	</select>
+ 	
+ 	<!-- MS SQL -->
+ 	<select id="getRandomWiseSaying" parameterClass="int" resultMap="getResult"> 
+		<![CDATA[
+		/* [PortletWiseSaying_SqlMap.xml] portal.portlet.portletWiseSaying.getRandomWiseSaying */
+    	SELECT				WISE_SAYING_ID,
+							WRITER_NAME,
+							WRITER_ENGLISH_NAME,
+							WISE_SAYING_CONTENTS,
+							WISE_SAYING_ENGLISH_CONTENTS,
+							IMAGE_FILE_ID,
+							USAGE
+    	FROM  				(
+    						SELECT				Row_number() OVER (ORDER BY WISE_SAYING_ID) AS NUM,
+    											WISE_SAYING_ID,
+												WRITER_NAME,
+												WRITER_ENGLISH_NAME,
+												WISE_SAYING_CONTENTS,
+												WISE_SAYING_ENGLISH_CONTENTS,
+												IMAGE_FILE_ID,
+												USAGE
+    						FROM				IKEP4_PO_PORTLET_WISE_SAYING
+    						WHERE USAGE = 1
+    						) TBL
+    	where 				NUM = #num#
+    	]]>
+ 	</select>
+ 	
+ 	<!-- ANSI -->
+ 	<select id="existsWiseSaying" parameterClass="PortletWiseSaying" resultClass="int">
+ 		<![CDATA[
+		/* [PortletWiseSaying_SqlMap.xml] ortal.portlet.portletWiseSaying.existsWiseSaying */
+		SELECT				COUNT(WISE_SAYING_ID) AS CNT
+		FROM				IKEP4_PO_PORTLET_WISE_SAYING
+		WHERE				WRITER_NAME = #writerName#
+		AND					WRITER_ENGLISH_NAME = #writerEnglishName#
+		AND					WISE_SAYING_CONTENTS = #wiseSayingContents#
+		AND					WISE_SAYING_ENGLISH_CONTENTS = #wiseSayingEnglishContents#	
+		]]>
+ 	</select>
+ 	
+ 	<!-- ANSI -->
+ 	<update id="update" parameterClass="PortletWiseSaying"> 
+ 		<![CDATA[
+ 		/* [PortletWiseSaying_SqlMap.xml] portal.portlet.portletWiseSaying.update */
+    	UPDATE				IKEP4_PO_PORTLET_WISE_SAYING 
+    	SET					WRITER_NAME = #writerName#,
+							WRITER_ENGLISH_NAME = #writerEnglishName#,
+							WISE_SAYING_CONTENTS = #wiseSayingContents#,
+							WISE_SAYING_ENGLISH_CONTENTS = #wiseSayingEnglishContents#,
+							IMAGE_FILE_ID = #imageFileId#,
+		    				UPDATER_ID = #updaterId#,
+		    				UPDATER_NAME = #updaterName#,
+		    				UPDATE_DATE = CURRENT_TIMESTAMP,
+		    				USAGE = #usage#
+    	WHERE				WISE_SAYING_ID = #wiseSayingId# 
+    	]]>
+  	</update>
+  
+  	<!-- ANSI -->
+  	<delete id="delete" parameterClass="string"> 
+  		<![CDATA[
+  		/* [PortletWiseSaying_SqlMap.xml] portal.portlet.portletWiseSaying.delete */
+    	DELETE 
+    	FROM 				IKEP4_PO_PORTLET_WISE_SAYING
+    	WHERE 				WISE_SAYING_ID = #wiseSayingId# 
+    	]]>
+  	</delete>  
+  	
+</sqlMap>   

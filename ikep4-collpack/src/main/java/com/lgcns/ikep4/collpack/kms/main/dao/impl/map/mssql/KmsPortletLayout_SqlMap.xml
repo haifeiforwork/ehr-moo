@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="collpack.kms.main.dao.KmsPortletLayout">
+
+	<typeAlias alias="KmsPortletLayout" type="com.lgcns.ikep4.collpack.kms.main.model.KmsPortletLayout"/>
+  
+	<sql id="sqlColumnList"> 
+		A.PORTLET_LAYOUT_ID	AS portletLayoutId, 
+		A.PORTLET_ID	AS portletId, 
+		A.COL_INDEX	AS colIndex,
+		A.ROW_INDEX	AS rowIndex,
+		A.IS_BOARD_PORTLET AS isBoardPortlet,		
+		A.BOARD_ID	AS boardId
+	</sql>  
+    
+    <!-- ANSI -->
+	<select id="get" parameterClass="java.lang.String" resultClass="KmsPortletLayout"> 
+		SELECT 
+			/* [KmsPortletLayout_SqlMap.xml] collpack.kms.main.dao.KmsPortletLayout.get */
+			<include refid="collpack.kms.main.dao.KmsPortletLayout.sqlColumnList" /> 
+		FROM  
+			IKEP4_KMS_PORTLET_LAYOUT A
+			LEFT OUTER JOIN IKEP4_KMS_BD_BOARD B ON (A.BOARD_ID=B.BOARD_ID AND B.BOARD_TYPE=0 AND B.IS_DELETE=0 )
+    	WHERE
+    		A.PORTLET_LAYOUT_ID = #portletLayoutId#  
+	</select>
+
+	<!-- ANSI -->  
+	<select id="exists" parameterClass="java.lang.String" resultClass="int"> 
+		SELECT /* [KmsPortletLayout_SqlMap.xml] collpack.kms.main.dao.KmsPortletLayout.exists */
+			COUNT(*)
+		FROM  
+			IKEP4_KMS_PORTLET_LAYOUT
+		WHERE
+			PORTLET_LAYOUT_ID = #portletLayoutId# 
+	</select> 
+
+	<!-- ANSI -->  
+	<select id="list" parameterClass="java.lang.String" resultClass="KmsPortletLayout">  
+		SELECT /* [KmsPortletLayout_SqlMap.xml] collpack.kms.main.dao.KmsPortletLayout.list */ 
+			<include refid="collpack.kms.main.dao.KmsPortletLayout.sqlColumnList" /> 
+		FROM   
+			IKEP4_KMS_PORTLET_LAYOUT  A
+			LEFT OUTER JOIN IKEP4_KMS_BD_BOARD B ON (A.BOARD_ID=B.BOARD_ID AND B.BOARD_TYPE=0 AND B.IS_DELETE=0 )		 
+		ORDER BY 
+			A.ROW_INDEX
+	</select> 
+	
+	<!-- ANSI -->
+	<select id="listLayout" parameterClass="String" resultClass="KmsPortletLayout">
+		SELECT /* [KmsPortletLayout_SqlMap.xml] collpack.kms.main.dao.KmsPortletLayout.listLayout */
+		    <include refid="collpack.kms.main.dao.KmsPortletLayout.sqlColumnList" /> 
+		FROM 
+			IKEP4_KMS_PORTLET_LAYOUT  A
+			LEFT OUTER JOIN IKEP4_KMS_BD_BOARD B ON A.BOARD_ID=B.BOARD_ID
+		WHERE 
+		(B.IS_DELETE IS NULL OR B.IS_DELETE = 0)
+		 
+		ORDER BY A.COL_INDEX,A.ROW_INDEX
+	</select>  
+	
+	<select id="listLayoutNew" parameterClass="String" resultClass="KmsPortletLayout">
+		SELECT /* [KmsPortletLayout_SqlMap.xml] collpack.kms.main.dao.KmsPortletLayout.listLayout */
+		    <include refid="collpack.kms.main.dao.KmsPortletLayout.sqlColumnList" /> 
+		FROM 
+			IKEP4_KMS_PORTLET_LAYOUT_NEW  A
+			LEFT OUTER JOIN IKEP4_KMS_BD_BOARD B ON A.BOARD_ID=B.BOARD_ID
+		WHERE 
+		(B.IS_DELETE IS NULL OR B.IS_DELETE = 0)
+		 
+		ORDER BY A.COL_INDEX,A.ROW_INDEX
+	</select> 
+	
+	<!-- ANSI -->
+	<select id="count" parameterClass="java.lang.String" resultClass="int">  
+		SELECT /* [KmsPortletLayout_SqlMap.xml] collpack.kms.main.dao.KmsPortletLayout.count*/ 
+           COUNT(*)
+		FROM
+			IKEP4_KMS_PORTLET_LAYOUT A
+			LEFT OUTER JOIN IKEP4_KMS_BD_BOARD B ON (A.BOARD_ID=B.BOARD_ID AND B.BOARD_TYPE=0 AND B.IS_DELETE=0 )		
+		ORDER BY A.ROW_INDEX
+  	</select>	
+	  
+</sqlMap> 

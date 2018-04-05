@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="portal.main.portalMymenuConfig" >
+	<typeAlias alias = "PortalMymenuConfig" type="com.lgcns.ikep4.portal.main.model.PortalMymenuConfig"/>
+
+	<!-- 포탈 테이블 조회 결과 -->
+	<resultMap id="portalMymenuConfigResult" class="PortalMymenuConfig">
+		<result property="userId" column="USER_ID"/>
+		<result property="openOption" column="OPEN_OPTION"/>
+		<result property="registerId" column="REGISTER_ID"/>
+		<result property="registerName" column="REGISTER_NAME"/>
+		<result property="registDate" column="REGIST_DATE"/>
+		<result property="updaterId" column="UPDATER_ID"/>
+		<result property="updaterName" column="UPDATER_NAME"/>
+		<result property="updateDate" column="UPDATE_DATE"/>
+	</resultMap>
+
+	<select id="getPortalMymenuConfig" parameterClass="java.lang.String" resultMap="portalMymenuConfigResult">
+	  <![CDATA[
+	  	   /* [PortalMymenuConfig_SqlMap.xml] portal.main.portalMymenuConfig.getPortalMymenuConfig */
+		   SELECT 
+		   	   USER_ID, 
+		   	   OPEN_OPTION, 
+		   	   REGISTER_ID, 
+		   	   REGISTER_NAME, 
+		   	   REGIST_DATE, 
+		   	   UPDATER_ID, 
+		   	   UPDATER_NAME, 
+		   	   UPDATE_DATE
+		   	 FROM IKEP4_PO_MYMENU_CONFIG
+		   	WHERE user_id = #userId#
+	   ]]>
+	</select>
+	
+	<update id="updateOpenOption" parameterClass="PortalMymenuConfig">
+	  <![CDATA[
+	  	   /* [PortalMymenuConfig_SqlMap.xml] portal.main.portalMymenuConfig.updateOpenOption */
+		   UPDATE IKEP4_PO_MYMENU_CONFIG
+		      SET OPEN_OPTION = #openOption#,
+		      	  UPDATER_ID = #updaterId#,
+		      	  UPDATER_NAME = #updaterName#,
+		      	  UPDATE_DATE = NOW()	 
+		    WHERE USER_ID = #userId#
+	   ]]>
+	</update>
+	
+	<insert id="createPortalMymenuConfig" parameterClass="PortalMymenuConfig"> 
+      <![CDATA[
+      	   /* [PortalMymenuConfig_SqlMap.xml] portal.main.portalMymenuConfig.createPortalMymenuConfig */ 
+           INSERT INTO IKEP4_PO_MYMENU_CONFIG (USER_ID, OPEN_OPTION, REGISTER_ID, REGISTER_NAME, REGIST_DATE, UPDATER_ID, UPDATER_NAME, UPDATE_DATE)  
+           VALUES (#userId#, #openOption#, #registerId#, #registerName#, NOW(), #updaterId#, #updaterName#, NOW())
+       ]]>
+   </insert>
+</sqlMap>

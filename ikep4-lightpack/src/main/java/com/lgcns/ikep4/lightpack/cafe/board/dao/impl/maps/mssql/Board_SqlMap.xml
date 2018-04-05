@@ -1,0 +1,560 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="lightpack.cafe.board.dao.board">
+
+  <typeAlias alias="cfBoard" type="com.lgcns.ikep4.lightpack.cafe.board.model.Board"/>
+  
+  <resultMap id="boardResult" class="com.lgcns.ikep4.lightpack.cafe.board.model.Board"> 
+    <result column="BOARD_ID"           jdbcType="VARCHAR" property="boardId" />
+    <result column="CAFE_ID"       jdbcType="VARCHAR" property="cafeId" />    
+    <result column="BOARD_PARENT_ID"    jdbcType="VARCHAR" property="boardParentId" />
+    <result column="SORT_ORDER"         jdbcType="DECIMAL" property="sortOrder" />
+    <result column="BOARD_NAME"         jdbcType="VARCHAR" property="boardName" />
+    <result column="BOARD_ROOT_ID"      jdbcType="VARCHAR" property="boardRootId" />
+    <result column="DESCRIPTION"  		jdbcType="VARCHAR" property="description" />
+    <result column="BOARD_TYPE"         jdbcType="VARCHAR" property="boardType" />
+    <result column="URL"                jdbcType="VARCHAR" property="url" />
+    <result column="LIST_TYPE"          jdbcType="VARCHAR" property="listType" />
+	<result column="URL_POPUP"			jdbcType="DECIMAL" property="urlPopup" />    
+    <result column="ANONYMOUS"          jdbcType="DECIMAL" property="anonymous" />
+    <result column="RSS"                jdbcType="DECIMAL" property="rss" />
+    <result column="FILE_SIZE"          jdbcType="DECIMAL" property="fileSize" />
+    <result column="IMAGE_FILE_SIZE"    jdbcType="DECIMAL" property="imageFileSize" />
+    <result column="IMAGE_WIDTH"        jdbcType="DECIMAL" property="imageWidth" />
+    <result column="PAGE_NUM"           jdbcType="DECIMAL" property="pageNum" />
+    <result column="DOC_POPUP"          jdbcType="DECIMAL" property="docPopup" />
+    <result column="REPLY"              jdbcType="DECIMAL" property="reply" />
+    <result column="LINEREPLY"          jdbcType="DECIMAL" property="linereply" />
+    <result column="RESTRICTION_TYPE"   jdbcType="VARCHAR" property="restrictionType" />
+	<result column="VERSION_MANAGE"		jdbcType="DECIMAL" property="versionManage" />
+	<result column="WIKI"				jdbcType="DECIMAL" property="wiki" />
+	<result column="MOVE"				jdbcType="DECIMAL" property="move" />
+	<result column="READ_PERMISSION"	jdbcType="VARCHAR" property="readPermission" />
+	<result column="WRITE_PERMISSION"	jdbcType="VARCHAR" property="writePermission" />
+    <result column="BOARD_POPUP"        jdbcType="DECIMAL" property="boardPopup" /> 
+    <result column="FILE_ATTACH_OPTION" jdbcType="DECIMAL" property="fileAttachOption" />
+    <result column="ALLOW_TYPE"         jdbcType="VARCHAR" property="allowType" /> 
+    <result column="PORTAL_ID"          jdbcType="VARCHAR" property="portalId" />
+    <result column="REGISTER_ID"        jdbcType="VARCHAR" property="registerId" />
+    <result column="REGISTER_NAME"      jdbcType="VARCHAR" property="registerName" />
+    <result column="REGIST_DATE"        jdbcType="DATE"    property="registDate" />
+    <result column="UPDATER_ID"         jdbcType="VARCHAR" property="updaterId" />
+    <result column="UPDATER_NAME"       jdbcType="VARCHAR" property="updaterName" />
+    <result column="UPDATE_DATE"        jdbcType="DATE"    property="updateDate" />
+    <result column="IS_DELETE"          jdbcType="DECIMAL"    property="isDelete" />
+  </resultMap>                          
+  <resultMap id="boardIndentationResult" extends="boardResult" class="com.lgcns.ikep4.lightpack.cafe.board.model.Board"> 
+    <result column="INDENTATION" jdbcType="VARCHAR" property="indentation" /> 
+    <result column="HAS_CHILDREN" jdbcType="DECIMAL" property="hasChildren" />
+  </resultMap> 
+  <resultMap id="boardResultEx" extends="boardResult"  class="com.lgcns.ikep4.lightpack.cafe.board.model.Board">  
+    <result column="HAS_CHILDREN" jdbcType="DECIMAL" property="hasChildren" />
+  </resultMap> 
+
+  <sql id="sqlColumnList">
+    BOARD_ID, 
+    CAFE_ID,
+    BOARD_PARENT_ID,
+    SORT_ORDER, 
+    BOARD_NAME, 
+    BOARD_ROOT_ID, 
+    DESCRIPTION, 
+    BOARD_TYPE, 
+    URL, 
+    URL_POPUP,
+    LIST_TYPE, 
+    ANONYMOUS,
+    RSS, 
+    FILE_SIZE, 
+    IMAGE_FILE_SIZE, 
+    IMAGE_WIDTH, 
+    PAGE_NUM, 
+    DOC_POPUP, 
+    REPLY, 
+    LINEREPLY, 
+    RESTRICTION_TYPE, 
+    VERSION_MANAGE,
+    WIKI,
+    MOVE,
+    READ_PERMISSION, 
+    WRITE_PERMISSION, 
+    BOARD_POPUP,     
+    FILE_ATTACH_OPTION,
+    ALLOW_TYPE,        
+    PORTAL_ID, 
+    REGISTER_ID, 
+    REGISTER_NAME, 
+    REGIST_DATE, 
+    UPDATER_ID, 
+    UPDATER_NAME, 
+    UPDATE_DATE,
+    IS_DELETE
+  </sql> 
+
+
+
+  <!-- MS SQL -->
+  <select id="readHasPermissionBoard" parameterClass="string" resultMap="boardResult"> 
+	SELECT /* [Board_SqlMap.xml] lightpack.cafe.board.dao.board.get */
+		   TOP 1 <include refid="lightpack.cafe.board.dao.board.sqlColumnList" />
+	FROM   IKEP4_CF_BD_BOARD 
+	WHERE  BOARD_ROOT_ID = #boardRootId#
+	AND    BOARD_PARENT_ID IS NULL 
+	AND    BOARD_TYPE = 0
+	AND    IS_DELETE =0
+	ORDER BY SORT_ORDER ASC
+  </select>
+  
+  <!-- ANSI -->
+  <select id="get" parameterClass="string" resultMap="boardResult">
+    SELECT /* [Board_SqlMap.xml] lightpack.cafe.board.dao.board.get */ 
+    <include refid="lightpack.cafe.board.dao.board.sqlColumnList" />
+    FROM  IKEP4_CF_BD_BOARD
+    WHERE BOARD_ID = #boardId#
+  </select>
+  
+  <!-- ANSI -->
+  <select id="exists" parameterClass="string" resultClass="int">
+    SELECT /* [Board_SqlMap.xml] lightpack.cafe.board.dao.board.exists */
+    	  COUNT(*)
+    FROM  IKEP4_CF_BD_BOARD
+    WHERE BOARD_ID = #boardId#
+  </select>
+  
+  <!-- MS SQL -->
+  <select id="listChildBoardAll" parameterClass="string" resultMap="boardResultEx"> 
+  	WITH CTE AS (
+  		SELECT	*, 
+  				1 INDENTATION, 
+  				CONVERT(NVARCHAR(2000), dbo.IKEP4_UFN_LPAD(CONVERT(NVARCHAR(5), SORT_ORDER), 10, 0) + '\') AS PATH_ORDER
+  		FROM	IKEP4_CF_BD_BOARD
+  		WHERE	BOARD_ID =#boardId#
+  		UNION ALL
+  		SELECT	B.*,
+  				INDENTATION + 1,
+  				CONVERT(NVARCHAR(2000), CTE.PATH_ORDER + dbo.IKEP4_UFN_LPAD(CONVERT(NVARCHAR(5), B.SORT_ORDER), 10, 0) + '\') AS PATH_ORDER
+  		FROM	IKEP4_CF_BD_BOARD B, CTE
+  		WHERE	CTE.BOARD_ID = B.BOARD_PARENT_ID 
+  	)
+	SELECT /* [Board_SqlMap.xml] lightpack.cafe.board.dao.board.listChildBoardAll */ 
+	       INDENTATION,
+	       (SELECT COUNT(*) FROM IKEP4_CF_BD_BOARD B WHERE CTE.BOARD_ID = B.BOARD_PARENT_ID) AS HAS_CHILDREN,
+	       <include refid="lightpack.cafe.board.dao.board.sqlColumnList"/>
+	FROM CTE 
+	ORDER BY PATH_ORDER 
+  </select>
+  
+  <!-- MS SQL -->
+  <select id="updateChildBoardAllCafe" parameterClass="Map">
+  	WITH CTE AS (
+  		SELECT	*
+  		FROM	IKEP4_CF_BD_BOARD
+  		WHERE	BOARD_PARENT_ID =#boardId#
+  		UNION ALL
+  		SELECT	B.*
+  		FROM	IKEP4_CF_BD_BOARD B, CTE
+  		WHERE	CTE.BOARD_ID = B.BOARD_PARENT_ID
+  	) 
+  	UPDATE IKEP4_CF_BD_BOARD /* [Board_SqlMap.xml] lightpack.cafe.board.dao.board.updateChildBoardAllCafe */ 
+	       SET CAFE_ID=#cafeId#
+    WHERE BOARD_ID IN ( SELECT BOARD_ID FROM CTE ) 
+  </select>  
+  <!-- select id="listChildrenBoard" parameterClass="string" resultMap="boardResultEx">
+	SELECT /* [Board_SqlMap.xml] lightpack.cafe.board.dao.board.listChildrenBoard */ 
+	<include refid="lightpack.cafe.board.dao.board.sqlColumnList"/>,
+	       (SELECT COUNT(*) FROM IKEP4_CF_BD_BOARD B WHERE A.BOARD_ID = B.BOARD_PARENT_ID) AS HAS_CHILDREN
+    FROM   IKEP4_CF_BD_BOARD A
+    <isNotEmpty>
+		WHERE BOARD_PARENT_ID = #boardId#
+	</isNotEmpty>
+    <isEmpty>
+		WHERE BOARD_PARENT_ID IS NULL
+	</isEmpty>	
+    ORDER BY SORT_ORDER ASC
+  </select-->
+  
+  <!-- ANSI -->
+  <insert id="create" parameterClass="cfBoard">
+    INSERT INTO IKEP4_CF_BD_BOARD ( /* [board_SqlMap.xml] lightpack.cafe.board.dao.board.insert */
+     <include refid="lightpack.cafe.board.dao.board.sqlColumnList" />
+    ) VALUES (
+      #boardId#,
+      #cafeId#,
+      
+      <isEmpty property="boardParentId">
+      	NULL,
+      </isEmpty>
+      <isNotEmpty property="boardParentId">
+      	#boardParentId#,   
+      </isNotEmpty>
+      
+      <isNotEmpty property="boardParentId">
+			 (SELECT ISNULL(MAX(SORT_ORDER), -1) + 1 FROM IKEP4_CF_BD_BOARD WHERE BOARD_PARENT_ID = #boardParentId#),  
+	  </isNotEmpty>
+      <isEmpty property="boardParentId">
+			 (SELECT ISNULL(MAX(SORT_ORDER), -1) + 1 FROM IKEP4_CF_BD_BOARD WHERE BOARD_PARENT_ID IS NULL),  
+	  </isEmpty>  
+	  
+      #boardName#,        
+      #boardRootId#,      
+      #description#, 
+      #boardType#,        
+      #url#, 
+      #urlPopup#,   
+      #listType#,         
+      #anonymous#,        
+      #rss#,    
+      #fileSize#,         
+      #imageFileSize#,    
+      #imageWidth#,       
+      #pageNum#,
+      #docPopup#,         
+      #reply#,  
+      #linereply#,        
+      #restrictionType#,
+      #versionManage#,
+      #wiki#,
+      #move#,
+      #readPermission#,   
+      #writePermission#,
+      #boardPopup#, 
+      #fileAttachOption#,  
+      #allowType#, 
+      #portalId#,         
+      #registerId#,       
+      #registerName#,     
+      CURRENT_TIMESTAMP,       
+      #updaterId#,        
+      #updaterName#,      
+      CURRENT_TIMESTAMP,
+      0
+    )
+  </insert>
+  
+  <!-- ANSI -->
+  <update id="updateMove" parameterClass="cfBoard">
+    UPDATE IKEP4_CF_BD_BOARD /* [board_SqlMap.xml] lightpack.cafe.board.dao.board.updateMove */
+    SET    BOARD_PARENT_ID  =  #boardParentId#,
+           SORT_ORDER       =  #sortOrder#, 
+           UPDATER_ID       =  #updaterId#,
+           UPDATER_NAME     =  #updaterName#,
+           UPDATE_DATE      =  CURRENT_TIMESTAMP  
+    WHERE  BOARD_ID = #boardId#
+  </update>   
+  
+  <!-- ANSI -->
+  <update id="updateSortOderIncrease" parameterClass="cfBoard">
+    UPDATE IKEP4_CF_BD_BOARD /* [board_SqlMap.xml] lightpack.cafe.board.dao.board.updateSortOderIncrease */
+    SET    SORT_ORDER      =  SORT_ORDER + 1
+    WHERE  1 = 1
+    <isEmpty property="boardParentId">
+    AND  BOARD_PARENT_ID IS NULL
+    </isEmpty>
+    <isNotEmpty property="boardParentId">
+    AND  BOARD_PARENT_ID = #boardParentId#
+    </isNotEmpty>
+    AND    SORT_ORDER &gt;= #sortOrder#
+  </update>  
+  
+  <!-- ANSI -->
+  <update id="updateSortOderDecrease" parameterClass="cfBoard">
+    UPDATE IKEP4_CF_BD_BOARD /* [board_SqlMap.xml] lightpack.cafe.board.dao.board.updateSortOderDecrease */
+    SET    SORT_ORDER      =  SORT_ORDER - 1
+    WHERE  1 = 1
+    <isEmpty property="boardParentId">
+    AND  BOARD_PARENT_ID IS NULL
+    </isEmpty>
+    <isNotEmpty property="boardParentId">
+    AND  BOARD_PARENT_ID = #boardParentId#
+    </isNotEmpty>
+    AND    SORT_ORDER &gt; #sortOrder#
+  </update>  
+  
+  <!-- ANSI -->
+  <update id="update" parameterClass="cfBoard">
+    UPDATE IKEP4_CF_BD_BOARD /* [board_SqlMap.xml] lightpack.cafe.board.dao.board.update */
+    SET    
+    	BOARD_ID           =  #boardId#,
+		BOARD_PARENT_ID    =  #boardParentId#,
+		SORT_ORDER         =  #sortOrder#,
+		BOARD_NAME         =  #boardName#,
+		BOARD_ROOT_ID      =  #boardRootId#,
+        DESCRIPTION  =  #description#,
+        BOARD_TYPE         =  #boardType#,
+        URL                =  #url#,
+        URL_POPUP		=	#urlPopup#,  
+        LIST_TYPE          =  #listType#,
+        ANONYMOUS          =  #anonymous#,
+        RSS                =  #rss#,
+        FILE_SIZE          =  #fileSize#,
+        IMAGE_FILE_SIZE    =  #imageFileSize#,
+        IMAGE_WIDTH        =  #imageWidth#,
+        PAGE_NUM           =  #pageNum#,
+        DOC_POPUP          =  #docPopup#,
+        REPLY              =  #reply#,
+        LINEREPLY          =  #linereply#,
+        RESTRICTION_TYPE   =  #restrictionType#,
+        VERSION_MANAGE	=	#versionManage#,
+        WIKI			=	#wiki#,
+        MOVE			=	#move#,
+        READ_PERMISSION    =  #readPermission#,
+        WRITE_PERMISSION   =  #writePermission#, 
+        BOARD_POPUP        =  #boardPopup#,
+		FILE_ATTACH_OPTION =  #fileAttachOption#,   
+		ALLOW_TYPE         =  #allowType#,  
+        PORTAL_ID          =  #portalId#, 
+        UPDATER_ID         =  #updaterId#,
+        UPDATER_NAME       =  #updaterName#,
+        UPDATE_DATE        =  CURRENT_TIMESTAMP  
+    WHERE  BOARD_ID = #boardId#
+  </update> 
+  
+  <!-- ANSI -->
+  <delete id="physicalDelete" parameterClass="string">
+    DELETE FROM IKEP4_CF_BD_BOARD /* [board_SqlMap.xml] lightpack.cafe.board.dao.board.physicalDelete */
+    WHERE  BOARD_ID = #boardId#
+  </delete>  
+  
+  
+  
+	<!--  WS 추가 5/17 -->
+	<!-- ANSI -->
+	<!-- WS별 Board Root -->
+	<delete id="logicalDelete" parameterClass="string">
+		UPDATE IKEP4_CF_BD_BOARD /* [board_SqlMap.xml] lightpack.cafe.dao.board.logicalDelete */
+			SET IS_DELETE = 1
+		WHERE
+			BOARD_ID = #boardId#
+	</delete> 	
+	
+	<!-- MS SQL -->
+	<select id="getParents" parameterClass="Map" resultMap="boardResult">
+		WITH CTE AS (
+			SELECT	*, 1 LEV
+			FROM	IKEP4_CF_BD_BOARD
+			WHERE	BOARD_ID = #boardId#
+			UNION ALL
+			SELECT	B.*, LEV + 1
+			FROM	IKEP4_CF_BD_BOARD B, CTE
+			WHERE	CTE.BOARD_PARENT_ID = B.BOARD_ID
+		)
+		SELECT /* [Board_SqlMap.xml] lightpack.cafe.board.dao.board.getParents */
+		<include refid="lightpack.cafe.board.dao.board.sqlColumnList" />  
+		FROM 
+		(
+			SELECT * FROM CTE WHERE CAFE_ID = #cafeId#
+		) TBL
+		ORDER BY LEV DESC
+	</select>
+	
+  <!-- ANSI -->
+  <select id="listChildrenBoard" parameterClass="Map" resultMap="boardResultEx">
+	SELECT /* [Board_SqlMap.xml] lightpack.cafe.board.dao.board.listChildrenBoard */ 
+	<include refid="lightpack.cafe.board.dao.board.sqlColumnList"/>,
+	       (SELECT COUNT(*) FROM IKEP4_CF_BD_BOARD B WHERE A.BOARD_ID = B.BOARD_PARENT_ID AND IS_DELETE = 0) AS HAS_CHILDREN
+    FROM   IKEP4_CF_BD_BOARD A
+    <isNotEmpty property="boardId">
+		WHERE BOARD_PARENT_ID = #boardId#
+	</isNotEmpty>
+    <isEmpty property="boardId">
+		WHERE BOARD_PARENT_ID IS NULL
+	</isEmpty>
+	AND CAFE_ID		= #cafeId#
+	AND IS_DELETE=0
+    ORDER BY SORT_ORDER ASC
+  </select>
+  
+  	<!-- ANSI -->
+	<select id="getChildren" parameterClass="Map" resultMap="boardResult">
+		SELECT /* [Board_SqlMap.xml] lightpack.cafe.board.dao.board.getChildren */
+			<include refid="lightpack.cafe.board.dao.board.sqlColumnList" />
+		FROM  
+			IKEP4_CF_BD_BOARD
+		WHERE 
+			CAFE_ID		= #cafeId#
+			AND IS_DELETE=0
+			<isNotEmpty property="boardId">
+			AND BOARD_PARENT_ID	= #boardId#
+			</isNotEmpty>
+	</select>	
+	
+	<!-- ANSI -->
+	<select id="listByBoardRootId" parameterClass="Map" resultClass="cfBoard">
+		SELECT /* [Board_SqlMap.xml] lightpack.cafe.board.dao.board.listByBoardRootId */ 
+			BOARD_ID		boardId,
+			CAFE_ID	cafeId,
+			BOARD_PARENT_ID	boardParentId,
+			BOARD_NAME		boardName,
+			BOARD_TYPE		boardType,
+			URL				url,
+			URL_POPUP		urlPopup,
+			LIST_TYPE		listType,
+			URL_POPUP		urlPopup,
+			PORTAL_ID		portalId,
+			SORT_ORDER		sortOrder,
+			BOARD_ROOT_ID	boardRootId
+		FROM
+			IKEP4_CF_BD_BOARD
+		WHERE  
+			CAFE_ID = #cafeId#
+			AND BOARD_ROOT_ID = #boardRootId# 
+			AND IS_DELETE=0
+		ORDER BY 
+			SORT_ORDER ASC
+	</select>
+
+	<!-- MS SQL -->
+	<select id="listByMenuBoardRootId" parameterClass="Map" resultClass="cfBoard"> 
+	WITH CTE AS (
+		SELECT	1 INDENTATION, *,
+				CONVERT(NVARCHAR(2000), dbo.IKEP4_UFN_LPAD(CONVERT(NVARCHAR(5), SORT_ORDER), 10, 0) + '\') AS PATH_ORDER
+		FROM	IKEP4_CF_BD_BOARD
+		WHERE	BOARD_PARENT_ID IS NULL
+		UNION ALL
+		SELECT	INDENTATION + 1, B.*,
+				CONVERT(NVARCHAR(2000), CTE.PATH_ORDER + dbo.IKEP4_UFN_LPAD(CONVERT(NVARCHAR(5), B.SORT_ORDER), 10, 0) + '\') AS PATH_ORDER
+		FROM	IKEP4_CF_BD_BOARD B, CTE
+		WHERE	CTE.BOARD_ID = B.BOARD_PARENT_ID 
+	)
+	SELECT /* [Board_SqlMap.xml] lightpack.board.dao.board.listByMenuBoardRootId */
+	       INDENTATION,
+	       (SELECT COUNT(*) FROM IKEP4_CF_BD_BOARD B WHERE CTE.BOARD_ID = B.BOARD_PARENT_ID) AS hasChildren,
+	       	BOARD_ID			boardId,
+			CAFE_ID				cafeId,
+			BOARD_PARENT_ID		boardParentId,
+			BOARD_NAME			boardName,
+			BOARD_TYPE			boardType,
+			URL					url,
+			URL_POPUP			urlPopup,
+			LIST_TYPE			listType,
+			PORTAL_ID			portalId,
+			SORT_ORDER			sortOrder,
+			BOARD_ROOT_ID		boardRootId
+	FROM CTE
+	WHERE  CAFE_ID = #cafeId# 
+	AND    PORTAL_Id = #portalId#
+	AND    IS_DELETE = 0
+	ORDER BY PATH_ORDER 
+  </select>
+
+	<!-- Board Migration procedure call -->
+	<procedure id="moveCafeBoard">
+		{exec dbo.IKEP4_MOVE_CAFE_BOARD}
+	</procedure>
+	
+	<!-- ANSI -->
+	<select id="listDeleteBoardByCafe" parameterClass="String" resultClass="cfBoard">
+		SELECT /* [Board_SqlMap.xml] lightpack.cafe.board.dao.board.listDeleteBoardByCafe */
+			BOARD_ID AS boardId,
+			BOARD_NAME AS boardName	
+		FROM 
+			IKEP4_CF_BD_BOARD
+		WHERE 
+			CAFE_ID = #cafeId#
+	</select>
+	
+	<!-- Board Migration procedure call -->
+	<procedure id="deleteCafeBoard" parameterClass="String">
+		{exec dbo.IKEP4_DELETE_CAFE_BOARD #boardId#}
+	</procedure>
+	
+	<!-- ANSI -->
+	<select id="listDeleteBoardBatch" resultClass="cfBoard">
+		SELECT /* [Board_SqlMap.xml] lightpack.cafe.board.dao.board.listDeleteBoardBatch */
+			BOARD_ID AS boardId,
+			BOARD_NAME AS boardName	
+		FROM 
+			IKEP4_CF_BD_BOARD
+		WHERE 
+			IS_DELETE=1
+	</select>
+	
+	<!-- MS SQL -->
+	<select id="listBoardByCafeId" parameterClass="String" resultMap="boardResult">
+		WITH CTE AS (
+			SELECT	1 LEV, *
+			FROM	IKEP4_CF_BD_BOARD
+			WHERE 	BOARD_PARENT_ID IS NULL
+			UNION ALL
+			SELECT	LEV + 1, B.*
+			FROM	IKEP4_CF_BD_BOARD B, CTE
+			WHERE	CTE.BOARD_ID = B.BOARD_PARENT_ID
+		)
+		SELECT /* [Board_SqlMap.xml] lightpack.cafe.board.dao.board.listBoardByCafeId */
+		<include refid="lightpack.cafe.board.dao.board.sqlColumnList" />  
+		FROM 
+		(
+			SELECT
+				*
+			FROM  
+				CTE
+			WHERE 
+				CAFE_ID = #cafeId#
+		)  
+		ORDER BY LEV
+	</select>
+	
+	<!-- ANSI -->
+	<update id="updateMoveBoardByCafe" parameterClass="Map">
+		UPDATE
+			IKEP4_CF_BD_BOARD /* [board_SqlMap.xml] lightpack.cafe.board.dao.board.updateMoveBoardByCafe */
+		SET
+			CAFE_ID	=	#targetCafeId#,
+			BOARD_PARENT_ID	=	#targetBoardId#,
+			UPDATER_ID		=	#updaterId#,
+			UPDATER_NAME	=	#updaterName#,
+			UPDATE_DATE		=	CURRENT_TIMESTAMP  
+		WHERE
+			CAFE_ID = #orgCafeId#
+			AND BOARD_ID = #orgBoardId#
+	</update>
+	
+	<!-- ANSI -->
+	<select id="getBoard" parameterClass="String" resultMap="boardResult">
+		SELECT /* [Board_SqlMap.xml] lightpack.cafe.board.dao.dao.board.getBoard */ 
+			<include refid="lightpack.cafe.board.dao.board.sqlColumnList" />
+		FROM  
+			IKEP4_CF_BD_BOARD
+		WHERE
+			BOARD_ID = #boardId#
+	</select>	
+	
+	<!-- MS SQL -->
+	<select id="getCafeWriteBoard" parameterClass="String" resultClass="cfBoard">
+		/* [Board_SqlMap.xml] lightpack.cafe.board.dao.dao.board.getCafeWriteBoard */ 
+		WITH CTE AS (
+			SELECT	*,
+					CONVERT(NVARCHAR(2000), '|' + BOARD_NAME) AS boardName,
+					CONVERT(NVARCHAR(2000), BOARD_ID + '\') AS PATH_ORDER
+			FROM	IKEP4_CF_BD_BOARD
+			WHERE	BOARD_PARENT_ID IS NULL
+			UNION ALL
+			SELECT	B.*,
+					CONVERT(NVARCHAR(2000), CTE.boardName + '|' + B.BOARD_NAME) AS boardName,
+					CONVERT(NVARCHAR(2000), CTE.PATH_ORDER + B.BOARD_ID + '\') AS PATH_ORDER
+			FROM	IKEP4_CF_BD_BOARD B, CTE
+			WHERE	CTE.BOARD_ID = B.BOARD_PARENT_ID
+		)
+		SELECT	BOARD_ID AS boardId, 
+				boardName, 
+                WRITE_PERMISSION AS writePermission,
+                FILE_ATTACH_OPTION as fileAttachOption,
+                ALLOW_TYPE as allowType,
+                FILE_SIZE as fileSize,
+                IMAGE_FILE_SIZE as imageFileSize
+		FROM	CTE 
+		WHERE	CAFE_ID = #cafeId# 
+			AND BOARD_TYPE = 0 
+            AND IS_DELETE = 0
+		ORDER BY PATH_ORDER
+	</select>		
+	
+	<select id="listBoardIdForCafe" parameterClass="String" resultClass="String">
+		SELECT /* [Board_SqlMap.xml] lightpack.cafe.board.dao.dao.board.listBoardIdForCafe */ 
+			BOARD_ID
+        FROM IKEP4_CF_BD_BOARD
+        WHERE 
+            CAFE_ID = #cafeId# 
+	</select>
+	  
+</sqlMap>

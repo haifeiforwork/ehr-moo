@@ -1,0 +1,117 @@
+<script type="text/javascript">
+/*
+(function($) {
+	$(document).ready(function() {		
+		
+		$("#microblog_list > li").click(function(event) {
+			var tg = $(event.target).attr("name");  
+			if(tg=="hashTag"){
+				getHashTag(event.target);				
+			}else if(tg=="mention"){
+				getMention(event.target);				
+			}else{
+				
+				var li_id = $(this).attr("id");
+				
+			    var list_hei = $("#microblog_list").position().top + $("#microblog_list").height();
+			    
+			    var top = $(this).position().top;
+			    var $div = $("#microblog_layer");
+			    var topPos = top-($div.height()/2)+50;
+			    if(topPos < 45){
+			    	topPos = 45;
+			    }
+			    var lay_hei = topPos + $div.height();
+			    if(lay_hei > list_hei){
+			    	topPos = topPos - (lay_hei - list_hei);
+			    }
+			    
+			    $div.css( { top:topPos  } );
+			    
+			    $("#microblog_layer_content").empty();
+			    
+				if(tg=="userId"){					
+					var userId = $(event.target).attr("id")
+					$div.effect( "slide",  500, function() { getUser(userId); });
+				}else{
+					$(this).siblings().removeClass("selected").end().addClass("selected");
+					$div.effect( "slide",  500, function() { callback(li_id); });
+				}
+			    
+			}
+			    
+		});		
+		
+		$("#microblog_list > li").hover(
+			  function () {			    
+			    $(this).addClass("hover");
+				$("span.microblog_icon", this).show();
+				$("div.ic_micro_ar", this).show();
+			  }, 
+			  function () {
+				$(this).removeClass("hover");
+				$("span.microblog_icon", this).hide();
+				$("div.ic_micro_ar", this).hide();
+			  }			
+		);		
+
+	});
+	
+})(jQuery);
+*/
+</script>
+
+<li id="m_10">
+	<div class="microblog_img">
+		<a href="#a"><img src="../../images/common/temp_img_50x50_3.gif" alt="image" /></a>
+	</div>
+	<div class="microblog_con">
+		<span class="microblog_id"><a href="#a" name="userId" id="peace2011">Add01</a></span>
+		<span class="microblog_name"><a href="#a">김추가</a></span>
+		<div class="ic_micro_ar none"></div>
+		<p>일본에서 들려오는 뉴스 설상가상, <a href="#" name="mention" id="peace2011">@peace2011</a> 우려스런 뉴스뿐 .. 끝장토론 생방준비하러 스튜디오 도착했는데 ...마음 참 어렵네요.</p>
+		<span class="microblog_time">12 hours ago</span>
+		<span class="microblog_icon none">
+			<span class="microblog_ic_favorite"><a href="#a">Favorite</a></span>
+			<span class="microblog_ic_retweet"><a href="#a">Retweet</a></span>
+			<span class="microblog_ic_reply"><a href="#a">Reply</a></span>
+		</span>
+	</div>
+	<div class="selected_ar"></div>
+</li>
+<li id="m_10">
+	<div class="microblog_img">
+		<a href="#a"><img src="../../images/common/temp_img_50x50_3.gif" alt="image" /></a>
+	</div>
+	<div class="microblog_con">
+		<span class="microblog_id"><a href="#a" name="userId" id="peace2011">Add02</a></span>
+		<span class="microblog_name"><a href="#a">길라임</a></span>
+		<div class="ic_micro_ar none"></div>
+		<p>일본 대지진뿐 아니라, 물가대란 등 대형 위험이 언제 발생할지 모르는 위험사회에서, 리더쉽의 요소 중 위기대처역량의 비중이 커지고 있습니다.</p>
+		<span class="microblog_time">12 hours ago</span>
+		<span class="microblog_icon none">
+			<span class="microblog_ic_favorite"><a href="#a">Favorite</a></span>
+			<span class="microblog_ic_retweet"><a href="#a">Retweet</a></span>
+			<span class="microblog_ic_reply"><a href="#a">Reply</a></span>
+		</span>
+	</div>
+	<div class="selected_ar"></div>
+</li>
+<li id="m_10">
+	<div class="microblog_img">
+		<a href="#a"><img src="../../images/common/temp_img_50x50_3.gif" alt="image" /></a>
+	</div>
+	<div class="microblog_con">
+		<span class="microblog_id"><a href="#a" name="userId" id="peace2011">Add03</a></span>
+		<span class="microblog_name"><a href="#a">김주원</a></span>
+		<div class="ic_micro_ar none"></div>
+		<p>결국은 일본 대지진의 가장 무서운 부작용, 후쿠시마 원전 방사능 유출이 현실이 되었군요. 몇분전 일본 관방성 발표도 자세한 내용은 없어 더욱 걱정이 됩니다. 부디부디!</p>
+		<span class="microblog_time">12 hours ago</span>
+		<span class="microblog_icon none">
+			<span class="microblog_ic_favorite"><a href="#a">Favorite</a></span>
+			<span class="microblog_ic_retweet"><a href="#a">Retweet</a></span>
+			<span class="microblog_ic_reply"><a href="#a">Reply</a></span>
+		</span>
+	</div>
+	<div class="selected_ar"></div>
+</li>

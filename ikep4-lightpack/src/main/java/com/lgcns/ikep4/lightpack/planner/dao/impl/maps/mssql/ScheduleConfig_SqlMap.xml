@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="lightpack.planner.dao.ScheduleConfig" >
+	<typeAlias alias="Config" type="com.lgcns.ikep4.lightpack.planner.model.ScheduleConfig"/>
+	<typeAlias alias="User" type="com.lgcns.ikep4.support.user.member.model.User"/>
+	
+	<resultMap id="resultConfig" class="Config"> 
+		<result property="userId" column="userId"/>
+		<result property="portalId" column="portalId"/>
+		<result property="unit" column="unit"/>
+		<result property="defaultView" column="defaultView"/>
+		<result property="holiday" column="holiday"/>
+		<result property="viewTodo" column="viewTodo"/>
+		<result property="startHour" column="startHour"/>
+		<result property="endHour" column="endHour"/>
+	</resultMap>
+	
+	<!-- insert IKEP4_SD_CONFIG -->
+	<insert id="insertConfig" parameterClass="Config"> 
+      	<![CDATA[ 
+      	/* [Schedule_SqlMap.xml] lightpack.planner.dao.Schedule.insertConfig */
+       INSERT INTO 	IKEP4_SD_CONFIG 
+          			(
+           				USER_ID,
+						PORTAL_ID,
+						UNIT,
+						DEFAULT_VIEW,
+						HOLIDAY,
+						VIEW_TODO,
+						START_HOUR,
+						END_HOUR
+          			) 
+       		VALUES 	(
+      					#userId#,
+      					#portalId#,
+      					#unit#,
+      					#defaultView#,
+      					#holiday#,
+      					#viewTodo#,
+      					#startHour#,
+      					#endHour#
+     				)
+       	]]>
+   	</insert>
+   	
+   	<!-- update IKEP4_SD_CONFIG -->
+   	<update id="updateConfig" parameterClass="Config">
+	  	<![CDATA[
+	  	/* [Schedule_SqlMap.xml] lightpack.planner.dao.Schedule.updateConfig */
+		UPDATE				IKEP4_SD_CONFIG 
+		SET					UNIT = #unit#, 
+							DEFAULT_VIEW = #defaultView#, 
+							HOLIDAY = #holiday#, 
+							VIEW_TODO = #viewTodo#,
+							START_HOUR = #startHour#,
+							END_HOUR = #endHour#
+		WHERE				USER_ID = #userId# 
+		  AND 				PORTAL_ID = #portalId#
+	   	]]>
+	</update>	
+	
+	<!-- select IKEP4_SD_CONFIG -->
+	<select id="getConfig"  parameterClass="map" resultClass="Config">
+		<![CDATA[
+		SELECT				USER_ID AS userId,
+							PORTAL_ID AS portalId,
+							UNIT AS unit,
+							DEFAULT_VIEW AS defaultView,
+							HOLIDAY AS holiday,
+							VIEW_TODO AS viewTodo,
+							START_HOUR as startHour,
+							END_HOUR as endHour
+		FROM 				IKEP4_SD_CONFIG
+		WHERE 				USER_ID = #userId# 
+		  AND 				PORTAL_ID = #portalId#
+		]]>
+	</select>
+	
+	<select id="isExistPersonalConfig" parameterClass="map" resultClass="int">  
+		<![CDATA[
+		SELECT				COUNT(*) AS "mcnt"
+		  FROM 				IKEP4_SD_CONFIG
+		 WHERE 				USER_ID = #userId# 
+		   AND 				PORTAL_ID = #portalId#
+		]]>
+	</select>
+	
+	<delete id="removeConfig"  parameterClass="User">
+		DELETE FROM IKEP4_SD_CONFIG
+		WHERE USER_ID = #userId#
+		  AND PORTAL_ID = #portalId#
+	</delete>
+	
+</sqlMap>

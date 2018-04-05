@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="collpack.expertnetwork.dao.ExpertNetworkPopular">
+	<typeAlias alias="ExpertNetworkPopularPK" type="com.lgcns.ikep4.collpack.expertnetwork.model.ExpertNetworkPopularPK"/>
+	<typeAlias alias="ExpertNetworkPopular" type="com.lgcns.ikep4.collpack.expertnetwork.model.ExpertNetworkPopular"/>
+	<typeAlias alias="ExpertNetworkPageCondition" type="com.lgcns.ikep4.collpack.expertnetwork.search.ExpertNetworkPageCondition"/>
+
+	<resultMap class="ExpertNetworkPopular" id="result">
+		<result column="USER_ID" property="userId" jdbcType="VARCHAR" javaType="String"/>
+		<result column="EXPERT_COUNT" property="expertCount" jdbcType="NUMBER" javaType="Integer"/>
+		<result column="USER_NAME" property="userName" jdbcType="VARCHAR" javaType="String"/>
+		<result column="USER_ENGLISH_NAME" property="userEnglishName" jdbcType="VARCHAR" javaType="String"/>
+		<result column="TEAM_NAME" property="teamName" jdbcType="VARCHAR" javaType="String"/>
+		<result column="TEAM_ENGLISH_NAME" property="teamEnglishName" jdbcType="VARCHAR" javaType="String"/>
+		<result column="JOB_TITLE_NAME" property="jobTitleName" jdbcType="VARCHAR" javaType="String"/>
+		<result column="JOB_TITLE_ENGLISH_NAME" property="jobTitleEnglishName" jdbcType="VARCHAR" javaType="String"/>
+		<result column="SORT_ORDER" property="sortOrder" jdbcType="NUMBER" javaType="Integer"/>
+		<result column="PICTURE_PATH" property="picturePath" jdbcType="VARCHAR" javaType="String"/>
+		<result column="PROFILE_PICTURE_PATH" property="profilePicturePath" jdbcType="VARCHAR" javaType="String"/>
+	</resultMap>
+
+<!-- 입력 -->
+	<insert id="create" parameterClass="ExpertNetworkPopular">
+	<![CDATA[
+		INSERT /* [ExpertNetworkPopular_SqlMap.xml] collpack.expertnetwork.dao.ExpertNetworkPopular.create */
+		       INTO IKEP4_EX_POPULAR (
+		       USER_ID
+		     , SCORE
+		     , SORT_ORDER
+		     , PORTAL_ID
+		     , REGIST_DATE
+		       )
+		VALUES (
+		       #userId#
+		     , #score#
+		     , #sortOrder#
+		     , #portalId#
+		     , SYSDATE
+		       )
+	]]>
+	</insert>
+
+<!-- 전체  조회 -->
+	<select id="listByPortalId" parameterClass="String" resultMap="result">
+	<![CDATA[
+		SELECT /* [ExpertNetworkPopular_SqlMap.xml] collpack.expertnetwork.dao.ExpertNetworkPopular.listByPortalId */
+		       USER_ID
+		     , (SELECT COUNT(USER_ID)
+		          FROM IKEP4_EX_EXPERT EXP
+		         WHERE EXP.USER_ID = USER_ID
+		           AND EXP.IS_AUTHORIZED != 2
+		           AND EXP.MATCHING_SCORE >= 100) EXPERT_COUNT
+		     , USR.USER_NAME USER_NAME
+		     , USR.USER_ENGLISH_NAME USER_ENGLISH_NAME
+		     , USR.TEAM_NAME TEAM_NAME
+		     , USR.TEAM_ENGLISH_NAME TEAM_ENGLISH_NAME
+		     , USR.JOB_TITLE_NAME JOB_TITLE_NAME
+		     , USR.JOB_TITLE_ENGLISH_NAME JOB_TITLE_ENGLISH_NAME
+		     , PPR.SORT_ORDER
+		     , USR.PICTURE_PATH
+		     , USR.PROFILE_PICTURE_PATH
+		  FROM IKEP4_EX_POPULAR PPR
+		  JOIN (
+		        SELECT USR.USER_ID USER_ID
+		             , USR.USER_NAME USER_NAME, USR.USER_ENGLISH_NAME USER_ENGLISH_NAME
+		             , USR.TEAM_NAME TEAM_NAME, USR.TEAM_ENGLISH_NAME TEAM_ENGLISH_NAME
+		             , JOB.JOB_TITLE_NAME JOB_TITLE_NAME, JOB.JOB_TITLE_ENGLISH_NAME JOB_TITLE_ENGLISH_NAME
+		             , USR.PICTURE_PATH, USR.PROFILE_PICTURE_PATH
+		          FROM IKEP4_EV_USER USR
+		          JOIN IKEP4_EV_JOB_TITLE JOB
+		         USING (JOB_TITLE_CODE)
+		       ) USR
+		 USING (USER_ID)
+		 WHERE PPR.PORTAL_ID = #portalId#
+		 ORDER BY PPR.SORT_ORDER
+	]]>
+	</select>
+
+<!-- 전체 삭제 -->
+	<delete id="removeAll">
+	<![CDATA[
+		DELETE /* [ExpertNetworkPopular_SqlMap.xml] collpack.expertnetwork.dao.ExpertNetworkPopular.removeAll */
+		       IKEP4_EX_POPULAR
+	]]>
+	</delete>
+
+<!-- 인기전문가 배치 -->
+	<insert id="batchGatherPopular" parameterClass="Integer">
+	<![CDATA[
+		INSERT /* [ExpertNetworkPopular_SqlMap.xml] collpack.expertnetwork.dao.ExpertNetworkPopular.batchGatherPopular */
+		       INTO IKEP4_EX_POPULAR 
+		     ( USER_ID, SCORE, SORT_ORDER, PORTAL_ID, REGIST_DATE )
+		SELECT USER_ID, SCORE, RANK, PORTAL_ID, SYSDATE
+		  FROM (
+		        SELECT USER_ID, PORTAL_ID
+		             , (GUESTBOOK + FOLLOW + FAVORITE) SCORE
+		             , ROW_NUMBER() OVER(PARTITION BY PORTAL_ID
+		                                 ORDER BY GUESTBOOK + FOLLOW + FAVORITE DESC) RANK
+		          FROM (
+		                SELECT USR.USER_ID, PORTAL_ID
+		                     , ROUND((SELECT COUNT(GUESTBOOK_ID)
+		                                FROM IKEP4_GB_GUESTBOOK
+		                               WHERE TARGET_USER_ID = USR.USER_ID
+		                             ) * PLC.GUESTBOOK_WEIGHT / 100) GUESTBOOK
+		                     , ROUND((SELECT COUNT(USER_ID)
+		                                FROM IKEP4_MB_FOLLOW
+		                               WHERE FOLLOWING_USER_ID = USR.USER_ID
+		                             ) * PLC.FOLLOW_WEIGHT / 100) FOLLOW
+		                     , ROUND((SELECT COUNT(FAVORITE_ID)
+		                                FROM IKEP4_AS_FAVORITE
+		                               WHERE TYPE = 'PEOPLE'
+		                                 AND TARGET_ID = USR.USER_ID
+		                             ) * PLC.FAVORITE_WEIGHT / 100) FAVORITE
+		                  FROM IKEP4_EV_USER USR
+		                  JOIN IKEP4_EX_POLICY PLC
+		                 USING (PORTAL_ID)
+		               )
+		       )
+		 WHERE RANK <= #gatherCount#
+	]]>
+	</insert>
+
+</sqlMap>

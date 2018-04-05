@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="com.lgcns.ikep4.workflow.engine.model.TransitionBean" >
+	<typeAlias alias = "TransitionBean" type="com.lgcns.ikep4.workflow.engine.model.TransitionBean"/>
+	
+	<!-- Activity 테이블 조회 결과 -->
+	<resultMap id="result" class="TransitionBean">
+		<result property="transitionId"   		column="TRANSITION_ID"    		columnIndex="1"/>
+		<result property="transitionName" 		column="TRANSITION_NAME"  		columnIndex="2"/>
+		<result property="transitionFrom" 		column="TRANSITION_FROM"  		columnIndex="3"/>
+		<result property="transitionTo"  		column="TRANSITION_TO"   		columnIndex="4"/>
+		<result property="conditionType"      	column="CONDITION_TYPE"       	columnIndex="5"/>
+		<result property="conditionExpression"  column="CONDITION_EXPRESSION"   columnIndex="6"/>
+		<result property="processId"  			column="PROCESS_ID"      		columnIndex="7"/>
+		<result property="processVer"  			column="PROCESS_VER"      		columnIndex="8"/>
+		<result property="createDate"  			column="CREATE_DATE"      		columnIndex="9"/>
+	</resultMap>
+	
+	<!-- insert -->
+	<insert id="com.lgcns.ikep4.workflow.engine.model.TransitionBean.insert" parameterClass="TransitionBean">
+      <![CDATA[ 
+      		/* [Transition_SqlMap.xml] com.lgcns.ikep4.workflow.engine.model.TransitionBean.insert */ 
+      
+			INSERT INTO IKEP4_WF_TRANSITION (							
+			TRANSITION_ID, TRANSITION_NAME, TRANSITION_FROM, TRANSITION_TO, CONDITION_TYPE,	
+			CONDITION_EXPRESSION, PROCESS_ID, PROCESS_VER, CREATE_DATE	)				
+			VALUES ( 	#transitionId#, #transitionName#, #transitionFrom#, #transitionTo#, #conditionType#,	
+			#conditionExpression#, #processId#, #processVer#, #createDate# )						
+       ]]>
+      <selectKey resultClass="String" keyProperty="transitionId" type="pre"> 
+         <![CDATA[ 
+               SELECT #transitionId# AS TRANSITION_ID FROM DUAL 
+            ]]>
+      </selectKey>       
+   </insert>
+</sqlMap>

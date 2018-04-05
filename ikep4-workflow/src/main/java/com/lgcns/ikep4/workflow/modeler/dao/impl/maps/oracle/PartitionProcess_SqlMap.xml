@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="workflow.modeler.dao.PartitionProcess" >
+	<typeAlias alias = "PartitionProcess" type="com.lgcns.ikep4.workflow.modeler.model.PartitionProcess"/>
+	
+	<!-- Partition 테이블 조회 결과 -->
+	<resultMap id="PartitionProcessResult" class="PartitionProcess">
+		<result property="relationId" column="RELATION_ID" columnIndex="1"/>
+		<result property="createDate" column="CREATE_DATE" columnIndex="2"/>
+		<result property="partitionId" column="PARTITION_ID" columnIndex="3"/>
+		<result property="processId" column="PROCESS_ID" columnIndex="4"/>
+		<result property="processVer" column="PROCESS_VER" columnIndex="5"/>
+	</resultMap>
+	
+   <!-- insert -->
+   <insert id="insert" parameterClass="PartitionProcess">
+      <![CDATA[ 
+           INSERT INTO IKEP4_WF_PARTITION_PROCESS (RELATION_ID, CREATE_DATE, PARTITION_ID, PROCESS_ID, PROCESS_VER)  
+           VALUES (#relationId#, #createDate#, #partitionId#, #processId#, #processVer#)
+       ]]>
+       <selectKey resultClass="String" keyProperty="relationId" type="pre"> 
+         <![CDATA[ 
+               SELECT #relationId# AS RELATION_ID FROM DUAL 
+            ]]>
+      </selectKey>
+   </insert>
+   
+   <!-- select -->
+	<select id="select" parameterClass="java.lang.String" resultMap="PartitionProcessResult">
+	  <![CDATA[
+		   SELECT * FROM IKEP4_WF_PARTITION_PROCESS WHERE PROCESS_ID = #processId#
+	   ]]>
+	</select>
+	
+	<!-- update -->
+	<update id="update" parameterClass="PartitionProcess">
+	  <![CDATA[
+	   ]]>
+	</update>
+   
+   <!-- delete -->
+   <delete id="delete" parameterClass="java.lang.String">
+      <![CDATA[
+	  		DELETE IKEP4_WF_PARTITION_PROCESS
+		     WHERE RELATION_ID = #relationId#
+	   ]]>
+	</delete>
+	
+	<!-- selectAll -->
+	<select id="selectAll" resultMap="PartitionProcessResult">
+	  <![CDATA[
+		   SELECT * FROM IKEP4_WF_PARTITION_PROCESS ORDER BY PROCESS_ID DESC, PROCESS_VER DESC
+	   ]]>
+	</select>
+	
+	<!-- selectCount -->
+	<select id="selectCount" parameterClass="String" resultClass="String">
+	  <![CDATA[
+		  SELECT COUNT(PARTITION_ID) FROM IKEP4_WF_PARTITION_PROCESS WHERE PARTITION_ID = #partitionId#   
+	   ]]>
+	</select>
+	
+	<!-- selectPartitionProcess -->
+    <select id="selectPartitionProcess" parameterClass="PartitionProcess" resultMap="PartitionProcessResult">
+      <![CDATA[
+	  		SELECT *
+			  FROM IKEP4_WF_PARTITION_PROCESS
+		     WHERE PARTITION_ID  = #partitionId#
+	   ]]>
+	</select>
+	
+	<!-- delete -->
+    <delete id="deletePartitionProcess" parameterClass="PartitionProcess">
+      <![CDATA[
+	  		DELETE IKEP4_WF_PARTITION_PROCESS
+		     WHERE PROCESS_ID  = #processId#
+			   AND PROCESS_VER = #processVer#
+	   ]]>
+	</delete>
+	
+</sqlMap>

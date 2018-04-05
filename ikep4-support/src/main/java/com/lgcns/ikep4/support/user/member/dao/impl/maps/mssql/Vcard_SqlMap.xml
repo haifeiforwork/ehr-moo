@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="support.user.member.dao.Vcard" >
+  	<typeAlias alias="Vcard" type="com.lgcns.ikep4.support.user.restful.model.Vcard" />
+  	<typeAlias alias="VcardSearchCondition" type="com.lgcns.ikep4.support.user.restful.model.VcardSearchCondition" />
+  	
+  	<resultMap id="result" class="Vcard">
+		<result property="visitingcardId" column="PERSON_ID" />
+		<result property="lastName" column="PERSON_NAME" />
+		<result property="companyName" column="COMPANY_NAME" />
+		<result property="teamName" column="TEAM_NAME" />
+		<result property="officePhoneno" column="OFFICE_PHONENO" />
+		<result property="mobile" column="MOBILE_PHONENO" />
+		<result property="mail" column="MAIL_ADDRESS" />
+		<result property="registerId" column="REGISTER_ID" />
+		<result property="registerName" column="REGISTER_NAME" />
+		<result property="registDate" column="REGIST_DATE" />
+		<result property="updateDate" column="UPDATE_DATE" />
+	</resultMap>
+
+	<select id="listUserVcardCheckFolder" parameterClass="VcardSearchCondition" resultMap="result">
+	SELECT /* [Vcard_SqlMap.xml] support.user.member.dao.Vcard.listUserVcardCheckFolder*/ * 
+	FROM 		(
+					 SELECT Row_number() OVER ( ORDER BY PER.PERSON_NAME ASC, PER.PERSON_ID ASC ) AS RNUM ,
+					 PERSON_ID, 
+					 PERSON_NAME, 
+					 COMPANY_NAME , 
+					 TEAM_NAME , 
+					 JOB_RANK_NAME , 
+					 OFFICE_PHONENO , 
+					 MOBILE_PHONENO , 
+					 MAIL_ADDRESS , 
+					 REGISTER_ID , 
+					 REGISTER_NAME , 
+					 REGIST_DATE , 
+					 UPDATE_DATE , 
+					 USER_TYPE , 
+					 '' AS ADDRGROUP_ID 
+					 FROM 		( 
+					 				SELECT AP.PERSON_ID ,
+					 				AP.PERSON_NAME ,
+					 				AP.PERSON_NAME AS PERSON_ENGLISH_NAME , 
+					 				AP.COMPANY_NAME , 
+					 				AP.TEAM_NAME ,
+					 				AP.TEAM_NAME AS TEAM_ENGLISH_NAME , 
+					 				AP.JOB_RANK_NAME , 
+					 				AP.JOB_RANK_NAME AS JOB_RANK_ENGLISH_NAME , 
+					 				AP.OFFICE_PHONENO , 
+					 				AP.MOBILE_PHONENO , 
+					 				AP.MAIL_ADDRESS , 
+					 				AP.PERSON_MEMO , 
+					 				AP.COMPANY_USER_ID , 
+					 				AP.REGISTER_ID , 
+					 				AP.REGISTER_NAME , 
+					 				AP.REGIST_DATE , 
+					 				AP.UPDATE_DATE , 
+					 				'O' AS USER_TYPE 
+					 				FROM IKEP4_AD_PERSON AP 
+					 				UNION ALL 
+					 				SELECT 		EU.USER_ID AS PERSON_ID , 
+					 									EU.USER_NAME AS PERSON_NAME , 
+					 									EU.USER_ENGLISH_NAME AS PERSON_ENGLISH_NAME , 
+					 									( 
+					 									SELECT COMPANY_CODE_name 
+					 									FROM 		IKEP4_EV_COMPANY_CODE 
+					 									WHERE 	IKEP4_EV_COMPANY_CODE.COMPANY_CODE = EU.company_code) AS COMPANY_NAME, 
+					 									EU.TEAM_NAME AS TEAM_NAME , 
+					 									EU.TEAM_ENGLISH_NAME AS TEAM_ENGLISH_NAME , 
+					 									(
+					 									SELECT JOB_TITLE_NAME 
+					 									FROM	 	IKEP4_EV_JOB_TITLE 
+					 									WHERE IKEP4_EV_JOB_TITLE.JOB_TITLE_CODE = EU.JOB_TITLE_CODE) AS JOB_RANK_NAME, 
+					 									(
+					 									SELECT JOB_TITLE_ENGLISH_NAME 
+					 									FROM 		IKEP4_EV_JOB_TITLE 
+					 									WHERE IKEP4_EV_JOB_TITLE.JOB_TITLE_CODE = EU.JOB_TITLE_CODE) AS JOB_RANK_ENGLISH_NAME , 
+					 									EU.OFFICE_PHONE_NO AS OFFICE_PHONENO , 
+					 									EU.MOBILE  AS MOBILE_PHONENO , 
+					 									EU.MAIL AS MAIL_ADDRESS , 
+					 									'' AS PERSON_MEMO , EU.USER_ID AS COMPANY_USER_ID, 
+					 									PG.REGISTER_ID AS REGISTER_ID , 
+					 									PG.REGISTER_NAME AS REGISTER_NAME , 
+					 									PG.REGIST_DATE AS REGIST_DATE , 
+					 									PG.UPDATE_DATE AS UPDATE_DATE , 
+					 									'I' AS USER_TYPE FROM IKEP4_EV_USER EU 
+					 									inner join IKEP4_AD_PERSON2GROUP PG ON EU.USER_ID = PG.PERSON_ID 
+					 									WHERE PG.USER_TYPE = 'I' 
+					 									AND PG.ADDRGROUP_ID = #folderId# ) PER 
+					 									WHERE 1=1 
+					 									AND PER.REGISTER_ID = #userId# 
+					 									<isNotNull property="folderId" >
+															<isEqual property="folderId" compareValue="NOGROUP" prepend="AND">
+															PER.PERSON_ID NOT IN (
+																			SELECT PERSON_ID
+																			FROM   IKEP4_AD_PERSON2GROUP APG
+																			       inner join IKEP4_AD_ADDRGROUP AB
+																			         ON APG.ADDRGROUP_ID = AB.ADDRGROUP_ID
+																			WHERE  APG.REGISTER_ID = #userId# 
+																			)  ) F
+															</isEqual>
+															<isNotEqual property="folderId" compareValue="NOGROUP" prepend="AND">
+															PER.PERSON_ID IN (
+																			SELECT PERSON_ID FROM IKEP4_AD_PERSON2GROUP APG 
+																			WHERE APG.ADDRGROUP_ID = #folderId#
+																			)  ) F
+															</isNotEqual>
+														</isNotNull>
+	</select>
+
+</sqlMap>

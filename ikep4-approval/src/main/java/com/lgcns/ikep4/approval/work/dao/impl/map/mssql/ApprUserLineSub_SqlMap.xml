@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="approval.work.dao.ApprUserLineSub" >
+
+	<typeAlias alias = "ApprUserLineSub" type="com.lgcns.ikep4.approval.work.model.ApprUserLineSub"/>
+
+	
+	<sql id="sqlColumnList">
+		A.USER_LINE_ID		AS	userLineId,
+		A.APPR_USER_ID		AS	apprUserId,
+		A.APPR_USER_TYPE	AS	apprUserType,
+		A.APPR_TYPE			AS	apprType,
+		A.APPR_ORDER		AS	apprOrder,
+		A.APPR_JOB_TITLE	AS	apprJobTitle,
+		A.LINE_MODIFY_AUTH	AS	lineModifyAuth,
+		A.DOC_MODIFY_AUTH	AS	docModifyAuth,
+		A.READ_MODIFY_AUTH	AS	readModifyAuth,
+		U.USER_NAME			AS	userName,
+		CASE WHEN A.APPR_USER_TYPE=0 THEN U.TEAM_NAME
+		ELSE G.GROUP_NAME
+		END	teamName
+	</sql>	
+
+
+	<!-- insert -->
+	
+	<insert id="create" parameterClass="ApprUserLineSub">
+	/* [ApprUserLineSub_SqlMap.xml] approval.work.dao.ApprUserLineSub.create */
+	<![CDATA[ 
+		INSERT INTO IKEP4_APPR_USER_LINE_SUB
+		(
+			USER_LINE_ID,
+			APPR_USER_ID,
+			APPR_USER_TYPE,
+			APPR_TYPE,
+			APPR_ORDER,
+			APPR_JOB_TITLE,
+			LINE_MODIFY_AUTH,
+			DOC_MODIFY_AUTH,
+			READ_MODIFY_AUTH
+		)
+		VALUES
+		(
+			#userLineId#,
+			#apprUserId#,
+			#apprUserType#,
+			#apprType#,
+			#apprOrder#,
+			#apprJobTitle#,
+			#lineModifyAuth#,
+			#docModifyAuth#,
+			#readModifyAuth#
+		)
+	]]>
+	</insert>
+
+	
+	<select id="listApprUserLineSub" parameterClass="java.lang.String" resultClass="ApprUserLineSub"> 
+	SELECT /* [ApprUserLineSub_SqlMap.xml] uapproval.work.dao.ApprUserLineSub.listApprUserLineSub */ 
+			<include refid="approval.work.dao.ApprUserLineSub.sqlColumnList" /> 
+	FROM   
+		IKEP4_APPR_USER_LINE_SUB A
+		LEFT OUTER JOIN IKEP4_EV_USER U ON (A.APPR_USER_ID=U.USER_ID AND APPR_USER_TYPE=0)
+		LEFT OUTER JOIN IKEP4_EV_GROUP G ON (A.APPR_USER_ID=G.GROUP_ID AND APPR_USER_TYPE=1)
+	WHERE
+		USER_LINE_ID	=	#userLineId#
+	ORDER BY 
+		APPR_ORDER ASC	  
+	</select>		
+
+	
+	<delete id="delete" parameterClass="java.lang.String"> 
+	<![CDATA[
+		/* [ApprUserLineSub_SqlMap.xml] approval.work.dao.ApprUserLineSub.delete */
+		DELETE 
+		FROM 
+			IKEP4_APPR_USER_LINE_SUB
+		WHERE
+			USER_LINE_ID		=	#userLineId# 
+    	]]>
+	</delete>	
+	
+	
+	
+</sqlMap>

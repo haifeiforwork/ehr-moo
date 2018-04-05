@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="util.user.member.dao.Users" >
+	<typeAlias alias="Users" type="com.lgcns.ikep4.util.user.member.model.User"/>
+	
+
+	<resultMap id="userResult" class="Users">
+		<result property="userId" column="USER_ID" />
+		<result property="portalId" column="PORTAL_ID" />
+		<result property="userPassword" column="USER_PASSWORD" />
+		<result property="userStatus" column="USER_STATUS" />
+		<result property="empNo" column="EMP_NO" />
+		<result property="mail" column="MAIL" />
+		<result property="mailPassword" column="MAIL_PASSWORD" />
+		<result property="userName" column="USER_NAME" />
+		<result property="userEnglishName" column="USER_ENGLISH_NAME" />
+		<result property="teamName" column="TEAM_NAME" />
+		<result property="teamEnglishName" column="TEAM_ENGLISH_NAME" />
+		<result property="timezoneId" column="TIMEZONE_ID" />
+		<result property="timezoneName" column="TIMEZONE_NAME" />
+		<result property="timezoneDescription" column="DESCRIPTION" />
+		<result property="timeDifference" column="TIME_DIFFERENCE" />
+		<result property="mobile" column="MOBILE" />
+		<result property="officePhoneNo" column="OFFICE_PHONE_NO" />
+		<result property="homePhoneNo" column="HOME_PHONE_NO" />
+		<result property="officeBasicAddress" column="OFFICE_BASIC_ADDRESS" />
+		<result property="officeDetailAddress" column="OFFICE_DETAIL_ADDRESS" />
+		<result property="officeZipcode" column="OFFICE_ZIPCODE" />
+		<result property="homeBasicAddress" column="HOME_BASIC_ADDRESS" />
+		<result property="homeDetailAddress" column="HOME_DETAIL_ADDRESS" />
+		<result property="homeZipcode" column="HOME_ZIPCODE" />
+		<result property="birthday" column="BIRTHDAY" />
+		<result property="weddingAnniv" column="WEDDING_ANNIV" />
+		<result property="pictureId" column="PICTURE_ID" />
+		<result property="profilePictureId" column="PROFILE_PICTURE_ID" />
+		<result property="picturePath" column="PICTURE_PATH" />
+		<result property="profilePicturePath" column="PROFILE_PICTURE_PATH" />
+		<result property="leader" column="LEADER" />
+		<result property="jobClassCode" column="JOB_CLASS_CODE" />
+		<result property="jobClassName" column="JOB_CLASS_NAME" />
+		<result property="jobRankCode" column="JOB_RANK_CODE" />
+		<result property="jobRankName" column="JOB_RANK_NAME" />
+		<result property="jobDutyCode" column="JOB_DUTY_CODE" />
+		<result property="jobDutyName" column="JOB_DUTY_NAME" />
+		<result property="workPlaceCode" column="WORK_PLACE_CODE" />
+        <result property="workPlaceName" column="WORK_PLACE_NAME" />
+        <result property="workPlaceEnglishName" column="WORK_PLACE_ENGLISH_NAME" />
+		<result property="jobTitleCode" column="JOB_TITLE_CODE" />
+		<result property="jobTitleName" column="JOB_TITLE_NAME" />
+		<result property="jobTitleEnglishName" column="JOB_TITLE_ENGLISH_NAME" />
+		<result property="localeCode" column="LOCALE_CODE" />
+		<result property="localeName" column="LOCALE_NAME" />
+		<result property="twitterAccount" column="TWITTER_ACCOUNT" />
+		<result property="twitterAuthCode" column="TWITTER_AUTH_CODE" />
+		<result property="facebookAccount" column="FACEBOOK_ACCOUNT" />
+		<result property="facebookAuthCode" column="FACEBOOK_AUTH_CODE" />
+		<result property="profileStatus" column="PROFILE_STATUS" />
+		<result property="currentJob" column="CURRENT_JOB" />
+		<result property="expertField" column="EXPERT_FIELD" />
+		<result property="registerId" column="REGISTER_ID" />
+		<result property="registerName" column="REGISTER_NAME" />
+		<result property="updaterId" column="UPDATER_ID" />
+		<result property="updaterName" column="UPDATER_NAME" />
+		<result property="registDate" column="REGIST_DATE" />
+		<result property="updateDate" column="UPDATE_DATE" />
+		<result property="groupId" column="GROUP_ID" />
+		<result property="nationCode" column="NATION_CODE" />
+		<result property="nationName" column="NATION_NAME" />
+		<result property="hanziName" column="HANZI_NAME" />
+		<result property="fax" column="FAX" />
+		<result property="companyCode" column="COMPANY_CODE" />
+        <result property="companyCodeName" column="COMPANY_CODE_NAME" />
+        <result property="infoGrade" column="INFO_GRADE" />
+        <result property="lunisolar" column="LUNISOLAR" />
+        <result property="mssAuthCode" column="MSS_AUTH_CODE" />
+        <result property="essAuthCode" column="ESS_AUTH_CODE" />
+        <result property="sapId" column="SAP_ID" />
+        <result property="bwId" column="BW_ID" />
+        <result property="scheduleManager" column="SCHEDULE_MANAGER" />
+	</resultMap>	
+	
+
+	
+	
+   
+   <!-- MS SQL -->
+   <!-- 사용자 관리화면용 상세정보 -->
+	<select id="select" parameterClass="java.lang.String" resultMap="userResult">
+	<![CDATA[
+		SELECT /* [User_SqlMap.xml] support.user.member.dao.User.select */
+			TOP 1 
+			A.USER_ID, A.PORTAL_ID, A.USER_PASSWORD, 
+			A.USER_STATUS, A.EMP_NO, A.MAIL, 
+			A.MAIL_PASSWORD, A.USER_NAME, 
+			A.USER_ENGLISH_NAME, C.GROUP_ID,
+			A.TEAM_NAME, 
+			A.TEAM_ENGLISH_NAME, 
+			A.TIMEZONE_ID, (SELECT ITEM_MESSAGE FROM IKEP4_I18N_MESSAGE 
+							WHERE ITEM_ID = A.TIMEZONE_ID 
+							AND LOCALE_CODE = A.LOCALE_CODE
+							AND FIELD_NAME = 'timezoneName') AS TIMEZONE_NAME
+			, D.DESCRIPTION, D.TIME_DIFFERENCE, A.MOBILE,
+			A.OFFICE_PHONE_NO, A.HOME_PHONE_NO, A.OFFICE_BASIC_ADDRESS,
+			A.OFFICE_DETAIL_ADDRESS, A.OFFICE_ZIPCODE, A.HOME_BASIC_ADDRESS,
+			A.HOME_DETAIL_ADDRESS, A.HOME_ZIPCODE, A.BIRTHDAY, A.WEDDING_ANNIV,
+			A.PICTURE_ID,
+			A.PROFILE_PICTURE_ID, 
+			A.PICTURE_PATH, 
+			CASE WHEN A.PROFILE_PICTURE_PATH = '' THEN A.SAP_PROFILE_PICTURE_PATH
+                 WHEN A.PROFILE_PICTURE_PATH IS NULL THEN A.SAP_PROFILE_PICTURE_PATH
+                 ELSE A.PROFILE_PICTURE_PATH
+                 END AS PROFILE_PICTURE_PATH, 			
+			A.LEADER, A.JOB_CLASS_CODE,
+			E.JOB_CLASS_NAME, A.JOB_RANK_CODE, F.JOB_RANK_NAME, A.JOB_DUTY_CODE,
+			G.JOB_DUTY_NAME, A.WORK_PLACE_CODE, H.WORK_PLACE_NAME, H.WORK_PLACE_ENGLISH_NAME,
+			A.JOB_TITLE_CODE, I.JOB_TITLE_NAME, I.JOB_TITLE_ENGLISH_NAME, 
+			A.LOCALE_CODE, (SELECT ITEM_MESSAGE FROM IKEP4_I18N_MESSAGE 
+							WHERE ITEM_ID = A.LOCALE_CODE 
+							AND LOCALE_CODE = A.LOCALE_CODE
+							AND FIELD_NAME = 'localeName') AS LOCALE_NAME,
+			A.TWITTER_ACCOUNT, A.TWITTER_AUTH_CODE, A.FACEBOOK_ACCOUNT,
+			A.FACEBOOK_AUTH_CODE, A.PROFILE_STATUS, A.CURRENT_JOB, A.EXPERT_FIELD,
+			A.NATION_CODE, (SELECT ITEM_MESSAGE FROM IKEP4_I18N_MESSAGE 
+							WHERE ITEM_ID = A.NATION_CODE 
+							AND LOCALE_CODE = A.LOCALE_CODE
+							AND FIELD_NAME = 'nationName') AS NATION_NAME,
+			A.REGISTER_ID, A.REGISTER_NAME, A.REGIST_DATE, A.UPDATER_ID,
+			A.UPDATER_NAME, A.UPDATE_DATE, A.HANZI_NAME, A.FAX,
+			A.COMPANY_CODE, L.COMPANY_CODE_NAME, A.INFO_GRADE, A.LUNISOLAR,
+			A.ESS_AUTH_CODE,
+			A.MSS_AUTH_CODE,
+			A.SAP_ID,
+			A.BW_ID,
+            A.SCHEDULE_MANAGER
+		FROM 
+			IKEP4_EV_USER A LEFT OUTER JOIN
+		    (
+		        select 
+		            A.user_id, B.group_id, B.group_name, B.group_english_name  
+		          from IKEP4_EV_USER_GROUP A inner join 
+		               IKEP4_EV_GROUP B on A.group_id = B.group_id
+		         where A.user_id = #userId#
+		           and B.group_type_id = 'G0001'
+		           and A.represent_group = 1
+		    ) C ON A.user_id = C.user_id LEFT OUTER JOIN
+		    IKEP4_EV_TIMEZONE D ON A.TIMEZONE_ID = D.TIMEZONE_ID LEFT OUTER JOIN 
+		    IKEP4_EV_JOB_CLASS E ON A.JOB_CLASS_CODE = E.JOB_CLASS_CODE LEFT OUTER JOIN 
+		    IKEP4_EV_JOB_RANK F ON A.JOB_RANK_CODE = F.JOB_RANK_CODE LEFT OUTER JOIN 
+		    IKEP4_EV_JOB_DUTY G ON A.JOB_DUTY_CODE = G.JOB_DUTY_CODE LEFT OUTER JOIN 
+		    IKEP4_EV_WORK_PLACE H ON A.WORK_PLACE_CODE = H.WORK_PLACE_CODE LEFT OUTER JOIN 
+		    IKEP4_EV_JOB_TITLE I ON A.JOB_TITLE_CODE = I.JOB_TITLE_CODE LEFT OUTER JOIN 
+		    IKEP4_EV_LOCALE J ON A.LOCALE_CODE = J.LOCALE_CODE LEFT OUTER JOIN
+		    IKEP4_EV_NATION K ON A.NATION_CODE = K.NATION_CODE LEFT OUTER JOIN
+            IKEP4_EV_COMPANY_CODE L ON A.COMPANY_CODE = L.COMPANY_CODE 
+		WHERE A.USER_ID = #userId#
+	]]>
+	</select>
+	
+	
+</sqlMap>

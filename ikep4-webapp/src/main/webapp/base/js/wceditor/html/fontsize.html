@@ -1,0 +1,45 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="stylesheet" type="text/css" href="../css/html.css" />
+<script type="text/javascript" src="/ikep4-webapp/base/js/jquery/jquery-1.6.2.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function(){
+		$("#fontsizeDiv > div")
+		.bind("mouseover", function() {
+			$(this).addClass("over");
+		})
+		.bind("mouseout", function() {
+			$(this).removeClass("over");
+		})
+		.bind("click", function() {
+			//parent.WCEditor.setFont("fontsize", $(this).find("span").attr("class"), $(this).find("span").css("font-size"));
+			parent.WCEditor.setFont("fontsize", $(this).find("span").attr("class"), $(this).find("span")[0].style.fontSize);
+		});
+
+        if(parent.WCEditor.config.miniMode){
+		    $("#fontsizeDiv > div:odd").hide();
+		}
+	});
+</script>
+</head>
+<body>
+<div id="ifrmMainDiv">
+	<div id="ifrmLayoutDiv">
+	    <div id="fontsizeDiv">
+			<div><span class="1" style="font-size:7pt;">가나다라마(7pt)</span></div>
+			<div><span class="1" style="font-size:8pt;">가나다라마(8pt)</span></div>
+			<div><span class="1" style="font-size:9pt;">가나다라마(9pt)</span></div>
+			<div><span class="2" style="font-size:10pt;">가나다라마(10pt)</span></div>
+			<div><span class="2" style="font-size:11pt;">가나다라마(11pt)</span></div>
+			<div><span class="3" style="font-size:12pt;">가나다라마(12pt)</span></div>
+			<div><span class="4" style="font-size:14pt;">가나다라마(14pt)</span></div>
+			<div><span class="5" style="font-size:18pt;">가나다라마(18pt)</span></div>
+			<div><span class="6" style="font-size:24pt;">가나다라(24pt)</span></div>
+			<div><span class="7" style="font-size:36pt;">가나다(36pt)</span></div>
+	    </div>
+	</div>
+</div>
+</body>
+</html>

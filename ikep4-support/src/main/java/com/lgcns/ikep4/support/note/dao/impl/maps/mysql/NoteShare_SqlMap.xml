@@ -1,0 +1,880 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="support.note.noteShare">
+  <typeAlias alias="NoteShare" type="com.lgcns.ikep4.support.note.model.NoteShare"/>
+  <typeAlias alias="wsBoardVersion" type="com.lgcns.ikep4.support.note.model.BoardItemVersion"/>  
+	<resultMap id="boardResult" class="com.lgcns.ikep4.support.note.model.NoteShare"> 
+    <result column="BOARD_ID"           jdbcType="VARCHAR" property="boardId" />
+    <result column="BOARD_NAME"         jdbcType="VARCHAR" property="boardName" />
+    <result column="BOARD_DESCRIPTION"  jdbcType="VARCHAR" property="boardDescription" />
+    <result column="BOARD_TYPE"         jdbcType="VARCHAR" property="boardType" />
+    <result column="BOARD_ENGLISH_NAME"         jdbcType="VARCHAR" property="boardEnglishName" />
+    <result column="BOARD_ENGLISH_DESCRIPTION"  jdbcType="VARCHAR" property="boardEnglishDescription" />
+  </resultMap>                          
+  <resultMap id="boardIndentationResult" extends="boardResult" class="com.lgcns.ikep4.support.note.model.NoteShare"> 
+    <result column="INDENTATION" jdbcType="VARCHAR" property="indentation" /> 
+    <result column="HAS_CHILDREN" jdbcType="DECIMAL" property="hasChildren" />
+  </resultMap>                         
+  <resultMap id="boardResultWS" extends="boardResult" class="com.lgcns.ikep4.support.note.model.NoteShare"> 
+    <result column="VERSION_MANAGE" jdbcType="VARCHAR" property="versionManage" /> 
+  </resultMap> 
+  
+  
+  <sql id="sqlColumnList">
+    BOARD_NAME, 
+    BOARD_DESCRIPTION, 
+    BOARD_TYPE, 
+    BOARD_ENGLISH_NAME,
+    BOARD_ENGLISH_DESCRIPTION
+  </sql> 
+
+  <sql id="insertSqlColumnList"> 
+    ITEM_ID, 
+    BOARD_ID, 
+    ITEM_PARENT_ID, 
+    ITEM_GROUP_ID, 
+    STEP, 
+    INDENTATION, 
+    ITEM_SEQ_ID,  
+    ITEM_DISPLAY, 
+    TITLE,
+    HIT_COUNT, 
+    RECOMMEND_COUNT, 
+    REPLY_COUNT, 
+    LINEREPLY_COUNT, 
+    ATTACH_FILE_COUNT, 
+    START_DATE, 
+    END_DATE, 
+    ITEM_DELETE,
+    IMAGE_FILE_ID, 
+    CONTENTS,
+    TEXT_CONTENTS,
+    REGISTER_ID, 
+    REGISTER_NAME, 
+    REGIST_DATE,    
+    UPDATER_ID, 
+    UPDATER_NAME, 
+    UPDATE_DATE 
+  </sql>  
+  
+  <select id="listByBBSBoardRootId" parameterClass="map" resultMap="boardIndentationResult"> 
+    SELECT  /* [NoteShare_SqlMap.xml] support.note.noteShare.listByBoardRootId */  * 
+    FROM (
+		SELECT
+		       LEVEL - 1 AS INDENTATION,
+		       (SELECT COUNT(*) FROM IKEP4_BD_BOARD B WHERE A.BOARD_ID = B.BOARD_PARENT_ID) AS HAS_CHILDREN,
+		       A.BOARD_ID, 
+		       <include refid="support.note.noteShare.sqlColumnList"/>
+		FROM (
+			SELECT	fncChildBoard() AS board_id, @level as level, @rownum as rownum
+			FROM	(SELECT  @start_with := 'root', @id := @start_with, @level := 1, @rownum := 0, @sort_order := 0) tbl1, IKEP4_BD_BOARD
+			WHERE	@id IS NOT NULL
+		) tbl2 inner join IKEP4_BD_BOARD A
+		ON tbl2.board_id = A.board_id
+		where  BOARD_ROOT_ID = #boardRootId# AND PORTAL_Id = #portalId# AND BOARD_DELETE = 0
+		order by rownum
+	)   A   
+  </select>
+  
+  <select id="listByBBSBoardRootIdPer" parameterClass="map" resultMap="boardIndentationResult"> 
+		SELECT /* [NoteShare_SqlMap.xml] support.note.noteShare.listByBoardRootIdPer */ B.*
+		FROM              	
+		(
+			select AAAA.RESOURCE_NAME AS RESOURCE_NAME,
+			       AAAA.OWNER_ID AS OWNER_ID,
+			       AAAA.OPERATION_NAME AS OPERATION_NAME,
+			       AAAA.user_id AS user_id,
+			       AAAA.CLASS_NAME AS CLASS_NAME
+			from 
+			(
+				select bb.resource_name AS RESOURCE_NAME,
+				       bb.owner_id AS OWNER_ID,
+				       dd.operation_name AS OPERATION_NAME,
+				       bb.owner_id AS user_id,
+				       ee.class_name AS CLASS_NAME
+				from ikep4_ev_sys_resource bb
+					join ikep4_ev_sys_permission cc on bb.resource_id = cc.resource_id
+					join ikep4_ev_operation dd on dd.operation_id = cc.operation_id and dd.OPERATION_NAME = #operationName#
+					join ikep4_ev_class ee on bb.class_id = ee.class_id and ee.class_name = #className#
+				where cc.open_option = 0 and bb.owner_id IN (#userId#, 'OPEN')
+				union
+				select bb.resource_name AS RESOURCE_NAME,
+				       bb.owner_id AS OWNER_ID,
+				       dd.operation_name AS OPERATION_NAME,
+				       'OPEN' AS user_id,
+				       ee.class_name AS CLASS_NAME
+				from ikep4_ev_sys_resource bb
+					join ikep4_ev_sys_permission cc on bb.resource_id = cc.resource_id
+					join ikep4_ev_operation dd on dd.operation_id = cc.operation_id and dd.OPERATION_NAME = #operationName#
+					join ikep4_ev_class ee on bb.class_id = ee.class_id and ee.class_name = #className#
+				where cc.open_option = 1
+				union
+				select bb.resource_name AS RESOURCE_NAME,
+				       bb.owner_id AS OWNER_ID,
+				       dd.operation_name AS OPERATION_NAME,
+				       aa.user_id AS user_id,
+				       ee.class_name AS CLASS_NAME
+				from ikep4_ev_user_sys_permission aa
+					join ikep4_ev_sys_permission cc on aa.permission_id = cc.permission_id
+					join ikep4_ev_sys_resource bb on bb.resource_id = cc.resource_id
+					join ikep4_ev_operation dd on dd.operation_id = cc.operation_id and dd.OPERATION_NAME = #operationName#
+					join ikep4_ev_class ee on bb.class_id = ee.class_id and ee.class_name = #className#
+				where cc.open_option = 0 and aa.user_id IN (#userId#, 'OPEN')
+				union
+				select bb.resource_name AS RESOURCE_NAME,
+				       bb.owner_id AS OWNER_ID,
+				       dd.operation_name AS OPERATION_NAME,
+				       ff.user_id AS user_id,
+				       ee.class_name AS CLASS_NAME
+				from ikep4_ev_group_sys_permission aa 
+					join ikep4_ev_sys_permission cc on cc.permission_id = aa.permission_id and cc.open_option = 0
+					join ikep4_ev_sys_resource bb on bb.resource_id = cc.resource_id
+					join ikep4_ev_operation dd on cc.operation_id = dd.operation_id and dd.OPERATION_NAME = #operationName#
+					join ikep4_ev_class ee on bb.class_id = ee.class_id and ee.class_name = #className#
+					join ikep4_ev_user_group ff on aa.group_id = ff.group_id and ff.user_id IN (#userId#, 'OPEN')
+				where aa.hierarchy_permission = 0							
+				union
+				select bb.resource_name AS RESOURCE_NAME,
+				       bb.owner_id AS OWNER_ID,
+				       dd.operation_name AS OPERATION_NAME,
+				       ff.user_id AS user_id,
+				       ee.class_name AS CLASS_NAME
+				from ikep4_ev_role_sys_permission aa
+					join ikep4_ev_sys_permission cc on aa.permission_id = cc.permission_id
+					join ikep4_ev_sys_resource bb on bb.resource_id = cc.resource_id
+					join ikep4_ev_operation dd on dd.operation_id = cc.operation_id and dd.OPERATION_NAME = #operationName#
+					join ikep4_ev_class ee on bb.class_id = ee.class_id and ee.class_name = #className#
+					join ikep4_ev_user_role ff on ff.role_id = aa.role_id and ff.user_id IN (#userId#, 'OPEN')
+				where cc.open_option = 0
+				union
+				select bb.resource_name AS RESOURCE_NAME,
+				       bb.owner_id AS OWNER_ID,
+				       dd.operation_name AS OPERATION_NAME,
+				       gg.user_id AS user_id,
+				       ee.class_name AS CLASS_NAME
+				from ikep4_ev_role_sys_permission aa 
+					join ikep4_ev_sys_permission cc on aa.permission_id = cc.permission_id
+					join ikep4_ev_sys_resource bb on bb.resource_id = cc.resource_id
+					join ikep4_ev_operation dd on dd.operation_id = cc.operation_id and dd.OPERATION_NAME = #operationName#
+					join ikep4_ev_class ee on bb.class_id = ee.class_id and ee.class_name = #className#
+					join ikep4_ev_group_role ff on ff.role_id = aa.role_id
+					join ikep4_ev_user_group gg on ff.group_id = gg.group_id and gg.user_id IN (#userId#, 'OPEN')
+				where cc.open_option = 0
+				union
+				select bb.resource_name AS RESOURCE_NAME,
+				       bb.owner_id AS OWNER_ID,
+				       dd.operation_name AS OPERATION_NAME,
+				       ff.user_id AS user_id,
+				       ee.class_name AS CLASS_NAME
+				from ikep4_ev_jclass_sys_permission aa 
+					join ikep4_ev_sys_permission cc on cc.permission_id = aa.permission_id
+					join ikep4_ev_sys_resource bb on bb.resource_id = cc.resource_id
+					join ikep4_ev_operation dd on cc.operation_id = dd.operation_id and dd.OPERATION_NAME =#operationName#
+					join ikep4_ev_class ee on bb.class_id = ee.class_id and ee.class_name = #className#
+					join ikep4_ev_user ff on aa.job_class_code = ff.job_class_code and ff.user_id IN (#userId#, 'OPEN')
+				where cc.open_option = 0
+				union
+				select bb.resource_name AS RESOURCE_NAME,
+				       bb.owner_id AS OWNER_ID,
+				       dd.operation_name AS OPERATION_NAME,
+				       ff.user_id AS user_id,
+				       ee.class_name AS CLASS_NAME
+				from ikep4_ev_jduty_sys_permission aa 
+					join ikep4_ev_sys_permission cc on cc.permission_id = aa.permission_id
+					join ikep4_ev_sys_resource bb on bb.resource_id = cc.resource_id
+					join ikep4_ev_operation dd on cc.operation_id = dd.operation_id and dd.OPERATION_NAME = #operationName#
+					join ikep4_ev_class ee on bb.class_id = ee.class_id and ee.class_name = #className#
+					join ikep4_ev_user ff on aa.job_duty_code = ff.job_duty_code and ff.user_id IN (#userId#, 'OPEN')
+				where cc.open_option = 0
+			) AAAA
+			LEFT JOIN 
+			(
+				select bb.resource_name AS RESOURCE_NAME,
+				       bb.owner_id AS OWNER_ID,
+				       dd.operation_name AS OPERATION_NAME,
+				       aa.user_id AS user_id,
+				       ee.class_name AS CLASS_NAME
+				  from ikep4_ev_user_sys_exp_perm aa
+				  	  join ikep4_ev_sys_permission cc on cc.permission_id = aa.permission_id
+				     join ikep4_ev_sys_resource bb on bb.resource_id = cc.resource_id
+					 join ikep4_ev_operation dd  on cc.operation_id = dd.operation_id and dd.OPERATION_NAME = #operationName#
+					 join ikep4_ev_class ee  on bb.class_id = ee.class_id and ee.class_name = #className#
+				 where cc.open_option = 0 and aa.user_id IN (#userId#, 'OPEN')
+			
+			) BBBB
+			on
+				(
+					   (AAAA.RESOURCE_NAME = BBBB.RESOURCE_NAME) and
+			           (AAAA.OWNER_ID = BBBB.OWNER_ID) and
+			           (AAAA.OPERATION_NAME = BBBB.OPERATION_NAME) and
+			           (AAAA.user_id = BBBB.user_id) and
+			           (AAAA.CLASS_NAME = BBBB.CLASS_NAME)
+				)
+			
+			where (
+					isnull(BBBB.RESOURCE_NAME) 
+					and isnull(BBBB.OWNER_ID) 
+					and isnull(BBBB.OPERATION_NAME) 
+					and isnull(BBBB.user_id) 
+					and isnull(BBBB.CLASS_NAME)
+				  )
+		) A	INNER JOIN
+		(
+           SELECT 
+               * 
+             FROM (
+                       SELECT
+                              LEVEL - 1 AS INDENTATION,
+                              (SELECT COUNT(*) FROM IKEP4_BD_BOARD B WHERE A.BOARD_ID = B.BOARD_PARENT_ID) AS HAS_CHILDREN,
+                              A.BOARD_ID,
+                              <include refid="support.note.noteShare.sqlColumnList"/>
+                         FROM (
+                                   SELECT	fncChildBoard() AS board_id, @level as level, @rownum as rownum
+                                   FROM	(SELECT  @start_with := 'root', @id := @start_with, @level := 1, @rownum := 0, @sort_order := 0) tbl1, IKEP4_BD_BOARD
+                                   WHERE	@id IS NOT NULL
+                              ) tbl2 inner join IKEP4_BD_BOARD A ON tbl2.board_id = A.board_id
+                        where  BOARD_ROOT_ID = '0' AND PORTAL_Id = 'P000001' AND BOARD_DELETE = 0
+                        order by rownum
+                  )   A
+       ) B on A.RESOURCE_NAME = B.BOARD_ID
+       WHERE B.BOARD_TYPE = '0'  
+  	</select>
+  		
+	<select id="listMyCollaboration" parameterClass="Map"  resultClass="NoteShare">
+	<![CDATA[
+		SELECT /* [NoteShare_SqlMap.xml] support.note.noteShare.listMyCollaboration */
+			A.WORKSPACE_ID		AS workspaceId,
+			A.WORKSPACE_NAME	AS workspaceName,
+			A.TYPE_ID			AS typeId, 
+			B.TYPE_NAME			AS typeName,
+			B.TYPE_ENGLISH_NAME AS typeEnglishName,
+			CASE WHEN D.IS_DEFAULT is NULL THEN 0 ELSE	D.IS_DEFAULT END isDefault
+		FROM
+			IKEP4_WS_WORKSPACE A
+			INNER JOIN IKEP4_WS_TYPE B ON (A.TYPE_ID = B.TYPE_ID AND (B.PORTAL_ID =	#portalId# OR B.IS_ORGANIZATION=1))
+			INNER JOIN IKEP4_WS_MEMBER D ON (A.WORKSPACE_ID	= D.WORKSPACE_ID AND D.MEMBER_LEVEL 	IN	('1','2','3','4'))
+		WHERE 
+			A.WORKSPACE_STATUS	IN	('O','WC')			
+			AND D.MEMBER_ID		=	#memberId#
+		ORDER BY
+			D.IS_DEFAULT DESC,B.IS_ORGANIZATION DESC, B.SORT_ORDER, A.WORKSPACE_NAME
+	]]>
+	</select>
+	
+  <select id="getBoardbyWS" parameterClass="map" resultMap="boardResultWS"> 
+    SELECT  /* [NoteShare_SqlMap.xml] support.note.noteShare.getBoardbyWS */  * 
+    FROM (
+    		SELECT 	A.BOARD_ID,
+					A.BOARD_NAME, 
+					A.DESCRIPTION as BOARD_DESCRIPTION, 
+					A.BOARD_TYPE, 
+					A.VERSION_MANAGE,
+					IFNULL(A.BOARD_ENGLISH_NAME, A.BOARD_NAME) AS BOARD_ENGLISH_NAME,
+					IFNULL(A.BOARD_ENGLISH_DESCRIPTION, A.DESCRIPTION) AS BOARD_ENGLISH_DESCRIPTION
+			FROM  	IKEP4_WS_BD_BOARD A
+			WHERE  	PORTAL_Id = #portalId#  
+			AND 	WORKSPACE_ID = #workspaceId# 
+			AND		BOARD_ID = #boardId# 
+			AND 	IS_DELETE = 0 
+			AND 	BOARD_TYPE = '0' 
+	)   A   
+  </select>
+  
+  <select id="listByWSBoardRootId" parameterClass="map" resultMap="boardResult"> 
+	  SELECT /* [NoteShare_SqlMap.xml] support.note.noteShare.listByWSBoardRootId */
+				BOARD_ID,
+				BOARD_NAME,
+				DESCRIPTION as BOARD_DESCRIPTION, 
+				BOARD_TYPE, 
+				IFNULL(BOARD_ENGLISH_NAME, BOARD_NAME) AS BOARD_ENGLISH_NAME,
+				IFNULL(BOARD_ENGLISH_DESCRIPTION, DESCRIPTION) AS BOARD_ENGLISH_DESCRIPTION
+			FROM
+				IKEP4_WS_BD_BOARD
+			WHERE  
+				WORKSPACE_ID = #workspaceId#
+				AND BOARD_ROOT_ID = #boardRootId# 
+				AND PORTAL_Id = #portalId#  
+				AND IS_DELETE=0
+			ORDER BY 
+				SORT_ORDER ASC
+  </select>
+  
+  <select id="listByWSBoardRootIdPer" parameterClass="map" resultMap="boardResult"> 
+		SELECT /* [NoteShare_SqlMap.xml] support.note.noteShare.listByWSBoardRootIdPer */ B.*
+		FROM              	
+		(
+			select AAAA.RESOURCE_NAME AS RESOURCE_NAME,
+			       AAAA.OWNER_ID AS OWNER_ID,
+			       AAAA.OPERATION_NAME AS OPERATION_NAME,
+			       AAAA.user_id AS user_id,
+			       AAAA.CLASS_NAME AS CLASS_NAME
+			from 
+			(
+				select bb.resource_name AS RESOURCE_NAME,
+				       bb.owner_id AS OWNER_ID,
+				       dd.operation_name AS OPERATION_NAME,
+				       bb.owner_id AS user_id,
+				       ee.class_name AS CLASS_NAME
+				from ikep4_ev_sys_resource bb
+					join ikep4_ev_sys_permission cc on bb.resource_id = cc.resource_id
+					join ikep4_ev_operation dd on dd.operation_id = cc.operation_id and dd.OPERATION_NAME = #operationName#
+					join ikep4_ev_class ee on bb.class_id = ee.class_id and ee.class_name = #className#
+				where cc.open_option = 0 and bb.owner_id IN (#userId#, 'OPEN')
+				union
+				select bb.resource_name AS RESOURCE_NAME,
+				       bb.owner_id AS OWNER_ID,
+				       dd.operation_name AS OPERATION_NAME,
+				       'OPEN' AS user_id,
+				       ee.class_name AS CLASS_NAME
+				from ikep4_ev_sys_resource bb
+					join ikep4_ev_sys_permission cc on bb.resource_id = cc.resource_id
+					join ikep4_ev_operation dd on dd.operation_id = cc.operation_id and dd.OPERATION_NAME = #operationName#
+					join ikep4_ev_class ee on bb.class_id = ee.class_id and ee.class_name = #className#
+				where cc.open_option = 1
+				union
+				select bb.resource_name AS RESOURCE_NAME,
+				       bb.owner_id AS OWNER_ID,
+				       dd.operation_name AS OPERATION_NAME,
+				       aa.user_id AS user_id,
+				       ee.class_name AS CLASS_NAME
+				from ikep4_ev_user_sys_permission aa
+					join ikep4_ev_sys_permission cc on aa.permission_id = cc.permission_id
+					join ikep4_ev_sys_resource bb on bb.resource_id = cc.resource_id
+					join ikep4_ev_operation dd on dd.operation_id = cc.operation_id and dd.OPERATION_NAME = #operationName#
+					join ikep4_ev_class ee on bb.class_id = ee.class_id and ee.class_name = #className#
+				where cc.open_option = 0 and aa.user_id IN (#userId#, 'OPEN')
+				union
+				select bb.resource_name AS RESOURCE_NAME,
+				       bb.owner_id AS OWNER_ID,
+				       dd.operation_name AS OPERATION_NAME,
+				       ff.user_id AS user_id,
+				       ee.class_name AS CLASS_NAME
+				from ikep4_ev_group_sys_permission aa 
+					join ikep4_ev_sys_permission cc on cc.permission_id = aa.permission_id and cc.open_option = 0
+					join ikep4_ev_sys_resource bb on bb.resource_id = cc.resource_id
+					join ikep4_ev_operation dd on cc.operation_id = dd.operation_id and dd.OPERATION_NAME = #operationName#
+					join ikep4_ev_class ee on bb.class_id = ee.class_id and ee.class_name = #className#
+					join ikep4_ev_user_group ff on aa.group_id = ff.group_id and ff.user_id IN (#userId#, 'OPEN')
+				where aa.hierarchy_permission = 0							
+				union
+				select bb.resource_name AS RESOURCE_NAME,
+				       bb.owner_id AS OWNER_ID,
+				       dd.operation_name AS OPERATION_NAME,
+				       ff.user_id AS user_id,
+				       ee.class_name AS CLASS_NAME
+				from ikep4_ev_role_sys_permission aa
+					join ikep4_ev_sys_permission cc on aa.permission_id = cc.permission_id
+					join ikep4_ev_sys_resource bb on bb.resource_id = cc.resource_id
+					join ikep4_ev_operation dd on dd.operation_id = cc.operation_id and dd.OPERATION_NAME = #operationName#
+					join ikep4_ev_class ee on bb.class_id = ee.class_id and ee.class_name = #className#
+					join ikep4_ev_user_role ff on ff.role_id = aa.role_id and ff.user_id IN (#userId#, 'OPEN')
+				where cc.open_option = 0
+				union
+				select bb.resource_name AS RESOURCE_NAME,
+				       bb.owner_id AS OWNER_ID,
+				       dd.operation_name AS OPERATION_NAME,
+				       gg.user_id AS user_id,
+				       ee.class_name AS CLASS_NAME
+				from ikep4_ev_role_sys_permission aa 
+					join ikep4_ev_sys_permission cc on aa.permission_id = cc.permission_id
+					join ikep4_ev_sys_resource bb on bb.resource_id = cc.resource_id
+					join ikep4_ev_operation dd on dd.operation_id = cc.operation_id and dd.OPERATION_NAME = #operationName#
+					join ikep4_ev_class ee on bb.class_id = ee.class_id and ee.class_name = #className#
+					join ikep4_ev_group_role ff on ff.role_id = aa.role_id
+					join ikep4_ev_user_group gg on ff.group_id = gg.group_id and gg.user_id IN (#userId#, 'OPEN')
+				where cc.open_option = 0
+				union
+				select bb.resource_name AS RESOURCE_NAME,
+				       bb.owner_id AS OWNER_ID,
+				       dd.operation_name AS OPERATION_NAME,
+				       ff.user_id AS user_id,
+				       ee.class_name AS CLASS_NAME
+				from ikep4_ev_jclass_sys_permission aa 
+					join ikep4_ev_sys_permission cc on cc.permission_id = aa.permission_id
+					join ikep4_ev_sys_resource bb on bb.resource_id = cc.resource_id
+					join ikep4_ev_operation dd on cc.operation_id = dd.operation_id and dd.OPERATION_NAME =#operationName#
+					join ikep4_ev_class ee on bb.class_id = ee.class_id and ee.class_name = #className#
+					join ikep4_ev_user ff on aa.job_class_code = ff.job_class_code and ff.user_id IN (#userId#, 'OPEN')
+				where cc.open_option = 0
+				union
+				select bb.resource_name AS RESOURCE_NAME,
+				       bb.owner_id AS OWNER_ID,
+				       dd.operation_name AS OPERATION_NAME,
+				       ff.user_id AS user_id,
+				       ee.class_name AS CLASS_NAME
+				from ikep4_ev_jduty_sys_permission aa 
+					join ikep4_ev_sys_permission cc on cc.permission_id = aa.permission_id
+					join ikep4_ev_sys_resource bb on bb.resource_id = cc.resource_id
+					join ikep4_ev_operation dd on cc.operation_id = dd.operation_id and dd.OPERATION_NAME = #operationName#
+					join ikep4_ev_class ee on bb.class_id = ee.class_id and ee.class_name = #className#
+					join ikep4_ev_user ff on aa.job_duty_code = ff.job_duty_code and ff.user_id IN (#userId#, 'OPEN')
+				where cc.open_option = 0
+			) AAAA
+			LEFT JOIN 
+			(
+				select bb.resource_name AS RESOURCE_NAME,
+				       bb.owner_id AS OWNER_ID,
+				       dd.operation_name AS OPERATION_NAME,
+				       aa.user_id AS user_id,
+				       ee.class_name AS CLASS_NAME
+				  from ikep4_ev_user_sys_exp_perm aa
+				  	  join ikep4_ev_sys_permission cc on cc.permission_id = aa.permission_id
+				     join ikep4_ev_sys_resource bb on bb.resource_id = cc.resource_id
+					 join ikep4_ev_operation dd  on cc.operation_id = dd.operation_id and dd.OPERATION_NAME = #operationName#
+					 join ikep4_ev_class ee  on bb.class_id = ee.class_id and ee.class_name = #className#
+				 where cc.open_option = 0 and aa.user_id IN (#userId#, 'OPEN')
+			
+			) BBBB
+			on
+				(
+					   (AAAA.RESOURCE_NAME = BBBB.RESOURCE_NAME) and
+			           (AAAA.OWNER_ID = BBBB.OWNER_ID) and
+			           (AAAA.OPERATION_NAME = BBBB.OPERATION_NAME) and
+			           (AAAA.user_id = BBBB.user_id) and
+			           (AAAA.CLASS_NAME = BBBB.CLASS_NAME)
+				)
+			
+			where (
+					isnull(BBBB.RESOURCE_NAME) 
+					and isnull(BBBB.OWNER_ID) 
+					and isnull(BBBB.OPERATION_NAME) 
+					and isnull(BBBB.user_id) 
+					and isnull(BBBB.CLASS_NAME)
+				  )
+		) A	INNER JOIN
+		(
+           SELECT 
+               * 
+             FROM (
+		    		SELECT 	A.BOARD_ID,
+							A.BOARD_NAME, 
+							A.DESCRIPTION as BOARD_DESCRIPTION, 
+							A.BOARD_TYPE, 
+							IFNULL(A.BOARD_ENGLISH_NAME, A.BOARD_NAME) AS BOARD_ENGLISH_NAME,
+							IFNULL(A.BOARD_ENGLISH_DESCRIPTION, A.DESCRIPTION) AS BOARD_ENGLISH_DESCRIPTION
+					FROM  	IKEP4_WS_BD_BOARD A
+					WHERE  	WORKSPACE_ID = #workspaceId# 
+					AND 	BOARD_ROOT_ID = #boardRootId#
+					AND 	PORTAL_Id = #portalId#  
+					AND 	IS_DELETE = 0 
+					ORDER BY SORT_ORDER ASC
+                  )   A
+       ) B on A.RESOURCE_NAME = B.BOARD_ID
+       WHERE B.BOARD_TYPE = '0'  
+  	</select>
+  		
+  <select id="listByCKBoardRootId" parameterClass="map" resultMap="boardResult"> 
+    SELECT  /* [NoteShare_SqlMap.xml] support.note.noteShare.listByCKBoardRootId */  * 
+    FROM (
+		SELECT	A.CATEGORY_ID AS BOARD_ID,
+				A.CATEGORY_NAME AS BOARD_NAME, 
+				A.CATEGORY_DESCRIPTION as BOARD_DESCRIPTION, 
+				A.CATEGORY_TYPE AS BOARD_TYPE, 
+				IFNULL(A.CATEGORY_ENGLISH_NAME,A.CATEGORY_NAME) AS BOARD_ENGLISH_NAME,
+				A.CATEGORY_DESCRIPTION AS BOARD_ENGLISH_DESCRIPTION
+		FROM (
+			SELECT	fncChildCKCategory() AS CATEGORY_ID, @LEVEL AS LEVEL, @rownum AS rownum
+			FROM	(SELECT  @start_with := 'root', @id := @start_with, @LEVEL := 1, @rownum := 0, @sort_order := 0) tbl1, IKEP4_CK_CATEGORY
+			WHERE	@id IS NOT NULL
+		) tbl2 inner join IKEP4_CK_CATEGORY A
+		ON tbl2.CATEGORY_ID = A.CATEGORY_ID
+		WHERE PORTAL_ID = #portalId#
+		AND   CATEGORY_DELETE = 0
+		ORDER BY rownum
+	)   A   
+  </select>
+  
+  <select id="listByCKBoardRootIdPer" parameterClass="map" resultMap="boardResult"> 
+		SELECT /* [NoteShare_SqlMap.xml] support.note.noteShare.listByCKBoardRootIdPer */ B.*
+		FROM              	
+		(
+			select AAAA.RESOURCE_NAME AS RESOURCE_NAME,
+			       AAAA.OWNER_ID AS OWNER_ID,
+			       AAAA.OPERATION_NAME AS OPERATION_NAME,
+			       AAAA.user_id AS user_id,
+			       AAAA.CLASS_NAME AS CLASS_NAME
+			from 
+			(
+				select bb.resource_name AS RESOURCE_NAME,
+				       bb.owner_id AS OWNER_ID,
+				       dd.operation_name AS OPERATION_NAME,
+				       bb.owner_id AS user_id,
+				       ee.class_name AS CLASS_NAME
+				from ikep4_ev_sys_resource bb
+					join ikep4_ev_sys_permission cc on bb.resource_id = cc.resource_id
+					join ikep4_ev_operation dd on dd.operation_id = cc.operation_id and dd.OPERATION_NAME = #operationName#
+					join ikep4_ev_class ee on bb.class_id = ee.class_id and ee.class_name = #className#
+				where cc.open_option = 0 and bb.owner_id IN (#userId#, 'OPEN')
+				union
+				select bb.resource_name AS RESOURCE_NAME,
+				       bb.owner_id AS OWNER_ID,
+				       dd.operation_name AS OPERATION_NAME,
+				       'OPEN' AS user_id,
+				       ee.class_name AS CLASS_NAME
+				from ikep4_ev_sys_resource bb
+					join ikep4_ev_sys_permission cc on bb.resource_id = cc.resource_id
+					join ikep4_ev_operation dd on dd.operation_id = cc.operation_id and dd.OPERATION_NAME = #operationName#
+					join ikep4_ev_class ee on bb.class_id = ee.class_id and ee.class_name = #className#
+				where cc.open_option = 1
+				union
+				select bb.resource_name AS RESOURCE_NAME,
+				       bb.owner_id AS OWNER_ID,
+				       dd.operation_name AS OPERATION_NAME,
+				       aa.user_id AS user_id,
+				       ee.class_name AS CLASS_NAME
+				from ikep4_ev_user_sys_permission aa
+					join ikep4_ev_sys_permission cc on aa.permission_id = cc.permission_id
+					join ikep4_ev_sys_resource bb on bb.resource_id = cc.resource_id
+					join ikep4_ev_operation dd on dd.operation_id = cc.operation_id and dd.OPERATION_NAME = #operationName#
+					join ikep4_ev_class ee on bb.class_id = ee.class_id and ee.class_name = #className#
+				where cc.open_option = 0 and aa.user_id IN (#userId#, 'OPEN')
+				union
+				select bb.resource_name AS RESOURCE_NAME,
+				       bb.owner_id AS OWNER_ID,
+				       dd.operation_name AS OPERATION_NAME,
+				       ff.user_id AS user_id,
+				       ee.class_name AS CLASS_NAME
+				from ikep4_ev_group_sys_permission aa 
+					join ikep4_ev_sys_permission cc on cc.permission_id = aa.permission_id and cc.open_option = 0
+					join ikep4_ev_sys_resource bb on bb.resource_id = cc.resource_id
+					join ikep4_ev_operation dd on cc.operation_id = dd.operation_id and dd.OPERATION_NAME = #operationName#
+					join ikep4_ev_class ee on bb.class_id = ee.class_id and ee.class_name = #className#
+					join ikep4_ev_user_group ff on aa.group_id = ff.group_id and ff.user_id IN (#userId#, 'OPEN')
+				where aa.hierarchy_permission = 0							
+				union
+				select bb.resource_name AS RESOURCE_NAME,
+				       bb.owner_id AS OWNER_ID,
+				       dd.operation_name AS OPERATION_NAME,
+				       ff.user_id AS user_id,
+				       ee.class_name AS CLASS_NAME
+				from ikep4_ev_role_sys_permission aa
+					join ikep4_ev_sys_permission cc on aa.permission_id = cc.permission_id
+					join ikep4_ev_sys_resource bb on bb.resource_id = cc.resource_id
+					join ikep4_ev_operation dd on dd.operation_id = cc.operation_id and dd.OPERATION_NAME = #operationName#
+					join ikep4_ev_class ee on bb.class_id = ee.class_id and ee.class_name = #className#
+					join ikep4_ev_user_role ff on ff.role_id = aa.role_id and ff.user_id IN (#userId#, 'OPEN')
+				where cc.open_option = 0
+				union
+				select bb.resource_name AS RESOURCE_NAME,
+				       bb.owner_id AS OWNER_ID,
+				       dd.operation_name AS OPERATION_NAME,
+				       gg.user_id AS user_id,
+				       ee.class_name AS CLASS_NAME
+				from ikep4_ev_role_sys_permission aa 
+					join ikep4_ev_sys_permission cc on aa.permission_id = cc.permission_id
+					join ikep4_ev_sys_resource bb on bb.resource_id = cc.resource_id
+					join ikep4_ev_operation dd on dd.operation_id = cc.operation_id and dd.OPERATION_NAME = #operationName#
+					join ikep4_ev_class ee on bb.class_id = ee.class_id and ee.class_name = #className#
+					join ikep4_ev_group_role ff on ff.role_id = aa.role_id
+					join ikep4_ev_user_group gg on ff.group_id = gg.group_id and gg.user_id IN (#userId#, 'OPEN')
+				where cc.open_option = 0
+				union
+				select bb.resource_name AS RESOURCE_NAME,
+				       bb.owner_id AS OWNER_ID,
+				       dd.operation_name AS OPERATION_NAME,
+				       ff.user_id AS user_id,
+				       ee.class_name AS CLASS_NAME
+				from ikep4_ev_jclass_sys_permission aa 
+					join ikep4_ev_sys_permission cc on cc.permission_id = aa.permission_id
+					join ikep4_ev_sys_resource bb on bb.resource_id = cc.resource_id
+					join ikep4_ev_operation dd on cc.operation_id = dd.operation_id and dd.OPERATION_NAME =#operationName#
+					join ikep4_ev_class ee on bb.class_id = ee.class_id and ee.class_name = #className#
+					join ikep4_ev_user ff on aa.job_class_code = ff.job_class_code and ff.user_id IN (#userId#, 'OPEN')
+				where cc.open_option = 0
+				union
+				select bb.resource_name AS RESOURCE_NAME,
+				       bb.owner_id AS OWNER_ID,
+				       dd.operation_name AS OPERATION_NAME,
+				       ff.user_id AS user_id,
+				       ee.class_name AS CLASS_NAME
+				from ikep4_ev_jduty_sys_permission aa 
+					join ikep4_ev_sys_permission cc on cc.permission_id = aa.permission_id
+					join ikep4_ev_sys_resource bb on bb.resource_id = cc.resource_id
+					join ikep4_ev_operation dd on cc.operation_id = dd.operation_id and dd.OPERATION_NAME = #operationName#
+					join ikep4_ev_class ee on bb.class_id = ee.class_id and ee.class_name = #className#
+					join ikep4_ev_user ff on aa.job_duty_code = ff.job_duty_code and ff.user_id IN (#userId#, 'OPEN')
+				where cc.open_option = 0
+			) AAAA
+			LEFT JOIN 
+			(
+				select bb.resource_name AS RESOURCE_NAME,
+				       bb.owner_id AS OWNER_ID,
+				       dd.operation_name AS OPERATION_NAME,
+				       aa.user_id AS user_id,
+				       ee.class_name AS CLASS_NAME
+				  from ikep4_ev_user_sys_exp_perm aa
+				  	  join ikep4_ev_sys_permission cc on cc.permission_id = aa.permission_id
+				      join ikep4_ev_sys_resource bb on bb.resource_id = cc.resource_id
+					  join ikep4_ev_operation dd  on cc.operation_id = dd.operation_id and dd.OPERATION_NAME = #operationName#
+					  join ikep4_ev_class ee  on bb.class_id = ee.class_id and ee.class_name = #className#
+				 where cc.open_option = 0 and aa.user_id IN (#userId#, 'OPEN')
+			
+			) BBBB
+			on
+				(
+					   (AAAA.RESOURCE_NAME = BBBB.RESOURCE_NAME) and
+			           (AAAA.OWNER_ID = BBBB.OWNER_ID) and
+			           (AAAA.OPERATION_NAME = BBBB.OPERATION_NAME) and
+			           (AAAA.user_id = BBBB.user_id) and
+			           (AAAA.CLASS_NAME = BBBB.CLASS_NAME)
+				)
+			
+			where (
+					isnull(BBBB.RESOURCE_NAME) 
+					and isnull(BBBB.OWNER_ID) 
+					and isnull(BBBB.OPERATION_NAME) 
+					and isnull(BBBB.user_id) 
+					and isnull(BBBB.CLASS_NAME)
+				  )
+		) A	INNER JOIN
+		(
+           SELECT 
+               * 
+             FROM (
+                       SELECT
+                              	LEVEL - 1 AS INDENTATION,
+                              	(SELECT COUNT(*) FROM IKEP4_CK_CATEGORY B WHERE A.CATEGORY_ID = B.CATEGORY_PARENT_ID) AS HAS_CHILDREN,
+                              	A.CATEGORY_ID AS BOARD_ID,
+								A.CATEGORY_NAME AS BOARD_NAME, 
+								A.CATEGORY_DESCRIPTION as BOARD_DESCRIPTION, 
+								A.CATEGORY_TYPE AS BOARD_TYPE, 
+								IFNULL(A.CATEGORY_ENGLISH_NAME,A.CATEGORY_NAME) AS BOARD_ENGLISH_NAME,
+								A.CATEGORY_DESCRIPTION AS BOARD_ENGLISH_DESCRIPTION
+                         FROM (
+                                   SELECT  fncChildCKCategory() AS category_id, @level as level, @rownum as rownum
+                                   FROM	(SELECT  @start_with := 'root', @id := @start_with, @level := 1, @rownum := 0, @sort_order := 0) tbl1, IKEP4_CK_CATEGORY
+                                   WHERE	@id IS NOT NULL
+                              ) tbl2 inner join IKEP4_CK_CATEGORY A ON tbl2.category_id = A.category_id
+                        where  PORTAL_ID = #portalId# AND CATEGORY_DELETE = 0
+                        order by rownum
+                  )   A
+       ) B on A.RESOURCE_NAME = B.BOARD_ID
+       WHERE B.BOARD_TYPE = '0'  
+  	</select>
+  		  
+  	<insert id="createBBS" parameterClass="NoteShare"> 
+    INSERT INTO IKEP4_BD_ITEM (/* [NoteShare_SqlMap.xml] support.note.noteShare.createBBS */
+     <include refid="support.note.noteShare.insertSqlColumnList" />
+     ) VALUES (
+      #itemId#, 
+      #boardId#, 
+      #itemParentId#, 
+      #itemGroupId#, 
+      #step#, 
+      #indentation#, 
+      #itemSeqId#,  
+      #itemDisplay#, 
+      #title#, 
+      #hitCount#, 
+      #recommendCount#, 
+      #replyCount#, 
+      #linereplyCount#, 
+      #attachFileCount#,
+      #startDate#, 
+      #endDate#, 
+      #itemDelete#, 
+      #imageFileId#,
+      #contents#,
+      #textContents#,
+      #registerId#, 
+      #registerName#, 
+      NOW(), 
+      #updaterId#, 
+      #updaterName#, 
+      NOW()
+    ) 
+     <selectKey resultClass="string" keyProperty="itemSeqId" type="pre">  
+       	<!-- SELECT SEQ_IKEP4_BD_ITEM.NEXTVAL FROM DUAL -->
+       	select fncGetSeqBoardItem() 
+     </selectKey>
+  	</insert>
+  	
+  	<update id="updateBBS" parameterClass="NoteShare"> 
+	    UPDATE IKEP4_BD_ITEM /* [NoteShare_SqlMap.xml] support.note.noteShare.updateBBS */
+	    SET   <isNotEmpty property="contents"       >CONTENTS          = #contents#,       	</isNotEmpty>
+	          <isNotEmpty property="textContents"   >TEXT_CONTENTS     = #textContents#,    </isNotEmpty>
+	          <isNotEmpty property="imageFileId"    >IMAGE_FILE_ID     = #imageFileId#,     </isNotEmpty>
+	          UPDATER_ID        = #updaterId#,
+	          UPDATER_NAME      = #updaterName#,
+	          UPDATE_DATE       = NOW()
+	    WHERE ITEM_ID = #itemId# 
+ 	 </update>
+  
+	<insert id="createWS" parameterClass="NoteShare"> 
+		INSERT INTO IKEP4_WS_BD_ITEM ( /* [NoteShare_SqlMap.xml] support.note.noteShare.createWS */
+			ITEM_ID, 
+			BOARD_ID, 
+			ITEM_PARENT_ID, 
+			ITEM_GROUP_ID, 
+			STEP, 
+			INDENTATION, 
+			ITEM_SEQ_ID,  
+			ITEM_DISPLAY, 
+			ITEM_TYPE,
+			TITLE,
+			HIT_COUNT, 
+			RECOMMEND_COUNT, 
+			REPLY_COUNT, 
+			LINEREPLY_COUNT, 
+			ATTACH_FILE_COUNT, 
+			START_DATE, 
+			END_DATE, 
+			ITEM_DELETE,
+			FOLLOW_BOARD_PERMISSION,
+			READ_PERMISSION,
+			IMAGE_FILE_ID, 
+			CONTENTS,
+			TEXT_CONTENTS,
+			REGISTER_ID, 
+			REGISTER_NAME, 
+			REGIST_DATE, 
+			UPDATER_ID, 
+			UPDATER_NAME, 
+			UPDATE_DATE
+		) VALUES (
+			#itemId#, 
+			#boardId#, 
+			#itemParentId#, 
+			#itemGroupId#, 
+			#step#, 
+			#indentation#, 
+			#itemSeqId#,  
+			#itemDisplay#, 
+			#itemType#, 
+			#title#, 
+			#hitCount#, 
+			#recommendCount#, 
+			#replyCount#, 
+			#linereplyCount#, 
+			#attachFileCount#,
+			NOW(), 
+			NOW(), 
+			#itemDelete#,
+			#followBoardPermission#,
+			#readPermission#,      
+			#imageFileId#,
+			#contents#,
+      		#textContents#,
+			#registerId#, 
+			#registerName#, 
+			NOW(), 
+			#updaterId#, 
+			#updaterName#, 
+			NOW()
+		) 
+		<selectKey resultClass="string" keyProperty="itemSeqId" type="pre">  
+			select fncGetSeqWsBoardItem()
+		</selectKey>
+	</insert>
+  	
+	<insert id="createItemVersion" parameterClass="wsBoardVersion"> 
+	INSERT INTO /* [NoteShare_SqlMap.xml] support.note.noteShare.createItemVersion */
+	IKEP4_WS_BD_ITEM_VERSION 
+	( 
+		VERSION_ID,
+		VERSION,
+		ITEM_ID,
+		ITEM_TYPE,
+		ITEM_DISPLAY,
+		TITLE,
+		CONTENTS,
+		ATTACH_FILE_COUNT,
+		START_DATE,
+		END_DATE,
+		REGISTER_ID,
+		REGISTER_NAME,
+		REGIST_DATE
+	) VALUES (
+		#versionId#,
+		(SELECT IFNULL(MAX(VERSION+0.1), 1.0) FROM ( SELECT * FROM IKEP4_WS_BD_ITEM_VERSION ) AS c1  WHERE c1.ITEM_ID = #itemId#),
+		#itemId#,
+		#itemType#,
+		#itemDisplay#,
+		#title#,
+		#contents#,
+		#attachFileCount#,
+		NOW(),
+		NOW()+10000,
+		#registerId#,
+		#registerName#,
+		NOW()
+	) 
+	</insert>
+   
+	<update id="updateWS" parameterClass="NoteShare"> 
+		UPDATE IKEP4_WS_BD_ITEM /* [NoteShare_SqlMap.xml] support.note.noteShare.createWS */
+		SET <isNotEmpty property="contents"        >CONTENTS          = #contents#,       </isNotEmpty>
+	        <isNotEmpty property="textContents"    >TEXT_CONTENTS     = #textContents#,   </isNotEmpty>
+			<isNotEmpty property="imageFileId"     >IMAGE_FILE_ID     = #imageFileId#,    </isNotEmpty>     
+			UPDATER_ID        = #updaterId#,
+			UPDATER_NAME      = #updaterName#,
+			UPDATE_DATE       = NOW()
+		WHERE
+			ITEM_ID = #itemId# 
+	</update>
+   
+  	<insert id="createCK" parameterClass="NoteShare"> 
+    INSERT INTO IKEP4_CK_KNOWLEDGE ( /* [NoteShare_SqlMap.xml] support.note.noteShare.createCK */     
+	    ITEM_ID, 
+	    CATEGORY_ID,
+	    ITEM_PARENT_ID, 
+	    ITEM_GROUP_ID, 
+	    STEP, 
+	    INDENTATION, 
+	    TITLE,
+	    CONTENTS,
+	    HIT_COUNT, 
+	    RECOMMEND_COUNT, 
+	    REPLY_COUNT, 
+	    LINEREPLY_COUNT, 
+	    ATTACH_FILE_COUNT, 
+	    ITEM_DELETE,
+	    REGISTER_ID, 
+	    REGISTER_NAME, 
+	    REGIST_DATE,    
+	    UPDATER_ID, 
+	    UPDATER_NAME, 
+	    UPDATE_DATE,
+	    ITEM_SEQ_ID,
+	    IMAGE_FILE_ID
+     ) VALUES (
+      #itemId#, 
+      #boardId#, 
+      #itemParentId#, 
+      #itemGroupId#, 
+      #step#, 
+      #indentation#, 
+      #title#, 
+      #contents#,
+      #hitCount#, 
+      #recommendCount#, 
+      #replyCount#, 
+      #linereplyCount#, 
+      #attachFileCount#,
+      #itemDelete#, 
+      #registerId#, 
+      #registerName#, 
+      NOW(), 
+      #updaterId#, 
+      #updaterName#, 
+      NOW(),
+      #itemSeqId#,
+      #imageFileId#
+    ) 
+     <selectKey resultClass="string" keyProperty="itemSeqId" type="pre">  
+       	<!-- SELECT SEQ_IKEP4_CK_KNOWLEDGE.NEXTVAL FROM DUAL -->
+       	select fncGetSeqBoardItem() 
+     </selectKey>
+  	</insert>
+  	
+  	<update id="updateCK" parameterClass="NoteShare"> 
+	    UPDATE IKEP4_CK_KNOWLEDGE  /* [NoteShare_SqlMap.xml] support.note.noteShare.updateCK */
+	    SET   <isNotEmpty property="contents"        >CONTENTS          = #contents#,       </isNotEmpty>
+	          <isNotEmpty property="textContents"    >TEXT_CONTENTS     = #textContents#,   </isNotEmpty>
+	          <isNotEmpty property="imageFileId"     >IMAGE_FILE_ID     = #imageFileId#,    </isNotEmpty>
+	          UPDATER_ID        = #updaterId#,
+	          UPDATER_NAME      = #updaterName#,
+	          UPDATE_DATE       = NOW()
+	    WHERE ITEM_ID = #itemId# 
+	  </update>
+</sqlMap>

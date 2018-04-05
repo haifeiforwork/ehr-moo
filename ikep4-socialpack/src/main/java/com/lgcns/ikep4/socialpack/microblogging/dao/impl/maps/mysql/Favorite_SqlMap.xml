@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="socialpack.microblogging.dao.favorite" >
+	<typeAlias alias = "Favorite" type="com.lgcns.ikep4.socialpack.microblogging.model.Favorite"/>
+	
+	<!-- IKEP4_MB_FAVORITE 테이블 조회 결과 -->
+	<resultMap id="result" class="Favorite">
+		<result property="userId" 			column="USER_ID" 			/>
+		<result property="mblogId" 			column="MBLOG_ID" 			/>
+		<result property="registDate" 		column="REGIST_DATE" 		/>
+	</resultMap>
+	
+	<!-- insert -->
+	<insert id="insert" parameterClass="Favorite"> 
+      <![CDATA[ 
+           INSERT INTO IKEP4_MB_FAVORITE ( /* [Favorite_SqlMap.xml] favorite.insert */
+           USER_ID, MBLOG_ID, REGIST_DATE)  
+           VALUES (#userId#, #mblogId#, NOW())
+       ]]>
+   </insert>
+   
+   <!-- select -->
+	<select id="select" parameterClass="Favorite" resultMap="result">
+	  <![CDATA[
+		   SELECT /* [Favorite_SqlMap.xml] favorite.select */ 
+		    * FROM IKEP4_MB_FAVORITE WHERE USER_ID = #userId# AND MBLOG_ID = #mblogId# 
+	   ]]>
+	</select>
+	   
+   <!-- delete -->
+   <delete id="delete" parameterClass="Favorite">
+      <![CDATA[
+	       DELETE FROM IKEP4_MB_FAVORITE   /* [Favorite_SqlMap.xml] favorite.delete */ 
+	       WHERE USER_ID = #userId# AND MBLOG_ID = #mblogId# 
+	   ]]>
+	</delete>
+	
+   <!-- deleteByMblogId -->
+   <delete id="deleteByMblogId" parameterClass="java.lang.String">
+      <![CDATA[
+	       DELETE FROM IKEP4_MB_FAVORITE   /* [Favorite_SqlMap.xml] favorite.deleteByMblogId */ 
+	       WHERE MBLOG_ID = #mblogId# 
+	   ]]>
+	</delete>
+	
+	<!-- selectCount -->
+	<select id="selectCountByUserId" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+	  <![CDATA[
+			SELECT /* [Favorite_SqlMap.xml] favorite.selectCountByUserId */ 
+			 COUNT(*) 
+			FROM IKEP4_MB_FAVORITE 
+			WHERE USER_ID = #userId# 
+	   ]]>
+	</select>
+	
+</sqlMap>

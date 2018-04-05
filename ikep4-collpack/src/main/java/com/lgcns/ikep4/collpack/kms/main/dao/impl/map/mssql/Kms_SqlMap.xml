@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="collpack.kms.main.dao.Kms">
+
+	<!-- ANSI -->
+	<select id="listKeyword" parameterClass="java.lang.String" resultClass="java.util.HashMap">
+		SELECT /* [Kms_SqlMap.xml] collpack.kms.main.dao.Kms.listKeyword */
+			ITEM_SEQ, KEYWORD
+		FROM 
+			IKEP4_KMS_SEARCH_KEYWORD
+		WHERE
+			USER_ID = #userId#
+		ORDER BY ITEM_SEQ ASC
+	</select>
+	
+	<select id="listKeywordAll" parameterClass="java.lang.String" resultClass="java.util.HashMap">
+		SELECT /* [Kms_SqlMap.xml] collpack.kms.main.dao.Kms.listKeywordAll */
+			USER_ID, KEYWORD
+		FROM 
+			IKEP4_KMS_SEARCH_KEYWORD
+		ORDER BY KEYWORD ASC, USER_ID ASC
+	</select>
+
+	<!-- ANSI -->
+	<insert id="insertKeyword" parameterClass="java.util.HashMap">
+		INSERT INTO IKEP4_KMS_SEARCH_KEYWORD (user_id, KEYWORD)
+		VALUES (#userId#, #keyword#)
+	</insert>	
+	
+	<delete id="deleteKeyword" parameterClass="java.util.HashMap">
+		DELETE IKEP4_KMS_SEARCH_KEYWORD
+		WHERE ITEM_SEQ = #itemSeq#
+	</delete>
+
+</sqlMap> 

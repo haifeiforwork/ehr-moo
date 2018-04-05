@@ -1,0 +1,325 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ko">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Home</title>
+<link rel="stylesheet" type="text/css" href="../../css/guide.css" />
+<link rel="stylesheet" type="text/css" href="../../css/theme01/jquery_ui_custom.css" />
+<link rel="stylesheet" type="text/css" href="../../css/common.css" />
+<link rel="stylesheet" type="text/css" href="../../css/theme01/theme.css" />
+<link type="text/css" rel="stylesheet" href="../../css/syntaxhighlighter_3.0.83/shCoreDefault.css"/>
+<script type="text/javascript" src="../../js/jquery/jquery-1.6.2.min.js"></script>
+<script type="text/javascript" src="../../js/jquery/jquery-ui-1.8.13.min.without.datepicker.js"></script>
+<script type="text/javascript" src="../../js/jquery/plugins.pack.js"></script>
+<script type="text/javascript" src="../../js/syntaxhighlighter_3.0.83/shCore.js"></script>
+<script type="text/javascript" src="../../js/syntaxhighlighter_3.0.83/shBrushJScript.js"></script>
+<script type="text/javascript" src="../../js/langResource/ko.js"></script>
+<script type="text/javascript" src="../../js/common.pack.js"></script>
+<script type="text/javascript">
+(function($) {
+	$(document).ready(function() {
+		SyntaxHighlighter.highlight();
+/*
+		$.template("tmplBoardItem", '<tr><td>${no}</td><td>${title}</td><td>${name}</td><td>${date}</td></tr>');
+		$("input[value=itemAppend]").click(function() {
+			var data = {no:7, title:"새로 추가한 게시물", name:"새로운 작성자", date:"오늘"};
+			$("tbody", "#tblBoardList").append($.tmpl("tmplBoardItem", data));
+		});
+*/
+	});
+})(jQuery);
+</script>
+
+<style type="text/css">
+	input.password { background-color:orange; }
+</style>
+</head>
+
+<body>
+<!--guideWrapper Start-->
+<div id="guideConFrame">
+
+	<div class="guideConTitle"><h2>JavaScript & jQuery</h2></div>
+	
+	<h4>Source code</h4>
+	<a target="_blank" href="javascript_jquery_pop.html">New Window</a>
+	<div class="UI_source">
+		<pre class="brush: js;">
+// 변수 선언 : 글로벌 변수
+var var1 = "variable 1";
+// var1 = "variable 1";
+
+// 글로벌 변수 접근법
+iKEP.debug(var1);
+iKEP.debug(this.var1);
+iKEP.debug(window.var1);
+
+// 변수 선언 : 글로벌 변수 설정의 다른 방법 --> 사용할일 없음
+window.var1 = "test";
+iKEP.debug(var1);
+
+// this의 이해 : window
+iKEP.debug(this);	// 전역 this
+(function(){	// 전역 함수내의 this *무명함수
+	iKEP.debug(this);
+})();
+
+// 함수 정의
+// function fn1() {iKEP.debug(this);}
+var fn1 = function() {iKEP.debug(this);};
+//var obj1 = new fn1();	// 함수의 객체화
+fn1();	// 함수 호출
+
+// 클래스형 함수 정의
+var fn2 = function() {
+	a = "global variable";	// var로 정의 되지 않은 변수의 사용
+	//var a = "private member";
+	this.a = "public member";
+	iKEP.debug(window.a); // 클래스 내에서 정의된 변수(멤버)의 scope
+	
+	//var a; 변수 선언부의 이해
+};
+var obj2 = new fn2();
+fn2();
+
+// json 표기법 : key:value
+var json1 = []; // [1, 2, "string", {}]
+var json2 = {};	// {key1:"value", key2:new Date()}
+
+
+// javascript & json :  JavaScript Object Notation
+//array
+var arr1 = new Array();
+var arr2 = [];
+
+var a="global a", c="global c";
+//object
+var obj3 = new (function(){
+	var a = "private variable";
+	this.b = "public variable";
+	this.getA = function() { iKEP.debug(a); };
+	this.getB = function() { iKEP.debug(this.b); };
+})();
+var obj4 = {
+	c:"public variable",
+	getC:function() { iKEP.debug(this.c); },
+	get_C:function() { iKEP.debug(c); }
+};
+
+obj3.getA();
+obj4.get_C();
+
+//object detect : . / []
+iKEP.debug(obj4.c);
+iKEP.debug(obj4["c"]);	//iKEP.debug(c); --> iKEP.debug(window["c"]);
+obj4["getC"] && obj4["getC"]();
+
+
+// object extend
+var obj5 = {empNo:123, empName:"alan"};
+obj5.group = "UI - UX";
+$jq.extend(obj5, {telNo:"000-000-0000", isLeader:false});
+
+//비교연산자
+// ==, ===, !=, !==
+iKEP.debug(false == 0);
+iKEP.debug(-1 != "-1");
+iKEP.debug({} == {});	// JAVA : "" == ""
+
+//논리연산자
+// &&, ||
+iKEP.debug(false && false);
+iKEP.debug(true && false);
+iKEP.debug(1 && 2);
+iKEP.debug(1 || 2);
+
+//jQuery
+iKEP.debug(jQuery);
+iKEP.debug(jQuery === $jq);
+
+// basic syntax
+(function($) {
+......
+})(jQuery);
+
+(function($) {
+	$(document).ready(function() {
+		//core
+		iKEP.debug($("#divExample")); 
+		iKEP.debug($(".guideConTitle")); 
+		iKEP.debug($("h4", document.body)); 
+		
+		// selector
+		iKEP.debug($("form"));			// element selector : document.getElementsByTagName("form")
+		iKEP.debug($("#divExample"));	// getElementById : document.getElementById("divExample")
+		iKEP.debug($(".password"));		// class selector : document.getElementsByClassName("guideConTitle") //HTML5
+		
+		iKEP.debug($("input.user-id"));	// element & class selector
+		iKEP.debug($("input[name=userId]"));	// attribute selector
+		// fmLogin.userId.value = "abcd";	// $(document.getElementById("fmLogin").userId).val("abcd")
+
+		
+		// attributes
+		iKEP.debug($("form").attr("action"));
+		$("input.user-id").removeClass("text").val("user id");
+		
+		// traversing
+		$("input.user-id").parents("tr:first").children().eq(0).text("사용자 아이디");
+		iKEP.debug($("input.user-id").parents("tr").children().eq(0));
+		iKEP.debug($("input.user-id").parents("tr").children()[0]);
+		
+		// manipulation
+		$("input.password").parent().append('&lt;span style="color:red;"&gt;*비밀번호를 입력해주세요&lt;/span&gt;');
+
+		$.template("empInfo", '&lt;span&gt;${empNo} / ${name}&lt;/span&gt;');
+		$("table tbody", "#divExample").prepend('&lt;tr&gt;&lt;td&gt;사번&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;/tr&gt;');
+		$("table tr:first", "#divExample").children().eq(1).append($.tmpl("empInfo", {empNo:"000", name:"이름"}));
+		
+		//event
+		function boardSearch() {
+			if (!$.trim($(this).siblings("input").val())) {
+				alert("검색어를 입력해주세요.");
+				return false;
+			}
+			
+			alert("검색...");
+		}
+		
+		$("a", "#divSearch").bind("click", boardSearch);	// function parameter
+		
+		$("input", "#divSearch").keypress(function(event){
+			if(event.which == 13) {
+				//boardSearch();
+				$(this).siblings("a").trigger("click");
+			}
+		});
+		
+		$("tr", "#tblBoardList").live("click", function() {
+			$(this).toggleClass("bgSelected");	// hasClass
+		});
+		
+		// unbind, die
+		// hover, toggle
+		/*$("tr", "#tblBoardList").toggle(
+			function() { $(this).addClass("bgSelected"); },
+			function() { $(this).removeClass("bgSelected");}
+		);*/
+		
+		
+		//utility
+		iKEP.debug($.trim("      trim  !    "));
+		$.each([1, 2, 3], function(index) { iKEP.debug(this); });
+		// $("input[type=radio]").each(function(idx) { iKEP.debug($(this)); });
+		
+		$.data($("#tblBoardList")[0], "currPage", 1);	// $("#tblBoardList").attr("currPage", 1);
+		iKEP.debug($.data($("#tblBoardList")[0], "currPage"));
+		
+		$("input[type=button]").click(function() {
+			var $table = $("#tblBoardList");
+			var currPage = $.data($table[0], "currPage");
+			switch($(this).val()) {
+				case "priv" : $.data($table[0], "currPage", currPage-1);
+					break;
+				case "next" : $.data($table[0], "currPage", currPage+1);
+					break;
+			}
+			iKEP.debug($.data($("#tblBoardList")[0], "currPage"));
+		});
+		
+		// template
+		$.template("tmplBoardItem", '&lt;tr&gt;&lt;td&gt;${no}&lt;/td&gt;&lt;td&gt;${title}&lt;/td&gt;&lt;td&gt;${name}&lt;/td&gt;&lt;td&gt;${date}&lt;/td&gt;&lt;/tr&gt;');
+		$("input[value=itemAppend]").click(function() {
+			var data = {no:7, title:"새로 추가한 게시물", name:"새로운 작성자", date:"오늘"};
+			$("tbody", "#tblBoardList").append($.tmpl("tmplBoardItem", data));
+		});
+		
+		//cookie
+		$jq.cookie(key, value, options);
+		// options : expires, path, domain, secure
+	});
+})(jQuery);
+		</pre>
+	</div>
+	
+	<h4>html example</h4>
+	<div id="divExample" class="blockDetail">
+		<form id="fmLogin" method="post" action="submit.do">
+			<table>
+				<caption></caption>
+				<tbody>
+					<tr>
+						<td>ID</td>
+						<td><input class="text user-id" name="userId" type="text"/></td>
+					</tr>
+					<tr>
+						<td>Password</td>
+						<td><input class="password" name="password" type="password"/></td>
+					</tr>
+				</tbody>
+			</table>
+		</form>
+	</div>
+	
+	<br/>
+	<br/>
+	<br/>
+	
+	<h4>html example</h4>
+	<div class="blockListTable">
+		<div class="tableTop">
+			<div id="divSearch" class="tableSearch">
+				<select name="tablesch_01" title="검색조건">
+					<option value="">제목</option>
+				</select>													
+				<input type="text" size="20" value="" name="" title="inputbox" class="inputbox">
+				<a href="#a"><img alt="검색" src="../../images/theme/theme01/basic/ic_search.gif"></a>
+			</div>
+		</div>
+		<table id="tblBoardList" summary="게시판 목록">
+			<caption>게시판 목록</caption>
+			<thead>
+				<tr>
+					<th>No</th>
+					<th>Title</th>
+					<th>Name</th>
+					<th>Date</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>2</td>
+					<td>title 2</td>
+					<td>namem 2</td>
+					<td>2011-02-28</td>
+				</tr>
+				<tr>
+					<td>3</td>
+					<td>title 3</td>
+					<td>namem 3</td>
+					<td>2011-02-28</td>
+				</tr>
+				<tr>
+					<td>4</td>
+					<td>title 4</td>
+					<td>namem 4</td>
+					<td>2011-02-28</td>
+				</tr>
+				<tr>
+					<td>5</td>
+					<td>title 5</td>
+					<td>namem 5</td>
+					<td>2011-02-28</td>
+				</tr>
+			</tbody>
+		</table>
+		<div style="text-align:center; margin-top:7px;">
+			<input type="button" value="priv"/>
+			<input type="button" value="next"/>
+			<input type="button" value="itemAppend"/>
+		</div>
+	</div>	
+	
+</div>
+<!--//guideWrapper End-->
+</body>
+</html>

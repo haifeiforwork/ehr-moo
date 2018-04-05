@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="collpack.ideation.dao.IdRecommend" >
+
+<typeAlias alias = "IdRecommend" type="com.lgcns.ikep4.collpack.ideation.model.IdRecommend"/>
+
+  <resultMap id="IdRecommendResult" class="IdRecommend" >
+    <result column="REGISTER_ID" 	property="registerId" />
+    <result column="REGIST_DATE" 	property="registDate" />
+    <result column="ITEM_ID" 		property="itemId" />
+  </resultMap>
+  
+  <insert id="create" parameterClass="IdRecommend" >
+    INSERT INTO IKEP4_ID_RECOMMEND (				/* [IdRecommend_SqlMap.xml] collpack.ideation.dao.IdRecommend.create */
+	    REGISTER_ID
+	    , REGIST_DATE
+	    , ITEM_ID
+    ) VALUES (
+	    #registerId#
+	    , sysdate
+	    , #itemId#
+    )
+  </insert>
+  
+  <select id="exists" resultClass="int" parameterClass="IdRecommend" >
+    SELECT 					/* [IdRecommend_SqlMap.xml] collpack.ideation.dao.IdRecommend.exists */
+   	 COUNT(ITEM_ID)
+    FROM IKEP4_ID_RECOMMEND
+    WHERE REGISTER_ID = #registerId#
+   	 AND ITEM_ID = #itemId#
+  </select>
+  
+  <select id="getCountByUserId" resultClass="int" parameterClass="String" >
+	    SELECT								/* [IdRecommend_SqlMap.xml] collpack.ideation.dao.IdRecommend.getCountByUserId */	
+			COUNT(ITEM_ID)	    
+	    FROM IKEP4_ID_RECOMMEND
+	    WHERE REGISTER_ID = #registerId#
+  </select>
+  
+  
+  <select id="listUserIdByItemId" resultClass="String" parameterClass="String" >
+	     SELECT 						/* [IdRecommend_SqlMap.xml] collpack.ideation.dao.IdRecommend.listUserIdByItemId */
+	     	DISTINCT(REGISTER_ID)
+	    FROM IKEP4_ID_RECOMMEND
+	    WHERE  ITEM_ID = #itemId#
+  </select>
+  
+  <select id="list" resultMap="IdRecommendResult" parameterClass="String" >
+    SELECT				/* [IdRecommend_SqlMap.xml] collpack.ideation.dao.IdRecommend.list */
+   	 REGISTER_ID
+   	 , REGIST_DATE
+   	 , ITEM_ID
+    FROM IKEP4_ID_RECOMMEND
+    WHERE ITEM_ID = #itemId#
+  </select>
+  
+  <delete id="remove" parameterClass="IdRecommend" >
+    DELETE 						/* [IdRecommend_SqlMap.xml] collpack.ideation.dao.IdRecommend.remove */
+    FROM IKEP4_ID_RECOMMEND
+    WHERE  ITEM_ID = #itemId#
+    	AND REGISTER_ID = #registerId#
+  </delete>
+  
+  <delete id="removeByItemId" parameterClass="String" >
+    DELETE 						/* [IdRecommend_SqlMap.xml] collpack.ideation.dao.IdRecommend.removeByItemId */
+    FROM IKEP4_ID_RECOMMEND
+    WHERE  ITEM_ID = #itemId#
+  </delete>
+  
+  
+</sqlMap>

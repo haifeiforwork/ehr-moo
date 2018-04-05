@@ -1,0 +1,279 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ko">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>iKEP 4.00</title>
+<link rel="stylesheet" type="text/css" href="../../css/layout/layout-default-latest.css" />
+<link rel="stylesheet" type="text/css" href="../../css/theme01/jquery_ui_custom.css" />
+<link rel="stylesheet" type="text/css" href="../../css/common.css" />
+<link rel="stylesheet" type="text/css" href="../../css/theme01/theme.css" />
+<script type="text/javascript" src="../../js/jquery/jquery-1.6.2.min.js"></script>
+<script type="text/javascript" src="../../js/jquery/jquery-ui-1.8.13.min.without.datepicker.js"></script>
+<script type="text/javascript" src="../../js/langResource/ko.js"></script>
+
+<script type="text/javascript" src="../../js/jquery/jquery.layout-latest.js"></script>
+
+<style type="text/css">
+.hidden2 { display: none; }
+#content { position: relative; overflow: hidden; }
+
+
+
+</style>
+<script type="text/javascript">
+<!--
+var docIframe;  // 부모 iframe
+var isIframe = 0; // iframe 존재 여부
+var isLayout; // 레이아웃 보기 여부
+var myLayout=null;
+
+(function($) {
+	
+	$(document).ready(function(){
+
+		/* iframe 구성여부 확인 */
+		docIframe = $(parent.document).find("iframe[name=contentIframe]");
+		isIframe = docIframe.length;
+		
+		/* 기본 layout 설정 여부 */ 
+		isLayout = false;		
+		
+		/*
+		myLayout = $('#container').layout({
+			//north__spacing_open: 0
+		});
+		*/
+		
+		$(window).bind("resize", resizeContanerHeight);
+	});
+	
+	/* window risize 시 Contaner 높이 조절 */
+	resizeContanerHeight = function(){
+		var docHeight = 0;
+		var adjustHeight = 20;		
+		var $lefMenu;
+		var $Container	= $('#container');
+		
+		if(isLayout){
+			// iframe 안에서 호출된 경우
+			if(isIframe>0){
+				docHeight = $(parent).height();
+				
+				$lefMenu = $("#leftMenu", parent.document);
+				var leftMenuPostion = $lefMenu.offset();
+				if($lefMenu.length > 0) {
+					$lefMenu.height(docHeight - leftMenuPostion.top);
+				}
+				// Contaniner 높이 조절 (부모 window 높이 - Contanier 시작 높이)
+				$Container.height( docHeight - $Container.offset().top - adjustHeight );
+				// 부모 iframe 높이 조절 - 부모 윈도우 높이로 조절
+				//docIframe.height(docHeight-19);
+			}else{
+				// Contaniner 높이 조절 (부모 window 높이 - Contanier 시작 높이)
+				$Container.height( $(window).height() - $Container.offset().top - adjustHeight );
+			}	
+		}
+		
+		if(myLayout != null){
+			myLayout.resizeAll();	
+		}
+		
+	}
+	
+	/* Contaner & iframe 높이 조절 */
+	setContanerHeight = function() {
+		var docHeight = 0;
+		var adjustHeight = 20;
+		var $lefMenu;
+		var $Container	= $('#container');
+		
+		// layout 존재하므로 layout destroy 함수 호출시
+		if(isLayout){
+			// iframe 안에서 호출된 경우
+			if(isIframe>0){
+				docHeight = $(parent).height();
+				$lefMenu = $("#leftMenu", parent.document);
+				var leftMenuPostion = $lefMenu.offset();
+				if($lefMenu.length > 0) {
+					$lefMenu.height(docHeight - leftMenuPostion.top)
+					.css({overflowY:"auto",overflowX:"hidden"});
+				}
+				
+				// Contaniner 높이 조절 (부모 window 높이 - Contanier 시작 높이)
+				$Container.height( docHeight - $Container.offset().top - adjustHeight );
+				// 부모 iframe 높이 조절 - 부모 윈도우 높이로 조절
+				docIframe.height(docHeight-19);
+			}else{
+				// Contaniner 높이 조절 (부모 window 높이 - Contanier 시작 높이)
+				$Container.height( $(window).height() - $Container.offset().top - adjustHeight );
+			}			
+			
+		}else{ // layout 없으므로 layout 함수 호출시
+			// iframe 안에서 호출된 경우
+			if(isIframe>0){
+				$lefMenu = $("#leftMenu", parent.document);
+				$lefMenu.css({overflowY:"",overflowX:""});
+				docIframe.height($(document).height());
+			}
+		
+		}
+		
+		if(myLayout != null){
+			myLayout.resizeAll();	
+		}
+		
+	}
+	
+	createLayout = function() {
+		
+		isLayout = true;
+		
+		$Container = $('#container');
+		$Container.height( $(window).height() - $Container.offset().top - 20 );
+		
+		$("#content").empty();
+		
+		$ListPane = $('#listDiv');
+		if($ListPane.hasClass("ui-layout-north")){
+			$ListPane.removeClass("ui-layout-north");
+		}
+		$ListPane.addClass("ui-layout-west");
+		
+		myLayout = $('#container').layout({			
+			togglerLength_open:0,
+			west__size: .50,
+			west__minSize: 200
+		});
+		
+		setContanerHeight();
+
+	};
+	
+	createLayout2 = function() {
+		isLayout = true;
+		
+		$Container = $('#container');
+		$Container.height( $(window).height() - $Container.offset().top - 20);
+		
+		$("#content").empty();
+		
+		$ListPane = $('#listDiv');
+		if($ListPane.hasClass("ui-layout-west")){
+			$ListPane.removeClass("ui-layout-west");
+		}
+		$ListPane.addClass("ui-layout-north");
+		
+		myLayout = $('#container').layout({			 
+			togglerLength_open: 0,
+			north__size: .50,
+			north__minSize: 200
+		});
+		
+		setContanerHeight();
+	};
+
+	destroyLayout = function() {
+		isLayout = false;
+		
+		$Container = $('#container');
+		$Container.layout().destroy();
+		
+		$("#content").empty();
+		
+		$ListPane = $('#listDiv');
+		if($ListPane.hasClass("ui-layout-west")){
+			$ListPane.removeClass("ui-layout-west");
+		}else if($ListPane.hasClass("ui-layout-north")){
+			$ListPane.removeClass("ui-layout-north");
+		}
+		myLayout = null;
+		setContanerHeight();
+	};
+	
+	goView = function(){
+		var $divContent = $("#content");
+		$divContent.empty();
+		var url = "./u03_01.html";
+		var parms = "";
+		$.ajax({
+			url : url,
+			data : "",
+			type : "get",
+			success : function(result) {
+				$divContent.html(result);
+			},
+			error : function(event, request, settings) { 
+				alert("error");	
+			}
+		});
+	}
+	
+	
+})(jQuery);
+
+-->
+</script>
+</head>
+<body>		
+<p>
+<button onclick="createLayout();">createLayout</button>
+<button onclick="createLayout2();">createLayout2</button>
+<button onclick="destroyLayout();">destroyLayout</button>
+<button onclick="goView();">내용보기</button>
+</p>
+<div style="height:35px;background:#fff;border:1px solid #ccc;margin-bottom:8px;">header</div>
+<div id="container">
+    <div class="ui-layout-center hidden2" id="viewDiv">
+		<div id="content">
+			center
+			<p>Some text...</p>
+			<p>Some text...</p>
+			<p>Some text...</p>
+			<p>Some text...</p>
+			<p>Some text...</p>
+			<p>Some text...</p>
+			<p>Some text...</p>
+		</div>
+	</div>
+    <div id="listDiv">
+    	<div id="tList" style="background:#yellow">
+			west
+			<p>Some text...</p>
+			<p>Some text...</p>
+			<p>Some text...</p>
+			<p>Some text...</p>
+			<p>Some text...</p>
+			<p>Some text...</p>
+			<p>Some text...</p>
+			<p>Some text...</p>
+			<p>Some text...</p>
+			<p>Some text...</p>
+			<p>Some text...</p>
+			<p>Some text...</p>
+			<p>Some text...</p>
+			<p>Some text...</p>
+			<p>Some text...</p>
+			<p>Some text...</p>
+			<p>Some text...</p>
+			<p>Some text...</p>
+			<p>Some text...</p>
+			<p>Some text...</p>
+			<p>Some text...</p>
+			<p>Some text...</p>
+			<p>Some text...</p>
+			<p>Some text...</p>
+			<p>Some text...</p>
+			<p>Some text...</p>
+			<p>Some text...</p>
+			<p>Some text...</p>
+			<p>Some text...</p>
+			<p>Some text...</p>
+			<p>Some text...</p>
+			<p>Some text...</p>
+			<p>마지막....</p>
+		</div>
+	</div>
+</div>
+</body>
+</html>
+				

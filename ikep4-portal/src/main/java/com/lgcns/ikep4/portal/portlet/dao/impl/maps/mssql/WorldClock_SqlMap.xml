@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="portal.portlet.worldClock" >
+	<typeAlias alias = "WorldClock" type="com.lgcns.ikep4.portal.portlet.model.WorldClock"/>
+
+	<select id="getWorldClock" parameterClass="String" resultClass="WorldClock">
+	  <![CDATA[
+	  	   /* [WorldClock_SqlMap.xml] portal.portlet.worldClock.getWorldClock */
+	  	   SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
+		   SELECT 
+			  USER_ID  userId, 
+			  TYPE     type, 
+			  COUNTRY_NAME  countryName, 
+			  CITY_NAME  cityName, 
+			  REGISTER_ID  registerId, 
+			  REGISTER_NAME  registerName, 
+			  REGIST_DATE  registDate, 
+			  UPDATER_ID  updaterId, 
+			  UPDATER_NAME  updaterName, 
+			  UPDATE_DATE  updateDate,
+			  COUNTRY_ENGLISH_NAME  countryEnglishName, 
+			  CITY_ENGLISH_NAME  cityEnglishName
+			FROM IKEP4_PO_PORTLET_WORLDCLOCK
+		   WHERE user_id = #userId#
+	   ]]>
+	</select>	
+
+	
+	<insert id="createWorldClock" parameterClass="WorldClock"> 
+      <![CDATA[
+      	   /* [WorldClock_SqlMap.xml] portal.portlet.worldClock.createWorldClock */
+      	   DELETE IKEP4_PO_PORTLET_WORLDCLOCK WHERE USER_ID = #userId# and TYPE = #type#      	   
+           INSERT INTO IKEP4_PO_PORTLET_WORLDCLOCK (USER_ID, TYPE, COUNTRY_NAME, CITY_NAME, REGISTER_ID, REGISTER_NAME, REGIST_DATE, UPDATER_ID, UPDATER_NAME, UPDATE_DATE, COUNTRY_ENGLISH_NAME, CITY_ENGLISH_NAME)  
+           VALUES (#userId#, #type#, #countryName#, #cityName#, #registerId#, #registerName#, CURRENT_TIMESTAMP, #updaterId#, #updaterName#, CURRENT_TIMESTAMP, #countryEnglishName#, #cityEnglishName#)
+       ]]>
+   </insert>
+   
+   <update id="updateWorldClock" parameterClass="WorldClock">
+	  <![CDATA[
+	  	   /* [WorldClock_SqlMap.xml] portal.portlet.worldClock.updateWorldClock */
+		   UPDATE IKEP4_PO_PORTLET_WORLDCLOCK
+			  SET COUNTRY_NAME = #countryName#, 
+			      CITY_NAME = #cityName#,
+			      UPDATER_ID = #updaterId#,
+			      UPDATER_NAME = #updaterName#,
+			      UPDATE_DATE = CURRENT_TIMESTAMP,
+			      COUNTRY_ENGLISH_NAME = #countryEnglishName#, 
+			      CITY_ENGLISH_NAME = #cityEnglishName#
+			WHERE USER_ID = #userId# and TYPE = #type#
+	   ]]>
+	</update>
+</sqlMap>

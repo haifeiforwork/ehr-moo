@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="com.lgcns.ikep4.servicepack.usagetracker.utLoginLog" >
+
+  <typeAlias alias="utLoginLog"                type="com.lgcns.ikep4.servicepack.usagetracker.model.UtLoginLog"/>
+  <typeAlias alias="utLoginLogKey"             type="java.lang.String"/>
+  <typeAlias alias="utSearchCondition"             type="com.lgcns.ikep4.servicepack.usagetracker.search.UtSearchCondition"/>
+  <typeAlias alias="utSearchUtil"             type="com.lgcns.ikep4.servicepack.usagetracker.util.SearchUtil"/>
+  
+  <resultMap id="result" class="utLoginLog" >
+    <result column="LOGIN_HISTORY_ID" jdbcType="VARCHAR" property="loginHistoryId" />
+    <result column="PORTAL_ID" jdbcType="VARCHAR" property="portalId" />
+    <result column="USER_ID" jdbcType="VARCHAR" property="userId" />
+    <result column="IP_ADDRESS" jdbcType="VARCHAR" property="ipAddress" />
+    <result column="USER_AGENT" jdbcType="VARCHAR" property="userAgent" />
+    <result column="BROWSER" jdbcType="VARCHAR" property="browser" />
+    <result column="LOGIN_DATE" jdbcType="TIMESTAMP" property="loginDate" />
+  </resultMap>
+  
+  
+   <resultMap id="resultUser" class="utLoginLog" >
+    <result column="LOGIN_HISTORY_ID" jdbcType="VARCHAR" property="loginHistoryId" />
+    <result column="PORTAL_ID" jdbcType="VARCHAR" property="portalId" />
+    <result column="USER_ID" jdbcType="VARCHAR" property="userId" />
+    <result column="IP_ADDRESS" jdbcType="VARCHAR" property="ipAddress" />
+    <result column="USER_AGENT" jdbcType="VARCHAR" property="userAgent" />
+    <result column="BROWSER" jdbcType="VARCHAR" property="browser" />
+    <result column="LOGIN_DATE" jdbcType="TIMESTAMP" property="loginDate" />
+    <result property="jobTitleName" column="JOB_TITLE_NAME"/>
+	<result property="jobTitleEnglishName" column="JOB_TITLE_ENGLISH_NAME"/>
+	<result property="userName" column="USER_NAME"/>
+	<result property="userEnglishName" column="USER_ENGLISH_NAME"/>
+	<result property="teamName" column="TEAM_NAME"/>
+	<result property="teamEnglishName" column="TEAM_ENGLISH_NAME"/>
+  </resultMap>
+  
+  <resultMap id="resultSms" class="utLoginLog" >
+    <result column="WORKSPACE" jdbcType="VARCHAR" property="workspace" />
+    <result column="TEAMNAME" jdbcType="VARCHAR" property="teamName" />
+    <result column="SCNT_SUM" jdbcType="VARCHAR" property="smsCountSum" />
+    <result column="MCNT_SUM" jdbcType="VARCHAR" property="mmsCountSum" />
+    <result column="ACNT_SUM" jdbcType="VARCHAR" property="allCountSum" />
+  </resultMap>
+  
+  <resultMap id="resultSmsDetail" class="utLoginLog" >
+    <result column="phone_num" jdbcType="VARCHAR" property="phoneNum" />
+    <result column="user_name" jdbcType="VARCHAR" property="userName" />
+    <result column="team_name" jdbcType="VARCHAR" property="teamName" />
+    <result column="work_place" jdbcType="VARCHAR" property="workspace" />
+    <result column="CMP_usr_ID" jdbcType="VARCHAR" property="cmpUsrId" />
+    <result column="send_cnt" jdbcType="VARCHAR" property="sendCnt" />
+  </resultMap>
+	
+  
+  <sql id="whereClause">
+    <iterate conjunction="or" prepend="where" property="oredCriteria" removeFirstPrepend="iterate">
+      <isEqual compareValue="true" property="oredCriteria[].valid">
+        (
+        <iterate conjunction="and" prepend="and" property="oredCriteria[].criteriaWithoutValue">
+          $oredCriteria[].criteriaWithoutValue[]$
+        </iterate>
+        <iterate conjunction="and" prepend="and" property="oredCriteria[].criteriaWithSingleValue">
+          $oredCriteria[].criteriaWithSingleValue[].condition$
+            #oredCriteria[].criteriaWithSingleValue[].value#
+        </iterate>
+        <iterate conjunction="and" prepend="and" property="oredCriteria[].criteriaWithListValue">
+          $oredCriteria[].criteriaWithListValue[].condition$
+          <iterate close=")" conjunction="," open="(" property="oredCriteria[].criteriaWithListValue[].values">
+            #oredCriteria[].criteriaWithListValue[].values[]#
+          </iterate>
+        </iterate>
+        <iterate conjunction="and" prepend="and" property="oredCriteria[].criteriaWithBetweenValue">
+          $oredCriteria[].criteriaWithBetweenValue[].condition$
+          #oredCriteria[].criteriaWithBetweenValue[].values[0]# and
+          #oredCriteria[].criteriaWithBetweenValue[].values[1]#
+        </iterate>
+        )
+      </isEqual>
+    </iterate>
+  </sql>
+        
+  <sql id="sqlColumnList"> 
+	  s.LOGIN_HISTORY_ID, 
+	  s.PORTAL_ID, 
+	  s.USER_ID, 
+	  s.IP_ADDRESS, 
+	  s.USER_AGENT, 
+	  s.BROWSER, 
+	  s.LOGIN_DATE
+  </sql> 
+
+	<!-- ANSI -->  
+ <select id="get" parameterClass="utLoginLogKey" resultMap="result"> 
+    SELECT /* [utLoginLog_SqlMap.xml] utLoginLog.get */
+    	<include refid="com.lgcns.ikep4.servicepack.usagetracker.utLoginLog.sqlColumnList" />
+    from IKEP4_UT_LOGIN_LOG s
+    where LOGIN_HISTORY_ID = #loginHistoryId#
+  </select>
+
+	<!-- ANSI -->  
+  <select id="exists" parameterClass="utLoginLogKey" resultClass="int"> 
+    SELECT COUNT(*) /* [utLoginLog_SqlMap.xml] utLoginLog.exists */
+    from IKEP4_UT_LOGIN_LOG
+    where LOGIN_HISTORY_ID = #loginHistoryId#
+  </select> 
+
+	<!-- ANSI -->  
+  <insert id="create" parameterClass="utLoginLog"> 
+     insert into IKEP4_UT_LOGIN_LOG (LOGIN_HISTORY_ID, PORTAL_ID, USER_ID, IP_ADDRESS, USER_AGENT,BROWSER, LOGIN_DATE) /* [utLoginLog_SqlMap.xml] utLoginLog.create */
+     values (#loginHistoryId#, #portalId#, #userId#, #ipAddress#,#userAgent#, #browser#, #loginDate#)
+  </insert>
+ 
+ 	<!-- ANSI --> 
+  <update id="update" parameterClass="utLoginLog"> 
+    update IKEP4_UT_LOGIN_LOG /* [utLoginLog_SqlMap.xml] utLoginLog.update */
+    set PORTAL_ID = #portalId#,
+      USER_ID = #userId#,
+      IP_ADDRESS = #ipAddress#,
+      USER_AGENT = #userAgent#,
+      BROWSER = #browser#,
+      LOGIN_DATE = #loginDate#
+    where LOGIN_HISTORY_ID = #loginHistoryId#
+  </update>
+
+	<!-- ANSI -->  
+  <delete id="remove" parameterClass="utLoginLogKey"> 
+    delete /* [utLoginLog_SqlMap.xml] utLoginLog.remove */
+    from IKEP4_UT_LOGIN_LOG
+    where LOGIN_HISTORY_ID = #loginHistoryId#
+  </delete>  
+
+	<!-- MS SQL -->  
+  <!--  최근 한달간 로그인 상세로그 -->
+  <select id="listBySearchCondition" parameterClass="utSearchCondition" resultMap="resultUser">  
+	SELECT * /* [utLoginLog_SqlMap.xml] utLoginLog.listBySearchCondition */
+	FROM ( 
+	     SELECT  A.*
+	     FROM ( 
+		         SELECT Row_number() OVER (order by s.login_date desc) AS RNUM,
+		           <include refid="com.lgcns.ikep4.servicepack.usagetracker.utLoginLog.sqlColumnList" />,
+		           eu.USER_NAME, 
+			       eu.USER_ENGLISH_NAME, 
+			       eu.TEAM_NAME, 
+			       eu.TEAM_ENGLISH_NAME,
+			       ejt.JOB_TITLE_NAME, 
+			       ejt.JOB_TITLE_ENGLISH_NAME
+		         FROM   IKEP4_UT_LOGIN_LOG s
+		         		INNER JOIN IKEP4_EV_USER eu
+		         			ON s.user_id = eu.user_id
+		         		   AND s.PORTAL_ID = eu.PORTAL_ID
+		         		INNER JOIN IKEP4_EV_JOB_TITLE ejt
+		         			ON eu.job_title_code =ejt.job_title_code
+    			 WHERE  s.PORTAL_ID = #portalId#
+    			 		and CONVERT(DATE, s.LOGIN_DATE) between CONVERT(DATE, #startDate#) and CONVERT(DATE, #endDate#)
+	    	) A WHERE RNUM <![CDATA[<=]]>   #endRowIndex# /* 종료  */
+	) TBL WHERE RNUM <![CDATA[>]]>   #startRowIndex# /* 시작 */
+  </select>
+  
+  <select id="smsUseListBySearchCondition" parameterClass="utSearchCondition" resultMap="resultSms">  
+		EXEC DBO.[smsUsageMeterView1] #sdate#, #edate#, #menuId# , #flg#
+  </select>   
+  
+  <select id="excelSmsListBySearchCondition" parameterClass="utSearchCondition" resultMap="resultSmsDetail">  
+		EXEC DBO.[smsUsageMeterDetail] #sdate#, #edate#, #menuId#
+  </select>
+  
+	<!-- MS SQL -->
+  <select id="countBySearchCondition" parameterClass="utSearchCondition" resultClass="int">  
+	SELECT COUNT(*) /* [utLoginLog_SqlMap.xml] utLoginLog.countBySearchCondition */
+	FROM   IKEP4_UT_LOGIN_LOG s
+		   INNER JOIN IKEP4_EV_USER eu
+		   		ON s.user_id = eu.user_id
+		   	   AND s.PORTAL_ID = eu.PORTAL_ID
+		   INNER JOIN IKEP4_EV_JOB_TITLE ejt
+		   		ON eu.job_title_code =ejt.job_title_code
+    WHERE  s.PORTAL_ID = #portalId#
+ 		and  CONVERT(DATE, s.LOGIN_DATE) between CONVERT(DATE, #startDate#) and CONVERT(DATE, #endDate#)
+  </select> 
+  
+  	<!-- MS SQL -->
+  <!--  최근 한달간 로그인 상세로그 -->
+  <select id="excelLoginListBySearchCondition" parameterClass="utSearchCondition" resultMap="resultUser">  
+         SELECT /* [utLoginLog_SqlMap.xml] utLoginLog.excelLoginListBySearchCondition */
+           <include refid="com.lgcns.ikep4.servicepack.usagetracker.utLoginLog.sqlColumnList" />,
+           eu.USER_NAME, 
+	       eu.USER_ENGLISH_NAME, 
+	       eu.TEAM_NAME, 
+	       eu.TEAM_ENGLISH_NAME,
+	       ejt.JOB_TITLE_NAME, 
+	       ejt.JOB_TITLE_ENGLISH_NAME
+         FROM   IKEP4_UT_LOGIN_LOG s
+         		INNER JOIN IKEP4_EV_USER eu
+         			ON s.user_id = eu.user_id
+  				   and s.PORTAL_ID = eu.PORTAL_ID
+         		INNER JOIN IKEP4_EV_JOB_TITLE ejt
+         			ON eu.job_title_code =ejt.job_title_code
+  			 WHERE  s.PORTAL_ID = #portalId#
+  			 		and  CONVERT(DATE, s.LOGIN_DATE) between CONVERT(DATE, #startDate#) and CONVERT(DATE, #endDate#)
+		order by s.login_date desc
+  </select>   
+  
+</sqlMap>

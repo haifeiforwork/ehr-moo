@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="com.lgcns.ikep4.workflow.engine.model.ProcessBean" >
+	<typeAlias alias = "ProcessBean" type="com.lgcns.ikep4.workflow.engine.model.ProcessBean"/>
+	
+	<!-- Partition 테이블 조회 결과 -->
+	<resultMap id="result" class="ProcessBean" groupBy="processId">
+		<result property="processId" column="PROCESS_ID" columnIndex="1"/>
+		<result property="processVer" column="PROCESS_VER" columnIndex="2"/>
+		<result property="processName" column="PROCESS_NAME" columnIndex="3"/>
+		<result property="processType" column="PROCESS_TYPE" columnIndex="4"/>
+		<result property="processState" column="PROCESS_STATE" columnIndex="5"/>
+		<result property="vendor" column="VENDOR" columnIndex="6"/>
+		<result property="authorId" column="AUTHOR" columnIndex="7"/>
+		<result property="startMode" column="START_MODE" columnIndex="8"/>
+		<result property="varDefine" column="VAR_DEFINE" columnIndex="9"/>
+		<result property="description" column="DESCRIPTION" columnIndex="10"/>
+		<result property="attrExpand" column="ATTR_EXPAND" columnIndex="11"/>
+		<result property="limitStartTime" column="LIMIT_START_TIME" columnIndex="12"/>
+		<result property="limitEndTime" column="LIMIT_END_TIME" columnIndex="13"/>
+		<result property="createDate" column="CREATE_DATE" columnIndex="14"/>
+	</resultMap>
+	
+	<!-- insert -->
+	<insert id="com.lgcns.ikep4.workflow.engine.model.ProcessBean.insert" parameterClass="ProcessBean">
+      <![CDATA[ 
+           INSERT INTO IKEP4_WF_PROCESS (PARTITION_ID, PROCESS_ID, PROCESS_VER, PROCESS_NAME, PROCESS_TYPE, VENDOR, AUTHOR, PROCESS_STATE, VAR_DEFINE, CREATE_DATE)
+			VALUES ( #partitionId#, #processId#, #processVer#, #processName#, #processType#, #vendor#, #authorId#, #processState#, #varDefine#, #createDate# 	)	
+       ]]>
+      <selectKey resultClass="String" keyProperty="processId" type="pre"> 
+         <![CDATA[ 
+               SELECT #processId# AS PROCESS_ID FROM DUAL 
+            ]]>
+      </selectKey>       
+
+   </insert>
+   
+   <!-- select -->
+	<select id="com.lgcns.ikep4.workflow.engine.model.ProcessBean.select" parameterClass="ProcessBean" resultClass="ProcessBean">
+	  
+	   SELECT 	PROCESS_ID AS processId
+	   			,PROCESS_VER AS processVer
+	   			,PROCESS_NAME AS processName
+	   			,PROCESS_TYPE AS processType
+	   			,PROCESS_STATE AS processState
+	   			,VENDOR AS vendor
+	   			,AUTHOR AS authorId
+	   			,START_MODE AS startMode
+	   			,VAR_DEFINE AS varDefine
+	   			,DESCRIPTION AS description
+	   			,ATTR_EXPAND AS attrExpand
+	   			,LIMIT_START_TIME AS limitStartTime
+	   			,LIMIT_END_TIME AS limitEndTime
+	   			,CREATE_DATE AS createDate
+	     FROM 	IKEP4_WF_PROCESS 
+	    WHERE 	PROCESS_ID = #processId#
+        <isNotEmpty property="processVer">
+		   AND	PROCESS_VER = #processVer#
+		</isNotEmpty>   	    
+	</select>
+	
+	
+	
+	<!-- update -->
+	<update id="com.lgcns.ikep4.workflow.engine.model.ProcessBean.updateProcess" parameterClass="ProcessBean">
+	  <![CDATA[
+		   UPDATE 	IKEP4_WF_PROCESS 
+		      SET 	PROCESS_NAME = #processName#
+					,PROCESS_TYPE = #processType#
+					,PROCESS_STATE = #processState#
+					,VENDOR = #vendor#
+					,AUTHOR = #authorId#
+					,START_MODE = #startMode#
+					,VAR_DEFINE = #varDefine#
+					,DESCRIPTION = #description#
+					,ATTR_EXPAND = #attrExpand#
+					,LIMIT_START_TIME = #limitStartTime#
+					,LIMIT_END_TIME = #limitEndTime#
+					,CREATE_DATE = #createDate#
+		    WHERE	PROCESS_ID = #processId#
+		      AND	PROCESS_VER = #processVer#
+	   ]]>
+	</update>	
+	
+	<!-- update -->
+	<update id="com.lgcns.ikep4.workflow.engine.model.ProcessBean.update" parameterClass="ProcessBean">
+	  <![CDATA[
+		   UPDATE IKEP4_WF_PROCESS 
+		   SET DESCRIPTION = #description#, 
+			   CREATE_DATE = sysdate, 
+			   UPDATE_DATE = sysdate
+		   WHERE PROCESS_ID = #processId#
+	   ]]>
+	</update>
+   
+   <!-- delete -->
+   <!-- 
+   <delete id="delete" parameterClass="java.lang.String">
+      <![CDATA[
+	       DELETE FROM IKEP4_WF_PROCESS WHERE PROCESS_ID = #processId#;
+	   ]]>
+	</delete>
+ -->
+ 
+ 	<delete id="com.lgcns.ikep4.workflow.engine.model.ProcessBean.deleteVarSchema" parameterClass="ProcessBean">
+       	DELETE 	FROM IKEP4_WF_VAR_SCHEMA
+         WHERE 	PROCESS_ID 	= #processId#
+	</delete>
+ 
+	<delete id="com.lgcns.ikep4.workflow.engine.model.ProcessBean.deleteVarLog" parameterClass="ProcessBean">
+       	DELETE 	FROM IKEP4_WF_VAR_LOG 
+         WHERE 	PROCESS_ID 	= #processId#
+	</delete>
+	
+	<delete id="com.lgcns.ikep4.workflow.engine.model.ProcessBean.deleteTodoList" parameterClass="ProcessBean">
+    	DELETE 	FROM IKEP4_WF_TODO_LIST 
+    	 WHERE 	PROCESS_ID = #processId#
+	</delete>
+	
+	<delete id="com.lgcns.ikep4.workflow.engine.model.ProcessBean.deleteInstanceLog" parameterClass="ProcessBean">
+       	DELETE 	FROM IKEP4_WF_INSTANCE_LOG 
+       	 WHERE 	PROCESS_ID = #processId#
+	</delete>
+	
+	<delete id="com.lgcns.ikep4.workflow.engine.model.ProcessBean.deleteInstanceVar" parameterClass="ProcessBean">
+       	DELETE 	FROM IKEP4_WF_INSTANCE_VAR 
+       	 WHERE 	PROCESS_ID = #processId#
+	</delete>
+	
+	<delete id="com.lgcns.ikep4.workflow.engine.model.ProcessBean.deleteProcessInstance" parameterClass="ProcessBean">
+  		DELETE 	FROM IKEP4_WF_INSTANCE 
+  		 WHERE 	PROCESS_ID = #processId#
+        <isNotEmpty property="processVer">
+		   AND	PROCESS_VER = #processVer#
+		</isNotEmpty>    		 
+	</delete>
+	
+	<delete id="com.lgcns.ikep4.workflow.engine.model.ProcessBean.deleteParticipant" parameterClass="ProcessBean">
+    	DELETE 	FROM IKEP4_WF_PARTICIPANT 
+    	 WHERE 	PROCESS_ID = #processId#
+        <isNotEmpty property="processVer">
+		   AND	PROCESS_VER = #processVer#
+		</isNotEmpty>     	 
+	</delete>
+	
+	<delete id="com.lgcns.ikep4.workflow.engine.model.ProcessBean.deleteNotify" parameterClass="ProcessBean">
+    	DELETE 	FROM IKEP4_WF_NOTIFY
+    	 WHERE 	PROCESS_ID = #processId#
+        <isNotEmpty property="processVer">
+		   AND	PROCESS_VER = #processVer#
+		</isNotEmpty>     	 
+	</delete>	
+	
+	<delete id="com.lgcns.ikep4.workflow.engine.model.ProcessBean.deleteManual" parameterClass="ProcessBean">
+       	DELETE 	FROM IKEP4_WF_MANUAL 
+       	 WHERE 	PROCESS_ID = #processId#
+        <isNotEmpty property="processVer">
+		   AND	PROCESS_VER = #processVer#
+		</isNotEmpty>         	 
+	</delete>
+	
+	<delete id="com.lgcns.ikep4.workflow.engine.model.ProcessBean.deleteActivity" parameterClass="ProcessBean">
+	 	DELETE 	FROM IKEP4_WF_ACTIVITY 
+	     WHERE 	PROCESS_ID = #processId#
+        <isNotEmpty property="processVer">
+		   AND	PROCESS_VER = #processVer#
+		</isNotEmpty>   	     
+	</delete>
+	
+	<delete id="com.lgcns.ikep4.workflow.engine.model.ProcessBean.deleteTransition" parameterClass="ProcessBean">
+	   	DELETE 	FROM IKEP4_WF_TRANSITION 
+	     WHERE 	PROCESS_ID = #processId#
+        <isNotEmpty property="processVer">
+		   AND	PROCESS_VER = #processVer#
+		</isNotEmpty>   	     
+	</delete>
+	
+	<delete id="com.lgcns.ikep4.workflow.engine.model.ProcessBean.deleteProcessModel" parameterClass="ProcessBean">
+	 	DELETE 	FROM IKEP4_WF_PROCESS_MODEL 
+	     WHERE 	PROCESS_ID = #processId#
+        <isNotEmpty property="processVer">
+		   AND	PROCESS_VER = #processVer#
+		</isNotEmpty>   	     
+	</delete>
+	
+	<delete id="com.lgcns.ikep4.workflow.engine.model.ProcessBean.deleteProcessView" parameterClass="ProcessBean">
+	 	DELETE 	FROM IKEP4_WF_PROCESS_VIEW 
+	     WHERE 	PROCESS_ID = #processId#
+        <isNotEmpty property="processVer">
+		   AND	PROCESS_VER = #processVer#
+		</isNotEmpty>   	     
+	</delete>
+	
+	<delete id="com.lgcns.ikep4.workflow.engine.model.ProcessBean.deleteService" parameterClass="ProcessBean">
+	   	DELETE 	FROM IKEP4_WF_SERVICE 
+	     WHERE 	PROCESS_ID = #processId#
+        <isNotEmpty property="processVer">
+		   AND	PROCESS_VER = #processVer#
+		</isNotEmpty>   	     
+	</delete>	
+	
+	<delete id="com.lgcns.ikep4.workflow.engine.model.ProcessBean.deleteProcess" parameterClass="ProcessBean">
+	  	DELETE 	FROM IKEP4_WF_PROCESS 
+	     WHERE 	PROCESS_ID = #processId#
+        <isNotEmpty property="processVer">
+		   AND	PROCESS_VER = #processVer#
+		</isNotEmpty>   	     
+	</delete>	
+		
+	
+	
+	
+	
+	
+	<!-- selectAll -->
+	<select id="selectAll" resultMap="result">
+	  <![CDATA[
+		   SELECT * FROM IKEP4_WF_PARTITION ORDER BY PARTITION_ID DESC
+	   ]]>
+	</select>
+	
+	<!-- selectCount -->
+	<select id="com.lgcns.ikep4.workflow.engine.model.ProcessBean.selectCount" parameterClass="String" resultClass="String">
+	  <![CDATA[
+		   SELECT COUNT(PROCESS_ID) FROM IKEP4_WF_PROCESS WHERE PROCESS_ID = #processId#
+	   ]]>
+	</select>
+	
+	
+
+	
+</sqlMap>

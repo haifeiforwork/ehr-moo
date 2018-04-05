@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="com.lgcns.ikep4.wfapproval.work.dao.ApProcessViewData" >
+
+	<typeAlias alias = "ApProcessViewData" type="com.lgcns.ikep4.wfapproval.work.model.ApProcessViewData"/>
+	<resultMap class="ApProcessViewData" 	id="apProcessViewDataResult">
+	  <result column="APPR_ID"      		property="apprId"							jdbcType="VARCHAR" columnIndex="1"/>
+	  <result column="APPR_USER_ID"     property="apprUserId"					jdbcType="VARCHAR" columnIndex="2"/>
+	  <result column="APPR_USER_NAME"   property="apprUserName"				jdbcType="VARCHAR" columnIndex="3"/>
+	  <result column="APPR_TYPE" 	     	property="apprType" 					jdbcType="INTEGER" columnIndex="4"/>
+	  <result column="APPR_TYPE_NAME"  	property="apprTypeName"				jdbcType="VARCHAR" columnIndex="5"/>
+	  <result column="APPR_ORDER"       property="apprOrder"    			jdbcType="INTEGER" columnIndex="6"/>
+	  <result column="APPR_STATE"       property="apprState"    			jdbcType="VARCHAR" columnIndex="7"/>
+	  <result column="APPR_STATE_NAME"  property="apprStateName" 			jdbcType="VARCHAR" columnIndex="8"/>
+	  <result column="APPR_DATE"     		property="apprDate"   				jdbcType="DATE"    columnIndex="9"/>
+	  <result column="APPR_LINE_TYPE"		property="apprLineType" 			jdbcType="VARCHAR" columnIndex="10"/>
+	  <result column="APPR_ORDERBY_SEQ"	property="apprOrderbySeq"			jdbcType="INTEGER" columnIndex="11"/>
+	</resultMap> 
+  
+	<!-- selectAll -->
+	<select id="listApProcessViewData" resultMap="apProcessViewDataResult">
+	  <![CDATA[
+			SELECT PRC.APPR_ID
+			      ,PRC.APPR_USER_ID
+			      ,USR.USER_NAME AS APPR_USER_NAME
+			      ,PRC.APPR_TYPE
+			      ,CASE WHEN PRC.APPR_ORDER = 0 THEN '기안' ELSE DECODE(PRC.APPR_TYPE,0,'결재',1,'합의',2,'참조','결재타입오류['||APPR_TYPE||']') END AS APPR_TYPE_NAME
+			      ,PRC.APPR_ORDER
+			      ,PRC.APPR_STATE
+			      ,DECODE(PRC.APPR_STATE, 'ASSIGN', '진행중-배정'
+			                            , 'SELECT', '진행중-열람'
+			                            , 'COMPLETE', '완료'
+			                            , 'fault', '오류'
+			                            , 'overdue', '지연'
+			                            , 'skip', '건너뜀'
+			                            , '상태값오류['||PRC.APPR_STATE||']') AS APPR_STATE_NAME
+			      ,PRC.APPR_DATE
+			      ,DOC.APPR_LINE_TYPE APPR_LINE_TYPE
+			      ,CASE WHEN DOC.APPR_LINE_TYPE != 'P' THEN PRC.APPR_ORDER
+			            ELSE (PRC.APPR_TYPE * PRC.APPR_ORDER) + PRC.APPR_ORDER
+			       END AS APPR_ORDERBY_SEQ    			      
+			  FROM IKEP4_AP_PROCESS PRC,
+			  		 IKEP4_AP_DOC DOC,
+			       IKEP4_EV_USER USR
+			 WHERE PRC.APPR_ID = #apprId#
+			   AND PRC.APPR_ID = DOC.APPR_ID
+			   AND PRC.APPR_USER_ID   = USR.USER_ID(+)
+			   AND APPR_TYPE IN (0,1)
+			 ORDER BY APPR_ORDERBY_SEQ ASC
+	   ]]>
+	</select>
+  
+</sqlMap>

@@ -1,0 +1,129 @@
+﻿<html>
+<head>
+<script language='javascript'>
+   // 전역적으로 사용되는 스크립트 변수
+   var WEBROOT = "/eW/";
+   var WEBSERVER = "ikep.lgcns.com";
+   var WEBPORT = "80";
+   var TITLE = " LGCNS ";
+   var DIALOGWIDTH = "405";
+   var DIALOGHEIGHT = "395";
+   var DIALOGSMALLHEIGHT = "140";
+   var DEFAULTDOMAIN = "lgcns.com";
+   var NEXTEPURL = "http://ikep.lgcns.com";
+   var UPLANNERURL = "http://ikep.lgcns.com:9000";
+   var UPLOADSIZELIMIT = "50";
+   var UPLOADCOUNTLIMIT = "10";
+   var SENDERLIMIT = "500";
+</script>
+<script language='javascript' src='./eW/DNSoft.eW.FrameWork.Scripts.Common.js'></script>
+<script language='javascript' src='./eW/DNSoft.eW.FrameWork.Scripts.FormEvent.js'></script>
+<!-- <script language='javascript' src='./eW/DNSoft.eW.FrameWork.Scripts.ControlUtil.js'></script> -->
+<!-- <script language='javascript' src='./eW/DNSoft.eW.FrameWork.Scripts.Date.js'></script> -->
+<!-- <script language='javascript' src='./eW/DNSoft.eW.FrameWork.Scripts.eWControl.js'></script> -->
+<script>
+var screenPopup;
+function ScreenPopup() {
+	try {
+	//	document.domain = sOriginalDomain;      // IE8 로 인한 코드 패치 
+		this.popup = window.createPopup();
+	//	this.popup.document.domain = document.domain;   // IE8 로 인한 코드 패치 
+	//	document.domain = sNewDomain;            // IE8 로 인한 코드 패치 
+		this.popupwidth;
+		this.popupheight;
+		this.screenwidth;
+		this.screenheight;
+		this.x;
+		this.y;
+		this.offset;
+		this.show = ScreenPopupShow;
+		this.down = ScreenPopupDown;
+	} catch(e) {}
+ }
+
+function ScreenPopupShow() {
+	//alert(this.x);  // 1104 , 624
+	//alert(this.y);  // 642 , 440
+	//alert(this.offset); // 85 , 85
+	//alert(this.popupwidth); // 330, 330
+	//alert(this.popupheight); // 85, 85 
+	this.popup.show(this.x, this.y + this.offset,this.popupwidth,this.popupheight-10);
+	setTimeout("hiddenScreenPopup()", 15000);
+}
+        
+function ScreenPopupDown() {
+	this.offset+=10;
+	if(this.offset <= this.popupheight) this.popup.show(this.x, this.y + this.offset,this.popupwidth,this.popupheight - this.offset);
+}        
+                
+function createScreenPopup(w, h, b) {
+	var w=330;
+	var h=85; 
+
+	var b=document.all.popupWin.outerHTML;
+	try {
+		screenPopup.popupwidth = w;
+		screenPopup.popupheight = h;
+		screenPopup.screenwidth = window.screen.availWidth;
+		screenPopup.screenheight = window.screen.availHeight;
+		
+		if (window.postMessage) { // IE8이라면
+		    screenPopup.x = screenPopup.screenwidth - w;                    
+		} else screenPopup.x = screenPopup.screenwidth - w; //176;
+
+		screenPopup.y = screenPopup.screenheight - 130;
+		screenPopup.offset = screenPopup.popupheight;
+
+		showScreenPopup();
+
+	//	document.domain = sOriginalDomain;  // IE8 로 인한 코드 패치 
+		screenPopup.popup.document.body.innerHTML = b;
+		screenPopup.popup.document.all.popupWin.style.display='block';
+
+	//	document.domain = sNewDomain;   // IE8 로 인한 코드 패치 
+	} catch(e) {
+		alert(e);
+	}
+}
+
+function showScreenPopup() {
+	screenPopup.show();
+}
+
+function hiddenScreenPopup() {
+	screenPopup.down();
+	if(screenPopup.offset <= screenPopup.popupheight) {
+		setTimeout("hiddenScreenPopup()", 20);
+	} else {
+		screenPopup.popup.hide();
+	}
+}
+
+function beforeLoad() {
+	try {
+		var vdomain = document.domain;
+		vdomain = vdomain.substr(vdomain.indexOf(".") + 1);
+
+		screenPopup = new ScreenPopup();
+		screenPopup.popup.document.domain = vdomain;
+	} catch(exception) { alert("error : beforeLoad"); }        
+}
+
+//
+</script>
+<body onload="beforeLoad();fn_WindowOnLoad();">
+<a href="#" onclick="createScreenPopup();">aaaaaa</a>
+
+<input type="hidden" name="winClosed" id="winClosed" value="open" />
+<input type="hidden" name="winClosedReturn" id="winClosedReturn" value="" />
+<input type="hidden" name="errorMessage" id="errorMessage" value="" />
+<input type="hidden" name="informationMessage" id="informationMessage" value="" />
+<input type="hidden" name="confirmMessage" id="confirmMessage" value="" />
+
+<div id="popupWin" style="display:none; background:#FFFFFF; width:320px; height:80px; " onselectstart="return false;" >
+  <span id="popupWin_showMsg" align=left style="width:400; height:100; background-attachment: fixed; background-repeat: no-repeat;">
+  	dssssssssssssssssssf
+  </span>
+</div>	
+</body>
+</html>

@@ -1,0 +1,512 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="collpack.kms.announce.dao.announceItem">
+	<typeAlias alias="kmsAnnounceItem"                type="com.lgcns.ikep4.collpack.kms.announce.model.AnnounceItem"/>
+	<typeAlias alias="kmsAnnounceItemSearchCondition" type="com.lgcns.ikep4.collpack.kms.announce.search.AnnounceItemSearchCondition"/>
+
+	<resultMap id="announceItemResult" class="com.lgcns.ikep4.collpack.kms.announce.model.AnnounceItem" >
+		<result column="ITEM_ID"           	property="itemId"			jdbcType="VARCHAR" />
+		<result column="ITEM_SEQ_ID"     	property="itemSeqId"        jdbcType="VARCHAR" />
+		<result column="ITEM_DISPLAY"       property="itemDisplay"      jdbcType="VARCHAR" />
+		<result column="TITLE"       		property="title"          	jdbcType="VARCHAR" />
+		<result column="CONTENTS"       	property="contents"         jdbcType="VARCHAR" />
+		<result column="HIT_COUNT"       	property="hitCount"         jdbcType="DECIMAL" />
+		<result column="ATTACH_FILE_COUNT"  property="attachFileCount"  jdbcType="DECIMAL" />
+		<result column="ITEM_DELETE"       	property="itemDelete"       jdbcType="DECIMAL" /> 
+		<result column="REGISTER_ID"      	property="registerId"       jdbcType="VARCHAR" />
+		<result column="REGISTER_NAME"     	property="registerName"     jdbcType="VARCHAR" />
+		<result column="REGISTER_ENGLISH_NAME"     	property="registerEnglishName"     jdbcType="VARCHAR" />		
+		<result column="REGIST_DATE"       	property="registDate"       jdbcType="DATE" />
+		<result column="UPDATER_ID"        	property="updaterId"        jdbcType="VARCHAR" />
+		<result column="UPDATER_NAME"      	property="updaterName"      jdbcType="VARCHAR" />
+		<result column="UPDATE_DATE"       	property="updateDate"       jdbcType="DATE" />
+		<!-- <result column="SHARE_COUNT"    	property="shareCount"       jdbcType="DECIMAL" /-->
+		<!-- result column="WORKSPACE_NAME"     property="workspaceName"    jdbcType="VARCHAR" /-->
+		<result column="JOB_TITLE_NAME"     property="jobTitleName"    jdbcType="VARCHAR" />
+		<result column="JOB_TITLE_ENGLISH_NAME"     property="jobTitleEnglishName"    jdbcType="VARCHAR" />
+	</resultMap>
+	
+	
+	<resultMap id="announceItemResultExtend" extends="announceItemResult"  class="com.lgcns.ikep4.collpack.kms.announce.model.AnnounceItem" > 
+	<!--
+		<result column="WORKSPACE_ID"       property="workspaceId"      jdbcType="VARCHAR" />
+		<result column="IS_OWNER"    		property="isOwner"         	jdbcType="VARCHAR" />
+	-->
+	</resultMap> 
+	
+	<!-- sql id="sqlColumnList"> 
+		ITEM_ID,
+		ITEM_SEQ_ID,
+		ITEM_DISPLAY,
+		TITLE,
+		CONTENTS,
+		HIT_COUNT,
+		ATTACH_FILE_COUNT,
+		ITEM_DELETE,
+		REGISTER_ID,
+		REGISTER_NAME,
+		REGIST_DATE,
+		UPDATER_ID,
+		UPDATER_NAME,
+		UPDATE_DATE
+	</sql-->
+
+	<sql id="sqlExtendColumnList"> 
+		A.ITEM_ID 			AS ITEM_ID,
+<!-- 	
+		B.WORKSPACE_ID		AS WORKSPACE_ID,
+		C.WORKSPACE_NAME	AS WORKSPACE_NAME,
+		B.IS_OWNER 			AS IS_OWNER,
+ -->		
+		A.ITEM_SEQ_ID 		AS ITEM_SEQ_ID,
+		A.ITEM_DISPLAY 		AS ITEM_DISPLAY,
+		A.TITLE 			AS TITLE,
+		A.CONTENTS 			AS CONTENTS,
+		A.HIT_COUNT 		AS HIT_COUNT,
+		A.ATTACH_FILE_COUNT AS ATTACH_FILE_COUNT,
+		A.ITEM_DELETE 		AS ITEM_DELETE,
+		A.REGISTER_ID 		AS REGISTER_ID,
+		U.USER_NAME 		AS REGISTER_NAME,
+		U.USER_ENGLISH_NAME AS REGISTER_ENGLISH_NAME,
+		A.REGIST_DATE 		AS REGIST_DATE,
+		A.UPDATER_ID 		AS UPDATER_ID,
+		A.UPDATER_NAME 		AS UPDATER_NAME,
+		A.UPDATE_DATE 		AS UPDATE_DATE,
+		J.JOB_TITLE_NAME 			AS JOB_TITLE_NAME,
+		J.JOB_TITLE_ENGLISH_NAME 	AS JOB_TITLE_ENGLISH_NAME
+<!-- 		
+		,
+		(SELECT COUNT(ITEM_ID) FROM IKEP4_KMS_BD_ANNOUNCE_WORKSPACE WHERE ITEM_ID=A.ITEM_ID AND IS_OWNER=0)	AS SHARE_COUNT
+ -->	
+	</sql>
+
+	<sql id="sqlLinkColumnList"> 
+		ITEM_ID,
+		<!-- 
+		WORKSPACE_ID,
+		 -->
+		IS_OWNER
+	</sql>
+
+	<!-- ANSI -->
+	<select id="getAnnounce" parameterClass="java.util.Map" resultMap="announceItemResultExtend">
+		SELECT 
+			/* [AnnounceItem_SqlMap.xml] AnnounceItem.get */
+			<include refid="collpack.kms.announce.dao.announceItem.sqlExtendColumnList" />
+		FROM 
+			IKEP4_KMS_BD_ANNOUNCE A
+			<!--
+			INNER JOIN IKEP4_KMS_BD_ANNOUNCE_WORKSPACE B ON A.ITEM_ID = B.ITEM_ID 
+			<isNotEmpty property="workspaceId" >
+				AND B.WORKSPACE_ID = #workspaceId#	
+			</isNotEmpty>
+			<isEmpty property="workspaceId" >
+				AND IS_OWNER = '1'
+			</isEmpty>
+			INNER JOIN IKEP4_WS_WORKSPACE C ON B.WORKSPACE_ID = C.WORKSPACE_ID
+			-->
+			INNER JOIN IKEP4_EV_USER U ON A.REGISTER_ID = U.USER_ID
+			INNER JOIN IKEP4_EV_JOB_TITLE J ON U.JOB_TITLE_CODE = J.JOB_TITLE_CODE
+		WHERE  
+			A.ITEM_ID = #itemId#
+	</select>
+
+	<!-- MS SQL -->
+	<!-- announce List Query -->
+	<select id="listBySearchCondition" parameterClass="kmsAnnounceItemSearchCondition" resultMap="announceItemResultExtend">  
+		SELECT  /* [AnnounceItem_SqlMap.xml] AnnounceItem.listBySearchCondition */ 
+			ITEM_ID,
+			<!--  
+			WORKSPACE_ID,
+			WORKSPACE_NAME,
+			IS_OWNER,
+			-->
+			ITEM_SEQ_ID,
+			ITEM_DISPLAY,
+			TITLE,
+			CONTENTS,
+			HIT_COUNT,
+			ATTACH_FILE_COUNT,
+			ITEM_DELETE,
+			REGISTER_ID,
+			REGISTER_NAME,
+			REGISTER_ENGLISH_NAME,
+			REGIST_DATE,
+			UPDATER_ID,
+			UPDATER_NAME,
+			UPDATE_DATE,
+			JOB_TITLE_NAME,
+			JOB_TITLE_ENGLISH_NAME
+			<!-- 
+			,
+			SHARE_COUNT
+			 -->
+		FROM 
+		( 
+			SELECT 
+				D.* 
+			FROM 
+			( 
+				/* START========================================= */
+				SELECT Row_number() OVER (	ORDER BY  ITEM_DISPLAY DESC, 
+											<isNotEmpty property="sortColumn" >
+												<isEqual property="sortColumn" compareValue="ITEM_SEQ_ID">
+													ITEM_SEQ_ID
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="ATTACH_FILE_COUNT">
+													ATTACH_FILE_COUNT
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="SHARE_COUNT">
+												SHARE_COUNT
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="TITLE">
+												TITLE
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="REGISTER_NAME">
+												U.USER_NAME
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="REGIST_DATE">
+												A.REGIST_DATE
+												</isEqual>
+												<isEqual property="sortColumn" compareValue="HIT_COUNT">
+												HIT_COUNT
+												</isEqual>
+											</isNotEmpty>
+						
+											<isNotEmpty property="sortType" >
+											<isEqual property="sortType" compareValue="DESC">
+											DESC ,
+											</isEqual>
+											<isEqual property="sortType" compareValue="ASC">
+											ASC ,
+											</isEqual>
+											</isNotEmpty>
+											
+											ITEM_SEQ_ID DESC ) AS RNUM,
+					<include refid="collpack.kms.announce.dao.announceItem.sqlExtendColumnList" /> 
+				FROM   
+					IKEP4_KMS_BD_ANNOUNCE A 
+					<!-- 
+					INNER JOIN IKEP4_KMS_BD_ANNOUNCE_WORKSPACE B ON A.ITEM_ID = B.ITEM_ID
+					INNER JOIN IKEP4_WS_WORKSPACE C ON B.WORKSPACE_ID = C.WORKSPACE_ID 
+					 -->
+					INNER JOIN IKEP4_EV_USER U ON A.REGISTER_ID = U.USER_ID
+					INNER JOIN IKEP4_EV_JOB_TITLE J ON U.JOB_TITLE_CODE = J.JOB_TITLE_CODE
+				WHERE
+					1=1
+					<!-- 
+					B.WORKSPACE_ID = #workspaceId# 
+					 -->
+					<isNotEmpty property="searchColumn">
+						<isEqual property="searchColumn" compareValue="title">
+							AND	A.TITLE LIKE '%' + #searchWord# + '%'
+						</isEqual>
+						<isEqual property="searchColumn" compareValue="registerName">
+							AND	A.REGISTER_NAME LIKE '%' + #searchWord# + '%'
+						</isEqual>
+					</isNotEmpty>
+					/* ===========================================END  */  
+		<![CDATA[   
+			) D
+			WHERE 
+				RNUM <=  #endRowIndex# /* 종료  */
+		) TBL
+		WHERE 
+			RNUM >  #startRowIndex# /* 시작 */
+		]]> 
+	</select>
+
+	<!-- ASNI -->
+	<!-- Announce 기본 카운트 --> 
+	<select id="countBySearchCondition" parameterClass="kmsAnnounceItemSearchCondition" resultClass="int">  
+	SELECT /* [AnnounceItem_SqlMap.xml] AnnounceItem.countBySearchCondition */ 
+		COUNT(ITEM_ID)
+	FROM  
+		IKEP4_KMS_BD_ANNOUNCE A
+	WHERE  
+		1=1 
+		<isNotEmpty property="searchColumn">
+			<isEqual property="searchColumn" compareValue="title">
+				AND	A.TITLE LIKE '%' + #searchWord# + '%'
+			</isEqual>
+			<isEqual property="searchColumn" compareValue="registerName">
+				AND	A.REGISTER_NAME LIKE '%' + #searchWord# + '%'
+			</isEqual>
+		</isNotEmpty>
+	</select>
+
+	<!-- MS SQL -->
+	<select id="countChildrenWorkspace" parameterClass="kmsAnnounceItemSearchCondition" resultClass="int">  
+		WITH CTE AS (
+			SELECT	1 LEV, *, CONVERT(NVARCHAR(2000), GROUP_ID) AS PATH_ORDER
+			FROM	IKEP4_EV_GROUP 
+			WHERE	PARENT_GROUP_ID = #teamId#
+			UNION ALL
+			SELECT	LEV + 1, G.*, CONVERT(NVARCHAR(2000), CTE.PATH_ORDER + '/' + G.GROUP_ID) AS PATH_ORDER
+			FROM	IKEP4_EV_GROUP G, CTE
+			WHERE	CTE.GROUP_ID = G.PARENT_GROUP_ID
+		)
+		SELECT	COUNT(WORKSPACE_ID) 
+		FROM	(	SELECT	Row_number() OVER (ORDER BY PATH_ORDER) AS RNUM, 
+							LEV,
+							GROUP_ID,
+							GROUP_NAME,
+							FULL_PATH
+					FROM CTE	) X LEFT OUTER JOIN IKEP4_WS_WORKSPACE A
+									ON (X.GROUP_ID = A.TEAM_ID)
+		WHERE A.WORKSPACE_STATUS IN ('O','WC')
+	</select>
+	
+	<!-- MS SQL -->
+	<select id="listChildWorkspaceBySearchCondition" parameterClass="kmsAnnounceItemSearchCondition" resultClass="kmsAnnounceItem">
+		WITH CTE AS (
+			SELECT	1 LEV, *, CONVERT(NVARCHAR(2000), GROUP_ID) AS PATH_ORDER
+			FROM	IKEP4_EV_GROUP 
+			WHERE	PARENT_GROUP_ID = #teamId#
+			UNION ALL
+			SELECT	LEV + 1, G.*, CONVERT(NVARCHAR(2000), CTE.PATH_ORDER + '/' + G.GROUP_ID) AS PATH_ORDER
+			FROM	IKEP4_EV_GROUP G, CTE
+			WHERE	CTE.GROUP_ID = G.PARENT_GROUP_ID
+		)
+		SELECT 
+			WORKSPACE_ID as workspaceId, 
+  			WORKSPACE_NAME as workspaceName, 
+  			X.lev as groupLevel,
+  			X.group_id as groupId,
+  			X.group_name groupName,
+  			CASE WHEN A.TEAM_ID IS NOT NULL THEN 1 ELSE 0 END hasWorkspace ,
+  			(SELECT COUNT(WORKSPACE_ID) FROM IKEP4_KMS_BD_ANNOUNCE_WORKSPACE   WHERE WORKSPACE_ID = A.WORKSPACE_ID AND ITEM_ID = #itemId# ) as shareFlagCount,
+    		REPLACE(SUBSTRING(X.FULL_PATH,2,LEN(X.FULL_PATH)),'|','>') as fullPath 
+		FROM
+		(	SELECT	Row_number() OVER (ORDER BY PATH_ORDER) AS RNUM, 
+							LEV,
+							GROUP_ID,
+							GROUP_NAME,
+							FULL_PATH
+					FROM CTE	) X LEFT OUTER JOIN IKEP4_WS_WORKSPACE A  ON (X.GROUP_ID = A.TEAM_ID)
+		WHERE  A.WORKSPACE_STATUS IN ('O','WC')
+		ORDER BY rnum,lev
+	</select>
+
+	<!-- ANSI -->
+	<select id="countAnnounceReference" parameterClass="java.util.Map" resultClass="Integer">
+		SELECT 
+			COUNT(REGISTER_ID) 
+		FROM
+			IKEP4_KMS_BD_ANNOUNCE_REFERENCE 
+		WHERE 
+			ITEM_ID = #itemId# 
+			AND REGISTER_ID = #userId#
+	</select>
+
+	<!-- ANSI -->
+	<insert id="create" parameterClass="kmsAnnounceItem"> 
+		INSERT INTO	IKEP4_KMS_BD_ANNOUNCE
+		( 
+			/* [AnnounceItem_SqlMap.xml] AnnounceItem.insert */
+			ITEM_ID,
+			ITEM_SEQ_ID,
+			ITEM_DISPLAY,
+			TITLE,
+			CONTENTS,
+			HIT_COUNT,
+			ATTACH_FILE_COUNT,
+			ITEM_DELETE,
+			REGISTER_ID,
+			REGISTER_NAME,
+			REGIST_DATE,
+			UPDATER_ID,
+			UPDATER_NAME,
+			UPDATE_DATE
+		) 
+		VALUES 
+		(
+			#itemId#, 
+			#itemSeqId#,  
+			#itemDisplay#, 
+			#title#, 
+			#contents#,
+			#hitCount#, 
+			#attachFileCount#,
+			#itemDelete#,
+			#registerId#, 
+			#registerName#, 
+			<isNotEmpty property="registDate">
+				#registDate#,
+			</isNotEmpty>
+			<isEmpty property="registDate">
+				CURRENT_TIMESTAMP,
+			</isEmpty>
+			#updaterId#, 
+			#updaterName#,
+			<isNotEmpty property="updateDate">
+				#updateDate#
+			</isNotEmpty>
+			<isEmpty property="updateDate">
+				CURRENT_TIMESTAMP
+			</isEmpty>
+		)
+		<selectKey resultClass="string" keyProperty="itemSeqId" type="pre">  
+			declare @seq numeric(38)
+			exec dbo.GET_SEQUENCE_FROM_SEQ_IKEP4_KMS_ANNOUNCE 2, @seq OUTPUT
+			
+			SELECT @seq
+		</selectKey>
+	</insert>
+
+	<!-- ANSI -->
+	<insert id="createAnnounceReference" parameterClass="java.util.Map"> 
+		INSERT INTO IKEP4_KMS_BD_ANNOUNCE_REFERENCE 
+		(
+			/* [AnnounceItem_SqlMap.xml] AnnounceItem.createReference*/
+			REGISTER_ID,
+			ITEM_ID,
+			REGIST_DATE
+		) 
+		VALUES
+		(
+			#userId#, 
+			#itemId#,
+			CURRENT_TIMESTAMP
+		)
+	</insert>
+
+	<!-- ANSI -->
+	<update id="update" parameterClass="kmsAnnounceItem"> 
+		UPDATE 	
+			IKEP4_KMS_BD_ANNOUNCE /* [AnnounceItem_SqlMap.xml] AnnounceItem.update */
+		SET	
+			ITEM_SEQ_ID       = #itemSeqId#, 
+			ITEM_DISPLAY      = #itemDisplay#,
+			TITLE             = #title#,
+			CONTENTS          = #contents#,
+			HIT_COUNT         = #hitCount#,
+			ATTACH_FILE_COUNT = #attachFileCount#,
+			ITEM_DELETE       = #itemDelete#,
+			UPDATER_ID        = #updaterId#,
+			UPDATER_NAME      = #updaterName#,
+			UPDATE_DATE       = CURRENT_TIMESTAMP
+		WHERE 	
+			ITEM_ID = #itemId# 
+	</update>
+
+	<!-- ANSI -->
+	<update id="updateAnnounceHitCount" parameterClass="String"> 
+		UPDATE 
+			IKEP4_KMS_BD_ANNOUNCE /* [AnnounceItem_SqlMap.xml] AnnounceItem.updateHitCount */
+		SET 
+			HIT_COUNT = HIT_COUNT + 1
+		WHERE
+			ITEM_ID = #itemId# 
+	</update>
+
+	<!-- ANSI -->
+	<delete id="removeAnnounceShareLink" parameterClass="string"> 
+	DELETE
+		/* [AnnounceItem_SqlMap.xml] AnnounceItem.removeAnnounceShareLink */
+	FROM
+		IKEP4_KMS_BD_ANNOUNCE_WORKSPACE 
+	WHERE
+		ITEM_ID = #announceItemId#
+		AND IS_OWNER = '0' 
+	</delete>
+
+	<!-- ANSI -->
+	<delete id="removeAnnounceLink" parameterClass="java.util.Map"> 
+		DELETE
+			/* [AnnounceItem_SqlMap.xml] AnnounceItem.removeAnnounceLink */
+		FROM
+			IKEP4_KMS_BD_ANNOUNCE_WORKSPACE 
+		WHERE
+			ITEM_ID = #itemId#
+			<!-- 
+			<isNotEmpty property="workspaceId">
+				AND WORKSPACE_ID = #workspaceId#
+			</isNotEmpty>
+			 -->
+	</delete>
+	
+	<!-- ANSI -->
+	<delete id="removeAnnounceItem" parameterClass="string"> 
+		DELETE
+			/* [AnnounceItem_SqlMap.xml] AnnounceItem.removeAnnounceItem */
+		FROM 
+			IKEP4_KMS_BD_ANNOUNCE 
+		WHERE
+			ITEM_ID = #itemId# 
+	</delete> 
+	
+	<!-- ANSI -->
+	<delete id="removeAnnounceReference" parameterClass="string"> 
+		DELETE
+			/* [AnnounceItem_SqlMap.xml] AnnounceItem.removeAnnounceReference */
+		FROM
+			IKEP4_KMS_BD_ANNOUNCE_REFERENCE 
+		WHERE
+			ITEM_ID = #itemId# 
+	</delete>
+
+	<!-- ANSI -->
+	<!-- portlet -->
+	<select id="listAnnounceItemByPortlet" parameterClass="Map" resultClass="kmsAnnounceItem">  
+		SELECT
+			/* [AnnounceItem_SqlMap.xml] collpack.kms.announce.dao.announceItem.listAnnounceItemByPortlet */ 
+			D.*  
+		FROM 
+		( 
+
+			SELECT
+				Row_number() OVER (ORDER BY B.ITEM_DISPLAY DESC, B.ITEM_SEQ_ID DESC) AS RNUM,
+				B.ITEM_ID 			AS itemId,				
+				B.ITEM_DISPLAY 		AS itemDisplay,
+				B.TITLE 			AS title,
+				B.HIT_COUNT 		AS hitCount,
+				B.REGISTER_ID 		AS registerId,
+				B.REGIST_DATE		as registDate,
+				B.UPDATE_DATE	    as updateDate,
+				U.USER_NAME			as registerName,
+				U.USER_ENGLISH_NAME as registerEnglishName
+			FROM   
+				IKEP4_KMS_BD_ANNOUNCE A
+				INNER JOIN IKEP4_KMS_BD_ANNOUNCE B ON A.ITEM_ID = B.ITEM_ID
+				INNER JOIN IKEP4_EV_USER U ON B.REGISTER_ID = U.USER_ID
+			WHERE
+				1=1  	
+				
+		<![CDATA[   
+		) D
+			WHERE 
+				RNUM <=  #limitSize#
+		]]> 
+	</select>  
+	
+	<!-- ANSI -->
+	<!-- delete announce Attach List Query -->
+	<select id="listDeleteAnnounceByWorkspace" parameterClass="String" resultClass="kmsAnnounceItem">  
+	<![CDATA[  
+		SELECT  /* [AnnounceItem_SqlMap.xml] collpack.kms.announce.dao.announceItem.listDeleteAnnounceByWorkspace */ 
+			A.ITEM_ID	AS itemId,
+			A.TITLE AS title,
+			A.ATTACH_FILE_COUNT AS attachFileCount
+		FROM   
+			IKEP4_KMS_BD_ANNOUNCE A 
+			INNER JOIN IKEP4_KMS_BD_ANNOUNCE_WORKSPACE B ON A.ITEM_ID = B.ITEM_ID AND B.IS_OWNER=1
+		WHERE
+			B.WORKSPACE_ID = #workspaceId#
+			AND A.ATTACH_FILE_COUNT>0
+	]]>			
+	</select>
+	
+	<select id="getTopAnnounceItem"  resultClass="kmsAnnounceItem">  
+	<![CDATA[  
+		SELECT  TOP 1 /* [AnnounceItem_SqlMap.xml] collpack.kms.announce.dao.announceItem.getTopAnnounceItem */ 
+			ITEM_ID	AS itemId,
+			TITLE   AS title			
+		FROM   
+			IKEP4_KMS_BD_ANNOUNCE			
+		WHERE			
+			ITEM_DISPLAY = 1
+		ORDER BY REGIST_DATE DESC
+	]]>			
+	</select>		
+</sqlMap> 

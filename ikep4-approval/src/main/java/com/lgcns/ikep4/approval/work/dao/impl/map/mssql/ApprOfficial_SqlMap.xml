@@ -1,0 +1,355 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="com.lgcns.ikep4.approval.work.dao.ApprOfficial" >
+
+	<typeAlias alias="apprOfficial" type="com.lgcns.ikep4.approval.work.model.ApprOfficial"/>
+	<typeAlias alias="apprListSearchCondition"	type="com.lgcns.ikep4.approval.work.search.ApprListSearchCondition"/>
+	
+	
+	<!--코드관리 테이블 조회 결과 -->
+	<resultMap id="apprOfficialResult" class="apprOfficial" >
+		<result property="officialId" 			column="OFFICIAL_ID" />
+		<result property="portalId" 	column="PORTAL_ID" />
+		<result property="apprId" 	column="APPR_ID" />
+		<result property="officialDocNo" 	column="OFFICIAL_DOC_NO" />
+		<result property="receiver" 	column="RECEIVER" />
+		<result property="reference" 	column="REFERENCE" />
+		<result property="title" 	column="TITLE" />
+		<result property="formEditorData" 	column="FORM_EDITOR_DATA" />
+		<result property="formData" 	column="FORM_DATA" />
+		<result property="formLayoutData" 	column="FORM_LAYOUT_DATA" />
+		<result property="headerTitle" 	    column="HEADER_TITLE" />
+		<result property="headerHeight" 	    column="HEADER_HEIGHT" />
+		<result property="isHeader" 	column="IS_HEADER" />
+		<result property="headerType" 		column="HEADER_TYPE" />
+		<result property="headerImgId" 		column="HEADER_IMG_ID" />
+		<result property="headerAlign"			column="HEADER_ALIGN" />
+		<result property="footerTitle"		column="FOOTER_TITLE" />
+		<result property="footerHeight"			column="FOOTER_HEIGHT" />
+		<result property="isFooter" 	column="IS_FOOTER" />
+		<result property="footerType" 		column="FOOTER_TYPE" />
+		<result property="footerImgId" 		column="FOOTER_IMG_ID" />
+		<result property="footerAlign" 		column="FOOTER_ALIGN" />
+		<result property="companyName" 		column="COMPANY_NAME" />
+		<result property="companyAddress" 		column="COMPANY_ADDRESS" />
+		<result property="companyZipCode" 		column="COMPANY_ZIPCODE" />
+		<result property="companyTel" 		column="COMPANY_TEL" />
+		<result property="companyFax" 		column="COMPANY_FAX" />
+		<result property="companyMail" 	column="COMPANY_MAIL" />
+		<result property="companyHomepage" 	column="COMPANY_HOMEPAGE" />
+		<result property="inCharge" 	column="IN_CHARGE" />
+		<result property="isMail" 	column="IS_MAIL" />
+		<result property="isHomepage" 	column="IS_HOMEPAGE" />
+		<result property="isInCharge" 	column="IS_IN_CHARGE" />
+		<result property="isSeal" 	column="IS_SEAL" />
+		<result property="sealId" 		column="SEAL_ID" />
+		<result property="registerId" 		column="REGISTER_ID" />
+		<result property="registerName" 		column="REGISTER_NAME" />
+		<result property="registDate" 		column="REGIST_DATE" />
+	</resultMap>
+	
+	<sql id="sqlColumnList">
+			OFFICIAL_ID, 
+			PORTAL_ID, 
+			APPR_ID, 
+		   	OFFICIAL_DOC_NO, 
+		   	RECEIVER, 
+		   	REFERENCE, 
+		   	TITLE, 
+		   	FORM_EDITOR_DATA, 
+		   	FORM_DATA, 
+		   	FORM_LAYOUT_DATA, 
+		   	HEADER_TITLE, 
+		   	HEADER_HEIGHT, 
+		   	IS_HEADER, 
+		   	HEADER_TYPE, 
+		   	HEADER_IMG_ID, 
+		   	HEADER_ALIGN, 
+		   	FOOTER_TITLE, 
+		   	FOOTER_HEIGHT, 
+		   	IS_FOOTER, 
+		   	FOOTER_TYPE, 
+		   	FOOTER_IMG_ID, 
+		   	FOOTER_ALIGN, 
+		   	COMPANY_NAME, 
+		   	COMPANY_ADDRESS, 
+		   	COMPANY_ZIPCODE, 
+		   	COMPANY_TEL, 
+		   	COMPANY_FAX, 
+		   	COMPANY_MAIL, 
+		   	COMPANY_HOMEPAGE, 
+		   	IN_CHARGE, 
+		   	IS_MAIL, 
+		   	IS_HOMEPAGE, 
+		   	IS_IN_CHARGE, 
+		   	IS_SEAL, 
+		   	SEAL_ID,
+		   	REGISTER_ID, 
+		   	REGISTER_NAME, 
+		   	REGIST_DATE
+	</sql>
+	
+	
+	<select id="get" parameterClass="String" resultMap="apprOfficialResult">
+		/* [ApprOfficial_SqlMap.xml] get */
+		
+		SELECT 
+			<include refid="sqlColumnList" /> 
+		FROM 	IKEP4_APPR_OFFICIAL 
+		WHERE 	OFFICIAL_ID = #officialId#
+	</select>
+	
+		
+	<insert id="create" parameterClass="apprOfficial">
+		/* [ApprOfficial_SqlMap.xml] create */
+		
+           INSERT INTO IKEP4_APPR_OFFICIAL 
+           (
+           		  <include refid="sqlColumnList" /> 
+           )
+           VALUES (
+           		#officialId#,
+           		#portalId#,
+           		#apprId#,
+           		#officialDocNo#,
+           		#receiver#,
+           		#reference#,
+           		#title#,
+           		#formEditorData#,
+           		#formData#,
+           		#formLayoutData#,
+           		#headerTitle#,
+           		#headerHeight#,
+           		#isHeader#,
+           		#headerType#,
+           		#headerImgId#,
+           		#headerAlign#,
+           		#footerTitle#,
+           		#footerHeight#,
+           		#isFooter#,
+           		#footerType#,
+           		#footerImgId#,
+           		#footerAlign#,
+           		#companyName#,
+           		#companyAddress#,
+           		#companyZipCode#,
+           		#companyTel#,
+           		#companyFax#,
+           		#companyMail#,
+           		#companyHomepage#,
+           		#inCharge#,
+           		#isMail#,
+           		#isHomepage#,
+           		#isInCharge#,
+           		#isSeal#,
+           		#sealId#,
+           		#registerId#,
+           		#registerName#,
+				GETDATE())
+   	</insert>
+   
+   	<update id="update" parameterClass="apprOfficial">
+   		/* [ApprOfficial_SqlMap.xml] update */
+   		
+		   	UPDATE 	IKEP4_APPR_OFFICIAL 
+		   	SET 	
+			<isNotEmpty property="officialDocNo">
+				OFFICIAL_DOC_NO = #officialDocNo#,
+			</isNotEmpty>
+			<isNotEmpty property="receiver">
+				RECEIVER = #receiver#,
+			</isNotEmpty>
+			<isNotEmpty property="reference">
+				REFERENCE = #reference#,
+			</isNotEmpty>
+			<isNotEmpty property="title">
+				TITLE = #title#,
+			</isNotEmpty>
+			<isNotEmpty property="formEditorData">
+				FORM_EDITOR_DATA = #formEditorData#,
+			</isNotEmpty>
+			<isNotEmpty property="formData">
+				FORM_DATA = #formData#,
+			</isNotEmpty>
+			<isNotEmpty property="formLayoutData">
+				FORM_LAYOUT_DATA = #formLayoutData#,
+			</isNotEmpty>
+			<isNotEmpty property="headerTitle">
+				HEADER_TITLE = #headerTitle#,
+			</isNotEmpty>
+			<isNotEmpty property="headerHeight">
+				HEADER_HEIGHT = #headerHeight#,
+			</isNotEmpty>
+			<isNotEmpty property="isHeader">
+				HEADER_TITLE = #isHeader#,
+			</isNotEmpty>
+			<isNotEmpty property="headerType">
+				HEADER_TYPE = #headerType#,
+			</isNotEmpty>
+			<isNotEmpty property="headerImgId">
+				HEADER_IMG_ID = #headerImgId#,
+			</isNotEmpty>
+			<isNotEmpty property="headerAlign">
+				HEADER_ALIGN = #headerAlign#,
+			</isNotEmpty>
+			<isNotEmpty property="footerTitle">
+				FOOTER_TITLE = #footerTitle#,
+			</isNotEmpty>
+			<isNotEmpty property="footerHeight">
+				FOOTER_HEIGHT = #footerHeight#,
+			</isNotEmpty>
+			<isNotEmpty property="isFooter">
+				HEADER_TITLE = #isFooter#,
+			</isNotEmpty>
+			<isNotEmpty property="footerType">
+				FOOTER_TYPE = #footerType#,
+			</isNotEmpty>
+			<isNotEmpty property="footerImgId">
+				FOOTER_IMG_ID = #footerImgId#,
+			</isNotEmpty>
+			<isNotEmpty property="footerAlign">
+				FOOTER_ALIGN = #footerAlign#,
+			</isNotEmpty>
+			<isNotEmpty property="companyName">
+				COMPANY_NAME = #companyName#,
+			</isNotEmpty>
+			<isNotEmpty property="companyAddress">
+				COMPANY_ADDRESS = #companyAddress#,
+			</isNotEmpty>
+			<isNotEmpty property="companyZipCode">
+				COMPANY_ZIPCODE = #companyZipCode#,
+			</isNotEmpty>
+			<isNotEmpty property="companyTel">
+				COMPANY_TEL = #companyTel#,
+			</isNotEmpty>
+			<isNotEmpty property="companyFax">
+				COMPANY_FAX = #companyFax#,
+			</isNotEmpty>
+			<isNotEmpty property="companyMail">
+				COMPANY_MAIL = #companyMail#,
+			</isNotEmpty>
+			<isNotEmpty property="companyHomepage">
+				COMPANY_HOMEPAGE = #companyHomepage#,
+			</isNotEmpty>
+			<isNotEmpty property="inCharge">
+				IN_CHARGE = #inCharge#,
+			</isNotEmpty>
+			<isNotEmpty property="isMail">
+				IS_MAIL = #isMail#,
+			</isNotEmpty>
+			<isNotEmpty property="isHomepage">
+				IS_HOMEPAGE = #isHomepage#,
+			</isNotEmpty>
+			<isNotEmpty property="isInCharge">
+				IS_IN_CHARGE = #isInCharge#,
+			</isNotEmpty>
+			<isNotEmpty property="isSeal">
+				IS_SEAL = #isSeal#,
+			</isNotEmpty>
+			<isNotEmpty property="sealId">
+				SEAL_ID = #sealId#,
+			</isNotEmpty>
+			
+			REGISTER_ID 	= #registerId#,
+			REGISTER_NAME 	= #registerName#,
+			REGIST_DATE 	= GETDATE()
+		   	WHERE 	OFFICIAL_ID = #officialId#
+	</update>
+	
+	<delete id="delete" parameterClass="String" >
+		/* [ApprOfficial_SqlMap.xml] delete */
+		
+		DELETE 
+		FROM 	IKEP4_APPR_OFFICIAL 
+		WHERE 	OFFICIAL_ID = #officialId#
+	</delete>
+	
+	<select id="listBySearchCondition" parameterClass="apprListSearchCondition" resultMap="apprOfficialResult">    	
+    	SELECT /* [ApprOfficial_SqlMap.xml] listBySearchCondition */ 
+    	*
+    	FROM (		
+    				SELECT
+		         	Row_number() over (
+		         	 ORDER BY
+					<isNotEmpty property="sortColumn">
+						<isEqual property="sortColumn" compareValue="officialDocNo">
+				    		TITLE
+						</isEqual>
+				    	<isEqual property="sortColumn" compareValue="title">
+				    		TITLE
+						</isEqual>
+						<isEqual property="sortColumn" compareValue="receiver">
+				    		RECEIVER
+						</isEqual>
+						<isEqual property="sortColumn" compareValue="registDate">
+				    		REGIST_DATE
+						</isEqual>		
+					</isNotEmpty>
+			    	
+					<isNotEmpty property="sortType">
+				    	<isEqual property="sortType" compareValue="DESC">
+				    		DESC
+						</isEqual>
+						<isEqual property="sortType" compareValue="ASC">
+				    		ASC
+						</isEqual>
+					</isNotEmpty>
+		         	) rnum,
+		         	
+					<include refid="sqlColumnList" /> 
+					
+					FROM IKEP4_APPR_OFFICIAL
+					WHERE 1 = 1
+					<isNotNull property="searchStartDate"><isNotEmpty property="searchStartDate">
+						<isNotNull property="searchEndDate"><isNotEmpty property="searchEndDate">
+							AND REGIST_DATE BETWEEN CONVERT(DATETIME,#searchStartDate#) AND CONVERT(DATETIME,#searchEndDate#) + 1
+						</isNotEmpty></isNotNull>
+					</isNotEmpty></isNotNull>
+					<isNotEmpty property="userId">
+						AND	REGISTER_ID = #userId#
+					</isNotEmpty>
+					<isNotEmpty property="portalId">
+						AND	PORTAL_ID = #portalId#
+					</isNotEmpty>
+					<isNotEmpty property="title">
+						AND	TITLE LIKE '%' || #title# || '%' 
+					</isNotEmpty>
+					<isNotEmpty property="receiver">
+						AND	RECEIVER LIKE '%' || #receiver# || '%' 
+					</isNotEmpty>
+					
+				   
+		<![CDATA[  
+		    ) a
+     	WHERE  a.rnum  > #startRowIndex#
+        AND a.rnum  <= #endRowIndex#
+		]]> 
+	</select>
+	
+	<select id="countBySearchCondition" parameterClass="apprListSearchCondition" resultClass="int">  
+		SELECT /* [ApprOfficial_SqlMap.xml] countBySearchCondition */ 
+	           COUNT(*)
+		FROM   IKEP4_APPR_OFFICIAL
+		WHERE 1 = 1
+					<isNotNull property="searchStartDate"><isNotEmpty property="searchStartDate">
+						<isNotNull property="searchEndDate"><isNotEmpty property="searchEndDate">
+							AND REGIST_DATE BETWEEN CONVERT(DATETIME,#searchStartDate#) AND CONVERT(DATETIME,#searchEndDate#) + 1
+						</isNotEmpty></isNotNull>
+					</isNotEmpty></isNotNull>
+					<isNotEmpty property="userId">
+						AND	REGISTER_ID = #userId#
+					</isNotEmpty>
+					<isNotEmpty property="portalId">
+						AND	PORTAL_ID = #portalId#
+					</isNotEmpty>
+					<isNotEmpty property="title">
+						AND	TITLE LIKE '%' || #title# || '%' 
+					</isNotEmpty>
+					<isNotEmpty property="receiver">
+						AND	RECEIVER LIKE '%' || #receiver# || '%' 
+					</isNotEmpty>
+	</select> 
+	
+	
+</sqlMap>

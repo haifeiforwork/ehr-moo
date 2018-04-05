@@ -1,0 +1,2002 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="support.addressbook.dao.Addressbook" >
+
+	<typeAlias alias = "Addrgroup" type="com.lgcns.ikep4.support.addressbook.model.Addrgroup"/>
+	<typeAlias alias = "AddrgroupSearch" type="com.lgcns.ikep4.support.addressbook.search.AddrgroupSearchCondition"/>
+	<typeAlias alias = "Contact" type="com.lgcns.ikep4.support.addressbook.model.Contact"/>
+	<typeAlias alias = "ContactSearch" type="com.lgcns.ikep4.support.addressbook.search.ContactSearchCondition"/>
+	<typeAlias alias = "Person" type="com.lgcns.ikep4.support.addressbook.model.Person"/>
+	<typeAlias alias = "PersonSearch" type="com.lgcns.ikep4.support.addressbook.search.PersonSearchCondition"/>
+	<typeAlias alias = "Person2group" type="com.lgcns.ikep4.support.addressbook.model.Person2group"/>
+	
+
+	<!-- IKEP4_AD_ADDRGROUP 테이블 조회 결과 -->
+	<resultMap id="resultAddrgroup" class="Addrgroup" groupBy="addrgroupId">
+		<result property="addrgroupId" column="ADDRGROUP_ID" columnIndex="1"/>
+		<result property="addrgroupName" column="ADDRGROUP_NAME" columnIndex="2"/>
+		<result property="addrgroupMemo" column="ADDRGROUP_MEMO" columnIndex="3"/>
+		<result property="groupType" column="GROUP_TYPE" columnIndex="4"/>
+		<result property="portalId" column="PORTAL_ID" columnIndex="5"/>
+		<result property="registerId" column="REGISTER_ID" columnIndex="6"/>
+		<result property="registerName" column="REGISTER_NAME" columnIndex="7"/>
+		<result property="registDate" column="REGIST_DATE" columnIndex="8"/>
+		<result property="updateDate" column="UPDATE_DATE" columnIndex="9"/>
+		<result property="categoryId" column="CATEGORY_ID" />
+		<result property="categoryName" column="CATEGORY_NAME" />
+		<result property="messengerUse" column="MESSENGER_USE" />
+		<result property="addrgroupSeqId" column="ADDRGROUP_SEQ_ID" />
+		<result property="addrgroupUserCnt" column="ADDRGROUP_ID" select="support.addressbook.dao.Addressbook.selectCountPersonByAgId" />
+	</resultMap>
+	
+	<resultMap id="resultAddrgroupPub" class="Addrgroup">
+		<result property="categoryId" column="CATEGORY_ID" />
+		<result property="categoryName" column="CATEGORY_NAME" />
+		<result property="addrgroupUserCnt" column="ADDRGROUP_CNT"  />
+	</resultMap>
+	
+	<!-- IKEP4_AD_CONTACT 테이블 조회 결과 -->
+	<resultMap id="resultContact" class="Contact" groupBy="contactId">
+		<result property="contactId" column="CONTACT_ID" columnIndex="1"/>
+		<result property="contactType" column="CONTACT_TYPE" columnIndex="2"/>
+		<result property="contactUserId" column="CONTACT_USER_ID" columnIndex="3"/>
+		<result property="contactUserName" column="CONTACT_USER_NAME" columnIndex="4"/>
+		<result property="registerId" column="REGISTER_ID" columnIndex="5"/>
+		<result property="registerName" column="REGISTER_NAME" columnIndex="6"/>
+		<result property="registDate" column="REGIST_DATE" columnIndex="7"/>
+	</resultMap>
+	
+	<!-- IKEP4_AD_PERSON 테이블 조회 결과 -->
+	<resultMap id="resultPerson" class="Person">
+		<result property="personId" column="PERSON_ID" />
+		<result property="personName" column="PERSON_NAME" />
+		<result property="personEnglishName" column="PERSON_ENGLISH_NAME" />
+		<result property="companyName" column="COMPANY_NAME" />
+		<result property="teamName" column="TEAM_NAME" />
+		<result property="teamEnglishName" column="TEAM_ENGLISH_NAME" />
+		<result property="jobRankName" column="JOB_RANK_NAME" />
+		<result property="jobRankEnglishName" column="JOB_RANK_ENGLISH_NAME"/>
+		<result property="officePhoneno" column="OFFICE_PHONENO" />
+		<result property="mobilePhoneno" column="MOBILE_PHONENO" />
+		<result property="mailAddress" column="MAIL_ADDRESS" />
+		<result property="personMemo" column="PERSON_MEMO" />
+		<result property="companyUserId" column="COMPANY_USER_ID" />
+		<result property="registerId" column="REGISTER_ID" />
+		<result property="registerName" column="REGISTER_NAME" />
+		<result property="registDate" column="REGIST_DATE" />
+		<result property="updateDate" column="UPDATE_DATE" />
+		<result property="userType" column="USER_TYPE" />
+		<result property="addrgroupId" column="ADDRGROUP_ID" />
+	</resultMap>
+	
+	<resultMap id="resultPersonAdd" class="Person">
+		<result property="personId" column="PERSON_ID" />
+		<result property="personName" column="PERSON_NAME" />
+		<result property="personEnglishName" column="PERSON_ENGLISH_NAME" />
+		<result property="companyName" column="COMPANY_NAME" />
+		<result property="teamName" column="TEAM_NAME" />
+		<result property="teamEnglishName" column="TEAM_ENGLISH_NAME" />
+		<result property="jobRankName" column="JOB_RANK_NAME" />
+		<result property="jobRankEnglishName" column="JOB_RANK_ENGLISH_NAME"/>
+		<result property="officePhoneno" column="OFFICE_PHONENO" />
+		<result property="mobilePhoneno" column="MOBILE_PHONENO" />
+		<result property="mailAddress" column="MAIL_ADDRESS" />
+		<result property="personMemo" column="PERSON_MEMO" />
+		<result property="companyUserId" column="COMPANY_USER_ID" />
+		<result property="registerId" column="REGISTER_ID" />
+		<result property="registerName" column="REGISTER_NAME" />
+		<result property="registDate" column="REGIST_DATE" />
+		<result property="updateDate" column="UPDATE_DATE" />
+		<result property="userType" column="USER_TYPE" />
+		<result property="addrgroupId" column="ADDRGROUP_ID" />
+		<result property="empNo" column="EMP_NO" />
+	</resultMap>
+	
+	<!-- IKEP4_AD_PERSON 그룹 수정용 Option Value -->
+	<resultMap id="resultPersonforOption" class="Person" groupBy="personId">
+		<result property="personId" column="PERSON_ID" columnIndex="1"/>
+		<result property="personName" column="PERSON_NAME" columnIndex="2"/>
+		<result property="companyName" column="COMPANY_NAME" columnIndex="3"/>
+		<result property="jobRankName" column="JOB_RANK_NAME" columnIndex="4"/>
+		<result property="teamName" column="TEAM_NAME" columnIndex="5"/>
+		<result property="userType" column="USER_TYPE" columnIndex="6"/>
+	</resultMap>
+	
+	<!-- IKEP4_AD_PERSON2GROUP 테이블 조회 결과 -->
+	<resultMap id="resultPerson2group" class="Person2group" groupBy="personId">
+		<result property="personId" column="PERSON_ID" columnIndex="1"/>
+		<result property="addrgroupId" column="ADDRGROUP_ID" columnIndex="2"/>
+		<result property="userType" column="USER_TYPE" columnIndex="3"/>
+		<result property="registerId" column="REGISTER_ID" columnIndex="4"/>
+		<result property="registerName" column="REGISTER_NAME" columnIndex="5"/>
+		<result property="registDate" column="REGIST_DATE" columnIndex="6"/>
+		<result property="updaterId" column="UPDATER_ID" columnIndex="7"/>
+		<result property="updaterName" column="UPDATER_NAME" columnIndex="8"/>
+		<result property="updateDate" column="UPDATE_DATE" columnIndex="9"/>
+	</resultMap>
+	
+	<!-- ANSI -->
+	<!-- insert IKEP4_AD_ADDRGROUP -->
+	<insert id="insertAddrgroup" parameterClass="Addrgroup"> 
+      <![CDATA[ 
+           INSERT INTO IKEP4_AD_ADDRGROUP 
+           ( /* [Addressbook_SqlMap.xml] support.addressbook.dao.Addressbook.insertAddrgroup */	
+           		   ADDRGROUP_ID
+           		, ADDRGROUP_NAME
+           		, ADDRGROUP_MEMO
+           		, GROUP_TYPE
+           		, PORTAL_ID
+           		, REGISTER_ID
+           		, REGISTER_NAME
+           		, REGIST_DATE
+           		, UPDATE_DATE
+           		, CATEGORY_ID
+           		, CATEGORY_NAME
+           		, MESSENGER_USE
+           		, ADDRGROUP_SEQ_ID
+           )  
+           VALUES 
+           (	#addrgroupId#
+           		, #addrgroupName#
+           		, #addrgroupMemo#
+           		, #groupType#
+           		, #portalId#
+           		, #registerId#
+           		, #registerName#
+           		, CURRENT_TIMESTAMP
+           		, CURRENT_TIMESTAMP
+           		, #categoryId#
+           		, #categoryName#
+           		, #messengerUse#
+           		, #addrgroupSeqId#
+           	)
+       ]]>
+   </insert>
+	
+	<!-- ANSI -->
+	<!-- insert IKEP4_AD_CONTACT -->
+	<insert id="insertContact" parameterClass="Contact"> 
+      <![CDATA[ 
+           INSERT INTO IKEP4_AD_CONTACT 
+           ( /* [Addressbook_SqlMap.xml] support.addressbook.dao.Addressbook.insertContact */	
+           		CONTACT_ID
+           		, CONTACT_TYPE
+           		, CONTACT_USER_ID
+           		, CONTACT_USER_NAME
+           		, REGISTER_ID
+           		, REGISTER_NAME
+           		, REGIST_DATE
+           )  
+           VALUES 
+           (	#contactId#
+           		, #contactType#
+           		, #contactUserId#
+           		, #contactUserName#
+           		, #registerId#
+           		, #registerName#
+           		, CURRENT_TIMESTAMP
+           	)
+       ]]>
+   </insert>
+   
+	<!-- ANSI -->
+	<!-- insert IKEP4_AD_PERSON -->
+	<insert id="insertPerson" parameterClass="Person"> 
+      <![CDATA[ 
+           INSERT INTO IKEP4_AD_PERSON 
+           ( /* [Addressbook_SqlMap.xml] support.addressbook.dao.Addressbook.insertPerson */
+           		PERSON_ID
+           		, PERSON_NAME
+           		, COMPANY_NAME
+           		, TEAM_NAME
+           		, JOB_RANK_NAME
+           		, OFFICE_PHONENO
+           		, MOBILE_PHONENO
+           		, MAIL_ADDRESS
+           		, PERSON_MEMO
+           		, COMPANY_USER_ID
+           		, REGISTER_ID
+           		, REGISTER_NAME
+           		, REGIST_DATE
+           		, UPDATE_DATE
+           )  
+           VALUES 
+           (	#personId#
+           		, #personName#
+           		, #companyName#
+           		, #teamName#
+           		, #jobRankName#
+           		, #officePhoneno#
+           		, #mobilePhoneno#
+           		, #mailAddress#
+           		, #personMemo#
+           		, #companyUserId#
+           		, #registerId#
+           		, #registerName#
+           		, CURRENT_TIMESTAMP
+           		, CURRENT_TIMESTAMP
+           	)
+       ]]>
+   </insert>
+   
+   <insert id="copyMyPerson" parameterClass="Person"> 
+      <![CDATA[ 
+           INSERT INTO IKEP4_AD_PERSON 
+           ( 
+           		PERSON_ID
+           		, PERSON_NAME
+           		, COMPANY_NAME
+           		, TEAM_NAME
+           		, JOB_RANK_NAME
+           		, OFFICE_PHONENO
+           		, MOBILE_PHONENO
+           		, MAIL_ADDRESS
+           		, PERSON_MEMO
+           		, COMPANY_USER_ID
+           		, REGISTER_ID
+           		, REGISTER_NAME
+           		, REGIST_DATE
+           		, UPDATE_DATE
+           )  
+           select 
+           		#personId#
+           		, PERSON_NAME
+           		, COMPANY_NAME
+           		, TEAM_NAME
+           		, JOB_RANK_NAME
+           		, OFFICE_PHONENO
+           		, MOBILE_PHONENO
+           		, MAIL_ADDRESS
+           		, PERSON_MEMO
+           		, COMPANY_USER_ID
+           		, #registerId#
+           		, #registerName#
+           		, CURRENT_TIMESTAMP
+           		, CURRENT_TIMESTAMP
+           	from IKEP4_AD_PERSON where person_id = #orgPersonId#
+       ]]>
+   </insert>
+
+	<!-- ANSI -->
+   	<!-- insert IKEP4_AD_PERSON2GROUP -->
+	<insert id="insertPerson2group" parameterClass="Person2group"> 
+		<![CDATA[
+			DECLARE @chcker INTEGER;
+			
+			SELECT @chcker = COUNT(*) from IKEP4_AD_PERSON2GROUP t WHERE t.person_id =  #personId# and t.addrgroup_id = #addrgroupId# 
+			if(@chcker = 0)
+				BEGIN
+					INSERT INTO IKEP4_AD_PERSON2GROUP 
+		           ( /* [Addressbook_SqlMap.xml] support.addressbook.dao.Addressbook.insertPerson2group */
+		           		PERSON_ID
+		           		, ADDRGROUP_ID
+		           		, USER_TYPE
+		           		, REGISTER_ID
+		           		, REGISTER_NAME
+		           		, REGIST_DATE
+		           		, UPDATER_ID
+		           		, UPDATER_NAME
+		           		, UPDATE_DATE
+		           )  
+		           VALUES 
+		           (	#personId#
+		           		, #addrgroupId#
+		           		, #userType#
+		           		, #registerId#
+		           		, #registerName#
+		           		, CURRENT_TIMESTAMP
+		           		, #updaterId#
+		           		, #updaterName#
+		           		, CURRENT_TIMESTAMP
+		           	)	
+				END
+				ELSE
+				BEGIN
+					UPDATE IKEP4_AD_PERSON2GROUP
+					SET updater_id = #registerId#,	updater_name = #registerName#, update_date	= CURRENT_TIMESTAMP	
+					WHERE addrgroup_id = #addrgroupId# AND person_id = #personId# 	
+			END
+	       ]]> 
+      <![CDATA[ 
+           INSERT INTO IKEP4_AD_PERSON2GROUP 
+           ( /* [Addressbook_SqlMap.xml] support.addressbook.dao.Addressbook.insertPerson2group */
+           		PERSON_ID
+           		, ADDRGROUP_ID
+           		, USER_TYPE
+           		, REGISTER_ID
+           		, REGISTER_NAME
+           		, REGIST_DATE
+           		, UPDATER_ID
+           		, UPDATER_NAME
+           		, UPDATE_DATE
+           )  
+           VALUES 
+           (	#personId#
+           		, #addrgroupId#
+           		, #userType#
+           		, #registerId#
+           		, #registerName#
+           		, CURRENT_TIMESTAMP
+           		, #updaterId#
+           		, #updaterName#
+           		, CURRENT_TIMESTAMP
+           	)
+       ]]>
+   </insert>
+
+	<!-- ANSI -->
+   <!-- select IKEP4_AD_ADDRGROUP -->
+	<select id="selectAddrgroup" parameterClass="Addrgroup" resultMap="resultAddrgroup">
+	  <![CDATA[
+		   SELECT /* [Addressbook_SqlMap.xml] support.addressbook.dao.Addressbook.selectAddrgroup */
+		   		  ADDRGROUP_ID
+           		, ADDRGROUP_NAME
+           		, ADDRGROUP_MEMO
+           		, GROUP_TYPE
+           		, PORTAL_ID
+           		, REGISTER_ID
+           		, REGISTER_NAME
+           		, REGIST_DATE
+           		, UPDATE_DATE
+           		, CATEGORY_ID
+           		, CATEGORY_NAME
+           		, MESSENGER_USE
+           		, ADDRGROUP_SEQ_ID
+			FROM IKEP4_AD_ADDRGROUP  AB
+			WHERE AB.ADDRGROUP_ID = #addrgroupId#
+			ORDER BY AB.ADDRGROUP_ID ASC, AB.ADDRGROUP_NAME ASC
+	   ]]>
+	</select>
+
+	<!-- ANSI -->
+	<!-- select IKEP4_AD_CONTACT -->
+	<select id="selectContact" parameterClass="Contact" resultMap="resultContact">
+	  	<![CDATA[
+		   SELECT /* [Addressbook_SqlMap.xml] support.addressbook.dao.Addressbook.selectContact */
+		   		  CONTACT_ID
+           		, CONTACT_TYPE
+           		, CONTACT_USER_ID
+           		, CONTACT_USER_NAME
+           		, REGISTER_ID
+           		, REGISTER_NAME
+           		, REGIST_DATE
+			FROM IKEP4_AD_CONTACT  AC
+			WHERE AC.CONTACT_ID = #contactId#
+			ORDER BY AC.CONTACT_ID ASC, AC.CONTACT_USER_NAME ASC
+	   	]]>
+	</select>
+	
+	<!-- MS SQL -->
+	<!-- select IKEP4_AD_CONTACT -->
+	<select id="selectContactAll" parameterClass="ContactSearch" resultMap="resultContact">
+	  	SELECT 
+	  	<dynamic>
+			<isNotEqual property="searchType" compareValue="post">
+				TOP $fetchSize$ /* fetchSize  */
+			</isNotEqual>
+		</dynamic>
+	  	A.* 
+		FROM ( 
+		   SELECT /* [Addressbook_SqlMap.xml] support.addressbook.dao.Addressbook.selectContactAll */
+		   		  CONTACT_ID
+           		, CONTACT_TYPE
+           		, CONTACT_USER_ID
+           		, CONTACT_USER_NAME
+           		, REGISTER_ID
+           		, REGISTER_NAME
+           		, REGIST_DATE
+			FROM IKEP4_AD_CONTACT  AC
+			WHERE REGISTER_ID = #registerId#
+			
+			<dynamic>
+			<isNotEmpty property="searchContactId">
+				<isEqual property="searchType" compareValue="pre" prepend="AND">
+			          CONTACT_ID <![CDATA[ <  ]]> #searchContactId#
+				</isEqual>
+				<isEqual property="searchType" compareValue="post" prepend="AND">
+			          CONTACT_ID <![CDATA[ >  ]]> #searchContactId#
+				</isEqual>
+			</isNotEmpty>
+			</dynamic>
+		) A 
+		ORDER BY CONTACT_ID ASC, CONTACT_USER_NAME ASC  
+	</select>
+	
+	<select id="getPersonList"  resultClass="Person">
+		select 
+		A.user_id as personId,
+		A.user_name as personName,
+		A.mail as mailAddress,
+		A.office_basic_address as companyName,
+		A.team_name as teamName,
+		B.job_title_name as jobRankName,
+		A.mobile as mobilePhoneno,
+		A.office_phone_no as officePhoneno,
+		'' as personMemo
+		from IKEP4_EV_USER A inner join IKEP4_EV_JOB_TITLE B on B.job_title_code = A.job_title_code
+		where A.user_name in
+	      <iterate open="(" close=")" conjunction=",">
+	      		#[]#
+	      </iterate>	
+	      and A.user_status = 'C'	
+	</select>
+	
+	<!-- MS SQL -->
+	<!-- select IKEP4_AD_PERSON -->
+	<select id="selectPerson" parameterClass="Person" resultMap="resultPerson">
+	  <![CDATA[
+	  SELECT * 
+	  FROM (
+		  SELECT  /* [Addressbook_SqlMap.xml] support.addressbook.dao.Addressbook.selectPerson */ 
+		  	ROW_NUMBER () OVER (ORDER BY PERSON_ID) rnum, PER.*
+		  	FROM (
+			   SELECT
+			   		  PERSON_ID
+	           		, PERSON_NAME
+	           		, PERSON_NAME AS PERSON_ENGLISH_NAME
+	           		, COMPANY_NAME
+	           		, TEAM_NAME
+	           		, TEAM_NAME AS TEAM_ENGLISH_NAME
+	           		, JOB_RANK_NAME
+	           		, JOB_RANK_NAME AS JOB_RANK_ENGLISH_NAME
+	           		, OFFICE_PHONENO
+	           		, MOBILE_PHONENO
+	           		, MAIL_ADDRESS
+	           		, PERSON_MEMO
+	           		, COMPANY_USER_ID
+	           		, REGISTER_ID
+	           		, REGISTER_NAME
+	           		, REGIST_DATE
+	           		, UPDATE_DATE
+	           		, 'O' AS USER_TYPE
+	           		, '' AS ADDRGROUP_ID
+				FROM IKEP4_AD_PERSON  AP
+				WHERE AP.PERSON_ID = #personId#
+				
+				UNION ALL
+				
+				SELECT EU.USER_ID AS PERSON_ID
+		        	,  EU.USER_NAME AS PERSON_NAME
+		        	,  EU.USER_ENGLISH_NAME AS PERSON_ENGLISH_NAME
+		        	, (SELECT COMPANY_CODE_name FROM IKEP4_EV_COMPANY_CODE WHERE IKEP4_EV_COMPANY_CODE.COMPANY_CODE = EU.company_code) AS COMPANY_NAME
+		        	,  EU.TEAM_NAME AS TEAM_NAME
+		        	,  EU.TEAM_ENGLISH_NAME AS TEAM_ENGLISH_NAME	        	
+		        	, (SELECT JOB_TITLE_NAME FROM IKEP4_EV_JOB_TITLE WHERE IKEP4_EV_JOB_TITLE.JOB_TITLE_CODE = EU.JOB_TITLE_CODE) AS JOB_RANK_NAME
+		        	, (SELECT JOB_TITLE_ENGLISH_NAME FROM IKEP4_EV_JOB_TITLE WHERE IKEP4_EV_JOB_TITLE.JOB_TITLE_CODE = EU.JOB_TITLE_CODE) AS JOB_RANK_ENGLISH_NAME
+		        	,  EU.OFFICE_PHONE_NO AS OFFICE_PHONENO
+		        	, EU.MOBILE AS MOBILE_PHONENO
+		        	, EU.MAIL AS MAIL_ADDRESS
+		        	, '' AS PERSON_MEMO
+		        	, EU.USER_ID AS COMPANY_USER_ID
+		        	, PG.REGISTER_ID AS REGISTER_ID
+					, PG.REGISTER_NAME AS REGISTER_NAME
+					, PG.REGIST_DATE AS REGIST_DATE
+					, PG.UPDATE_DATE AS UPDATE_DATE
+					, 'I' AS USER_TYPE
+					, PG.ADDRGROUP_ID AS ADDRGROUP_ID
+				FROM   IKEP4_EV_USER EU
+				       inner join IKEP4_AD_PERSON2GROUP PG
+				         ON EU.USER_ID = PG.PERSON_ID 
+		      	AND PG.USER_TYPE = 'I'
+		      	AND PG.PERSON_ID = #personId#
+	      	 ]]>
+		   
+		      	<dynamic>
+					<isNotNull property="addrgroupId" prepend="AND">
+						PG.ADDRGROUP_ID = #addrgroupId#
+					</isNotNull>
+				</dynamic>
+		      	
+		   <![CDATA[	
+		   ) PER
+	   ) AA
+	   WHERE RNUM = 1				
+	   ]]>
+	</select>
+	
+	<!-- ANSI -->
+	<!-- select IKEP4_AD_PERSON2GROUP -->
+	<select id="selectPerson2group" parameterClass="Person2group" resultMap="resultPerson2group">
+	  <![CDATA[
+		   SELECT /* [Addressbook_SqlMap.xml] support.addressbook.dao.Addressbook.selectPerson2group */ 
+		   		  PERSON_ID
+           		, ADDRGROUP_ID
+           		, USER_TYPE
+           		, REGISTER_ID
+           		, REGISTER_NAME
+           		, REGIST_DATE
+           		, UPDATER_ID
+           		, UPDATER_NAME
+           		, UPDATE_DATE
+			FROM IKEP4_AD_PERSON2GROUP  AP
+			WHERE AP.PERSON_ID = #personId#
+			AND AP.ADDRGROUP_ID = #addrgroupId#
+			ORDER BY AP.PERSON_ID ASC, AP.ADDRGROUP_ID ASC
+	   ]]>
+	</select>	
+	
+	<!-- MS SQL -->
+	<!-- select IKEP4_AD_ADDRGROUP -->
+	<select id="selectAddrgroupPerPage" parameterClass="AddrgroupSearch" resultMap="resultAddrgroup">
+	      SELECT  /* [Addressbook_SqlMap.xml] support.addressbook.dao.Addressbook.selectAddrgroupPerPage */
+	      	*
+	      FROM    (
+						   SELECT Row_number() OVER (ORDER BY (select C.category_seq_id from IKEP4_AD_CATEGORY C WHERE C.category_id = AB.category_id) ASC, AB.ADDRGROUP_SEQ_ID ASC, AB.ADDRGROUP_ID ASC, AB.ADDRGROUP_NAME ASC) AS RNUM
+						   		, ADDRGROUP_ID
+				           		, ADDRGROUP_NAME
+				           		, ADDRGROUP_MEMO
+				           		, GROUP_TYPE
+				           		, PORTAL_ID
+				           		, REGISTER_ID
+				           		, REGISTER_NAME
+				           		, REGIST_DATE
+				           		, UPDATE_DATE
+				           		, CATEGORY_ID
+				           		, CATEGORY_NAME
+				           		, MESSENGER_USE
+				           		, ADDRGROUP_SEQ_ID
+							FROM IKEP4_AD_ADDRGROUP  AB
+							WHERE AB.PORTAL_ID = #portalId#
+													
+							<dynamic>
+								<isNotNull property="addrgroupName" prepend="AND">
+									replace(ADDRGROUP_NAME,' ','') LIKE '%' + replace(#addrgroupName#,' ','') + '%'
+								</isNotNull>
+							</dynamic>
+
+							<dynamic>
+								<isNotNull property="groupType" prepend="AND">
+									<isEqual property="groupType" compareValue="O">
+										GROUP_TYPE = #groupType# 
+									</isEqual>
+									<isEqual property="groupType" compareValue="P">
+										GROUP_TYPE = #groupType# AND AB.REGISTER_ID = #registerId#
+									</isEqual>
+									<isEqual property="groupType" compareValue="G">
+										GROUP_TYPE = #groupType# AND AB.REGISTER_ID = #registerId#
+									</isEqual>
+								</isNotNull>
+							</dynamic>
+		<![CDATA[   
+				) F 
+		]]> 					
+
+	</select>
+	
+	<select id="selectAddrgroupPub2" parameterClass="AddrgroupSearch" resultMap="resultAddrgroup">
+	      SELECT  /* [Addressbook_SqlMap.xml] support.addressbook.dao.Addressbook.selectAddrgroupPerPage */
+	      	*
+	      FROM    (
+						   SELECT Row_number() OVER (ORDER BY (select C.category_seq_id from IKEP4_AD_CATEGORY C WHERE C.category_id = AB.category_id) ASC, AB.ADDRGROUP_ID ASC, AB.ADDRGROUP_NAME ASC) AS RNUM
+						   		, ADDRGROUP_ID
+				           		, ADDRGROUP_NAME
+				           		, ADDRGROUP_MEMO
+				           		, GROUP_TYPE
+				           		, PORTAL_ID
+				           		, REGISTER_ID
+				           		, REGISTER_NAME
+				           		, REGIST_DATE
+				           		, UPDATE_DATE
+				           		, CATEGORY_ID
+				           		, CATEGORY_NAME
+				           		, MESSENGER_USE
+				           		, ADDRGROUP_SEQ_ID
+							FROM IKEP4_AD_ADDRGROUP  AB
+							WHERE AB.PORTAL_ID = #portalId#
+													
+							<dynamic>
+								<isNotNull property="addrgroupId" prepend="AND">
+									CATEGORY_ID = #addrgroupId#
+								</isNotNull>
+							</dynamic>
+
+							<dynamic>
+								<isNotNull property="groupType" prepend="AND">
+									<isEqual property="groupType" compareValue="O">
+										GROUP_TYPE = #groupType# 
+									</isEqual>
+									<isEqual property="groupType" compareValue="P">
+										GROUP_TYPE = #groupType# AND AB.REGISTER_ID = #registerId#
+									</isEqual>
+								</isNotNull>
+							</dynamic>
+		<![CDATA[   
+				) F 
+		]]> 					
+
+	</select>
+	
+	<select id="selectAddrgroupPub1" parameterClass="AddrgroupSearch" resultMap="resultAddrgroupPub">
+		SELECT  A.CATEGORY_ID , A.CATEGORY_NAME, count(*) as ADDRGROUP_CNT FROM IKEP4_AD_ADDRGROUP A 
+		WHERE A.PORTAL_ID = #portalId# AND A.GROUP_TYPE = #groupType# 
+		group by A.CATEGORY_ID,A.CATEGORY_NAME
+		ORDER BY (select C.category_seq_id from IKEP4_AD_CATEGORY C WHERE C.category_id = A.category_id) ASC				
+	</select>
+	
+	<!-- MS SQL -->
+		<!-- select IKEP4_AD_ADDRGROUP -->
+	<select id="selectTotalCntAddrgroupPerPage" parameterClass="AddrgroupSearch" resultClass="int">
+
+		SELECT /* [Addressbook_SqlMap.xml] support.addressbook.dao.Addressbook.selectTotalCntAddrgroupPerPage */
+			COUNT(ADDRGROUP_ID) 
+		FROM (
+			SELECT ADDRGROUP_ID
+				, ADDRGROUP_NAME
+				, ADDRGROUP_MEMO
+				, GROUP_TYPE
+				, PORTAL_ID
+				, REGISTER_ID
+				, REGISTER_NAME
+				, REGIST_DATE
+				, UPDATE_DATE
+			FROM IKEP4_AD_ADDRGROUP  AB
+			WHERE AB.PORTAL_ID = #portalId#
+													
+			<dynamic>
+				<isNotNull property="addrgroupName" prepend="AND">
+					replace(ADDRGROUP_NAME,' ','') LIKE '%' + replace(#addrgroupName#,' ','') + '%'
+				</isNotNull>
+			</dynamic>
+
+			<dynamic>
+				<isNotNull property="groupType" prepend="AND">
+					<isEqual property="groupType" compareValue="O">
+						GROUP_TYPE = #groupType# 
+					</isEqual>
+					<isEqual property="groupType" compareValue="P">
+						GROUP_TYPE = #groupType# AND AB.REGISTER_ID = #registerId#
+					</isEqual>
+					<isEqual property="groupType" compareValue="G">
+						GROUP_TYPE = #groupType# AND AB.REGISTER_ID = #registerId#
+					</isEqual>
+				</isNotNull>
+			</dynamic>
+		) TBL						
+	</select>
+
+	<!-- MS SQL -->
+	<!-- select IKEP4_AD_PERSON -->
+	<select id="selectPersonPerPage" parameterClass="PersonSearch" resultMap="resultPerson">
+
+	  	  SELECT /* [Addressbook_SqlMap.xml] support.addressbook.dao.Addressbook.selectPersonPerPage */  
+	  	  	*
+	      FROM    (
+	                       SELECT 	Row_number() OVER ( ORDER BY PER.PERSON_NAME ASC, PER.PERSON_ID ASC ) AS RNUM
+	                       			, PERSON_ID
+									, PERSON_NAME
+									, PERSON_ENGLISH_NAME
+									, COMPANY_NAME
+									, TEAM_NAME
+									, TEAM_ENGLISH_NAME
+									, JOB_RANK_NAME
+									, JOB_RANK_ENGLISH_NAME
+									, OFFICE_PHONENO
+									, MOBILE_PHONENO
+									, MAIL_ADDRESS
+									, PERSON_MEMO
+									, COMPANY_USER_ID
+									, REGISTER_ID
+									, REGISTER_NAME
+									, REGIST_DATE
+									, UPDATE_DATE
+									, USER_TYPE
+									, '' AS ADDRGROUP_ID
+						  FROM (
+							   SELECT AP.PERSON_ID
+									, AP.PERSON_NAME
+									, AP.PERSON_NAME AS PERSON_ENGLISH_NAME
+									, AP.COMPANY_NAME
+									, AP.TEAM_NAME
+									, AP.TEAM_NAME AS TEAM_ENGLISH_NAME
+									, AP.JOB_RANK_NAME
+									, AP.JOB_RANK_NAME AS JOB_RANK_ENGLISH_NAME
+									, AP.OFFICE_PHONENO
+									, AP.MOBILE_PHONENO
+									, AP.MAIL_ADDRESS
+									, AP.PERSON_MEMO
+									, AP.COMPANY_USER_ID
+									, AP.REGISTER_ID
+									, AP.REGISTER_NAME
+									, AP.REGIST_DATE
+									, AP.UPDATE_DATE
+									, 'O' AS USER_TYPE
+								FROM IKEP4_AD_PERSON  AP
+								
+								UNION ALL
+								
+								SELECT EU.USER_ID AS PERSON_ID
+	           						,  EU.USER_NAME AS PERSON_NAME
+	           						,  EU.USER_ENGLISH_NAME AS PERSON_ENGLISH_NAME
+									,  EU.office_basic_address AS COMPANY_NAME
+	           						,  EU.TEAM_NAME AS TEAM_NAME
+	           						,  EU.TEAM_ENGLISH_NAME AS TEAM_ENGLISH_NAME
+	           						, (SELECT JOB_TITLE_NAME FROM IKEP4_EV_JOB_TITLE WHERE IKEP4_EV_JOB_TITLE.JOB_TITLE_CODE = EU.JOB_TITLE_CODE) AS JOB_RANK_NAME
+	           						, (SELECT JOB_TITLE_ENGLISH_NAME FROM IKEP4_EV_JOB_TITLE WHERE IKEP4_EV_JOB_TITLE.JOB_TITLE_CODE = EU.JOB_TITLE_CODE) AS JOB_RANK_ENGLISH_NAME
+	           						,  EU.OFFICE_PHONE_NO AS OFFICE_PHONENO
+	             					, EU.MOBILE AS MOBILE_PHONENO
+	             					, EU.MAIL AS MAIL_ADDRESS
+	             					, '' AS PERSON_MEMO
+	             					, EU.USER_ID AS COMPANY_USER_ID
+	              					, PG.REGISTER_ID AS REGISTER_ID
+					           		, PG.REGISTER_NAME AS REGISTER_NAME
+					           		, PG.REGIST_DATE AS REGIST_DATE
+					           		, PG.UPDATE_DATE AS UPDATE_DATE
+					           		, 'I' AS USER_TYPE
+								FROM   IKEP4_EV_USER EU
+								       inner join IKEP4_AD_PERSON2GROUP PG
+								         ON EU.USER_ID = PG.PERSON_ID
+								WHERE 1=1
+								<isNotEqual property="groupType" compareValue="T">  
+									AND PG.USER_TYPE = 'I' 
+								</isNotEqual>
+	      						
+	      						<dynamic>
+									<isNotNull property="addrgroupId" prepend="AND">
+										PG.ADDRGROUP_ID = #addrgroupId#
+									</isNotNull>
+									<isNull property="addrgroupId" prepend="AND" >
+										(CONVERT(NVARCHAR, EU.USER_ID) + CONVERT(NVARCHAR, PG.REGIST_DATE)) = 
+										(	SELECT CONVERT(NVARCHAR, PG1.PERSON_ID) + CONVERT(NVARCHAR, MAX(PG1.REGIST_DATE))  
+											FROM IKEP4_EV_USER EU1, IKEP4_AD_PERSON2GROUP PG1 
+  												WHERE EU1.USER_ID = PG1.PERSON_ID AND PG1.USER_TYPE = 'I' 
+  													AND EU1.USER_ID =EU.USER_ID GROUP BY PG1.PERSON_ID   )
+									</isNull>
+								</dynamic>
+								
+      						) PER
+      						WHERE 1=1
+							<isNotEqual property="groupType" compareValue="T">
+								<isEqual property="userTypeIn" compareValue="Y">
+									<isEmpty property="userTypeOut">
+										AND PER.USER_TYPE = 'I'
+									</isEmpty>
+								</isEqual>
+								<isEqual property="userTypeOut" compareValue="Y">
+									<isEmpty property="userTypeIn">
+										AND PER.USER_TYPE = 'O'
+									</isEmpty>
+								</isEqual>		
+								<isEmpty property="userTypeOut">
+									<isEmpty property="userTypeIn">
+										AND PER.USER_TYPE = '99999'
+									</isEmpty>
+								</isEmpty>		
+							</isNotEqual>
+							<dynamic>
+								<isNotEqual property="groupType" compareValue="O">
+									<isNotEqual property="groupType" compareValue="T">
+										AND PER.REGISTER_ID = #registerId#
+									</isNotEqual>
+								</isNotEqual>
+							</dynamic>
+							
+							<dynamic>
+								<isEqual property="groupType" compareValue="T">
+									<isNotNull property="addrgroupId" prepend="AND">
+										PER.PERSON_ID IN (
+														SELECT PERSON_ID 
+														FROM IKEP4_AD_PERSON2GROUP APG 
+														WHERE APG.ADDRGROUP_ID = #addrgroupId#
+														)
+									</isNotNull>
+									<isNull property="addrgroupId" prepend="AND" >
+										PER.PERSON_ID IN (
+														SELECT PERSON_ID
+														FROM   IKEP4_AD_PERSON2GROUP APG
+														       inner join IKEP4_AD_ADDRGROUP AB
+														         ON APG.ADDRGROUP_ID = AB.ADDRGROUP_ID
+														WHERE  AB.GROUP_TYPE = 'T' 
+										)
+									</isNull>
+								</isEqual>
+								<isEqual property="groupType" compareValue="O">
+									<isNotNull property="addrgroupId" prepend="AND">
+										PER.PERSON_ID IN (
+														SELECT PERSON_ID 
+														FROM IKEP4_AD_PERSON2GROUP APG 
+														WHERE APG.ADDRGROUP_ID = #addrgroupId#
+														)
+									</isNotNull>
+									<isNull property="addrgroupId" prepend="AND" >
+										PER.PERSON_ID IN (
+														SELECT PERSON_ID
+														FROM   IKEP4_AD_PERSON2GROUP APG
+														       inner join IKEP4_AD_ADDRGROUP AB
+														         ON APG.ADDRGROUP_ID = AB.ADDRGROUP_ID
+														WHERE  AB.GROUP_TYPE = 'O' 
+										)
+									</isNull>
+								</isEqual>
+								<isEqual property="groupType" compareValue="P">
+								
+									<isNotNull property="addrgroupId" >
+										<isEqual property="addrgroupId" compareValue="NOGROUP" prepend="AND">
+										PER.PERSON_ID NOT IN (
+														SELECT PERSON_ID
+														FROM   IKEP4_AD_PERSON2GROUP APG
+														       inner join IKEP4_AD_ADDRGROUP AB
+														         ON APG.ADDRGROUP_ID = AB.ADDRGROUP_ID
+														WHERE  APG.REGISTER_ID = #registerId# 
+														AND AB.GROUP_TYPE != 'T'
+														)
+										</isEqual>
+										<isNotEqual property="addrgroupId" compareValue="NOGROUP" prepend="AND">
+										PER.PERSON_ID IN (
+														SELECT PERSON_ID FROM IKEP4_AD_PERSON2GROUP APG 
+														WHERE APG.ADDRGROUP_ID = #addrgroupId#
+														)
+										</isNotEqual>
+									</isNotNull>
+									
+									<isNull property="addrgroupId" prepend="AND">
+										PER.PERSON_ID IN (
+										 				SELECT PERSON_ID FROM IKEP4_AD_PERSON
+                                        				WHERE REGISTER_ID = #registerId#
+                                        				UNION ALL
+                        								SELECT PERSON_ID
+                          								FROM IKEP4_AD_PERSON2GROUP APG
+                         								WHERE APG.ADDRGROUP_ID IN (SELECT ADDRGROUP_ID 
+                         															FROM IKEP4_AD_ADDRGROUP WHERE REGISTER_ID = #registerId# 
+                         															AND GROUP_TYPE = 'P' )
+														)
+									</isNull>
+									
+								</isEqual>
+								<isEqual property="groupType" compareValue="G">
+								
+									<isNotNull property="addrgroupId" >
+										<isEqual property="addrgroupId" compareValue="NOGROUP" prepend="AND">
+										PER.PERSON_ID NOT IN (
+														SELECT PERSON_ID
+														FROM   IKEP4_AD_PERSON2GROUP APG
+														       inner join IKEP4_AD_ADDRGROUP AB
+														         ON APG.ADDRGROUP_ID = AB.ADDRGROUP_ID
+														WHERE  APG.REGISTER_ID = #registerId# 
+														AND AB.GROUP_TYPE != 'T'
+														)
+										</isEqual>
+										<isNotEqual property="addrgroupId" compareValue="NOGROUP" prepend="AND">
+										PER.PERSON_ID IN (
+														SELECT PERSON_ID FROM IKEP4_AD_PERSON2GROUP APG 
+														WHERE APG.ADDRGROUP_ID = #addrgroupId#
+														)
+										</isNotEqual>
+									</isNotNull>
+									
+									<isNull property="addrgroupId" prepend="AND">
+										PER.PERSON_ID IN (
+										 				SELECT PERSON_ID FROM IKEP4_AD_PERSON
+                                        				WHERE REGISTER_ID = #registerId#
+                                        				UNION ALL
+                        								SELECT PERSON_ID
+                          								FROM IKEP4_AD_PERSON2GROUP APG
+                         								WHERE APG.ADDRGROUP_ID IN (SELECT ADDRGROUP_ID 
+                         															FROM IKEP4_AD_ADDRGROUP WHERE REGISTER_ID = #registerId# 
+                         															AND GROUP_TYPE = 'G' )
+														)
+									</isNull>
+									
+								</isEqual>
+							</dynamic>
+							
+							<dynamic>
+								<isNotNull property="personName" prepend="AND">
+									replace(PER.PERSON_NAME,' ','') LIKE '%' + replace(#personName#,' ','') + '%'
+								</isNotNull>
+							</dynamic>
+							
+							<dynamic>
+								<isNotNull property="companyName" prepend="AND">
+									replace(PER.COMPANY_NAME,' ','') LIKE '%' + replace(#companyName#,' ','') + '%'
+								</isNotNull>
+							</dynamic>
+							
+							<dynamic>
+								<isNotNull property="officePhoneno" prepend="AND">
+									replace(PER.OFFICE_PHONENO,' ','') LIKE '%' + replace(#officePhoneno#,' ','') + '%'
+								</isNotNull>
+							</dynamic>
+							
+							<dynamic>
+								<isNotNull property="mobilePhoneno" prepend="AND">
+									replace(PER.MOBILE_PHONENO,' ','') LIKE '%' + replace(#mobilePhoneno#,' ','') + '%'
+								</isNotNull>
+							</dynamic>
+							
+							<dynamic>
+								<isNotNull property="personMemo" prepend="AND">
+									replace(PER.PERSON_MEMO,' ','') LIKE '%' + replace(#personMemo#,' ','') + '%'
+								</isNotNull>
+							</dynamic>
+							
+							<dynamic>
+								<isNotNull property="mailAddress" prepend="AND">
+									replace(PER.MAIL_ADDRESS,' ','') LIKE '%' + replace(#mailAddress#,' ','') + '%'
+								</isNotNull>
+							</dynamic>
+							
+							<dynamic>
+								<isNotNull property="indexSearchText" >
+									<isEqual property="indexSearchLocale" compareValue="ko">
+										<isEqual property="indexSearchText" compareValue="가" prepend="AND">
+											SUBSTRING(PER.PERSON_NAME,1,1) BETWEEN '가' AND '깋'
+										</isEqual>
+										<isEqual property="indexSearchText" compareValue="나" prepend="AND">
+											SUBSTRING(PER.PERSON_NAME,1,1) BETWEEN '나' AND '닣'
+										</isEqual>
+										<isEqual property="indexSearchText" compareValue="다" prepend="AND">
+											SUBSTRING(PER.PERSON_NAME,1,1) BETWEEN '다' AND '딯'
+										</isEqual>
+										<isEqual property="indexSearchText" compareValue="라" prepend="AND">
+											SUBSTRING(PER.PERSON_NAME,1,1) BETWEEN '라' AND '맇'
+										</isEqual>
+										<isEqual property="indexSearchText" compareValue="마" prepend="AND">
+											SUBSTRING(PER.PERSON_NAME,1,1) BETWEEN '마' AND '밓'
+										</isEqual>
+										<isEqual property="indexSearchText" compareValue="바" prepend="AND">
+											SUBSTRING(PER.PERSON_NAME,1,1) BETWEEN '바' AND '빟'
+										</isEqual>
+										<isEqual property="indexSearchText" compareValue="사" prepend="AND">
+											SUBSTRING(PER.PERSON_NAME,1,1) BETWEEN '사' AND '싷'
+										</isEqual>
+										<isEqual property="indexSearchText" compareValue="아" prepend="AND">
+											SUBSTRING(PER.PERSON_NAME,1,1) BETWEEN '아' AND '잏'
+										</isEqual>
+										<isEqual property="indexSearchText" compareValue="자" prepend="AND">
+											SUBSTRING(PER.PERSON_NAME,1,1) BETWEEN '자' AND '짛'
+										</isEqual>
+										<isEqual property="indexSearchText" compareValue="차" prepend="AND">
+											SUBSTRING(PER.PERSON_NAME,1,1) BETWEEN '차' AND '칳'
+										</isEqual>
+										<isEqual property="indexSearchText" compareValue="카" prepend="AND">
+											SUBSTRING(PER.PERSON_NAME,1,1) BETWEEN '카' AND '킿'
+										</isEqual>
+										<isEqual property="indexSearchText" compareValue="타" prepend="AND">
+											SUBSTRING(PER.PERSON_NAME,1,1) BETWEEN '타' AND '팋'
+										</isEqual>
+										<isEqual property="indexSearchText" compareValue="파" prepend="AND">
+											SUBSTRING(PER.PERSON_NAME,1,1) BETWEEN '파' AND '핗'
+										</isEqual>
+										<isEqual property="indexSearchText" compareValue="하" prepend="AND">
+											SUBSTRING(PER.PERSON_NAME,1,1) BETWEEN '하' AND '힣'
+										</isEqual>
+										<isEqual property="indexSearchText" compareValue="A-Z" prepend="AND">
+											<![CDATA[   
+												UPPER(SUBSTRING(PER.PERSON_NAME,1,1)) BETWEEN 'A' AND 'Z'
+											]]> 
+										</isEqual>
+										<isEqual property="indexSearchText" compareValue="기타" prepend="AND">
+											<![CDATA[   
+											(SUBSTRING(PER.PERSON_NAME,1,1) < '가' OR SUBSTRING(PER.PERSON_NAME,1,1) > '힣')
+											AND SUBSTRING(PER.PERSON_NAME,1,1) NOT IN ('0','1','2','3','4','5','6','7','8','9')
+											]]> 
+										</isEqual>
+										<isEqual property="indexSearchText" compareValue="0-9" prepend="AND">
+											SUBSTRING(PER.PERSON_NAME,1,1) BETWEEN '0' AND '9'
+										</isEqual>
+									</isEqual>
+									
+									<isNotEqual property="indexSearchLocale" compareValue="ko">
+										<isEqual property="indexSearchText" compareValue="A" prepend="AND">
+											UPPER(SUBSTRING(PER.PERSON_NAME,1,1)) = 'A'
+										</isEqual>
+										<isEqual property="indexSearchText" compareValue="B" prepend="AND">
+											UPPER(SUBSTRING(PER.PERSON_NAME,1,1)) = 'B'
+										</isEqual>
+										<isEqual property="indexSearchText" compareValue="C" prepend="AND">
+											UPPER(SUBSTRING(PER.PERSON_NAME,1,1)) = 'C'
+										</isEqual>
+										<isEqual property="indexSearchText" compareValue="D" prepend="AND">
+											UPPER(SUBSTRING(PER.PERSON_NAME,1,1)) = 'D'
+										</isEqual>
+										<isEqual property="indexSearchText" compareValue="E" prepend="AND">
+											UPPER(SUBSTRING(PER.PERSON_NAME,1,1)) = 'E'
+										</isEqual>
+										<isEqual property="indexSearchText" compareValue="F" prepend="AND">
+											UPPER(SUBSTRING(PER.PERSON_NAME,1,1)) = 'F'
+										</isEqual>
+										<isEqual property="indexSearchText" compareValue="G" prepend="AND">
+											UPPER(SUBSTRING(PER.PERSON_NAME,1,1)) = 'G'
+										</isEqual>
+										<isEqual property="indexSearchText" compareValue="H" prepend="AND">
+											UPPER(SUBSTRING(PER.PERSON_NAME,1,1)) = 'H'
+										</isEqual>
+										<isEqual property="indexSearchText" compareValue="I" prepend="AND">
+											UPPER(SUBSTRING(PER.PERSON_NAME,1,1)) = 'I'
+										</isEqual>
+										<isEqual property="indexSearchText" compareValue="J" prepend="AND">
+											UPPER(SUBSTRING(PER.PERSON_NAME,1,1)) = 'J'
+										</isEqual>
+										<isEqual property="indexSearchText" compareValue="K" prepend="AND">
+											UPPER(SUBSTRING(PER.PERSON_NAME,1,1)) = 'K'
+										</isEqual>
+										<isEqual property="indexSearchText" compareValue="L" prepend="AND">
+											UPPER(SUBSTRING(PER.PERSON_NAME,1,1)) = 'L'
+										</isEqual>
+										<isEqual property="indexSearchText" compareValue="M" prepend="AND">
+											UPPER(SUBSTRING(PER.PERSON_NAME,1,1)) = 'M'
+										</isEqual>
+										<isEqual property="indexSearchText" compareValue="N" prepend="AND">
+											UPPER(SUBSTRING(PER.PERSON_NAME,1,1)) = 'N'
+										</isEqual>
+										<isEqual property="indexSearchText" compareValue="O" prepend="AND">
+											UPPER(SUBSTRING(PER.PERSON_NAME,1,1)) = 'O'
+										</isEqual>
+										<isEqual property="indexSearchText" compareValue="P" prepend="AND">
+											UPPER(SUBSTRING(PER.PERSON_NAME,1,1)) = 'P'
+										</isEqual>
+										<isEqual property="indexSearchText" compareValue="Q" prepend="AND">
+											UPPER(SUBSTRING(PER.PERSON_NAME,1,1)) = 'Q'
+										</isEqual>
+										<isEqual property="indexSearchText" compareValue="R" prepend="AND">
+											UPPER(SUBSTRING(PER.PERSON_NAME,1,1)) = 'R'
+										</isEqual>
+										<isEqual property="indexSearchText" compareValue="S" prepend="AND">
+											UPPER(SUBSTRING(PER.PERSON_NAME,1,1)) = 'S'
+										</isEqual>
+										<isEqual property="indexSearchText" compareValue="T" prepend="AND">
+											UPPER(SUBSTRING(PER.PERSON_NAME,1,1)) = 'T'
+										</isEqual>
+										<isEqual property="indexSearchText" compareValue="U" prepend="AND">
+											UPPER(SUBSTRING(PER.PERSON_NAME,1,1)) = 'U'
+										</isEqual>
+										<isEqual property="indexSearchText" compareValue="V" prepend="AND">
+											UPPER(SUBSTRING(PER.PERSON_NAME,1,1)) = 'V'
+										</isEqual>
+										<isEqual property="indexSearchText" compareValue="W" prepend="AND">
+											UPPER(SUBSTRING(PER.PERSON_NAME,1,1)) = 'W'
+										</isEqual>
+										<isEqual property="indexSearchText" compareValue="X" prepend="AND">
+											UPPER(SUBSTRING(PER.PERSON_NAME,1,1)) = 'X'
+										</isEqual>
+										<isEqual property="indexSearchText" compareValue="Y" prepend="AND">
+											UPPER(SUBSTRING(PER.PERSON_NAME,1,1)) = 'Y'
+										</isEqual>
+										<isEqual property="indexSearchText" compareValue="Z" prepend="AND">
+											UPPER(SUBSTRING(PER.PERSON_NAME,1,1)) = 'Z'
+										</isEqual>
+										<isEqual property="indexSearchText" compareValue="etc" prepend="AND">
+											<![CDATA[   
+											(UPPER(SUBSTRING(PER.PERSON_NAME, 1, 1)) < 'A' or UPPER(SUBSTRING(PER.PERSON_NAME, 1, 1)) > 'Z' )
+											AND SUBSTRING(PER.PERSON_NAME,1,1) NOT IN ('0','1','2','3','4','5','6','7','8','9')
+											]]> 
+										</isEqual>
+										<isEqual property="indexSearchText" compareValue="0-9" prepend="AND">
+											UPPER(SUBSTRING(PER.PERSON_NAME,1,1)) BETWEEN '0' AND '9'
+										</isEqual>
+									</isNotEqual>
+									
+								</isNotNull>
+							</dynamic>
+		<![CDATA[   
+				) F WHERE RNUM >  #startRowIndex# AND RNUM <=  #endRowIndex#
+		]]> 
+	</select>
+	
+	<!-- MS SQL -->
+	<!-- select IKEP4_AD_PERSON -->
+	<select id="selectTotalCntPersonPerPage" parameterClass="PersonSearch" resultClass="int">
+
+		SELECT /* [Addressbook_SqlMap.xml] support.addressbook.dao.Addressbook.selectTotalCntPersonPerPage */ 
+			COUNT(DISTINCT PERSON_ID) 
+		FROM (
+			SELECT AP.PERSON_ID
+				, AP.PERSON_NAME
+				, AP.COMPANY_NAME
+				, AP.TEAM_NAME
+				, AP.JOB_RANK_NAME
+				, AP.OFFICE_PHONENO
+				, AP.MOBILE_PHONENO
+				, AP.MAIL_ADDRESS
+				, AP.PERSON_MEMO
+				, AP.COMPANY_USER_ID
+				, AP.REGISTER_ID
+				, AP.REGISTER_NAME
+				, AP.REGIST_DATE
+				, AP.UPDATE_DATE
+				, 'O' AS USER_TYPE
+			FROM IKEP4_AD_PERSON  AP
+								
+			UNION ALL
+								
+			SELECT EU.USER_ID AS PERSON_ID
+	           	,  EU.USER_NAME AS PERSON_NAME
+	           	, (SELECT COMPANY_CODE_name FROM IKEP4_EV_COMPANY_CODE WHERE IKEP4_EV_COMPANY_CODE.COMPANY_CODE = EU.company_code) AS COMPANY_NAME
+	           	,  EU.TEAM_NAME AS TEAM_NAME
+	           	, (SELECT JOB_TITLE_NAME FROM IKEP4_EV_JOB_TITLE WHERE IKEP4_EV_JOB_TITLE.JOB_TITLE_CODE = EU.JOB_TITLE_CODE) AS JOB_RANK_NAME
+	           	,  EU.OFFICE_PHONE_NO AS OFFICE_PHONENO
+	            , EU.MOBILE AS MOBILE_PHONENO
+	            , EU.MAIL AS MAIL_ADDRESS
+	            , '' AS PERSON_MEMO
+	            , EU.USER_ID AS COMPANY_USER_ID
+	            , PG.REGISTER_ID AS REGISTER_ID
+				, PG.REGISTER_NAME AS REGISTER_NAME
+				, PG.REGIST_DATE AS REGIST_DATE
+				, PG.UPDATE_DATE AS UPDATE_DATE
+				, 'I' AS USER_TYPE
+			FROM   IKEP4_EV_USER EU
+			       inner join IKEP4_AD_PERSON2GROUP PG
+			         ON EU.USER_ID = PG.PERSON_ID
+			WHERE 1=1
+			<isNotEqual property="groupType" compareValue="T">  
+				AND PG.USER_TYPE = 'I' 
+			</isNotEqual>
+			<dynamic>
+				<isNotNull property="addrgroupId" prepend="AND">
+					PG.ADDRGROUP_ID = #addrgroupId#
+				</isNotNull>
+				<isNull property="addrgroupId" prepend="AND" >
+					(CONVERT(NVARCHAR, EU.USER_ID) + CONVERT(NVARCHAR, PG.REGIST_DATE)) = 
+						(	SELECT CONVERT(NVARCHAR, PERSON_ID) + CONVERT(NVARCHAR, MAX(PG1.REGIST_DATE))
+							FROM IKEP4_EV_USER EU1, IKEP4_AD_PERSON2GROUP PG1 
+  							WHERE EU1.USER_ID = PG1.PERSON_ID AND PG1.USER_TYPE = 'I' 
+  								AND EU1.USER_ID =EU.USER_ID GROUP BY PERSON_ID   )
+				</isNull>
+			</dynamic>
+			
+		) PER
+		WHERE 1=1
+	    <isNotEqual property="groupType" compareValue="T">  						
+			<isEqual property="userTypeIn" compareValue="Y">
+				<isEmpty property="userTypeOut">
+					AND PER.USER_TYPE = 'I'
+				</isEmpty>
+			</isEqual>
+			<isEqual property="userTypeOut" compareValue="Y">
+				<isEmpty property="userTypeIn">
+					AND PER.USER_TYPE = 'O'
+				</isEmpty>
+			</isEqual>		
+			<isEmpty property="userTypeOut">
+				<isEmpty property="userTypeIn">
+					AND PER.USER_TYPE = '99999'
+				</isEmpty>
+			</isEmpty>			
+		</isNotEqual>				
+		<dynamic>
+			<isNotEqual property="groupType" compareValue="O">
+				<isNotEqual property="groupType" compareValue="T">
+					AND PER.REGISTER_ID = #registerId#
+				</isNotEqual>
+			</isNotEqual>
+		</dynamic>
+							
+		<dynamic>
+			<isEqual property="groupType" compareValue="O">
+				<isNotNull property="addrgroupId" prepend="AND">
+					PER.PERSON_ID IN (
+									SELECT PERSON_ID 
+									FROM IKEP4_AD_PERSON2GROUP APG 
+									WHERE APG.ADDRGROUP_ID = #addrgroupId#
+									)
+				</isNotNull>
+				<isNull property="addrgroupId" prepend="AND" >
+					PER.PERSON_ID IN (
+									SELECT PERSON_ID
+									FROM   IKEP4_AD_PERSON2GROUP APG
+									       inner join IKEP4_AD_ADDRGROUP AB
+									         ON APG.ADDRGROUP_ID = AB.ADDRGROUP_ID
+									WHERE  AB.GROUP_TYPE = 'O' 
+									)
+				</isNull>
+			</isEqual>
+			<isEqual property="groupType" compareValue="T">
+				<isNotNull property="addrgroupId" prepend="AND">
+					PER.PERSON_ID IN (
+									SELECT PERSON_ID 
+									FROM IKEP4_AD_PERSON2GROUP APG 
+									WHERE APG.ADDRGROUP_ID = #addrgroupId#
+									)
+				</isNotNull>
+				<isNull property="addrgroupId" prepend="AND" >
+					PER.PERSON_ID IN (
+									SELECT PERSON_ID
+									FROM   IKEP4_AD_PERSON2GROUP APG
+									       inner join IKEP4_AD_ADDRGROUP AB
+									         ON APG.ADDRGROUP_ID = AB.ADDRGROUP_ID
+									WHERE  AB.GROUP_TYPE = 'T' 
+									)
+				</isNull>
+			</isEqual>
+			<isEqual property="groupType" compareValue="P">
+								
+				<isNotNull property="addrgroupId" >
+					<isEqual property="addrgroupId" compareValue="NOGROUP" prepend="AND">
+						PER.PERSON_ID NOT IN (
+											SELECT PERSON_ID
+											FROM   IKEP4_AD_PERSON2GROUP APG
+											       inner join IKEP4_AD_ADDRGROUP AB
+											         ON APG.ADDRGROUP_ID = AB.ADDRGROUP_ID
+											WHERE  APG.REGISTER_ID = #registerId# 
+											AND AB.GROUP_TYPE != 'T'
+											)
+					</isEqual>
+					<isNotEqual property="addrgroupId" compareValue="NOGROUP" prepend="AND">
+						PER.PERSON_ID IN (
+										SELECT PERSON_ID FROM IKEP4_AD_PERSON2GROUP APG 
+										WHERE APG.ADDRGROUP_ID = #addrgroupId#
+										)
+					</isNotEqual>
+				</isNotNull>
+									
+				<isNull property="addrgroupId" prepend="AND">
+					PER.PERSON_ID IN (
+									SELECT PERSON_ID FROM IKEP4_AD_PERSON
+                                    WHERE REGISTER_ID = #registerId#
+                                    UNION ALL
+									SELECT PERSON_ID
+									FROM IKEP4_AD_PERSON2GROUP APG
+									WHERE APG.ADDRGROUP_ID IN (SELECT ADDRGROUP_ID 
+                         										FROM IKEP4_AD_ADDRGROUP WHERE REGISTER_ID = #registerId# 
+                         										AND GROUP_TYPE = 'P' )
+									)
+				</isNull>
+									
+			</isEqual>
+			<isEqual property="groupType" compareValue="G">
+								
+				<isNotNull property="addrgroupId" >
+					<isEqual property="addrgroupId" compareValue="NOGROUP" prepend="AND">
+						PER.PERSON_ID NOT IN (
+											SELECT PERSON_ID
+											FROM   IKEP4_AD_PERSON2GROUP APG
+											       inner join IKEP4_AD_ADDRGROUP AB
+											         ON APG.ADDRGROUP_ID = AB.ADDRGROUP_ID
+											WHERE  APG.REGISTER_ID = #registerId# 
+											AND AB.GROUP_TYPE != 'T'
+											)
+					</isEqual>
+					<isNotEqual property="addrgroupId" compareValue="NOGROUP" prepend="AND">
+						PER.PERSON_ID IN (
+										SELECT PERSON_ID FROM IKEP4_AD_PERSON2GROUP APG 
+										WHERE APG.ADDRGROUP_ID = #addrgroupId#
+										)
+					</isNotEqual>
+				</isNotNull>
+									
+				<isNull property="addrgroupId" prepend="AND">
+					PER.PERSON_ID IN (
+									SELECT PERSON_ID FROM IKEP4_AD_PERSON
+                                    WHERE REGISTER_ID = #registerId#
+                                    UNION ALL
+									SELECT PERSON_ID
+									FROM IKEP4_AD_PERSON2GROUP APG
+									WHERE APG.ADDRGROUP_ID IN (SELECT ADDRGROUP_ID 
+                         										FROM IKEP4_AD_ADDRGROUP WHERE REGISTER_ID = #registerId# 
+                         										AND GROUP_TYPE = 'G' )
+									)
+				</isNull>
+									
+			</isEqual>
+		</dynamic>
+							
+		<dynamic>
+			<isNotNull property="personName" prepend="AND">
+				replace(PER.PERSON_NAME,' ','') LIKE '%' + replace(#personName#,' ','') + '%'
+			</isNotNull>
+		</dynamic>
+							
+		<dynamic>
+			<isNotNull property="companyName" prepend="AND">
+				replace(PER.COMPANY_NAME,' ','') LIKE '%' + replace(#companyName#,' ','') + '%'
+			</isNotNull>
+		</dynamic>
+							
+		<dynamic>
+			<isNotNull property="officePhoneno" prepend="AND">
+				replace(PER.OFFICE_PHONENO,' ','') LIKE '%' + replace(#officePhoneno#,' ','') + '%'
+			</isNotNull>
+		</dynamic>
+							
+		<dynamic>
+			<isNotNull property="mobilePhoneno" prepend="AND">
+				replace(PER.MOBILE_PHONENO,' ','') LIKE '%' + replace(#mobilePhoneno#,' ','') + '%'
+			</isNotNull>
+		</dynamic>
+							
+		<dynamic>
+			<isNotNull property="personMemo" prepend="AND">
+				replace(PER.PERSON_MEMO,' ','') LIKE '%' + replace(#personMemo#,' ','') + '%'
+			</isNotNull>
+		</dynamic>
+		
+		<dynamic>
+			<isNotNull property="mailAddress" prepend="AND">
+				replace(PER.MAIL_ADDRESS,' ','') LIKE '%' + replace(#mailAddress#,' ','') + '%'
+			</isNotNull>
+		</dynamic>
+				
+		<dynamic>
+			<isNotNull property="indexSearchText" >
+				<isEqual property="indexSearchLocale" compareValue="ko">
+					<isEqual property="indexSearchText" compareValue="가" prepend="AND">
+						SUBSTRING(PER.PERSON_NAME,1,1) BETWEEN '가' AND '깋'
+					</isEqual>
+					<isEqual property="indexSearchText" compareValue="나" prepend="AND">
+						SUBSTRING(PER.PERSON_NAME,1,1) BETWEEN '나' AND '닣'
+					</isEqual>
+					<isEqual property="indexSearchText" compareValue="다" prepend="AND">
+						SUBSTRING(PER.PERSON_NAME,1,1) BETWEEN '다' AND '딯'
+					</isEqual>
+					<isEqual property="indexSearchText" compareValue="라" prepend="AND">
+						SUBSTRING(PER.PERSON_NAME,1,1) BETWEEN '라' AND '맇'
+					</isEqual>
+					<isEqual property="indexSearchText" compareValue="마" prepend="AND">
+						SUBSTRING(PER.PERSON_NAME,1,1) BETWEEN '마' AND '밓'
+					</isEqual>
+					<isEqual property="indexSearchText" compareValue="바" prepend="AND">
+						SUBSTRING(PER.PERSON_NAME,1,1) BETWEEN '바' AND '빟'
+					</isEqual>
+					<isEqual property="indexSearchText" compareValue="사" prepend="AND">
+						SUBSTRING(PER.PERSON_NAME,1,1) BETWEEN '사' AND '싷'
+					</isEqual>
+					<isEqual property="indexSearchText" compareValue="아" prepend="AND">
+						SUBSTRING(PER.PERSON_NAME,1,1) BETWEEN '아' AND '잏'
+					</isEqual>
+					<isEqual property="indexSearchText" compareValue="자" prepend="AND">
+						SUBSTRING(PER.PERSON_NAME,1,1) BETWEEN '자' AND '짛'
+					</isEqual>
+					<isEqual property="indexSearchText" compareValue="차" prepend="AND">
+						SUBSTRING(PER.PERSON_NAME,1,1) BETWEEN '차' AND '칳'
+					</isEqual>
+					<isEqual property="indexSearchText" compareValue="카" prepend="AND">
+						SUBSTRING(PER.PERSON_NAME,1,1) BETWEEN '카' AND '킿'
+					</isEqual>
+					<isEqual property="indexSearchText" compareValue="타" prepend="AND">
+						SUBSTRING(PER.PERSON_NAME,1,1) BETWEEN '타' AND '팋'
+					</isEqual>
+					<isEqual property="indexSearchText" compareValue="파" prepend="AND">
+						SUBSTRING(PER.PERSON_NAME,1,1) BETWEEN '파' AND '핗'
+					</isEqual>
+					<isEqual property="indexSearchText" compareValue="하" prepend="AND">
+						SUBSTRING(PER.PERSON_NAME,1,1) BETWEEN '하' AND '힣'
+					</isEqual>
+					<isEqual property="indexSearchText" compareValue="A-Z" prepend="AND">
+						<![CDATA[   
+							UPPER(SUBSTRING(PER.PERSON_NAME,1,1)) BETWEEN 'A' AND 'Z'
+						]]> 
+					</isEqual>
+					<isEqual property="indexSearchText" compareValue="기타" prepend="AND">
+						<![CDATA[   
+							(SUBSTRING(PER.PERSON_NAME,1,1) < '가' OR SUBSTRING(PER.PERSON_NAME,1,1) > '힣' )
+							AND SUBSTRING(PER.PERSON_NAME,1,1) NOT IN ('0','1','2','3','4','5','6','7','8','9')
+						]]> 
+					</isEqual>
+					<isEqual property="indexSearchText" compareValue="0-9" prepend="AND">
+						SUBSTRING(PER.PERSON_NAME,1,1) BETWEEN '0' AND '9'
+					</isEqual>
+				</isEqual>
+									
+				<isNotEqual property="indexSearchLocale" compareValue="ko">
+					<isEqual property="indexSearchText" compareValue="A" prepend="AND">
+						UPPER(SUBSTRING(PER.PERSON_NAME,1,1)) = 'A'
+					</isEqual>
+					<isEqual property="indexSearchText" compareValue="B" prepend="AND">
+						UPPER(SUBSTRING(PER.PERSON_NAME,1,1)) = 'B'
+					</isEqual>
+					<isEqual property="indexSearchText" compareValue="C" prepend="AND">
+						UPPER(SUBSTRING(PER.PERSON_NAME,1,1)) = 'C'
+					</isEqual>
+					<isEqual property="indexSearchText" compareValue="D" prepend="AND">
+						UPPER(SUBSTRING(PER.PERSON_NAME,1,1)) = 'D'
+					</isEqual>
+					<isEqual property="indexSearchText" compareValue="E" prepend="AND">
+						UPPER(SUBSTRING(PER.PERSON_NAME,1,1)) = 'E'
+					</isEqual>
+					<isEqual property="indexSearchText" compareValue="F" prepend="AND">
+						UPPER(SUBSTRING(PER.PERSON_NAME,1,1)) = 'F'
+					</isEqual>
+					<isEqual property="indexSearchText" compareValue="G" prepend="AND">
+						UPPER(SUBSTRING(PER.PERSON_NAME,1,1)) = 'G'
+					</isEqual>
+					<isEqual property="indexSearchText" compareValue="H" prepend="AND">
+						UPPER(SUBSTRING(PER.PERSON_NAME,1,1)) = 'H'
+					</isEqual>
+					<isEqual property="indexSearchText" compareValue="I" prepend="AND">
+						UPPER(SUBSTRING(PER.PERSON_NAME,1,1)) = 'I'
+					</isEqual>
+					<isEqual property="indexSearchText" compareValue="J" prepend="AND">
+						UPPER(SUBSTRING(PER.PERSON_NAME,1,1)) = 'J'
+					</isEqual>
+					<isEqual property="indexSearchText" compareValue="K" prepend="AND">
+						UPPER(SUBSTRING(PER.PERSON_NAME,1,1)) = 'K'
+					</isEqual>
+					<isEqual property="indexSearchText" compareValue="L" prepend="AND">
+						UPPER(SUBSTRING(PER.PERSON_NAME,1,1)) = 'L'
+					</isEqual>
+					<isEqual property="indexSearchText" compareValue="M" prepend="AND">
+						UPPER(SUBSTRING(PER.PERSON_NAME,1,1)) = 'M'
+					</isEqual>
+					<isEqual property="indexSearchText" compareValue="N" prepend="AND">
+						UPPER(SUBSTRING(PER.PERSON_NAME,1,1)) = 'N'
+					</isEqual>
+					<isEqual property="indexSearchText" compareValue="O" prepend="AND">
+						UPPER(SUBSTRING(PER.PERSON_NAME,1,1)) = 'O'
+					</isEqual>
+					<isEqual property="indexSearchText" compareValue="P" prepend="AND">
+						UPPER(SUBSTRING(PER.PERSON_NAME,1,1)) = 'P'
+					</isEqual>
+					<isEqual property="indexSearchText" compareValue="Q" prepend="AND">
+						UPPER(SUBSTRING(PER.PERSON_NAME,1,1)) = 'Q'
+					</isEqual>
+					<isEqual property="indexSearchText" compareValue="R" prepend="AND">
+						UPPER(SUBSTRING(PER.PERSON_NAME,1,1)) = 'R'
+					</isEqual>
+					<isEqual property="indexSearchText" compareValue="S" prepend="AND">
+						UPPER(SUBSTRING(PER.PERSON_NAME,1,1)) = 'S'
+					</isEqual>
+					<isEqual property="indexSearchText" compareValue="T" prepend="AND">
+						UPPER(SUBSTRING(PER.PERSON_NAME,1,1)) = 'T'
+					</isEqual>
+					<isEqual property="indexSearchText" compareValue="U" prepend="AND">
+						UPPER(SUBSTRING(PER.PERSON_NAME,1,1)) = 'U'
+					</isEqual>
+					<isEqual property="indexSearchText" compareValue="V" prepend="AND">
+						UPPER(SUBSTRING(PER.PERSON_NAME,1,1)) = 'V'
+					</isEqual>
+					<isEqual property="indexSearchText" compareValue="W" prepend="AND">
+						UPPER(SUBSTRING(PER.PERSON_NAME,1,1)) = 'W'
+					</isEqual>
+					<isEqual property="indexSearchText" compareValue="X" prepend="AND">
+						UPPER(SUBSTRING(PER.PERSON_NAME,1,1)) = 'X'
+					</isEqual>
+					<isEqual property="indexSearchText" compareValue="Y" prepend="AND">
+						UPPER(SUBSTRING(PER.PERSON_NAME,1,1)) = 'Y'
+					</isEqual>
+					<isEqual property="indexSearchText" compareValue="Z" prepend="AND">
+						UPPER(SUBSTRING(PER.PERSON_NAME,1,1)) = 'Z'
+					</isEqual>
+					<isEqual property="indexSearchText" compareValue="etc" prepend="AND">
+						<![CDATA[   
+							(UPPER(SUBSTRING(PER.PERSON_NAME, 1, 1)) < 'A' or UPPER(SUBSTRING(PER.PERSON_NAME, 1, 1)) > 'Z' )
+							AND SUBSTRING(PER.PERSON_NAME,1,1) NOT IN ('0','1','2','3','4','5','6','7','8','9')
+						]]> 
+					</isEqual>
+					<isEqual property="indexSearchText" compareValue="0-9" prepend="AND">
+						UPPER(SUBSTRING(PER.PERSON_NAME,1,1)) BETWEEN '0' AND '9'
+					</isEqual>
+				</isNotEqual>
+									
+			</isNotNull>
+		</dynamic>
+										
+	</select>
+	
+	<!-- MS SQL -->
+	<!-- select IKEP4_AD_PERSON -->
+	<select id="selectPersonAll" parameterClass="PersonSearch" resultMap="resultPersonAdd">
+	
+	  	SELECT /* [Addressbook_SqlMap.xml] support.addressbook.dao.Addressbook.selectPersonAll */ 
+	  		* 
+	  	FROM (
+			SELECT 
+				  AP.PERSON_ID AS PERSON_ID
+           		, AP.PERSON_NAME AS PERSON_NAME
+           		, AP.PERSON_NAME AS PERSON_ENGLISH_NAME
+           		, AP.COMPANY_NAME AS COMPANY_NAME
+           		, AP.TEAM_NAME AS TEAM_NAME
+           		, AP.TEAM_NAME AS TEAM_ENGLISH_NAME
+           		, AP.JOB_RANK_NAME AS JOB_RANK_NAME
+           		, AP.JOB_RANK_NAME AS JOB_RANK_ENGLISH_NAME
+           		, AP.OFFICE_PHONENO AS OFFICE_PHONENO
+           		, AP.MOBILE_PHONENO AS MOBILE_PHONENO
+           		, AP.MAIL_ADDRESS AS MAIL_ADDRESS
+           		, AP.PERSON_MEMO AS PERSON_MEMO
+           		, AP.COMPANY_USER_ID AS COMPANY_USER_ID
+           		, AP.REGISTER_ID AS REGISTER_ID
+           		, AP.REGISTER_NAME AS REGISTER_NAME
+           		, AP.REGIST_DATE AS REGIST_DATE
+           		, AP.UPDATE_DATE AS UPDATE_DATE
+           		, CASE WHEN PG.USER_TYPE = 'T' THEN NULL ELSE PG.USER_TYPE END AS USER_TYPE
+           		, CASE WHEN PG.USER_TYPE = 'T' THEN NULL ELSE PG.ADDRGROUP_ID END AS ADDRGROUP_ID
+           		, '' AS EMP_NO
+			FROM IKEP4_AD_PERSON  AP LEFT JOIN IKEP4_AD_PERSON2GROUP PG
+      			ON AP.PERSON_ID = PG.PERSON_ID
+      		WHERE 1=1
+      		<dynamic>
+				<isNotNull property="addrgroupId" prepend="AND">
+					PG.ADDRGROUP_ID = #addrgroupId#
+					AND PG.USER_TYPE = 'O'
+				</isNotNull>
+			</dynamic>
+			<dynamic>
+				<isNotNull property="groupType">
+					<isEqual property="groupType" compareValue="O" prepend="AND">
+          				PG.ADDRGROUP_ID IN ( SELECT ADDRGROUP_ID 
+                        	        	   	FROM IKEP4_AD_ADDRGROUP AG 
+                            	       		WHERE AG.GROUP_TYPE = #groupType#
+                        	        	   	AND AG.PORTAL_ID = #portalId#
+                                    		)
+                    </isEqual>
+                    <isEqual property="groupType" compareValue="P" prepend="AND">
+                    	AP.REGISTER_ID = #registerId#		
+                    </isEqual>			
+                    <isEqual property="groupType" compareValue="G" prepend="AND">
+          				AP.PERSON_ID = 'noselect'
+                    </isEqual>
+				</isNotNull>
+			</dynamic>
+      		
+      
+      		UNION ALL
+      
+      		SELECT EU.USER_ID AS PERSON_ID
+               , EU.USER_NAME AS PERSON_NAME
+               , EU.USER_ENGLISH_NAME AS PERSON_ENGLISH_NAME
+               , EU.OFFICE_BASIC_ADDRESS AS COMPANY_NAME
+               , EU.TEAM_NAME AS TEAM_NAME
+               , EU.TEAM_ENGLISH_NAME AS TEAM_ENGLISH_NAME
+               , C.JOB_TITLE_NAME AS JOB_RANK_NAME
+               , C.JOB_TITLE_ENGLISH_NAME AS JOB_RANK_ENGLISH_NAME
+               , EU.OFFICE_PHONE_NO AS OFFICE_PHONENO
+               , EU.MOBILE AS MOBILE_PHONENO
+               , EU.MAIL AS MAIL_ADDRESS
+               , '' AS PERSON_MEMO
+               , EU.USER_ID AS COMPANY_USER_ID
+               , PG.REGISTER_ID AS REGISTER_ID
+               , PG.REGISTER_NAME AS REGISTER_NAME
+               , PG.REGIST_DATE AS REGIST_DATE
+               , PG.UPDATE_DATE AS UPDATE_DATE
+               , PG.USER_TYPE AS USER_TYPE
+               , PG.ADDRGROUP_ID AS ADDRGROUP_ID
+               , EU.EMP_NO AS EMP_NO
+			FROM IKEP4_EV_USER  EU JOIN IKEP4_AD_PERSON2GROUP PG
+      			ON EU.USER_ID = PG.PERSON_ID
+      			JOIN IKEP4_EV_JOB_TITLE C
+				ON	EU.JOB_TITLE_CODE = C.JOB_TITLE_CODE
+      		WHERE 1=1
+      		<dynamic>
+				<isNotNull property="addrgroupId" prepend="AND">
+					PG.ADDRGROUP_ID = #addrgroupId#
+				</isNotNull>
+			</dynamic>
+			<dynamic>
+				<isNotNull property="groupType">
+					<isEqual property="groupType" compareValue="O" prepend="AND">
+          				PG.ADDRGROUP_ID IN ( SELECT ADDRGROUP_ID 
+                        	        	   	FROM IKEP4_AD_ADDRGROUP AG 
+                            	       		WHERE AG.GROUP_TYPE = #groupType#
+                            	       		AND AG.PORTAL_ID = #portalId#
+                                    		)		
+                    </isEqual>
+                    <isEqual property="groupType" compareValue="P" prepend="AND">
+          				PG.ADDRGROUP_ID IN ( SELECT ADDRGROUP_ID 
+                        	        	   	FROM IKEP4_AD_ADDRGROUP AG 
+                            	       		WHERE AG.GROUP_TYPE = #groupType# 
+                                	   		AND AG.REGISTER_ID = #registerId#
+                                	   		AND AG.PORTAL_ID = #portalId#
+                                    		)		
+                    </isEqual>		
+                    <isEqual property="groupType" compareValue="G" prepend="AND">
+          				PG.ADDRGROUP_ID IN ( SELECT ADDRGROUP_ID 
+                        	        	   	FROM IKEP4_AD_ADDRGROUP AG 
+                            	       		WHERE AG.GROUP_TYPE = #groupType# 
+                                	   		AND AG.REGISTER_ID = #registerId#
+                                	   		AND AG.PORTAL_ID = #portalId#
+                                    		)		
+                    </isEqual>		
+				</isNotNull>
+			</dynamic>
+      		AND PG.USER_TYPE = 'I'
+      	) PER
+      	
+      	<isEqual property="userTypeIn" compareValue="Y">
+				WHERE PER.USER_TYPE = 'I'
+		</isEqual>
+		
+      	ORDER BY PER.PERSON_NAME ASC, PER.PERSON_ID ASC 
+	</select>
+	
+	<!-- MS SQL -->
+	<!-- select IKEP4_AD_PERSON -->
+	<select id="selectTotalCntPersonAll" parameterClass="PersonSearch" resultClass="int">
+	  		SELECT /* [Addressbook_SqlMap.xml] support.addressbook.dao.Addressbook.selectTotalCntPersonAll */  
+	  			COUNT(DISTINCT PERSON_ID) FROM (
+			SELECT AP.PERSON_ID AS PERSON_ID
+           		, AP.PERSON_NAME AS PERSON_NAME
+           		, AP.COMPANY_NAME AS COMPANY_NAME
+           		, AP.TEAM_NAME AS TEAM_NAME
+           		, AP.JOB_RANK_NAME AS JOB_RANK_NAME
+           		, AP.OFFICE_PHONENO AS OFFICE_PHONENO
+           		, AP.MOBILE_PHONENO AS MOBILE_PHONENO
+           		, AP.MAIL_ADDRESS AS MAIL_ADDRESS
+           		, AP.PERSON_MEMO AS PERSON_MEMO
+           		, AP.COMPANY_USER_ID AS COMPANY_USER_ID
+           		, AP.REGISTER_ID AS REGISTER_ID
+           		, AP.REGISTER_NAME AS REGISTER_NAME
+           		, AP.REGIST_DATE AS REGIST_DATE
+           		, AP.UPDATE_DATE AS UPDATE_DATE
+           		, PG.USER_TYPE AS USER_TYPE
+           		, PG.ADDRGROUP_ID AS ADDRGROUP_ID
+			FROM IKEP4_AD_PERSON  AP LEFT JOIN IKEP4_AD_PERSON2GROUP PG
+      			ON AP.PERSON_ID = PG.PERSON_ID
+      		WHERE 1=1
+      		<dynamic>
+				<isNotNull property="addrgroupId" prepend="AND">
+					PG.ADDRGROUP_ID = #addrgroupId#
+					AND PG.USER_TYPE = 'O'
+				</isNotNull>
+			</dynamic>
+			<dynamic>
+				<isNotNull property="groupType">
+					<isEqual property="groupType" compareValue="O" prepend="AND">
+          				PG.ADDRGROUP_ID IN ( SELECT ADDRGROUP_ID 
+                        	        	   	FROM IKEP4_AD_ADDRGROUP AG 
+                            	       		WHERE AG.GROUP_TYPE = #groupType#
+                                    		)		
+                    </isEqual>
+                    <isEqual property="groupType" compareValue="P" prepend="AND">
+          				AP.REGISTER_ID = #registerId#	
+                    </isEqual>
+                    <isEqual property="groupType" compareValue="G" prepend="AND">
+          				AP.PERSON_ID = 'noselect'
+                    </isEqual>			
+				</isNotNull>
+			</dynamic>
+      		
+      
+      		UNION ALL
+      
+      		SELECT EU.USER_ID AS PERSON_ID
+               , EU.USER_NAME AS PERSON_NAME
+               , (SELECT COMPANY_CODE_name FROM IKEP4_EV_COMPANY_CODE WHERE IKEP4_EV_COMPANY_CODE.COMPANY_CODE = EU.company_code) AS COMPANY_NAME
+               , EU.TEAM_NAME AS TEAM_NAME
+               , (SELECT JOB_TITLE_NAME FROM IKEP4_EV_JOB_TITLE WHERE IKEP4_EV_JOB_TITLE.JOB_TITLE_CODE = EU.JOB_TITLE_CODE) AS JOB_RANK_NAME
+               , EU.OFFICE_PHONE_NO AS OFFICE_PHONENO
+               , EU.MOBILE AS MOBILE_PHONENO
+               , EU.MAIL AS MAIL_ADDRESS
+               , '' AS PERSON_MEMO
+               , EU.USER_ID AS COMPANY_USER_ID
+               , PG.REGISTER_ID AS REGISTER_ID
+               , PG.REGISTER_NAME AS REGISTER_NAME
+               , PG.REGIST_DATE AS REGIST_DATE
+               , PG.UPDATE_DATE AS UPDATE_DATE
+               , PG.USER_TYPE AS USER_TYPE
+               , PG.ADDRGROUP_ID AS ADDRGROUP_ID
+			FROM IKEP4_EV_USER  EU JOIN IKEP4_AD_PERSON2GROUP PG
+      			ON EU.USER_ID = PG.PERSON_ID
+      			JOIN IKEP4_EV_JOB_TITLE C
+				ON	EU.JOB_TITLE_CODE = C.JOB_TITLE_CODE
+      		WHERE 1=1
+      		<dynamic>
+				<isNotNull property="addrgroupId" prepend="AND">
+					PG.ADDRGROUP_ID = #addrgroupId#
+				</isNotNull>
+			</dynamic>
+			<dynamic>
+				<isNotNull property="groupType">
+					<isEqual property="groupType" compareValue="O" prepend="AND">
+          				PG.ADDRGROUP_ID IN ( SELECT ADDRGROUP_ID 
+                        	        	   	FROM IKEP4_AD_ADDRGROUP AG 
+                            	       		WHERE AG.GROUP_TYPE = #groupType#
+                                    		)		
+                    </isEqual>
+                    <isEqual property="groupType" compareValue="P" prepend="AND">
+          				PG.ADDRGROUP_ID IN ( SELECT ADDRGROUP_ID 
+                        	        	   	FROM IKEP4_AD_ADDRGROUP AG 
+                            	       		WHERE AG.GROUP_TYPE = #groupType# 
+                                	   		AND AG.REGISTER_ID = #registerId#
+                                    		)		
+                    </isEqual>		
+                    <isEqual property="groupType" compareValue="G" prepend="AND">
+          				PG.ADDRGROUP_ID IN ( SELECT ADDRGROUP_ID 
+                        	        	   	FROM IKEP4_AD_ADDRGROUP AG 
+                            	       		WHERE AG.GROUP_TYPE = #groupType# 
+                                	   		AND AG.REGISTER_ID = #registerId#
+                                    		)		
+                    </isEqual>		
+				</isNotNull>
+			</dynamic>
+      		AND PG.USER_TYPE = 'I'
+      		) PER
+			<isEqual property="userTypeIn" compareValue="Y">
+				WHERE PER.USER_TYPE = 'I'
+			</isEqual>
+
+	</select>
+	
+	<!-- MS SQL -->
+	<!-- select IKEP4_AD_PERSON -->
+	<select id="selectPersonPopup" parameterClass="PersonSearch" resultMap="resultPersonforOption">
+
+		SELECT /* [Addressbook_SqlMap.xml] support.addressbook.dao.Addressbook.selectPersonPopup */ 
+			  AP.PERSON_ID AS PERSON_ID
+           	, AP.PERSON_NAME
+           	, AP.COMPANY_NAME
+           	, AP.JOB_RANK_NAME
+           	, AP.TEAM_NAME
+            , 'O' AS USER_TYPE
+		FROM IKEP4_AD_PERSON  AP
+		WHERE AP.REGISTER_ID = #registerId#
+
+		<dynamic>
+			<isNotNull property="personName" prepend="AND">
+				replace(AP.PERSON_NAME,' ','') LIKE '%' + replace(#personName#,' ','') + '%'
+			</isNotNull>
+		</dynamic>
+		ORDER BY AP.PERSON_NAME ASC, AP.PERSON_ID ASC
+	</select>
+	
+	<!-- MS SQL -->
+	<!-- select IKEP4_AD_PERSON -->
+	<select id="selectTotalCntPersonPopup" parameterClass="PersonSearch" resultClass="int">
+
+		SELECT /* [Addressbook_SqlMap.xml] support.addressbook.dao.Addressbook.selectTotalCntPersonPopup */
+			COUNT(PERSON_ID) FROM(
+		SELECT AP.PERSON_ID AS PERSON_ID
+           	, AP.PERSON_NAME
+           	, AP.COMPANY_NAME
+           	, AP.JOB_RANK_NAME
+           	, AP.TEAM_NAME
+            , 'O' AS USER_TYPE
+		FROM IKEP4_AD_PERSON  AP
+		WHERE AP.REGISTER_ID = #registerId#
+
+		<dynamic>
+			<isNotNull property="personName" prepend="AND">
+				replace(AP.PERSON_NAME,' ','') LIKE '%' + replace(#personName#,' ','') + '%'
+			</isNotNull>
+		</dynamic>
+		) TBL
+		
+	</select>
+	
+	<!-- ANSI -->
+	<!-- select Count IKEP4_AD_ADDRGROUP -->
+	<select id="selectCountAddrgroup" parameterClass="Addrgroup" resultClass="int">
+	  <![CDATA[
+		   	SELECT /* [Addressbook_SqlMap.xml] support.addressbook.dao.Addressbook.selectCountAddrgroup */ 
+		   		COUNT(AB.ADDRGROUP_ID)
+			FROM IKEP4_AD_ADDRGROUP  AB
+			WHERE AB.ADDRGROUP_ID = #addrgroupId#
+	   ]]>
+	</select>
+
+	<!-- ANSI -->
+	<!-- select Count IKEP4_AD_CONTACT -->
+	<select id="selectCountContact" parameterClass="Contact" resultClass="int">
+	  <![CDATA[
+		   	SELECT /* [Addressbook_SqlMap.xml] support.addressbook.dao.Addressbook.selectCountContact */ 
+		   		COUNT(AC.CONTACT_ID)
+			FROM IKEP4_AD_CONTACT  AC
+			WHERE AC.CONTACT_ID = #contactId#
+	   ]]>
+	</select>
+	
+	<!-- ANSI -->
+	<!-- select Count IKEP4_AD_PERSON -->
+	<select id="selectCountPerson" parameterClass="Person" resultClass="int">
+	  <![CDATA[
+		   	SELECT /* [Addressbook_SqlMap.xml] support.addressbook.dao.Addressbook.selectCountPerson */ 
+		   		COUNT(AP.PERSON_ID)
+			FROM IKEP4_AD_PERSON  AP
+			WHERE AP.PERSON_ID = #personId#
+	   ]]>
+	</select>
+	
+	<!-- ANSI -->
+	<!-- select Count IKEP4_AD_PERSON -->
+	<select id="selectCountPersonByAgId" parameterClass="java.lang.String" resultClass="int">
+	  <![CDATA[
+		   	SELECT /* [Addressbook_SqlMap.xml] support.addressbook.dao.Addressbook.selectCountPersonByAgId */ 
+		   		COUNT(PERSON_ID) AS ADDRGROUP_USER_CNT
+			FROM IKEP4_AD_PERSON2GROUP APG
+			WHERE APG.ADDRGROUP_ID = #addrgroupId#
+	   ]]>
+	</select>
+	
+	<!-- ANSI -->
+	<!-- select Count IKEP4_AD_PERSON2GROUP -->
+	<select id="selectCountPerson2group" parameterClass="Person2group" resultClass="int">
+	  <![CDATA[
+		   	SELECT /* [Addressbook_SqlMap.xml] support.addressbook.dao.Addressbook.selectCountPerson2group */ 
+		   		COUNT(*)
+			FROM IKEP4_AD_PERSON2GROUP  AP
+			WHERE AP.PERSON_ID = #personId#
+			AND AP.ADDRGROUP_ID = #addrgroupId#
+	   ]]>
+	</select>	
+	
+	<!-- ANSI -->
+	<!-- update IKEP4_AD_ADDRGROUP -->
+	<update id="updateAddrgroup" parameterClass="Addrgroup">
+	  <![CDATA[
+		   UPDATE IKEP4_AD_ADDRGROUP 
+		   /* [Addressbook_SqlMap.xml] support.addressbook.dao.Addressbook.updateAddrgroup */
+		   SET  ADDRGROUP_NAME = #addrgroupName#
+           		, ADDRGROUP_MEMO = #addrgroupMemo#
+           		, GROUP_TYPE = #groupType#
+           		, PORTAL_ID = #portalId#
+           		, UPDATE_DATE = CURRENT_TIMESTAMP
+           		, CATEGORY_ID = #categoryId#
+           		, CATEGORY_NAME = #categoryName#
+           		, MESSENGER_USE = #messengerUse#
+           		, ADDRGROUP_SEQ_ID = #addrgroupSeqId#
+		   WHERE ADDRGROUP_ID = #addrgroupId#
+	   ]]>
+	</update>
+	
+	<!-- ANSI -->
+	<!-- update IKEP4_AD_CONTACT -->
+	<update id="updateContact" parameterClass="Contact">
+	  <![CDATA[
+		   UPDATE IKEP4_AD_CONTACT 
+		   /* [Addressbook_SqlMap.xml] support.addressbook.dao.Addressbook.updateContact */
+		   SET  CONTACT_TYPE = #contactType#
+           		, CONTACT_USER_ID = #contactUserId#
+           		, CONTACT_USER_NAME = #contactUserName#
+		   WHERE CONTACT_ID = #contactId#
+	   ]]>
+	</update>
+   
+   	<!-- ANSI -->
+	<!-- update IKEP4_AD_PERSON -->
+	<update id="updatePerson" parameterClass="Person">
+	  <![CDATA[
+		   UPDATE IKEP4_AD_PERSON
+		   /* [Addressbook_SqlMap.xml] support.addressbook.dao.Addressbook.updatePerson */ 
+		   SET   PERSON_NAME = #personName#
+           		, COMPANY_NAME = #companyName#
+           		, TEAM_NAME = #teamName#
+           		, JOB_RANK_NAME = #jobRankName#
+           		, OFFICE_PHONENO = #officePhoneno#
+           		, MOBILE_PHONENO = #mobilePhoneno#
+           		, MAIL_ADDRESS = #mailAddress#
+           		, PERSON_MEMO = #personMemo#
+           		, COMPANY_USER_ID = #companyUserId#
+           		, UPDATE_DATE = CURRENT_TIMESTAMP
+           		
+		   WHERE PERSON_ID = #personId#
+	   ]]>
+	</update>
+	
+	<update id="updatePersonFlg" parameterClass="Person">
+	  <![CDATA[
+		   UPDATE IKEP4_AD_PERSON
+		   /* [Addressbook_SqlMap.xml] support.addressbook.dao.Addressbook.updatePersonFlg */ 
+		   SET   REGISTER_ID = 'NOTUSE', 
+		   		 REGISTER_NAME = 'NOTUSE',
+           		 UPDATE_DATE = CURRENT_TIMESTAMP
+		   WHERE PERSON_ID = #personId#
+	   ]]>
+	</update>
+	
+	<!-- ANSI -->
+	<!-- update IKEP4_AD_PERSON2GROUP -->
+	<update id="updatePerson2group" parameterClass="Person2group">
+	  <![CDATA[
+		   UPDATE IKEP4_AD_PERSON2GROUP
+		   /* [Addressbook_SqlMap.xml] support.addressbook.dao.Addressbook.updatePerson2group */  
+		   SET  USER_TYPE = #userType#
+           		, UPDATER_ID = #updaterId#
+           		, UPDATER_NAME = #updaterName#
+           		, UPDATE_DATE = CURRENT_TIMESTAMP
+		   WHERE PERSON_ID = #personId#
+		   AND   ADDRGROUP_ID = #addrgroupId#
+	   ]]>
+	</update>
+
+	<!-- ANSI -->
+	<!-- delete IKEP4_AD_ADDRGROUP -->
+	<delete id="deleteAddrgroup" parameterClass="Addrgroup">
+      <![CDATA[
+	       DELETE FROM IKEP4_AD_ADDRGROUP 
+	       /* [Addressbook_SqlMap.xml] support.addressbook.dao.Addressbook.deleteAddrgroup */
+	       WHERE ADDRGROUP_ID = #addrgroupId#
+	   ]]>
+	</delete>
+
+	<!-- ANSI -->
+	<!-- delete IKEP4_AD_CONTACT -->
+	<delete id="deleteContact" parameterClass="Contact">
+      <![CDATA[
+	       DELETE FROM IKEP4_AD_CONTACT 
+	       /* [Addressbook_SqlMap.xml] support.addressbook.dao.Addressbook.deleteContact */
+	       WHERE CONTACT_ID = #contactId#
+	   ]]>
+	</delete>
+	
+	<!-- ANSI -->
+	<!-- delete IKEP4_AD_PERSON -->
+	<delete id="deletePerson" parameterClass="Person">
+      <![CDATA[
+	       DELETE FROM IKEP4_AD_PERSON 
+	       /* [Addressbook_SqlMap.xml] support.addressbook.dao.Addressbook.deletePerson */
+	       WHERE PERSON_ID = #personId#
+	   ]]>
+	</delete>
+	
+	<!-- ANSI -->	
+	<!-- delete IKEP4_AD_PERSON2GROUP -->
+	<delete id="deletePerson2group" parameterClass="Person2group">
+			DELETE FROM IKEP4_AD_PERSON2GROUP
+			/* [Addressbook_SqlMap.xml] support.addressbook.dao.Addressbook.deletePerson2group */
+			WHERE 1=1
+
+			<dynamic>
+				<isNotNull property="personId" prepend="AND">
+					PERSON_ID = #personId#
+					<isNotNull property="addrgroupId" prepend="AND">
+						ADDRGROUP_ID = #addrgroupId#
+					</isNotNull>
+				</isNotNull>
+				<isNull property="personId">
+					<isNotNull property="addrgroupId" prepend="AND">
+						ADDRGROUP_ID = #addrgroupId#
+					</isNotNull>
+					<isNull property="addrgroupId" prepend="AND">
+						ADDRGROUP_ID IS NULL
+					</isNull>
+				</isNull>
+			</dynamic>
+	</delete>
+	
+	<insert id="copyTeamAddr" parameterClass="Person2group"> 
+	    <![CDATA[
+			 /* support.addressbook.dao.Addressbook.copyTeamAddr */ 
+			DECLARE @chcker INTEGER;
+			
+			SELECT @chcker = COUNT(*) from IKEP4_AD_PERSON2GROUP t WHERE t.person_id =  #personId# and t.user_type = 'T' and t.addrgroup_id = #addrgroupId# 
+			if(@chcker = 0)
+				BEGIN
+					INSERT INTO IKEP4_AD_PERSON2GROUP 
+					   (person_id,
+						addrgroup_id,
+						user_type,
+						register_id,
+						register_name,
+						regist_date,
+						updater_id,
+						updater_name,
+						update_date)
+					VALUES (#personId#, #addrgroupId#, 'T', #registerId#, #registerName#, CURRENT_TIMESTAMP, #registerId#, #registerName#, CURRENT_TIMESTAMP)	
+				END
+				ELSE
+				BEGIN
+					UPDATE IKEP4_AD_PERSON2GROUP
+					SET updater_id = #registerId#,	updater_name = #registerName#, update_date	= CURRENT_TIMESTAMP	
+					WHERE addrgroup_id = #addrgroupId# AND USER_TYPE = 'T' AND person_id = #personId# 	
+			END
+	       ]]> 
+	  </insert>
+	  
+	
+	<select id="selectPersonByMail" parameterClass="PersonSearch" resultMap="resultPerson">
+    
+        SELECT /* [Addressbook_SqlMap.xml] support.addressbook.dao.Addressbook.selectPersonByMail */ 
+                  AP.PERSON_ID AS PERSON_ID
+                , AP.PERSON_NAME AS PERSON_NAME
+                , AP.PERSON_NAME AS PERSON_ENGLISH_NAME
+                , AP.COMPANY_NAME AS COMPANY_NAME
+                , AP.TEAM_NAME AS TEAM_NAME
+                , AP.TEAM_NAME AS TEAM_ENGLISH_NAME
+                , AP.JOB_RANK_NAME AS JOB_RANK_NAME
+                , AP.JOB_RANK_NAME AS JOB_RANK_ENGLISH_NAME
+                , AP.OFFICE_PHONENO AS OFFICE_PHONENO
+                , AP.MOBILE_PHONENO AS MOBILE_PHONENO
+                , AP.MAIL_ADDRESS AS MAIL_ADDRESS
+                , AP.PERSON_MEMO AS PERSON_MEMO
+                , AP.COMPANY_USER_ID AS COMPANY_USER_ID
+                , AP.REGISTER_ID AS REGISTER_ID
+                , AP.REGISTER_NAME AS REGISTER_NAME
+                , AP.REGIST_DATE AS REGIST_DATE
+                , AP.UPDATE_DATE AS UPDATE_DATE
+                , PG.USER_TYPE AS USER_TYPE
+                , PG.ADDRGROUP_ID AS ADDRGROUP_ID
+            FROM IKEP4_AD_PERSON  AP LEFT JOIN IKEP4_AD_PERSON2GROUP PG
+                ON AP.PERSON_ID = PG.PERSON_ID
+            WHERE 1=1 
+            <dynamic>
+                <isNotNull property="mailAddress">                   
+                     AND  AP.MAIL_ADDRESS = #mailAddress#  
+                </isNotNull>
+            </dynamic>      
+            <dynamic>
+                <isNotNull property="registerId">                  
+                   AND    AP.REGISTER_ID = #registerId#
+                </isNotNull>
+            </dynamic>
+    </select>	
+	
+</sqlMap>

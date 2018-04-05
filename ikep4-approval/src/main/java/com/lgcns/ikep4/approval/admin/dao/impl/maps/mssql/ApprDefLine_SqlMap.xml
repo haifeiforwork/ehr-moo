@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="approval.admin.dao.ApprDefLine" >
+	<typeAlias alias="ApprDefLine"					type="com.lgcns.ikep4.approval.admin.model.ApprDefLine"/>
+	<typeAlias alias="ApprDefLineInfo"				type="com.lgcns.ikep4.approval.admin.model.ApprDefLineInfo"/>
+	<typeAlias alias="ApprDefLineSearchCondition"	type="com.lgcns.ikep4.approval.admin.search.ApprDefLineSearchCondition"/>
+	
+
+	<sql id="sqlColumnList">
+		A.DEF_LINE_ID		AS	defLineId,
+		A.DEF_LINE_NAME		AS	defLineName,
+		A.DEF_LINE_DESC		AS	defLineDesc,
+		A.DEF_LINE_TYPE		AS	defLineType,
+		A.DEF_LINE_WAY		AS	defLineWay,
+		A.REGISTER_ID		AS	registerId,
+		A.REGISTER_NAME		AS	registerName,
+		A.REGIST_DATE		AS	registDate,
+		A.PORTAL_ID			AS	portalId,
+		A.SYSTEM_ID			AS	systemId,
+		B.SYSTEM_NAME		AS	systemName,
+		B.SYSTEM_EN_NAME	AS	systemEnName
+	</sql>
+
+	<!-- insert -->
+	<insert id="create" parameterClass="ApprDefLine">
+	/* [ApprDefLine_SqlMap.xml] approval.admin.dao.ApprDefLine.insert */
+	<![CDATA[ 
+		INSERT INTO IKEP4_APPR_DEF_LINE
+		(
+			DEF_LINE_ID,
+			DEF_LINE_NAME,
+			DEF_LINE_DESC,
+			DEF_LINE_TYPE,
+			DEF_LINE_WAY,
+			REGISTER_ID,
+			REGISTER_NAME,
+			REGIST_DATE,
+			PORTAL_ID,
+			SYSTEM_ID
+		)
+		VALUES 
+		(
+			#defLineId#,
+			#defLineName#,
+			#defLineDesc#,
+			#defLineType#,
+			#defLineWay#,
+			#registerId#,
+			#registerName#,
+			CURRENT_TIMESTAMP,
+			#portalId#,
+			#systemId#
+		)
+	]]>
+	</insert>
+	
+	<select id="listBySearchCondition" parameterClass="ApprDefLineSearchCondition" resultClass="ApprDefLine"> 
+	SELECT /* [ApprDefLine_SqlMap.xml] uapproval.admin.dao.ApprDefLine.listBySearchCondition */ 
+		*
+	FROM 
+	( 
+		SELECT A.* FROM 
+		( 
+			/* START========================================= */
+			SELECT 
+				Row_number() OVER (	
+					ORDER BY
+						<isNotEmpty property="sortColumn">
+				    	<isEqual property="sortColumn" compareValue="defLineType">
+				    	A.DEF_LINE_TYPE
+						</isEqual>
+						<isEqual property="sortColumn" compareValue="defLineName">
+				    	A.DEF_LINE_NAME
+						</isEqual>
+						<isEqual property="sortColumn" compareValue="registDate">
+				    	A.REGIST_DATE
+						</isEqual>						
+						</isNotEmpty>
+				    	
+						<isNotEmpty property="sortType">
+				    	<isEqual property="sortType" compareValue="DESC">
+				    	DESC,
+						</isEqual>
+						<isEqual property="sortType" compareValue="ASC">
+				    	ASC,
+						</isEqual>
+						</isNotEmpty>
+				    	A.REGIST_DATE DESC ,A.DEF_LINE_NAME DESC
+					) AS RNUM,													
+				<include refid="approval.admin.dao.ApprDefLine.sqlColumnList" /> 
+			FROM   
+				IKEP4_APPR_DEF_LINE A
+				LEFT OUTER JOIN IKEP4_APPR_SYSTEM B ON (A.SYSTEM_ID=B.SYSTEM_ID)
+			WHERE	
+				A.PORTAL_ID		=	#portalId#
+				<isNotEmpty property="systemId">
+				AND A.SYSTEM_ID	=	#systemId#	
+				</isNotEmpty>		
+				<isNotEmpty property="searchColumn">
+				<isEqual property="searchColumn" compareValue="systemName">
+				AND	 ( UPPER(B.SYSTEM_NAME) LIKE '%' || UPPER(#searchWord#) || '%' OR  UPPER(B.SYSTEM_EN_NAME) LIKE '%' || UPPER(#searchWord#) || '%' )
+				</isEqual>				
+				<isEqual property="searchColumn" compareValue="defLineName">
+				AND	UPPER(A.DEF_LINE_NAME) LIKE '%' || UPPER(#searchWord#) || '%'
+				</isEqual>
+				</isNotEmpty>
+	    	
+			/* ===========================================END  */ 
+	<![CDATA[
+		) A WHERE RNUM <=  #endRowIndex# /* 종료  */
+	) TBL WHERE RNUM >  #startRowIndex# /* 시작 */
+	]]> 
+	</select>
+	 
+	<select id="countBySearchCondition" parameterClass="ApprDefLineSearchCondition" resultClass="int">
+		SELECT /* [ApprDefLine_SqlMap.xml] approval.admin.dao.ApprDefLine.countBySearchCondition */ 
+	          COUNT(A.DEF_LINE_ID)
+		FROM   
+			IKEP4_APPR_DEF_LINE A
+			LEFT OUTER JOIN IKEP4_APPR_SYSTEM B ON (A.SYSTEM_ID=B.SYSTEM_ID)			
+		WHERE	
+			A.PORTAL_ID		=	#portalId#
+			<isNotEmpty property="systemId">
+			AND A.SYSTEM_ID	=	#systemId#	
+			</isNotEmpty>		  
+			
+
+			
+			<isNotEmpty property="searchColumn">
+			<isEqual property="searchColumn" compareValue="systemName">
+			AND	 ( UPPER(B.SYSTEM_NAME) LIKE '%' || UPPER(#searchWord#) || '%' OR  UPPER(B.SYSTEM_EN_NAME) LIKE '%' || UPPER(#searchWord#) || '%' )
+			</isEqual>				
+			<isEqual property="searchColumn" compareValue="defLineName">
+			AND	UPPER(A.DEF_LINE_NAME) LIKE '%' || UPPER(#searchWord#) || '%'
+			</isEqual>
+			</isNotEmpty>
+	</select>
+	
+	<select id="listApprDefLine" resultClass="ApprDefLine"> 
+	SELECT /* [ApprDefLine_SqlMap.xml] uapproval.admin.dao.ApprDefLine.listApprDefLine */ 
+			<include refid="approval.admin.dao.ApprDefLine.sqlColumnList" /> 
+	FROM   
+		IKEP4_APPR_DEF_LINE A
+		LEFT OUTER JOIN IKEP4_APPR_SYSTEM B ON (A.SYSTEM_ID=B.SYSTEM_ID)		
+	ORDER BY 
+		defLineName ASC	  
+	</select>	
+	
+	<select id="listApprDefLineType" parameterClass="ApprDefLine" resultClass="ApprDefLine"> 
+	SELECT /* [ApprDefLine_SqlMap.xml] uapproval.admin.dao.ApprDefLine.listApprDefLineType */ 
+			<include refid="approval.admin.dao.ApprDefLine.sqlColumnList" /> 
+	FROM   
+		IKEP4_APPR_DEF_LINE A
+		LEFT OUTER JOIN IKEP4_APPR_SYSTEM B ON (A.SYSTEM_ID=B.SYSTEM_ID)		
+	WHERE
+		A.PORTAL_ID	=	#portalId#
+		<isNotEmpty property="systemId">	
+		AND A.SYSTEM_ID	=	#systemId#	
+		</isNotEmpty>	
+		AND A.DEF_LINE_TYPE=#defLineType#
+	ORDER BY 
+		defLineName ASC	  
+	</select>
+		
+ 	<select id="get" parameterClass="java.lang.String" resultClass="ApprDefLine"> 
+	<![CDATA[
+	/* [ApprDefLine_SqlMap.xml] approval.admin.dao.ApprDefLine.get */
+	SELECT 
+		A.DEF_LINE_ID		AS	defLineId,
+		A.DEF_LINE_NAME		AS	defLineName,
+		A.DEF_LINE_DESC		AS	defLineDesc,
+		A.DEF_LINE_TYPE		AS	defLineType,
+		A.DEF_LINE_WAY		AS	defLineWay,
+		A.REGISTER_ID		AS	registerId,
+		A.REGISTER_NAME		AS	registerName,
+		A.REGIST_DATE		AS	registDate,
+		A.PORTAL_ID			AS	portalId,
+		A.SYSTEM_ID			AS	systemId,
+		B.SYSTEM_NAME		AS	systemName,
+		B.SYSTEM_EN_NAME	AS	systemEnName
+	FROM   
+		IKEP4_APPR_DEF_LINE A
+		LEFT OUTER JOIN IKEP4_APPR_SYSTEM B ON (A.SYSTEM_ID=B.SYSTEM_ID)			
+	WHERE
+    	A.DEF_LINE_ID = #defLineId#
+    ]]>
+ 	</select>
+
+
+	<update id="update" parameterClass="ApprDefLine"> 
+ 	<![CDATA[
+	/* [ApprDefLine_SqlMap.xml] approval.admin.dao.ApprDefLine.update */
+    	UPDATE				
+    		IKEP4_APPR_DEF_LINE 
+    	SET					
+			DEF_LINE_NAME	=	#defLineName#,    		
+			DEF_LINE_DESC	=	#defLineDesc#,
+			DEF_LINE_TYPE	=	#defLineType#,
+			DEF_LINE_WAY	=	#defLineWay#,
+			SYSTEM_ID		=	#systemId#
+    	WHERE
+			DEF_LINE_ID		=	#defLineId# 
+    ]]>
+  	</update>
+
+	
+	<delete id="delete" parameterClass="java.lang.String"> 
+	<![CDATA[
+		/* [ApprDefLine_SqlMap.xml] approval.admin.dao.ApprDefLine.delete */
+		DELETE 
+		FROM 
+			IKEP4_APPR_DEF_LINE
+		WHERE
+			DEF_LINE_ID		=	#defLineId# 
+    	]]>
+	</delete>
+
+
+		
+</sqlMap>

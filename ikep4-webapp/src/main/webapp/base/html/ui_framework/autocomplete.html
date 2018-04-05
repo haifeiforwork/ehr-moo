@@ -1,0 +1,114 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ko">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Home</title>
+<link rel="stylesheet" type="text/css" href="../../css/guide.css" />
+<link rel="stylesheet" type="text/css" href="../../css/theme01/jquery_ui_custom.css" />
+<link rel="stylesheet" type="text/css" href="../../css/common.css" />
+<link rel="stylesheet" type="text/css" href="../../css/theme01/theme.css" />
+<link type="text/css" rel="stylesheet" href="../../css/syntaxhighlighter_3.0.83/shCoreDefault.css"/>
+<script type="text/javascript" src="../../js/jquery/jquery-1.6.2.min.js"></script>
+<script type="text/javascript" src="../../js/jquery/jquery-ui-1.8.13.min.without.datepicker.js"></script>
+<script type="text/javascript" src="../../js/syntaxhighlighter_3.0.83/shCore.js"></script>
+<script type="text/javascript" src="../../js/syntaxhighlighter_3.0.83/shBrushJScript.js"></script>
+<script type="text/javascript" src="../../js/langResource/ko.js"></script>
+<script type="text/javascript" src="../../js/common.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$(document).ready(function() {
+		SyntaxHighlighter.highlight();
+		
+		$("a.command_help").parents("div.toolbar").hide();
+		//setTimeout(function() {$("a.command_help").parents("div.toolbar").hide();}, 100);
+		
+		$("#tags").autocomplete({
+			// source에서의 result 중 첫번째 아이템이 객체형으로 쓰여지면 이후 문자형 아이템으로 혼영해서 사용하면 오류발생
+			source : "ajax_result/autocomplete_items.json",
+			change : function(event) {
+				iKEP.debug($(this).val());
+			},
+			select : function(event, item) {
+				this.blur();
+				iKEP.debug(item);//label, value
+			}
+		});
+		$("#tags").bind("keypress", function(event) {
+			if(event.which == 13) {
+				iKEP.debug("enterd key : Enter");
+			}
+		});
+	});	
+})(jQuery);
+</script>
+</head>
+
+<body>
+<!--guideWrapper Start-->
+<div id="guideConFrame">
+
+	<div class="guideConTitle"><h2>Autocomplete</h2><a class="refer" target="_blank" href="http://jqueryui.com/demos/autocomplete/">reference</a></div>
+	
+	<!--UI_sample_area Start-->
+	<h4>UI sample</h4>
+	<a target="_blank" href="autocomplete_pop.html">New Window</a>
+	<div class="UI_sample">
+		
+		<!--UI_sample Start-->
+		<div>
+			<label for="tags">Tags: </label>
+			<input id="tags" />
+		</div>
+		<!--//UI_sample End-->
+		
+		<div class="UI_sum">
+			사용자의 입력에 따라 해당 문자열의 자동 완성 기능
+		</div>
+	</div>
+	<!--//UI_sample_area End-->
+
+	<!--UI_source Start-->
+	<h4>View source</h4>
+	<div class="UI_source">
+		<h5>JavaScript</h5>
+		<pre class="brush: js;">
+	$("#tags").autocomplete({
+		source : "ajax_result/autocomplete_items.json",	// source에서의 result 중 첫번째 아이템이 객체형으로 쓰여지면 이후 문자형 아이템으로 혼영해서 사용하면 오류발생
+		change : function(event) {
+			iKEP.debug($(this).val());
+		},
+		select : function(event, item) {
+			this.blur();	// 아이템 선택 후 포커스 이동시 change이벤트 발생하므로...
+			iKEP.debug(item);//label, value
+		}
+	});
+		</pre>
+	</div>	
+	<!--UI_source End-->	
+
+	<!--Method Start-->	
+	<h4>Method & Properties</h4>
+	<div class="UI_method">
+		<ul>
+			<li><span>.autocomplete(options)</span>
+				<ul>
+					<li><span>options</span>
+						<ul>
+							<li><span>source : array / url(ajax request url)</span><br/>
+								* url 지정시 해당 url로 요청시 "term" 파라미터 이름으로 입력한 값 전송 
+							</li>
+							<li>change : callback_function(event) - 지정된 input의 값이 변경되었을때 발생하는 이벤트</li>
+							<li><span>select : callback_function(event, item) - 제시된 아이템을 선택했을때 발생하는 이벤트</span><br/>
+								item : {label:"", value:""}	- source가 label, value쌍의 오프젝트 리스트일 경우 해당하는 값으로 설정되며, 그렇지 않으면 같은 값으로 설정됨.
+							</li>
+						</ul>
+					</li>
+				</ul>
+			</li>
+		</ul>
+	</div>
+	<!--//Method End-->	
+</div>
+<!--//guideWrapper End-->
+</body>
+</html>

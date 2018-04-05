@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="com.lgcns.ikep4.approval.work.dao.ApprUserDoc" >
+	<typeAlias alias="apprUserDocFolder" type="com.lgcns.ikep4.approval.work.model.ApprUserDocFolder"/>
+	
+	<select id="getChildCount" parameterClass="java.util.Map" resultClass="int">
+		<![CDATA[
+		/* [ApprUserDoc_SqlMap.xml] approval.work.userdoc.getChildCount */
+		SELECT				COUNT(USER_ID) AS CNT
+		FROM				IKEP4_APPR_USER_FOLDER
+		WHERE				USER_ID = #userId#
+		AND					PORTAL_ID = #portalId#
+		]]>
+	</select>
+	
+	<select id="treeList" parameterClass="java.util.Map" resultClass="apprUserDocFolder">
+		<![CDATA[
+		/* [ApprUserDoc_SqlMap.xml] approval.work.userdoc.treeList */
+		]]> 
+		<![CDATA[
+		SELECT 
+				A.FOLDER_ID folderId,
+			    A.FOLDER_PARENT_ID folderParentId,
+			    A.FOLDER_NAME folderName,
+			    A.SORT_ORDER SORT_ORDER
+		FROM
+			IKEP4_APPR_USER_FOLDER A
+		WHERE  A.PORTAL_ID		= #portalId#
+		AND    A.USER_ID		= #userId#
+		ORDER BY 
+			A.SORT_ORDER ASC
+		
+      	]]>    	
+	</select>
+	
+	<select id="treeChildrenList" parameterClass="Map" resultClass="apprUserDocFolder">
+		SELECT /* [[ApprUserDoc_SqlMap.xml] approval.work.userdoc.treeChildrenList */ 
+				A.FOLDER_ID folderId,
+			    A.FOLDER_PARENT_ID folderParentId,
+			    A.FOLDER_NAME folderName,
+		       (SELECT COUNT(A.FOLDER_ID) FROM IKEP4_APPR_USER_FOLDER B WHERE (A.FOLDER_ID = B.FOLDER_PARENT_ID or B.FOLDER_PARENT_ID IS NULL)) AS hasChildren
+	    FROM   IKEP4_APPR_USER_FOLDER A
+	    <isNotEmpty property="folderId">
+			WHERE A.FOLDER_PARENT_ID = #folderId#
+		</isNotEmpty>
+	    <isEmpty property="folderId">
+			WHERE A.FOLDER_PARENT_ID IS NULL
+		</isEmpty>
+		AND A.PORTAL_ID		= #portalId#
+		AND A.USER_ID		= #userId#
+		ORDER BY A.SORT_ORDER ASC
+  </select>
+  
+  <insert id="createFolder" parameterClass="apprUserDocFolder">
+  	
+  	/* [[ApprUserDoc_SqlMap.xml] approval.work.userdoc.createFolder */
+    INSERT INTO IKEP4_APPR_USER_FOLDER ( 
+     		FOLDER_ID,
+		    USER_ID,
+		    PORTAL_ID ,
+		    FOLDER_PARENT_ID ,
+		    FOLDER_NAME ,
+		    FOLDER_TYPE ,
+		    SORT_ORDER ,
+		    REGISTER_ID ,
+		    REGISTER_NAME ,
+		    REGIST_DATE 
+    ) VALUES (
+      #folderId#,
+      #userId#,
+      #portalId#,
+      <isEmpty property="folderParentId">
+      	NULL,
+      </isEmpty>
+      <isNotEmpty property="folderParentId">
+      	#folderParentId#,   
+      </isNotEmpty>
+      #folderName#,
+      #folderType#,
+      <isNotEmpty property="folderParentId">
+			 (SELECT ISNULL(MAX(SORT_ORDER), -1) + 1 FROM IKEP4_APPR_USER_FOLDER WHERE FOLDER_PARENT_ID = #folderParentId#),  
+	  </isNotEmpty>
+      <isEmpty property="folderParentId">
+			 (SELECT ISNULL(MAX(SORT_ORDER), -1) + 1 FROM IKEP4_APPR_USER_FOLDER WHERE FOLDER_PARENT_ID IS NULL),  
+	  </isEmpty>  
+      #registerId#,       
+      #registerName#,     
+      GETDATE()       
+    )
+  </insert>
+  
+   <update id="updateFolder" parameterClass="apprUserDocFolder">
+   		/* [ApprUserDoc_SqlMap.xml]  approval.work.userdoc.updateFolder */
+		
+	  	<![CDATA[
+		   	UPDATE 	IKEP4_APPR_USER_FOLDER 
+		   	SET 	FOLDER_NAME 		= #folderName#
+		   	WHERE 	FOLDER_ID 		= #folderId#
+	   	]]>
+	</update>
+	
+	<select id="getFolderInfo" parameterClass="String" resultClass="apprUserDocFolder">
+		<![CDATA[
+		/* [ApprUserDoc_SqlMap.xml] approval.work.userdoc.getChildCount */
+		SELECT 
+				A.FOLDER_ID folderId,
+			    A.FOLDER_PARENT_ID folderParentId,
+			    A.FOLDER_NAME folderName,
+			    A.SORT_ORDER sortOrder
+		FROM
+			IKEP4_APPR_USER_FOLDER A
+		WHERE  A.FOLDER_ID		= #folderId#
+		]]>
+	</select>
+	
+	<insert id="createApprUserDoc" parameterClass="apprUserDocFolder">
+  	
+  	/* [[ApprUserDoc_SqlMap.xml] approval.work.userdoc.createApprUserDoc */
+    INSERT INTO IKEP4_APPR_USER_DOC ( 
+     		APPR_ID,
+     		FOLDER_ID,
+		    REGISTER_ID ,
+		    REGISTER_NAME ,
+		    REGIST_DATE 
+    ) VALUES (
+      #apprId#,
+      #folderId#,
+      #registerId#,       
+      #registerName#,     
+      GETDATE()       
+    )
+  </insert>
+  
+   <delete id="deleteApprUserDoc" parameterClass="Map"> 
+	<![CDATA[
+		/* [ApprUserDoc_SqlMap.xml] approval.work.userdoc.deleteApprDoc */
+		DELETE 
+		FROM 
+			IKEP4_APPR_USER_DOC
+		WHERE
+	]]>
+		<isNotEmpty property="apprId">
+			APPR_ID	=	#apprId#
+		</isNotEmpty>
+		<isNotEmpty property="folderId">
+			FOLDER_ID		IN ( SELECT FOLDER_ID FROM dbo.FN_APPR_USER_FOLDER_LIST (#folderId#))
+		</isNotEmpty>
+	</delete>
+	
+	<delete id="deleteApprDocFolder" parameterClass="java.lang.String"> 
+	<![CDATA[
+		/* [ApprUserDoc_SqlMap.xml] approval.work.userdoc.deleteApprDocFolder */
+		DELETE 
+		FROM 
+			IKEP4_APPR_USER_FOLDER
+		WHERE
+			FOLDER_ID IN ( SELECT FOLDER_ID FROM dbo.FN_APPR_USER_FOLDER_LIST (#folderId#))
+								  
+    	]]>
+	</delete>
+	
+	<update id="updateMove" parameterClass="apprUserDocFolder">
+    UPDATE IKEP4_APPR_USER_FOLDER /* [ApprUserDoc_SqlMap.xml] approval.work.userdoc.updateMove */
+    SET    
+	   	<isEmpty property="folderParentId">
+	   	FOLDER_PARENT_ID  =  NULL,
+	   	</isEmpty>
+	   	<isNotEmpty property="folderParentId">
+	   	FOLDER_PARENT_ID  =  #folderParentId#,
+	   	</isNotEmpty>     
+           SORT_ORDER       =  #sortOrder#
+    WHERE  FOLDER_ID = #folderId#
+  </update>   
+  
+  <update id="updateSortOderIncrease" parameterClass="apprUserDocFolder">
+    UPDATE IKEP4_APPR_USER_FOLDER /* [ApprUserDoc_SqlMap.xml] approval.work.userdoc.updateSortOderIncrease */
+    SET    SORT_ORDER      =  SORT_ORDER + 1
+    WHERE  1 = 1
+    <isEmpty property="folderParentId">
+    AND  FOLDER_PARENT_ID IS NULL
+    </isEmpty>
+    <isNotEmpty property="folderParentId">
+    AND  FOLDER_PARENT_ID = #folderParentId#
+    </isNotEmpty>
+    AND    SORT_ORDER &gt;= #sortOrder#
+  </update>
+    
+  <update id="updateSortOderDecrease" parameterClass="apprUserDocFolder">
+    UPDATE IKEP4_APPR_USER_FOLDER /* [ApprUserDoc_SqlMap.xml] approval.work.userdoc.updateSortOderDecrease */
+    SET    SORT_ORDER      =  SORT_ORDER - 1
+    WHERE  1 = 1
+    <isEmpty property="folderParentId">
+    AND  FOLDER_PARENT_ID IS NULL
+    </isEmpty>
+    <isNotEmpty property="folderParentId">
+    AND  FOLDER_PARENT_ID = #folderParentId#
+    </isNotEmpty>
+    AND    SORT_ORDER &gt; #sortOrder#
+  </update> 
+  
+  <select id="checkExist" parameterClass="java.util.Map" resultClass="int">
+		<![CDATA[
+		/* [ApprUserDoc_SqlMap.xml] approval.work.userdoc.checkExist */
+		SELECT				COUNT(FOLDER_ID) AS CNT
+		FROM				IKEP4_APPR_USER_DOC
+		WHERE				FOLDER_ID = #folderId#
+		AND					APPR_ID = #apprId#
+		]]>
+	</select>
+	
+	<select id="existFolderName" parameterClass="java.util.Map" resultClass="int">
+		<![CDATA[
+		/* [ApprUserDoc_SqlMap.xml] approval.work.userdoc.existFolderName */
+		SELECT				COUNT(FOLDER_ID) AS CNT
+		FROM				IKEP4_APPR_USER_FOLDER
+		WHERE				FOLDER_NAME = #folderName#
+		]]>
+	</select>
+	
+</sqlMap>

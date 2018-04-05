@@ -1,0 +1,741 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="portal.admin.screen.portalPortlet" >
+	<typeAlias alias = "PortalPortlet" type="com.lgcns.ikep4.portal.admin.screen.model.PortalPortlet"/>
+	<typeAlias alias = "SearchCondition" type="com.lgcns.ikep4.support.user.code.model.AdminSearchCondition"/>
+	
+	<!-- 포틀릿 테이블 조회 결과 -->
+	<resultMap id="result" class="PortalPortlet">
+		<result property="portletId" column="PORTLET_ID" columnIndex="1"/>
+		<result property="portletName" column="PORTLET_NAME" columnIndex="2"/>
+		<result property="portletCategoryId" column="PORTLET_CATEGORY_ID" columnIndex="3"/>
+		<result property="portletCategoryName" column="PORTLET_CATEGORY_NAME" columnIndex="4"/>
+		<result property="systemCode" column="SYSTEM_CODE" columnIndex="5"/>
+		<result property="systemName" column="SYSTEM_NAME" columnIndex="6"/>
+		<result property="moveable" column="MOVEABLE" columnIndex="7"/>
+		<result property="previewImageId" column="PREVIEW_IMAGE_ID" columnIndex="8"/>
+		<result property="portletType" column="PORTLET_TYPE" columnIndex="9"/>
+		<result property="ownerId" column="OWNER_ID" columnIndex="10"/>
+		<result property="registerId" column="REGISTER_ID" columnIndex="11"/>
+		<result property="registerName" column="REGISTER_NAME" columnIndex="12"/>
+		<result property="registDate" column="REGIST_DATE" columnIndex="13"/>
+		<result property="updaterId" column="UPDATER_ID" columnIndex="14"/>
+		<result property="updaterName" column="UPDATER_NAME" columnIndex="15"/>
+		<result property="updateDate" column="UPDATE_DATE" columnIndex="16"/>
+		<result property="linkType" column="LINK_TYPE" columnIndex="17"/>
+		<result property="defaultColIndex" column="DEFAULT_COL_INDEX" columnIndex="18"/>
+		<result property="normalViewUrl" column="NORMAL_VIEW_URL" columnIndex="19"/>
+		<result property="configViewUrl" column="CONFIG_VIEW_URL" columnIndex="20"/>
+		<result property="maxViewUrl" column="MAX_VIEW_URL" columnIndex="21"/>
+		<result property="configMode" column="CONFIG_MODE" columnIndex="22"/>
+		<result property="maxMode" column="MAX_MODE" columnIndex="23"/>
+		<result property="reloadMode" column="RELOAD_MODE" columnIndex="24"/>
+		<result property="removeMode" column="REMOVE_MODE" columnIndex="25"/>
+		<result property="moreMode" column="MORE_MODE" columnIndex="26"/>
+		<result property="multipleMode" column="MULTIPLE_MODE" columnIndex="27"/>
+		<result property="helpMode" column="HELP_MODE" columnIndex="28"/>
+		<result property="helpViewUrl" column="HELP_VIEW_URL" columnIndex="29"/>
+		<result property="moreViewUrl" column="MORE_VIEW_URL" columnIndex="30"/>
+		<result property="publicOption" column="PUBLIC_OPTION" columnIndex="31"/>
+		<result property="warFileId" column="WAR_FILE_ID" columnIndex="32"/>
+		<result property="headerMode" column="HEADER_MODE" columnIndex="33"/>
+		<result property="status" column="STATUS" columnIndex="34"/>
+		<result property="iframeHeight" column="IFRAME_HEIGHT" columnIndex="35"/>
+		<result property="shareYn" column="SHARE_YN" columnIndex="36"/>
+		<result property="cacheYn" column="CACHE_YN" columnIndex="37"/>
+		<result property="cacheLiveSecond" column="CACHE_LIVE_SECOND" columnIndex="38"/>
+		<result property="cacheMaxCount" column="CACHE_MAX_COUNT" columnIndex="39"/>
+		<result property="cacheNameStr" column="CACHE_NAME_STR" columnIndex="40"/>
+	</resultMap>
+	
+	<resultMap id="configResult" class="PortalPortlet">
+		<result property="portletId" column="PORTLET_ID" columnIndex="1"/>
+		<result property="portletName" column="PORTLET_NAME" columnIndex="2"/>
+		<result property="portletCategoryId" column="PORTLET_CATEGORY_ID" columnIndex="3"/>
+		<result property="systemCode" column="SYSTEM_CODE" columnIndex="4"/>
+		<result property="systemName" column="SYSTEM_NAME" columnIndex="5"/>
+		<result property="moveable" column="MOVEABLE" columnIndex="6"/>
+		<result property="previewImageId" column="PREVIEW_IMAGE_ID" columnIndex="7"/>
+		<result property="portletType" column="PORTLET_TYPE" columnIndex="8"/>
+		<result property="ownerId" column="OWNER_ID" columnIndex="9"/>
+		<result property="registerId" column="REGISTER_ID" columnIndex="10"/>
+		<result property="registerName" column="REGISTER_NAME" columnIndex="11"/>
+		<result property="registDate" column="REGIST_DATE" columnIndex="12"/>
+		<result property="updaterId" column="UPDATER_ID" columnIndex="13"/>
+		<result property="updaterName" column="UPDATER_NAME" columnIndex="14"/>
+		<result property="updateDate" column="UPDATE_DATE" columnIndex="15"/>
+		<result property="linkType" column="LINK_TYPE" columnIndex="16"/>
+		<result property="defaultColIndex" column="DEFAULT_COL_INDEX" columnIndex="17"/>
+		<result property="normalViewUrl" column="NORMAL_VIEW_URL" columnIndex="18"/>
+		<result property="portletConfigId" column="PORTLET_CONFIG_ID" columnIndex="19"/>
+		<result property="viewMode" column="VIEW_MODE" columnIndex="20"/>
+		<result property="configViewUrl" column="CONFIG_VIEW_URL" columnIndex="21"/>
+		<result property="maxViewUrl" column="MAX_VIEW_URL" columnIndex="22"/>
+		<result property="configMode" column="CONFIG_MODE" columnIndex="23"/>
+		<result property="maxMode" column="MAX_MODE" columnIndex="24"/>
+		<result property="reloadMode" column="RELOAD_MODE" columnIndex="25"/>
+		<result property="removeMode" column="REMOVE_MODE" columnIndex="26"/>
+		<result property="moreMode" column="MORE_MODE" columnIndex="27"/>
+		<result property="multipleMode" column="MULTIPLE_MODE" columnIndex="28"/>
+		<result property="helpMode" column="HELP_MODE" columnIndex="29"/>
+		<result property="helpViewUrl" column="HELP_VIEW_URL" columnIndex="30"/>
+		<result property="moreViewUrl" column="MORE_VIEW_URL" columnIndex="31"/>
+	</resultMap>
+	
+	<!-- portalPortletAdd -->
+	<insert id="createPortalPortlet" parameterClass="PortalPortlet"> 
+      <![CDATA[ 
+      	/* [PortalPortlet_SqlMap.xml] portal.admin.screen.portalPortlet.createPortalPortlet */
+           INSERT INTO IKEP4_PO_PORTLET (PORTLET_ID, PORTLET_NAME, PORTLET_CATEGORY_ID, SYSTEM_CODE, MOVEABLE, PREVIEW_IMAGE_ID, PORTLET_TYPE, OWNER_ID, REGISTER_ID, REGISTER_NAME, REGIST_DATE, UPDATER_ID, UPDATER_NAME, UPDATE_DATE, LINK_TYPE,NORMAL_VIEW_URL, CONFIG_VIEW_URL, MAX_VIEW_URL, CONFIG_MODE, MAX_MODE, RELOAD_MODE, REMOVE_MODE, MORE_MODE, MULTIPLE_MODE, HELP_MODE, HELP_VIEW_URL, MORE_VIEW_URL, PUBLIC_OPTION, WAR_FILE_ID, HEADER_MODE, STATUS, IFRAME_HEIGHT, SHARE_YN, CACHE_YN, CACHE_LIVE_SECOND, CACHE_MAX_COUNT, CACHE_NAME_STR)  
+           VALUES (#portletId#, #portletName#, #portletCategoryId#, #systemCode#, #moveable#, #previewImageId#, #portletType#, #ownerId#, #registerId#, #registerName#, sysdate, #updaterId#, #updaterName#, sysdate, #linkType#, #normalViewUrl#, #configViewUrl#, #maxViewUrl#, #configMode#, #maxMode#, #reloadMode#, #removeMode#, #moreMode#, #multipleMode#, #helpMode#, #helpViewUrl#, #moreViewUrl#, #publicOption#, #warFileId#, #headerMode#, #status#, #iframeHeight#, #shareYn#, #cacheYn#, #cacheLiveSecond#, #cacheMaxCount#, #cacheNameStr#)
+       ]]>
+   </insert>
+   
+   <update id="updatePortalPortlet" parameterClass="PortalPortlet"> 
+      <![CDATA[ 
+      	/* [PortalPortlet_SqlMap.xml] portal.admin.screen.portalPortlet.updatePortalPortlet */
+           UPDATE IKEP4_PO_PORTLET 
+           SET 
+             PORTLET_NAME = #portletName#
+           , PORTLET_CATEGORY_ID = #portletCategoryId#
+           , SYSTEM_CODE = #systemCode#
+           , MOVEABLE = #moveable#
+           , PREVIEW_IMAGE_ID = #previewImageId#
+           , PORTLET_TYPE = #portletType#
+           , OWNER_ID = #ownerId#
+           , UPDATER_ID = #updaterId#
+           , UPDATER_NAME = #updaterName#
+           , UPDATE_DATE = sysdate
+           , LINK_TYPE = #linkType#
+           , NORMAL_VIEW_URL = #normalViewUrl#
+           , CONFIG_VIEW_URL = #configViewUrl#
+           , MAX_VIEW_URL = #maxViewUrl#
+           , CONFIG_MODE = #configMode#
+           , MAX_MODE = #maxMode#
+           , RELOAD_MODE = #reloadMode#
+           , REMOVE_MODE = #removeMode#
+           , MORE_MODE = #moreMode#
+           , MULTIPLE_MODE =  #multipleMode#
+           , HELP_MODE = #helpMode#
+           , HELP_VIEW_URL = #helpViewUrl#
+           , MORE_VIEW_URL = #moreViewUrl#
+           , PUBLIC_OPTION = #publicOption#
+           , HEADER_MODE = #headerMode#
+           , STATUS = #status#
+           , IFRAME_HEIGHT = #iframeHeight#
+           , SHARE_YN = #shareYn#
+           , CACHE_YN = #cacheYn#
+           , CACHE_LIVE_SECOND = #cacheLiveSecond#
+           , CACHE_MAX_COUNT = #cacheMaxCount#
+           , CACHE_NAME_STR = #cacheNameStr#
+           WHERE PORTLET_ID = #portletId#
+       ]]>
+   </update>
+   
+   <delete id="deletePortalPortlet" parameterClass="String"> 
+      <![CDATA[ 
+      	/* [PortalPortlet_SqlMap.xml] portal.admin.screen.portalPortlet.deletePortalPortlet */
+           DELETE IKEP4_PO_PORTLET 
+           WHERE PORTLET_ID=  #portletId#
+       ]]>
+   </delete>
+   
+   <!-- portalPortletView -->
+   <select id="readPortalPortlet" parameterClass="java.util.HashMap" resultMap="result">
+	  <![CDATA[
+	        /* [PortalPortlet_SqlMap.xml] portal.admin.screen.portalPortlet.readPortalPortlet */
+	  		SELECT 
+			    a.PORTLET_ID, 
+	  ]]>
+	  <isNotEmpty property="userLocaleCode">
+			    d.ITEM_MESSAGE PORTLET_NAME,
+	  </isNotEmpty>
+	  <isEmpty property="userLocaleCode">
+			    a.PORTLET_NAME, 
+	  </isEmpty>	
+	  <![CDATA[
+			   
+			    a.PORTLET_CATEGORY_ID,
+			    c.PORTLET_CATEGORY_NAME, 
+			    a.SYSTEM_CODE,
+			    b.SYSTEM_NAME, 
+			    a.MOVEABLE, 
+			    a.PREVIEW_IMAGE_ID, 
+			    a.PORTLET_TYPE, 
+			    a.OWNER_ID, 
+			    a.REGISTER_ID, 
+			    a.REGISTER_NAME,
+			    TO_CHAR(a.REGIST_DATE, 'YYYY-MM-DD hh:mm:ss') AS REGIST_DATE, 
+			    a.UPDATER_ID, 
+			    a.UPDATER_NAME, 
+			    TO_CHAR(a.UPDATE_DATE, 'YYYY-MM-DD hh:mm:ss') AS UPDATE_DATE,
+			    a.LINK_TYPE,
+			    a.DEFAULT_COL_INDEX,
+			    a.NORMAL_VIEW_URL,
+			    a.CONFIG_VIEW_URL,
+			    a.MAX_VIEW_URL,
+			    a.CONFIG_MODE,
+			    a.MAX_MODE,
+			    a.RELOAD_MODE,
+			    a.REMOVE_MODE,
+			    a.MORE_MODE,
+			    a.MULTIPLE_MODE,
+			    a.HELP_MODE,
+			    a.HELP_VIEW_URL,
+			    a.MORE_VIEW_URL,
+			    a.PUBLIC_OPTION,
+			    a.WAR_FILE_ID,
+			    a.HEADER_MODE,
+			    a.STATUS,
+			    a.IFRAME_HEIGHT,
+			    a.SHARE_YN,
+			    a.CACHE_YN, 
+			    a.CACHE_LIVE_SECOND, 
+			    a.CACHE_MAX_COUNT,
+			    a.CACHE_NAME_STR
+			  FROM IKEP4_PO_PORTLET a inner join
+			       IKEP4_PO_SYSTEM b on a.system_code = b.system_code inner join
+			       IKEP4_PO_PORTLET_CATEGORY c ON a.portlet_category_id = c.portlet_category_id
+	   ]]>
+			       <isNotEmpty property="userLocaleCode">
+			       left outer join 
+			       (SELECT ITEM_MESSAGE, ITEM_ID FROM IKEP4_I18N_MESSAGE 
+			        WHERE   locale_code = #userLocaleCode#
+				    AND   item_type_code = #itemTypeCode# 
+				    AND field_name = 'portletName')
+			        d on a.portlet_id = d.item_id
+				   </isNotEmpty>
+	   <![CDATA[
+			 WHERE a.PORTLET_ID = #portletId#
+	   ]]>
+	</select>
+	
+	<!-- getPortletList -->
+	<select id="listPortlet" parameterClass="String" resultClass="PortalPortlet">
+	  <![CDATA[
+	 		 /* [PortalPortlet_SqlMap.xml] portal.admin.screen.portalPortlet.listPortlet */
+		   SELECT 
+			    a.PORTLET_ID  portletId, 
+			    a.PORTLET_NAME  portletName, 
+			    a.PORTLET_CATEGORY_ID  portletCategoryId,
+			    a.SYSTEM_CODE  systemCode,
+			    a.MOVEABLE  moveable, 
+			    a.PREVIEW_IMAGE_ID  previewImageId, 
+			    a.PORTLET_TYPE  portletType, 
+			    a.OWNER_ID  ownerId, 
+			    a.REGISTER_ID  registerId, 
+			    a.REGISTER_NAME  registerName, 
+			    TO_CHAR(a.REGIST_DATE, 'YYYY-MM-DD hh:mm:ss') AS registDate,  
+			    a.UPDATER_ID  updaterId, 
+			    a.UPDATER_NAME  updaterName, 
+			    TO_CHAR(a.UPDATE_DATE, 'YYYY-MM-DD hh:mm:ss') AS updateDate,
+			    a.LINK_TYPE  linkType,
+			    a.DEFAULT_COL_INDEX  defaultColIndex,
+			    a.NORMAL_VIEW_URL  normalViewUrl,
+			    a.CONFIG_VIEW_URL  configViewUrl,
+			    a.MAX_VIEW_URL  maxViewUrl,
+			    a.CONFIG_MODE  configMode,
+			    a.MAX_MODE  maxMode,
+			    a.RELOAD_MODE  reloadMode,
+			    a.REMOVE_MODE  removeMode,
+			    a.MORE_MODE  moreMode,
+			    a.MULTIPLE_MODE  multipleMode,
+			    a.HELP_MODE	helpMode,
+			    a.HELP_VIEW_URL	helpViewUrl,
+			    a.MORE_VIEW_URL moreViewUrl,
+			    a.HEADER_MODE headerMode,
+			    a.PUBLIC_OPTION publicOption,
+			    a.IFRAME_HEIGHT iframeHeight
+			  FROM IKEP4_PO_PORTLET a inner join
+			       IKEP4_PO_PORTLET_CATEGORY b on a.portlet_category_id = b.portlet_category_id
+			 WHERE a.system_code = #systemCode#
+			   AND a.status = 1    
+		     ORDER BY a.regist_date ASC
+		]]>
+	</select>
+	
+	<!-- getPortletList -->
+	<select id="listPortletPrivate" parameterClass="String" resultClass="PortalPortlet">
+	  <![CDATA[
+	 		 /* [PortalPortlet_SqlMap.xml] portal.admin.screen.portalPortlet.listPortletPrivate */
+		   SELECT 
+			    a.PORTLET_ID  portletId, 
+			    a.PORTLET_NAME  portletName, 
+			    a.PORTLET_CATEGORY_ID  portletCategoryId,
+			    a.SYSTEM_CODE  systemCode,
+			    a.MOVEABLE  moveable, 
+			    a.PREVIEW_IMAGE_ID  previewImageId, 
+			    a.PORTLET_TYPE  portletType, 
+			    a.OWNER_ID  ownerId, 
+			    a.REGISTER_ID  registerId, 
+			    a.REGISTER_NAME  registerName, 
+			    TO_CHAR(a.REGIST_DATE, 'YYYY-MM-DD hh:mm:ss') AS registDate,  
+			    a.UPDATER_ID  updaterId, 
+			    a.UPDATER_NAME  updaterName, 
+			    TO_CHAR(a.UPDATE_DATE, 'YYYY-MM-DD hh:mm:ss') AS updateDate,
+			    a.LINK_TYPE  linkType,
+			    a.DEFAULT_COL_INDEX  defaultColIndex,
+			    a.NORMAL_VIEW_URL  normalViewUrl,
+			    a.CONFIG_VIEW_URL  configViewUrl,
+			    a.MAX_VIEW_URL  maxViewUrl,
+			    a.CONFIG_MODE  configMode,
+			    a.MAX_MODE  maxMode,
+			    a.RELOAD_MODE  reloadMode,
+			    a.REMOVE_MODE  removeMode,
+			    a.MORE_MODE  moreMode,
+			    a.MULTIPLE_MODE  multipleMode,
+			    a.HELP_MODE	helpMode,
+			    a.HELP_VIEW_URL	helpViewUrl,
+			    a.MORE_VIEW_URL moreViewUrl,
+			    a.HEADER_MODE headerMode,
+			    a.PUBLIC_OPTION publicOption,
+			    a.IFRAME_HEIGHT iframeHeight
+			  FROM IKEP4_PO_PORTLET a inner join
+			       IKEP4_PO_PORTLET_CATEGORY b on a.portlet_category_id = b.portlet_category_id
+			 WHERE a.system_code = #systemCode#
+			   AND a.status = 1  
+			   AND a.public_option = 0  
+		     ORDER BY a.regist_date ASC
+		]]>
+	</select>
+	
+	<select id="listPortletCommonCheck" parameterClass="java.util.HashMap" resultClass="PortalPortlet">
+	  <![CDATA[
+	 		 /* [PortalPortlet_SqlMap.xml] portal.admin.screen.portalPortlet.listPortletCommonCheck */
+		   SELECT 
+			    a.PORTLET_ID  portletId, 
+			    d.ITEM_MESSAGE  portletName, 
+			    a.PORTLET_CATEGORY_ID  portletCategoryId,
+			    a.SYSTEM_CODE  systemCode,
+			    a.MOVEABLE  moveable, 
+			    a.PREVIEW_IMAGE_ID  previewImageId, 
+			    a.PORTLET_TYPE  portletType, 
+			    a.OWNER_ID  ownerId, 
+			    a.REGISTER_ID  registerId, 
+			    a.REGISTER_NAME  registerName, 
+			    TO_CHAR(a.REGIST_DATE, 'YYYY-MM-DD hh:mm:ss') AS registDate,  
+			    a.UPDATER_ID  updaterId, 
+			    a.UPDATER_NAME  updaterName, 
+			    TO_CHAR(a.UPDATE_DATE, 'YYYY-MM-DD hh:mm:ss') AS updateDate,
+			    a.LINK_TYPE  linkType,
+			    a.DEFAULT_COL_INDEX  defaultColIndex,
+			    a.NORMAL_VIEW_URL  normalViewUrl,
+			    a.CONFIG_VIEW_URL  configViewUrl,
+			    a.MAX_VIEW_URL  maxViewUrl,
+			    a.CONFIG_MODE  configMode,
+			    a.MAX_MODE  maxMode,
+			    a.RELOAD_MODE  reloadMode,
+			    a.REMOVE_MODE  removeMode,
+			    a.MORE_MODE  moreMode,
+			    a.MULTIPLE_MODE  multipleMode,
+			    a.HELP_MODE	helpMode,
+			    a.HELP_VIEW_URL	helpViewUrl,
+			    a.MORE_VIEW_URL moreViewUrl,
+			    a.HEADER_MODE headerMode,
+			    a.public_option publicOption,
+			    a.IFRAME_HEIGHT iframeHeight,
+			    a.CACHE_YN cacheYn
+			  FROM IKEP4_PO_PORTLET a inner join
+			       IKEP4_PO_PORTLET_CATEGORY b on a.portlet_category_id = b.portlet_category_id inner join
+			       IKEP4_VW_PERMIT_SYS_RESOURCE c on a.PORTLET_ID  = c.RESOURCE_NAME inner join
+			       IKEP4_I18N_MESSAGE d on a.PORTLET_ID = d.ITEM_ID
+			 WHERE a.system_code = #systemCode#
+			   AND a.status = 1
+			   AND c.OPERATION_NAME IN ('READ')
+			   AND c.CLASS_NAME='Portal-Portlet'
+			   AND c.USER_ID IN (#userId#, 'OPEN')    
+			   AND d.FIELD_NAME = #fieldName# 
+			   AND d.LOCALE_CODE = #localeCode#  
+		     ORDER BY a.regist_date ASC
+		]]>
+	</select>
+	
+	<!--  listPageLayoutPortlet -->
+	<select id="listPageLayoutPortlet" parameterClass="java.util.HashMap" resultClass="PortalPortlet">
+	  <![CDATA[
+	  		/* [PortalPortlet_SqlMap.xml] portal.admin.screen.portalPortlet.listPageLayoutPortlet */
+		   select 
+		        a.PORTLET_ID  portletId, 
+			    c.ITEM_MESSAGE  portletName, 
+			    a.PORTLET_CATEGORY_ID  portletCategoryId,
+			    a.SYSTEM_CODE  systemCode,
+			    a.MOVEABLE  moveable, 
+			    a.PREVIEW_IMAGE_ID  previewImageId, 
+			    a.PORTLET_TYPE  portletType, 
+			    a.OWNER_ID  ownerId, 
+			    a.REGISTER_ID  registerId, 
+			    a.REGISTER_NAME  registerName, 
+			    TO_CHAR(a.REGIST_DATE, 'YYYY-MM-DD hh:mm:ss') AS registDate,  
+			    a.UPDATER_ID  updaterId, 
+			    a.UPDATER_NAME  updaterName, 
+			    TO_CHAR(a.UPDATE_DATE, 'YYYY-MM-DD hh:mm:ss') AS updateDate,
+			    a.LINK_TYPE  linkType,
+			    a.DEFAULT_COL_INDEX  defaultColIndex,
+			    a.NORMAL_VIEW_URL  normalViewUrl,
+			    b.PORTLET_CONFIG_ID  portletConfigId,
+			    b.VIEW_MODE  viewMode,
+			    a.CONFIG_VIEW_URL  configViewUrl,
+			    a.MAX_VIEW_URL  maxViewUrl,
+			    a.CONFIG_MODE  configMode,
+			    a.MAX_MODE  maxMode,
+			    a.RELOAD_MODE  reloadMode,
+			    a.REMOVE_MODE  removeMode,
+			    a.MORE_MODE  moreMode,
+			    a.MULTIPLE_MODE  multipleMode,
+			    a.HELP_MODE	helpMode,
+			    a.HELP_VIEW_URL	helpViewUrl,
+			    a.MORE_VIEW_URL moreViewUrl
+		     from 
+		        IKEP4_PO_PORTLET a inner join
+		        IKEP4_PO_PORTLET_CONFIG b ON a.portlet_id = b.portlet_id inner join
+		        IKEP4_I18N_MESSAGE c ON a.portlet_id = c.item_id
+		    where b.page_layout_id = #pageLayoutId#
+		      and a.system_code = #systemCode#
+		      and c.field_name = #fieldName#
+		      and c.locale_code = #localeCode#
+		    order by b.ROW_INDEX asc
+	  ]]>
+	</select>
+	
+	<select id="listActivePortlet" parameterClass="java.util.HashMap" resultClass="PortalPortlet">
+	  <![CDATA[
+	  		/* [PortalPortlet_SqlMap.xml] portal.admin.screen.portalPortlet.listActivePortlet */
+		   select 
+		        a.PORTLET_ID  portletId, 
+			    d.ITEM_MESSAGE  portletName, 
+			    a.PORTLET_CATEGORY_ID  portletCategoryId,
+			    a.SYSTEM_CODE  systemCode,
+			    a.MOVEABLE  moveable, 
+			    a.PREVIEW_IMAGE_ID  previewImageId, 
+			    a.PORTLET_TYPE  portletType, 
+			    a.OWNER_ID  ownerId, 
+			    a.REGISTER_ID  registerId, 
+			    a.REGISTER_NAME  registerName, 
+			    TO_CHAR(a.REGIST_DATE, 'YYYY-MM-DD hh:mm:ss') AS registDate,  
+			    a.UPDATER_ID  updaterId, 
+			    a.UPDATER_NAME  updaterName, 
+			    TO_CHAR(a.UPDATE_DATE, 'YYYY-MM-DD hh:mm:ss') AS updateDate,
+			    a.LINK_TYPE  linkType,
+			    a.DEFAULT_COL_INDEX  defaultColIndex,
+			    a.NORMAL_VIEW_URL  normalViewUrl,
+			    b.PORTLET_CONFIG_ID  portletConfigId,
+			    b.COL_INDEX  colIndex,
+			    b.ROW_INDEX  rowIndex,
+			    b.VIEW_MODE  viewMode,
+			    a.CONFIG_VIEW_URL  configViewUrl,
+			    a.MAX_VIEW_URL  maxViewUrl,
+			    a.CONFIG_MODE  configMode,
+			    a.MAX_MODE  maxMode,
+			    a.RELOAD_MODE  reloadMode,
+			    a.REMOVE_MODE  removeMode,
+			    a.MORE_MODE  moreMode,
+			    a.MULTIPLE_MODE  multipleMode,
+			    a.HELP_MODE	helpMode,
+			    a.HELP_VIEW_URL	helpViewUrl,
+			    a.MORE_VIEW_URL moreViewUrl,
+			    a.HEADER_MODE headerMode,
+			    a.IFRAME_HEIGHT iframeHeight
+		     from 
+		        IKEP4_PO_PORTLET a inner join
+		        IKEP4_PO_PORTLET_CONFIG b ON a.portlet_id = b.portlet_id inner join
+		        IKEP4_VW_PERMIT_SYS_RESOURCE c ON a.PORTLET_ID = c.RESOURCE_NAME inner join
+		        IKEP4_I18N_MESSAGE d on a.PORTLET_ID = d.ITEM_ID
+		    where a.system_code = #systemCode#
+		      and a.status = 1
+		      and b.page_layout_id IN
+	  ]]>    
+		    <iterate property="pageLayoutList" open="(" close=")" conjunction=",">
+				#pageLayoutList[].pageLayoutId#
+			</iterate>
+	  <![CDATA[
+	  		  AND c.OPERATION_NAME IN ('READ')
+			  AND c.CLASS_NAME='Portal-Portlet'
+			  AND c.USER_ID IN (#userId#, 'OPEN')	   
+			  AND d.FIELD_NAME = #fieldName# 
+			  AND d.LOCALE_CODE = #localeCode#   
+		    order by b.COL_INDEX ASC, b.ROW_INDEX ASC
+	  ]]>
+	</select>
+	
+	<select id="listActivePortletSetting" parameterClass="java.util.HashMap" resultClass="PortalPortlet">
+	  <![CDATA[
+	  		/* [PortalPortlet_SqlMap.xml] portal.admin.screen.portalPortlet.listActivePortletSetting */
+		   select 
+		        a.PORTLET_ID  portletId, 
+			    a.PORTLET_NAME  portletName, 
+			    a.PORTLET_CATEGORY_ID  portletCategoryId,
+			    a.SYSTEM_CODE  systemCode,
+			    a.MOVEABLE  moveable, 
+			    a.PREVIEW_IMAGE_ID  previewImageId, 
+			    a.PORTLET_TYPE  portletType, 
+			    a.OWNER_ID  ownerId, 
+			    a.REGISTER_ID  registerId, 
+			    a.REGISTER_NAME  registerName, 
+			    TO_CHAR(a.REGIST_DATE, 'YYYY-MM-DD hh:mm:ss') AS registDate,  
+			    a.UPDATER_ID  updaterId, 
+			    a.UPDATER_NAME  updaterName, 
+			    TO_CHAR(a.UPDATE_DATE, 'YYYY-MM-DD hh:mm:ss') AS updateDate,
+			    a.LINK_TYPE  linkType,
+			    a.DEFAULT_COL_INDEX  defaultColIndex,
+			    a.NORMAL_VIEW_URL  normalViewUrl,
+			    b.PORTLET_CONFIG_ID  portletConfigId,
+			    b.COL_INDEX  colIndex,
+			    b.ROW_INDEX  rowIndex,
+			    b.VIEW_MODE  viewMode,
+			    a.CONFIG_VIEW_URL  configViewUrl,
+			    a.MAX_VIEW_URL  maxViewUrl,
+			    a.CONFIG_MODE  configMode,
+			    a.MAX_MODE  maxMode,
+			    a.RELOAD_MODE  reloadMode,
+			    a.REMOVE_MODE  removeMode,
+			    a.MORE_MODE  moreMode,
+			    a.MULTIPLE_MODE  multipleMode,
+			    a.HELP_MODE	helpMode,
+			    a.HELP_VIEW_URL	helpViewUrl,
+			    a.MORE_VIEW_URL moreViewUrl,
+			    a.HEADER_MODE headerMode
+		     from 
+		        IKEP4_PO_PORTLET a inner join
+		        IKEP4_PO_PORTLET_CONFIG b ON a.portlet_id = b.portlet_id
+		    where a.system_code = #systemCode#
+		      and a.status = 1
+		      and b.page_layout_id IN
+	  ]]>    
+		    <iterate property="pageLayoutList" open="(" close=")" conjunction=",">
+				#pageLayoutList[].pageLayoutId#
+			</iterate>
+	  <![CDATA[	      
+		    order by b.COL_INDEX ASC, b.ROW_INDEX ASC
+	  ]]>
+	</select>
+	
+	<!--  portalPageLayoutMovePortletList -->
+	<select id="listPageLayoutMovePortlet" parameterClass="java.util.HashMap" resultMap="configResult">
+	  <![CDATA[
+	  		/* [PortalPortlet_SqlMap.xml] portal.admin.screen.portalPortlet.listPageLayoutMovePortlet */
+		   select 
+		        a.PORTLET_ID, 
+			    a.PORTLET_NAME, 
+			    a.PORTLET_CATEGORY_ID,
+			    a.SYSTEM_CODE,
+			    c.SYSTEM_NAME, 
+			    a.MOVEABLE, 
+			    a.PREVIEW_IMAGE_ID, 
+			    a.PORTLET_TYPE, 
+			    a.OWNER_ID, 
+			    a.REGISTER_ID, 
+			    a.REGISTER_NAME, 
+			    TO_CHAR(a.REGIST_DATE, 'YYYY-MM-DD hh:mm:ss') AS REGIST_DATE,  
+			    a.UPDATER_ID, 
+			    a.UPDATER_NAME, 
+			    TO_CHAR(a.UPDATE_DATE, 'YYYY-MM-DD hh:mm:ss') AS UPDATE_DATE,
+			    a.LINK_TYPE,
+			    a.DEFAULT_COL_INDEX,
+			    a.NORMAL_VIEW_URL,
+			    b.PORTLET_CONFIG_ID,
+			    b.VIEW_MODE,
+			    a.CONFIG_VIEW_URL,
+			    a.MAX_VIEW_URL,
+			    a.CONFIG_MODE,
+			    a.MAX_MODE,
+			    a.RELOAD_MODE,
+			    a.REMOVE_MODE,
+			    a.MORE_MODE,
+			    a.MULTIPLE_MODE,
+			    a.HELP_MODE,
+			    a.HELP_VIEW_URL,
+			    a.MORE_VIEW_URL
+		     from IKEP4_PO_PORTLET a inner join
+		          IKEP4_PO_PORTLET_CONFIG b ON a.portlet_id = b.portlet_id inner join
+		          IKEP4_PO_SYSTEM c on a.system_code = c.system_code
+		    where b.page_layout_id = #pageLayoutId#
+		      and a.system_code = #systemCode#
+		      and b.PORTLET_CONFIG_ID <> #portletConfigId#
+		    order by b.ROW_INDEX asc
+	  ]]>
+	</select>
+	
+	<!-- 목록 가져오기 -->
+	<select id="listPortalPortletByCondition" parameterClass="SearchCondition" resultClass="PortalPortlet">
+	<![CDATA[
+		/* [PortalPortlet_SqlMap.xml] portal.admin.screen.portalPortlet.listPortalPortletByCondition */
+		SELECT
+				*
+		FROM 
+		( 
+		    SELECT 
+		        ROWNUM AS num, 
+		        A.* 
+		    FROM 
+		    ( 
+		   SELECT 
+			    a.PORTLET_ID  portletId, 
+	]]>
+	  <isNotEmpty property="userLocaleCode">
+			    d.ITEM_MESSAGE portletName,
+	  </isNotEmpty>
+	  <isEmpty property="userLocaleCode">
+			    a.PORTLET_NAME portletName, 
+	  </isEmpty>	
+	<![CDATA[ 
+			    a.PORTLET_CATEGORY_ID  portletCategoryId,
+			    a.SYSTEM_CODE  systemCode,
+			    a.MOVEABLE  moveable, 
+			    a.PREVIEW_IMAGE_ID  previewImageId, 
+			    a.PORTLET_TYPE  portletType, 
+			    a.OWNER_ID  ownerId, 
+			    a.REGISTER_ID  registerId, 
+			    a.REGISTER_NAME  registerName, 
+			    TO_CHAR(a.REGIST_DATE, 'YYYY-MM-DD hh:mm:ss') AS registDate,  
+			    a.UPDATER_ID  updaterId, 
+			    a.UPDATER_NAME  updaterName, 
+			    TO_CHAR(a.UPDATE_DATE, 'YYYY-MM-DD hh:mm:ss') AS updateDate,
+			    a.LINK_TYPE  linkType,
+			    a.DEFAULT_COL_INDEX  defaultColIndex,
+			    a.NORMAL_VIEW_URL  normalViewUrl,
+			    a.CONFIG_VIEW_URL  configViewUrl,
+			    a.MAX_VIEW_URL  maxViewUrl,
+			    a.CONFIG_MODE  configMode,
+			    a.MAX_MODE  maxMode,
+			    a.RELOAD_MODE  reloadMode,
+			    a.REMOVE_MODE  removeMode,
+			    a.MORE_MODE  moreMode,
+			    a.MULTIPLE_MODE  multipleMode,
+			    a.HELP_MODE		helpMode,
+			    a.HELP_VIEW_URL		helpViewUrl,
+			    b.PORTLET_CATEGORY_NAME portletCategoryName,
+			    c.SYSTEM_NAME systemName,
+			    a.STATUS status,
+			    a.PUBLIC_OPTION publicOption
+			  FROM IKEP4_PO_PORTLET a inner join
+			       IKEP4_PO_PORTLET_CATEGORY b on a.portlet_category_id = b.portlet_category_id inner join
+			       IKEP4_PO_SYSTEM c on a.system_code = c.system_code
+		 ]]>
+			       <isNotEmpty property="userLocaleCode">
+			       left outer join 
+			       (SELECT ITEM_MESSAGE, ITEM_ID, ITEM_TYPE_CODE, LOCALE_CODE FROM IKEP4_I18N_MESSAGE 
+			        WHERE   locale_code = #userLocaleCode#
+				    AND   item_type_code = #itemTypeCode# 
+				    AND   field_name = 'portletName')
+			        d on a.portlet_id = d.item_id
+				   </isNotEmpty>
+	    <![CDATA[
+			 WHERE PORTAL_ID = #portalId#
+		]]>
+		<isNotEmpty property="searchColumn">
+			<isEqual property="searchColumn" compareValue="portletName">
+				AND	upper(PORTLET_NAME) LIKE '%' || upper( #searchWord# ) || '%'
+			</isEqual>
+			<isEqual property="searchColumn" compareValue="systemName">
+				AND	upper(SYSTEM_NAME) LIKE '%' || upper( #searchWord# ) || '%'
+			</isEqual>
+			<isEqual property="searchColumn" compareValue="portletCategoryName">
+				AND	upper(PORTLET_CATEGORY_NAME) LIKE '%' || upper( #searchWord# ) || '%'
+			</isEqual>
+		</isNotEmpty>
+	   
+	    <isNotEmpty property="sortColumn" >
+			<isEqual property="sortColumn" compareValue="PORTLET_CATEGORY_NAME">
+				ORDER BY PORTLET_CATEGORY_NAME
+			</isEqual>
+			<isEqual property="sortColumn" compareValue="PORTLET_NAME">
+				ORDER BY PORTLET_NAME
+			</isEqual>
+			<isEqual property="sortColumn" compareValue="PORTLET_TYPE">
+				ORDER BY PORTLET_TYPE
+			</isEqual>
+			<isEqual property="sortColumn" compareValue="SYSTEM_NAME">
+				ORDER BY SYSTEM_NAME
+			</isEqual>
+			<isEqual property="sortColumn" compareValue="MOVEABLE">
+				ORDER BY MOVEABLE
+			</isEqual>
+			<isEqual property="sortColumn" compareValue="STATUS">
+				ORDER BY STATUS
+			</isEqual>
+			<isEqual property="sortColumn" compareValue="PUBLIC_OPTION">
+				ORDER BY PUBLIC_OPTION
+			</isEqual>
+		
+			<isEqual property="sortType" compareValue="ASC">
+				ASC
+			</isEqual>
+			<isEqual property="sortType" compareValue="DESC">
+				DESC
+			</isEqual>
+			
+		</isNotEmpty>    
+	    <isEmpty property="sortColumn" >ORDER BY a.REGIST_DATE DESC</isEmpty>  
+	<![CDATA[	
+			) A
+			WHERE ROWNUM <=  #endRowIndex# /* 종료  */
+		) 
+		WHERE NUM >  #startRowIndex# /* 시작 */
+	]]>	
+	</select>
+	
+	<!-- 목록 카운트 가져오기 -->
+	<select id="countPortalPortletByCondition" parameterClass="SearchCondition" resultClass="int">
+	<![CDATA[
+		/* [PortalPortlet_SqlMap.xml] portal.admin.screen.portalPortlet.countPortalPortletByCondition */
+		SELECT COUNT(a.PORTLET_ID)
+		FROM IKEP4_PO_PORTLET a inner join
+			IKEP4_PO_PORTLET_CATEGORY b on a.portlet_category_id = b.portlet_category_id inner join
+			IKEP4_PO_SYSTEM c on a.system_code = c.system_code
+		WHERE PORTAL_ID = #portalId#
+	]]>		       
+		<isNotEmpty property="searchColumn">
+			<isEqual property="searchColumn" compareValue="portletName">
+				AND	upper(PORTLET_NAME) LIKE '%' || upper( #searchWord# ) || '%'
+			</isEqual>
+			<isEqual property="searchColumn" compareValue="systemName">
+				AND	upper(SYSTEM_NAME) LIKE '%' || upper( #searchWord# ) || '%'
+			</isEqual>
+			<isEqual property="searchColumn" compareValue="portletCategoryName">
+				AND	upper(PORTLET_CATEGORY_NAME) LIKE '%' || upper( #searchWord# ) || '%'
+			</isEqual>
+		</isNotEmpty>
+	</select>
+	
+	<select id="listPortletShareAll" parameterClass="String" resultClass="PortalPortlet">
+	  <![CDATA[
+	 	   /* [PortalPortlet_SqlMap.xml] portal.admin.screen.portalPortlet.listPortletShareAll */
+		   Select 
+			    A.Portlet_Id   portletId,
+			    A.Portlet_Name  portletName,
+			    A.Portlet_Category_Id  portletCategoryId,
+			    A.System_Code  systemCode,
+			    A.Moveable  moveable,
+			    A.Preview_Image_Id  previewImageId,
+			    A.Portlet_Type  portletType,
+			    A.Link_Type  linkType,
+			    A.Default_Col_Index  defaultColIndex,
+			    A.Normal_View_Url  normalViewUrl,
+			    A.Config_View_Url  configViewUrl,
+			    A.Max_View_Url  maxViewUrl,
+			    A.Config_Mode  configMode,
+			    A.Max_Mode  maxMode,
+			    A.Reload_Mode  reloadMode,
+			    A.Remove_Mode  removeMode,
+			    A.More_Mode  moreMode,
+			    A.Multiple_Mode  multipleMode,
+			    A.More_View_Url  moreViewUrl,
+			    A.Help_Mode  helpMode,
+			    A.Help_View_Url  helpViewUrl,
+			    A.War_File_Id  warFileId,
+			    A.Public_Option  publicOption,
+			    A.Header_Mode  headerMode,
+			    A.Status  status,
+			    A.Iframe_Height  iframeHeight,
+			    A.SHARE_YN  shareYn
+			  From Ikep4_Po_Portlet A Inner Join
+			       Ikep4_Po_System B On A.System_Code = B.System_Code Inner Join
+			       IKEP4_PO_PORTLET_CATEGORY C on A.portlet_category_id = C.portlet_category_id
+			 Where A.Share_Yn = 'Y'
+			   and A.Portlet_Type = 'HTML'
+			   And B.Portal_Id = #portalId#
+			   and B.system_name = 'Portal'
+		]]>
+	</select>
+</sqlMap>

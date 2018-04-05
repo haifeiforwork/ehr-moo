@@ -1,0 +1,40 @@
+<html>
+<head>
+<title>popup window</title>
+<meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+<script type="text/javascript">
+function addEvent(element, eventType, handler) {
+	if(element.addEventListener) {
+		element.addEventListener(eventType, handler, false);
+		return true;
+	} else if(element.attachEvent) {
+		return element.attachEvent("on"+eventType, handler);
+	} else {
+		return false;
+	}
+}
+
+var param;
+addEvent(window, "load", function() {
+	console.log(opener.data);
+	console.log(JSON.stringify(opener.data));
+	
+	var cnt = 0;
+	var interval = setInterval(function() {
+		if(param) {
+			console.log(param);
+			console.log(JSON.stringify(param));
+			clearInterval(interval);
+			
+			console.log("equal : " + (parent.popupParam == param));
+			opener.debugData(param, "popup");
+		}
+	}, 100);
+});
+</script>
+</head>
+
+<body>
+popup
+</body>
+</html>

@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:mvc="http://www.springframework.org/schema/mvc" 
+	xmlns:aop="http://www.springframework.org/schema/aop"	
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd">  
+	
+	<!-- aspect -->
+	<aop:aspectj-autoproxy />
+	
+	<!-- 
+	<bean id="aclAspector" class="com.lgcns.ikep4.support.security.acl.aspects.ACLAspector" />
+	  
+	<bean id="validExtendAspector" class="com.lgcns.ikep4.framework.validator.aspect.ValidatorExtendAspector" />
+	 --> 
+		
+	<!-- ================================================================================================================================== -->
+	<!--Scans the classpath of this application for @Components to deploy as beans   -->
+	<!-- ================================================================================================================================== --> 		
+	<context:component-scan base-package="com.lgcns.ikep4" use-default-filters="false">
+		<context:include-filter type="annotation" expression="org.springframework.stereotype.Controller" />
+		<context:include-filter type="annotation" expression="org.aspectj.lang.annotation.Aspect" />
+	</context:component-scan> 
+
+	<bean id="messageSourceAccessor" class="org.springframework.context.support.MessageSourceAccessor">
+		<constructor-arg ref="messageSource" />
+	</bean> 
+	<!-- ================================================================================================================================== -->
+	<!-- AnnotationMethodHandlerAdapter 설정   -->
+	<!-- ================================================================================================================================== -->
+	<bean class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping" >
+		<property name="order" value="0"/>
+        <property name="interceptors">
+            <list>
+                <bean class="org.springframework.web.servlet.handler.ConversionServiceExposingInterceptor" >
+                    <constructor-arg ref="conversionService"/>
+                </bean>
+            </list>
+        </property>
+    </bean> 
+	<bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
+		<property name="webBindingInitializer">
+			<bean class="org.springframework.web.bind.support.ConfigurableWebBindingInitializer">
+				<property name="conversionService" ref="conversionService" />
+				<property name="validator"         ref="validator" />
+			</bean>
+		</property>
+		<property name="messageConverters">
+			<list>
+				<bean class="org.springframework.http.converter.StringHttpMessageConverter">
+					<property name="supportedMediaTypes">
+						<list>
+							<value>text/plain; charset=UTF-8</value>
+						</list>
+					</property>
+				</bean>
+				<bean class="org.springframework.http.converter.json.MappingJacksonHttpMessageConverter">
+					<property name="supportedMediaTypes">
+						<list>
+							<value>application/json; charset=UTF-8</value>
+						</list>
+					</property>
+				</bean>
+			</list>
+		</property>
+	</bean> 
+
+	<!-- ================================================================================================================================== -->
+	<!-- 유효성 체크 빈 설정  -->
+	<!-- ================================================================================================================================== --> 
+	<bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean" /> 
+	
+	<!-- ================================================================================================================================== -->
+	<!-- 빈 바인드 컨버트 빈 설정  -->
+	<!-- ================================================================================================================================== -->
+	<bean id="conversionService" class="org.springframework.format.support.FormattingConversionServiceFactoryBean"></bean>
+
+	<!-- ================================================================================================================================== -->
+	<!-- MVC 관련 설정  -->
+	<!-- ================================================================================================================================== -->
+   
+	<!-- Configures Handler Interceptors -->
+	<mvc:interceptors>
+		<!-- Changes the locale when a 'locale' request parameter is sent; e.g./?locale=de -->
+		<bean class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
+			<property name="paramName" value="locale" />
+		</bean>
+		<bean class="com.lgcns.ikep4.servicepack.usagetracker.interceptor.MenuInterceptor" />
+	</mvc:interceptors>
+	
+	<!-- ================================================================================================================================== -->
+	<!-- i18n 설정  -->
+	<!-- ================================================================================================================================== -->
+	<!-- requst가 가지고 있는 session으로 부터 locale 정보를 가져온다 -->
+    <bean id="localeResolver" class="org.springframework.web.servlet.i18n.SessionLocaleResolver" />
+
+	<!-- Saves a locale change using a cookie -->
+	<!-- <bean id="localeResolver" class="org.springframework.web.servlet.i18n.CookieLocaleResolver" /> -->
+
+	<!-- 특정한 Locale 지정, setLocale() 지원하지 않음 -->
+	<!-- 
+	<bean id="fixedLocaleResolver" class="org.springframework.web.servlet.i18n.FixedLocaleResolver">
+		<property name="defaultLocale" value="ko" />
+	</bean>
+	-->
+	
+	<bean id="propertyConfigurer2" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="locations">
+            <list>
+                <value>classpath:/configuration/fileupload-conf.properties</value>
+            </list>
+        </property>
+    </bean>
+    
+	<!-- ================================================================================================================================== -->
+	<!-- 파일 업로드 설정  -->
+	<!-- ================================================================================================================================== -->
+	<!-- file-upload configuration -->
+	<bean id="multipartResolver"
+		class="com.lgcns.ikep4.support.fileupload.base.AjaxMultipartResolver">
+		<property name="maxUploadSize" value="${ikep4.support.fileupload.upload_size}" />
+		<property name="uploadTempDir" ref="uploadTempDir" />
+		<property name="progressListener">
+			<ref bean="progressListener" />
+		</property>
+	</bean>
+	<!-- uploadTempDir -->
+	<bean id="uploadTempDir" class="org.springframework.core.io.FileSystemResource">
+		<constructor-arg value="${ikep4.support.fileupload.upload_folder_temp}" />
+	</bean>
+	<!-- AjaxProgressListener -->
+	<bean id="progressListener" class="com.lgcns.ikep4.support.fileupload.base.AjaxProgressListener" />
+
+	<!-- ================================================================================================================================== -->
+	<!-- 예외핸들링 리졸러 목록 -->
+	<!-- ================================================================================================================================== -->
+	<!-- 타일즈2 설정  -->
+	<bean id="tilesConfigurer" class="org.springframework.web.servlet.view.tiles2.TilesConfigurer">
+		<property name="definitions">
+			<list>
+				<value>/WEB-INF/tiles-defs/layout.xml</value>
+				<value>/WEB-INF/tiles-defs/**/*-templates.xml</value>
+			</list>
+		</property>
+	</bean>
+	<!-- 타일즈2 뷰 리졸버  -->
+	<bean id="tilesViewResolver" class="org.springframework.web.servlet.view.UrlBasedViewResolver">
+		<property name="viewClass" value="org.springframework.web.servlet.view.tiles2.TilesView" />
+		<property name="contentType" value="text/html; charset=UTF-8" />
+		<property name="order" value="1" />
+	</bean>
+
+	<!--내부자원 뷰 리졸버  -->
+	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix" value="/WEB-INF/view/" />
+		<property name="suffix" value=".jsp" />
+		<property name="contentType" value="text/html; charset=UTF-8" />
+	</bean> 
+	
+	
+	 <bean id="beanNameViewResolver" class="org.springframework.web.servlet.view.BeanNameViewResolver">
+		 <property name="order" value="2" />
+	 </bean>
+	<!-- ================================================================================================================================== -->
+	<!-- 예외핸들링 리졸러 목록 -->
+	<!-- ================================================================================================================================== -->
+	<!-- exception resolver -->
+	<bean name="defaultHandlerExceptionResolver" class="org.springframework.web.servlet.mvc.support.DefaultHandlerExceptionResolver" />
+	<!-- HTTP STATUS 에 따라른 예외 리졸버  -->
+	<bean name="responseStatusExceptionResolver" class="org.springframework.web.servlet.mvc.annotation.ResponseStatusExceptionResolver" /> 
+	<!-- @ExceptionHandler를 사용가능하게 하는 리졸버  -->
+	<bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerExceptionResolver"/>
+	<!-- HTTP STATUS 에 따라른 예외 리졸버  -->
+	<bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+		<property name="defaultErrorView" value="/common/error" />
+		<property name="exceptionMappings">
+			<props>
+				<prop
+					key="com.lgcns.ikep4.framework.common.exception.IKEP4AuthorizedException">/common/notAuthorized</prop>
+				<prop
+					key="com.lgcns.ikep4.framework.common.exception.IKEP4LicenseValidException">/common/inValidLicense</prop>
+				<prop
+					key="com.lgcns.ikep4.framework.common.exception.IKEP4LicenseExpiredException">/common/expiredLicense</prop>
+				<prop
+					key="com.lgcns.ikep4.framework.common.exception.IKEP4LicenseUnitException">/common/unitLicense</prop>
+				<prop
+					key="com.lgcns.ikep4.framework.common.exception.IKEP4LicenseIpException">/common/ipLicense</prop>
+				<prop
+					key="com.lgcns.ikep4.framework.common.exception.IKEP4UserCountValidException">/common/userCountLicense</prop>
+			</props>
+		</property>
+	</bean>
+	
+	<!-- jsperreports -->
+	<bean id="logReport" abstract="true" class="org.springframework.web.servlet.view.jasperreports.JasperReportsXlsView">
+	     <property name="exporterParameters">
+            <map>
+                <entry key="net.sf.jasperreports.engine.export.JRHtmlExporterParameter.IS_REMOVE_EMPTY_SPACE_BETWEEN_ROWS">
+                    <value>true</value>
+                </entry>
+                <entry key="net.sf.jasperreports.engine.export.JRHtmlExporterParameter.IS_USING_IMAGES_TO_ALIGN">
+                    <value>false</value>
+                </entry>
+                <entry key="net.sf.jasperreports.engine.export.JRXlsExporterParameter.IS_ONE_PAGE_PER_SHEET">
+                    <value>false</value>
+                </entry>
+                <entry key="net.sf.jasperreports.engine.export.JRXlsExporterParameter.IS_DETECT_CELL_TYPE">
+                    <value>true</value>
+                </entry>
+                <entry key="net.sf.jasperreports.engine.export.JRXlsExporterParameter.IS_WHITE_PAGE_BACKGROUND">
+                    <value>false</value>
+                </entry>
+                <entry key="net.sf.jasperreports.engine.export.JRXlsExporterParameter.IS_COLLAPSE_ROW_SPAN">
+                    <value>true</value>
+                </entry>
+                <entry key="net.sf.jasperreports.engine.export.JRXlsExporterParameter.IS_IGNORE_GRAPHICS">
+                    <value>true</value>
+                </entry>
+                <entry key="net.sf.jasperreports.engine.export.JRXlsExporterParameter.IS_REMOVE_EMPTY_SPACE_BETWEEN_COLUMNS">
+                    <value>true</value>
+                </entry>
+                 <entry key="net.sf.jasperreports.engine.export.JRXlsExporterParameter.MAXIMUM_ROWS_PER_SHEET">
+                    <value>50000</value>
+                </entry>
+            </map>
+        </property>
+	    <property name="url" value="/WEB-INF/reports/report.jrxml" />
+    </bean>
+    
+    <bean id="userLogReport" parent="logReport">
+	    <property name="url" value="/WEB-INF/reports/report.jrxml" />
+    </bean>
+    
+    <bean id="browseLogReport" parent="logReport">
+	    <property name="url" value="/WEB-INF/reports/report3.jrxml" />
+    </bean>
+    
+     <bean id="menuLogReport" parent="logReport">
+	    <property name="url" value="/WEB-INF/reports/report2.jrxml" />
+    </bean>
+    
+    <bean id="smsLogReport" parent="logReport">
+	    <property name="url" value="/WEB-INF/reports/report7.jrxml" />
+    </bean>
+    
+    <bean id="loginRankReport" parent="logReport">
+	    <property name="url" value="/WEB-INF/reports/report4.jrxml" />
+    </bean>
+    
+    
+    <bean id="menuRankReport" parent="logReport">
+	    <property name="url" value="/WEB-INF/reports/report5.jrxml" />
+    </bean>
+    
+    <bean id="portletRankReport" parent="logReport">
+	    <property name="url" value="/WEB-INF/reports/report6.jrxml" />
+    </bean>
+    
+    <bean class="com.lgcns.ikep4.util.excel.DefaultJExcelView" id="defaultExcelView"/>
+</beans>

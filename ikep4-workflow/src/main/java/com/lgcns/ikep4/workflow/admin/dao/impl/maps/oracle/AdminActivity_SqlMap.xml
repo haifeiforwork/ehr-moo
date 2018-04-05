@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="workflow.admin.dao.AdminActivityDao">
+	<typeAlias alias="AdminActivity" type="com.lgcns.ikep4.workflow.admin.model.AdminActivity"/>
+	<typeAlias alias="AdminActivitySearchCondition" type="com.lgcns.ikep4.workflow.admin.model.AdminActivitySearchCondition"/>
+
+	<resultMap id="AdminActivityResult" class="AdminActivity">
+		<result property="activityId" column="ACTIVITY_ID" columnIndex="1"/>
+		<result property="activityName" column="ACTIVITY_NAME" columnIndex="2"/>
+		<result property="startMode" column="START_MODE" columnIndex="3"/>
+		<result property="subType" column="SUB_TYPE" columnIndex="4"/>
+		<result property="gatewayType" column="GATEWAY_TYPE" columnIndex="5"/>
+		<result property="endMode" column="END_MODE" columnIndex="6"/>
+		<result property="loopType" column="LOOP_TYPE" columnIndex="7"/>
+		<result property="description" column="DESCRIPTION" columnIndex="8"/>
+		<result property="subProcessId" column="SUB_PROCESS_ID" columnIndex="9"/>
+		<result property="activityType" column="ACTIVITY_TYPE" columnIndex="10"/>
+		<result property="varDefine" column="VAR_DEFINE" columnIndex="11"/>
+		<result property="createDate" column="CREATE_DATE" columnIndex="12"/>
+		<result property="attrExpand" column="ATTR_EXPAND" columnIndex="13"/>
+		<result property="updateDate" column="UPDATE_DATE" columnIndex="14"/>
+		<result property="author" column="AUTHOR" columnIndex="15"/>
+		<result property="processId" column="PROCESS_ID" columnIndex="16"/>
+		<result property="processVer" column="PROCESS_VER" columnIndex="17"/>
+	</resultMap>
+	
+	<resultMap id="AdminActivityViewResult" class="AdminActivity">
+		<result property="activityId" column="ACTIVITY_ID" columnIndex="1"/>
+		<result property="activityName" column="ACTIVITY_NAME" columnIndex="2"/>
+		<result property="createDate" column="CREATE_DATE" columnIndex="3"/>
+		<result property="updateDate" column="UPDATE_DATE" columnIndex="4"/>
+	</resultMap>
+	
+	<!-- insert -->
+	<insert id="insert" parameterClass="AdminActivity"> 
+      <![CDATA[ 
+      		/* [AdminActivity_SqlMap.xml] workflow.admin.dao.AdminActivityDao.insert */
+          INSERT INTO IKEP4_WF_ACTIVITY (ACTIVITY_ID, PROCESS_ID, DESCRIPTION, PROCESS_VER, CREATE_DATE, UPDATE_DATE)  
+          VALUES (#activityId#, #processId#, #description#, #processVer#,sysdate, sysdate)
+       ]]>
+      <selectKey resultClass="String" keyProperty="activityId" type="pre"> 
+         <![CDATA[ 
+               SELECT #activityId# AS PARTITION_ID FROM DUAL 
+            ]]>
+      </selectKey>
+   </insert>
+   
+   <!-- select -->
+	<select id="select" parameterClass="String" resultMap="AdminActivityResult">
+	  <![CDATA[
+	  /* [AdminActivity_SqlMap.xml] workflow.admin.dao.AdminActivityDao.select */
+		   SELECT * FROM IKEP4_WF_ACTIVITY WHERE ACTIVITY_ID = #activityId#
+	   ]]>
+	</select>
+	
+	<!-- update -->
+	<update id="update" parameterClass="AdminActivity">
+	  <![CDATA[
+	  /* [AdminActivity_SqlMap.xml] workflow.admin.dao.AdminActivityDao.update */
+		   UPDATE IKEP4_WF_ACTIVITY 
+		   SET DESCRIPTION = #description# 
+		   WHERE ACTIVITY_ID = #activityId#
+	   ]]>
+	</update>
+   
+   <!-- delete -->
+   <delete id="delete" parameterClass="String">
+      <![CDATA[
+      	   /* [AdminActivity_SqlMap.xml] workflow.admin.dao.AdminActivityDao.delete */
+	       DELETE FROM IKEP4_WF_ACTIVITY WHERE ACTIVITY_ID = #activityId#
+	   ]]>
+	</delete>
+	
+	<!-- selectCount -->
+	<select id="selectCount" parameterClass="String" resultClass="java.lang.Integer">
+	  <![CDATA[
+	  	   /* [AdminActivity_SqlMap.xml] workflow.admin.dao.AdminActivityDao.selectCount */
+		   SELECT COUNT(*) FROM IKEP4_WF_ACTIVITY WHERE ACTIVITY_ID = #activityId#
+	   ]]>
+	</select>
+	
+	<select id="selectAll" resultMap="AdminActivityResult">
+	<![CDATA[	
+	  SELECT   /* [AdminActivity_SqlMap.xml] workflow.admin.dao.AdminActivityDao.selectAll */
+	  *
+	  FROM IKEP4_WF_ACTIVITY 
+	  ORDER BY CREATE_DATE
+	]]>
+	</select>
+	
+	<!-- 워크플로우 - 현황관리 - 프로세스 관리 - 액티비티 리스트 조회 -->
+	<select id="listActivity" parameterClass="AdminActivitySearchCondition" resultMap="AdminActivityViewResult">
+	<![CDATA[
+	SELECT   * /* [AdminActivity_SqlMap.xml] workflow.admin.dao.AdminActivityDao.listActivity */
+	  FROM   (SELECT   ROWNUM AS RNUM, A.*
+	            FROM   (SELECT   
+	            		ACTIVITY_ID,
+	            		ACTIVITY_NAME,
+	            		TO_CHAR(CREATE_DATE,'YYYY-MM-DD') CREATE_DATE,
+	            		TO_CHAR(UPDATE_DATE,'YYYY-MM-DD') UPDATE_DATE
+	                      FROM   IKEP4_WF_ACTIVITY
+	                     WHERE   PROCESS_ID = #processId#
+	 ]]>
+	 <isNotEmpty property="sortColumn" >
+        	<![CDATA[
+        	ORDER BY $sortColumn$ $sortType$
+        	]]>
+     </isNotEmpty>
+	 <![CDATA[
+	                     ) A
+	           WHERE   ROWNUM <= #endRowIndex#                         /* 종료  */
+	                                          )
+	 WHERE   RNUM > #startRowIndex#                                    /* 시작 */
+	]]>
+	</select>
+	
+	<!-- 워크플로우 - 현황관리 - 프로세스 관리 - 액티비티 리스트  조회건수 -->
+	<select id="listActivityCount" parameterClass="AdminActivitySearchCondition" resultClass="int">
+	<![CDATA[  
+	SELECT /* [AdminActivity_SqlMap.xml] workflow.admin.dao.AdminActivityDao.listActivityCount */ 
+           COUNT(*)
+	FROM IKEP4_WF_ACTIVITY
+	WHERE   PROCESS_ID = #processId#
+	]]> 
+    </select>
+</sqlMap>

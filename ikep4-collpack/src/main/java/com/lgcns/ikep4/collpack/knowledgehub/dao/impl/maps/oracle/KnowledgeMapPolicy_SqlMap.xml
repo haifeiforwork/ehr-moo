@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="collpack.knowledgehub.dao.KnowledgeMapPolicy">
+	<typeAlias alias="KnowledgeMapPolicyPK" type="com.lgcns.ikep4.collpack.knowledgehub.model.KnowledgeMapPolicyPK"/>
+	<typeAlias alias="KnowledgeMapPolicy" type="com.lgcns.ikep4.collpack.knowledgehub.model.KnowledgeMapPolicy"/>
+
+	<resultMap class="KnowledgeMapPolicy" id="result">
+		<result column="POLICY_ID" property="policyId" jdbcType="VARCHAR" javaType="String"/>
+		<result column="HIT_WEIGHT" property="hitWeight" jdbcType="NUMBER" javaType="Integer"/>
+		<result column="RECOMMEND_WEIGHT" property="recommendWeight" jdbcType="NUMBER" javaType="Integer"/>
+		<result column="FAVORITE_WEIGHT" property="favoriteWeight" jdbcType="NUMBER" javaType="Integer"/>
+	</resultMap>
+
+<!-- 입력 -->
+	<insert id="create" parameterClass="KnowledgeMapPolicy">
+	<![CDATA[
+		INSERT /* [KnowledgeMapPolicy_SqlMap.xml] collpack.knowledgehub.dao.KnowledgeMapPolicy.create */
+		       INTO IKEP4_KM_POLICY (
+		       POLICY_ID
+		     , POLICY_TYPE
+		     , HIT_WEIGHT
+		     , RECOMMEND_WEIGHT
+		     , FAVORITE_WEIGHT
+		     , PORTAL_ID
+		     , REGIST_DATE
+		       )
+		VALUES (
+		       #policyId#
+		     , #policyType#
+		     , #hitWeight#
+		     , #recommendWeight#
+		     , #favoriteWeight#
+		     , #portalId#
+		     , SYSDATE
+		       )
+	]]>
+	</insert>
+
+<!-- Policy 수정 -->
+	<update id="update" parameterClass="KnowledgeMapPolicy">
+	<![CDATA[
+		UPDATE /* [KnowledgeMapPolicy_SqlMap.xml] collpack.knowledgehub.dao.KnowledgeMapPolicy.update */
+		       IKEP4_KM_POLICY
+		   SET HIT_WEIGHT = #hitWeight#
+		     , RECOMMEND_WEIGHT = #recommendWeight#
+		     , FAVORITE_WEIGHT = #favoriteWeight#
+		     , REGIST_DATE = SYSDATE
+		 WHERE POLICY_ID = #policyId#
+	]]>
+	</update>
+
+<!-- Policy 조회 -->
+	<select id="getByPortalId" parameterClass="String" resultMap="result">
+	<![CDATA[
+		SELECT /* [KnowledgeMapPolicy_SqlMap.xml] collpack.knowledgehub.dao.KnowledgeMapPolicy.getByPortalId */
+		       POLICY_ID
+		     , HIT_WEIGHT
+		     , RECOMMEND_WEIGHT
+		     , FAVORITE_WEIGHT
+		  FROM IKEP4_KM_POLICY
+		 WHERE PORTAL_ID = #portalId#
+	]]>
+	</select>
+
+</sqlMap>

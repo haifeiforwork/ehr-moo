@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="lightpack.award.dao.awardReference"> 
+  <typeAlias alias="AwardReference"   type="com.lgcns.ikep4.lightpack.award.model.AwardReference"/>
+  <typeAlias alias="AwardReferencePK" type="com.lgcns.ikep4.lightpack.award.model.AwardReferencePK"/>
+  
+  <resultMap class="com.lgcns.ikep4.lightpack.award.model.AwardReference" id="awardReferenceResult"> 
+    <result column="ITEM_ID"     jdbcType="VARCHAR"  property="itemId" />
+    <result column="REGISTER_ID" jdbcType="VARCHAR" property="registerId" />
+    <result column="REGIST_DATE" jdbcType="DATE"    property="registDate" />
+  </resultMap>
+
+  <!-- ANSI -->  
+  <insert id="create" parameterClass="AwardReference"> 
+    INSERT INTO IKEP4_AW_REFERENCE /* [Award_Reference_SqlMap.xml] lightpack.award.dao.awardReference.insert */ 
+           (ITEM_ID, REGISTER_ID, REGIST_DATE)
+    VALUES (#itemId#, #registerId#, CURRENT_TIMESTAMP)
+  </insert>
+   
+  <!-- ANSI -->   
+ <select id="exists" parameterClass="AwardReferencePK" resultClass="int">
+    SELECT /* [Award_Reference_SqlMap.xml] lightpack.award.dao.awardReference.exists */
+           COUNT(*)
+    FROM   IKEP4_AW_REFERENCE
+    WHERE  ITEM_ID = #itemId#
+    AND    REGISTER_ID = #registerId#
+  </select> 
+
+  <!-- ANSI -->  
+  <select id="get" parameterClass="AwardReferencePK" resultMap="awardReferenceResult">
+    SELECT /* [Award_Reference_SqlMap.xml] lightpack.award.dao.awardLinereply.get */
+           ITEM_ID, 
+           REGISTER_ID, 
+           REGIST_DATE 
+    FROM   IKEP4_AW_REFERENCE
+    WHERE  ITEM_ID = #itemId#
+    AND    REGISTER_ID = #registerId#
+  </select>  
+ 
+  <!-- ANSI -->  
+  <update id="update" parameterClass="AwardReference"> 
+    UPDATE IKEP4_AW_REFERENCE /* [Award_Reference_SqlMap.xml] lightpack.award.dao.awardReference.update */
+    SET REGIST_DATE = CURRENT_TIMESTAMP
+    WHERE ITEM_ID = #itemId#
+    AND REGISTER_ID = #registerId#
+  </update>
+  
+  <!-- ANSI -->  
+  <delete id="removeByItemId" parameterClass="string"> 
+    DELETE FROM IKEP4_AW_REFERENCE /* [Award_Reference_SqlMap.xml] lightpack.award.dao.awardReference.removeByItemId */
+    WHERE ITEM_ID = #itemId#
+  </delete>      
+</sqlMap>

@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="support.guestbook.dao.Guestbook" >
+	<typeAlias alias = "Guestbook" type="com.lgcns.ikep4.support.guestbook.model.Guestbook"/>
+	<typeAlias alias = "GuestbookSearch" type="com.lgcns.ikep4.support.guestbook.search.GuestbookSearchCondition"/>
+	
+	<!-- Guestbook 테이블 조회 결과 -->
+	<resultMap id="resultGuestbook" class="Guestbook" groupBy="guestbookId">
+		<result property="guestbookId" column="GUESTBOOK_ID" columnIndex="1"/>
+		<result property="parentId" column="PARENT_ID" columnIndex="2"/>
+		<result property="groupId" column="GROUP_ID" columnIndex="3"/>
+		<result property="step" column="STEP" columnIndex="4"/>
+		<result property="indentation" column="INDENTATION" columnIndex="5"/>
+		<result property="contents" column="CONTENTS" columnIndex="6"/>
+		<result property="targetUserId" column="TARGET_USER_ID" columnIndex="7"/>
+		<result property="registerId" column="REGISTER_ID" columnIndex="8"/>
+		<result property="registerName" column="REGISTER_NAME" columnIndex="9"/>
+		<result property="registDate" column="REGIST_DATE" columnIndex="10"/>
+		<result property="registerJobTitleName" column="REGISTER_JOB_TITLE_NAME" columnIndex="11"/>
+		<result property="registerJobTitleEngName" column="REGISTER_JOB_TITLE_ENG_NAME" columnIndex="12"/>
+		<result property="registerTeamName" column="REGISTER_TEAM_NAME" columnIndex="13"/>
+		<result property="registerTeamEngName" column="REGISTER_TEAM_ENG_NAME" columnIndex="14"/>
+		<result property="guestbookLineReplyCnt" column="GUESTBOOK_LINE_REPLY_CNT" columnIndex="15"/>
+		<result property="guestbookUserName" column="GUESTBOOK_USER_NAME" columnIndex="16"/>
+		<result property="guestbookUserEngName" column="GUESTBOOK_USER_ENG_NAME" columnIndex="17"/>
+		<result property="sessUserLocale" column="SESS_USER_LOCALE" columnIndex="18"/>
+		<result property="guestbookList" column="{parentId=GUESTBOOK_ID,sessUserLocale=SESS_USER_LOCALE}" select="support.guestbook.dao.Guestbook.selectGuestbookLineReply" />
+	</resultMap>
+	
+	<!-- insert Guestbook -->
+	<insert id="insertGuestbook" parameterClass="Guestbook"> 
+      <![CDATA[ 
+           INSERT INTO IKEP4_GB_GUESTBOOK (
+           			/* [Guestbook_SqlMap.xml] support.guestbook.dao.Guestbook.insertGuestbook */
+           			GUESTBOOK_ID, PARENT_ID, GROUP_ID, STEP, INDENTATION, 
+           			CONTENTS, TARGET_USER_ID, REGISTER_ID, REGISTER_NAME, REGIST_DATE)  
+           VALUES (#guestbookId#,  #parentId#,
+					#groupId#, #step#, #indentation#, #contents#, #targetUserId#
+           			, #registerId#, #registerName#, SYSDATE)
+       ]]>
+   </insert>
+   
+   
+   	<sql id="sqlExtendColumnList">
+   	  			GUESTBOOK_ID
+				, PARENT_ID
+				, GROUP_ID
+				, STEP
+				, INDENTATION
+				, CONTENTS
+				, TARGET_USER_ID
+				, REGISTER_ID
+				, REGISTER_NAME
+				, REGIST_DATE
+				, (SELECT JOB_TITLE_NAME  FROM IKEP4_EV_JOB_TITLE EJT, IKEP4_EV_USER EVU WHERE EJT.JOB_TITLE_CODE = EVU.JOB_TITLE_CODE AND EVU.USER_ID = GB.REGISTER_ID  ) AS REGISTER_JOB_TITLE_NAME
+				, (SELECT JOB_TITLE_ENGLISH_NAME  FROM IKEP4_EV_JOB_TITLE EJT, IKEP4_EV_USER EVU WHERE EJT.JOB_TITLE_CODE = EVU.JOB_TITLE_CODE AND EVU.USER_ID = GB.REGISTER_ID  ) AS REGISTER_JOB_TITLE_ENG_NAME
+
+				, (SELECT EG.GROUP_NAME FROM IKEP4_EV_USER_GROUP UG, IKEP4_EV_GROUP EG
+					WHERE UG.GROUP_ID = EG.GROUP_ID and UG.USER_ID = GB.REGISTER_ID AND UG.REPRESENT_GROUP = '1' AND EG.GROUP_TYPE_ID = 'G0001' AND ROWNUM = 1 ) AS REGISTER_TEAM_NAME
+				, (SELECT EG.GROUP_ENGLISH_NAME FROM IKEP4_EV_USER_GROUP UG, IKEP4_EV_GROUP EG
+					WHERE UG.GROUP_ID = EG.GROUP_ID and UG.USER_ID = GB.REGISTER_ID AND UG.REPRESENT_GROUP = '1' AND EG.GROUP_TYPE_ID = 'G0001' AND ROWNUM = 1 ) AS REGISTER_TEAM_ENG_NAME
+				, (SELECT COUNT(GUESTBOOK_ID)-1 FROM IKEP4_GB_GUESTBOOK GBC START WITH GBC.GUESTBOOK_ID = GB.GUESTBOOK_ID CONNECT BY PRIOR GBC.GUESTBOOK_ID = GBC.PARENT_ID ) AS GUESTBOOK_LINE_REPLY_CNT
+				, (SELECT USER_NAME FROM IKEP4_EV_USER WHERE USER_ID = GB.REGISTER_ID ) AS GUESTBOOK_USER_NAME
+				, (SELECT USER_ENGLISH_NAME FROM IKEP4_EV_USER WHERE USER_ID = GB.REGISTER_ID ) AS GUESTBOOK_USER_ENG_NAME
+				, #sessUserLocale# AS SESS_USER_LOCALE
+   	</sql>
+   
+   	<select id="selectGuestbookAll" parameterClass="GuestbookSearch" resultMap="resultGuestbook">
+
+          SELECT  *
+	      FROM    (
+	                SELECT  ROWNUM RNUM, F.*
+	                FROM
+	                        (
+	                          SELECT  
+	                          		/* [Guestbook_SqlMap.xml] support.guestbook.dao.Guestbook.selectGuestbookAll */
+	                          		<include refid="support.guestbook.dao.Guestbook.sqlExtendColumnList" />
+	                         FROM   IKEP4_GB_GUESTBOOK GB
+							 WHERE  GB.TARGET_USER_ID = #targetUserId#
+							 AND PARENT_ID IS NULL
+					         ORDER BY GB.STEP ASC, GB.GROUP_ID DESC, GB.INDENTATION ASC
+   		<![CDATA[
+	               ) F 
+	               WHERE ROWNUM <=  #endRowIndex# /* 종료  */
+			) 
+			WHERE RNUM >  #startRowIndex# /* 시작 */
+		]]>
+	</select>
+	
+	<!-- selectCount -->
+	<select id="selectCountGuestbookAll" parameterClass="GuestbookSearch" resultClass="int">
+		   SELECT COUNT(GB.GUESTBOOK_ID) 
+		   FROM   IKEP4_GB_GUESTBOOK GB
+	       WHERE GB.TARGET_USER_ID = #targetUserId#
+	       AND PARENT_ID IS NULL
+	</select>
+	
+	<select id="selectGuestbookMore" parameterClass="GuestbookSearch" resultMap="resultGuestbook">
+          SELECT  *
+	      FROM    (
+	                SELECT  ROWNUM RNUM, F.*
+	                FROM
+	                        (
+	                          SELECT  /* [Guestbook_SqlMap.xml] support.guestbook.dao.Guestbook.selectGuestbookMore */
+	                          		<include refid="support.guestbook.dao.Guestbook.sqlExtendColumnList" />
+	                         FROM   IKEP4_GB_GUESTBOOK GB
+							 WHERE  GB.TARGET_USER_ID = #targetUserId#
+							 AND PARENT_ID IS NULL
+					         ORDER BY GB.STEP ASC, GB.GROUP_ID DESC, GB.INDENTATION ASC
+		<![CDATA[
+	               ) F 
+	               WHERE ROWNUM <=  #endRowIndex# /* 종료  */
+			)
+		]]>
+	</select>
+	
+	<!-- selectCount -->
+	<select id="selectCountGuestbook" parameterClass="java.lang.String" resultClass="int">
+		   SELECT
+		   		/* [Guestbook_SqlMap.xml] support.guestbook.dao.Guestbook.selectCountGuestbook */ 
+		   		COUNT(GB.GUESTBOOK_ID) 
+		   FROM   IKEP4_GB_GUESTBOOK GB
+	       WHERE GB.TARGET_USER_ID = #targetUserId#
+	</select>
+					         
+   <!-- select Guestbook -->
+	<select id="selectGuestbook" parameterClass="GuestbookSearch" resultMap="resultGuestbook">
+		   SELECT 
+		   		  /* [Guestbook_SqlMap.xml] support.guestbook.dao.Guestbook.selectGuestbook */
+		   		<include refid="support.guestbook.dao.Guestbook.sqlExtendColumnList" />
+			FROM IKEP4_GB_GUESTBOOK  GB
+			WHERE GB.GUESTBOOK_ID = #guestbookId#
+			ORDER BY GB.STEP ASC, GB.INDENTATION ASC
+	</select>
+	
+	<!-- select selectGuestbookByGroup -->
+	<select id="selectGuestbookByGroup" parameterClass="GuestbookSearch" resultMap="resultGuestbook">
+		   SELECT 
+		   		  /* [Guestbook_SqlMap.xml] support.guestbook.dao.Guestbook.selectGuestbookByGroup */
+		   		<include refid="support.guestbook.dao.Guestbook.sqlExtendColumnList" />
+			FROM IKEP4_GB_GUESTBOOK  GB
+			WHERE GB.GROUP_ID = #groupId#
+			ORDER BY GB.STEP ASC, GB.INDENTATION ASC
+	</select>
+	
+	<!-- select selectGuestbookLineReply -->
+	<select id="selectGuestbookLineReply" parameterClass="Guestbook" resultMap="resultGuestbook">
+		   SELECT 
+		   		  /* [Guestbook_SqlMap.xml] support.guestbook.dao.Guestbook.selectGuestbookLineReply */
+		   		<include refid="support.guestbook.dao.Guestbook.sqlExtendColumnList" />
+			FROM IKEP4_GB_GUESTBOOK  GB
+			WHERE GB.PARENT_ID = #parentId#
+			AND GB.PARENT_ID IS NOT NULL
+			ORDER BY GB.STEP ASC, GB.INDENTATION ASC
+	</select>
+	
+
+	<!-- select Guestbook --> 
+	<select id="selectGuestbookByChild" parameterClass="GuestbookSearch" resultMap="resultGuestbook">
+		   SELECT 
+		   		  /* [Guestbook_SqlMap.xml] support.guestbook.dao.Guestbook.selectGuestbookByChild */
+		   		<include refid="support.guestbook.dao.Guestbook.sqlExtendColumnList" />
+			FROM IKEP4_GB_GUESTBOOK  GB
+			WHERE GB.PARENT_ID = #parentId#
+            ORDER BY GB.STEP ASC, INDENTATION ASC
+	</select>
+
+	<!-- update Guestbook -->
+	<update id="updateGuestbook" parameterClass="Guestbook">
+	  <![CDATA[
+		   UPDATE IKEP4_GB_GUESTBOOK 
+		   /* [Guestbook_SqlMap.xml] support.guestbook.dao.Guestbook.updateGuestbook */
+		   SET CONTENTS = #contents#, 
+			   REGIST_DATE = sysdate
+		   WHERE GUESTBOOK_ID = #guestbookId#
+	   ]]>
+	</update>
+	
+	<!-- update -->
+	<update id="updateStep" parameterClass="Guestbook">
+	  	<![CDATA[
+		   UPDATE IKEP4_GB_GUESTBOOK GB
+		   /* [Guestbook_SqlMap.xml] support.guestbook.dao.Guestbook.updateStep */
+		   SET GB.STEP = STEP +1 
+		   WHERE GB.GROUP_ID = #groupId#
+		   	AND GB.STEP >= #step#
+		   	AND GB.TARGET_USER_ID = #targetUserId#
+		]]>
+	</update>
+   
+	<!-- delete Guestbook -->
+	<delete id="deleteGuestbook" parameterClass="java.lang.String">
+      <![CDATA[
+	       DELETE  
+	       /* [Guestbook_SqlMap.xml] support.guestbook.dao.Guestbook.deleteGuestbook */
+	       FROM IKEP4_GB_GUESTBOOK
+	       WHERE GUESTBOOK_ID IN (
+	       	SELECT GUESTBOOK_ID
+	       	FROM IKEP4_GB_GUESTBOOK
+	       	START WITH GUESTBOOK_ID = #guestbookId# 
+             CONNECT BY PRIOR GUESTBOOK_ID = PARENT_ID
+	       )
+	   ]]>
+	</delete>
+	
+	
+	<select id="readPortletPropertyValue" parameterClass="java.util.HashMap" resultClass="java.lang.String"> 
+		<![CDATA[
+		
+    		SELECT
+    			/* [Guestbook_SqlMap.xml] support.guestbook.dao.Guestbook.readPortletRowCnt */ 
+    			PROPERTY_VALUE
+    		FROM IKEP4_PO_PORTLET_USER_CONFIG
+    		WHERE PORTLET_CONFIG_ID = #portletConfigId# 
+    		AND PROPERTY_NAME = #propertyName#
+    	]]>
+ 	</select>
+</sqlMap>

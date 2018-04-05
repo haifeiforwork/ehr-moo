@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="lightpack.todo.dao.taskUser">
+	<typeAlias alias = "TaskUser" type="com.lgcns.ikep4.lightpack.todo.model.TaskUser"/>
+	<typeAlias alias = "TaskUserPk" type="com.lgcns.ikep4.lightpack.todo.model.TaskUserPk"/>
+	
+	<!-- IKEP4_TD_TASK_USER 테이블 조회 결과 -->
+	<resultMap id="taskUserResult" class="TaskUser">
+		<result property="workerId"          column="WORKER_ID"             />
+		<result property="taskId"            column="TASK_ID"               />
+		<result property="userContents"      column="USER_CONTENTS"         />
+		<result property="userAttachCount"   column="USER_ATTACH_COUNT"     />
+		<result property="userCompleteDate"  column="USER_COMPLETE_DATE"    />
+		<result property="userStatus"        column="USER_STATUS"           />
+		<result property="registerId"        column="REGISTER_ID"           />
+		<result property="registerName"      column="REGISTER_NAME"         />
+		<result property="registDate"        column="REGIST_DATE"           />
+		<result property="updaterId"         column="UPDATER_ID"            />
+		<result property="updaterName"       column="UPDATER_NAME"          />
+		<result property="updateDate"        column="UPDATE_DATE"           />
+		<result property="workerName"        column="WORKER_NAME"           />
+		<result property="workerTeamName"    column="WORKER_TEAM_NAME"      />
+		<result property="workerJobRankName" column="WORKER_JOB_RANK_NAME"  />
+		<result property="workerEnglishName"        column="WORKER_ENGLISH_NAME"           />
+		<result property="workerTeamEnglishName"    column="WORKER_TEAM_ENGLISH_NAME"      />
+		<result property="workerJobRankEnglishName" column="WORKER_JOB_RANK_ENGLISH_NAME"  />
+	</resultMap>
+
+	<insert id="create" parameterClass="TaskUser"> 
+      <![CDATA[ 
+           INSERT INTO IKEP4_TD_TASK_USER /* [TaskUser_SqlMap.xml] TaskUser.create */
+                  (WORKER_ID, TASK_ID, USER_CONTENTS, USER_ATTACH_COUNT, 
+				   USER_STATUS, REGISTER_ID, REGISTER_NAME, REGIST_DATE)  
+           VALUES (#workerId#, #taskId#, #userContents#, IFNULL(#userAttachCount#, 0),
+				   'A', #registerId#, #registerName#, NOW())
+       ]]>
+   </insert>
+   
+	<select id="get" parameterClass="TaskUserPk" resultMap="taskUserResult">
+	  <![CDATA[
+		   SELECT /* [TaskUser_SqlMap.xml] TaskUser.get */
+		   		  WORKER_ID,          
+	              TASK_ID,            
+	              USER_CONTENTS,      
+	              USER_ATTACH_COUNT,  
+	              USER_COMPLETE_DATE, 
+	              USER_STATUS,        
+	              REGISTER_ID,        
+	              REGISTER_NAME,      
+	              REGIST_DATE,        
+	              UPDATER_ID,         
+	              UPDATER_NAME,       
+	              UPDATE_DATE,
+		          '' AS WORKER_NAME,
+		          '' AS WORKER_TEAM_NAME,
+		          '' AS WORKER_JOB_RANK_NAME,
+		          '' AS WORKER_ENGLISH_NAME,
+		          '' AS WORKER_TEAM_ENGLISH_NAME,
+		          '' AS WORKER_JOB_RANK_ENGLISH_NAME
+		     FROM IKEP4_TD_TASK_USER
+		    WHERE TASK_ID = #taskId#
+		      AND WORKER_ID = #workerId#
+	   ]]>
+	</select>
+	
+	<update id="update" parameterClass="TaskUser">
+	  <![CDATA[
+		   UPDATE IKEP4_TD_TASK_USER /* [TaskUser_SqlMap.xml] TaskUser.update */
+		      SET USER_CONTENTS = #userContents#,
+				  USER_ATTACH_COUNT = IFNULL(#userAttachCount#, 0),
+				  USER_COMPLETE_DATE = CASE WHEN USER_STATUS = 'B' THEN USER_COMPLETE_DATE
+				                            WHEN #userStatus# = 'A' THEN NULL
+				                            ELSE NOW() END,
+				  USER_STATUS = IF(USER_STATUS = 'B', USER_STATUS, #userStatus#),
+				  UPDATER_ID = #updaterId#,
+				  UPDATER_NAME = #updaterName#,
+				  UPDATE_DATE = NOW()
+		    WHERE WORKER_ID = #workerId#
+              AND TASK_ID = #taskId#
+	   ]]>
+	</update>
+   
+   <delete id="remove" parameterClass="TaskUserPk">
+      <![CDATA[
+	       DELETE FROM IKEP4_TD_TASK_USER /* [TaskUser_SqlMap.xml] TaskUser.remove */
+	        WHERE WORKER_ID = #workerId#
+              AND TASK_ID = #taskId#
+	   ]]>
+	</delete>
+	
+	<select id="count" parameterClass="TaskUserPk" resultClass="java.lang.Integer">
+	  <![CDATA[
+		   SELECT /* [TaskUser_SqlMap.xml] TaskUser.count */
+		   		  COUNT(1) 
+		     FROM IKEP4_TD_TASK_USER 
+		    WHERE WORKER_ID = #workerId#
+              AND TASK_ID = #taskId#
+	   ]]>
+	</select>
+   
+	<!-- //할일 조회 -->
+	<select id="getTaskUser" parameterClass="TaskUserPk" resultMap="taskUserResult">
+	  <![CDATA[
+		   SELECT /* [TaskUser_SqlMap.xml] TaskUser.getTaskUser */
+		   		  A.WORKER_ID,          
+	              A.TASK_ID,            
+	              A.USER_CONTENTS,      
+	              A.USER_ATTACH_COUNT,  
+	              A.USER_COMPLETE_DATE, 
+	              A.USER_STATUS,        
+	              A.REGISTER_ID,        
+	              A.REGISTER_NAME,      
+	              A.REGIST_DATE,        
+	              A.UPDATER_ID,         
+	              A.UPDATER_NAME,       
+	              A.UPDATE_DATE,
+		          B.USER_NAME AS WORKER_NAME,
+		          B.TEAM_NAME AS WORKER_TEAM_NAME,
+		          C.JOB_TITLE_NAME AS WORKER_JOB_RANK_NAME,
+		          B.USER_ENGLISH_NAME AS WORKER_ENGLISH_NAME,
+		          B.TEAM_ENGLISH_NAME AS WORKER_TEAM_ENGLISH_NAME,
+		          C.JOB_TITLE_ENGLISH_NAME AS WORKER_JOB_RANK_ENGLISH_NAME
+		     FROM IKEP4_TD_TASK_USER A,
+		          IKEP4_EV_USER B, 
+                  IKEP4_EV_JOB_TITLE C 
+		    WHERE A.TASK_ID = #taskId#
+		      AND A.WORKER_ID = #workerId#
+		      AND A.WORKER_ID = B.USER_ID
+		      AND B.JOB_TITLE_CODE = C.JOB_TITLE_CODE
+		      AND B.PORTAL_ID = C.PORTAL_ID
+	   ]]>
+	</select>
+	
+	<!-- //과업별 반대 상태  갯수 -->
+	<select id="countRestReverseStatus" parameterClass="TaskUser" resultClass="java.lang.Integer">
+	  <![CDATA[
+		   SELECT /* [TaskUser_SqlMap.xml] TaskUser.countRestReverseStatus */
+		   		  COUNT(1) 
+		     FROM IKEP4_TD_TASK_USER 
+		    WHERE TASK_ID = #taskId#
+              AND USER_STATUS <> #userStatus#
+	   ]]>
+	</select>
+	
+	<!-- //작업등록 수정에 의한 삭제 대상자 조회 -->
+	<select id="listDeleteWorker" parameterClass="java.util.Map" resultMap="taskUserResult">
+	  <![CDATA[
+		   SELECT /* [TaskUser_SqlMap.xml] TaskUser.listDeleteWorker */
+		   		  WORKER_ID,          
+				  TASK_ID,            
+				  USER_CONTENTS,      
+				  USER_ATTACH_COUNT,  
+				  USER_COMPLETE_DATE, 
+				  USER_STATUS,        
+				  REGISTER_ID,        
+				  REGISTER_NAME,      
+				  REGIST_DATE,        
+				  UPDATER_ID,         
+				  UPDATER_NAME,       
+				  UPDATE_DATE,
+				  '' AS WORKER_NAME,
+				  '' AS WORKER_TEAM_NAME,
+				  '' AS WORKER_JOB_RANK_NAME,
+		          '' AS WORKER_ENGLISH_NAME,
+		          '' AS WORKER_TEAM_ENGLISH_NAME,
+		          '' AS WORKER_JOB_RANK_ENGLISH_NAME
+		     FROM IKEP4_TD_TASK_USER 
+		    WHERE TASK_ID = #taskId#
+              AND WORKER_ID NOT IN 
+	   ]]>
+		    <iterate property="workerId" open="(" close=")" conjunction=",">
+				    #workerId[]#
+			</iterate>
+	</select>
+	
+	<!-- //태스크 아이디로 대상자 조회 -->
+	<select id="listTaskUserByTaskId" parameterClass="java.lang.String" resultMap="taskUserResult">
+	  <![CDATA[
+		   SELECT /* [TaskUser_SqlMap.xml] TaskUser.listTaskUserByTaskId */
+		   		  A.WORKER_ID,          
+	              A.TASK_ID,            
+	              A.USER_CONTENTS,      
+	              A.USER_ATTACH_COUNT,  
+	              A.USER_COMPLETE_DATE, 
+	              A.USER_STATUS,        
+	              A.REGISTER_ID,        
+	              A.REGISTER_NAME,      
+	              A.REGIST_DATE,        
+	              A.UPDATER_ID,         
+	              A.UPDATER_NAME,       
+	              A.UPDATE_DATE,
+		          B.USER_NAME AS WORKER_NAME,
+		          B.TEAM_NAME AS WORKER_TEAM_NAME,
+		          C.JOB_TITLE_NAME AS WORKER_JOB_RANK_NAME,
+		          B.USER_ENGLISH_NAME AS WORKER_ENGLISH_NAME,
+		          B.TEAM_ENGLISH_NAME AS WORKER_TEAM_ENGLISH_NAME,
+		          C.JOB_TITLE_ENGLISH_NAME AS WORKER_JOB_RANK_ENGLISH_NAME
+		     FROM IKEP4_TD_TASK_USER A,
+		          IKEP4_EV_USER B, 
+              	  IKEP4_EV_JOB_TITLE C 
+		    WHERE A.TASK_ID = #taskId#
+		      AND A.WORKER_ID = B.USER_ID
+		      AND B.JOB_TITLE_CODE = C.JOB_TITLE_CODE
+		      AND B.PORTAL_ID = C.PORTAL_ID 
+	   ]]>
+	</select> 
+   
+   <!-- //TaskId로 삭제 -->
+   <delete id="removeByTaskId" parameterClass="java.lang.String">
+      <![CDATA[
+	       DELETE FROM IKEP4_TD_TASK_USER /* [TaskUser_SqlMap.xml] TaskUser.removeByTaskId*/
+	        WHERE TASK_ID = #taskId#
+	   ]]>
+	</delete>
+</sqlMap>

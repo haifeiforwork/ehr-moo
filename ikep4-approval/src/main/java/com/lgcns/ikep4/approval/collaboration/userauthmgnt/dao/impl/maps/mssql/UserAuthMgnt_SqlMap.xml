@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="com.lgcns.ikep4.approval.collaboration.userauthmgnt.dao.UserAuthMgnt" >
+
+	<typeAlias alias="userAuthMgnt" type="com.lgcns.ikep4.approval.collaboration.userauthmgnt.model.UserAuthMgnt"/>
+	<typeAlias alias="userAuthMgntSearchCondition" type="com.lgcns.ikep4.approval.collaboration.userauthmgnt.search.UserAuthMgntSearchCondition" />
+	
+	<resultMap id="userAuthMgntResultMap" class="userAuthMgnt">  
+		<result property="workGbnCd"		column="WORK_GBN_CD"		jdbcType="VARCHAR"/>
+		<result property="deptId"			column="DEPT_ID"			jdbcType="VARCHAR"/>
+		<result property="empNo"			column="EMP_NO"				jdbcType="VARCHAR"/>
+		<result property="rsltFileReadYn"	column="RSLT_FILE_READ_YN"	jdbcType="VARCHAR"/>
+		<result property="apprYn"			column="APPR_YN"			jdbcType="VARCHAR"/>
+		<result property="useYn"			column="USE_YN"				jdbcType="VARCHAR"/>
+		<result property="userName"			column="USER_NAME"			jdbcType="VARCHAR"/>
+		<result property="groupName"		column="GROUP_NAME"			jdbcType="VARCHAR"/>
+		<result property="rNum"				column="RNUM"				jdbcType="VARCHAR"/>
+		<result property="mail"				column="MAIL"				jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	<select id="checkDupUserAuthMgnt" parameterClass="userAuthMgnt" resultClass="int">
+		/* [UserAuthMgnt_SqlMap.xml] userAuthMgnt.checkDupUserAuthMgnt */
+		SELECT COUNT(*)
+		  FROM TB_USER_AUTH_MGNT
+		 WHERE WORK_GBN_CD = #workGbnCd#
+		   AND DEPT_ID = #deptId#
+		   AND EMP_NO = #empNo#
+	</select>
+	
+	<select id="getUserAuthMgntCount" parameterClass="userAuthMgntSearchCondition" resultClass="int">
+		/* [UserAuthMgnt_SqlMap.xml] userAuthMgnt.getUserAuthMgntCount */
+		SELECT COUNT(*)
+		  FROM TB_USER_AUTH_MGNT A
+		 WHERE 1 = 1
+       	<isNotEmpty property="searchWorkGbnCd" >
+		   AND A.WORK_GBN_CD = #searchWorkGbnCd#
+		</isNotEmpty>
+       	<isNotEmpty property="searchGroupId" >
+		   AND A.DEPT_ID = #searchGroupId#
+		</isNotEmpty>
+       	<isNotEmpty property="searchUserId" >
+		   AND A.EMP_NO = #searchUserId#
+		</isNotEmpty>
+		<isEqual property="isSystemAdmin" compareValue="false">
+		   AND A.WORK_GBN_CD IN ( 
+		                              SELECT COM_CD 
+		                                FROM TB_COMMON_CODE 
+		                               WHERE GRP_CD = 'C00001' 
+		                                 AND ( 
+		                                          CHAR_COL1 = #sessionGoupId# 
+		                                       OR CHAR_COL2 = #sessionGoupId#
+		                                      ) 
+		                             )
+		</isEqual>
+	</select>
+	
+	<select id="getUserAuthMgntList" parameterClass="userAuthMgntSearchCondition" resultMap="userAuthMgntResultMap">
+		/* [UserAuthMgnt_SqlMap.xml] userAuthMgnt.getUserAuthMgntList */
+		SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
+		SELECT *
+		  FROM
+		     (
+				SELECT A.WORK_GBN_CD    AS WORK_GBN_CD    /* 업무구분코드 */
+				     , A.DEPT_ID        AS DEPT_ID        /* 부서코드 */
+				     , C.GROUP_NAME     AS GROUP_NAME     /* 부서명 */
+				     , A.EMP_NO         AS EMP_NO         /* 사원번호 */
+				     , B.USER_NAME      AS USER_NAME      /* 사원명 */
+				     , A.RSLT_FILE_READ_YN    AS RSLT_FILE_READ_YN    /* 결과파일 읽기 권한여부 */
+				     , A.APPR_YN        AS APPR_YN        /* 승인자여부 */
+				     , A.USE_YN         AS USE_YN         /* 사용여부 */
+				     , B.MAIL			AS MAIL
+				     , ROW_NUMBER() OVER( 
+				     					 ORDER BY
+				     					 <isNotEmpty property="sortColumn">
+				     					 	<isEqual property="sortColumn" compareValue="workGbnCd">
+				     					 		<isEqual property="sortType" compareValue="DESC">
+				     					 			A.WORK_GBN_CD DESC,
+				     					 		</isEqual>
+				     					 		<isEqual property="sortType" compareValue="ASC">
+				     					 			A.WORK_GBN_CD ASC,
+				     					 		</isEqual>
+				     					 	</isEqual>
+				     					 	<isEqual property="sortColumn" compareValue="groupName">
+				     					 		<isEqual property="sortType" compareValue="DESC">
+				     					 			C.GROUP_NAME DESC,
+				     					 		</isEqual>
+				     					 		<isEqual property="sortType" compareValue="ASC">
+				     					 			C.GROUP_NAME ASC,
+				     					 		</isEqual>
+				     					 	</isEqual>
+				     					 	<isEqual property="sortColumn" compareValue="userName">
+				     					 		<isEqual property="sortType" compareValue="DESC">
+				     					 			B.USER_NAME DESC,
+				     					 		</isEqual>
+				     					 		<isEqual property="sortType" compareValue="ASC">
+				     					 			B.USER_NAME ASC,
+				     					 		</isEqual>
+				     					 	</isEqual>
+				     					 	<isEqual property="sortColumn" compareValue="apprYn">
+				     					 		<isEqual property="sortType" compareValue="DESC">
+				     					 			A.APPR_YN DESC,
+				     					 		</isEqual>
+				     					 		<isEqual property="sortType" compareValue="ASC">
+				     					 			A.APPR_YN ASC,
+				     					 		</isEqual>
+				     					 	</isEqual>
+				     					 	<isEqual property="sortColumn" compareValue="rsltFileReadYn">
+				     					 		<isEqual property="sortType" compareValue="DESC">
+				     					 			A.RSLT_FILE_READ_YN DESC,
+				     					 		</isEqual>
+				     					 		<isEqual property="sortType" compareValue="ASC">
+				     					 			A.RSLT_FILE_READ_YN ASC,
+				     					 		</isEqual>
+				     					 	</isEqual>
+				     					 	<isEqual property="sortColumn" compareValue="useYn">
+				     					 		<isEqual property="sortType" compareValue="DESC">
+				     					 			A.USE_YN DESC,
+				     					 		</isEqual>
+				     					 		<isEqual property="sortType" compareValue="ASC">
+				     					 			A.USE_YN ASC,
+				     					 		</isEqual>
+				     					 	</isEqual>
+				     					 </isNotEmpty>
+				     					            B.COMPANY_CODE ASC
+				                        ) RNUM
+				  FROM TB_USER_AUTH_MGNT A
+		    INNER JOIN IKEP4_EV_USER B 
+		            ON A.EMP_NO = B.EMP_NO 
+		    INNER JOIN IKEP4_EV_GROUP C 
+		            ON A.DEPT_ID = C.GROUP_ID 
+		         WHERE 1 = 1
+         		<isNotEmpty property="searchWorkGbnCd" >
+				   AND A.WORK_GBN_CD = #searchWorkGbnCd#
+				</isNotEmpty>
+         		<isNotEmpty property="searchGroupId" >
+				   AND A.DEPT_ID = #searchGroupId#
+				</isNotEmpty>
+         		<isNotEmpty property="searchUserId" >
+				   AND A.EMP_NO = #searchUserId#
+				</isNotEmpty>
+         		<isNotEmpty property="searchUseYn" >
+				   AND A.USE_YN = #searchUseYn#
+				</isNotEmpty>
+				<isEqual property="isSystemAdmin" compareValue="false">
+				   AND A.WORK_GBN_CD IN ( 
+		                              SELECT COM_CD 
+		                                FROM TB_COMMON_CODE 
+		                               WHERE GRP_CD = 'C00001' 
+		                                 AND ( 
+		                                          CHAR_COL1 = #sessionGoupId# 
+		                                       OR CHAR_COL2 = #sessionGoupId#
+		                                      ) 
+		                             )
+				</isEqual>
+		     ) IA 
+		 WHERE IA.RNUM &lt;= #endRowIndex#
+		   AND IA.RNUM &gt; #startRowIndex#
+	</select>
+	
+	<select id="getUserAuthMgnt" parameterClass="userAuthMgntSearchCondition" resultMap="userAuthMgntResultMap">
+		/* [UserAuthMgnt_SqlMap.xml] userAuthMgnt.getUserAuthMgnt */
+			SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
+			SELECT A.WORK_GBN_CD    AS WORK_GBN_CD    /* 업무구분코드 */
+			     , A.DEPT_ID        AS DEPT_ID        /* 부서코드 */
+			     , C.GROUP_NAME     AS GROUP_NAME     /* 부서명 */
+			     , A.EMP_NO         AS EMP_NO         /* 사원번호 */
+			     , B.USER_NAME      AS USER_NAME      /* 사원명 */
+			     , A.RSLT_FILE_READ_YN    AS RSLT_FILE_READ_YN    /* 결과파일 읽기 권한여부 */
+			     , A.APPR_YN        AS APPR_YN        /* 승인자여부 */
+			     , A.USE_YN         AS USE_YN         /* 사용여부 */
+			     , 0         		AS RNUM           /* 더미 */
+			     , B.MAIL			AS MAIL
+			  FROM TB_USER_AUTH_MGNT A
+	    LEFT OUTER JOIN IKEP4_EV_USER B 
+	            ON A.EMP_NO = B.EMP_NO 
+	    LEFT OUTER JOIN IKEP4_EV_GROUP C 
+	            ON A.DEPT_ID = C.GROUP_ID 
+	         WHERE 1 = 1
+			   AND A.WORK_GBN_CD = #searchWorkGbnCd#
+			   AND A.EMP_NO = #searchEmpNo#
+			   AND A.DEPT_ID = #searchDeptId#
+	</select>
+	
+	<insert id="createUserAuthMgnt" parameterClass="userAuthMgnt" >
+		/* [UserAuthMgnt_SqlMap.xml] userAuthMgnt.createUserAuthMgnt */
+		INSERT INTO TB_USER_AUTH_MGNT
+				  (
+				      WORK_GBN_CD
+				    , EMP_NO
+				    , DEPT_ID
+				    , RSLT_FILE_READ_YN
+				    , APPR_YN
+				    , USE_YN
+				  )
+			 VALUES
+			      (
+			          #workGbnCd#
+			        , #empNo#
+			        , #deptId#
+			        <isNotEmpty property="rsltFileReadYn" >
+			        , #rsltFileReadYn#
+			        </isNotEmpty>
+			        <isEmpty property="rsltFileReadYn" >
+			        , 'N'
+			        </isEmpty>
+			        <isNotEmpty property="apprYn" >
+			        , #apprYn#
+			        </isNotEmpty>
+			        <isEmpty property="apprYn" >
+			        , 'N'
+			        </isEmpty>
+			        , #useYn#
+			      )	   
+	</insert>
+	
+	<update id="updateUserAuthMgnt" parameterClass="userAuthMgnt" >
+		/* [UserAuthMgnt_SqlMap.xml] userAuthMgnt.updateUserAuthMgnt */
+		UPDATE TB_USER_AUTH_MGNT
+		   SET RSLT_FILE_READ_YN = #rsltFileReadYn#
+		     , APPR_YN = #apprYn#
+		     , USE_YN = #useYn#
+		 WHERE WORK_GBN_CD = #workGbnCd#
+	       AND EMP_NO = #empNo#
+	       AND DEPT_ID = #deptId#
+	</update>
+	
+	<delete id="deleteUserAuthMgnt" parameterClass="userAuthMgnt">
+		/* [UserAuthMgnt_SqlMap.xml] userAuthMgnt.deleteUserAuthMgnt */
+		DELETE TB_USER_AUTH_MGNT
+		 WHERE WORK_GBN_CD = #workGbnCd#
+		   AND EMP_NO = #empNo#
+		   AND DEPT_ID = #deptId#
+	</delete>
+</sqlMap>

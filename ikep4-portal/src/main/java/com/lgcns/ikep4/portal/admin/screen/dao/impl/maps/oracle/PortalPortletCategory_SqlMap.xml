@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="portal.admin.screen.portalPortletCategory" >
+	<typeAlias alias="PortalPortletCategory" 				type="com.lgcns.ikep4.portal.admin.screen.model.PortalPortletCategory"/>
+	<typeAlias alias="PortalPortletCategorySearchCondition"	type="com.lgcns.ikep4.framework.web.SearchCondition" />
+
+	<!-- 포틀릿 카테고리  테이블 조회 결과 -->
+	<resultMap id="portletCategoryResult" class="PortalPortletCategory">
+		<result property="portletCategoryId" column="PORTLET_CATEGORY_ID" columnIndex="1"/>
+		<result property="portletCategoryName" column="PORTLET_CATEGORY_NAME" columnIndex="2"/>
+		<result property="description" column="DESCRIPTION" columnIndex="3"/>
+		<result property="systemCode" column="SYSTEM_CODE" columnIndex="4"/>
+		<result property="systemName" column="SYSTEM_NAME" columnIndex="5"/>
+		<result property="registerId" column="REGISTER_ID" columnIndex="6"/>
+		<result property="registerName" column="REGISTER_NAME" columnIndex="7"/>
+		<result property="registDate" column="REGIST_DATE" columnIndex="8"/>
+		<result property="updaterId" column="UPDATER_ID" columnIndex="9"/>
+		<result property="updaterName" column="UPDATER_NAME" columnIndex="10"/>
+		<result property="updateDate" column="UPDATE_DATE" columnIndex="11"/>
+	</resultMap>
+	
+	<resultMap id="searchResult" class="PortalPortletCategory">
+		<result property="num" column="NUM" columnIndex="1"/>
+		<result property="portletCategoryId" column="PORTLET_CATEGORY_ID" columnIndex="2"/>
+		<result property="portletCategoryName" column="PORTLET_CATEGORY_NAME" columnIndex="3"/>
+		<result property="description" column="DESCRIPTION" columnIndex="4"/>
+		<result property="systemCode" column="SYSTEM_CODE" columnIndex="5"/>
+		<result property="systemName" column="SYSTEM_NAME" columnIndex="6"/>
+		<result property="registerId" column="REGISTER_ID" columnIndex="7"/>
+		<result property="registerName" column="REGISTER_NAME" columnIndex="8"/>
+		<result property="registDate" column="REGIST_DATE" columnIndex="9"/>
+		<result property="updaterId" column="UPDATER_ID" columnIndex="10"/>
+		<result property="updaterName" column="UPDATER_NAME" columnIndex="11"/>
+		<result property="updateDate" column="UPDATE_DATE" columnIndex="12"/>
+	</resultMap>
+
+	<select id="listPortletCategory" parameterClass="java.util.HashMap" resultMap="portletCategoryResult">
+	  <![CDATA[
+	  	   /* [PortalPortletCategory_SqlMap.xml] portal.admin.screen.portalPortletCategory.listPortletCategory */
+		   SELECT
+		   		A.PORTLET_CATEGORY_ID, 
+		   		A.PORTLET_CATEGORY_NAME, 
+		   		A.DESCRIPTION, 
+		   		A.SYSTEM_CODE,  
+				'' SYSTEM_NAME,
+				A.REGISTER_ID, 
+				A.REGISTER_NAME,
+				TO_CHAR(A.REGIST_DATE, 'YYYY-MM-DD') AS REGIST_DATE, 
+				A.UPDATER_ID, 
+				A.UPDATER_NAME,
+				TO_CHAR(A.UPDATE_DATE, 'YYYY-MM-DD') AS UPDATE_DATE
+			 FROM IKEP4_PO_PORTLET_CATEGORY A 
+			WHERE A.SYSTEM_CODE = #systemCode# 
+			ORDER BY A.REGIST_DATE ASC
+		]]>
+	</select>
+	
+	<select id="listPortletCategoryAll" resultMap="portletCategoryResult">
+	  <![CDATA[
+	  	   /* [PortalPortletCategory_SqlMap.xml] portal.admin.screen.portalPortletCategory.listPortletCategoryAll */
+		   SELECT
+		   		A.PORTLET_CATEGORY_ID, 
+		   		A.PORTLET_CATEGORY_NAME, 
+		   		A.DESCRIPTION, 
+		   		A.SYSTEM_CODE,  
+				B.SYSTEM_NAME,
+				A.REGISTER_ID, 
+				A.REGISTER_NAME, 
+				TO_CHAR(A.REGIST_DATE, 'YYYY-MM-DD') AS REGIST_DATE,
+				A.UPDATER_ID, 
+				A.UPDATER_NAME, 
+				TO_CHAR(A.UPDATE_DATE, 'YYYY-MM-DD') AS UPDATE_DATE
+			 FROM IKEP4_PO_PORTLET_CATEGORY A inner join
+			      IKEP4_PO_SYSTEM B on A.system_code = B.system_code 
+			ORDER BY A.REGIST_DATE ASC
+		]]>
+	</select>
+	
+	<select id="listBySearchCondition" parameterClass="PortalPortletCategorySearchCondition" resultMap="searchResult">
+	<![CDATA[
+  		/* [PortalPortletCategory_SqlMap.xml] portal.admin.screen.portalPortletCategory.listBySearchCondition */
+		SELECT				*
+		FROM 				(
+	     					SELECT				ROWNUM AS NUM,
+					     						PORTLET_CATEGORY_ID, 
+										   		PORTLET_CATEGORY_NAME, 
+										   		DESCRIPTION, 
+										   		SYSTEM_CODE,  
+												SYSTEM_NAME,
+												REGISTER_ID,
+												REGISTER_NAME,
+												TO_CHAR(REGIST_DATE, 'YYYY-MM-DD') AS REGIST_DATE,
+												UPDATER_ID,
+												UPDATER_NAME,
+												TO_CHAR(UPDATE_DATE, 'YYYY-MM-DD') AS UPDATE_DATE
+	     					FROM 				(
+	     										SELECT				A.PORTLET_CATEGORY_ID, 
+															   		A.PORTLET_CATEGORY_NAME, 
+															   		A.DESCRIPTION, 
+															   		A.SYSTEM_CODE,  
+																	B.SYSTEM_NAME,
+																	A.REGISTER_ID, 
+																	A.REGISTER_NAME, 
+																	A.REGIST_DATE, 
+																	A.UPDATER_ID, 
+																	A.UPDATER_NAME, 
+																	A.UPDATE_DATE
+	     										FROM				IKEP4_PO_PORTLET_CATEGORY A
+	     										INNER JOIN			IKEP4_PO_SYSTEM B
+	     										ON					A.SYSTEM_CODE = B.SYSTEM_CODE
+	     										WHERE				B.PORTAL_ID = #portalId#
+		]]>
+												<isNotEmpty property="searchColumn">
+												<isEqual prepend="AND" property="searchColumn" compareValue="portletCategoryName">
+																	UPPER(A.PORTLET_CATEGORY_NAME) LIKE UPPER('%' || #searchWord# || '%')
+												</isEqual>
+												</isNotEmpty>
+									    		<isNotEmpty property="sortColumn">
+									    		<isEqual property="sortColumn" compareValue="A.PORTLET_CATEGORY_NAME">
+									    		<isEqual property="sortType" compareValue="ASC">
+												ORDER BY 			A.PORTLET_CATEGORY_NAME ASC
+												</isEqual>
+												<isEqual property="sortType" compareValue="DESC">
+												ORDER BY 			A.PORTLET_CATEGORY_NAME DESC
+												</isEqual>
+												</isEqual>
+									    		</isNotEmpty>
+									    		<isEmpty property="sortColumn">
+									    		ORDER BY 			A.REGIST_DATE DESC
+									    		</isEmpty>
+									    		)
+		<![CDATA[
+	    					WHERE 				ROWNUM <= #endRowIndex#		 
+							)
+		WHERE 				NUM > #startRowIndex#
+		]]>
+	</select>
+	
+	<select id="countBySearchCondition" parameterClass="PortalPortletCategorySearchCondition" resultClass="int">  
+  		<![CDATA[
+  		/* [PortalPortletCategory_SqlMap.xml] portal.admin.screen.portalPortletCategory.countBySearchCondition */
+		SELECT 				COUNT(A.PORTLET_CATEGORY_ID)
+		FROM   				IKEP4_PO_PORTLET_CATEGORY A
+		INNER JOIN			IKEP4_PO_SYSTEM B
+		ON					A.SYSTEM_CODE = B.SYSTEM_CODE
+		WHERE				B.PORTAL_ID = #portalId#
+		]]>
+		<isNotEmpty property="searchColumn">
+		<isEqual prepend="AND" property="searchColumn" compareValue="portletCategoryName">
+							UPPER(A.PORTLET_CATEGORY_NAME) LIKE UPPER('%' || #searchWord# || '%')
+		</isEqual>
+		</isNotEmpty>
+  	</select> 
+	
+	<insert id="createPortletCategory" parameterClass="PortalPortletCategory"> 
+      <![CDATA[
+      	   /* [PortalPortletCategory_SqlMap.xml] portal.admin.screen.portalPortletCategory.createPortletCategory */ 
+           INSERT INTO IKEP4_PO_PORTLET_CATEGORY (PORTLET_CATEGORY_ID, PORTLET_CATEGORY_NAME, DESCRIPTION, SYSTEM_CODE, REGISTER_ID, REGISTER_NAME, REGIST_DATE, UPDATER_ID, UPDATER_NAME, UPDATE_DATE)  
+           VALUES (#portletCategoryId#, #portletCategoryName#, #description#, #systemCode#, #registerId#, #registerName#, sysdate, #updaterId#, #updaterName#, sysdate)
+       ]]>
+   </insert>
+   
+   <select id="getPortletCategory" parameterClass="String" resultMap="portletCategoryResult">
+	  <![CDATA[
+	  	   /* [PortalPortletCategory_SqlMap.xml] portal.admin.screen.portalPortletCategory.getPortletCategory */
+		   SELECT 
+		   		A.PORTLET_CATEGORY_ID, 
+		   		A.PORTLET_CATEGORY_NAME, 
+		   		A.DESCRIPTION, 
+		   		A.SYSTEM_CODE,  
+				'' SYSTEM_NAME,
+				A.REGISTER_ID, 
+				A.REGISTER_NAME, 
+				TO_CHAR(A.REGIST_DATE, 'YYYY-MM-DD') AS REGIST_DATE,
+				A.UPDATER_ID, 
+				A.UPDATER_NAME, 
+				TO_CHAR(A.UPDATE_DATE, 'YYYY-MM-DD') AS UPDATE_DATE
+		   	 FROM IKEP4_PO_PORTLET_CATEGORY A 
+		   	WHERE A.PORTLET_CATEGORY_ID = #portletCategoryId#
+	   ]]>
+	</select>
+	
+    <delete id="removePortletCategory" parameterClass="java.lang.String">
+      <![CDATA[
+      	   /* [PortalPortletCategory_SqlMap.xml] portal.admin.screen.portalPortletCategory.removePortletCategory */
+	       DELETE FROM IKEP4_PO_PORTLET_CATEGORY 
+	        WHERE PORTLET_CATEGORY_ID = #portletCategoryId#
+	   ]]>
+	</delete>
+	
+	<update id="updatePortletCategory" parameterClass="PortalPortletCategory">
+	  <![CDATA[
+		   UPDATE IKEP4_PO_PORTLET_CATEGORY
+		   SET PORTLET_CATEGORY_NAME = #portletCategoryName#,	 
+			   DESCRIPTION = #description#,
+			   SYSTEM_CODE = #systemCode#,
+			   UPDATER_ID = #updaterId#, 
+			   UPDATER_NAME = #updaterName#,
+			   UPDATE_DATE = sysdate 
+		   WHERE PORTLET_CATEGORY_ID = #portletCategoryId#
+	   ]]>
+	</update>
+	
+	<select id="listPortalPortletCategoryAll" parameterClass="java.lang.String" resultClass="PortalPortletCategory">
+	  <![CDATA[
+	  	   /* [PortalPortletCategory_SqlMap.xml] portal.admin.screen.portalPortletCategory.listPortalPortletCategoryAll */
+		   Select
+		   		 A.Portlet_Category_Id  portletCategoryId,
+         		 A.Portlet_Category_Name  portletCategoryName,
+		         A.Description  description,
+		         A.SYSTEM_CODE  systemCode
+			 FROM IKEP4_PO_PORTLET_CATEGORY A inner join
+			      Ikep4_Po_System B On A.System_Code = B.System_Code 
+      		Where B.Portal_Id = #portalId#
+        	  and B.system_name = 'Portal'
+			ORDER BY A.REGIST_DATE ASC
+		]]>
+	</select>
+</sqlMap>

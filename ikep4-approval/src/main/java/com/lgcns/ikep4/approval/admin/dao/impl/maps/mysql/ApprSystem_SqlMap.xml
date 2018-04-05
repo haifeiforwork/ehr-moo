@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="approval.admin.dao.ApprSystem" >
+	<typeAlias alias = "ApprSystem" type="com.lgcns.ikep4.approval.admin.model.ApprSystem"/>
+	<typeAlias alias = "SearchCondition" type="com.lgcns.ikep4.support.user.code.model.AdminSearchCondition"/>
+
+	<resultMap id="getResult" class="ApprSystem">
+		<result property="systemId"			column="SYSTEM_ID" />
+		<result property="systemName"		column="SYSTEM_NAME" />
+		<result property="systemEnName"		column="SYSTEM_EN_NAME" />
+		<result property="systemType" 		column="SYSTEM_TYPE" />
+		<result property="systemOrder"		column="SYSTEM_ORDER" />
+		<result property="portalId"			column="PORTAL_ID" />		
+		<result property="registerId"		column="REGISTER_ID" />
+		<result property="registerName"		column="REGISTER_NAME" />
+		<result property="registDate"		column="REGIST_DATE" />		
+		<result property="updaterId"		column="UPDATER_ID" />
+		<result property="updaterName"		column="UPDATER_NAME" />
+		<result property="updateDate"		column="UPDATE_DATE" />
+		<result property="description"		column="DESCRIPTION" />
+	</resultMap>
+
+	
+	<!-- 신규 등록 -->
+	<insert id="insert" parameterClass="ApprSystem"> 
+	<![CDATA[
+		INSERT /* [ApprSystem_SqlMap.xml] approval.admin.dao.ApprSystem.insert */
+		INTO IKEP4_APPR_SYSTEM 
+		(
+			SYSTEM_ID,
+			SYSTEM_NAME,
+			SYSTEM_EN_NAME,
+			SYSTEM_TYPE,
+			SYSTEM_ORDER,
+			PORTAL_ID,
+			REGISTER_ID,
+			REGISTER_NAME,
+			REGIST_DATE,
+			UPDATER_ID,
+			UPDATER_NAME,
+			UPDATE_DATE,
+			DESCRIPTION
+		)
+		VALUES 
+		( 
+			#systemId#,
+			#systemName#,
+			#systemEnName#,
+			#systemType#,
+			#systemOrder#,
+			#portalId#,
+		    #registerId#,
+		    #registerName#,
+		    now(), 
+		    #updaterId#,
+		    #updaterName#,
+		    now(),
+		    #description#
+		)
+	]]>
+	</insert>
+   
+   <!-- 상세정보 -->
+	<select id="select" parameterClass="java.lang.String" resultMap="getResult">
+	<![CDATA[
+		SELECT /* [ApprSystem_SqlMap.xml] approval.admin.dao.ApprSystem.select */
+			SYSTEM_ID,
+			SYSTEM_NAME,
+			SYSTEM_EN_NAME,
+			SYSTEM_TYPE,
+			SYSTEM_ORDER,
+			PORTAL_ID,
+			REGISTER_ID,
+			REGISTER_NAME,
+			REGIST_DATE,
+			UPDATER_ID,
+			UPDATER_NAME,
+			UPDATE_DATE,
+			DESCRIPTION
+		FROM 
+		    IKEP4_APPR_SYSTEM
+		WHERE
+			SYSTEM_ID = #systemId#
+	]]>
+	</select>
+
+	
+	<!-- 기존 정보 수정 -->
+	<update id="update" parameterClass="ApprSystem">
+	<![CDATA[
+		UPDATE /* [ApprSystem_SqlMap.xml] approval.admin.dao.ApprSystem.update */
+			IKEP4_APPR_SYSTEM
+		SET
+			SYSTEM_NAME		=	#systemName#,
+			SYSTEM_EN_NAME	=	#systemEnName#,
+			SYSTEM_TYPE		=	#systemType#,
+			SYSTEM_ORDER	=	#systemOrder#,
+			UPDATER_ID		=	#updaterId#,
+			UPDATER_NAME	=	#updaterName#,
+			UPDATE_DATE		=	now(),
+			DESCRIPTION		=	#description#
+		WHERE
+			SYSTEM_ID = #systemId#
+	]]>
+	</update>
+   
+	<!-- 삭제 -->
+	<delete id="delete" parameterClass="java.lang.String">
+	<![CDATA[
+		DELETE /* [ApprSystem_SqlMap.xml] approval.admin.dao.ApprSystem.delete */ 
+		FROM IKEP4_APPR_SYSTEM
+		WHERE
+			SYSTEM_ID = #systemId#
+	]]>
+	</delete>
+	
+	<!-- Select Box -->
+	<select id="selectList" parameterClass="java.lang.String" resultMap="getResult">
+	<![CDATA[
+		SELECT /* [ApprSystem_SqlMap.xml] approval.admin.dao.ApprSystem.selectList */
+			*
+		FROM 
+		    IKEP4_APPR_SYSTEM
+		WHERE
+			PORTAL_ID = #portalId#
+			
+	]]>
+	</select>
+	
+	<!-- 목록 가져오기 -->
+	<select id="selectAll" parameterClass="SearchCondition" resultMap="getResult">
+	<![CDATA[
+		SELECT /* [ApprSystem_SqlMap.xml] approval.admin.dao.ApprSystem.selectAll */
+					SYSTEM_ID,
+					SYSTEM_NAME,
+					SYSTEM_EN_NAME,
+					SYSTEM_TYPE,
+					SYSTEM_ORDER,
+					PORTAL_ID,
+					REGISTER_ID,
+					REGISTER_NAME,
+					REGIST_DATE,
+					UPDATER_ID,
+					UPDATER_NAME,
+					UPDATE_DATE,
+					DESCRIPTION
+				FROM 
+				    IKEP4_APPR_SYSTEM
+		        WHERE 1 = 1
+		        ]]>	
+		<isNotEmpty property="portalId">
+				AND PORTAL_ID = #portalId#
+		</isNotEmpty>
+		<isNotEmpty property="searchWord">
+			<isEqual property="searchColumn" compareValue="systemName">
+				AND	(UPPER(SYSTEM_NAME) LIKE '%' || UPPER(#searchWord#) || '%' OR UPPER(SYSTEM_EN_NAME) LIKE '%' || UPPER(#searchWord#))
+			</isEqual>
+			<isEqual property="searchColumn" compareValue="systemId">
+				AND	SYSTEM_ID LIKE '%' || #searchWord# || '%'
+			</isEqual>
+		</isNotEmpty>
+		<isNotNull property="sortColumn">
+			<isEqual property="sortColumn" compareValue="SYSTEM_ORDER">
+				<isEqual property="sortType" compareValue="ASC">
+					ORDER BY SYSTEM_ORDER ASC
+				</isEqual>
+				<isEqual property="sortType" compareValue="DESC">
+					ORDER BY SYSTEM_ORDER DESC
+				</isEqual>
+			</isEqual>
+			<isEqual property="sortColumn" compareValue="SYSTEM_ID">
+				<isEqual property="sortType" compareValue="ASC">
+					ORDER BY SYSTEM_ID ASC
+				</isEqual>
+				<isEqual property="sortType" compareValue="DESC">
+					ORDER BY SYSTEM_ID DESC
+				</isEqual>
+			</isEqual>
+			<isEqual property="sortColumn" compareValue="SYSTEM_NAME">
+				<isEqual property="sortType" compareValue="ASC">
+					ORDER BY SYSTEM_NAME ASC
+				</isEqual>
+				<isEqual property="sortType" compareValue="DESC">
+					ORDER BY SYSTEM_NAME DESC
+				</isEqual>
+			</isEqual>
+			<isEqual property="sortColumn" compareValue="SYSTEM_EN_NAME">
+				<isEqual property="sortType" compareValue="ASC">
+					ORDER BY SYSTEM_EN_NAME ASC
+				</isEqual>
+				<isEqual property="sortType" compareValue="DESC">
+					ORDER BY SYSTEM_EN_NAME DESC
+				</isEqual>
+			</isEqual>
+		</isNotNull>
+		<isNull property="sortColumn">
+			ORDER BY SYSTEM_ORDER ASC
+		</isNull>
+	<![CDATA[	
+			LIMIT #startRowIndex#, #pagePerRecord#
+	]]>	
+	</select>
+	
+	<select id="selectCount" parameterClass="SearchCondition" resultClass="int">
+	<![CDATA[
+	    SELECT /* [ApprSystem_SqlMap.xml] approval.admin.dao.ApprSystem.selectCount */ 
+	        COUNT(SYSTEM_ID)
+	    FROM 
+	        IKEP4_APPR_SYSTEM
+	    WHERE 1 = 1
+	]]>    
+		<isNotEmpty property="portalId">
+				AND PORTAL_ID = #portalId#
+		</isNotEmpty>
+		<isNotEmpty property="searchWord">
+		    <isEqual property="searchColumn" compareValue="systemName">
+		     	AND	(UPPER(SYSTEM_NAME) LIKE '%' || UPPER(#searchWord#) || '%' OR UPPER(SYSTEM_EN_NAME) LIKE '%' || UPPER(#searchWord#))
+			</isEqual>
+		    <isEqual property="searchColumn" compareValue="systemId">
+		        AND SYSTEM_ID LIKE '%' || #searchWord# || '%'
+		    </isEqual>
+		</isNotEmpty>
+	</select>
+
+	<select id="checkSystemId" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+	<![CDATA[
+		SELECT /* [ApprSystem_SqlMap.xml] approval.admin.dao.ApprSystem.checkSystemId */
+			COUNT(SYSTEM_ID)
+		FROM
+			IKEP4_APPR_SYSTEM
+		WHERE
+			SYSTEM_ID = #systemId#
+	]]>
+	</select>
+	
+	<select id="getMaxSystemOrder" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+	<![CDATA[
+		SELECT
+			IFNULL(MAX(SYSTEM_ORDER),0)+1 AS SYSTEM_ORDER
+		FROM
+			IKEP4_APPR_SYSTEM
+		WHERE
+			PORTAL_ID=#portalId#
+	]]>
+	</select>
+	
+	<insert id="updateSystemOrder" parameterClass="ApprSystem">
+	<![CDATA[
+		UPDATE /* [ApprSystem_SqlMap.xml] approval.admin.dao.ApprSystem.updateSystemOrder */
+			IKEP4_APPR_SYSTEM
+    	SET 
+    		SYSTEM_ORDER = #systemOrder#
+    	WHERE 
+    		SYSTEM_ID = #systemId#
+   	]]>
+	</insert>
+	
+	<select id="selectGoUp" parameterClass="java.util.Map" resultMap="getResult">
+	<![CDATA[	
+		SELECT /* [ApprSystem_SqlMap.xml] approval.admin.dao.ApprSystem.selectGoUp */
+			*
+		FROM 
+		(
+			SELECT 
+				* 
+			FROM 
+				IKEP4_APPR_SYSTEM 
+			WHERE 
+				PORTAL_ID	=	#portalId#
+				AND SYSTEM_ORDER < #systemOrder#
+			ORDER BY SYSTEM_ORDER DESC
+		) 
+		WHERE ROWNUM= 1
+	]]>
+    </select>
+    
+    <select id="selectGoDown" parameterClass="java.util.Map" resultMap="getResult">
+	<![CDATA[	
+		SELECT /* [ApprSystem_SqlMap.xml] approval.admin.dao.ApprSystem.selectGoDown */
+			*
+		FROM 
+		(
+			SELECT 
+				* 
+			FROM 
+				IKEP4_APPR_SYSTEM
+			WHERE 
+				PORTAL_ID	=	#portalId#
+				AND SYSTEM_ORDER > #systemOrder#
+			ORDER BY SYSTEM_ORDER ASC
+		) 
+		WHERE ROWNUM= 1
+	]]>
+    </select>
+		
+</sqlMap>

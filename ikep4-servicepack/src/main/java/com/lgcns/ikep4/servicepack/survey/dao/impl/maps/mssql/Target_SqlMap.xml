@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="com.lgcns.ikep4.servicepack.survey.svTarget" >
+  <typeAlias alias="svTarget"           type="com.lgcns.ikep4.servicepack.survey.model.Target"/>
+  <typeAlias alias="svTargetKey"        type="com.lgcns.ikep4.servicepack.survey.model.TargetKey"/>
+  
+  <resultMap id="result" class="svTarget" >
+    <result column="SURVEY_ID" jdbcType="VARCHAR" property="targetKey.surveyId" />
+    <result column="TARGET_ID" jdbcType="VARCHAR" property="targetKey.targetId" />
+    <result column="TARGET_TYPE" jdbcType="DECIMAL" property="targetKey.targetType" />
+    <result column="REGISTER_ID" jdbcType="VARCHAR" property="registerId" />
+    <result column="REGIST_DATE" jdbcType="TIMESTAMP" property="registDate" />
+    <result column="REGISTER_NAME" jdbcType="VARCHAR" property="registerName" />
+    <result column="TARGET_NAME" jdbcType="VARCHAR" property="targetName" />
+    <result column="ENG_TARGET_NAME" jdbcType="VARCHAR" property="engTargetName" />
+  </resultMap>
+  
+    <sql id="sqlColumnList"> 
+	  SURVEY_ID, 
+	  TARGET_ID, 
+	  TARGET_TYPE, 
+	  REGISTER_ID, 
+	  REGIST_DATE, 
+	  REGISTER_NAME,
+	  TARGET_NAME,
+	  ENG_TARGET_NAME
+    </sql> 
+  
+  <!-- MSSQL -->
+ <select id="get" parameterClass="svTargetKey" resultMap="result"> 
+ 	set concat_null_yields_null off 
+    SELECT /* [svTarget_SqlMap.xml] svTarget.get */
+    <include refid="com.lgcns.ikep4.servicepack.survey.svTarget.sqlColumnList" />
+	FROM(
+      SELECT st.survey_id, 
+             st.target_id, 
+             st.target_type, 
+             st.register_id, 
+             st.regist_date, 
+             st.register_name,
+             eg.group_name AS target_name,  
+             eg.group_english_name as eng_target_name
+      FROM IKEP4_SV_TARGET st,IKEP4_EV_GROUP eg
+      WHERE st.target_id = eg.group_id
+	      AND st.SURVEY_ID = #surveyId#
+	      and st.TARGET_ID = #targetId#
+	      and st.target_type =1
+      UNION ALL
+      SELECT st.survey_id, 
+            st.target_id, 
+            st.target_type, 
+            st.register_id, 
+            st.regist_date, 
+            st.register_name,
+            (
+            eu.user_name + '/' +
+            ejt.job_title_name + '/' + 
+            eu.team_name
+            ) AS target_name,       
+            (
+            eu.USER_ENGLISH_NAME + '/' +
+            ejt.JOB_TITLE_ENGLISH_NAME + '/' + 
+            eu.TEAM_ENGLISH_NAME
+            ) AS target_name
+      FROM IKEP4_SV_TARGET st,IKEP4_EV_USER eu,IKEP4_EV_JOB_TITLE ejt
+      WHERE st.target_id = eu.user_id
+            AND eu.job_title_code =ejt.job_title_code
+            AND st.SURVEY_ID = #surveyId#
+		    and st.TARGET_ID = #targetId#
+		    and st.TARGET_TYPE = 0
+   	) AAA
+  </select>
+  
+   <!-- MSSQL -->
+  <select id="getAllBySurveyId" parameterClass="string" resultMap="result">
+   	set concat_null_yields_null off  
+    SELECT /* [svTarget_SqlMap.xml] svTarget.get */
+    <include refid="com.lgcns.ikep4.servicepack.survey.svTarget.sqlColumnList" />
+	FROM(
+      SELECT st.survey_id, 
+             st.target_id, 
+             st.target_type, 
+             st.register_id, 
+             st.regist_date, 
+             st.register_name,
+             eg.group_name AS target_name ,
+             eg.group_english_name as eng_target_name  
+      FROM IKEP4_SV_TARGET st,IKEP4_EV_GROUP eg
+      WHERE st.target_id = eg.group_id
+          and st.target_type =1 
+	      AND st.SURVEY_ID = #surveyId#
+      UNION ALL
+      SELECT st.survey_id, 
+            st.target_id, 
+            st.target_type, 
+            st.register_id, 
+            st.regist_date, 
+            st.register_name,
+            (
+            eu.user_name + ' ' +
+            ejt.job_title_name + ' ' + 
+            eu.team_name
+            ) AS target_name,       
+            (
+            eu.USER_ENGLISH_NAME + ' ' +
+            ejt.JOB_TITLE_ENGLISH_NAME + ' ' + 
+            eu.TEAM_ENGLISH_NAME
+            ) AS target_name        
+      FROM IKEP4_SV_TARGET st,IKEP4_EV_USER eu,IKEP4_EV_JOB_TITLE ejt
+      WHERE st.target_id = eu.user_id
+            AND eu.job_title_code =ejt.job_title_code
+            and st.target_type =0 
+            AND st.SURVEY_ID = #surveyId#
+   	) AAA
+  </select>
+  
+   <!-- ANSI -->
+    <!-- select id="getTotalCountBySurveyId" parameterClass="string" resultClass="int"> 
+	WITH CTE AS 
+	(
+		SELECT GROUP_ID, PARENT_GROUP_ID
+		FROM IKEP4_EV_GROUP
+		WHERE GROUP_ID = 
+		(
+			select target_id from  
+			IKEP4_SV_TARGET where target_type=1 and SURVEY_ID = #surveyId#
+		)
+		UNION ALL
+		SELECT TBL.GROUP_ID, TBL.PARENT_GROUP_ID
+		FROM IKEP4_EV_GROUP TBL, CTE
+		WHERE TBL.PARENT_GROUP_ID = CTE.GROUP_ID		
+	)
+	select count(user_id)
+	from (
+		SELECT eu.user_id
+		FROM IKEP4_EV_USER eu,IKEP4_EV_USER_GROUP eug ,CTE c
+		WHERE
+		eu.user_id = eug.user_id
+		and c.group_id = eug.group_id
+		and eu.USER_STATUS='C'
+
+		UNION ALL
+		
+		SELECT eu.user_id
+		FROM IKEP4_SV_TARGET st,IKEP4_EV_USER eu
+		WHERE st.target_id = eu.user_id
+		AND st.target_type=0
+		AND st.SURVEY_ID = #surveyId#
+	) b	
+  </select-->
+    <select id="getTotalCountBySurveyId" parameterClass="string" resultClass="int"> 
+    SELECT COUNT(*)
+    FROM
+    (
+          SELECT eu.user_id
+          FROM IKEP4_SV_TARGET st,IKEP4_EV_USER eu,IKEP4_EV_USER_GROUP eug
+          WHERE st.target_id = eug.group_id
+               AND eu.user_id = eug.user_id
+               AND st.target_type=1
+               AND st.SURVEY_ID = #surveyId#
+               AND eu.user_status = 'C'
+          UNION
+          SELECT eu.user_id
+          FROM IKEP4_SV_TARGET st,IKEP4_EV_USER eu
+          WHERE st.target_id = eu.user_id
+                AND st.target_type=0
+                AND st.SURVEY_ID = #surveyId#
+                AND eu.user_status = 'C'
+          UNION
+		 SELECT eu.user_id
+          FROM IKEP4_SV_TARGET st,IKEP4_EV_USER eu,IKEP4_AD_PERSON2GROUP eug
+          WHERE st.target_id = eug.addrgroup_id
+               AND eu.user_id = eug.person_id
+               AND st.target_type=1
+               AND st.SURVEY_ID = #surveyId#
+               AND eu.user_status = 'C'
+   ) AAA
+  </select>  
+    <select id="getSubGroupList" parameterClass="Map" resultMap="result"> 
+	WITH CTE AS 
+	(
+		SELECT GROUP_ID, PARENT_GROUP_ID
+		FROM IKEP4_EV_GROUP
+		WHERE GROUP_ID = #targetId#
+		UNION ALL
+		SELECT TBL.GROUP_ID, TBL.PARENT_GROUP_ID
+		FROM IKEP4_EV_GROUP TBL, CTE
+		WHERE TBL.PARENT_GROUP_ID = CTE.GROUP_ID		
+	)
+	SELECT 		
+	  '' SURVEY_ID, 
+	  GROUP_ID AS TARGET_ID, 
+	  0 TARGET_TYPE, 
+	  '' REGISTER_ID, 
+	  CURRENT_TIMESTAMP REGIST_DATE, 
+	  '' REGISTER_NAME,
+	  '' TARGET_NAME,
+	  '' ENG_TARGET_NAME
+	FROM 
+		CTE
+	EXCEPT
+	SELECT 
+		'' SURVEY_ID,      
+		TARGET_ID,     
+		0 TARGET_TYPE,     
+		'' REGISTER_ID,    
+		CURRENT_TIMESTAMP REGIST_DATE,     
+		'' REGISTER_NAME,    
+		'' TARGET_NAME,  
+		'' ENG_TARGET_NAME 
+	FROM 
+		IKEP4_SV_TARGET 
+	WHERE 
+		SURVEY_ID =#surveyId#
+		
+	union all 
+		SELECT 
+		'' SURVEY_ID,      
+		ADDRGROUP_ID as TARGET_ID,     
+		0 TARGET_TYPE,     
+		'' REGISTER_ID,    
+		CURRENT_TIMESTAMP REGIST_DATE,     
+		'' REGISTER_NAME,    
+		'' TARGET_NAME,  
+		'' ENG_TARGET_NAME 
+	FROM 
+		IKEP4_AD_ADDRGROUP
+	WHERE 
+		ADDRGROUP_ID = #targetId#
+		and group_type = 'O'
+  </select>  
+   <!-- ANSI -->
+  <select id="getTotalCountByMember"  parameterClass="string" resultClass="int"> 
+     SELECT count(*)
+     FROM  IKEP4_EV_USER
+     WHERE PORTAL_ID =#portalId#
+     AND USER_STATUS ='C'
+  </select>
+  
+  
+  
+  
+  
+   <!-- ANSI -->
+  <select id="existByUserId" parameterClass="svTargetKey" resultClass="int"> 
+    SELECT COUNT(*)
+    FROM
+    (
+          SELECT eu.user_id
+          FROM IKEP4_SV_TARGET st,IKEP4_EV_USER eu,IKEP4_EV_USER_GROUP eug
+          WHERE st.target_id = eug.group_id
+               AND eu.user_id = eug.user_id
+               AND st.target_type=1
+               AND st.SURVEY_ID = #surveyId#
+               AND eu.user_id = #targetId#
+          UNION
+          SELECT eu.user_id
+          FROM IKEP4_SV_TARGET st,IKEP4_EV_USER eu
+          WHERE st.target_id = eu.user_id
+                AND st.target_type=0
+                AND st.SURVEY_ID = #surveyId#
+                AND eu.user_id = #targetId#
+          union
+		SELECT eu.user_id
+          FROM IKEP4_SV_TARGET st,IKEP4_EV_USER eu,IKEP4_AD_PERSON2GROUP eug
+          WHERE st.target_id = eug.addrgroup_id
+               AND eu.user_id = eug.person_id
+               AND st.target_type=1
+               AND st.SURVEY_ID = #surveyId#
+               AND eu.user_id =  #targetId#
+   ) AAA
+  </select>
+  
+   <!-- ANSI -->
+  <select id="exists" parameterClass="svTargetKey" resultClass="int"> 
+    SELECT /* [svTarget_SqlMap.xml] svTarget.exists */
+    	  COUNT(*)
+    FROM  IKEP4_SV_TARGET
+    WHERE SURVEY_ID = #surveyId#
+      and TARGET_ID = #targetId#
+      and TARGET_TYPE = #targetType#
+  </select> 
+  
+   <!-- ANSI -->
+  <insert id="create" parameterClass="svTarget"> 
+    INSERT INTO IKEP4_SV_TARGET ( /* [svTarget_SqlMap.xml] svTarget.insert */
+      SURVEY_ID, 
+	  TARGET_ID, 
+	  TARGET_TYPE, 
+	  REGISTER_ID, 
+	  REGIST_DATE, 
+	  REGISTER_NAME
+     ) VALUES (
+        #targetKey.surveyId#,
+        #targetKey.targetId#,
+        #targetKey.targetType#,
+        #registerId#,
+        #registDate#,
+        #registerName#
+    )
+  </insert>
+  
+   <!-- ANSI -->
+  <delete id="remove" parameterClass="svTargetKey"> 
+    delete from IKEP4_SV_TARGET  /* [svTarget_SqlMap.xml] svTarget.remove */
+    WHERE SURVEY_ID = #surveyId#
+      and TARGET_ID = #targetId#
+      and TARGET_TYPE = #targetType#
+  </delete>    
+  
+   <!-- ANSI -->
+  <delete id="removeAllBySurveyId" parameterClass="string"> 
+    delete from IKEP4_SV_TARGET  /* [svTarget_SqlMap.xml] svTarget.remove */
+    WHERE SURVEY_ID = #surveyId#
+  </delete>
+  
+  
+  
+</sqlMap>

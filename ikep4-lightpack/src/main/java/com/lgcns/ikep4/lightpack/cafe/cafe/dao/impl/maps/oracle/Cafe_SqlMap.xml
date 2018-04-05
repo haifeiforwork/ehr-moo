@@ -1,0 +1,747 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="lightpack.cafe.cafe.dao.Cafe">
+
+	<typeAlias alias="Cafe" type="com.lgcns.ikep4.lightpack.cafe.cafe.model.Cafe" />
+	<typeAlias alias="CafeSearchCondition" type="com.lgcns.ikep4.lightpack.cafe.cafe.search.CafeSearchCondition"/>
+		
+	<sql id="sqlColumnList">
+		A.CAFE_ID			AS cafeId,
+		A.CAFE_NAME			AS cafeName,
+		A.DESCRIPTION		AS description,
+		A.OPEN_DATE			AS openDate,
+		A.CLOSE_DATE		AS closeDate,
+		A.CAFE_STATUS		AS cafeStatus,
+		A.REGISTER_ID		AS registerId,
+		E.USER_NAME			AS registerName,
+		E.USER_ENGLISH_NAME	AS registerEnglishName,		
+		A.REGIST_DATE		AS registDate,
+		A.UPDATER_ID		AS updaterId,
+		F.USER_NAME			AS updaterName,
+		F.USER_ENGLISH_NAME	AS updaterEnglishName,		
+		A.UPDATE_DATE		AS updateDate,
+		A.CATEGORY_ID		AS categoryId,
+		C.CATEGORY_NAME		AS categoryName,
+		C.CATEGORY_ENGLISH_NAME AS categoryEnglishName,
+		A.CAFE_INTRODUCTION	AS cafeIntroduction,
+		A.PORTAL_ID			AS portalId,
+		A.LAYOUT_ID			AS layoutId,
+		D.MEMBER_ID			AS sysopId,
+		U.USER_NAME			AS sysopName,
+		U.USER_ENGLISH_NAME AS sysopEnglishName,
+		A.IMAGE_ID			AS imageId,
+		(SELECT count(MEMBER_ID) FROM IKEP4_CF_MEMBER WHERE CAFE_ID=A.CAFE_ID AND MEMBER_LEVEL IN ('1','2','3','4') ) memberCount,
+		(SELECT count(MEMBER_ID) FROM IKEP4_CF_MEMBER WHERE CAFE_ID=A.CAFE_ID AND MEMBER_LEVEL='4') associateMemberCount,
+		NVL(Y.boardItemCount,0) AS boardItemCount
+	</sql>
+	
+	<sql id="sqlColumnPersonalList">
+		A.CAFE_ID			AS cafeId,
+		A.CAFE_NAME			AS cafeName,
+		A.DESCRIPTION		AS description,
+		A.OPEN_DATE			AS openDate,
+		A.CLOSE_DATE		AS closeDate,
+		A.CAFE_STATUS		AS cafeStatus,
+		A.REGISTER_ID		AS registerId,
+		E.USER_NAME			AS registerName,
+		E.USER_ENGLISH_NAME	AS registerEnglishName,		
+		A.REGIST_DATE		AS registDate,
+		A.UPDATER_ID		AS updaterId,
+		F.USER_NAME			AS updaterName,
+		F.USER_ENGLISH_NAME	AS updaterEnglishName,		
+		A.UPDATE_DATE		AS updateDate,
+		A.CATEGORY_ID		AS categoryId,
+		C.CATEGORY_NAME		AS categoryName,
+		C.CATEGORY_ENGLISH_NAME AS categoryEnglishName,
+		A.CAFE_INTRODUCTION	AS cafeIntroduction,
+		A.PORTAL_ID			AS portalId,
+		A.LAYOUT_ID			AS layoutId,
+		D.MEMBER_ID			AS sysopId,
+		U.USER_NAME			AS sysopName,
+		U.USER_ENGLISH_NAME AS sysopEnglishName,
+		X.JOIN_DATE			AS joinDate,
+		X.MEMBER_LEVEL		AS memberLevel,
+		A.IMAGE_ID			AS imageId,
+		(SELECT count(MEMBER_ID) FROM IKEP4_CF_MEMBER WHERE CAFE_ID=A.CAFE_ID AND MEMBER_LEVEL IN ('1','2','3','4') ) memberCount,
+		(SELECT count(MEMBER_ID) FROM IKEP4_CF_MEMBER WHERE CAFE_ID=A.CAFE_ID AND MEMBER_LEVEL='4') associateMemberCount
+	</sql>
+
+	<select id="listBySearchCondition" parameterClass="CafeSearchCondition" resultClass="Cafe"> 
+	SELECT /* [Cafe_SqlMap.xml] lightpack.cafe.cafe.dao.Cafe.listBySearchCondition */ 
+		*
+	FROM 
+	( 
+		SELECT ROWNUM AS RNUM, A.* FROM 
+		( 
+			/* START========================================= */
+			SELECT 
+				<include refid="lightpack.cafe.cafe.dao.Cafe.sqlColumnList" />
+				,SUBSTR(X.C_NAME,2,LENGTH(X.C_NAME)) as fullPath 
+				,SUBSTR(X.CE_NAME,2,LENGTH(X.CE_NAME)) as fullEnglishPath 
+			FROM   
+				IKEP4_CF_CAFE A
+				LEFT OUTER JOIN IKEP4_CF_CATEGORY C 
+					ON A.CATEGORY_ID = C.CATEGORY_ID
+				LEFT OUTER JOIN IKEP4_CF_MEMBER D 
+					ON ( A.CAFE_ID	=	D.CAFE_ID AND D.MEMBER_LEVEL='1')
+				LEFT OUTER JOIN IKEP4_EV_USER E 
+					ON (A.REGISTER_ID = E.USER_ID)
+				LEFT OUTER JOIN IKEP4_EV_USER F 
+					ON (A.UPDATER_ID = F.USER_ID)
+				LEFT OUTER JOIN IKEP4_EV_USER U 
+					ON (D.MEMBER_ID = U.USER_ID)
+				LEFT OUTER JOIN 
+				(
+					SELECT 
+						CATEGORY_ID,
+						SYS_CONNECT_BY_PATH(CATEGORY_NAME,'>') AS C_NAME  ,
+						SYS_CONNECT_BY_PATH(CATEGORY_ENGLISH_NAME,'>') AS CE_NAME  
+                    FROM IKEP4_CF_CATEGORY
+                    START WITH PARENT_ID IS NULL       
+                    CONNECT BY  PARENT_ID = PRIOR CATEGORY_ID       
+                    ORDER SIBLINGS BY  CATEGORY_ID  
+				) X ON (X.CATEGORY_ID = A.CATEGORY_ID)
+				 LEFT OUTER JOIN (SELECT BOARD.CAFE_ID, COUNT(ITEM_ID) boardItemCount
+                                      FROM IKEP4_CF_BD_ITEM ITEM 
+                                      	INNER JOIN IKEP4_CF_BD_BOARD BOARD
+                                        	ON ITEM.BOARD_ID = BOARD.BOARD_ID
+                                        GROUP BY BOARD.CAFE_ID) Y
+                      ON  A.CAFE_ID = Y.CAFE_ID
+				WHERE	A.PORTAL_ID			=	#portalId#
+				
+				<isEmpty property="cafeStatus">
+					AND A.CAFE_STATUS IN ('O','WC')
+				</isEmpty>
+				<isNotEmpty property="cafeStatus">
+					<isEqual property="cafeStatus" compareValue="C">
+						AND A.CAFE_STATUS IN ('C')
+					</isEqual>
+					<isEqual property="cafeStatus" compareValue="LOG">
+						AND A.CAFE_STATUS IN ('O','WC','C')
+					</isEqual>
+				</isNotEmpty>
+				<isNotNull property="startDate"><isNotEmpty property="startDate">
+						<isNotNull property="endDate"><isNotEmpty property="endDate">
+							AND TO_CHAR(A.OPEN_DATE, 'YYYY-MM-DD') BETWEEN TO_CHAR(#startDate#, 'YYYY-MM-DD') and TO_CHAR(#endDate#, 'YYYY-MM-DD')
+						</isNotEmpty></isNotNull>
+					</isNotEmpty></isNotNull>
+				<isNotEmpty property="categoryId">
+					AND (C.CATEGORY_ID = #categoryId# OR C.PARENT_ID = #categoryId#)
+				</isNotEmpty>
+				<isNotEmpty property="searchWord">
+					<isEqual property="searchColumn" compareValue="CAFE_NAME">
+						AND	UPPER(A.CAFE_NAME) LIKE '%' || UPPER(#searchWord#) || '%'
+					</isEqual>
+					<isEqual property="searchColumn" compareValue="REGISTER_NAME">
+						AND	( UPPER(U.USER_NAME) LIKE '%' || UPPER(#searchWord#) || '%' OR UPPER(U.USER_ENGLISH_NAME) LIKE '%' || UPPER(#searchWord#) || '%' )
+					</isEqual>
+					<isEqual property="searchColumn" compareValue="SYSOP_NAME">
+						AND	( UPPER(U.USER_NAME) LIKE '%' || UPPER(#searchWord#) || '%' OR UPPER(U.USER_ENGLISH_NAME) LIKE '%' || UPPER(#searchWord#) || '%' )
+					</isEqual>		
+				</isNotEmpty>
+			ORDER BY
+			<isNotEmpty property="sortColumn">
+				<isEqual property="sortColumn" compareValue="cafeName">
+		    		cafeName
+				</isEqual>
+		    	<isEqual property="sortColumn" compareValue="memberCount">
+		    		memberCount
+				</isEqual>
+				<isEqual property="sortColumn" compareValue="boardItemCount">
+		    		boardItemCount
+				</isEqual>
+				<isEqual property="sortColumn" compareValue="sysopName">
+		    		sysopName
+				</isEqual>
+				<isEqual property="sortColumn" compareValue="sysopEnglishName">
+		    		sysopEnglishName
+				</isEqual>
+		    	<isEqual property="sortColumn" compareValue="openDate">
+		    		openDate
+				</isEqual>
+				<isEqual property="sortColumn" compareValue="closeDate">
+		    		closeDate
+				</isEqual>
+				<isEqual property="sortColumn" compareValue="fullPath">
+		    		fullPath
+				</isEqual>
+				<isEqual property="sortColumn" compareValue="fullEnglishPath">
+		    		fullEnglishPath
+				</isEqual>
+				<isEqual property="sortColumn" compareValue="updaterName">
+		    		updaterName
+				</isEqual>
+				<isEqual property="sortColumn" compareValue="updaterEnglishName">
+		    		updaterEnglishName
+				</isEqual>
+			</isNotEmpty>
+	    	
+			<isNotEmpty property="sortType">
+		    	<isEqual property="sortType" compareValue="DESC">
+		    	DESC,
+				</isEqual>
+				<isEqual property="sortType" compareValue="ASC">
+		    	ASC,
+				</isEqual>
+			</isNotEmpty>
+			cafeName ASC
+			/* ===========================================END  */ 
+	<![CDATA[
+		) A WHERE ROWNUM <=  #endRowIndex# /* 종료  */
+	) WHERE RNUM >  #startRowIndex# /* 시작 */
+	]]> 
+	</select>
+	 
+	<select id="countBySearchCondition" parameterClass="CafeSearchCondition" resultClass="int">
+		SELECT /* [Cafe_SqlMap.xml] lightpack.cafe.cafe.dao.Cafe.countBySearchCondition */ 
+	          COUNT(A.CAFE_ID)
+		FROM   
+			IKEP4_CF_CAFE A
+			LEFT OUTER JOIN IKEP4_CF_CATEGORY C 
+				ON A.CATEGORY_ID = C.CATEGORY_ID
+			LEFT OUTER JOIN IKEP4_CF_MEMBER D 
+				ON ( A.CAFE_ID	=	D.CAFE_ID AND D.MEMBER_LEVEL='1')
+			LEFT OUTER JOIN IKEP4_EV_USER E 
+				ON (A.REGISTER_ID = E.USER_ID)
+			LEFT OUTER JOIN IKEP4_EV_USER F 
+				ON (A.UPDATER_ID = F.USER_ID)
+			LEFT OUTER JOIN IKEP4_EV_USER U 
+				ON (D.MEMBER_ID = U.USER_ID)			
+		WHERE	
+			A.PORTAL_ID			=	#portalId#
+				<isEmpty property="cafeStatus">
+						AND A.CAFE_STATUS IN ('O','WC')
+				</isEmpty>
+				<isNotEmpty property="cafeStatus">
+					<isEqual property="cafeStatus" compareValue="C">
+						AND A.CAFE_STATUS IN ('C')
+					</isEqual>
+					<isEqual property="cafeStatus" compareValue="LOG">
+						AND A.CAFE_STATUS IN ('O','WC','C')
+					</isEqual>
+				</isNotEmpty>
+				<isNotNull property="startDate"><isNotEmpty property="startDate">
+						<isNotNull property="endDate"><isNotEmpty property="endDate">
+							AND TO_CHAR(A.OPEN_DATE, 'YYYY-MM-DD') BETWEEN TO_CHAR(#startDate#, 'YYYY-MM-DD') and TO_CHAR(#endDate#, 'YYYY-MM-DD')
+						</isNotEmpty></isNotNull>
+					</isNotEmpty></isNotNull>
+				<isNotEmpty property="categoryId">
+					AND (C.CATEGORY_ID = #categoryId# OR C.PARENT_ID = #categoryId#)
+				</isNotEmpty>
+				<isNotEmpty property="searchWord">
+					<isEqual property="searchColumn" compareValue="CAFE_NAME">
+						AND	UPPER(A.CAFE_NAME) LIKE '%' || UPPER(#searchWord#) || '%'
+					</isEqual>
+	
+					<isEqual property="searchColumn" compareValue="REGISTER_NAME">
+						AND	( UPPER(U.USER_NAME) LIKE '%' || UPPER(#searchWord#) || '%' OR UPPER(U.USER_ENGLISH_NAME) LIKE '%' || UPPER(#searchWord#) || '%' )
+					</isEqual>
+	
+					<isEqual property="searchColumn" compareValue="SYSOP_NAME">
+						AND	( UPPER(U.USER_NAME) LIKE '%' || UPPER(#searchWord#) || '%' OR UPPER(U.USER_ENGLISH_NAME) LIKE '%' || UPPER(#searchWord#) || '%' )
+					</isEqual>		
+				</isNotEmpty>
+	</select>
+	
+	<select id="listMyCafe" parameterClass="Map"  resultClass="Cafe">
+		SELECT /* [Cafe_SqlMap.xml] lightpack.cafe.cafe.dao.Cafe.listMyCafe */
+			A.CAFE_ID			AS cafeId,
+			A.CAFE_NAME			AS cafeName,
+			A.DESCRIPTION		AS description,
+			A.OPEN_DATE			AS openDate,
+			A.CLOSE_DATE		AS closeDate,
+			A.CAFE_STATUS		AS cafeStatus,
+			A.REGISTER_ID		AS registerId,
+			E.USER_NAME			AS registerName,
+			E.USER_ENGLISH_NAME	AS registerEnglishName,		
+			A.REGIST_DATE		AS registDate,
+			D.MEMBER_LEVEL		AS memberLevel,
+			A.IMAGE_ID			AS imageId,
+			D.JOIN_APPLY_DATE	AS joinApplyDate,
+			D.JOIN_DATE			AS joinDate
+		FROM
+			IKEP4_CF_CAFE A 
+				LEFT OUTER JOIN IKEP4_EV_USER E 
+					ON (A.REGISTER_ID = E.USER_ID)
+				INNER JOIN IKEP4_CF_MEMBER D 
+				<isEmpty property="memberType">
+					ON (A.CAFE_ID	=	D.CAFE_ID AND D.MEMBER_LEVEL 	IN	('1','2','3','4'))
+				</isEmpty>
+				<isNotEmpty property="memberType">
+					ON (A.CAFE_ID	=	D.CAFE_ID AND D.MEMBER_LEVEL 	IN	('5'))
+				</isNotEmpty>
+		WHERE 
+			A.CAFE_STATUS	IN	('O','WC')			
+			AND D.MEMBER_ID		=	#memberId#
+		ORDER BY
+			A.CAFE_NAME
+	</select>
+	
+	<select id="listCloseCafe" parameterClass="Map"  resultClass="Cafe">
+	<![CDATA[
+		SELECT /* [Cafe_SqlMap.xml] lightpack.cafe.cafe.dao.Cafe.listCloseCafe */
+			A.CAFE_ID			AS cafeId,
+			A.CAFE_NAME			AS cafeName,
+			A.DESCRIPTION		AS description,
+			A.OPEN_DATE			AS openDate,
+			A.CLOSE_DATE		AS closeDate,
+			A.CAFE_STATUS		AS cafeStatus,
+			A.REGISTER_ID		AS registerId,
+			E.USER_NAME			AS registerName,
+			E.USER_ENGLISH_NAME	AS registerEnglishName,		
+			A.REGIST_DATE		AS registDate,
+			D.MEMBER_LEVEL		AS memberLevel,
+			A.IMAGE_ID			AS imageId,
+			D.JOIN_APPLY_DATE	AS joinApplyDate,
+			D.JOIN_DATE			AS joinDate
+		FROM
+			IKEP4_CF_CAFE A 
+				LEFT OUTER JOIN IKEP4_EV_USER E 
+					ON (A.REGISTER_ID = E.USER_ID)
+				INNER JOIN IKEP4_CF_MEMBER D 
+					ON (A.CAFE_ID	=	D.CAFE_ID AND D.MEMBER_LEVEL 	IN	('1','2','3','4'))
+		WHERE 
+			A.CAFE_STATUS	IN	('C')			
+			AND D.MEMBER_ID		=	#memberId#
+		ORDER BY
+			A.CAFE_NAME
+	]]>
+	</select>
+	
+	<select id="listNewCafe" parameterClass="Map"  resultClass="Cafe">
+	<![CDATA[
+		SELECT *  /* [Cafe_SqlMap.xml] lightpack.cafe.cafe.dao.Cafe.listNewCafe */
+		FROM 
+		( 
+			SELECT 
+				A.CAFE_ID			AS cafeId,
+				A.CAFE_NAME			AS cafeName,
+				A.DESCRIPTION		AS description,
+				A.OPEN_DATE			AS openDate,
+				A.CLOSE_DATE		AS closeDate,
+				A.CAFE_STATUS		AS cafeStatus,
+				A.REGISTER_ID		AS registerId,
+				E.USER_NAME			AS registerName,
+				E.USER_ENGLISH_NAME	AS registerEnglishName,		
+				A.REGIST_DATE		AS registDate,
+				A.IMAGE_ID			AS imageId,
+				D.MEMBER_ID AS sysopId,
+                U.USER_NAME AS sysopName,
+                U.USER_ENGLISH_NAME AS sysopEnglishName
+			FROM
+				IKEP4_CF_CAFE A
+					LEFT OUTER JOIN IKEP4_EV_USER E 
+							ON (A.REGISTER_ID = E.USER_ID)
+					LEFT OUTER JOIN IKEP4_CF_MEMBER D
+                            ON (A.CAFE_ID = D.CAFE_ID AND D.MEMBER_LEVEL = '1')
+                    LEFT OUTER JOIN IKEP4_EV_USER U
+                            ON (D.MEMBER_ID = U.USER_ID)
+			WHERE 
+				A.CAFE_STATUS	IN	('O','WC')		
+			ORDER BY
+				A.OPEN_DATE DESC,A.CAFE_NAME
+		)
+		WHERE ROWNUM<=5
+	]]>
+	</select>	
+	
+	<select id="listCafeManager" parameterClass="Map"  resultClass="Cafe">
+	<![CDATA[
+		SELECT /* [Cafe_SqlMap.xml] lightpack.cafe.cafe.dao.Cafe.listCafeManager */
+			A.CAFE_ID		as cafeId,
+			A.CAFE_NAME	as cafeName
+			U.USER_ID			as sysopId,
+			U.USER_NAME			as sysopName  		
+		FROM
+			IKEP4_CF_CAFE A
+			INNER JOIN IKEP4_CF_MEMBER D ON ( A.CAFE_ID	=	D.CAFE_ID AND D.MEMBER_ID	=	#memberId# AND D.MEMBER_LEVEL 	IN	('1','2'))
+			INNER JOIN IKEP4_EV_USER U ON (D.MEMBER_ID=U.USER_ID )
+		WHERE 
+			A.CAFE_STATUS	IN	('O','WC')			
+		ORDER BY
+			A.CAFE_NAME
+	]]>
+	</select>	
+	
+	<select id="listCafeByType" parameterClass="Map"  resultClass="Cafe">
+	<![CDATA[
+		SELECT /* [Cafe_SqlMap.xml] lightpack.cafe.cafe.dao.Cafe.listCafeByType */
+			A.CAFE_ID		AS cafeId,
+			A.CAFE_NAME	AS cafeName
+		FROM 
+			IKEP4_CF_CAFE A
+		WHERE 
+			A.PORTAL_ID		=	#portalId#
+			AND A.CAFE_STATUS	IN	('O','WC')			
+		ORDER BY
+			A.CAFE_NAME
+	]]>
+	</select>
+	
+	<select id="listCafeByCategory" parameterClass="Map" resultClass="Cafe">
+	<![CDATA[
+	SELECT /* [Cafe_SqlMap.xml] lightpack.cafe.cafe.dao.Cafe.listCafeByCategory */ 
+		A.CAFE_ID		AS cafeId,
+		A.CAFE_NAME	AS cafeName,
+		A.OPEN_DATE			AS openDate,
+		C.CATEGORY_NAME		AS categoryName,
+		C.CATEGORY_ENGLISH_NAME AS categoryEnglishName,
+		A.PORTAL_ID			AS portalId,
+		E.USER_ID			AS sysopId,
+		E.USER_NAME			AS sysopName,
+		E.USER_ENGLISH_NAME AS sysopEnglishName,
+		(SELECT count(MEMBER_ID) FROM IKEP4_CF_MEMBER WHERE CAFE_ID=A.CAFE_ID) AS memberCount
+	FROM   
+		IKEP4_CF_CAFE A
+		LEFT OUTER JOIN IKEP4_CF_CATEGORY C ON A.CATEGORY_ID = C.CATEGORY_ID
+		LEFT OUTER JOIN IKEP4_CF_MEMBER D ON ( A.CAFE_ID	=	D.CAFE_ID  AND D.MEMBER_LEVEL	=	'1' )
+		LEFT OUTER JOIN IKEP4_EV_USER E ON D.MEMBER_ID = E.USER_ID
+	WHERE	
+		A.PORTAL_ID			=	#portalId#
+		AND A.CATEGORY_ID	=	#categoryId#
+		AND A.CAFE_STATUS	IN ('O','WC')
+   	ORDER BY cafeName
+	]]> 
+	</select>
+	
+	<!-- create -->	
+	<insert id="create" parameterClass="Cafe"> 
+	<![CDATA[ 
+		INSERT INTO IKEP4_CF_CAFE /* [Cafe_SqlMap.xml] lightpack.cafe.cafe.dao.Cafe.create */
+		(
+			CAFE_ID,		CAFE_NAME,		DESCRIPTION,	OPEN_DATE, 
+			CAFE_STATUS,	REGISTER_ID,
+			REGISTER_NAME,	REGIST_DATE,	UPDATER_ID,		UPDATER_NAME,		UPDATE_DATE,
+			CATEGORY_ID,	PORTAL_ID, 		LAYOUT_ID, 		IMAGE_ID
+		)  
+		VALUES 
+		(	
+			#cafeId#,		#cafeName#,		#description#,	sysdate,
+			#cafeStatus#,	#registerId#,
+			#registerName#,	sysdate,		#updaterId#,	#updaterName#,		sysdate,
+			#categoryId#,	#portalId#, 	#layoutId#, 	#imageId#
+		)
+	]]>
+	</insert>	
+
+	<insert id="createCafeVisit" parameterClass="Map"> 
+	<![CDATA[ 
+		INSERT INTO IKEP4_CF_CAFE_VISIT /* [Cafe_SqlMap.xml] lightpack.cafe.cafe.dao.Cafe.createCafeVisit */
+		(
+			CAFE_ID,	VISITOR_ID,		VISIT_DATE
+		)  
+		VALUES 
+		(	
+			#cafeId#,	#visitorId#,	sysdate
+		)
+	]]>
+	</insert>	
+	<select id="existsCafeVisit" parameterClass="Map" resultClass="java.lang.Integer">
+	<![CDATA[
+		SELECT /* [Cafe_SqlMap.xml] lightpack.cafe.cafe.dao.Cafe.existsCafeVisit */
+			COUNT(CAFE_ID) 
+		FROM 
+			IKEP4_CF_CAFE_VISIT
+		WHERE 
+			CAFE_ID	=	#cafeId#
+			AND VISITOR_ID	=	#visitorId#
+			AND TO_CHAR(VISIT_DATE,'YYYYMMDD')  =   TO_CHAR(SYSDATE,'YYYYMMDD')
+	]]>
+	</select>
+	
+	<select id="getCafe" parameterClass="String"  resultClass="Cafe">
+		SELECT /* [Cafe_SqlMap.xml] lightpack.cafe.cafe.dao.Cafe.get */
+			<include refid="lightpack.cafe.cafe.dao.Cafe.sqlColumnList" />
+		FROM 
+			IKEP4_CF_CAFE A 
+			LEFT OUTER JOIN IKEP4_CF_CATEGORY C ON A.CATEGORY_ID = C.CATEGORY_ID
+			LEFT OUTER JOIN IKEP4_CF_MEMBER D ON ( A.CAFE_ID	=	D.CAFE_ID AND D.MEMBER_LEVEL='1')
+			LEFT OUTER JOIN IKEP4_EV_USER E ON (A.REGISTER_ID = E.USER_ID)
+			LEFT OUTER JOIN IKEP4_EV_USER F ON (A.UPDATER_ID = F.USER_ID)
+			LEFT OUTER JOIN IKEP4_EV_USER U ON (D.MEMBER_ID = U.USER_ID)
+			LEFT OUTER JOIN (SELECT BOARD.CAFE_ID, COUNT(ITEM_ID) boardItemCount
+                                      FROM IKEP4_CF_BD_ITEM ITEM 
+                                      	INNER JOIN IKEP4_CF_BD_BOARD BOARD
+                                        	ON ITEM.BOARD_ID = BOARD.BOARD_ID
+                                        GROUP BY BOARD.CAFE_ID) Y
+                      ON  A.CAFE_ID = Y.CAFE_ID
+		WHERE A.CAFE_ID	= #cafeId#
+	</select>
+	
+	<select id="getDefaultCafe" parameterClass="Map"  resultClass="Cafe">
+		SELECT * FROM 
+		(
+			SELECT /* [Cafe_SqlMap.xml] lightpack.cafe.cafe.dao.Cafe.get */
+				<include refid="lightpack.cafe.cafe.dao.Cafe.sqlColumnList" />
+			FROM 
+				IKEP4_CF_CAFE A 
+				LEFT OUTER JOIN IKEP4_CF_CATEGORY C ON A.CATEGORY_ID = C.CATEGORY_ID
+				LEFT OUTER JOIN IKEP4_CF_MEMBER D ON ( A.CAFE_ID	=	D.CAFE_ID AND D.MEMBER_LEVEL='1')
+				LEFT OUTER JOIN IKEP4_EV_USER E ON (A.REGISTER_ID = E.USER_ID)
+				LEFT OUTER JOIN IKEP4_EV_USER F ON (A.UPDATER_ID = F.USER_ID)
+				LEFT OUTER JOIN IKEP4_EV_USER U ON (D.MEMBER_ID = U.USER_ID)
+				<isEmpty property="teamId">
+				INNER JOIN IKEP4_CF_MEMBER X ON (A.CAFE_ID=X.CAFE_ID AND X.MEMBER_ID=#memberId#)
+				</isEmpty>
+				<isNotEmpty property="teamId">
+				INNER JOIN IKEP4_CF_MEMBER X ON (A.CAFE_ID=X.CAFE_ID AND X.MEMBER_ID=#memberId#)
+				</isNotEmpty>				
+				LEFT OUTER JOIN (SELECT BOARD.CAFE_ID, COUNT(ITEM_ID) boardItemCount
+                                      FROM IKEP4_CF_BD_ITEM ITEM 
+                                      	INNER JOIN IKEP4_CF_BD_BOARD BOARD
+                                        	ON ITEM.BOARD_ID = BOARD.BOARD_ID
+                                        GROUP BY BOARD.CAFE_ID) Y
+                      ON  A.CAFE_ID = Y.CAFE_ID
+			WHERE
+				A.PORTAL_ID		=	#portalId#			
+				AND A.CAFE_STATUS IN ('O', 'WC')
+		) WHERE ROWNUM =1
+	</select>		
+	<select id="checkCafeName" parameterClass="Map" resultClass="java.lang.Integer">
+	<![CDATA[
+		SELECT /* [Cafe_SqlMap.xml] lightpack.cafe.cafe.dao.Cafe.checkCafeName */
+			COUNT(CAFE_ID) 
+		FROM 
+			IKEP4_CF_CAFE 
+		WHERE 
+			PORTAL_ID				=	#portalId#
+			AND CAFE_NAME		=	#cafeName#
+			AND CAFE_STATUS	IN	('WO','WC','O')
+	]]>
+	</select>
+	<select id="checkCafeTeam" parameterClass="String" resultClass="String">
+	<![CDATA[
+		SELECT /* [Cafe_SqlMap.xml] lightpack.cafe.cafe.dao.Cafe.checkCafeTeam */
+			CAFE_STATUS
+		FROM
+			IKEP4_CF_CAFE
+	]]>
+	</select>	
+	<select id="exists" parameterClass="Cafe" resultClass="java.lang.Integer">
+	<![CDATA[
+		SELECT /* [Cafe_SqlMap.xml] lightpack.cafe.cafe.dao.Cafe.exists */
+			COUNT(A.CAFE_ID) 
+		FROM 
+			IKEP4_CF_CAFE A
+			LEFT OUTER JOIN IKEP4_CF_CATEGORY C ON A.CATEGORY_ID = C.CATEGORY_ID
+			LEFT OUTER JOIN IKEP4_CF_MEMBER D ON ( A.CAFE_ID	=	D.CAFE_ID  AND D.MEMBER_LEVEL	=	'1' )
+			LEFT OUTER JOIN IKEP4_EV_USER E ON D.MEMBER_ID = E.USER_ID
+		WHERE 
+			A.PORTAL_ID			=	#portalId#
+			AND A.CAFE_ID	=	#cafeId#
+	]]>
+	</select>
+
+
+
+
+
+	<!-- update -->
+	<update id="update" parameterClass="Cafe">
+		UPDATE 
+			IKEP4_CF_CAFE /* [Cafe_SqlMap.xml] lightpack.cafe.cafe.dao.Cafe.update */
+		SET 
+			CAFE_NAME	=	#cafeName#, 
+			CATEGORY_ID		=	#categoryId#,
+			DESCRIPTION		=	#description#,
+			IMAGE_ID		=	#imageId#,
+			UPDATER_ID		=	#updaterId#,
+			UPDATER_NAME	=	#updaterName#,
+			UPDATE_DATE		=	sysdate
+		WHERE 
+			CAFE_ID	=	#cafeId#
+	</update>
+	<update id="updateIntro" parameterClass="Cafe">
+		UPDATE 
+			IKEP4_CF_CAFE /* [Cafe_SqlMap.xml] lightpack.cafe.cafe.dao.Cafe.updateIntro */
+		SET 
+			CAFE_INTRODUCTION	=	#cafeIntroduction#, 
+			UPDATER_ID		=	#updaterId#,
+			UPDATER_NAME	=	#updaterName#,
+			UPDATE_DATE		=	sysdate
+		WHERE 
+			CAFE_ID	=	#cafeId#
+	</update>
+	
+	<update id="updateLayout" parameterClass="Cafe">
+		UPDATE 
+			IKEP4_CF_CAFE /* [Cafe_SqlMap.xml] lightpack.cafe.cafe.dao.Cafe.updateLayout */
+		SET 
+			LAYOUT_ID			=   #layoutId#,
+			UPDATER_ID			=	#updaterId#,
+			UPDATER_NAME		=	#updaterName#,
+			UPDATE_DATE			=	sysdate			
+		WHERE 
+			CAFE_ID		=	#cafeId#
+	</update>
+
+	<update id="updateStatus" parameterClass="Cafe">
+		UPDATE 
+			IKEP4_CF_CAFE /* [Cafe_SqlMap.xml] lightpack.cafe.cafe.dao.Cafe.updateStatus */
+		SET 
+			
+			
+			<isNotEmpty property="cafeStatus">
+			
+				<isEqual property="cafeStatus" compareValue="O">
+					CAFE_STATUS	=	#cafeStatus#,
+					OPEN_DATE			=	sysdate,
+				</isEqual>
+				<isEqual property="cafeStatus" compareValue="WC">
+					CAFE_STATUS	=	#cafeStatus#,
+				</isEqual>
+				<isEqual property="cafeStatus" compareValue="C">
+					CAFE_STATUS	=	#cafeStatus#,
+					CLOSE_DATE	=	sysdate,
+				</isEqual>
+				<isEqual property="cafeStatus" compareValue="WR">
+					CAFE_STATUS	=	#cafeStatus#,
+					CLOSE_DATE	=	sysdate,
+				</isEqual>
+				<isEqual property="cafeStatus" compareValue="ED">
+					CAFE_STATUS	=	#cafeStatus#,
+					CLOSE_DATE	=	sysdate,
+				</isEqual>			
+				<isEqual property="cafeStatus" compareValue="Reject">
+					CAFE_STATUS	=	'O',
+				</isEqual>	
+			</isNotEmpty>
+			
+			UPDATER_ID			=	#updaterId#,
+			UPDATER_NAME		=	#updaterName#,
+			UPDATE_DATE			=	sysdate			
+		WHERE 
+			CAFE_ID		=	#cafeId#
+	</update>
+	<update id="updateCloseRejectStatus" parameterClass="Cafe">
+		UPDATE 
+			IKEP4_CF_CAFE /* [Cafe_SqlMap.xml] lightpack.cafe.cafe.dao.Cafe.updateCloseRejectStatus */
+		SET 
+			CAFE_STATUS	=	#cafeStatus#,
+			UPDATER_ID			=	#updaterId#,
+			UPDATER_NAME		=	#updaterName#,
+			UPDATE_DATE			=	sysdate			
+		WHERE 
+			CAFE_ID		=	#cafeId#
+	</update>
+
+	<!-- delete -->
+	<delete id="physicalDelete" parameterClass="java.lang.String">
+	<![CDATA[
+		DELETE FROM 
+			IKEP4_CF_CAFE /* [Cafe_SqlMap.xml] lightpack.cafe.cafe.dao.Cafe.physicalDelete */
+		WHERE 
+			CAFE_ID	=	#cafeId#
+	]]>
+	</delete>
+	
+	<!-- create Team procedure call -->
+	<procedure id="syncTeamCafe" parameterClass="String">
+		{call IKEP4_SYNC_TEAM_COLLABORATION(#userId#)}
+	</procedure>
+		
+	<!-- New Member(Team) Registration procedure call -->
+	<procedure id="syncUserCafe" parameterClass="String">
+		{call IKEP4_SYNC_TEAM_COLL_USER(#userId#)}
+	</procedure>		
+		
+	<!-- create Team procedure call -->
+	<procedure id="deleteCafeBatch" parameterClass="String">
+		{call IKEP4_DELETE_CAFE(#cafeId#)}
+	</procedure>		
+		
+		
+		
+		
+	<select id="listAllCafeDelete" resultClass="Cafe">
+	<![CDATA[
+		SELECT /* [Cafe_SqlMap.xml] lightpack.cafe.cafe.dao.Cafe.listAllCafeDelete */
+			A.CAFE_ID		AS cafeId,
+			A.CAFE_NAME	AS cafeName
+		FROM
+			IKEP4_CF_CAFE A
+		WHERE 
+			A.CAFE_STATUS	IN	('ED')	
+	]]>
+	</select>
+	<delete id="physicalDeleteCafeVisit" parameterClass="String">
+	<![CDATA[
+		DELETE /* [Cafe_SqlMap.xml] lightpack.cafe.cafe.dao.Cafe.physicalDeleteCafeVisit */
+		FROM 
+			IKEP4_CF_CAFE_VISIT
+		WHERE 
+			CAFE_ID	=	#cafeId#
+	]]>
+	</delete>
+	
+
+	<select id="getDefaultLayoutId" resultClass="string"> 
+		SELECT LAYOUT_ID 	AS layoutId 
+		FROM IKEP4_CF_LAYOUT WHERE IS_DEFAULT = 1 
+	</select>
+	
+	<select id="getCafeDateCount" parameterClass="String" resultClass="Cafe"> 
+	<![CDATA[
+		SELECT A.BASE_DATE AS baseDate,
+		         NVL (VISIT_COUNT, 0) AS visitCount,
+		         NVL (ITEM_COUNT, 0) AS boardItemCount
+		    FROM (    SELECT TO_CHAR ( (SYSDATE) - (LEVEL - 1), 'YYYY-MM-DD') AS BASE_DATE
+		                FROM DUAL
+		          CONNECT BY LEVEL <= 7) A
+		         LEFT OUTER JOIN (  SELECT TO_CHAR (CV.VISIT_DATE, 'YYYY-MM-DD')
+		                                      VISIT_BASE_DATE,
+		                                   COUNT (*) AS VISIT_COUNT
+		                              FROM IKEP4_CF_CAFE_VISIT CV
+		                             WHERE CV.CAFE_ID = #cafeId#
+		                          GROUP BY TO_CHAR (CV.VISIT_DATE, 'YYYY-MM-DD')) B
+		            ON A.BASE_DATE = B.VISIT_BASE_DATE
+		         LEFT OUTER JOIN (  SELECT TO_CHAR (BI.REGIST_DATE, 'YYYY-MM-DD')
+		                                      REGIST_BASE_DATE,
+		                                   COUNT (*) AS ITEM_COUNT
+		                              FROM    IKEP4_CF_BD_ITEM BI
+		                                   INNER JOIN
+		                                      IKEP4_CF_BD_BOARD BD
+		                                   ON BI.BOARD_ID = BD.BOARD_ID
+		                             WHERE BD.CAFE_ID = #cafeId#
+		                          GROUP BY TO_CHAR (BI.REGIST_DATE, 'YYYY-MM-DD')) C
+		            ON A.BASE_DATE = C.REGIST_BASE_DATE
+			ORDER BY A.BASE_DATE
+	]]>
+	</select>
+	
+	<select id="getCafeImageFile" parameterClass="CafeSearchCondition" resultClass="Cafe"> 
+	<![CDATA[
+		SELECT			/* [Cafe_SqlMap.xml] getCafeImageFile */
+						*
+		FROM 			(
+	     				SELECT			 
+	     					ROWNUM AS RNUM, AA.* 
+	     				FROM 			(
+							SELECT A.FILE_ID fileId,
+							       A.FILE_REAL_NAME fileName,
+							       A.REGISTER_ID registerId,
+							       A.REGISTER_NAME registerName,
+							       A.REGIST_DATE registDate
+							  FROM IKEP4_DM_FILE A
+							       INNER JOIN IKEP4_DM_FILE_LINK B
+							          ON A.FILE_ID = B.FILE_ID
+							       INNER JOIN IKEP4_CF_BD_ITEM C
+							          ON B.ITEM_ID = C.ITEM_ID
+							       INNER JOIN IKEP4_CF_BD_BOARD D
+							          ON C.BOARD_ID = D.BOARD_ID AND D.CAFE_ID = #cafeId#
+							  WHERE UPPER(A.FILE_EXTENSION) IN ('JPG','JPEG','PNG','GIF','BMP')
+							  ORDER BY A.REGIST_DATE DESC
+	]]>
+							<isEqual property="searchColumn" compareValue="fileName">
+								AND	A.FILE_REAL_NAME LIKE '%' || #searchWord# || '%'
+							</isEqual>
+	<![CDATA[
+	    								) AA
+	    				WHERE 			ROWNUM <= #endRowIndex#		 
+						)
+		WHERE 			RNUM > #startRowIndex#
+	]]>
+	</select>
+	
+</sqlMap>

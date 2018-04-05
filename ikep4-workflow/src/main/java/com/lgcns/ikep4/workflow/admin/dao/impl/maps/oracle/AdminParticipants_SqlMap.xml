@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="workflow.admin.dao.AdminParticipantsDao">
+	<typeAlias alias="AdminParticipants" type="com.lgcns.ikep4.workflow.admin.model.AdminParticipants"/>
+	<typeAlias alias="AdminParticipantsSearchCondition" type="com.lgcns.ikep4.workflow.admin.model.AdminParticipantSearchCondition"/>
+
+	<resultMap id="AdminParticipantsResult" class="AdminParticipants">
+		<result property="roleId" column="ROLE_ID" columnIndex="1"/>
+		<result property="portalId" column="PORTAL_ID" columnIndex="2"/>
+		<result property="roleName" column="ROLE_NAME" columnIndex="3"/>
+		<result property="roleTypeId" column="ROLE_TYPE_ID" columnIndex="4"/>
+		<result property="description" column="DESCRIPTION" columnIndex="5"/>
+		<result property="registerId" column="REGISTER_ID" columnIndex="6"/>
+		<result property="registerName" column="REGISTER_NAME" columnIndex="7"/>
+		<result property="registDate" column="REGIST_DATE" columnIndex="8"/>
+		<result property="updaterId" column="UPDATER_ID" columnIndex="9"/>
+		<result property="updaterName" column="UPDATER_NAME" columnIndex="10"/>
+		<result property="updateDate" column="UPDATE_DATE" columnIndex="11"/>
+	</resultMap>
+
+	<!-- insert -->
+	<insert id="insertRoleType" parameterClass="java.util.Map"> 
+      <![CDATA[ 
+      		/* [Participants_SqlMap.xml] workflow.admin.dao.AdminParticipantsDao.insertRoleType */
+          INSERT INTO IKEP4_EV_ROLE_TYPE (ROLE_TYPE_ID, ROLE_TYPE_NAME, REGISTER_ID, REGISTER_NAME, UPDATER_ID, UPDATER_NAME)  
+          VALUES (#roleTypeId#, #roleTypeName#, #registerId#, #registerName#, #updaterId#, #updaterName#)
+       ]]>
+      <selectKey resultClass="String" keyProperty="roleTypeId" type="pre"> 
+         <![CDATA[ 
+               SELECT #roleTypeId# AS ROLE_ID FROM DUAL 
+            ]]>
+      </selectKey>
+   </insert>
+   
+	<!-- insert -->
+	<insert id="insert" parameterClass="AdminParticipants"> 
+      <![CDATA[ 
+      		/* [Participants_SqlMap.xml] workflow.admin.dao.AdminParticipantsDao.insert */
+          INSERT INTO IKEP4_EV_ROLE (ROLE_ID, ROLE_NAME, ROLE_TYPE_ID, DESCRIPTION, REGISTER_ID, REGISTER_NAME, UPDATER_ID, UPDATER_NAME)  
+          VALUES (#roleId#, #roleName#, #roleTypeId#, #description#, #registerId#, #registerName#, #updaterId#, #updaterName#)
+       ]]>
+      <selectKey resultClass="String" keyProperty="roleId" type="pre"> 
+         <![CDATA[ 
+               SELECT #roleId# AS ROLE_ID FROM DUAL 
+            ]]>
+      </selectKey>
+   </insert>
+   
+   <!-- select -->
+	<select id="select" parameterClass="String" resultMap="AdminParticipantsResult">
+	  <![CDATA[
+	  /* [Participants_SqlMap.xml] workflow.admin.dao.AdminParticipantsDao.select */
+		   SELECT * FROM IKEP4_EV_ROLE WHERE ROLE_ID = #roleId#
+	   ]]>
+	</select>
+	
+	<!-- update -->
+	<update id="update" parameterClass="AdminParticipants">
+	  <![CDATA[
+	  /* [Participants_SqlMap.xml] workflow.admin.dao.AdminParticipantsDao.update */
+		   UPDATE IKEP4_EV_ROLE 
+		   SET DESCRIPTION = #description# 
+		   WHERE ROLE_ID = #roleId#
+	   ]]>
+	</update>
+   
+   <!-- delete -->
+   <delete id="delete" parameterClass="String">
+      <![CDATA[
+      	   /* [Participants_SqlMap.xml] workflow.admin.dao.AdminParticipantsDao.delete */
+	       DELETE FROM IKEP4_EV_ROLE WHERE ROLE_ID = #roleId#
+	   ]]>
+	</delete>
+	
+	<!-- selectCount -->
+	<select id="selectCount" parameterClass="String" resultClass="java.lang.Integer">
+	  <![CDATA[
+	  	   /* [Participants_SqlMap.xml] workflow.admin.dao.AdminParticipantsDao.selectCount */
+		   SELECT COUNT(*) FROM IKEP4_EV_ROLE WHERE ROLE_ID = #roleId#
+	   ]]>
+	</select>
+	
+	<select id="selectAll" resultMap="AdminParticipantsResult">
+	<![CDATA[	
+	  SELECT   /* [Participants_SqlMap.xml] workflow.admin.dao.AdminParticipantsDao.selectAll */
+	  *
+	  FROM IKEP4_EV_ROLE 
+	  ORDER BY REGIST_DATE
+	]]>
+	</select>
+	
+	<!-- 롤 조회 -->
+	<select id="listRole" parameterClass="AdminParticipantsSearchCondition" resultMap="AdminParticipantsResult">
+	<![CDATA[
+	SELECT   * /* [Participants_SqlMap.xml] workflow.admin.dao.AdminParticipantsDao.listRole */
+	  FROM   (SELECT   ROWNUM AS RNUM, A.*
+	            FROM   (SELECT   *
+	                      FROM   IKEP4_EV_ROLE
+	                     WHERE   1=1
+	 ]]>
+	 <isNotEqual property="participantSearchTitle" compareValue="all">
+	 <![CDATA[
+	 		AND ROLE_NAME LIKE '%' || #participantSearchTitle# || '%'
+	 ]]>
+	 </isNotEqual>
+	 <![CDATA[
+	 )
+	  A WHERE ROWNUM <=  #endRowIndex# /* 종료  */
+    ) WHERE RNUM >  #startRowIndex# /* 시작 */
+	 ]]>
+	</select>
+	
+	<!-- 롤 조회 건수 -->
+	<select id="listRoleCount" parameterClass="AdminParticipantsSearchCondition" resultClass="int">
+	<![CDATA[  
+	SELECT /* [Participants_SqlMap.xml] workflow.admin.dao.AdminParticipantsDao.listRoleCount */ 
+           COUNT(*)
+	FROM IKEP4_EV_ROLE
+	WHERE   1 = 1
+	]]> 
+	<isNotEqual property="participantSearchTitle" compareValue="all">
+	 <![CDATA[
+	 		AND	ROLE_NAME LIKE '%' || #participantSearchTitle# || '%'
+	 ]]>
+	 </isNotEqual>
+    </select>
+</sqlMap>

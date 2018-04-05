@@ -1,0 +1,3136 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="support.user.member.dao.User" >
+	<typeAlias alias="User" type="com.lgcns.ikep4.support.user.member.model.User"/>
+	<typeAlias alias="LocaleCode" type="com.lgcns.ikep4.support.user.code.model.LocaleCode"/>
+	<typeAlias alias="Timezone" type="com.lgcns.ikep4.support.user.code.model.Timezone"/>
+	<typeAlias alias="JobClass" type="com.lgcns.ikep4.support.user.code.model.JobClass"/>	
+	<typeAlias alias="JobRank" type="com.lgcns.ikep4.support.user.code.model.JobRank"/>
+	<typeAlias alias="JobPosition" type="com.lgcns.ikep4.support.user.code.model.JobPosition"/>
+	<typeAlias alias="WorkPlace" type="com.lgcns.ikep4.support.user.code.model.WorkPlace"/>
+	<typeAlias alias="JobTitle" type="com.lgcns.ikep4.support.user.code.model.JobTitle"/>
+	<typeAlias alias="JobDuty" type="com.lgcns.ikep4.support.user.code.model.JobDuty"/>
+	<typeAlias alias="Group" type="com.lgcns.ikep4.support.user.group.model.Group"/>
+	<typeAlias alias="userSearchCondition" type="com.lgcns.ikep4.support.user.member.model.UserSearchCondition"/>
+	<typeAlias alias="Nation" type="com.lgcns.ikep4.support.user.code.model.Nation"/>
+	<typeAlias alias="UserDetail" type="com.lgcns.ikep4.util.model.UserDetail" />
+	<typeAlias alias="CompanyCode" type="com.lgcns.ikep4.support.user.code.model.CompanyCode" />
+	
+	<resultMap id="resultRoleUser" class="com.lgcns.ikep4.support.user.member.model.User">
+		<result property="userId" column="userId" />
+	</resultMap>
+	
+	<resultMap id="resultOfficeRoleUser" class="com.lgcns.ikep4.support.user.member.model.User">
+		<result property="userId" column="userId" />
+		<result property="groupId" column="groupId" />
+	</resultMap>
+	
+	<resultMap id="result" class="User">
+		<result property="userId" column="USER_ID" />
+		<result property="portalId" column="PORTAL_ID" />
+		<result property="userPassword" column="USER_PASSWORD" />
+		<result property="userStatus" column="USER_STATUS" />
+		<result property="empNo" column="EMP_NO" />
+		<result property="mail" column="MAIL" />
+		<result property="mailPassword" column="MAIL_PASSWORD" />
+		<result property="userName" column="USER_NAME" />
+		<result property="userEnglishName" column="USER_ENGLISH_NAME" />
+		<result property="teamName" column="TEAM_NAME" />
+		<result property="groupId" column="GROUP_ID" />
+		<result property="timezoneId" column="TIMEZONE_ID" />
+		<result property="timezoneName" column="TIMEZONE_NAME" />
+		<result property="mobile" column="MOBILE" />
+		<result property="officePhoneNo" column="OFFICE_PHONE_NO" />
+		<result property="homePhoneNo" column="HOME_PHONE_NO" />
+		<result property="officeBasicAddress" column="OFFICE_BASIC_ADDRESS" />
+		<result property="officeDetailAddress" column="OFFICE_DETAIL_ADDRESS" />
+		<result property="officeZipcode" column="OFFICE_ZIPCODE" />
+		<result property="homeBasicAddress" column="HOME_BASIC_ADDRESS" />
+		<result property="homeDetailAddress" column="HOME_DETAIL_ADDRESS" />
+		<result property="homeZipcode" column="HOME_ZIPCODE" />
+		<result property="birthday" column="BIRTHDAY" />
+		<result property="weddingAnniv" column="WEDDING_ANNIV" />
+		<result property="pictureId" column="PICTURE_ID" />
+		<result property="profilePictureId" column="PROFILE_PICTURE_ID" />
+		<result property="leader" column="LEADER" />
+		<result property="jobClassCode" column="JOB_CLASS_CODE" />
+		<result property="jobClassName" column="JOB_CLASS_NAME" />
+		<result property="jobRankCode" column="JOB_RANK_CODE" />
+		<result property="jobRankName" column="JOB_RANK_NAME" />
+		<result property="jobDutyCode" column="JOB_DUTY_CODE" />
+		<result property="jobDutyName" column="JOB_DUTY_NAME" />
+		<result property="workPlaceCode" column="WORK_PLACE_CODE" />
+		<result property="workPlaceName" column="WORK_PLACE_NAME" />
+		<result property="workPlaceEnglishName" column="WORK_PLACE_ENGLISH_NAME" />
+		<result property="jobTitleCode" column="JOB_TITLE_CODE" />
+		<result property="jobTitleName" column="JOB_TITLE_NAME" />
+		<result property="localeCode" column="LOCALE_CODE" />
+		<result property="localeName" column="LOCALE_NAME" />
+		<result property="twitterAccount" column="TWITTER_ACCOUNT" />
+		<result property="twitterAuthCode" column="TWITTER_AUTH_CODE" />
+		<result property="facebookAccount" column="FACEBOOK_ACCOUNT" />
+		<result property="facebookAuthCode" column="FACEBOOK_AUTH_CODE" />
+		<result property="profileStatus" column="PROFILE_STATUS" />
+		<result property="currentJob" column="CURRENT_JOB" />
+		<result property="expertField" column="EXPERT_FIELD" />
+		<result property="registerId" column="REGISTER_ID" />
+		<result property="registerName" column="REGISTER_NAME" />
+		<result property="updaterId" column="UPDATER_ID" />
+		<result property="updaterName" column="UPDATER_NAME" />
+		<result property="registDate" column="REGIST_DATE" />
+		<result property="updateDate" column="UPDATE_DATE" />
+		<result property="fax" column="FAX" />
+	</resultMap>
+	
+	<resultMap id="resultAgentUser" class="User">
+		<result property="userId" column="userId" />
+		<result property="empNo" column="empNo" />
+		<result property="userName" column="userName" />
+		<result property="userEnglishName" column="userEnglishName" />
+		<result property="teamName" column="teamName" />
+		<result property="teamEnglishName" column="teamEnglishName" />
+		<result property="jobTitleName" column="jobTitleName" />
+		<result property="jobTitleEnglishName" column="jobTitleEnglishName" />
+		<result property="mail" column="mail" />
+		<result property="mobile" column="mobile" />
+		<result property="workPlaceCode" column="workPlaceCode" />
+	</resultMap>
+	
+	<resultMap id="resultPwUpdateUser" class="User">
+		<result property="userId" column="userId" />
+		<result property="userName" column="userName" />
+		<result property="teamName" column="teamName" />
+		<result property="jobTitleName" column="jobTitleName" />
+		<result property="officeBasicAddress" column="officeBasicAddress" />
+		<result property="leader" column="leader" />
+		<result property="jobDutyName" column="jobDutyName" />
+		<result property="passwordChangeYn" column="passwordChangeYn" />
+		<result property="updatePasswordDate" column="updatePasswordDate" />
+		<result property="expectedUpdatePasswordDate" column="expectedUpdatePasswordDate" />
+	</resultMap>
+	
+	<resultMap id="resultTeamLeader"  class="User">
+		<result column="TEAM_NAME" property="teamName" jdbcType="VARCHAR" javaType="String"/>
+		<result column="TEAM_CODE" property="teamCode" jdbcType="VARCHAR" javaType="String"/>
+	</resultMap>
+
+	<resultMap id="userResult" class="User">
+		<result property="userId" column="USER_ID" />
+		<result property="portalId" column="PORTAL_ID" />
+		<result property="userPassword" column="USER_PASSWORD" />
+		<result property="userStatus" column="USER_STATUS" />
+		<result property="empNo" column="EMP_NO" />
+		<result property="mail" column="MAIL" />
+		<result property="mailPassword" column="MAIL_PASSWORD" />
+		<result property="userName" column="USER_NAME" />
+		<result property="userEnglishName" column="USER_ENGLISH_NAME" />
+		<result property="teamName" column="TEAM_NAME" />
+		<result property="teamEnglishName" column="TEAM_ENGLISH_NAME" />
+		<result property="timezoneId" column="TIMEZONE_ID" />
+		<result property="timezoneName" column="TIMEZONE_NAME" />
+		<result property="timezoneDescription" column="DESCRIPTION" />
+		<result property="timeDifference" column="TIME_DIFFERENCE" />
+		<result property="mobile" column="MOBILE" />
+		<result property="officePhoneNo" column="OFFICE_PHONE_NO" />
+		<result property="homePhoneNo" column="HOME_PHONE_NO" />
+		<result property="officeBasicAddress" column="OFFICE_BASIC_ADDRESS" />
+		<result property="officeDetailAddress" column="OFFICE_DETAIL_ADDRESS" />
+		<result property="officeZipcode" column="OFFICE_ZIPCODE" />
+		<result property="homeBasicAddress" column="HOME_BASIC_ADDRESS" />
+		<result property="homeDetailAddress" column="HOME_DETAIL_ADDRESS" />
+		<result property="homeZipcode" column="HOME_ZIPCODE" />
+		<result property="birthday" column="BIRTHDAY" />
+		<result property="weddingAnniv" column="WEDDING_ANNIV" />
+		<result property="pictureId" column="PICTURE_ID" />
+		<result property="profilePictureId" column="PROFILE_PICTURE_ID" />
+		<result property="picturePath" column="PICTURE_PATH" />
+		<result property="profilePicturePath" column="PROFILE_PICTURE_PATH" />
+		<result property="leader" column="LEADER" />
+		<result property="jobClassCode" column="JOB_CLASS_CODE" />
+		<result property="jobClassName" column="JOB_CLASS_NAME" />
+		<result property="jobRankCode" column="JOB_RANK_CODE" />
+		<result property="jobRankName" column="JOB_RANK_NAME" />
+		<result property="jobDutyCode" column="JOB_DUTY_CODE" />
+		<result property="jobDutyName" column="JOB_DUTY_NAME" />
+		<result property="workPlaceCode" column="WORK_PLACE_CODE" />
+        <result property="workPlaceName" column="WORK_PLACE_NAME" />
+        <result property="workPlaceEnglishName" column="WORK_PLACE_ENGLISH_NAME" />
+		<result property="jobTitleCode" column="JOB_TITLE_CODE" />
+		<result property="jobTitleName" column="JOB_TITLE_NAME" />
+		<result property="jobTitleEnglishName" column="JOB_TITLE_ENGLISH_NAME" />
+		<result property="localeCode" column="LOCALE_CODE" />
+		<result property="localeName" column="LOCALE_NAME" />
+		<result property="twitterAccount" column="TWITTER_ACCOUNT" />
+		<result property="twitterAuthCode" column="TWITTER_AUTH_CODE" />
+		<result property="facebookAccount" column="FACEBOOK_ACCOUNT" />
+		<result property="facebookAuthCode" column="FACEBOOK_AUTH_CODE" />
+		<result property="profileStatus" column="PROFILE_STATUS" />
+		<result property="currentJob" column="CURRENT_JOB" />
+		<result property="detailJob" column="DETAIL_JOB" />
+		<result property="expertField" column="EXPERT_FIELD" />
+		<result property="registerId" column="REGISTER_ID" />
+		<result property="registerName" column="REGISTER_NAME" />
+		<result property="updaterId" column="UPDATER_ID" />
+		<result property="updaterName" column="UPDATER_NAME" />
+		<result property="registDate" column="REGIST_DATE" />
+		<result property="updateDate" column="UPDATE_DATE" />
+		<result property="groupId" column="GROUP_ID" />
+		<result property="nationCode" column="NATION_CODE" />
+		<result property="nationName" column="NATION_NAME" />
+		<result property="hanziName" column="HANZI_NAME" />
+		<result property="fax" column="FAX" />
+		<result property="companyCode" column="COMPANY_CODE" />
+        <result property="companyCodeName" column="COMPANY_CODE_NAME" />
+        <result property="infoGrade" column="INFO_GRADE" />
+        <result property="lunisolar" column="LUNISOLAR" />
+        <result property="mssAuthCode" column="MSS_AUTH_CODE" />
+        <result property="essAuthCode" column="ESS_AUTH_CODE" />
+        <result property="sapId" column="SAP_ID" />
+        <result property="bwId" column="BW_ID" />
+        <result property="scheduleManager" column="SCHEDULE_MANAGER" />
+        <result property="passwordChangeYn" column="PASSWORD_CHANGE_YN" />
+	</resultMap>	
+	
+	<resultMap id="userSearchResult" class="User">
+		<result property="userId" column="USER_ID" />
+		<result property="userName" column="USER_NAME" />
+		<result property="teamName" column="TEAM_NAME" />
+	</resultMap>	
+	
+	<resultMap id="resultGroupInUser" class="java.util.HashMap">
+		<result property="groupId" column="GROUP_ID" />
+		<result property="groupName" column="GROUP_NAME" />
+		<result property="groupEnglishName" column="GROUP_ENGLISH_NAME" />
+		<result property="userId" column="USER_ID" />
+		<result property="isRepresentGroup" column="REPRESENT_GROUP" />
+	</resultMap>
+	
+	<resultMap id="resultForTree" class="User">
+        <result property="userId" column="USER_ID" />
+        <result property="empNo" column="EMP_NO" />
+        <result property="mail" column="MAIL" />
+        <result property="userName" column="USER_NAME" />
+        <result property="userEnglishName" column="USER_ENGLISH_NAME" />
+        <result property="teamName" column="TEAM_NAME" />
+        <result property="teamEnglishName" column="TEAM_ENGLISH_NAME" />
+        <result property="leader" column="LEADER" />
+        <result property="groupId" column="GROUP_ID" />
+        <result property="mobile" column="MOBILE" />
+        <result property="officePhoneNo" column="OFFICE_PHONE_NO" />
+        <result property="homePhoneNo" column="HOME_PHONE_NO" />
+        <result property="jobTitleCode" column="JOB_TITLE_CODE" />
+        <result property="jobTitleName" column="JOB_TITLE_NAME" />
+        <result property="jobTitleEnglishName" column="JOB_TITLE_ENGLISH_NAME" />
+        <result property="jobDutyCode" column="JOB_Duty_CODE" />
+        <result property="jobDutyName" column="JOB_Duty_NAME" />
+        <result property="jobDutyEnglishName" column="JOB_Duty_ENGLISH_NAME" />
+        <result property="scheduleManager" column="SCHEDULE_MANAGER" />
+    </resultMap>
+    
+    <resultMap id="resultUserInfo" class="User">
+        <result property="userId" column="USER_ID" />
+        <result property="mail" column="MAIL" />
+        <result property="userName" column="USER_NAME" />
+    </resultMap>
+    
+    <resultMap id="mssTeamTreeSpecialResult" class="User">
+		<result property="itemId" column="itemId"/>
+		<result property="userId" column="userId"/>
+		<result property="groupId" column="groupId"/>		
+	</resultMap>
+    
+	<!-- ANSI -->	
+	<!-- 신규 등록 -->
+	<insert id="insert" parameterClass="User"> 
+	<![CDATA[
+		INSERT INTO /* [User_SqlMap.xml] support.user.member.dao.User.insert */
+		    IKEP4_EV_USER (
+				USER_ID,
+				PORTAL_ID,
+				USER_PASSWORD,
+				USER_STATUS,
+				EMP_NO,
+				MAIL,
+				MAIL_PASSWORD,
+				USER_NAME,
+				USER_ENGLISH_NAME,
+				TEAM_NAME,
+				TEAM_ENGLISH_NAME,
+				TIMEZONE_ID,
+				MOBILE,
+				OFFICE_PHONE_NO,
+				HOME_PHONE_NO,
+				OFFICE_BASIC_ADDRESS,
+				OFFICE_DETAIL_ADDRESS,
+				OFFICE_ZIPCODE,
+				HOME_BASIC_ADDRESS,
+				HOME_DETAIL_ADDRESS,
+				HOME_ZIPCODE,
+				BIRTHDAY,
+				WEDDING_ANNIV,
+				PICTURE_ID,
+				PROFILE_PICTURE_ID,
+				LEADER,
+				JOB_CLASS_CODE,
+				JOB_RANK_CODE,
+				JOB_DUTY_CODE,
+				WORK_PLACE_CODE,
+				JOB_TITLE_CODE,
+				LOCALE_CODE,
+				NATION_CODE,
+				TWITTER_ACCOUNT,
+				TWITTER_AUTH_CODE,
+				FACEBOOK_ACCOUNT,
+				FACEBOOK_AUTH_CODE,
+				PROFILE_STATUS,
+				CURRENT_JOB,
+				EXPERT_FIELD,
+				PASSWORD_CHANGE_YN,
+				REGISTER_ID,
+				REGISTER_NAME,
+				UPDATER_ID,
+				UPDATER_NAME,
+				REGIST_DATE,
+				UPDATE_DATE)
+		VALUES (
+				#userId#,
+				#portalId#,
+				#userPassword#,
+				#userStatus#,
+				#empNo#,
+				#mail#,
+				#mailPassword#,
+				#userName#,
+				#userEnglishName#,
+				#teamName#,
+				#teamEnglishName#,
+				#timezoneId#,
+				#mobile#,
+				#officePhoneNo#,
+				#homePhoneNo#,
+				#officeBasicAddress#,
+				#officeDetailAddress#,
+				#officeZipcode#,
+				#homeBasicAddress#,
+				#homeDetailAddress#,
+				#homeZipcode#,
+				#birthday#,
+				#weddingAnniv#,
+				#pictureId#,
+				#profilePictureId#,
+				#leader#,
+				#jobClassCode#,
+				#jobRankCode#,
+				#jobDutyCode#,
+				#workPlaceCode#,
+				#jobTitleCode#,
+				#localeCode#,
+				#nationCode#,
+				#twitterAccount#,
+				#twitterAuthCode#,
+				#facebookAccount#,
+				#facebookAuthCode#,
+				#profileStatus#,
+				#currentJob#,
+				#expertField#,
+				#passwordChangeYn#,
+				#registerId#,
+				#registerName#,
+				#updaterId#,
+				#updaterName#,
+				CURRENT_TIMESTAMP,
+				CURRENT_TIMESTAMP)
+	]]>
+   </insert>
+   
+   <!-- MS SQL -->
+   <!-- 사용자 관리화면용 상세정보 -->
+	<select id="select" parameterClass="java.lang.String" resultMap="userResult">
+	<![CDATA[
+		SELECT /* [User_SqlMap.xml] support.user.member.dao.User.select */
+			TOP 1 
+			A.USER_ID, A.PORTAL_ID, A.USER_PASSWORD, 
+			A.USER_STATUS, A.EMP_NO, A.MAIL, 
+			A.MAIL_PASSWORD, A.USER_NAME, 
+			A.USER_ENGLISH_NAME, C.GROUP_ID,
+			A.TEAM_NAME, 
+			A.TEAM_ENGLISH_NAME, 
+			A.TIMEZONE_ID, (SELECT ITEM_MESSAGE FROM IKEP4_I18N_MESSAGE 
+							WHERE ITEM_ID = A.TIMEZONE_ID 
+							AND LOCALE_CODE = A.LOCALE_CODE
+							AND FIELD_NAME = 'timezoneName') AS TIMEZONE_NAME
+			, D.DESCRIPTION, D.TIME_DIFFERENCE, A.MOBILE,
+			A.OFFICE_PHONE_NO, A.HOME_PHONE_NO, A.OFFICE_BASIC_ADDRESS,
+			A.OFFICE_DETAIL_ADDRESS, A.OFFICE_ZIPCODE, A.HOME_BASIC_ADDRESS,
+			A.HOME_DETAIL_ADDRESS, A.HOME_ZIPCODE, A.BIRTHDAY, A.WEDDING_ANNIV,
+			A.PICTURE_ID,
+			A.PROFILE_PICTURE_ID, 
+			A.PICTURE_PATH, 
+			CASE WHEN A.PROFILE_PICTURE_PATH = '' THEN A.SAP_PROFILE_PICTURE_PATH
+                 WHEN A.PROFILE_PICTURE_PATH IS NULL THEN A.SAP_PROFILE_PICTURE_PATH
+                 ELSE A.PROFILE_PICTURE_PATH
+                 END AS PROFILE_PICTURE_PATH, 			
+			A.LEADER, A.JOB_CLASS_CODE,
+			E.JOB_CLASS_NAME, A.JOB_RANK_CODE, F.JOB_RANK_NAME, A.JOB_DUTY_CODE,
+			G.JOB_DUTY_NAME, A.WORK_PLACE_CODE, H.WORK_PLACE_NAME, H.WORK_PLACE_ENGLISH_NAME,
+			A.JOB_TITLE_CODE, I.JOB_TITLE_NAME, I.JOB_TITLE_ENGLISH_NAME, 
+			A.LOCALE_CODE, (SELECT ITEM_MESSAGE FROM IKEP4_I18N_MESSAGE 
+							WHERE ITEM_ID = A.LOCALE_CODE 
+							AND LOCALE_CODE = A.LOCALE_CODE
+							AND FIELD_NAME = 'localeName') AS LOCALE_NAME,
+			A.TWITTER_ACCOUNT, A.TWITTER_AUTH_CODE, A.FACEBOOK_ACCOUNT,
+			A.FACEBOOK_AUTH_CODE, A.PROFILE_STATUS, A.CURRENT_JOB, 
+			A.DETAIL_JOB,
+			A.EXPERT_FIELD,
+			A.NATION_CODE, (SELECT ITEM_MESSAGE FROM IKEP4_I18N_MESSAGE 
+							WHERE ITEM_ID = A.NATION_CODE 
+							AND LOCALE_CODE = A.LOCALE_CODE
+							AND FIELD_NAME = 'nationName') AS NATION_NAME,
+			A.REGISTER_ID, A.REGISTER_NAME, A.REGIST_DATE, A.UPDATER_ID,
+			A.UPDATER_NAME, A.UPDATE_DATE, A.HANZI_NAME, A.FAX,
+			A.COMPANY_CODE, L.COMPANY_CODE_NAME, A.INFO_GRADE, A.LUNISOLAR,
+			A.ESS_AUTH_CODE,
+			A.MSS_AUTH_CODE,
+			A.SAP_ID,
+			A.BW_ID,
+            A.SCHEDULE_MANAGER,
+            A.PASSWORD_CHANGE_YN
+		FROM 
+			IKEP4_EV_USER A LEFT OUTER JOIN
+		    (
+		        select 
+		            A.user_id, B.group_id, B.group_name, B.group_english_name  
+		          from IKEP4_EV_USER_GROUP A inner join 
+		               IKEP4_EV_GROUP B on A.group_id = B.group_id
+		         where A.user_id = #userId#
+		           and B.group_type_id = 'G0001'
+		           and A.represent_group = 1
+		    ) C ON A.user_id = C.user_id LEFT OUTER JOIN
+		    IKEP4_EV_TIMEZONE D ON A.TIMEZONE_ID = D.TIMEZONE_ID LEFT OUTER JOIN 
+		    IKEP4_EV_JOB_CLASS E ON A.JOB_CLASS_CODE = E.JOB_CLASS_CODE LEFT OUTER JOIN 
+		    IKEP4_EV_JOB_RANK F ON A.JOB_RANK_CODE = F.JOB_RANK_CODE LEFT OUTER JOIN 
+		    IKEP4_EV_JOB_DUTY G ON A.JOB_DUTY_CODE = G.JOB_DUTY_CODE LEFT OUTER JOIN 
+		    IKEP4_EV_WORK_PLACE H ON A.WORK_PLACE_CODE = H.WORK_PLACE_CODE LEFT OUTER JOIN 
+		    IKEP4_EV_JOB_TITLE I ON A.JOB_TITLE_CODE = I.JOB_TITLE_CODE LEFT OUTER JOIN 
+		    IKEP4_EV_LOCALE J ON A.LOCALE_CODE = J.LOCALE_CODE LEFT OUTER JOIN
+		    IKEP4_EV_NATION K ON A.NATION_CODE = K.NATION_CODE LEFT OUTER JOIN
+            IKEP4_EV_COMPANY_CODE L ON A.COMPANY_CODE = L.COMPANY_CODE 
+		WHERE A.USER_ID = #userId#
+	]]>
+	</select>
+	
+	<!-- 사용자 관리화면용 상세정보  부서ID를 파라미터로 받는 경우 -->
+	<select id="selectByGroupId" parameterClass="Map" resultMap="userResult">
+	<![CDATA[
+		SELECT /* [User_SqlMap.xml] support.user.member.dao.User.select */
+			TOP 1 
+			A.USER_ID, A.PORTAL_ID, A.USER_PASSWORD, 
+			A.USER_STATUS, A.EMP_NO, A.MAIL, 
+			A.MAIL_PASSWORD, A.USER_NAME, 
+			A.USER_ENGLISH_NAME, C.GROUP_ID,
+			A.TEAM_NAME, 
+			A.TEAM_ENGLISH_NAME, 
+			A.TIMEZONE_ID, (SELECT ITEM_MESSAGE FROM IKEP4_I18N_MESSAGE 
+							WHERE ITEM_ID = A.TIMEZONE_ID 
+							AND LOCALE_CODE = A.LOCALE_CODE
+							AND FIELD_NAME = 'timezoneName') AS TIMEZONE_NAME
+			, D.DESCRIPTION, D.TIME_DIFFERENCE, A.MOBILE,
+			A.OFFICE_PHONE_NO, A.HOME_PHONE_NO, A.OFFICE_BASIC_ADDRESS,
+			A.OFFICE_DETAIL_ADDRESS, A.OFFICE_ZIPCODE, A.HOME_BASIC_ADDRESS,
+			A.HOME_DETAIL_ADDRESS, A.HOME_ZIPCODE, A.BIRTHDAY, A.WEDDING_ANNIV,
+			A.PICTURE_ID, A.PROFILE_PICTURE_ID, A.PICTURE_PATH, A.PROFILE_PICTURE_PATH, A.LEADER, A.JOB_CLASS_CODE,
+			E.JOB_CLASS_NAME, A.JOB_RANK_CODE, F.JOB_RANK_NAME, A.JOB_DUTY_CODE,
+			G.JOB_DUTY_NAME, A.WORK_PLACE_CODE, H.WORK_PLACE_NAME, H.WORK_PLACE_ENGLISH_NAME,
+			A.JOB_TITLE_CODE, I.JOB_TITLE_NAME, I.JOB_TITLE_ENGLISH_NAME, 
+			A.LOCALE_CODE, (SELECT ITEM_MESSAGE FROM IKEP4_I18N_MESSAGE 
+							WHERE ITEM_ID = A.LOCALE_CODE 
+							AND LOCALE_CODE = A.LOCALE_CODE
+							AND FIELD_NAME = 'localeName') AS LOCALE_NAME,
+			A.TWITTER_ACCOUNT, A.TWITTER_AUTH_CODE, A.FACEBOOK_ACCOUNT,
+			A.FACEBOOK_AUTH_CODE, A.PROFILE_STATUS, A.CURRENT_JOB, 
+			A.DETAIL_JOB,
+			A.EXPERT_FIELD,
+			A.NATION_CODE, (SELECT ITEM_MESSAGE FROM IKEP4_I18N_MESSAGE 
+							WHERE ITEM_ID = A.NATION_CODE 
+							AND LOCALE_CODE = A.LOCALE_CODE
+							AND FIELD_NAME = 'nationName') AS NATION_NAME,
+			A.REGISTER_ID, A.REGISTER_NAME, A.REGIST_DATE, A.UPDATER_ID,
+			A.UPDATER_NAME, A.UPDATE_DATE, A.HANZI_NAME, A.FAX, A.COMPANY_CODE, L.COMPANY_CODE_NAME, A.INFO_GRADE, A.LUNISOLAR,
+			A.ESS_AUTH_CODE,
+			A.MSS_AUTH_CODE,
+			A.SAP_ID,
+			A.BW_ID,
+            A.SCHEDULE_MANAGER,
+            A.PASSWORD_CHANGE_YN
+		FROM 
+			IKEP4_EV_USER A LEFT OUTER JOIN
+		    (
+		        select 
+		            A.user_id, B.group_id, B.group_name, B.group_english_name  
+		          from IKEP4_EV_USER_GROUP A inner join 
+		               IKEP4_EV_GROUP B on A.group_id = B.group_id
+		         where A.user_id = #userId#
+		           and B.group_type_id = 'G0001'
+		           and B.group_id = #groupId#
+		    ) C ON A.user_id = C.user_id LEFT OUTER JOIN
+		    IKEP4_EV_TIMEZONE D ON A.TIMEZONE_ID = D.TIMEZONE_ID LEFT OUTER JOIN 
+		    IKEP4_EV_JOB_CLASS E ON A.JOB_CLASS_CODE = E.JOB_CLASS_CODE LEFT OUTER JOIN 
+		    IKEP4_EV_JOB_RANK F ON A.JOB_RANK_CODE = F.JOB_RANK_CODE LEFT OUTER JOIN 
+		    IKEP4_EV_JOB_DUTY G ON A.JOB_DUTY_CODE = G.JOB_DUTY_CODE LEFT OUTER JOIN 
+		    IKEP4_EV_WORK_PLACE H ON A.WORK_PLACE_CODE = H.WORK_PLACE_CODE LEFT OUTER JOIN 
+		    IKEP4_EV_JOB_TITLE I ON A.JOB_TITLE_CODE = I.JOB_TITLE_CODE LEFT OUTER JOIN 
+		    IKEP4_EV_LOCALE J ON A.LOCALE_CODE = J.LOCALE_CODE LEFT OUTER JOIN
+		    IKEP4_EV_NATION K ON A.NATION_CODE = K.NATION_CODE LEFT OUTER JOIN
+            IKEP4_EV_COMPANY_CODE L ON A.COMPANY_CODE = L.COMPANY_CODE  
+		WHERE A.USER_ID = #userId#
+	]]>
+	</select>
+	
+	<!-- ANSI -->
+	<!-- 해당 사용자가 속한 그룹 목록 가져오기 -->
+	<select id="selectGroupForUser" parameterClass="java.lang.String" resultMap="resultGroupInUser">
+	<![CDATA[
+		SELECT /* [User_SqlMap.xml] support.user.member.dao.User.selectGroupForUser */
+		    A.GROUP_ID,
+		    B.GROUP_NAME,
+		    B.GROUP_ENGLISH_NAME,
+		    A.USER_ID,
+		    A.REPRESENT_GROUP,
+		    B.LEADER_ID 
+		FROM 
+			IKEP4_EV_USER_GROUP A
+		    LEFT JOIN IKEP4_EV_GROUP B
+		    ON A.GROUP_ID = B.GROUP_ID
+		WHERE 
+			A.USER_ID = #userId#
+		AND B.GROUP_TYPE_ID = 'G0001'
+	]]>
+	</select>
+	
+	
+	
+	
+	
+		<!-- ANSI -->
+	<select id="selectAllChildGroupId" parameterClass="java.lang.String" resultClass="java.lang.String">
+	<![CDATA[
+		SELECT /* [User_SqlMap.xml] selectAllChildGroupId */
+			 top 1 dbo.IKEP4_GET_CHILD_GROUP_ID_LIST(#groupId#) from IKEP4_EV_GROUP 
+	]]>
+	</select>
+	
+	<select id="getListUser" resultMap="mssTeamTreeSpecialResult" parameterClass="java.lang.String">
+	  <![CDATA[
+		 SELECT t.ITEM_ID as itemId, t.USER_ID as userId, t.GROUP_ID as groupId
+		 FROM IKEP4_PO_MSS_TEAMVIEW t 
+		 where t.user_id=#userId#
+		 and t.group_id in (select group_id from  IKEP4_EV_GROUP)
+		 ORDER BY userId
+	   ]]>
+	</select>
+	
+	<select id="listUserInfo" resultMap="resultUserInfo" parameterClass="list">
+		 SELECT USER_ID, MAIL, USER_NAME FROM IKEP4_EV_USER
+		 WHERE USER_STATUS = 'C'
+		 AND USER_ID IN
+		 (<iterate conjunction=",">
+			#userId[]#
+		</iterate>) 	
+	</select>
+	
+	
+	<!-- ANSI -->
+	<select id="selectLeadingGroup" parameterClass="java.lang.String" resultClass="Group">
+	<![CDATA[
+		SELECT /* [User_SqlMap.xml] support.user.member.dao.User.selectLeadingGroup */
+			TOP 1
+			DISTINCT(C.GROUP_ID) AS groupId, 
+			C.GROUP_NAME AS groupName, 
+			C.GROUP_ENGLISH_NAME AS groupEnglishName
+		FROM 
+			IKEP4_EV_USER A
+			LEFT JOIN IKEP4_EV_USER_GROUP B
+			ON A.USER_ID = B.USER_ID
+			LEFT JOIN IKEP4_EV_GROUP C
+			ON B.GROUP_ID = C.GROUP_ID
+		WHERE 
+			C.LEADER_ID = #userId#	
+	]]>
+	</select>
+	
+	<select id="selectLeadingGroupAll" parameterClass="java.lang.String" resultClass="Group">
+	<![CDATA[
+		SELECT /* [User_SqlMap.xml] support.user.member.dao.User.selectLeadingGroup */
+			DISTINCT(C.GROUP_ID) AS groupId, 
+			C.GROUP_NAME AS groupName, 
+			C.GROUP_ENGLISH_NAME AS groupEnglishName
+		FROM 
+			IKEP4_EV_USER A
+			LEFT JOIN IKEP4_EV_USER_GROUP B
+			ON A.USER_ID = B.USER_ID
+			LEFT JOIN IKEP4_EV_GROUP C
+			ON B.GROUP_ID = C.GROUP_ID
+		WHERE 
+			C.LEADER_ID = #userId#	
+	]]>
+	</select>
+	
+	<!-- ANSI -->
+	<!-- 기존 정보 수정 -->
+	<update id="update" parameterClass="User">
+	<![CDATA[
+		UPDATE /* [User_SqlMap.xml] support.user.member.dao.User.update */
+		    IKEP4_EV_USER
+		SET
+		    PORTAL_ID = #portalId#,
+		    USER_STATUS = #userStatus#,
+		    EMP_NO = #empNo#,
+		    MAIL = #mail#,
+		    MAIL_PASSWORD = #mailPassword#,
+		    USER_NAME = #userName#,
+		    USER_ENGLISH_NAME = #userEnglishName#,
+		    HANZI_NAME = #hanziName#,
+		   	USER_PASSWORD = #userPassword#,
+		    TEAM_NAME = #teamName#,
+		    TEAM_ENGLISH_NAME = #teamEnglishName#,
+		    TIMEZONE_ID = #timezoneId#,
+		    NATION_CODE = #nationCode#,
+		    MOBILE = #mobile#,
+		    OFFICE_PHONE_NO = #officePhoneNo#,
+		    HOME_PHONE_NO = #homePhoneNo#,
+		    OFFICE_BASIC_ADDRESS = #officeBasicAddress#,
+		    OFFICE_DETAIL_ADDRESS = #officeDetailAddress#,
+		    OFFICE_ZIPCODE = #officeZipcode#,
+		    HOME_BASIC_ADDRESS = #homeBasicAddress#,
+		    HOME_DETAIL_ADDRESS = #homeDetailAddress#,
+		    HOME_ZIPCODE = #homeZipcode#,
+		    LUNISOLAR = #lunisolar#,
+		    BIRTHDAY = #birthday#,
+		    WEDDING_ANNIV = #weddingAnniv#,
+		    PICTURE_ID = #pictureId#,
+		    PROFILE_PICTURE_ID = #profilePictureId#,
+		    LEADER = #leader#,
+		    JOB_CLASS_CODE = #jobClassCode#,
+		    JOB_RANK_CODE = #jobRankCode#,
+		    JOB_DUTY_CODE = #jobDutyCode#,
+		    COMPANY_CODE = #companyCode#,
+		    WORK_PLACE_CODE = #workPlaceCode#,
+		    JOB_TITLE_CODE = #jobTitleCode#,
+		    LOCALE_CODE = #localeCode#,
+			TWITTER_ACCOUNT = #twitterAccount#,
+			TWITTER_AUTH_CODE = #twitterAuthCode#,
+			FACEBOOK_ACCOUNT = #facebookAccount#,
+			FACEBOOK_AUTH_CODE = #facebookAuthCode#,
+			PROFILE_STATUS = #profileStatus#,
+			CURRENT_JOB = #currentJob#,
+			EXPERT_FIELD = #expertField#,
+			PASSWORD_CHANGE_YN = #passwordChangeYn#,
+		    UPDATER_ID = #updaterId#,
+		    UPDATER_NAME = #updaterName#,
+		    UPDATE_DATE = CURRENT_TIMESTAMP
+		WHERE  
+			USER_ID = #userId#
+	]]>
+	</update>
+	
+	<!-- ANSI -->
+	<update id="updateLeaderInfo" parameterClass="java.lang.String">
+	<![CDATA[
+		UPDATE /* [User_SqlMap.xml] support.user.member.dao.User.updateLeaderInfo */
+			IKEP4_EV_GROUP
+		SET
+		    LEADER_ID = ''
+		WHERE
+		    GROUP_ID = #groupId#
+	]]>
+	</update>
+   
+   	<!-- ANSI -->
+	<!-- 삭제 -->
+	<delete id="delete" parameterClass="java.lang.String">
+	<![CDATA[
+		DELETE FROM /* [User_SqlMap.xml] support.user.member.dao.User.delete */
+			IKEP4_EV_USER
+		WHERE
+			USER_ID = #id#
+	]]>
+	</delete>
+	
+	
+	<delete id="deleteRoleUser" parameterClass="java.util.Map">
+		DELETE FROM 
+			IKEP4_EV_USER_ROLE
+		WHERE
+			USER_ID = #userId#
+		AND ROLE_ID = (select ROLE_ID FROM IKEP4_EV_ROLE
+		WHERE ROLE_NAME = #roleName#)
+	</delete>
+	
+	<insert id="insertRoleUser" parameterClass="java.util.Map">
+		INSERT INTO IKEP4_EV_USER_ROLE
+		(
+			   ROLE_ID
+		      ,USER_ID
+		      ,REGISTER_ID
+		      ,REGISTER_NAME
+		      ,REGIST_DATE
+		      ,UPDATER_ID
+		      ,UPDATER_NAME
+		      , UPDATE_DATE
+		)  
+		(
+		
+			SELECT ROLE_ID,
+				#userId# AS USER_ID, 
+				#userId# AS REGISTER_ID,
+				#userName# AS REGISTER_NAME,
+				CURRENT_TIMESTAMP AS REGIST_DATE,
+				#userId# AS UPDATER_ID,
+				#userName# AS UPDATER_NAME,
+				CURRENT_TIMESTAMP AS UPDATE_DATE
+			FROM IKEP4_EV_ROLE  WHERE ROLE_NAME = #roleName#
+		)
+	</insert>
+	
+	<!-- ANSI -->
+	<!-- UserID 중복 체크 -->
+	<select id="checkId" parameterClass="java.lang.String" resultClass="java.lang.String">
+	<![CDATA[
+		SELECT /* [User_SqlMap.xml] support.user.member.dao.User.checkId */
+			COUNT(USER_ID)
+		FROM
+			IKEP4_EV_USER
+		WHERE
+			USER_ID = #userId#
+	]]>
+	</select>
+	
+	<!-- ANSI -->
+	<!-- 중복 Group 체크 -->
+	<select id="checkGroup" parameterClass="User" resultClass="java.lang.String">
+	<![CDATA[
+		SELECT /* [User_SqlMap.xml] support.user.member.dao.User.checkGroup */
+			COUNT(GROUP_ID) 
+		FROM 
+			IKEP4_EV_USER_GROUP
+		WHERE 
+			USER_ID = #userId#
+			AND GROUP_ID = #groupId#
+	]]>
+	</select>
+	
+	<!-- ANSI -->
+	<!-- UserID 목록 가져오기 -->
+	<select id="selectUserAll" resultClass="User">
+	<![CDATA[
+		SELECT /* [User_SqlMap.xml] support.user.member.dao.User.selectUserAll */
+			USER_ID AS USERID, 
+			USER_NAME AS USERNAME
+		FROM
+			IKEP4_EV_USER
+		ORDER BY USER_ID DESC
+	]]>
+	</select>
+	
+	<!-- ANSI -->
+	<!-- LocaleCode 목록 가져오기 -->
+	<select id="selectLocaleCodeAll" parameterClass="java.lang.String" resultClass="LocaleCode">
+	<![CDATA[
+		SELECT /* [User_SqlMap.xml] support.user.member.dao.User.selectLocaleCodeAll */
+			A.LOCALE_CODE AS LOCALECODE, 
+			B.ITEM_MESSAGE AS LOCALENAME
+		FROM IKEP4_EV_LOCALE A
+			JOIN IKEP4_I18N_MESSAGE B
+			ON A.LOCALE_CODE = B.ITEM_ID
+		WHERE B.LOCALE_CODE = #localeCode#
+		ORDER BY A.SORT_ORDER
+	]]>
+	</select>
+	
+	<!-- ANSI -->
+	<!-- Timezone 목록 가져오기 -->
+	<select id="selectTimezoneAll" parameterClass="java.lang.String" resultClass="Timezone">
+	<![CDATA[
+		SELECT /* [User_SqlMap.xml] support.user.member.dao.User.selectTimezoneAll */
+			A.TIMEZONE_ID AS TIMEZONEID, 
+			B.ITEM_MESSAGE AS TIMEZONENAME,
+            A.DISPLAY_NAME AS DISPLAYNAME
+		FROM IKEP4_EV_TIMEZONE A
+			JOIN IKEP4_I18N_MESSAGE B
+			ON A.TIMEZONE_ID = B.ITEM_ID
+		WHERE B.LOCALE_CODE = #localeCode#
+		ORDER BY A.SORT_ORDER
+	]]>
+	</select>
+	
+	<!-- ANSI -->
+	<!-- 국가 목록 가져오기 -->
+	<select id="selectNationAll" parameterClass="java.lang.String" resultClass="Nation">
+	<![CDATA[
+		SELECT /* [User_SqlMap.xml] support.user.member.dao.User.selectNationAll */
+			A.NATION_CODE AS NATIONCODE, 
+			B.ITEM_MESSAGE AS NATIONNAME
+		FROM IKEP4_EV_NATION A
+			JOIN IKEP4_I18N_MESSAGE B
+			ON A.NATION_CODE = B.ITEM_ID
+		WHERE B.LOCALE_CODE = #localeCode#
+		ORDER BY A.NATION_CODE
+	]]>
+	</select>
+	
+	<!-- ANSI -->
+	<!-- JobClassCode 목록 가져오기 -->
+	<select id="selectJobClassAll" parameterClass="java.lang.String" resultClass="JobClass">
+	<![CDATA[
+		SELECT /* [User_SqlMap.xml] support.user.member.dao.User.selectJobClassAll */
+			JOB_CLASS_CODE AS jobClassCode, 
+			JOB_CLASS_NAME AS jobClassName,
+			JOB_CLASS_ENGLISH_NAME AS jobClassEnglishName
+		FROM
+			IKEP4_EV_JOB_CLASS
+		WHERE PORTAL_ID = #portalId#
+		ORDER BY JOB_CLASS_CODE ASC
+	]]>
+	</select>
+	
+	<!-- ANSI -->
+	<!-- JobRankCode 목록 가져오기 -->
+	<select id="selectJobRankAll" parameterClass="java.lang.String" resultClass="JobRank">
+	<![CDATA[
+		SELECT /* [User_SqlMap.xml] support.user.member.dao.User.selectJobRankAll */
+			JOB_RANK_CODE AS JOBRANKCODE, 
+			JOB_RANK_NAME AS JOBRANKNAME,
+			JOB_RANK_ENGLISH_NAME AS JOBRANKENGLISHNAME
+		FROM
+			IKEP4_EV_JOB_RANK
+		WHERE PORTAL_ID = #portalId#
+		ORDER BY JOB_RANK_CODE DESC
+	]]>
+	</select>
+	
+	<!-- ANSI -->
+    <!-- JobPositionCode 목록 가져오기 -->
+    <select id="selectJobPositionAll" resultClass="JobPosition">
+    <![CDATA[
+        SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
+        SELECT /* [User_SqlMap.xml] support.user.member.dao.User.selectJobPositionAll */
+            JOB_POSITION_CODE AS JOBPOSITIONCODE, 
+            JOB_POSITION_NAME AS JOBPOSITIONNAME,
+            JOB_POSITION_ENGLISH_NAME AS JOBPOSITIONENGLISHNAME
+        FROM
+            IKEP4_EV_JOB_POSITION
+        ORDER BY JOB_POSITION_CODE DESC
+    ]]>
+    </select>
+	
+	<!-- ANSI -->
+	<!-- WorkPlaceCode 목록 가져오기 -->
+	<select id="selectWorkPlaceAll" parameterClass="java.lang.String" resultClass="WorkPlace">
+	<![CDATA[
+		SELECT /* [User_SqlMap.xml] support.user.member.dao.User.selectWorkPlaceAll */
+			WORK_PLACE_CODE AS WORKPLACECODE, 
+			WORK_PLACE_NAME AS WORKPLACENAME,
+			WORK_PLACE_ENGLISH_NAME AS WORKPLACEENGLISHNAME
+		FROM
+			IKEP4_EV_WORK_PLACE
+		WHERE PORTAL_ID = #portalId#
+		ORDER BY WORK_PLACE_CODE DESC
+	]]>
+	</select>
+
+	<!-- ANSI -->
+	<!-- JobTItleCode 목록 가져오기 -->
+	<select id="selectJobTitleAll" parameterClass="java.lang.String" resultClass="JobTitle">
+	<![CDATA[
+		SELECT /* [User_SqlMap.xml] support.user.member.dao.User.selectJobTitleAll */
+			JOB_TITLE_CODE AS JOBTITLECODE, 
+			JOB_TITLE_NAME AS JOBTITLENAME,
+			JOB_TITLE_ENGLISH_NAME AS JOBTITLEENGLISHNAME
+		FROM
+			IKEP4_EV_JOB_TITLE
+		WHERE PORTAL_ID = #portalId#
+		ORDER BY JOB_TITLE_CODE DESC
+	]]>
+	</select>
+
+	<!-- ANSI -->
+	<!-- JobDutyCode 목록 가져오기 -->
+	<select id="selectJobDutyAll" parameterClass="java.lang.String" resultClass="JobDuty">
+	<![CDATA[
+		SELECT /* [User_SqlMap.xml] support.user.member.dao.User.selectJobDutyAll */
+			JOB_DUTY_CODE AS JOBDUTYCODE, 
+			JOB_DUTY_NAME AS JOBDUTYNAME,
+			JOB_DUTY_ENGLISH_NAME AS JOBDUTYENGLISHNAME
+		FROM
+			IKEP4_EV_JOB_DUTY
+		WHERE PORTAL_ID = #portalId#
+		ORDER BY JOB_DUTY_CODE DESC
+	]]>
+	</select>
+	
+	<!-- ANSI -->
+    <!-- Company Code 목록 가져오기 -->
+    <select id="selectCompanyCodeAll" parameterClass="java.lang.String" resultClass="CompanyCode">
+    <![CDATA[
+        SELECT /* [User_SqlMap.xml] support.user.member.dao.User.selectCompanyCodeAll */
+            COMPANY_CODE AS COMPANYCODE, 
+            COMPANY_CODE_NAME AS COMPANYCODENAME,
+            COMPANY_CODE_ENGLISH_NAME AS COMPANYCODEENGLISHNAME
+        FROM
+            IKEP4_EV_COMPANY_CODE
+        WHERE PORTAL_ID = #portalId#
+        ORDER BY COMPANY_CODE DESC
+    ]]>
+    </select>
+	
+	<!-- ANSI -->
+	<!-- 사용자를 그룹에 추가함 -->
+	<insert id="addUserToGroup" parameterClass="User">
+	<![CDATA[
+		INSERT INTO /* [User_SqlMap.xml] support.user.member.dao.User.addUserToGroup */
+		    IKEP4_EV_USER_GROUP (
+		        GROUP_ID, 
+		        USER_ID, 
+		        REGISTER_ID, 
+		        REGISTER_NAME, 
+		        UPDATER_ID, 
+		        UPDATER_NAME, 
+		        REGIST_DATE, 
+		        UPDATE_DATE,
+		        REPRESENT_GROUP) 
+		VALUES (
+				#groupId#,
+				#userId#,
+				#registerId#,
+				#registerName#,
+				#updaterId#,
+				#updaterName#,
+				CURRENT_TIMESTAMP,
+				CURRENT_TIMESTAMP,
+				0)
+	]]>
+	</insert>
+	
+	<!-- ANSI -->
+	<update id="updateRepresentGroup" parameterClass="User">
+	<![CDATA[
+		UPDATE /* [User_SqlMap.xml] support.user.member.dao.User.updateRepresentGroup */
+			IKEP4_EV_USER_GROUP
+		SET
+			REPRESENT_GROUP = #isRepresentGroup#
+		WHERE
+			USER_ID = #userId#
+		AND GROUP_ID = #groupId#
+	]]>
+	</update>
+	
+	<update id="requestCertification" parameterClass="User">
+	<![CDATA[
+		UPDATE /* [User_SqlMap.xml] support.user.member.dao.User.requestCertification */
+			IKEP4_EV_USER
+		SET
+			temp_code = #tempCode#,
+			temp_code_date = CURRENT_TIMESTAMP
+		WHERE
+			USER_ID = #userId#
+		and user_name = #userName#
+		and replace(replace(mobile,' ',''),'-','') = #mobile#
+	]]>
+	</update>
+	
+	<select id="getUserInfo" parameterClass="User" resultClass="int">  
+		SELECT  
+	           COUNT(*)
+		FROM IKEP4_EV_USER
+		WHERE USER_ID = #userId#
+		and user_name = #userName#
+		and replace(replace(mobile,' ',''),'-','') = #mobile#
+	</select> 
+	
+	<select id="getUserInfoCheck" parameterClass="User" resultClass="int">  
+		SELECT  
+	           COUNT(*)
+		FROM IKEP4_EV_USER
+		WHERE USER_ID = #userId#
+		and temp_code = #tempCode#
+		<![CDATA[
+		and dateadd(minute,5,temp_code_date) > current_timestamp
+		]]>
+	</select>
+	
+	<!-- ANSI -->
+	<!-- 사용자의 그룹 정보를 수정 -->
+	<update id="updateUserToGroup" parameterClass="User">
+	<![CDATA[
+		UPDATE /* [User_SqlMap.xml] support.user.member.dao.User.updateUserToGroup */
+		    IKEP4_EV_USER_GROUP
+		SET
+		    GROUP_ID = #groupId#,
+		    UPDATER_ID = #updaterId#,
+		    UPDATER_NAME = #updaterName#,
+		    UPDATE_DATE = CURRENT_TIMESTAMP
+		WHERE
+		    USER_ID = #userId#
+	]]>
+	</update>
+	
+	<!-- ANSI -->
+	<!-- 사용자를 그룹에서 제거함 -->
+	<delete id="removeUserFromGroup" parameterClass="java.lang.String">
+	<![CDATA[
+		DELETE /* [User_SqlMap.xml] support.user.member.dao.User.removeUserFromGroup */
+			FROM IKEP4_EV_USER_GROUP
+		WHERE 
+			GROUP_ID = #groupId#
+	]]>
+	</delete>
+	
+	<!-- ANSI -->
+	<!-- USER_GROUP에 매핑된 특정그룹 사용자 정보 삭제 -->
+	<delete id="removeUserFromCertainGroup" parameterClass="User">
+	<![CDATA[
+		DELETE /* [User_SqlMap.xml] support.user.member.dao.User.removeUserFromCertainGroup */
+			FROM IKEP4_EV_USER_GROUP
+		WHERE 
+			USER_ID = #userId#
+		AND GROUP_ID = #groupId#
+	]]>
+	</delete>
+	
+	<!-- ANSI -->
+	<!-- USER_ROLE에 매핑된 전체 그룹 사용자 정보 삭제 -->
+	<delete id="deleteUserFromGroup" parameterClass="java.lang.String">
+	<![CDATA[
+		DELETE /* [User_SqlMap.xml] support.user.member.dao.User.deleteUserFromGroup */
+			FROM IKEP4_EV_USER_GROUP
+		WHERE 
+			USER_ID = #userId#
+	]]>
+	</delete>
+	
+	<!-- ANSI -->
+	<!-- USER_ROLE에 매핑된 사용자 정보 삭제 -->
+	<delete id="deleteUserFromRole" parameterClass="java.lang.String">
+	<![CDATA[
+		DELETE /* [User_SqlMap.xml] support.user.member.dao.User.deleteUserFromGroup */
+			FROM IKEP4_EV_USER_ROLE
+		WHERE 
+			USER_ID = #userId#
+	]]>
+	</delete>
+	
+	<!-- ANSI -->
+	<!-- USER_SYS_PERMISSION에 매핑된 사용자 정보 삭제 -->
+	<delete id="deleteUserFromSysPermission" parameterClass="java.lang.String">
+	<![CDATA[
+		DELETE /* [User_SqlMap.xml] support.user.member.dao.User.deleteUserFromSysPermission */
+			FROM IKEP4_EV_USER_SYS_PERMISSION
+		WHERE 
+			USER_ID = #userId#
+	]]>
+	</delete>
+	
+	<!-- ANSI -->
+	<!-- USER_CON_PERMISSION에 매핑된 사용자 정보 삭제 -->
+	<delete id="deleteUserFromConPermission" parameterClass="java.lang.String">
+	<![CDATA[
+		DELETE /* [User_SqlMap.xml] support.user.member.dao.User.deleteUserFromConPermission */
+			FROM IKEP4_EV_USER_CON_PERMISSION
+		WHERE 
+			USER_ID = #userId#
+	]]>
+	</delete>
+	
+	<!-- ANSI -->
+	<!-- USER_ABSENCE에 매핑된 사용자 정보 삭제 -->
+	<delete id="deleteUserFromAbsence" parameterClass="java.lang.String">
+	<![CDATA[
+		DELETE /* [User_SqlMap.xml] support.user.member.dao.User.deleteUserFromAbsence */
+			FROM IKEP4_EV_USER_ABSENCE
+		WHERE 
+			USER_ID = #userId#
+	]]>
+	</delete>
+	
+	
+	
+	<!-- MS SQL -->
+	<!-- 조직도용 사용자 조회 -->
+	<select id="selectAllForTree" parameterClass="java.util.Map" resultMap="resultForTree">
+	/* [User_SqlMap.xml] support.user.member.dao.User.selectAllForTree */
+			WITH TBL AS (
+				SELECT	GROUP_ID
+				FROM	IKEP4_EV_GROUP
+				WHERE   PORTAL_ID = #portalId#	
+				  AND   GROUP_ID = (SELECT 	TOP 1 A.GROUP_ID AS GROUP_ID
+									FROM 	IKEP4_EV_USER_GROUP A, IKEP4_EV_GROUP B
+									WHERE 	A.USER_ID = #userId# AND A.REPRESENT_GROUP = 1
+									    AND B.PORTAL_ID = #portalId#
+											/* 아래 그룹타입ID는 부서타입 ID로 고정 */
+										AND B.GROUP_TYPE_ID = 'G0001'
+										AND A.GROUP_ID = B.GROUP_ID)
+			),
+			CTE AS (
+				SELECT	PARENT_GROUP_ID, GROUP_ID, GROUP_NAME, GROUP_ENGLISH_NAME, VIEW_OPTION
+			    FROM	IKEP4_EV_GROUP
+			    WHERE	GROUP_TYPE_ID = 'G0001'
+			      AND   PORTAL_ID = #portalId#
+	         	<dynamic>
+					<isNotEmpty property="groupId" prepend="AND">
+						GROUP_ID = #groupId#
+					</isNotEmpty>
+					<isEmpty property="groupId" prepend="AND">
+						GROUP_ID = (SELECT TOP 1 GROUP_ID FROM TBL)
+						UNION ALL
+						SELECT	PG.PARENT_GROUP_ID, PG.GROUP_ID, PG.GROUP_NAME, PG.GROUP_ENGLISH_NAME, PG.VIEW_OPTION
+					    FROM	IKEP4_EV_GROUP PG, CTE
+					    WHERE	PG.GROUP_TYPE_ID = 'G0001'
+					        AND PG.PORTAL_ID = #portalId#
+		                	AND PG.GROUP_ID =  CTE.PARENT_GROUP_ID
+					</isEmpty>
+				</dynamic>
+			)
+			SELECT 
+			       A.USER_ID AS USER_ID,
+			       A.EMP_NO AS EMP_NO,
+			       A.MAIL AS MAIL,
+			       A.USER_NAME AS USER_NAME,
+			       A.USER_ENGLISH_NAME AS USER_ENGLISH_NAME,
+			       /**A.TEAM_NAME,  겸직처리로 삭제
+			       A.TEAM_ENGLISH_NAME,**/
+			       G.GROUP_NAME AS TEAM_NAME,
+			       G.GROUP_ENGLISH_NAME AS TEAM_ENGLISH_NAME,
+			       A.LEADER,
+			       B.GROUP_ID AS GROUP_ID,
+			       A.MOBILE AS MOBILE,
+			       A.OFFICE_PHONE_NO AS OFFICE_PHONE_NO,
+			       A.HOME_PHONE_NO AS HOME_PHONE_NO,
+			       D.JOB_TITLE_CODE,
+			       D.JOB_TITLE_NAME,
+			       D.JOB_TITLE_ENGLISH_NAME,
+			       F.JOB_DUTY_CODE,
+                   F.JOB_DUTY_NAME,
+                   F.JOB_DUTY_ENGLISH_NAME,
+                   A.SCHEDULE_MANAGER
+			  FROM IKEP4_EV_USER A JOIN IKEP4_EV_USER_GROUP B
+			  		ON A.USER_ID = B.USER_ID
+			  		INNER JOIN CTE C
+			     	ON B.GROUP_ID = C.GROUP_ID
+			     	INNER JOIN IKEP4_EV_GROUP G ON (B.GROUP_ID = G.GROUP_ID) /* 겸직처리 추가 */			     	
+			     	LEFT OUTER JOIN IKEP4_EV_JOB_TITLE D
+					ON	A.JOB_TITLE_CODE = D.JOB_TITLE_CODE
+					LEFT OUTER JOIN IKEP4_EV_JOB_DUTY F
+                    ON  A.JOB_DUTY_CODE = F.JOB_DUTY_CODE					
+			 WHERE A.USER_STATUS != 'T'
+			 <isNotEmpty property="portalId">
+				AND A.PORTAL_ID = #portalId#
+			</isNotEmpty>
+			 AND C.VIEW_OPTION = 1
+			 AND G.VIEW_OPTION = 1
+			 ORDER BY A.LEADER DESC, A.JOB_TITLE_CODE, A.EMP_NO, A.USER_NAME
+		
+	</select>
+	
+	<select id="selectAgentUserList" parameterClass="String" resultMap="resultAgentUser">
+		SELECT 
+		EU.user_id as userId,
+	  	EU.emp_no as empNo,
+	  	EU.user_name as userName,
+	  	EU.user_english_name as userEnglishName,
+	  	EU.team_name as teamName,
+	  	EU.team_english_name as teamEnglishName,
+	  	EJT.job_title_name as jobTitleName,
+	  	EJT.job_title_english_name as jobTitleEnglishName,
+	  	EU.mail as mail,
+	  	EU.mobile as mobile,
+	  	EU.work_place_code as workPlaceCode
+	    FROM IKEP4_EV_USER EU 
+	    	INNER JOIN IKEP4_EV_JOB_TITLE EJT ON EU.job_title_code = EJT.job_title_code
+	    WHERE EU.USER_ID IN(SELECT RU.USER_ID FROM IKEP4_EV_ROLE R INNER JOIN IKEP4_EV_USER_ROLE RU
+		ON R.role_id = RU.role_id AND R.role_name = #roleName#
+		UNION ALL
+		SELECT UG.USER_ID FROM IKEP4_EV_USER_GROUP UG
+		WHERE UG.group_id IN(
+		SELECT RG.GROUP_ID FROM IKEP4_EV_ROLE R INNER JOIN IKEP4_EV_GROUP_ROLE RG
+		ON R.role_id = RG.role_id AND R.role_name = #roleName#))
+		AND EU.user_status = 'C'
+		ORDER BY EU.team_name,EJT.JOB_TITLE_CODE
+	</select>
+	
+	<select id="selectUserPwUpdateList" parameterClass="userSearchCondition" resultMap="resultPwUpdateUser">
+		SELECT 
+			ROWNUM, userName, officeBasicAddress, teamName, jobTitleName, leader, jobDutyName, passwordChangeYn, updatePasswordDate, userId, expectedUpdatePasswordDate
+		FROM 
+		( 
+			SELECT 
+				D.* 
+			FROM 
+			( 							
+				SELECT Row_number() OVER (	
+				
+				<isNotEmpty property="sortColumn" >
+									<isEqual property="sortColumn" compareValue="USER_NAME">
+ 										ORDER BY B.user_name
+ 									</isEqual>
+ 									<isEqual property="sortColumn" compareValue="TEAM_NAME">
+ 										ORDER BY B.team_name
+ 									</isEqual>
+ 									<isEqual property="sortColumn" compareValue="UPDATE_PASSWORD_DATE">
+ 										ORDER BY B.UPDATE_PASSWORD_DATE
+ 									</isEqual>
+ 									<isEqual property="sortColumn" compareValue="CHANGE_PASSWORD_DATE">
+ 										ORDER BY convert(varchar,B.update_password_date,102)
+ 									</isEqual>
+ 									<isEqual property="sortColumn" compareValue="PASSWORD_CHANGE_YN">
+ 										ORDER BY B.PASSWORD_CHANGE_YN
+ 									</isEqual>
+ 									<isEqual property="sortType" compareValue="ASC">
+ 										ASC
+ 									</isEqual>
+ 									<isEqual property="sortType" compareValue="DESC">
+ 										DESC
+ 									</isEqual>   									
+ 									
+ 								</isNotEmpty>  
+ 							 	<isEmpty property="sortColumn"> ORDER BY  B.office_basic_address DESC, B.team_name asc, B.leader desc, C.job_title_code asc </isEmpty>
+				 ) AS ROWNUM,	
+					B.user_id as userId, B.user_name as userName, B.office_basic_address as officeBasicAddress, 
+			B.team_name as teamName, C.job_title_name as jobTitleName,B.leader as leader, JD.job_duty_name as jobDutyName, 
+		B.password_change_yn as passwordChangeYn, convert(varchar,B.update_password_date,102)  as updatePasswordDate,
+		convert(varchar, dateadd(day,180,B.update_password_date), 102) as expectedUpdatePasswordDate
+				FROM   IKEP4_EV_USER		B 
+		LEFT OUTER JOIN  IKEP4_EV_JOB_TITLE	C ON ( B.JOB_TITLE_CODE	=	C.JOB_TITLE_CODE )
+		LEFT OUTER JOIN IKEP4_EV_JOB_DUTY JD
+		ON  B.JOB_DUTY_CODE = JD.JOB_DUTY_CODE		
+		where B.user_status = 'C'	
+		<isNotEmpty property="period">
+			<isEqual property="period" compareValue="0">
+				and 
+				(
+				convert(varchar, dateadd(day,180,B.update_password_date), 112) = convert(varchar, current_timestamp, 112) 
+				or 
+				convert(varchar, B.update_password_date, 112) = convert(varchar, current_timestamp, 112) 
+				)
+			</isEqual>
+			<isEqual property="period" compareValue="1">
+				and convert(varchar, dateadd(day,180,B.update_password_date), 112) = convert(varchar, current_timestamp+1, 112)
+			</isEqual>
+			<isEqual property="period" compareValue="3">
+				and convert(varchar, dateadd(day,180,B.update_password_date), 112) = convert(varchar, current_timestamp+3, 112)
+			</isEqual>
+			<isEqual property="period" compareValue="4">
+				<![CDATA[
+				and convert(varchar, dateadd(day,180,B.update_password_date), 112) < convert(varchar, current_timestamp, 112)
+				]]> 
+			</isEqual>
+		</isNotEmpty>
+		<isNotEmpty property="passwordChangeYn">
+			<isEqual property="passwordChangeYn" compareValue="1">
+				and B.password_Change_Yn = '1'
+			</isEqual>
+			<isEqual property="passwordChangeYn" compareValue="0">
+				and isnull(B.password_Change_Yn,'') = ''
+			</isEqual>
+		</isNotEmpty>
+		<isNotEmpty property="workPlaceName">			
+			AND B.WORK_PLACE_CODE IN (
+				SELECT TW.WORK_PLACE_CODE FROM IKEP4_EV_WORK_PLACE TW WHERE TW.WORK_PLACE_NAME = #workPlaceName#
+			)
+		</isNotEmpty>					
+		<isNotEmpty property="teamCode">				
+			AND B.user_id IN(SELECT TB.USER_iD FROM IKEP4_EV_USER_GROUP TB WHERE TB.group_id = #teamCode#)
+		</isNotEmpty>
+		<isNotEmpty property="searchWord">
+			<isEqual property="searchColumn" compareValue="userName">
+				AND B.USER_NAME like '%' + #searchWord# + '%'
+			</isEqual>
+		</isNotEmpty>
+				<![CDATA[   
+			) D
+			WHERE 
+				ROWNUM <=  #endRowIndex# /* 종료  */
+		) TBL  
+		WHERE 
+			ROWNUM >  #startRowIndex# /* 시작 */  
+		]]> 
+	</select>
+	
+	<select id="getWorkPlaceNameList" resultClass="String">		
+		SELECT 
+			DISTINCT(WORK_PLACE_NAME) AS WORK_PLACE_NAME 
+		FROM IKEP4_EV_WORK_PLACE  
+	</select>
+	
+	<select id="listTeamCodes" parameterClass="String" resultMap="resultTeamLeader"> 
+		
+		WITH CTE AS (
+			SELECT * FROM IKEP4_EV_USER
+			WHERE WORK_PLACE_CODE IN (
+				SELECT WORK_PLACE_CODE FROM IKEP4_EV_WORK_PLACE
+				WHERE WORK_PLACE_NAME = #workPlaceName#
+			)
+		)
+		SELECT B.GROUP_ID AS TEAM_CODE, C.group_NAME as team_name
+		FROM CTE A INNER JOIN IKEP4_EV_USER_GROUP B ON A.USER_ID = B.USER_ID INNER 
+		JOIN IKEP4_EV_GROUP C ON C.group_id = B.group_id WHERE C.group_NAME IS NOT NULL AND C.group_type_id 
+		= 'G0001' AND C.view_option = 1 /*1:LIVE GROUP, 2:DEAD GROUP AFTER OPEN*/ GROUP BY B.GROUP_ID, 
+		C.group_NAME ORDER BY C.group_NAME ASC
+						
+	</select>
+	
+	<select id="countUserPwUpdateList" parameterClass="userSearchCondition" resultClass="int">  
+		select count(*)
+		FROM   IKEP4_EV_USER		B 
+		LEFT OUTER JOIN  IKEP4_EV_JOB_TITLE	C ON ( B.JOB_TITLE_CODE	=	C.JOB_TITLE_CODE )
+		LEFT OUTER JOIN IKEP4_EV_JOB_DUTY JD
+		ON  B.JOB_DUTY_CODE = JD.JOB_DUTY_CODE		
+		where B.user_status = 'C'	
+		<isNotEmpty property="period">
+			<isEqual property="period" compareValue="0">
+				and 
+				(
+				convert(varchar, dateadd(day,180,B.update_password_date), 112) = convert(varchar, current_timestamp, 112) 
+				or 
+				convert(varchar, B.update_password_date, 112) = convert(varchar, current_timestamp, 112) 
+				)
+			</isEqual>
+			<isEqual property="period" compareValue="1">
+				and convert(varchar, dateadd(day,180,B.update_password_date), 112) = convert(varchar, current_timestamp+1, 112)
+			</isEqual>
+			<isEqual property="period" compareValue="3">
+				and convert(varchar, dateadd(day,180,B.update_password_date), 112) = convert(varchar, current_timestamp+3, 112)
+			</isEqual>
+			<isEqual property="period" compareValue="4">
+				<![CDATA[
+				and convert(varchar, dateadd(day,180,B.update_password_date), 112) < convert(varchar, current_timestamp, 112)
+				]]> 
+			</isEqual>
+		</isNotEmpty>
+		<isNotEmpty property="passwordChangeYn">
+			<isEqual property="passwordChangeYn" compareValue="1">
+				and B.password_Change_Yn = '1'
+			</isEqual>
+			<isEqual property="passwordChangeYn" compareValue="0">
+				and isnull(B.password_Change_Yn,'') = ''
+			</isEqual>
+		</isNotEmpty>
+		<isNotEmpty property="workPlaceName">			
+			AND B.WORK_PLACE_CODE IN (
+				SELECT TW.WORK_PLACE_CODE FROM IKEP4_EV_WORK_PLACE TW WHERE TW.WORK_PLACE_NAME = #workPlaceName#
+			)
+		</isNotEmpty>					
+		<isNotEmpty property="teamCode">				
+			AND B.user_id IN(SELECT TB.USER_iD FROM IKEP4_EV_USER_GROUP TB WHERE TB.group_id = #teamCode#)
+		</isNotEmpty>
+		<isNotEmpty property="searchWord">
+			<isEqual property="searchColumn" compareValue="userName">
+				AND B.USER_NAME like '%' + #searchWord# + '%'
+			</isEqual>
+		</isNotEmpty>
+	</select>
+	
+	<!-- MS SQL -->
+	<!-- 조직도용 사용자 이름으로 검색 -->
+	<select id="selectSearchForTree" parameterClass="java.util.Map" resultMap="resultForTree">
+	<![CDATA[
+		SELECT * /* [User_SqlMap.xml] support.user.member.dao.User.selectSearchForTree */ 
+		FROM
+		(SELECT 
+			 	   A.USER_ID AS USER_ID,
+			       A.EMP_NO AS EMP_NO,
+			       A.MAIL AS MAIL,
+			       A.USER_NAME AS USER_NAME,
+			       A.USER_ENGLISH_NAME AS USER_ENGLISH_NAME,
+			       A.TEAM_NAME,
+			       A.TEAM_ENGLISH_NAME,
+			       A.LEADER,
+			       B.GROUP_ID AS GROUP_ID,
+			       A.MOBILE AS MOBILE,
+			       A.OFFICE_PHONE_NO AS OFFICE_PHONE_NO,
+			       A.HOME_PHONE_NO AS HOME_PHONE_NO,			       
+			       A.JOB_TITLE_CODE,
+			       C.JOB_TITLE_NAME,
+			       C.JOB_TITLE_ENGLISH_NAME,
+                   A.JOB_DUTY_CODE,
+                   D.JOB_DUTY_NAME,
+                   D.JOB_DUTY_ENGLISH_NAME,
+                   A.SCHEDULE_MANAGER			       
+		FROM 
+					IKEP4_EV_USER A JOIN IKEP4_EV_USER_GROUP B
+					ON A.USER_ID = B.USER_ID
+                    INNER JOIN IKEP4_EV_JOB_TITLE C
+                    ON  A.JOB_TITLE_CODE = C.JOB_TITLE_CODE
+                    LEFT OUTER JOIN IKEP4_EV_JOB_DUTY D
+                    ON  A.JOB_DUTY_CODE = D.JOB_DUTY_CODE
+		WHERE 1=1
+				AND A.USER_STATUS != 'T'
+				AND B.REPRESENT_GROUP = '1'
+		]]>
+		<dynamic>
+				<isNotEmpty property="portalId">
+					AND A.PORTAL_ID = #portalId#
+				</isNotEmpty>
+				<isNotNull property="userName" prepend="AND">
+					(replace(A.USER_ID,' ','') LIKE '%' + replace(#userName#,' ','') + '%' OR replace(A.USER_NAME,' ','') LIKE '%' + replace(#userName#,' ','') + '%' OR replace(A.USER_ENGLISH_NAME,' ','') LIKE '%' + replace(#userName#,' ','') + '%')
+				</isNotNull>
+		</dynamic>
+ <![CDATA[
+        UNION
+		SELECT /* [User_SqlMap.xml] support.user.member.dao.User.selectSearchForTree */ 
+                   person_id AS USER_ID,
+                   ''        AS EMP_NO,
+                   mail_address AS MAIL,
+                   person_name AS USER_NAME,
+                   ''   AS USER_ENGLISH_NAME,
+                   team_name + ' ' + company_name as TEAM_NAME,
+                   team_name + ' ' + company_name as TEAM_ENGLISH_NAME,
+                   0 as LEADER,
+                   'OUTSIDE' AS GROUP_ID,
+                   mobile_phoneno AS MOBILE,
+                   office_phoneno AS OFFICE_PHONE_NO,
+                   '' AS HOME_PHONE_NO,                
+                   '' as JOB_TITLE_CODE,
+                   job_rank_name as JOB_TITLE_NAME,
+                   job_rank_name as JOB_TITLE_ENGLISH_NAME,
+                   '' as JOB_DUTY_CODE,
+                   '' as JOB_DUTY_NAME,
+                   '' as JOB_DUTY_ENGLISH_NAME,
+                   '' as SCHEDULE_MANAGER                  
+        
+      FROM [IKEP4J].[dbo].[IKEP4_AD_PERSON]
+      WHERE register_id = #register#
+      ]]>
+      <dynamic>
+          <isNotNull property="userName" prepend="AND">
+            replace(person_name,' ','') LIKE '%' + replace(#userName#,' ','') + '%'
+	      </isNotNull>
+	 </dynamic>
+	 )AA		
+	ORDER BY AA.LEADER DESC, AA.JOB_TITLE_CODE, AA.USER_NAME 
+		
+	</select>
+	
+	<!-- My Personal Info 수정 -->
+	<update id="updateMyPsInfo" parameterClass="User">
+	<![CDATA[
+		UPDATE /* [User_SqlMap.xml] support.user.member.dao.User.updateMyPsInfo */
+		    IKEP4_EV_USER
+		SET
+			USER_PASSWORD = #userPassword#,
+			BIRTHDAY = #birthday#,
+			WEDDING_ANNIV = #weddingAnniv#,
+		    HOME_PHONE_NO = #homePhoneNo#,
+		    HOME_ZIPCODE = #homeZipcode#,
+		    HOME_BASIC_ADDRESS = #homeBasicAddress#,
+		    HOME_DETAIL_ADDRESS = #homeDetailAddress#,
+		    UPDATER_ID = #updaterId#,
+		    UPDATER_NAME = #updaterName#,
+		    UPDATE_DATE = CURRENT_TIMESTAMP
+		WHERE USER_ID = #userId#
+	]]>
+	</update>
+	
+	<!-- ANSI -->
+	<!-- 프로 파일 기존 정보 수정 -->
+	<update id="updateProfile" parameterClass="User">
+	<![CDATA[
+		UPDATE /* [User_SqlMap.xml] support.user.member.dao.User.updateProfile */
+		    IKEP4_EV_USER
+		SET
+		    TIMEZONE_ID = #timezoneId#,
+		    OFFICE_BASIC_ADDRESS = #officeBasicAddress#,
+		    LOCALE_CODE = #localeCode#,
+		    NATION_CODE = #nationCode#,
+		    FAX         = #fax#,
+		    CURRENT_JOB = #currentJob#,
+		    DETAIL_JOB = #detailJob#,
+		    UPDATER_ID = #updaterId#,
+		    UPDATER_NAME = #updaterName#,
+		    UPDATE_DATE = CURRENT_TIMESTAMP
+		WHERE USER_ID = #userId#
+	]]>
+	</update>
+	
+	<!-- ANSI -->
+	<!-- update ProfileStatus -->
+	<update id="updateProfileStatus" parameterClass="User">
+	<![CDATA[
+		UPDATE /* [User_SqlMap.xml] support.user.member.dao.User.updateProfileStatus */  
+			IKEP4_EV_USER 
+		SET 
+			PROFILE_STATUS = #profileStatus#, 
+			UPDATER_ID = #updaterId#,
+			UPDATER_NAME = #updaterName#,
+			UPDATE_DATE = CURRENT_TIMESTAMP
+		WHERE 
+			USER_ID = #userId#
+	]]>
+	</update>
+	
+	<!-- ANSI -->
+	<!-- update PictureId -->
+	<update id="updatePictureId" parameterClass="User">
+	<![CDATA[
+		UPDATE /* [User_SqlMap.xml] support.user.member.dao.User.updatePictureId */  
+			IKEP4_EV_USER 
+		SET 
+			PICTURE_ID = #pictureId#,
+			UPDATER_ID = #updaterId#,
+			UPDATER_NAME = #updaterName#,
+			UPDATE_DATE = CURRENT_TIMESTAMP
+		WHERE 
+			USER_ID = #userId#
+	]]>
+	</update>
+	
+	<!-- ANSI -->
+	<!-- update ProfilePictureId -->
+	<update id="updateProfilePictureId" parameterClass="User">
+	<![CDATA[
+		UPDATE /* [User_SqlMap.xml] support.user.member.dao.User.updateProfilePictureId */  
+			IKEP4_EV_USER 
+		SET 
+			PROFILE_PICTURE_ID = #profilePictureId#,
+			UPDATER_ID = #updaterId#,
+			UPDATER_NAME = #updaterName#,
+			UPDATE_DATE = CURRENT_TIMESTAMP
+		WHERE 
+			USER_ID = #userId#
+	]]>
+	</update>
+	
+	<!-- ANSI -->
+    <!-- update ProfilePictureId -->
+    <update id="updateProfilePicture" parameterClass="User">
+    <![CDATA[
+        UPDATE /* [User_SqlMap.xml] support.user.member.dao.User.updateProfilePictureId */  
+            IKEP4_EV_USER 
+        SET 
+            sap_profile_picture_path = #profilePicturePath#,
+            UPDATER_ID = #updaterId#,
+            UPDATER_NAME = #updaterName#,
+            UPDATE_DATE = CURRENT_TIMESTAMP
+        WHERE 
+            USER_ID = #userId#
+    ]]>
+    </update>
+	
+	<!-- ANSI -->
+		<!-- update TwitterInfo -->
+	<update id="updateTwitterInfo" parameterClass="User">
+	<![CDATA[
+		UPDATE /* [User_SqlMap.xml] support.user.member.dao.User.updateTwitterInfo */  
+			IKEP4_EV_USER 
+		SET 
+			TWITTER_ACCOUNT = #twitterAccount#, 
+			TWITTER_AUTH_CODE = #twitterAuthCode#, 
+			UPDATER_ID = #updaterId#,
+			UPDATER_NAME = #updaterName#,
+			UPDATE_DATE = CURRENT_TIMESTAMP
+		WHERE 
+			USER_ID = #userId#
+	]]>
+	</update>
+	
+	<!-- ANSI -->
+		<!-- update FacebookInfo -->
+	<update id="updateFacebookInfo" parameterClass="User">
+	<![CDATA[
+		UPDATE /* [User_SqlMap.xml] support.user.member.dao.User.updateFacebookInfo */ 
+			IKEP4_EV_USER 
+		SET 
+			FACEBOOK_ACCOUNT = #facebookAccount#, 
+			FACEBOOK_AUTH_CODE = #facebookAuthCode#, 
+			UPDATER_ID = #updaterId#,
+			UPDATER_NAME = #updaterName#,
+			UPDATE_DATE = CURRENT_TIMESTAMP
+		WHERE 
+			USER_ID = #userId#
+	]]>
+	</update>
+	
+	<!-- ANSI -->
+		<!-- updateExportField -->
+	<update id="updateExportField" parameterClass="User">
+	<![CDATA[
+		UPDATE /* [User_SqlMap.xml] support.user.member.dao.User.updateExportField */  
+			IKEP4_EV_USER 
+		SET 
+			EXPERT_FIELD = #expertField#, 
+			UPDATER_ID = #updaterId#,
+			UPDATER_NAME = #updaterName#,
+			UPDATE_DATE = CURRENT_TIMESTAMP
+		WHERE 
+			USER_ID = #userId#
+	]]>
+	</update>
+	
+	<!-- ANSI -->
+	<!-- updateCurrentJob -->
+	<update id="updateCurrentJob" parameterClass="User">
+	<![CDATA[
+		UPDATE /* [User_SqlMap.xml] support.user.member.dao.User.updateCurrentJob */  
+			IKEP4_EV_USER 
+		SET 
+			CURRENT_JOB = #currentJob#, 
+			UPDATER_ID = #updaterId#,
+			UPDATER_NAME = #updaterName#,
+			UPDATE_DATE = CURRENT_TIMESTAMP
+		WHERE 
+			USER_ID = #userId#
+	]]>
+	</update>
+	
+	<!-- MS SQL -->
+	<select id="selectAllBySearchCondition" parameterClass="userSearchCondition" resultClass="User">    	
+    	SELECT /* [User_SqlMap.xml] selectAllBySearchCondition */ 
+		       *
+		FROM ( 
+		         /* START========================================= */
+		         SELECT Row_number() OVER 	(
+		         								<isNotEmpty property="sortColumn" >
+											    	<isEqual property="sortColumn" compareValue="USER_ID">
+											    		<isEqual property="sortType" compareValue="ASC">
+											    			ORDER BY A.USER_ID ASC, A.LEADER DESC, D.SORT_ORDER ASC
+											    		</isEqual>
+											    		<isEqual property="sortType" compareValue="DESC">
+											    			ORDER BY A.USER_ID DESC, A.LEADER DESC, D.SORT_ORDER ASC
+											    		</isEqual>
+											    	</isEqual>
+											    	<isEqual property="sortColumn" compareValue="USER_NAME">
+											    		<isEqual property="userLocaleCode" compareValue="ko">
+												    		<isEqual property="sortType" compareValue="ASC">
+												    			ORDER BY A.USER_NAME ASC, A.LEADER DESC, D.SORT_ORDER ASC
+												    		</isEqual>
+												    		<isEqual property="sortType" compareValue="DESC">
+												    			ORDER BY A.USER_NAME DESC, A.LEADER DESC, D.SORT_ORDER ASC
+												    		</isEqual>
+												    	</isEqual>
+												    	<isNotEqual property="userLocaleCode" compareValue="ko">
+												    		<isEqual property="sortType" compareValue="ASC">
+												    			ORDER BY A.USER_ENGLISH_NAME ASC, A.LEADER DESC, D.SORT_ORDER ASC
+												    		</isEqual>
+												    		<isEqual property="sortType" compareValue="DESC">
+												    			ORDER BY A.USER_ENGLISH_NAME DESC, A.LEADER DESC, D.SORT_ORDER ASC
+												    		</isEqual>
+												    	</isNotEqual>
+											    	</isEqual>
+											    	<isEqual property="sortColumn" compareValue="TEAM_NAME">
+											    		<isEqual property="userLocaleCode" compareValue="ko">
+												    		<isEqual property="sortType" compareValue="ASC">
+												    			ORDER BY A.TEAM_NAME ASC, A.LEADER DESC, D.SORT_ORDER ASC, A.USER_NAME ASC
+												    		</isEqual>
+												    		<isEqual property="sortType" compareValue="DESC">
+												    			ORDER BY A.TEAM_NAME DESC, A.LEADER DESC, D.SORT_ORDER ASC, A.USER_NAME ASC
+												    		</isEqual>
+												    	</isEqual>
+												    	<isNotEqual property="userLocaleCode" compareValue="ko">
+												    		<isEqual property="sortType" compareValue="ASC">
+												    			ORDER BY A.TEAM_ENGLISH_NAME ASC, A.LEADER DESC, D.SORT_ORDER ASC, A.USER_ENGLISH_NAME ASC
+												    		</isEqual>
+												    		<isEqual property="sortType" compareValue="DESC">
+												    			ORDER BY A.TEAM_ENGLISH_NAME DESC, A.LEADER DESC, D.SORT_ORDER ASC, A.USER_ENGLISH_NAME ASC
+												    		</isEqual>
+												    	</isNotEqual>
+											    	</isEqual>
+											    	<isEqual property="sortColumn" compareValue="JOB_TITLE_NAME">
+											    		<isEqual property="sortType" compareValue="ASC">
+											    			ORDER BY D.SORT_ORDER ASC, A.LEADER DESC, A.USER_NAME ASC
+											    		</isEqual>
+											    		<isEqual property="sortType" compareValue="DESC">
+											    			ORDER BY D.SORT_ORDER ASC, A.LEADER DESC, A.USER_NAME ASC
+											    		</isEqual>
+											    	</isEqual>
+											    	<isEqual property="sortColumn" compareValue="MAIL">
+											    		<isEqual property="sortType" compareValue="ASC">
+											    			ORDER BY A.MAIL ASC, A.LEADER DESC, D.SORT_ORDER ASC, A.USER_NAME ASC
+											    		</isEqual>
+											    		<isEqual property="sortType" compareValue="DESC">
+											    			ORDER BY A.MAIL DESC, A.LEADER DESC, D.SORT_ORDER ASC, A.USER_NAME ASC
+											    		</isEqual>
+											    	</isEqual>
+											    	<isEqual property="sortColumn" compareValue="MOBILE">
+											    		<isEqual property="sortType" compareValue="ASC">
+											    			ORDER BY A.MOBILE ASC, A.LEADER DESC, D.SORT_ORDER ASC, A.USER_NAME ASC
+											    		</isEqual>
+											    		<isEqual property="sortType" compareValue="DESC">
+											    			ORDER BY A.MOBILE DESC, A.LEADER DESC, D.SORT_ORDER ASC, A.USER_NAME ASC
+											    		</isEqual>
+											    	</isEqual>
+											    </isNotEmpty>
+		         								<isEmpty property="sortColumn" >
+											    	ORDER BY A.LEADER DESC, D.SORT_ORDER ASC, A.USER_NAME ASC
+											    </isEmpty>
+		         							) AS RNUM,
+						A.USER_ID userId,
+						A.EMP_NO empNo,
+						A.MAIL mail,
+						A.USER_NAME userName,
+						A.USER_ENGLISH_NAME userEnglishName,
+						A.MOBILE mobile,
+						A.LEADER leader,
+						A.OFFICE_PHONE_NO officePhoneNo, 
+						A.JOB_TITLE_CODE jobTitleCode,  
+						CASE WHEN ISNULL(E.JOB_DUTY_NAME,'') != '' THEN E.JOB_DUTY_NAME ELSE D.JOB_TITLE_NAME END AS jobTitleName,
+						D.JOB_TITLE_ENGLISH_NAME jobTitleEnglishName,
+						C.GROUP_ID groupId,
+						C.GROUP_NAME teamName,
+						C.GROUP_ENGLISH_NAME teamEnglishName,
+						A.JOB_DUTY_CODE jobDutyCode,
+						E.JOB_DUTY_NAME jobDutyName,
+                        E.JOB_DUTY_ENGLISH_NAME jobDutyEnglishName,
+                        A.SAP_ID sapId,
+                        CASE 
+						WHEN (A.PROFILE_PICTURE_PATH = '' OR A.PROFILE_PICTURE_PATH IS NULL) AND (A.SAP_PROFILE_PICTURE_PATH != '' AND A.SAP_PROFILE_PICTURE_PATH IS NOT NULL)
+							THEN A.SAP_PROFILE_PICTURE_PATH
+			        	WHEN (A.SAP_PROFILE_PICTURE_PATH = '' OR A.SAP_PROFILE_PICTURE_PATH IS NULL) AND (A.PROFILE_PICTURE_PATH != '' AND A.PROFILE_PICTURE_PATH IS NOT NULL)
+			        		THEN A.PROFILE_PICTURE_PATH
+						WHEN A.PROFILE_PICTURE_PATH != '' AND A.PROFILE_PICTURE_PATH IS NOT NULL AND A.SAP_PROFILE_PICTURE_PATH != '' AND A.SAP_PROFILE_PICTURE_PATH IS NOT NULL
+							THEN A.SAP_PROFILE_PICTURE_PATH
+			        	ELSE '/base/images/common/photo_170x170.gif'	
+			        	 END AS profilePicturePath,
+			        	convert(varchar,CURRENT_TIMESTAMP,120)  as registDate					
+					FROM IKEP4_EV_USER A LEFT OUTER JOIN
+					    (
+					      select 
+					          F.user_id, B.group_id, B.group_name, B.group_english_name  
+					          from IKEP4_EV_USER_GROUP F inner join 
+					               IKEP4_EV_GROUP B on F.group_id = B.group_id
+					         where F.group_id = B.group_id
+					         <isNotEmpty property="groupTypeId">
+					           and B.group_type_id = #groupTypeId#
+					         </isNotEmpty>
+					    ) C ON A.user_id = C.user_id
+						LEFT OUTER JOIN IKEP4_EV_JOB_TITLE D ON A.JOB_TITLE_CODE = D.JOB_TITLE_CODE
+						LEFT OUTER JOIN IKEP4_EV_JOB_DUTY E ON A.JOB_DUTY_CODE = E.JOB_DUTY_CODE
+				 	WHERE 1=1
+					<isNotEmpty property="searchWord">
+						<isEqual property="searchColumn" compareValue="title">
+							AND	( replace(A.USER_NAME,' ','') LIKE '%' + replace(#searchWord#,' ','') + '%' OR replace(A.USER_ENGLISH_NAME,' ','') LIKE '%' + replace(#searchWord#,' ','') + '%' )
+						</isEqual>
+						<isEqual property="searchColumn" compareValue="id">
+							AND	replace(A.USER_ID,' ','') LIKE '%' + replace(#searchWord#,' ','') + '%'
+						</isEqual>
+						<isEqual property="searchColumn" compareValue="team">
+							AND (replace(A.TEAM_NAME,' ','') LIKE '%' + replace(#searchWord#,' ','') + '%' OR replace(A.TEAM_ENGLISH_NAME,' ','') LIKE '%' + replace(#searchWord#,' ','') + '%')
+						</isEqual>
+					</isNotEmpty>
+					<isNotEmpty property="portalId">
+							AND A.PORTAL_ID = #portalId#
+					</isNotEmpty>
+							AND A.USER_STATUS = 'C'
+					<isNotEmpty property="groupId">
+						<isEmpty property="mssAuthCode">
+                        AND C.GROUP_ID  in ($childGroupIds$)
+                        </isEmpty>
+					</isNotEmpty>
+					   <isNotEmpty property="jobTitleCode">
+                        AND A.JOB_TITLE_CODE = #jobTitleCode#
+                    </isNotEmpty>
+                        <isNotEmpty property="jobDutyCode">
+                        AND A.JOB_DUTY_CODE = #jobDutyCode#
+                    </isNotEmpty>
+				 /* ===========================================END  */ 
+		<![CDATA[  
+		) A 
+		WHERE RNUM >  #startRowIndex# AND RNUM <=  #endRowIndex#
+		]]> 
+	</select>
+	
+	<!-- ANSI -->
+	<select id="countBySearchCondition" parameterClass="userSearchCondition" resultClass="int">  
+		SELECT /* [User_SqlMap.xml] countBySearchCondition */ 
+	           COUNT(*)
+		FROM IKEP4_EV_USER A  
+			 JOIN IKEP4_EV_JOB_TITLE D ON A.JOB_TITLE_CODE = D.JOB_TITLE_CODE  
+			 <isNotEmpty property="groupId">
+			 <isEmpty property="mssAuthCode">
+			 JOIN IKEP4_EV_USER_GROUP F ON A.USER_ID = F.USER_ID 
+			 </isEmpty>
+			 </isNotEmpty>
+		WHERE 1=1
+                    <isNotEmpty property="searchWord">
+                        <isEqual property="searchColumn" compareValue="title">
+                            AND ( replace(A.USER_NAME,' ','') LIKE '%' + replace(#searchWord#,' ','') + '%' OR replace(A.USER_ENGLISH_NAME,' ','') LIKE '%' + replace(#searchWord#,' ','') + '%' )
+                        </isEqual>
+                        <isEqual property="searchColumn" compareValue="id">
+                            AND	replace(A.USER_ID,' ','') LIKE '%' + replace(#searchWord#,' ','') + '%'
+                        </isEqual>
+                        <isEqual property="searchColumn" compareValue="team">
+                            AND ( replace(A.TEAM_NAME,' ','') LIKE '%' + replace(#searchWord#,' ','') + '%' OR replace(A.TEAM_ENGLISH_NAME,' ','') LIKE '%' + replace(#searchWord#,' ','') + '%' )
+                        </isEqual>
+                    </isNotEmpty>
+                    <isNotEmpty property="portalId">
+                            AND A.PORTAL_ID = #portalId#
+                    </isNotEmpty>
+                    <isEmpty property="isAllUser">
+                            AND A.USER_STATUS = 'C'
+                    </isEmpty>
+                    <isNotEmpty property="groupId">
+                    	<isEmpty property="mssAuthCode">
+                        AND F.GROUP_ID  in ($childGroupIds$)
+                        </isEmpty>
+                    </isNotEmpty>
+                       <isNotEmpty property="jobTitleCode">
+                        AND A.JOB_TITLE_CODE = #jobTitleCode#
+                    </isNotEmpty>
+                        <isNotEmpty property="jobDutyCode">
+                        AND A.JOB_DUTY_CODE = #jobDutyCode#
+                    </isNotEmpty>
+	</select> 
+	
+	<!-- MS SQL -->
+	<select id="selectJobCode" parameterClass="java.util.Map" resultClass="String">
+		SELECT	TOP 1 
+			<isEqual property="paramField" compareValue="group_name">
+				group_name as name
+			</isEqual>
+			<isEqual property="paramField" compareValue="job_class_code">
+				job_class_code as name
+			</isEqual>
+			<isEqual property="paramField" compareValue="job_rank_code">
+				job_rank_code as name
+			</isEqual>
+			<isEqual property="paramField" compareValue="job_duty_code">
+				job_duty_code as name
+			</isEqual>
+			<isEqual property="paramField" compareValue="job_position_code">
+				job_position_code as name
+			</isEqual>
+			<isEqual property="paramField" compareValue="job_title_code">
+				job_title_code as name
+			</isEqual>
+		FROM 
+			<isEqual property="paramTable" compareValue="ikep4_ev_group">
+				ikep4_ev_group
+			</isEqual>
+			<isEqual property="paramTable" compareValue="ikep4_ev_job_class">
+				ikep4_ev_job_class
+			</isEqual>
+			<isEqual property="paramTable" compareValue="ikep4_ev_job_rank">
+				ikep4_ev_job_rank
+			</isEqual>
+			<isEqual property="paramTable" compareValue="ikep4_ev_job_duty">
+				ikep4_ev_job_duty
+			</isEqual>
+			<isEqual property="paramTable" compareValue="ikep4_ev_job_position">
+				ikep4_ev_job_position
+			</isEqual>
+			<isEqual property="paramTable" compareValue="ikep4_ev_job_title">
+				ikep4_ev_job_title
+			</isEqual>
+		WHERE 
+			<isEqual property="paramCondition" compareValue="group_id">
+				group_id = #paramValue#
+			</isEqual>
+			<isEqual property="paramCondition" compareValue="job_class_name">
+				job_class_name = #paramValue#
+			</isEqual>
+			<isEqual property="paramCondition" compareValue="job_rank_name">
+				job_rank_name = #paramValue#
+			</isEqual>
+			<isEqual property="paramCondition" compareValue="job_duty_name">
+				job_duty_name = #paramValue#
+			</isEqual>
+			<isEqual property="paramCondition" compareValue="job_position_name">
+				job_position_name = #paramValue#
+			</isEqual>
+			<isEqual property="paramCondition" compareValue="job_title_name">
+				job_title_name = #paramValue#
+			</isEqual>
+	</select>
+	
+	<!-- ANSI -->
+	<select id="selectForPassword" parameterClass="userSearchCondition" resultClass="User">
+		SELECT USER_ID userId,
+				USER_PASSWORD userPassword,
+				EMP_NO empNo
+		FROM IKEP4_EV_USER
+		WHERE 1=1
+		<isEmpty property="isAllUser">
+			AND USER_ID = #userId#
+		</isEmpty>
+	</select>
+	
+	<!-- ANSI -->
+	<update id="updateForPassword" parameterClass="User">
+		UPDATE IKEP4_EV_USER
+			SET USER_PASSWORD = #userPassword#,
+			UPDATE_PASSWORD_DATE = CURRENT_TIMESTAMP
+			WHERE USER_ID = #userId#
+    </update>
+	
+	<!-- ANSI -->
+	<select id="getTargetUser" parameterClass="string" resultClass="User"> 
+		/* [User_SqlMap.xml] support.user.member.dao.User.getTargetUser */
+	  SELECT EU.user_id as userId,
+	  	EU.emp_no as empNo,
+	  	EU.user_name as userName,
+	  	EU.user_english_name as userEnglishName,
+	  	EU.team_name as teamName,
+	  	EU.team_english_name as teamEnglishName,
+	  	EJT.job_title_name as jobTitleName,
+	  	EJT.job_title_english_name as jobTitleEnglishName,
+	  	EU.mail,
+	  	EU.mobile
+	    FROM IKEP4_SV_TARGET ST
+	    	INNER JOIN IKEP4_EV_USER EU ON ST.target_id = EU.user_id
+	    	INNER JOIN IKEP4_EV_JOB_TITLE EJT ON EU.job_title_code = EJT.job_title_code
+	    WHERE ST.target_type = 0 
+	          AND ST.SURVEY_ID = #surveyId#
+	</select>  
+	
+	
+	<update id="updateSapUser" parameterClass="UserDetail"> 
+ 		<![CDATA[
+		 /* [User_SqlMap.xml] support.user.member.dao.User.updateSapUser */
+		DECLARE @chcker NUMERIC;
+		
+		SELECT @chcker = COUNT(*) from tmp_EV_USER t WHERE t.user_id = #userId#
+		if(@chcker = 0)
+			BEGIN
+				INSERT INTO 
+		        TMP_EV_USER (
+			         user_id,       
+			         user_status,       
+			         emp_no,       
+			         mail,       
+			         user_name,       
+			         user_english_name,    
+			         team_code,       
+			         team_name,       
+			         mobile,       
+			         office_phone_no,      
+			         birthday,       
+			         lunisolar,       
+			         leader,       
+			         job_duty_code,       
+			         job_duty_name,       
+			         job_position_code,    
+			         job_position_name,    
+			         team_english_name,    
+			         profile_picture_path, 
+			         bw_id,       
+			         sap_id,       
+			         job_class_code,       
+			         job_class_name,       
+			         work_place_code,      
+			         work_place_name,       
+			         hanzi_name,
+			         modified_date,
+			         company_name,
+			         company_code,
+			         erp_position_name,
+			         erp_position_code,
+			         ess_auth_code,
+			         mss_auth_code,
+			         schedule_manager,
+			         executive_id,
+			         regist_date,
+			         entry_date,
+			         leaving_date,
+			         retire_flag
+			         )
+				VALUES (
+					#userId#,       
+					#userStatus#,       
+					#empNo#,       
+					#mail#,       
+					#userName#,       
+					#userEnglishName#,    
+					#teamCode#,       
+					#teamName#,       
+					#mobile#,       
+					#officePhoneNo#,      
+					#birthday#,       
+					$lunisolar$,       
+					$leader$,       
+					#jobDutyCode#,       
+					#jobDutyName#,       
+					#jobPositionCode#,    
+					#jobPositionName#,    
+					#teamEnglishName#,    
+					#profilePicturePath#, 
+					#bwId#,       
+					#sapId#,       
+					#jobClassCode#,       
+					#jobClassName#,       
+					#workPlaceCode#,      
+					#workPlaceName#,       
+					#hanziName#,
+					#modifiedDate#,
+					#companyName#,
+					#companyCode#,
+					#erpPositionName#,
+					#erpPositionCode#,
+					#essAuthCode#,  
+					#mssAuthCode#,   
+                    #scheduleManager#,  
+                    #executiveId#,                  
+			        CURRENT_TIMESTAMP,
+			        #entryDate#,
+			        #leavingDate#,
+			        #retireFlag#
+		          )		
+			END
+			ELSE
+			  BEGIN
+				UPDATE
+				   TMP_EV_USER
+				SET
+					user_status = #userStatus#,
+					emp_no = #empNo#,
+					mail = #mail#,
+					user_name = #userName#,
+					user_english_name = #userEnglishName#,
+					team_code = #teamCode#,
+					team_name = #teamName#,
+					mobile = #mobile#,
+					office_phone_no = #officePhoneNo#,
+					birthday = #birthday#,
+					lunisolar = $lunisolar$,
+					leader = $leader$,
+					job_duty_code = #jobDutyCode#,
+					job_duty_name = #jobDutyName#,
+					job_position_code = #jobPositionCode#,
+					job_position_name = #jobPositionName#,
+					team_english_name = #teamEnglishName#,
+					profile_picture_path = #profilePicturePath#,
+					bw_id = #bwId#,
+					sap_id = #sapId#,
+					job_class_code = #jobClassCode#,
+					job_class_name = #jobClassName#,
+					work_place_code = #workPlaceCode#,
+					work_place_name = #workPlaceName#,
+					hanzi_name = #hanziName#,
+					modified_date = #modifiedDate#,
+					company_name = #companyName#,
+					company_code = #companyCode#,
+					erp_position_name = #erpPositionName#,
+					erp_position_code = #erpPositionCode#,
+					ess_auth_code  = #essAuthCode#,  
+                    mss_auth_code = #mssAuthCode#,   
+                    schedule_manager = #scheduleManager#,	
+                    executive_id = #executiveId#,				
+					update_date = CURRENT_TIMESTAMP,
+					entry_date = #entryDate#,
+					leaving_date = #leavingDate#,
+					retire_flag = #retireFlag#		
+				WHERE
+				   USER_ID = #userId#				
+			 END
+
+    		 ]]> 
+  	</update>
+  	
+  	<update id="updateSapNewUser" parameterClass="UserDetail"> 
+ 		<![CDATA[
+		 /* [User_SqlMap.xml] support.user.member.dao.User.updateSapNewUser */
+		DECLARE @chcker NUMERIC;
+		
+		SELECT @chcker = COUNT(*) from TMP_EV_USER_NEW t WHERE t.user_id = #userId#
+		if(@chcker = 0)
+			BEGIN
+				INSERT INTO 
+		        TMP_EV_USER_NEW (
+			         user_id,       
+			         user_status,       
+			         emp_no,       
+			         mail,       
+			         user_name,       
+			         user_english_name,    
+			         team_code,       
+			         team_name,       
+			         mobile,       
+			         office_phone_no,      
+			         birthday,       
+			         lunisolar,       
+			         leader,       
+			         job_duty_code,       
+			         job_duty_name,       
+			         job_position_code,    
+			         job_position_name,    
+			         team_english_name,    
+			         profile_picture_path, 
+			         bw_id,       
+			         sap_id,       
+			         job_class_code,       
+			         job_class_name,       
+			         work_place_code,      
+			         work_place_name,       
+			         hanzi_name,
+			         modified_date,
+			         company_name,
+			         company_code,
+			         erp_position_name,
+			         erp_position_code,
+			         ess_auth_code,
+			         mss_auth_code,
+			         schedule_manager,
+			         executive_id,
+			         regist_date,
+			         entry_date,
+			         leaving_date,
+			         retire_flag
+			         )
+				VALUES (
+					#userId#,       
+					#userStatus#,       
+					#empNo#,       
+					#mail#,       
+					#userName#,       
+					#userEnglishName#,    
+					#teamCode#,       
+					#teamName#,       
+					#mobile#,       
+					#officePhoneNo#,      
+					#birthday#,       
+					$lunisolar$,       
+					$leader$,       
+					#jobDutyCode#,       
+					#jobDutyName#,       
+					#jobPositionCode#,    
+					#jobPositionName#,    
+					#teamEnglishName#,    
+					#profilePicturePath#, 
+					#bwId#,       
+					#sapId#,       
+					#jobClassCode#,       
+					#jobClassName#,       
+					#workPlaceCode#,      
+					#workPlaceName#,       
+					#hanziName#,
+					#modifiedDate#,
+					#companyName#,
+					#companyCode#,
+					#erpPositionName#,
+					#erpPositionCode#,
+					#essAuthCode#,  
+					#mssAuthCode#,   
+                    #scheduleManager#,  
+                    #executiveId#,                  
+			        CURRENT_TIMESTAMP,
+			        #entryDate#,
+			        #leavingDate#,
+			        #retireFlag#
+		          )		
+			END
+			ELSE
+			  BEGIN
+				UPDATE
+				   TMP_EV_USER_NEW
+				SET
+					user_status = #userStatus#,
+					emp_no = #empNo#,
+					mail = #mail#,
+					user_name = #userName#,
+					user_english_name = #userEnglishName#,
+					team_code = #teamCode#,
+					team_name = #teamName#,
+					mobile = #mobile#,
+					office_phone_no = #officePhoneNo#,
+					birthday = #birthday#,
+					lunisolar = $lunisolar$,
+					leader = $leader$,
+					job_duty_code = #jobDutyCode#,
+					job_duty_name = #jobDutyName#,
+					job_position_code = #jobPositionCode#,
+					job_position_name = #jobPositionName#,
+					team_english_name = #teamEnglishName#,
+					profile_picture_path = #profilePicturePath#,
+					bw_id = #bwId#,
+					sap_id = #sapId#,
+					job_class_code = #jobClassCode#,
+					job_class_name = #jobClassName#,
+					work_place_code = #workPlaceCode#,
+					work_place_name = #workPlaceName#,
+					hanzi_name = #hanziName#,
+					modified_date = #modifiedDate#,
+					company_name = #companyName#,
+					company_code = #companyCode#,
+					erp_position_name = #erpPositionName#,
+					erp_position_code = #erpPositionCode#,
+					ess_auth_code  = #essAuthCode#,  
+                    mss_auth_code = #mssAuthCode#,   
+                    schedule_manager = #scheduleManager#,	
+                    executive_id = #executiveId#,				
+					update_date = CURRENT_TIMESTAMP,
+					entry_date = #entryDate#,
+					leaving_date = #leavingDate#,
+					retire_flag = #retireFlag#
+				WHERE
+				   USER_ID = #userId#				
+			 END
+
+    		 ]]> 
+  	</update>
+  	
+  	<update id="updateEntryDate" parameterClass="java.lang.String"> 
+ 		<![CDATA[
+		 /* [User_SqlMap.xml] support.user.member.dao.User.updateEntryDate */
+		update IKEP4_EV_USER
+		set IKEP4_EV_USER.entry_date = tmp_EV_USER.entry_date
+		from IKEP4_EV_USER , tmp_EV_USER 
+		where IKEP4_EV_USER.user_id = tmp_EV_USER.user_id
+
+    		 ]]> 
+  	</update>
+  	
+  	<delete id="deleteTmpUser" parameterClass="java.lang.String">
+	<![CDATA[
+		DELETE FROM /* [User_SqlMap.xml] support.user.member.dao.User.deleteTmpUser */
+			TMP_EV_USER
+	]]>
+	</delete>
+	
+	<delete id="deleteTmpNewUser" parameterClass="java.lang.String">
+	<![CDATA[
+		DELETE FROM /* [User_SqlMap.xml] support.user.member.dao.User.deleteTmpNewUser */
+			TMP_EV_USER_NEW
+	]]>
+	</delete>
+  	
+  	<select id="selectJobTitleUserForTree" parameterClass="java.util.Map" resultMap="resultForTree">
+            SELECT /* [User_SqlMap.xml] support.user.member.dao.User.selectJobTitleUserForTree */
+                   A.USER_ID AS USER_ID,
+                   A.EMP_NO AS EMP_NO,
+                   A.MAIL AS MAIL,
+                   A.USER_NAME AS USER_NAME,
+                   A.USER_ENGLISH_NAME AS USER_ENGLISH_NAME,
+                   /**A.TEAM_NAME,  겸직처리로 삭제
+                   A.TEAM_ENGLISH_NAME,**/
+                   A.TEAM_NAME,
+                   A.TEAM_ENGLISH_NAME,
+                   A.LEADER AS LEADER, 
+                   B.JOB_TITLE_CODE AS GROUP_ID,
+                   A.MOBILE AS MOBILE,
+                   A.OFFICE_PHONE_NO AS OFFICE_PHONE_NO,
+                   A.HOME_PHONE_NO AS HOME_PHONE_NO,
+                   B.JOB_TITLE_CODE,
+                   B.JOB_TITLE_NAME,  
+                   B.JOB_TITLE_ENGLISH_NAME,
+				   C.JOB_DUTY_CODE AS JOB_DUTY_CODE, 
+				   C.JOB_DUTY_NAME AS JOB_DUTY_NAME,
+                   C.JOB_DUTY_ENGLISH_NAME AS JOB_DUTY_ENGLISH_NAME ,
+                   A.SCHEDULE_MANAGER               
+              FROM IKEP4_EV_USER A JOIN IKEP4_EV_JOB_TITLE B
+                    ON A.JOB_TITLE_CODE = B.JOB_TITLE_CODE 
+                    LEFT JOIN IKEP4_EV_JOB_DUTY C
+                    ON C.JOB_DUTY_CODE = A.JOB_DUTY_CODE                                       
+             WHERE A.USER_STATUS != 'T'
+            <dynamic>
+                <isNotEmpty property="jobTitleCode">
+                    AND A.JOB_TITLE_CODE = #jobTitleCode#
+                </isNotEmpty>
+                <isEmpty property="jobTitleCode">
+                    AND A.JOB_TITLE_CODE = (SELECT JOB_TITLE_CODE FROM IKEP4_EV_USER WHERE USER_ID=#userId#)
+                </isEmpty>
+            </dynamic>                       
+             <isNotEmpty property="portalId">
+                AND A.PORTAL_ID = #portalId#
+            </isNotEmpty>
+             ORDER BY LEADER DESC, A.JOB_TITLE_CODE, A.USER_NAME
+        
+    </select>
+    
+    <select id="selectJobDutyUserForTree" parameterClass="java.util.Map" resultMap="resultForTree">
+            SELECT /* [User_SqlMap.xml] support.user.member.dao.User.selectJobDutyUserForTree */
+                   A.USER_ID AS USER_ID,
+                   A.EMP_NO AS EMP_NO,
+                   A.MAIL AS MAIL,
+                   A.USER_NAME AS USER_NAME,
+                   A.USER_ENGLISH_NAME AS USER_ENGLISH_NAME,
+                   /**A.TEAM_NAME,  겸직처리로 삭제
+                   A.TEAM_ENGLISH_NAME,**/
+                   ISNULL(A.TEAM_NAME, '') as TEAM_NAME,
+                   A.TEAM_ENGLISH_NAME,
+                   A.LEADER AS LEADER, 
+                   B.JOB_DUTY_CODE AS GROUP_ID,
+                   A.MOBILE AS MOBILE,
+                   A.OFFICE_PHONE_NO AS OFFICE_PHONE_NO,
+                   A.HOME_PHONE_NO AS HOME_PHONE_NO,
+                   B.JOB_DUTY_CODE,
+                   B.JOB_DUTY_NAME,
+                   B.JOB_DUTY_ENGLISH_NAME,
+                   C.JOB_TITLE_CODE,
+                   C.JOB_TITLE_NAME,  
+                   C.JOB_TITLE_ENGLISH_NAME ,
+                   A.SCHEDULE_MANAGER               
+              FROM IKEP4_EV_USER A JOIN IKEP4_EV_JOB_DUTY B
+                    ON A.JOB_DUTY_CODE = B.JOB_DUTY_CODE
+                    JOIN IKEP4_EV_JOB_TITLE C
+                    ON C.JOB_TITLE_CODE = A.JOB_TITLE_CODE                                  
+             WHERE A.USER_STATUS != 'T'
+                   AND A.JOB_DUTY_CODE IS NOT NULL
+            <dynamic>
+                <isNotEmpty property="jobDutyCode">
+                    AND A.JOB_DUTY_CODE = #jobDutyCode#
+                </isNotEmpty>
+                <isEmpty property="jobDutyCode">
+                    AND A.JOB_DUTY_CODE = (SELECT JOB_DUTY_CODE FROM IKEP4_EV_USER WHERE USER_ID=#userId#)
+                </isEmpty>
+            </dynamic>                       
+             <isNotEmpty property="portalId">
+                AND A.PORTAL_ID = #portalId#
+            </isNotEmpty>
+             ORDER BY LEADER DESC, A.JOB_TITLE_CODE, A.USER_NAME
+        
+    </select>   
+    
+    <!-- ANSI -->
+    <!-- 무림 사용자의 기존 정보 수정 -->
+    <update id="updateMoorimUser" parameterClass="User">
+    <![CDATA[
+        UPDATE /* [User_SqlMap.xml] support.user.member.dao.User.update */
+            IKEP4_EV_USER
+        SET
+            USER_PASSWORD = #userPassword#,           
+            TIMEZONE_ID = #timezoneId#,           
+            OFFICE_BASIC_ADDRESS = #officeBasicAddress#, 
+            FAX = #fax#,
+            CURRENT_JOB = #currentJob#,
+            EXPERT_FIELD = #expertField#,
+            PASSWORD_CHANGE_YN = #passwordChangeYn#,
+            UPDATER_ID = #updaterId#,
+            UPDATER_NAME = #updaterName#,
+            UPDATE_DATE = CURRENT_TIMESTAMP
+        WHERE  
+            USER_ID = #userId#
+    ]]>
+    </update>
+    
+    
+    <!-- 임시 테이블의 사용자를 실 사용자 테이블에 적용한다...  -->
+    <select id="updateEpUserTabeFromTmpUserTable" parameterClass="String" resultClass="String">
+    <![CDATA[
+        declare @seq nvarchar(max)
+        exec dbo.update_EpUserTable_From_TmpUserTable_ikep4 @seq OUTPUT        
+        SELECT @seq
+    ]]>
+    </select>
+    
+     <!-- 사용자의 메뉴 사용 권한을 업데이트 한다.  -->
+    <select id="updateUserMenuAcl" parameterClass="String" resultClass="String">
+    <![CDATA[
+        declare @seq nvarchar(max)
+        exec dbo.Create_Menu_AccessList @seq OUTPUT        
+        SELECT @seq
+    ]]>
+    </select>
+    
+    <select id="readJobCondition" parameterClass="String" resultClass="String">
+        select job_condition from IKEP4_QRTZ_JOB_DETAILS
+		where job_name = #jobName#
+    </select>
+    
+      <!-- 공용 주소록을 업데이트 한다.  -->
+    <procedure id="updatePublicAddressbook">
+		exec dbo.Create_Public_AddressBook
+	</procedure>
+    
+	
+	
+	<select id="listTeamUser" parameterClass="String" resultClass="User">
+		select 
+			b.USER_ID  userId,
+			b.USER_NAME  userName,
+			b.TEAM_NAME  teamName,
+			c.JOB_TITLE_NAME  jobTitleName
+		  from IKEP4_EV_USER_GROUP a inner join 
+		       IKEP4_EV_USER b on a.USER_ID = b.USER_ID LEFT OUTER JOIN 
+		       IKEP4_EV_JOB_TITLE c ON b.JOB_TITLE_CODE = c.JOB_TITLE_CODE
+		 where a.group_id = #groupId#
+		   and b.USER_STATUS = 'C'
+	</select>
+	
+	<select id="listTeamLeader" parameterClass="String" resultClass="User">
+		WITH CTE AS (
+		SELECT	*
+		FROM	IKEP4_EV_GROUP
+		WHERE	GROUP_ID = #groupId#
+		UNION ALL
+		SELECT	G.*
+		FROM	IKEP4_EV_GROUP G, CTE
+		WHERE	CTE.GROUP_ID = G.PARENT_GROUP_ID
+		)
+	
+		select 
+			b.USER_ID  userId,
+			b.USER_NAME  userName,
+			b.TEAM_NAME  teamName,
+			c.JOB_TITLE_NAME  jobTitleName
+		  from IKEP4_EV_USER_GROUP a inner join 
+		       IKEP4_EV_USER b on a.USER_ID = b.USER_ID LEFT OUTER JOIN 
+		       IKEP4_EV_JOB_TITLE c ON b.JOB_TITLE_CODE = c.JOB_TITLE_CODE
+		 where a.group_id in (SELECT GROUP_ID FROM CTE)
+		   and b.USER_STATUS = 'C'
+		   and b.leader = '1'
+	</select>
+	
+	<select id="empNoToUserId" parameterClass="String" resultClass="java.util.HashMap">
+		SELECT TOP 1
+			   A.USER_ID,
+			   A.USER_NAME,
+			   A.EMP_NO,
+			   B.GROUP_ID,
+			   C.GROUP_NAME
+		  FROM IKEP4_EV_USER A
+		  	   INNER JOIN IKEP4_EV_USER_GROUP B ON A.USER_ID = B.USER_ID
+			   INNER JOIN IKEP4_EV_GROUP C ON B.GROUP_ID = C.GROUP_ID
+ 		 WHERE C.GROUP_TYPE_ID = 'G0001'
+		   AND A.EMP_NO = #empNo#
+	</select>	
+	<select id="getKmsUserGroup" parameterClass="String" resultClass="java.util.HashMap">
+		SELECT TOP 1
+			   A.USER_ID,
+			   A.USER_NAME,
+			   A.EMP_NO,
+			   B.GROUP_ID,
+			   C.GROUP_NAME
+		  FROM IKEP4_EV_USER A
+		  	   INNER JOIN IKEP4_EV_USER_GROUP B ON A.USER_ID = B.USER_ID
+			   INNER JOIN IKEP4_EV_GROUP C ON B.GROUP_ID = C.GROUP_ID
+ 		 WHERE C.GROUP_TYPE_ID = 'G0001'
+		   AND A.USER_ID = #userId#
+	</select>
+	<select id="empNoToUserInfo" parameterClass="String" resultClass="java.util.HashMap">
+		SELECT  TOP 1
+		        USER_ID,
+				PORTAL_ID,
+				USER_PASSWORD,
+				USER_STATUS,
+				EMP_NO,
+				MAIL,
+				USER_NAME,
+				USER_ENGLISH_NAME,
+				TEAM_NAME,
+				TIMEZONE_ID,
+				MOBILE,
+				OFFICE_PHONE_NO,
+				HOME_PHONE_NO,
+				OFFICE_BASIC_ADDRESS,
+				OFFICE_DETAIL_ADDRESS,
+				OFFICE_ZIPCODE,
+				HOME_BASIC_ADDRESS,
+				HOME_DETAIL_ADDRESS,
+				HOME_ZIPCODE,
+				BIRTHDAY,
+				WEDDING_ANNIV,
+				PICTURE_ID,
+				PROFILE_PICTURE_ID,
+				LEADER,
+				JOB_CLASS_CODE,
+				JOB_RANK_CODE,
+				JOB_DUTY_CODE,
+				JOB_POSITION_CODE,
+				JOB_TITLE_CODE,
+				LOCALE_CODE,
+				TWITTER_ACCOUNT,
+				TWITTER_AUTH_CODE,
+				FACEBOOK_ACCOUNT,
+				FACEBOOK_AUTH_CODE,
+				PROFILE_STATUS,
+				CURRENT_JOB,
+				EXPERT_FIELD,
+				REGISTER_ID,
+				REGISTER_NAME,
+				REGIST_DATE,
+				UPDATER_ID,
+				UPDATER_NAME,
+				UPDATE_DATE,
+				TEAM_ENGLISH_NAME,
+				MAIL_PASSWORD,
+				NATION_CODE,
+				PROFILE_PICTURE_PATH,
+				PICTURE_PATH,
+				APPROVAL_PASSWORD,
+				UPDATE_PASSWORD_DATE,
+				HANZI_NAME,
+				WORK_PLACE_CODE,
+				FAX,
+				COMPANY_CODE,
+				INFO_GRADE,
+				LUNISOLAR,
+				SCHEDULE_MANAGER,
+				MSS_AUTH_CODE,
+				ESS_AUTH_CODE,
+				SAP_ID,
+				SAP_PROFILE_PICTURE_PATH,
+				BW_ID 
+		   FROM IKEP4_EV_USER
+ 		  WHERE EMP_NO = #empNo#
+	</select>
+	
+	<select id="getRoleId" parameterClass="String" resultClass="String">
+		SELECT top 1 ROLE_ID FROM IKEP4_EV_USER_ROLE
+		WHERE USER_ID = #userId#
+		AND ROLE_ID IN ('100001059165', '100000803133','100001089851' )
+	</select>
+	<select id="getRoleCheck" parameterClass="Map" resultClass="int">
+		SELECT COUNT(E.role_id) FROM (
+		SELECT A.role_id role_id FROM IKEP4_EV_USER_ROLE A INNER JOIN IKEP4_EV_ROLE B ON A.ROLE_ID = B.ROLE_ID
+				WHERE B.ROLE_NAME = #roleName#
+				AND A.USER_ID = #userId#
+		union all
+		SELECT A.role_id FROM IKEP4_EV_GROUP_ROLE A INNER JOIN IKEP4_EV_ROLE B ON A.ROLE_ID = B.ROLE_ID
+		WHERE B.ROLE_NAME = #roleName#
+		AND A.group_id in(
+		select C.group_id from ikep4_ev_user_group C
+		where C.user_id = #userId#
+		and C.group_id in(select D.group_id from ikep4_ev_group D
+		where D.group_type_id = 'G0001'
+		and D.view_option = '1'))) E
+	</select>
+	
+	<insert id="loginLogInput" parameterClass="String">
+	<![CDATA[
+		INSERT INTO /* [User_SqlMap.xml] support.user.member.dao.User.loginLogInput */
+		    IKEP4_EV_USER_LOGIN_LOG (
+		        USER_ID, 
+		        REGIST_DATE
+		        )
+		VALUES (
+				#userId#,
+				CURRENT_TIMESTAMP
+				)
+	]]>
+	</insert>
+	
+	<!-- 조건에 따른 조직 정보 조회 -->
+	<select id="countBySelectGroupList" parameterClass="userSearchCondition" resultClass="int">
+		SELECT COUNT(*) 
+		FROM ikep4_ev_group 
+		WHERE 1=1 
+		AND view_option = 1
+		<isNotEmpty property="groupTypeId"> 
+		AND GROUP_TYPE_ID = #groupTypeId# 
+		</isNotEmpty>
+		<isNotEmpty property="groupId">
+			<isEqual property="searchColumn" prepend="AND" compareValue="child_group_id">
+				<isEqual property="groupId" compareValue="0">
+				parent_group_id is null
+				</isEqual>
+				<isNotEqual property="groupId" compareValue="0"> 
+				parent_group_id = #groupId# 
+				</isNotEqual>
+			</isEqual>
+			<isEqual property="searchColumn" prepend="AND" compareValue="group_id"> 
+			group_id = #groupId# 
+			</isEqual>
+			<isEqual property="searchColumn" prepend="AND" compareValue="parent_group_id"> 
+			group_id = (SELECT parent_group_id FROM ikep4_ev_group WHERE group_id = #groupId#) 
+			</isEqual>
+		</isNotEmpty>
+	</select>
+	
+	<!-- 조건에 따른 조직 정보 조회 -->
+	<select id="selectGroupList" parameterClass="userSearchCondition" resultClass="User">
+		SELECT group_id groupId, group_name teamName, group_english_name teamEnglishName
+		FROM 
+			ikep4_ev_group
+		WHERE 1=1
+		AND view_option = 1
+		<isNotEmpty property="groupTypeId">
+			AND GROUP_TYPE_ID = #groupTypeId#
+		</isNotEmpty>
+		<isNotEmpty property="groupId">
+			<isEqual property="searchColumn" compareValue="child_group_id" prepend="AND">
+		    	<isEqual property="groupId" compareValue="0">
+				parent_group_id is null
+		    	</isEqual>
+			    <isNotEqual property="groupId" compareValue="0">
+				parent_group_id = #groupId#
+			    </isNotEqual>					
+			</isEqual>
+			<isEqual property="searchColumn" compareValue="group_id" prepend="AND">
+				group_id = #groupId#
+			</isEqual>
+			<isEqual property="searchColumn" compareValue="parent_group_id" prepend="AND">
+				group_id = (SELECT parent_group_id FROM ikep4_ev_group WHERE group_id = #groupId#)
+			</isEqual>
+		</isNotEmpty>
+		ORDER BY FULL_PATH, SORT_ORDER, GROUP_NAME
+	</select>
+	
+	<!-- 조직도용 조건에 따른 조직 정보 조회 -->
+	<select id="countBySelectGroupListForTreeMobile" parameterClass="userSearchCondition" resultClass="int">
+		/* [User_SqlMap.xml] support.user.member.dao.User.countBySelectGroupListForTreeMobile */
+		WITH DEPT_CTE (GROUP_ID, PARENT_GROUP_ID, LEVEL) AS (
+		    SELECT  GROUP_ID, 
+		            PARENT_GROUP_ID, 
+		            1 AS level
+		    FROM    IKEP4_EV_GROUP
+			WHERE   PORTAL_ID       = 'P000001' 
+			<isNotEmpty property="groupTypeId" prepend="AND">
+				GROUP_TYPE_ID = #groupTypeId#
+			</isNotEmpty>
+			<isNotEmpty property="groupId">		
+			<isEqual property="searchColumn" compareValue="group_id" prepend="AND">
+				<isEqual property="groupId" compareValue="0">
+				GROUP_ID IS NULL
+		    	</isEqual>
+			    <isNotEqual property="groupId" compareValue="0">
+				GROUP_ID = #groupId#
+			    </isNotEqual>	
+			</isEqual>
+			<isEqual property="searchColumn" compareValue="parent_group_id" prepend="AND">
+		    	<isEqual property="groupId" compareValue="0">
+				GROUP_ID IS NULL
+		    	</isEqual>
+			    <isNotEqual property="groupId" compareValue="0">
+				GROUP_ID <![CDATA[ =  ]]> #groupId#
+			    </isNotEqual>								
+			</isEqual>
+		</isNotEmpty>
+		    UNION ALL
+		    SELECT  A.GROUP_ID, 
+		            A.PARENT_GROUP_ID,
+		            LEVEL+1 AS LEVEL 
+		    FROM    IKEP4_EV_GROUP A
+			JOIN    DEPT_CTE B
+			ON      A.GROUP_ID = B.PARENT_GROUP_ID 
+		)
+		
+		SELECT  COUNT(*)
+		FROM    IKEP4_EV_GROUP A INNER JOIN DEPT_CTE B
+		ON      A.GROUP_ID = B.GROUP_ID
+		AND     PORTAL_ID = 'P000001' 
+		<isNotEmpty property="groupTypeId" prepend="AND">
+			GROUP_TYPE_ID = #groupTypeId#
+		</isNotEmpty>
+	</select>
+	
+	<!-- 조직도용 조건에 따른 조직 정보 조회(MOBILE) -->
+	<select id="selectGroupListForTreeMobile" parameterClass="userSearchCondition" resultClass="User">
+		WITH DEPT_CTE (GROUP_ID, PARENT_GROUP_ID, LEVEL) AS (
+		    SELECT  GROUP_ID, 
+		            PARENT_GROUP_ID, 
+		            1 AS level
+		    FROM    IKEP4_EV_GROUP
+			WHERE   PORTAL_ID       = 'P000001' 
+			<isNotEmpty property="groupTypeId" prepend="AND">
+				GROUP_TYPE_ID = #groupTypeId#
+			</isNotEmpty>
+			<isNotEmpty property="groupId">		
+			<isEqual property="searchColumn" compareValue="group_id" prepend="AND">
+				<isEqual property="groupId" compareValue="0">
+				GROUP_ID IS NULL
+		    	</isEqual>
+			    <isNotEqual property="groupId" compareValue="0">
+				GROUP_ID = #groupId#
+			    </isNotEqual>	
+			</isEqual>
+			<isEqual property="searchColumn" compareValue="parent_group_id" prepend="AND">
+		    	<isEqual property="groupId" compareValue="0">
+				GROUP_ID IS NULL
+		    	</isEqual>
+			    <isNotEqual property="groupId" compareValue="0">
+				GROUP_ID <![CDATA[ =  ]]> #groupId#
+			    </isNotEqual>								
+			</isEqual>
+		</isNotEmpty>
+		    UNION ALL
+		    SELECT  A.GROUP_ID, 
+		            A.PARENT_GROUP_ID,
+		            LEVEL+1 AS LEVEL 
+		    FROM    IKEP4_EV_GROUP A
+			JOIN    DEPT_CTE B
+			ON      A.GROUP_ID = B.PARENT_GROUP_ID 
+		)
+		
+		SELECT  A.PARENT_GROUP_ID parentGroupId,
+		        A.GROUP_ID groupId, 
+		        A.GROUP_NAME teamName, 
+		        A.GROUP_ENGLISH_NAME teamEnglishName, 
+		        A.LEADER_ID, 
+		        B.LEVEL groupLevel
+		FROM    IKEP4_EV_GROUP A INNER JOIN DEPT_CTE B
+		ON      A.GROUP_ID = B.GROUP_ID
+		AND     PORTAL_ID = 'P000001' 
+		<isNotEmpty property="groupTypeId" prepend="AND">
+			GROUP_TYPE_ID = #groupTypeId#
+		</isNotEmpty>
+		ORDER BY LEVEL DESC
+		
+	</select>
+	
+	<select id="countBySearchConditionAll" parameterClass="userSearchCondition" resultClass="int">  
+		SELECT /* [User_SqlMap.xml] countBySearchConditionAll */ 
+	           COUNT(*)
+		FROM (
+				SELECT  
+					A.USER_ID USER_ID,
+					A.EMP_NO EMP_NO,
+					A.MAIL MAIL,
+					A.USER_NAME USER_NAME,
+					A.USER_ENGLISH_NAME USER_ENGLISH_NAME,
+					A.MOBILE MOBILE,
+					A.OFFICE_PHONE_NO OFFICE_PHONE_NO,
+					D.JOB_TITLE_NAME JOB_TITLE_NAME,
+					D.JOB_TITLE_ENGLISH_NAME JOB_TITLE_ENGLISH_NAME,
+					C.GROUP_ID GROUP_ID,
+					C.GROUP_NAME GROUP_NAME,
+					C.GROUP_ENGLISH_NAME GROUP_ENGLISH_NAME,
+					A.PROFILE_PICTURE_PATH AS PROFILE_PICTURE_PATH,
+					F.FAVORITE_ID AS FAVORITE_ID,
+					'1' USER_FLAG
+				FROM IKEP4_EV_USER A
+				LEFT OUTER JOIN IKEP4_EV_USER_GROUP B
+					ON A.USER_ID = B.USER_ID
+				INNER JOIN IKEP4_EV_GROUP C
+					ON B.GROUP_ID = C.GROUP_ID
+					AND C.GROUP_TYPE_ID = 'G0001'
+				LEFT OUTER JOIN IKEP4_EV_JOB_TITLE D
+					ON A.JOB_TITLE_CODE = D.JOB_TITLE_CODE	
+				LEFT OUTER JOIN IKEP4_AS_FAVORITE F 
+					ON A.USER_ID = F.TARGET_ID AND F.REGISTER_ID = #userId#
+				WHERE A.USER_STATUS = 'C'
+				<isNotEmpty property="portalId">
+					AND A.PORTAL_ID = #portalId#
+				</isNotEmpty>
+		) A
+		WHERE 1=1
+			<isNotEmpty property="searchWord">
+				AND	(replace(A.USER_ID,' ','') LIKE '%' + replace(#searchWord#,' ','') + '%'
+					OR replace(A.USER_NAME,' ','') LIKE '%' + replace(#searchWord#,' ','') + '%'
+					OR replace(A.GROUP_NAME,' ','') LIKE '%' + replace(#searchWord#,' ','') + '%'
+					OR replace(A.GROUP_ENGLISH_NAME,' ','') LIKE '%' + replace(#searchWord#,' ','') + '%'
+					OR replace(A.MOBILE,' ','') LIKE '%' + replace(#searchWord#,' ','') + '%'
+					OR replace(A.OFFICE_PHONE_NO,' ','') LIKE '%' + replace(#searchWord#,' ','') + '%'
+					)
+			</isNotEmpty>
+			<isNotEmpty property="searchUserId">
+				AND	A.USER_ID = #searchUserId#
+			</isNotEmpty>
+	</select> 
+	
+	<select id="selectAllUserBySearchCondition" parameterClass="userSearchCondition" resultClass="User">    	
+	SELECT /* [User_SqlMap.xml] selectAllUserBySearchCondition */
+			*
+	FROM 
+	(
+        SELECT
+        	ROW_NUMBER() OVER (
+			    		ORDER BY A.USER_NAME ASC
+			) AS RNUM, 
+			A.USER_ID userId,
+			A.EMP_NO empNo,
+			A.MAIL mail,
+			A.USER_NAME userName,
+			A.USER_ENGLISH_NAME userEnglishName,
+			A.MOBILE mobile,
+			A.OFFICE_PHONE_NO officePhoneNo,
+			A.JOB_TITLE_NAME jobTitleName,
+			A.JOB_TITLE_ENGLISH_NAME jobTitleEnglishName,
+			A.JOB_DUTY_NAME jobDutyName,
+			A.JOB_DUTY_CODE jobDutyCode,
+			A.GROUP_ID groupId,
+			A.GROUP_NAME teamName,
+			A.GROUP_ENGLISH_NAME teamEnglishName,
+			A.PROFILE_PICTURE_PATH AS profilePicturePath,
+			A.FAVORITE_ID AS favoriteId,
+			A.USER_FLAG userFlag
+		FROM (
+				SELECT  
+					A.USER_ID USER_ID,
+					A.EMP_NO EMP_NO,
+					A.MAIL MAIL,
+					A.USER_NAME USER_NAME,
+					A.USER_ENGLISH_NAME USER_ENGLISH_NAME,
+					A.MOBILE MOBILE,
+					A.OFFICE_PHONE_NO OFFICE_PHONE_NO,
+					D.JOB_TITLE_NAME JOB_TITLE_NAME,
+					D.JOB_TITLE_ENGLISH_NAME JOB_TITLE_ENGLISH_NAME,
+					G.JOB_DUTY_NAME JOB_DUTY_NAME,
+					G.JOB_DUTY_CODE JOB_DUTY_CODE,
+					C.GROUP_ID GROUP_ID,
+					C.GROUP_NAME GROUP_NAME,
+					C.GROUP_ENGLISH_NAME GROUP_ENGLISH_NAME,
+					A.SAP_PROFILE_PICTURE_PATH AS PROFILE_PICTURE_PATH,
+					F.FAVORITE_ID AS FAVORITE_ID,
+					'I' USER_FLAG
+				FROM IKEP4_EV_USER A
+				LEFT OUTER JOIN IKEP4_EV_USER_GROUP B
+					ON A.USER_ID = B.USER_ID
+				INNER JOIN IKEP4_EV_GROUP C
+					ON B.GROUP_ID = C.GROUP_ID
+					AND C.GROUP_TYPE_ID = 'G0001'
+				LEFT OUTER JOIN IKEP4_EV_JOB_TITLE D
+					ON A.JOB_TITLE_CODE = D.JOB_TITLE_CODE	
+				LEFT OUTER JOIN IKEP4_EV_JOB_DUTY G
+					ON A.JOB_DUTY_CODE = G.JOB_DUTY_CODE	
+				LEFT OUTER JOIN IKEP4_AS_FAVORITE F 
+					ON A.USER_ID = F.TARGET_ID AND F.REGISTER_ID = #userId#
+				WHERE A.USER_STATUS = 'C'
+				<isNotEmpty property="portalId">
+					AND A.PORTAL_ID = #portalId#
+				</isNotEmpty>
+		) A
+		WHERE 1=1
+			<isNotEmpty property="searchWord">
+				AND	(replace(A.USER_ID,' ','') LIKE '%' + replace(#searchWord#,' ','') + '%'
+					OR replace(A.USER_NAME,' ','') LIKE '%' + replace(#searchWord#,' ','') + '%'
+					OR replace(A.GROUP_NAME,' ','') LIKE '%' + replace(#searchWord#,' ','') + '%'
+					OR replace(A.GROUP_ENGLISH_NAME,' ','') LIKE '%' + replace(#searchWord#,' ','') + '%'
+					OR replace(A.MOBILE,' ','') LIKE '%' + replace(#searchWord#,' ','') + '%'
+					OR replace(A.OFFICE_PHONE_NO,' ','') LIKE '%' + replace(#searchWord#,' ','') + '%'
+					)
+			</isNotEmpty>
+			<isNotEmpty property="searchUserId">
+				AND	A.USER_ID = #searchUserId#
+			</isNotEmpty>
+		<isNotEmpty property="searchUserId">
+		) X WHERE RNUM = 1
+		</isNotEmpty>
+		<isEmpty property="searchUserId">
+		<![CDATA[
+		) X WHERE RNUM > #startRowIndex# AND RNUM <= #endRowIndex# 
+		]]>
+		</isEmpty>
+	</select>
+	
+	<!-- MS SQL -->
+	<select id="selectAllBySearchConditionForMobile" parameterClass="userSearchCondition" resultClass="User">    	
+    	SELECT /* [User_SqlMap.xml] selectAllBySearchCondition */  
+		       *
+		FROM ( 
+		         /* START========================================= */
+		         SELECT Row_number() OVER 	(
+		         								<isNotEmpty property="sortColumn" >
+											    	<isEqual property="sortColumn" compareValue="USER_ID">
+											    		<isEqual property="sortType" compareValue="ASC">
+											    			ORDER BY A.USER_ID ASC, A.LEADER DESC, D.SORT_ORDER ASC
+											    		</isEqual>
+											    		<isEqual property="sortType" compareValue="DESC">
+											    			ORDER BY A.USER_ID DESC, A.LEADER DESC, D.SORT_ORDER ASC
+											    		</isEqual>
+											    	</isEqual>
+											    	<isEqual property="sortColumn" compareValue="USER_NAME">
+											    		<isEqual property="userLocaleCode" compareValue="ko">
+												    		<isEqual property="sortType" compareValue="ASC">
+												    			ORDER BY A.USER_NAME ASC, A.LEADER DESC, D.SORT_ORDER ASC
+												    		</isEqual>
+												    		<isEqual property="sortType" compareValue="DESC">
+												    			ORDER BY A.USER_NAME DESC, A.LEADER DESC, D.SORT_ORDER ASC
+												    		</isEqual>
+												    	</isEqual>
+												    	<isNotEqual property="userLocaleCode" compareValue="ko">
+												    		<isEqual property="sortType" compareValue="ASC">
+												    			ORDER BY A.USER_ENGLISH_NAME ASC, A.LEADER DESC, D.SORT_ORDER ASC
+												    		</isEqual>
+												    		<isEqual property="sortType" compareValue="DESC">
+												    			ORDER BY A.USER_ENGLISH_NAME DESC, A.LEADER DESC, D.SORT_ORDER ASC
+												    		</isEqual>
+												    	</isNotEqual>
+											    	</isEqual>
+											    	<isEqual property="sortColumn" compareValue="TEAM_NAME">
+											    		<isEqual property="userLocaleCode" compareValue="ko">
+												    		<isEqual property="sortType" compareValue="ASC">
+												    			ORDER BY C.GROUP_NAME ASC, A.LEADER DESC, D.SORT_ORDER ASC, A.USER_NAME ASC
+												    		</isEqual>
+												    		<isEqual property="sortType" compareValue="DESC">
+												    			ORDER BY C.GROUP_NAME DESC, A.LEADER DESC, D.SORT_ORDER ASC, A.USER_NAME ASC
+												    		</isEqual>
+												    	</isEqual>
+												    	<isNotEqual property="userLocaleCode" compareValue="ko">
+												    		<isEqual property="sortType" compareValue="ASC">
+												    			ORDER BY C.GROUP_ENGLISH_NAME ASC, A.LEADER DESC, D.SORT_ORDER ASC, A.USER_ENGLISH_NAME ASC
+												    		</isEqual>
+												    		<isEqual property="sortType" compareValue="DESC">
+												    			ORDER BY C.GROUP_ENGLISH_NAME DESC, A.LEADER DESC, D.SORT_ORDER ASC, A.USER_ENGLISH_NAME ASC
+												    		</isEqual>
+												    	</isNotEqual>
+											    	</isEqual>
+											    	<isEqual property="sortColumn" compareValue="JOB_TITLE_NAME">
+											    		<isEqual property="sortType" compareValue="ASC">
+											    			ORDER BY D.SORT_ORDER ASC, A.LEADER DESC, A.USER_NAME ASC
+											    		</isEqual>
+											    		<isEqual property="sortType" compareValue="DESC">
+											    			ORDER BY D.SORT_ORDER ASC, A.LEADER DESC, A.USER_NAME ASC
+											    		</isEqual>
+											    	</isEqual>
+											    	<isEqual property="sortColumn" compareValue="MAIL">
+											    		<isEqual property="sortType" compareValue="ASC">
+											    			ORDER BY A.MAIL ASC, A.LEADER DESC, D.SORT_ORDER ASC, A.USER_NAME ASC
+											    		</isEqual>
+											    		<isEqual property="sortType" compareValue="DESC">
+											    			ORDER BY A.MAIL DESC, A.LEADER DESC, D.SORT_ORDER ASC, A.USER_NAME ASC
+											    		</isEqual>
+											    	</isEqual>
+											    	<isEqual property="sortColumn" compareValue="MOBILE">
+											    		<isEqual property="sortType" compareValue="ASC">
+											    			ORDER BY A.MOBILE ASC, A.LEADER DESC, D.SORT_ORDER ASC, A.USER_NAME ASC
+											    		</isEqual>
+											    		<isEqual property="sortType" compareValue="DESC">
+											    			ORDER BY A.MOBILE DESC, A.LEADER DESC, D.SORT_ORDER ASC, A.USER_NAME ASC
+											    		</isEqual>
+											    	</isEqual>
+											    </isNotEmpty>
+		         								<isEmpty property="sortColumn" >
+											    	ORDER BY A.LEADER DESC, D.SORT_ORDER ASC, A.USER_NAME ASC
+											    </isEmpty>
+		         							) AS RNUM,
+						A.USER_ID userId,
+						A.EMP_NO empNo,
+						A.MAIL mail,
+						A.USER_NAME userName,
+						A.USER_ENGLISH_NAME userEnglishName,
+						A.MOBILE mobile,
+						(CASE WHEN A.USER_ID = C.LEADER_ID THEN 1 ELSE 0 END) leader,
+						A.OFFICE_PHONE_NO officePhoneNo,
+						D.JOB_TITLE_NAME jobTitleName,
+						D.JOB_TITLE_ENGLISH_NAME jobTitleEnglishName,
+						G.JOB_DUTY_NAME jobDutyName,
+						G.JOB_DUTY_CODE jobDutyCode, 
+						C.GROUP_ID groupId,
+						C.GROUP_NAME teamName,
+						C.GROUP_ENGLISH_NAME teamEnglishName,
+						A.PROFILE_PICTURE_PATH AS profilePicturePath
+					<isNotEmpty property="userId">
+						,F.FAVORITE_ID AS favoriteId
+					</isNotEmpty>
+					FROM IKEP4_EV_USER A
+					LEFT OUTER JOIN IKEP4_EV_USER_GROUP B
+					  ON A.USER_ID = B.USER_ID
+					INNER JOIN IKEP4_EV_GROUP C
+					  ON B.GROUP_ID = C.GROUP_ID
+					<isNotEmpty property="groupTypeId">
+						AND C.GROUP_TYPE_ID = #groupTypeId#
+					</isNotEmpty>
+					LEFT OUTER JOIN IKEP4_EV_JOB_TITLE D
+					  ON A.JOB_TITLE_CODE = D.JOB_TITLE_CODE
+					LEFT OUTER JOIN IKEP4_EV_JOB_DUTY G
+					  ON A.JOB_DUTY_CODE = G.JOB_DUTY_CODE
+					<isNotEmpty property="userId">
+					LEFT OUTER JOIN IKEP4_AS_FAVORITE F
+					  ON A.USER_ID = F.TARGET_ID AND F.REGISTER_ID = #userId#
+					</isNotEmpty>
+				 	WHERE 1=1
+					<isNotEmpty property="searchWord">
+						<isEqual property="searchColumn" compareValue="title">
+							AND	(replace(A.USER_ID,' ','') LIKE '%' + replace(#searchWord#,' ','') + '%' OR replace(A.USER_NAME,' ','') LIKE '%' + replace(#searchWord#,' ','') + '%' OR replace(A.USER_ENGLISH_NAME,' ','') LIKE '%' + replace(#searchWord#,' ','') + '%')
+						</isEqual>
+						<isEqual property="searchColumn" compareValue="id">
+							AND	replace(A.USER_ID,' ','') LIKE '%' + replace(#searchWord#,' ','') + '%'
+						</isEqual>
+						<isEqual property="searchColumn" compareValue="team">
+							AND (replace(A.TEAM_NAME,' ','') LIKE '%' + replace(#searchWord#,' ','') + '%' OR replace(A.TEAM_ENGLISH_NAME,' ','') LIKE '%' + replace(#searchWord#,' ','') + '%')
+						</isEqual>
+					</isNotEmpty>
+					<isNotEmpty property="portalId">
+							AND A.PORTAL_ID = #portalId#
+					</isNotEmpty>
+					<isEmpty property="isAllUser">
+							AND A.USER_STATUS != 'T'
+					</isEmpty>
+					<isNotEmpty property="groupId">
+				    	<isEqual property="groupId" compareValue="0">
+						AND C.GROUP_ID in (SELECT GROUP_ID 
+											FROM IKEP4_EV_GROUP 
+										   WHERE PARENT_GROUP_ID IS NULL
+											<isNotEmpty property="groupTypeId">
+											 AND GROUP_TYPE_ID = #groupTypeId#
+											</isNotEmpty>
+										  )
+				    	</isEqual>
+					    <isNotEqual property="groupId" compareValue="0">
+						AND C.GROUP_ID = #groupId#
+						</isNotEqual>
+					</isNotEmpty>
+				 /* ===========================================END  */ 
+		<![CDATA[  
+		) A 
+		WHERE RNUM >  #startRowIndex# AND RNUM <=  #endRowIndex#
+		]]> 
+	</select>
+	
+	<!-- ANSI -->
+	<select id="countBySearchConditionForMobile" parameterClass="userSearchCondition" resultClass="int">  
+		SELECT /* [User_SqlMap.xml] countBySearchCondition */ 
+	           COUNT(*)
+		FROM IKEP4_EV_USER A
+		LEFT OUTER JOIN IKEP4_EV_USER_GROUP B
+		  ON A.USER_ID = B.USER_ID
+		INNER JOIN IKEP4_EV_GROUP C
+		  ON B.GROUP_ID = C.GROUP_ID
+		<isNotEmpty property="groupTypeId">
+			AND C.GROUP_TYPE_ID = #groupTypeId#
+		</isNotEmpty>
+		LEFT OUTER JOIN IKEP4_EV_JOB_TITLE D
+		  ON A.JOB_TITLE_CODE = D.JOB_TITLE_CODE
+		<isNotEmpty property="userId">
+		LEFT OUTER JOIN IKEP4_AS_FAVORITE F
+		  ON A.USER_ID = F.TARGET_ID AND F.REGISTER_ID = #userId#
+		</isNotEmpty>
+	 	WHERE 1=1
+		<isNotEmpty property="searchWord">
+			<isEqual property="searchColumn" compareValue="title">
+				AND	(replace(A.USER_ID,' ','') LIKE '%' + replace(#searchWord#,' ','') + '%' OR replace(A.USER_NAME,' ','') LIKE '%' + replace(#searchWord#,' ','') + '%' OR replace(A.USER_ENGLISH_NAME,' ','') LIKE '%' + replace(#searchWord#,' ','') + '%')
+			</isEqual>
+			<isEqual property="searchColumn" compareValue="id">
+				AND	replace(A.USER_ID,' ','') LIKE '%' + replace(#searchWord#,' ','') + '%'
+			</isEqual>
+			<isEqual property="searchColumn" compareValue="team">
+				AND (replace(A.TEAM_NAME,' ','') LIKE '%' + replace(#searchWord#,' ','') + '%' OR replace(A.TEAM_ENGLISH_NAME,' ','') LIKE '%' + replace(#searchWord#,' ','') + '%')
+			</isEqual>
+		</isNotEmpty>
+		<isNotEmpty property="portalId">
+				AND A.PORTAL_ID = #portalId#
+		</isNotEmpty>
+		<isEmpty property="isAllUser">
+				AND A.USER_STATUS != 'T'
+		</isEmpty>
+		<isNotEmpty property="groupId">
+	    	<isEqual property="groupId" compareValue="0">
+			AND C.GROUP_ID in (SELECT GROUP_ID 
+								FROM IKEP4_EV_GROUP 
+							   WHERE PARENT_GROUP_ID IS NULL
+							   AND PORTAL_ID = #portalId#
+								<isNotEmpty property="groupTypeId">
+								 AND GROUP_TYPE_ID = #groupTypeId#
+								</isNotEmpty>
+							  )
+	    	</isEqual>
+		    <isNotEqual property="groupId" compareValue="0">
+			AND C.GROUP_ID = #groupId#
+			</isNotEqual>
+		</isNotEmpty>
+	</select>
+	
+	<!-- 사용자 관리화면용 상세정보 -->
+	<select id="selectMobile" parameterClass="java.lang.String" resultMap="userResult">
+	<![CDATA[
+		SELECT /* [User_SqlMap.xml] support.user.member.dao.User.selectMobile */
+			A.USER_ID, A.PORTAL_ID, A.USER_PASSWORD, 
+			A.USER_STATUS, A.EMP_NO, A.MAIL, 
+			A.MAIL_PASSWORD, A.USER_NAME,
+			A.USER_ENGLISH_NAME, C.GROUP_ID,
+			A.TEAM_NAME, 
+			A.TEAM_ENGLISH_NAME AS TEAM_ENGLISH_NAME, 
+			A.TIMEZONE_ID, (SELECT ITEM_MESSAGE FROM IKEP4_I18N_MESSAGE 
+							WHERE ITEM_ID = A.TIMEZONE_ID 
+							AND LOCALE_CODE = A.LOCALE_CODE
+							AND FIELD_NAME = 'timezoneName') AS TIMEZONE_NAME
+			, D.DESCRIPTION, D.TIME_DIFFERENCE, A.MOBILE,
+			A.OFFICE_PHONE_NO, A.HOME_PHONE_NO, A.OFFICE_BASIC_ADDRESS,
+			A.OFFICE_DETAIL_ADDRESS, A.OFFICE_ZIPCODE, A.HOME_BASIC_ADDRESS,
+			A.HOME_DETAIL_ADDRESS, A.HOME_ZIPCODE, A.BIRTHDAY, A.WEDDING_ANNIV,
+			A.PICTURE_ID, A.PROFILE_PICTURE_ID, A.PICTURE_PATH, A.PROFILE_PICTURE_PATH, A.LEADER, A.JOB_CLASS_CODE,
+			E.JOB_CLASS_NAME, A.JOB_RANK_CODE, F.JOB_RANK_NAME, A.JOB_DUTY_CODE,
+			G.JOB_DUTY_NAME, A.JOB_POSITION_CODE, H.JOB_POSITION_NAME,
+			A.JOB_TITLE_CODE, I.JOB_TITLE_NAME, I.JOB_TITLE_ENGLISH_NAME, 
+			A.LOCALE_CODE, (SELECT ITEM_MESSAGE FROM IKEP4_I18N_MESSAGE 
+							WHERE ITEM_ID = A.LOCALE_CODE 
+							AND LOCALE_CODE = A.LOCALE_CODE
+							AND FIELD_NAME = 'localeName') AS LOCALE_NAME,
+			A.TWITTER_ACCOUNT, A.TWITTER_AUTH_CODE, A.FACEBOOK_ACCOUNT,
+			A.FACEBOOK_AUTH_CODE, A.PROFILE_STATUS, A.CURRENT_JOB, 
+			A.DETAIL_JOB,
+			A.EXPERT_FIELD,
+			A.NATION_CODE, (SELECT ITEM_MESSAGE FROM IKEP4_I18N_MESSAGE 
+							WHERE ITEM_ID = A.NATION_CODE 
+							AND LOCALE_CODE = A.LOCALE_CODE
+							AND FIELD_NAME = 'nationName') AS NATION_NAME,
+			A.REGISTER_ID, A.REGISTER_NAME, A.REGIST_DATE, A.UPDATER_ID,
+			A.UPDATER_NAME, A.UPDATE_DATE,A.PASSWORD_CHANGE_YN
+		FROM 
+			IKEP4_EV_USER A LEFT OUTER JOIN
+		    (
+		        select 
+		            A.user_id, B.group_id, B.group_name, B.group_english_name  
+		          from IKEP4_EV_USER_GROUP A inner join 
+		               IKEP4_EV_GROUP B on A.group_id = B.group_id
+		         where B.group_type_id = 'G0001'
+		           and A.represent_group = 1
+		    ) C ON A.user_id = C.user_id LEFT OUTER JOIN
+		    IKEP4_EV_TIMEZONE D ON A.TIMEZONE_ID = D.TIMEZONE_ID LEFT OUTER JOIN 
+		    IKEP4_EV_JOB_CLASS E ON A.JOB_CLASS_CODE = E.JOB_CLASS_CODE LEFT OUTER JOIN 
+		    IKEP4_EV_JOB_RANK F ON A.JOB_RANK_CODE = F.JOB_RANK_CODE LEFT OUTER JOIN 
+		    IKEP4_EV_JOB_DUTY G ON A.JOB_DUTY_CODE = G.JOB_DUTY_CODE LEFT OUTER JOIN 
+		    IKEP4_EV_JOB_POSITION H ON A.JOB_POSITION_CODE = H.JOB_POSITION_CODE LEFT OUTER JOIN 
+		    IKEP4_EV_JOB_TITLE I ON A.JOB_TITLE_CODE = I.JOB_TITLE_CODE LEFT OUTER JOIN 
+		    IKEP4_EV_LOCALE J ON A.LOCALE_CODE = J.LOCALE_CODE LEFT OUTER JOIN
+		    IKEP4_EV_NATION K ON A.NATION_CODE = K.NATION_CODE 
+		WHERE REPLACE(A.MOBILE,'-','') = #mobile#
+	]]>
+	</select>
+	
+	<select id="searchUser" parameterClass="userSearchCondition" resultMap="userSearchResult">
+	<![CDATA[
+		SELECT top 1
+			A.USER_ID,  
+			A.USER_NAME,
+			A.TEAM_NAME 
+		FROM 
+			IKEP4_EV_USER A inner join IKEP4_EV_USER_GROUP B
+			on B.user_id = A.user_id
+		WHERE A.user_name = #userId#
+		and A.user_status = 'C'
+		and B.group_id = #groupId#
+	]]>
+	</select>
+	
+	<update id = "executeMappingDB">
+		<![CDATA[
+		/* [User_SqlMap.xml] support.user.member.dao.User.executeMappingDB */
+		update tbl_user 
+			set groupid = '5'
+			where accountId in (
+				select a.user_id from ikep4_ev_user a
+				,tbl_user b
+				where a.user_id = b.accountId
+				and a.user_status <> 'C'
+		)
+		]]>
+	</update>
+	
+	<select id="selectRoleUser" parameterClass="String" resultMap="resultRoleUser">
+		select user_id as userId from IKEP4_EV_USER_ROLE
+		where role_id = (
+		select role_id from IKEP4_EV_ROLE
+		where role_name = #roleName#)
+		and user_id in (select user_id from IKEP4_EV_USER where user_status = 'C')
+		union 
+		select user_id as userId from IKEP4_EV_USER_GROUP
+		where group_id in(
+		select group_id from IKEP4_EV_GROUP_ROLE
+		where role_id = (
+		select role_id from IKEP4_EV_ROLE
+		where role_name = #roleName#))
+		and user_id in (select user_id from IKEP4_EV_USER where user_status = 'C')
+	</select>
+	
+	<select id="selectOfficeRoleUsers1" resultMap="resultOfficeRoleUser">
+		select 
+	    	team_manager_id as userId,
+    		team_id as groupId
+		from ikep4_officesupplies_team_manager
+		where use_yn = 'Y'
+   		and ISNULL(team_manager_id, '') != ''
+	</select>
+	
+	<select id="selectOfficeRoleUsers2" resultMap="resultOfficeRoleUser">
+		select 
+	    	team_leader_id as userId,
+    		team_id as groupId
+		from ikep4_officesupplies_team_manager
+		where use_yn = 'Y'
+   		and ISNULL(team_leader_id, '') != ''
+	</select>
+	
+	<select id="selectOfficeRoleUser" parameterClass="Map" resultMap="resultRoleUser">
+		select 
+		<isNotEmpty property="role">
+	    	<isEqual property="role" compareValue="OFTR">
+	    		team_manager_id as userId
+	    	</isEqual>
+	    	<isEqual property="role" compareValue="OFTL">
+	    		team_leader_id as userId
+	    	</isEqual>
+    	</isNotEmpty>
+		from ikep4_officesupplies_team_manager
+		where team_id = #teamId#
+		and use_yn = 'Y'
+	</select>
+</sqlMap>

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="com.lgcns.ikep4.workflow.engine.model.ProcessStepBean" >
+	<typeAlias alias = "ProcessReqBean" type="com.lgcns.ikep4.workflow.engine.model.ProcessReqBean"/>
+	<typeAlias alias = "ProcessStepBean" type="com.lgcns.ikep4.workflow.engine.model.ProcessStepBean"/>
+	
+	
+	<parameterMap id="param" class="com.lgcns.ikep4.workflow.engine.model.ProcessReqBean">
+		<parameter property="activityId" 	javaType="java.lang.String" 	jdbcType="VARCHAR"/>
+		<parameter property="processId"  	javaType="java.lang.String" 	jdbcType="VARCHAR"/>
+	</parameterMap>	
+	
+	<!-- Activity 테이블 조회 결과 -->
+	<resultMap id="result" class="ProcessStepBean">
+		<result property="processId"    		column="PROCESS_ID"    			columnIndex="1"/>
+		<result property="actId"  				column="ACT_ID"  				columnIndex="2"/>
+		<result property="actName"  	      	column="ACT_NAME"        		columnIndex="3"/>
+		<result property="subType"  			column="SUB_TYPE"  				columnIndex="4"/>
+		<result property="actType" 				column="ACT_TYPE" 				columnIndex="5"/>
+		<result property="gatewayType" 			column="GATEWAY_TYPE" 			columnIndex="6"/>		
+		<result property="varDefine"        	column="VAR_DEFINE"        		columnIndex="7"/>
+		<result property="nextActId"       		column="NEXT_ACT_ID"       		columnIndex="8"/>
+		<result property="nextActName"   		column="NEXT_ACT_NAME"   		columnIndex="9"/>
+		<result property="nextSubType"      	column="NEXT_SUB_TYPE"      	columnIndex="10"/>
+		<result property="nextActType"			column="NEXT_ACT_TYPE" 			columnIndex="11"/>
+		<result property="nextGatewayType"		column="NEXT_GATEWAY_TYPE" 		columnIndex="12"/>		
+		<result property="conditionType"		column="CONDITION_TYPE" 		columnIndex="13"/>
+		<result property="conditionExpression"	column="CONDITION_EXPRESSION" 	columnIndex="14"/>
+	</resultMap>
+	
+	<!-- ANSI -->
+	<!-- select -->
+	<select id="selectStart" parameterClass="com.lgcns.ikep4.workflow.engine.model.ProcessReqBean" resultClass="ProcessStepBean">
+      <![CDATA[ 
+		SELECT  grp2.PROCESS_ID AS processId, grp2.ACTIVITY_ID AS actId, grp2.ACTIVITY_NAME AS actName, grp2.SUB_TYPE AS subType, grp2.LOOP_TYPE As loopType, grp2.ACTIVITY_TYPE AS actType, 
+                grp2.GATEWAY_TYPE AS gatewayType, grp2.VAR_DEFINE AS varDefine, grp2.TRANSITION_TO AS nextActId, grp1.ACTIVITY_NAME AS nextActName, grp1.SUB_TYPE AS nextSubType, 
+                grp1.ACTIVITY_TYPE AS nextActType, grp1.GATEWAY_TYPE AS nextGatewayType, grp1.LOOP_TYPE AS nextLoopType, grp2.CONDITION_TYPE AS conditionType, grp2.CONDITION_EXPRESSION AS conditionExpression                                                                                                                             
+		  FROM IKEP4_WF_activity grp1                                                                                                                                    
+			   	 INNER JOIN	(SELECT  act.PROCESS_ID, act.ACTIVITY_ID, act.ACTIVITY_NAME, act.SUB_TYPE, act.LOOP_TYPE, act.ACTIVITY_TYPE, act.GATEWAY_TYPE, act.VAR_DEFINE,                                          
+					                trans.TRANSITION_TO, trans.CONDITION_TYPE, trans.CONDITION_EXPRESSION                                                                          
+			                  FROM IKEP4_WF_activity act 
+			                  		INNER JOIN IKEP4_WF_transition trans
+			                  			ON act.ACTIVITY_ID = trans.TRANSITION_FROM 
+					                   AND act.PROCESS_ID = trans.PROCESS_ID
+					                   AND act.PROCESS_VER = trans.PROCESS_VER	                                                                                                         
+			                 WHERE act.sub_type = 'StartEvent'	
+					           AND act.PROCESS_ID = #processId#                                                                                                             		 		
+					           AND act.PROCESS_VER = #processVer# 	           
+					         ) grp2
+		         	ON grp1.PROCESS_ID = grp2.PROCESS_ID                                                                                                             
+		    		AND grp1.ACTIVITY_ID = grp2.TRANSITION_TO
+		          INNER JOIN IKEP4_WF_PROCESS PROC  
+		          	ON grp1.PROCESS_ID = PROC.PROCESS_ID                                                                                                      			
+		  ORDER BY grp2.CONDITION_TYPE
+       ]]>
+   </select>
+   
+   <!-- ANSI -->
+   <!-- select -->
+	<select id="select" parameterClass="com.lgcns.ikep4.workflow.engine.model.ProcessReqBean" resultClass="ProcessStepBean">
+      <![CDATA[ 
+		SELECT  grp2.PROCESS_ID AS processId, grp2.ACTIVITY_ID AS actId, grp2.ACTIVITY_NAME AS actName, grp2.SUB_TYPE AS subType, grp2.LOOP_TYPE As loopType, grp2.ACTIVITY_TYPE AS actType, 
+                grp2.GATEWAY_TYPE AS gatewayType, grp2.VAR_DEFINE AS varDefine, grp2.TRANSITION_TO AS nextActId, grp1.ACTIVITY_NAME AS nextActName, grp1.SUB_TYPE AS nextSubType, 
+                grp1.ACTIVITY_TYPE AS nextActType, grp1.GATEWAY_TYPE AS nextGatewayType, grp1.LOOP_TYPE AS nextLoopType, grp2.CONDITION_TYPE AS conditionType, grp2.CONDITION_EXPRESSION AS conditionExpression                                                                                                                             
+		  FROM IKEP4_WF_activity grp1                                                                                                                                      
+				 INNER JOIN ( SELECT  act.PROCESS_ID, act.ACTIVITY_ID, act.ACTIVITY_NAME, act.SUB_TYPE, act.LOOP_TYPE, act.ACTIVITY_TYPE, act.GATEWAY_TYPE, act.VAR_DEFINE,                                          
+					                trans.TRANSITION_TO, trans.CONDITION_TYPE, trans.CONDITION_EXPRESSION                                                                          
+			                  FROM IKEP4_WF_activity act
+			                  	INNER JOIN IKEP4_WF_transition trans 
+			                  		ON act.ACTIVITY_ID = trans.TRANSITION_FROM      
+			                  		AND act.PROCESS_ID = trans.PROCESS_ID
+			                   		AND act.PROCESS_VER = trans.PROCESS_VER	                                                                                                                 
+			                  WHERE act.ACTIVITY_ID = #activityId#  
+					            AND act.PROCESS_ID = #processId#                                                                                                             		 		
+					            AND act.PROCESS_VER = #processVer# 
+					           ) grp2       
+					ON grp1.PROCESS_ID = grp2.PROCESS_ID                                                                                                             
+		    		AND grp1.ACTIVITY_ID = grp2.TRANSITION_TO  
+          ORDER BY grp2.CONDITION_TYPE		     					
+       ]]>
+   	</select>
+   	
+   	<!-- ANSI -->
+   <!-- select -->
+	<select id="selectJoin" parameterClass="com.lgcns.ikep4.workflow.engine.model.ProcessReqBean" resultMap="result">
+      <![CDATA[ 
+		SELECT  grp2.PROCESS_ID AS processId, grp2.ACTIVITY_ID AS actId, grp2.ACTIVITY_NAME AS actName, grp2.SUB_TYPE AS subType, grp2.ACTIVITY_TYPE AS actType, 
+                grp2.GATEWAY_TYPE AS gatewayType, grp2.VAR_DEFINE AS varDefine, grp2.TRANSITION_TO AS nextActId, grp1.ACTIVITY_NAME AS nextActName, grp1.SUB_TYPE AS nextSubType, 
+                grp1.ACTIVITY_TYPE AS nextActType, grp1.GATEWAY_TYPE AS nextGatewayType, grp1.LOOP_TYPE AS nextLoopType, grp2.CONDITION_TYPE AS conditionType, grp2.CONDITION_EXPRESSION AS conditionExpression                                                                                                                            
+		  FROM IKEP4_WF_activity grp1                                                                                                                                      
+		   		 INNER JOIN (    SELECT  act.PROCESS_ID, act.ACTIVITY_ID, act.ACTIVITY_NAME, act.SUB_TYPE, act.ACTIVITY_TYPE, act.GATEWAY_TYPE, act.VAR_DEFINE,                                          
+						                trans.TRANSITION_TO, trans.CONDITION_TYPE, trans.CONDITION_EXPRESSION                                                                          
+						          FROM IKEP4_WF_activity act
+						          	INNER JOIN IKEP4_WF_transition trans   
+						          		ON act.ACTIVITY_ID = trans.TRANSITION_TO                                                                                                        
+						         WHERE act.ACTIVITY_ID = #activityId#  
+							           AND act.PROCESS_ID = #processId#                                                                                                             		 		
+							           AND trans.PROCESS_ID = #processId# ) grp2  
+				   ON grp1.PROCESS_ID = grp2.PROCESS_ID                                                                                                             
+		    	  AND grp1.ACTIVITY_ID = grp2.TRANSITION_FROM  
+          ORDER BY grp2.CONDITION_TYPE		     					
+       ]]>
+   	</select>  
+   	
+</sqlMap>

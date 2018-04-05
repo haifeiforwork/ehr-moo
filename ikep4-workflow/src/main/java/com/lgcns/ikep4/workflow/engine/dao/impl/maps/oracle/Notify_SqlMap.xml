@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="com.lgcns.ikep4.workflow.engine.model.NotifyBean" >
+	<typeAlias alias = "NotifyBean" type="com.lgcns.ikep4.workflow.engine.model.NotifyBean"/>
+
+   
+	<select id="com.lgcns.ikep4.workflow.engine.model.NotifyBean.select" resultClass="NotifyBean">
+      	<![CDATA[ 
+      		/* [Notify_SqlMap.xml] com.lgcns.ikep4.workflow.engine.model.NotifyBean.select */
+      		SELECT 	NOTIFY_SEQ AS notifySeq, PROCESS_ID AS processId, PROCESS_VER AS processVer, ACTIVITY_ID AS activityId, NOTIFY_TYPE AS notifyType,
+      				NOTIFY_POINT AS notifyPoint, RECEIVER_ID AS receiverId, MOBILE_NUMBER AS mobileNumber, EMAIL_TYPE AS emailType, EMAIL_ADDRESS AS emailAddress, 
+      				NOTIFY_TITLE AS notifyTitle, NOTIFY_CONTENT AS notifyContent, CREATE_DATE AS createDate
+      		  FROM IKEP4_WF_NOTIFY
+      		 WHERE 	PROCESS_ID = #processId#
+      		   AND	PROCESS_VER = #processVer#
+      		   AND 	ACTIVITY_ID = #activityId#
+      		   AND 	NOTIFY_POINT = #notifyPoint#
+       	]]>
+   	</select>  
+   	
+   	<insert id="com.lgcns.ikep4.workflow.engine.model.NotifyBean.insert" parameterClass="NotifyBean">
+   		<![CDATA[
+			/* [Notify_SqlMap.xml] com.lgcns.ikep4.workflow.engine.model.NotifyBean.insert */
+			
+   			INSERT INTO IKEP4_WF_NOTIFY (
+				NOTIFY_SEQ, PROCESS_ID, PROCESS_VER, ACTIVITY_ID, NOTIFY_TYPE, NOTIFY_POINT, 
+				RECEIVER_ID, MOBILE_NUMBER, EMAIL_TYPE, EMAIL_ADDRESS, NOTIFY_TITLE, 
+				NOTIFY_CONTENT, CREATE_DATE
+   			) VALUES (
+	   			#notifySeq#, #processId#, #processVer#, #activityId#, #notifyType#, #notifyPoint#, 
+	   			#receiverId#, #mobileNumber#, #emailType#, #emailAddress#, #notifyTitle#, #notifyContent#, 
+	   			#createDate#
+   			)
+   		]]>
+   	</insert>
+   	
+   	<delete id="com.lgcns.ikep4.workflow.engine.model.NotifyBean.delete" parameterClass="NotifyBean">
+   		<![CDATA[
+			/* [Notify_SqlMap.xml] com.lgcns.ikep4.workflow.engine.model.NotifyBean.delete */
+			
+			DELETE 	FROM IKEP4_WF_NOTIFY
+			 WHERE 	PROCESS_ID = #processId#
+			   AND 	PROCESS_VER = #processVer#
+			   AND	ACTIVITY_ID = #processId#
+   		]]>
+   	</delete>
+</sqlMap>

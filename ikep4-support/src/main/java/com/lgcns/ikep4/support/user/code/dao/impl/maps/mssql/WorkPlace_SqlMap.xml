@@ -1,0 +1,331 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="support.user.code.dao.WorkPlace" >
+	<typeAlias alias = "WorkPlace" type="com.lgcns.ikep4.support.user.code.model.WorkPlace"/>
+	<typeAlias alias = "SearchCondition" type="com.lgcns.ikep4.support.user.code.model.AdminSearchCondition"/>
+
+	<resultMap id="result" class="WorkPlace">
+		<result property="workPlaceCode" column="Work_Place_CODE" />
+		<result property="portalId" column="PORTAL_ID" />
+		<result property="workPlaceName" column="Work_Place_NAME" />
+		<result property="workPlaceEnglishName" column="Work_Place_ENGLISH_NAME" />
+		<result property="sortOrder" column="SORT_ORDER" />
+		<result property="registerId" column="REGISTER_ID" />
+		<result property="registerName" column="REGISTER_NAME" />
+		<result property="updaterId" column="UPDATER_ID" />
+		<result property="updaterName" column="UPDATER_NAME" />
+		<result property="registDate" column="REGIST_DATE" />
+		<result property="updateDate" column="UPDATE_DATE" />
+		<result property="num" column="NUM" />
+	</resultMap>
+	
+	<resultMap id="getResult" class="WorkPlace">
+		<result property="workPlaceCode" column="Work_Place_CODE" />
+		<result property="portalId" column="PORTAL_ID" />
+		<result property="workPlaceName" column="Work_Place_NAME" />
+		<result property="workPlaceEnglishName" column="Work_Place_ENGLISH_NAME" />
+		<result property="sortOrder" column="SORT_ORDER" />
+		<result property="registerId" column="REGISTER_ID" />
+		<result property="registerName" column="REGISTER_NAME" />
+		<result property="updaterId" column="UPDATER_ID" />
+		<result property="updaterName" column="UPDATER_NAME" />
+		<result property="registDate" column="REGIST_DATE" />
+		<result property="updateDate" column="UPDATE_DATE" />
+	</resultMap>
+	
+	<resultMap id="sortOrderResult" class="WorkPlace">
+		<result property="sortOrder" column="SORT_ORDER" />
+	</resultMap>
+	
+	<!-- 신규 등록 -->
+	<!-- ANSI -->
+	<insert id="insert" parameterClass="WorkPlace"> 
+	<![CDATA[
+		INSERT INTO /* [WorkPlace_SqlMap.xml] support.user.code.dao.WorkPlace.insert */
+			IKEP4_EV_Work_Place (
+			Work_Place_CODE,
+			PORTAL_ID, 
+			Work_Place_NAME, 
+			Work_Place_ENGLISH_NAME,
+			SORT_ORDER,
+			REGISTER_ID, 
+			REGISTER_NAME,
+			UPDATER_ID, 
+			UPDATER_NAME,
+			REGIST_DATE, 
+			UPDATE_DATE)
+		VALUES ( 
+			#workPlaceCode#,
+			#portalId#,
+			#workPlaceName#,
+			#workPlaceEnglishName#,
+			#sortOrder#,
+		    #registerId#,
+		    #registerName#,
+		    #updaterId#,
+		    #updaterName#,
+		    CURRENT_TIMESTAMP , 
+		    CURRENT_TIMESTAMP )
+	]]>
+	</insert>
+   
+   <!-- 상세정보 -->
+   <!-- ANSI -->
+	<select id="select" parameterClass="java.lang.String" resultMap="getResult">
+	<![CDATA[
+		SELECT /* [WorkPlace_SqlMap.xml] support.user.code.dao.WorkPlace.select */
+		    Work_Place_CODE,
+		    Work_Place_NAME,
+		    Work_Place_ENGLISH_NAME,
+		    SORT_ORDER,
+		    PORTAL_ID,
+		    REGISTER_ID,
+		    REGISTER_NAME,
+		    UPDATER_ID,
+		    UPDATER_NAME,
+		    REGIST_DATE,
+		    UPDATE_DATE
+		FROM 
+		    IKEP4_EV_Work_Place
+		WHERE
+			Work_Place_CODE = #workPlaceCode#
+	]]>
+	</select>
+	
+	<!-- 기존 정보 수정 -->
+	<!-- ANSI -->
+	<update id="update" parameterClass="WorkPlace">
+	<![CDATA[
+		UPDATE /* [WorkPlace_SqlMap.xml] support.user.code.dao.WorkPlace.update */
+			IKEP4_EV_Work_Place
+		SET
+			Work_Place_NAME = #workPlaceName#,
+			Work_Place_ENGLISH_NAME = #workPlaceEnglishName#,
+			SORT_ORDER = #sortOrder#,
+			PORTAL_ID = #portalId#,
+			UPDATER_ID = #updaterId#,
+			UPDATER_NAME = #updaterName#,
+			UPDATE_DATE = CURRENT_TIMESTAMP 
+		WHERE
+			Work_Place_CODE = #workPlaceCode#
+	]]>
+	</update>
+   
+	<!-- 삭제 -->
+	<!-- ANSI -->
+	<delete id="delete" parameterClass="java.lang.String">
+	<![CDATA[
+		DELETE /* [WorkPlace_SqlMap.xml] support.user.code.dao.WorkPlace.delete */ 
+		FROM IKEP4_EV_Work_Place
+		WHERE
+			Work_Place_CODE = #workPlaceCode#
+	]]>
+	</delete>
+	
+	<!-- 목록 가져오기 -->
+	<!-- MSSQL -->
+	<select id="selectAll" parameterClass="SearchCondition" resultMap="result">
+	<![CDATA[
+		SELECT /* [WorkPlace_SqlMap.xml] support.user.code.dao.WorkPlace.selectAll */
+		        A.* 
+		    FROM 
+		    ( 
+				SELECT ROW_NUMBER() OVER(
+	 ]]>				
+		<isNotNull property="sortColumn">
+			<isEqual property="sortColumn" compareValue="SORT_ORDER">
+				<isEqual property="sortType" compareValue="ASC">
+					ORDER BY SORT_ORDER ASC
+				</isEqual>
+				<isEqual property="sortType" compareValue="DESC">
+					ORDER BY SORT_ORDER DESC
+				</isEqual>
+			</isEqual>
+			<isEqual property="sortColumn" compareValue="Work_Place_CODE">
+				<isEqual property="sortType" compareValue="ASC">
+					ORDER BY Work_Place_CODE ASC
+				</isEqual>
+				<isEqual property="sortType" compareValue="DESC">
+					ORDER BY Work_Place_CODE DESC
+				</isEqual>
+			</isEqual>
+			<isEqual property="sortColumn" compareValue="Work_Place_NAME">
+				<isEqual property="sortType" compareValue="ASC">
+					ORDER BY Work_Place_NAME ASC
+				</isEqual>
+				<isEqual property="sortType" compareValue="DESC">
+					ORDER BY Work_Place_NAME DESC
+				</isEqual>
+			</isEqual>
+			<isEqual property="sortColumn" compareValue="Work_Place_ENGLISH_NAME">
+				<isEqual property="sortType" compareValue="ASC">
+					ORDER BY Work_Place_ENGLISH_NAME ASC
+				</isEqual>
+				<isEqual property="sortType" compareValue="DESC">
+					ORDER BY Work_Place_ENGLISH_NAME DESC
+				</isEqual>
+			</isEqual>
+		</isNotNull>
+		<isNull property="sortColumn">
+			ORDER BY SORT_ORDER ASC
+		</isNull>
+			<![CDATA[
+					) AS NUM,
+				    Work_Place_CODE,
+				    Work_Place_NAME,
+				    Work_Place_ENGLISH_NAME,
+				    SORT_ORDER,
+				    PORTAL_ID,
+				    REGISTER_ID,
+				    REGISTER_NAME,
+				    UPDATER_ID,
+				    UPDATER_NAME,
+				    REGIST_DATE,
+				    UPDATE_DATE
+				FROM 
+				    IKEP4_EV_Work_Place
+		        WHERE 1 = 1
+		        ]]>	
+		<isNotEmpty property="portalId">
+				AND PORTAL_ID = #portalId#
+		</isNotEmpty>
+		<isNotEmpty property="searchWord">
+			<isEqual property="searchColumn" compareValue="title">
+				AND	UPPER(Work_Place_NAME) LIKE '%' + UPPER(#searchWord#) + '%'
+			</isEqual>
+			<isEqual property="searchColumn" compareValue="code">
+				AND	Work_Place_CODE LIKE '%' + #searchWord# + '%'
+			</isEqual>
+		</isNotEmpty>
+
+	<![CDATA[	
+			) A
+			WHERE A.NUM <=  #endRowIndex# AND A.NUM >  #startRowIndex# /* 시작 */
+	]]>	
+	</select>
+	
+	<!-- ANSI -->
+    <select id="getAll" parameterClass="java.lang.String" resultMap="getResult">
+    <![CDATA[
+        SELECT /* [WorkPlace_SqlMap.xml] SUPPORT.USER.CODE.DAO.WORKPLACE.GETALL */
+            Work_Place_CODE,            
+			Work_Place_NAME,
+			Work_Place_ENGLISH_NAME,
+	        SORT_ORDER,
+			PORTAL_ID,
+			REGISTER_ID,
+			REGISTER_NAME,
+			UPDATER_ID,
+			UPDATER_NAME,
+			REGIST_DATE,
+			UPDATE_DATE
+        FROM IKEP4_EV_Work_Place
+        ORDER BY SORT_ORDER
+    ]]>
+    </select>
+	
+	<!-- MSSQL -->
+	<select id="selectCount" parameterClass="SearchCondition" resultClass="int">
+	<![CDATA[
+	    SELECT /* [WorkPlace_SqlMap.xml] support.user.code.dao.WorkPlace.selectCount */ 
+	        COUNT(*)
+	    FROM 
+	        IKEP4_EV_Work_Place
+        WHERE 1 = 1
+	]]>	
+		<isNotEmpty property="portalId">
+				AND PORTAL_ID = #portalId#
+		</isNotEmpty>
+		<isNotEmpty property="searchWord">
+		    <isEqual property="searchColumn" compareValue="title">
+		        AND UPPER(Work_Place_NAME) LIKE '%' + UPPER(#searchWord#) + '%'
+		    </isEqual>
+		    <isEqual property="searchColumn" compareValue="code">
+		        AND Work_Place_CODE LIKE '%' + #searchWord# + '%'
+		    </isEqual>
+		</isNotEmpty>
+	</select>
+	
+	<!-- ANSI -->
+	<select id="checkCode" parameterClass="java.lang.String" resultClass="java.lang.String">
+	<![CDATA[
+		SELECT /* [WorkPlace_SqlMap.xml] support.user.code.dao.WorkPlace.checkCode */
+			COUNT(Work_Place_CODE)
+		FROM
+			IKEP4_EV_Work_Place
+		WHERE
+			Work_Place_CODE = #workPlaceCode#	
+	]]>
+	</select>
+	
+	<!-- MSSQL -->
+	<select id="getMaxSortOrder" resultClass="java.lang.String">
+	<![CDATA[
+		SELECT
+			dbo.IKEP4_UFN_LPAD((MAX(SORT_ORDER)+1), 6, '0') AS SORT_ORDER
+		FROM
+			IKEP4_EV_Work_Place
+	]]>
+	</select>
+	
+	<!-- ANSI -->
+	<insert id="updateSortOrder" parameterClass="WorkPlace">
+	<![CDATA[
+		UPDATE /* [WorkPlace_SqlMap.xml] support.user.code.dao.WorkPlace.updateSortOrder */
+			IKEP4_EV_Work_Place
+    	SET 
+    		SORT_ORDER = #sortOrder#
+    	WHERE 
+    		Work_Place_CODE = #workPlaceCode#
+   	]]>
+	</insert>
+	
+	<!-- MSSQL -->
+	<select id="selectGoUp" parameterClass="java.util.Map" resultMap="getResult">
+	<![CDATA[	
+		SELECT /* [WorkPlace_SqlMap.xml] support.user.code.dao.WorkPlace.selectGoUp */
+			TOP 1 *
+		FROM 
+			IKEP4_EV_Work_Place 
+		WHERE 
+			SORT_ORDER < #sortOrder#
+		ORDER BY SORT_ORDER DESC
+	]]>
+    </select>
+    
+    <!-- MSSQL -->
+    <select id="selectGoDown" parameterClass="java.util.Map" resultMap="getResult">
+	<![CDATA[	
+		SELECT /* [WorkPlace_SqlMap.xml] support.user.code.dao.WorkPlace.selectGoDown */
+			 TOP 1 * 
+		FROM 
+			IKEP4_EV_Work_Place 
+		WHERE 
+			SORT_ORDER > #sortOrder#
+		ORDER BY SORT_ORDER ASC
+	]]>
+    </select>
+	
+	<!-- 목록 가져오기 -->
+	<select id="listWorkPlaceAll" parameterClass="java.lang.String" resultMap="getResult">
+	<![CDATA[
+		/* [WorkPlace_SqlMap.xml] support.user.code.dao.WorkPlace.listWorkPlaceAll */
+		SELECT 
+		    Work_Place_CODE,
+		    Work_Place_NAME,
+		    Work_Place_ENGLISH_NAME,
+		    SORT_ORDER,
+		    PORTAL_ID,
+		    REGISTER_ID,
+		    REGISTER_NAME,
+		    UPDATER_ID,
+		    UPDATER_NAME,
+		    REGIST_DATE,
+		    UPDATE_DATE
+		FROM 
+		    IKEP4_EV_Work_Place
+	       WHERE PORTAL_ID = #portalId#
+	]]>
+	</select>	
+</sqlMap>

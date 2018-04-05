@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="com.lgcns.ikep4.approval.work.dao.ApprExam" >
+	<typeAlias alias="apprExam" type="com.lgcns.ikep4.approval.work.model.ApprExam"/>
+	
+	<resultMap id="apprExamResult" class="apprExam"> 
+		<result property="apprId" 					column="APPR_ID" 				jdbcType="VARCHAR"/>
+		<result property="examOrder" 				column="EXAM_ORDER" 			jdbcType="VARCHAR"/>
+		<result property="examReqId" 				column="EXAM_REQ_ID" 			jdbcType="VARCHAR"/>
+		<result property="examReqName" 				column="EXAM_REQ_NAME" 			jdbcType="VARCHAR"/>
+		<result property="examReqTeamName" 		    column="EXAM_REQ_TEAM_NAME" 	jdbcType="VARCHAR"/>
+		<result property="examReqDate" 				column="EXAM_REQ_DATE" 			jdbcType="DATE"/>
+		<result property="examReqContent"			column="EXAM_REQ_CONTENT" 		jdbcType="VARCHAR"/>
+		<result property="examUserId" 				column="EXAM_USER_ID" 			jdbcType="VARCHAR"/>
+		<result property="examName" 				column="EXAM_NAME"				jdbcType="DATE"/>
+		<result property="examTeamName" 		    column="EXAM_TEAM_NAME" 		jdbcType="VARCHAR"/>
+		<result property="examDate" 				column="EXAM_DATE" 				jdbcType="DATE"/>
+		<result property="examContent"				column="EXAM_CONTENT" 			jdbcType="VARCHAR"/>
+		<result property="examStatus" 				column="EXAM_STATUS" 	    	jdbcType="VARCHAR"/>
+		<result property="isOpen" 		    		column="IS_OPEN" 				jdbcType="VARCHAR"/>
+		<result property="isRequest" 		    	column="IS_REQUEST" 			jdbcType="VARCHAR"/>
+		<result property="lastUpdaterId" 		    column="LAST_UPDATER_ID" 		jdbcType="VARCHAR"/>
+		<result property="lastUpdate" 		    	column="LAST_UPDATE" 			jdbcType="DATE"/>
+		<result property="examFirstReqId" 		    	column="EXAM_FIRST_REQ_ID" 			jdbcType="VARCHAR"/>
+		
+	</resultMap>
+	
+	<insert id="entrustCreate" parameterClass="apprExam"> 
+      <![CDATA[ 
+           INSERT INTO IKEP4_APPR_EXAM 
+           		  (APPR_ID, 
+           		   EXAM_ORDER, 
+           		   EXAM_REQ_ID, 
+           		   EXAM_REQ_DATE, 
+           		   EXAM_REQ_CONTENT,
+           	       EXAM_USER_ID, 
+           	       EXAM_STATUS, 
+           	       IS_OPEN,
+           	       IS_REQUEST,
+           	       LAST_UPDATER_ID,
+           	       LAST_UPDATE,
+           	       EXAM_FIRST_REQ_ID
+           	       )
+           VALUES (#apprId#, 
+           		   #examOrder#, 
+           		   #examReqId#,
+           		   SYSDATE, 
+           		   #examReqContent#,
+           		   #examUserId#,
+           		   #examStatus#,
+           		   #isOpen#,  
+           		   #isRequest#,
+           		   #examReqId#,
+           		   SYSDATE,
+           		   #examFirstReqId#
+           		   )
+       ]]>
+  	</insert>
+  	
+  	<select id="listApprExamInfo" parameterClass="apprExam" resultMap="apprExamResult">
+  		<![CDATA[  
+		SELECT /* [ApprExam_SqlMap.xml] uapproval.work.dao.ApprExam.listApprExamInfo */ 
+			DISTINCT APPR_ID, 
+	                 EXAM_ORDER, 
+	                 EXAM_REQ_ID,
+	                  (SELECT USER_NAME || ' '|| JOB_TITLE_NAME
+			                FROM IKEP4_EV_USER E, IKEP4_EV_JOB_TITLE J 
+			                WHERE  E.JOB_TITLE_CODE = J.JOB_TITLE_CODE
+	                      AND E.USER_ID = AE.EXAM_REQ_ID) EXAM_REQ_NAME,
+	                (SELECT TEAM_NAME
+			                FROM IKEP4_EV_USER E
+			                WHERE E.USER_ID = AE.EXAM_REQ_ID) EXAM_REQ_TEAM_NAME,
+	                 EXAM_REQ_DATE, 
+	                 EXAM_REQ_CONTENT,
+	                 EXAM_USER_ID, 
+	                 (SELECT USER_NAME || ' '|| JOB_TITLE_NAME
+			                FROM IKEP4_EV_USER E, IKEP4_EV_JOB_TITLE J 
+			                WHERE E.JOB_TITLE_CODE = J.JOB_TITLE_CODE 
+			                  AND E.USER_ID = AE.EXAM_USER_ID) EXAM_NAME,
+	                 (SELECT TEAM_NAME
+			                FROM IKEP4_EV_USER E
+			                WHERE E.USER_ID = AE.EXAM_USER_ID) EXAM_TEAM_NAME,
+			         EXAM_DATE,
+			         EXAM_CONTENT,
+	                 EXAM_STATUS, 
+	                 IS_OPEN,
+	                 IS_REQUEST,
+	                 LAST_UPDATER_ID,
+	                 LAST_UPDATE ,
+	                 EXAM_FIRST_REQ_ID
+	          FROM IKEP4_APPR_EXAM AE 
+	         WHERE APPR_ID = #apprId#
+	          ORDER BY EXAM_REQ_DATE,EXAM_ORDER DESC
+        ]]>	  
+	</select>
+	
+	<insert id="updateApprExamInfoSave" parameterClass="apprExam"> 
+      <![CDATA[ 
+           UPDATE IKEP4_APPR_EXAM 
+              SET
+           		   EXAM_CONTENT = #examContent#,
+           		   EXAM_STATUS	= 1,
+           		   EXAM_DATE	= SYSDATE,
+           	       LAST_UPDATER_ID = #examUserId# ,
+           	       LAST_UPDATE = SYSDATE
+            WHERE APPR_ID = #apprId#
+              AND EXAM_USER_ID = #examUserId#
+       ]]>
+  	</insert>
+
+	<delete id="delete" parameterClass="java.util.Map"> 
+		/* [apprExam_SqlMap.xml] com.lgcns.ikep4.approval.work.dao.ApprExam.delete */
+		DELETE 
+		FROM 
+			IKEP4_APPR_EXAM
+		WHERE
+			APPR_ID	=	#apprId#
+	    	<isNotEmpty property="examReqId">
+			AND	EXAM_REQ_ID	=	#examReqId#
+			</isNotEmpty>
+	</delete>  	
+	
+  	<select id="existExamUser" parameterClass="map" resultClass="int">
+  		<![CDATA[  
+			SELECT /* [ApprExam_SqlMap.xml] approval.work.dao.ApprExam.existExamUser */ 
+				COUNT(*)
+			FROM IKEP4_APPR_EXAM 
+			WHERE APPR_ID=#apprId#
+			AND EXAM_USER_ID = #userId#
+        ]]>	  
+	</select>
+	
+	<select id="existExamIsRequest" parameterClass="map" resultClass="int">
+  		<![CDATA[  
+			SELECT /* [ApprExam_SqlMap.xml] approval.work.dao.ApprExam.existExamIsRequest */ 
+				COUNT(*)
+			FROM IKEP4_APPR_EXAM 
+			WHERE APPR_ID=#apprId#
+			AND EXAM_USER_ID = #userId#
+			AND IS_REQUEST = '1'
+        ]]>	  
+	</select>
+	
+	<select id="existExamStatus" parameterClass="map" resultClass="int">
+  		<![CDATA[  
+			SELECT /* [ApprExam_SqlMap.xml] uapproval.work.dao.ApprExam.existExamStatus */ 
+				COUNT(*)
+			FROM IKEP4_APPR_EXAM 
+			WHERE APPR_ID=#apprId#
+			AND EXAM_USER_ID = #userId#
+			AND EXAM_STATUS = '1'
+        ]]>	  
+	</select>
+	
+	<select id="examFirstReqId" parameterClass="String" resultClass="String">
+  		<![CDATA[  
+			SELECT /* [ApprExam_SqlMap.xml] uapproval.work.dao.ApprExam.existExamStatus */ 
+				DISTINCT EXAM_FIRST_REQ_ID examFirstReqId
+			FROM IKEP4_APPR_EXAM 
+			WHERE APPR_ID=#apprId#
+        ]]>	  
+	</select>
+  	
+</sqlMap>

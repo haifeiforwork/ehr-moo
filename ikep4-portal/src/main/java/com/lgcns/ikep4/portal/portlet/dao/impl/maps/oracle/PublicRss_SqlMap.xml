@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="portal.portlet.publicRss" >
+	<typeAlias alias = "PublicRss" type="com.lgcns.ikep4.portal.portlet.model.PublicRss"/>
+
+	<insert id="createPublicRss" parameterClass="PublicRss"> 
+      <![CDATA[
+      	   /* [PublicRss_SqlMap.xml] portal.portlet.publicRss.createPublicRss */
+           INSERT INTO IKEP4_PO_PORTLET_PUBLIC_RSS (PORTLET_CONFIG_ID, RSS_URL,  TAB_COUNT, LIST_COUNT, REGISTER_ID, REGISTER_NAME, REGIST_DATE, UPDATER_ID, UPDATER_NAME, UPDATE_DATE)  
+           VALUES (#portletConfigId#, #rssUrl#, #tabCount#, #listCount#, #registerId#, #registerName#, sysdate, #updaterId#, #updaterName#, sysdate)
+       ]]>
+   </insert>
+   
+   <select id="getPublicRss" parameterClass="String" resultClass="PublicRss">
+	  <![CDATA[
+	  	   /* [PublicRss_SqlMap.xml] portal.portlet.publicRss.getPublicRss */
+		   SELECT 
+			  PORTLET_CONFIG_ID  portletConfigId, 
+			  RSS_URL  rssUrl, 
+			  TAB_COUNT  tabCount,
+			  LIST_COUNT  listCount, 
+			  REGISTER_ID  registerId, 
+			  REGISTER_NAME  registerName, 
+			  REGIST_DATE  registDate, 
+			  UPDATER_ID  updaterId, 
+			  UPDATER_NAME  updaterName, 
+			  UPDATE_DATE  updateDate
+			FROM IKEP4_PO_PORTLET_PUBLIC_RSS
+		   WHERE PORTLET_CONFIG_ID = #portletConfigId#
+		   ORDER BY PORTLET_CONFIG_ID
+	   ]]>
+	</select>
+	
+	<select id="getPublicRssList"  resultClass="PublicRss">
+	  <![CDATA[
+	  	   /* [PublicRss_SqlMap.xml] portal.portlet.publicRss.getPublicRss */
+		   SELECT 
+			  PORTLET_CONFIG_ID  portletConfigId, 
+			  RSS_URL  rssUrl,
+			  TAB_COUNT  tabCount,
+			  LIST_COUNT  listCount, 
+			  REGISTER_ID  registerId, 
+			  REGISTER_NAME  registerName, 
+			  REGIST_DATE  registDate, 
+			  UPDATER_ID  updaterId, 
+			  UPDATER_NAME  updaterName, 
+			  UPDATE_DATE  updateDate
+			FROM IKEP4_PO_PORTLET_PUBLIC_RSS
+			ORDER BY PORTLET_CONFIG_ID
+	   ]]>
+	</select>
+	
+	<update id="updatePublicRss" parameterClass="PublicRss">
+	  <![CDATA[
+	  	   /* [PublicRss_SqlMap.xml] portal.portlet.publicRss.updatePublicRss */
+		   UPDATE IKEP4_PO_PORTLET_PUBLIC_RSS
+			  SET RSS_URL = #rssUrl#, 
+			  	  TAB_COUNT = #tabCount#,
+			      LIST_COUNT = #listCount#,
+			      UPDATER_ID = #updaterId#,
+			      UPDATER_NAME = #updaterName#,
+			      UPDATE_DATE = sysdate
+			WHERE PORTLET_CONFIG_ID = #portletConfigId#
+	   ]]>
+	</update>
+	<update id="updatePublicRssTabCount" parameterClass="PublicRss">
+	  <![CDATA[
+	  	   /* [PublicRss_SqlMap.xml] portal.portlet.publicRss.updatePublicRss */
+		   UPDATE IKEP4_PO_PORTLET_PUBLIC_RSS
+			  SET 
+			  	  TAB_COUNT = #tabCount#
+	   ]]>
+	</update>
+	
+	<delete id="deleteAllRssChannel">
+		DELETE FROM IKEP4_PO_PORTLET_PUBLIC_RSS
+	</delete>
+</sqlMap>

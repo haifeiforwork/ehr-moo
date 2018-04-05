@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="com.lgcns.ikep4.servicepack.survey.svSendLog" >
+  <typeAlias alias="svSendLog"                type="com.lgcns.ikep4.servicepack.survey.model.SendLog"/>
+  <typeAlias alias="svSendLogKey"                type="com.lgcns.ikep4.servicepack.survey.model.SendLogKey"/>
+
+  <resultMap id="result" class="svSendLog" >
+    <result column="SURVEY_ID" property="surveyId" jdbcType="VARCHAR" />
+    <result column="SEND_SEQ" property="sendSeq" jdbcType="DECIMAL" />
+    <result column="SEND_COUNT" property="sendCount" jdbcType="DECIMAL" />
+    <result column="RECEIVER_ID" property="receiverId" jdbcType="VARCHAR" />
+    <result column="RECEIVER_NAME" property="receiverName" jdbcType="VARCHAR" />
+    <result column="RECEIVER_MAIL" property="receiverMail" jdbcType="VARCHAR" />
+    <result column="SEND_DATE" property="sendDate" jdbcType="TIMESTAMP" />
+    <result property="jobTitleName" column="JOB_TITLE_NAME"/>
+	<result property="jobTitleEnglishName" column="JOB_TITLE_ENGLISH_NAME"/>
+	<result property="userName" column="USER_NAME"/>
+	<result property="userEnglishName" column="USER_ENGLISH_NAME"/>
+	<result property="teamName" column="TEAM_NAME"/>
+	<result property="teamEnglishName" column="TEAM_ENGLISH_NAME"/>
+  </resultMap>
+  
+  <sql id="sqlColumnList"> 
+	   ANSWER_ID, 
+	   QUESTION_ID, 
+	   ANSWER_SEQ,
+	   TITLE, 
+       REGISTER_ID, 
+       REGISTER_NAME,
+       REGIST_DATE, 
+       UPDATER_ID, 
+       UPDATER_NAME, 
+       UPDATE_DATE
+  </sql> 
+  
+    <select id="exists" parameterClass="svSendLogKey" resultClass="int"> 
+    SELECT /* [svTarget_SqlMap.xml] svTarget.exists */
+    	  COUNT(*)
+    FROM  IKEP4_SV_SEND_LOG
+    WHERE SURVEY_ID = #surveyId#
+      	  and RECEIVER_ID = #receiverId#
+   </select> 
+   
+    <select id="getTotalSendLog" parameterClass="String" resultClass="int"> 
+    SELECT /* [svTarget_SqlMap.xml] svTarget.getTotalSendLog */
+    	  COUNT(*)
+    FROM  IKEP4_SV_SEND_LOG
+    WHERE SURVEY_ID = #surveyId#
+   </select> 
+   
+   
+   <update id="update" parameterClass="svSendLog"> 
+    update IKEP4_SV_SEND_LOG
+    set SEND_COUNT =SEND_COUNT+1
+    where SURVEY_ID = #surveyId#
+      	  and RECEIVER_ID = #receiverId#
+  </update>
+  
+  
+  <insert id="create" parameterClass="svSendLog"> 
+    insert into IKEP4_SV_SEND_LOG (
+      SURVEY_ID, 
+      SEND_SEQ, 
+      SEND_COUNT, 
+      RECEIVER_ID,
+      RECEIVER_NAME, 
+      RECEIVER_MAIL, 
+      SEND_DATE
+    )
+    values (
+    #surveyId#, 
+    #sendSeq#, 
+    #sendCount#, 
+    #receiverId#,
+    #receiverName#, 
+    #receiverMail#, 
+    #sendDate#)
+  </insert>
+  
+   <select id="getSendMailListAllBySurveyId" parameterClass="string" resultMap="result"> 
+	    SELECT s.survey_id, 
+	        ROWNUM AS send_seq, 
+	        s.send_count, 
+	        s.receiver_id,
+	        s.receiver_name, 
+	        s.receiver_mail, 
+	        s.send_date,
+	        eu.USER_NAME, 
+	        eu.USER_ENGLISH_NAME, 
+	        eu.TEAM_NAME, 
+	        eu.TEAM_ENGLISH_NAME,
+	        ejt.JOB_TITLE_NAME, 
+	        ejt.JOB_TITLE_ENGLISH_NAME
+		FROM
+		(
+		      SELECT st.survey_id,
+		             1 AS send_count, 
+		             eu.user_id AS receiver_id, 
+		             eu.user_name AS receiver_name,
+		             eu.mail AS receiver_mail,
+		             sysdate AS send_date  
+		      FROM IKEP4_SV_TARGET st,IKEP4_EV_USER eu,IKEP4_EV_USER_GROUP eug
+		      WHERE st.target_id = eug.group_id
+		           AND eu.user_id = eug.user_id
+		           AND st.target_type=1
+		           AND st.survey_id = #surveyId#
+		      UNION
+		      SELECT st.survey_id, 
+		             1 AS send_count,   
+		             eu.user_id AS receiver_id, 
+		             eu.user_name AS receiver_name,
+		             eu.mail AS receiver_mail,
+		             sysdate AS send_date
+		      FROM IKEP4_SV_TARGET st,IKEP4_EV_USER eu
+		      WHERE st.target_id = eu.user_id
+		            AND st.target_type=0
+		            AND st.survey_id = #surveyId#
+		)s,IKEP4_EV_USER eu,IKEP4_EV_JOB_TITLE ejt 
+		where eu.job_title_code =ejt.job_title_code
+    		  and s.receiver_id = eu.user_id 
+  </select>
+  
+  
+
+  
+  <select id="getSendMailListAllByUser"  parameterClass="svSendLog" resultMap="result"> 
+     SELECT '' SURVEY_ID, 
+      		ROWNUM AS send_seq,
+            1 AS send_count,   
+            eu.user_id AS receiver_id, 
+            eu.user_name AS receiver_name,
+            eu.mail AS receiver_mail,
+            sysdate AS send_date,
+            eu.USER_NAME, 
+	        eu.USER_ENGLISH_NAME, 
+	        eu.TEAM_NAME, 
+	        eu.TEAM_ENGLISH_NAME,
+	        ejt.JOB_TITLE_NAME, 
+	        ejt.JOB_TITLE_ENGLISH_NAME
+     FROM IKEP4_EV_USER eu,IKEP4_EV_JOB_TITLE ejt
+     WHERE eu.job_title_code =ejt.job_title_code
+      	   and eu.portal_id =#portalId#
+  </select>
+  
+     <select id="getSendNotMail" parameterClass="string" resultMap="result"> 
+	    SELECT s.survey_id, 
+	        ROWNUM AS send_seq, 
+	        s.send_count, 
+	        s.receiver_id,
+	        s.receiver_name, 
+	        s.receiver_mail, 
+	        s.send_date,
+	        eu.USER_NAME, 
+	        eu.USER_ENGLISH_NAME, 
+	        eu.TEAM_NAME, 
+	        eu.TEAM_ENGLISH_NAME,
+	        ejt.JOB_TITLE_NAME, 
+	        ejt.JOB_TITLE_ENGLISH_NAME
+		FROM
+		(
+			select *
+			from
+			(
+		      SELECT st.survey_id,
+		             1 AS send_count, 
+		             eu.user_id AS receiver_id, 
+		             eu.user_name AS receiver_name,
+		             eu.mail AS receiver_mail,
+		             sysdate AS send_date  
+		      FROM IKEP4_SV_TARGET st,IKEP4_EV_USER eu,IKEP4_EV_USER_GROUP eug
+		      WHERE st.target_id = eug.group_id
+		           AND eu.user_id = eug.user_id
+		           AND st.target_type=1
+		           AND st.survey_id = #surveyId#
+		      UNION
+		      SELECT st.survey_id, 
+		             1 AS send_count,   
+		             eu.user_id AS receiver_id, 
+		             eu.user_name AS receiver_name,
+		             eu.mail AS receiver_mail,
+		             sysdate AS send_date
+		      FROM IKEP4_SV_TARGET st,IKEP4_EV_USER eu
+		      WHERE st.target_id = eu.user_id
+		            AND st.target_type=0
+		            AND st.survey_id = #surveyId#
+		    )a where a.receiver_id not in(
+		    							select RESPONSE_USER_ID from IKEP4_SV_RESPONSE where survey_id = #surveyId#
+		    						  )        
+		)s,IKEP4_EV_USER eu,IKEP4_EV_JOB_TITLE ejt 
+		where eu.job_title_code =ejt.job_title_code
+    		  and s.receiver_id = eu.user_id 
+  </select>
+  
+  
+
+  
+  <select id="getSendNotMailListAllByUser" parameterClass="svSendLog" resultMap="result"> 
+     SELECT '' SURVEY_ID, 
+      		ROWNUM AS send_seq,
+            1 AS send_count,   
+            eu.user_id AS receiver_id, 
+            eu.user_name AS receiver_name,
+            eu.mail AS receiver_mail,
+            sysdate AS send_date,
+            eu.USER_NAME, 
+	        eu.USER_ENGLISH_NAME, 
+	        eu.TEAM_NAME, 
+	        eu.TEAM_ENGLISH_NAME,
+	        ejt.JOB_TITLE_NAME, 
+	        ejt.JOB_TITLE_ENGLISH_NAME
+     FROM (select eu.*
+     	   from IKEP4_EV_USER eu
+     	   where eu.portal_id =#portalId#
+     	   		 and eu.user_id not in(
+     	   							select RESPONSE_USER_ID from IKEP4_SV_RESPONSE where survey_id = #surveyId#
+     	   						  )
+     	   ) eu,IKEP4_EV_JOB_TITLE ejt
+     WHERE eu.job_title_code =ejt.job_title_code
+  </select>
+  
+  
+    <delete id="removeAllBySurveyId" parameterClass="string"> 
+    delete from IKEP4_SV_SEND_LOG  /* [svTarget_SqlMap.xml] svTarget.remove */
+    WHERE SURVEY_ID = #surveyId#
+  </delete>   
+  
+</sqlMap>

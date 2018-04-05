@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="collpack.expertnetwork.dao.ExpertNetworkPolicy">
+	<typeAlias alias="ExpertNetworkPolicyPK" type="com.lgcns.ikep4.collpack.expertnetwork.model.ExpertNetworkPolicyPK"/>
+	<typeAlias alias="ExpertNetworkPolicy" type="com.lgcns.ikep4.collpack.expertnetwork.model.ExpertNetworkPolicy"/>
+
+	<resultMap class="ExpertNetworkPolicy" id="result">
+		<result column="ID" property="id" jdbcType="VARCHAR" javaType="String"/>
+		<result column="GUESTBOOK_WEIGHT" property="guestbookWeight" jdbcType="NUMBER" javaType="Integer"/>
+		<result column="FOLLOW_WEIGHT" property="followWeight" jdbcType="NUMBER" javaType="Integer"/>
+		<result column="FAVORITE_WEIGHT" property="favoriteWeight" jdbcType="NUMBER" javaType="Integer"/>
+	</resultMap>
+
+<!-- 입력 -->
+	<insert id="create" parameterClass="ExpertNetworkPolicy">
+	<![CDATA[
+		INSERT /* [ExpertNetworkPolicy_SqlMap.xml] collpack.expertnetwork.dao.ExpertNetworkPolicy.create */
+		       INTO IKEP4_EX_POLICY (
+		       ID
+		     , GUESTBOOK_WEIGHT
+		     , FOLLOW_WEIGHT
+		     , FAVORITE_WEIGHT
+		     , PORTAL_ID
+		     , REGISTER_ID
+		     , REGISTER_NAME
+		     , REGIST_DATE
+		       )
+		VALUES (
+		       #id#
+		     , #guestbookWeight#
+		     , #followWeight#
+		     , #favoriteWeight#
+		     , #portalId#
+		     , #registerId#
+		     , #registerName#
+		     , SYSDATE
+		       )
+	]]>
+	</insert>
+
+<!-- Policy 수정 -->
+	<update id="update" parameterClass="ExpertNetworkPolicy">
+	<![CDATA[
+		UPDATE /* [ExpertNetworkPolicy_SqlMap.xml] collpack.expertnetwork.dao.ExpertNetworkPolicy.update */
+		       IKEP4_EX_POLICY
+		   SET GUESTBOOK_WEIGHT = #guestbookWeight#
+		     , FOLLOW_WEIGHT = #followWeight#
+		     , FAVORITE_WEIGHT = #favoriteWeight#
+		     , REGISTER_ID = #registerId#
+		     , REGISTER_NAME = #registerName#
+		     , REGIST_DATE = SYSDATE
+		 WHERE ID = #id#
+	]]>
+	</update>
+
+<!-- Policy 조회 -->
+	<select id="getByPortalId" parameterClass="String" resultMap="result">
+	<![CDATA[
+		SELECT /* [ExpertNetworkPolicy_SqlMap.xml] collpack.expertnetwork.dao.ExpertNetworkPolicy.getByPortalId */
+		       ID
+		     , GUESTBOOK_WEIGHT
+		     , FOLLOW_WEIGHT
+		     , FAVORITE_WEIGHT
+		  FROM IKEP4_EX_POLICY
+		 WHERE PORTAL_ID = #portalId#
+	]]>
+	</select>
+
+</sqlMap>

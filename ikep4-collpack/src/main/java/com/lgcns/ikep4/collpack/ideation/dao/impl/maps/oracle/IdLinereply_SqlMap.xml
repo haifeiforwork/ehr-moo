@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="collpack.ideation.dao.IdLinereply" >
+ 
+	<typeAlias alias = "IdLinereply" type="com.lgcns.ikep4.collpack.ideation.model.IdLinereply"/>
+	
+	<typeAlias alias = "IdIdea" type="com.lgcns.ikep4.collpack.ideation.model.IdIdea"/>
+
+	<typeAlias alias = "IdSearch" type="com.lgcns.ikep4.collpack.ideation.model.IdSearch"/>
+
+    
+  <resultMap id="IdLinereplyResult" class="IdLinereply" >
+    <result column="LINEREPLY_ID" 			property="linereplyId" 			/>
+    <result column="ITEM_ID" 				property="itemId" 				/>
+    <result column="LINEREPLY_PARENT_ID" 	property="linereplyParentId" 	/>
+    <result column="CONTENTS"				property="contents" 			/>
+    <result column="REGISTER_ID" 			property="registerId" 			/>
+    <result column="REGISTER_NAME" 			property="registerName" 		/>
+    <result column="REGIST_DATE" 			property="registDate" 			/>
+    <result column="UPDATER_ID" 			property="updaterId" 			/>
+    <result column="UPDATER_NAME" 			property="updaterName" 			/>
+    <result column="UPDATE_DATE" 			property="updateDate" 			/>
+    <result column="LINEREPLY_GROUP_ID" 	property="linereplyGroupId" 	/>
+    <result column="STEP" 					property="step" 				/>
+    <result column="INDENTATION" 			property="indentation" 			/>
+    <result column="LINEREPLY_DELETE" 		property="linereplyDelete" 		/>
+    <result column="RECOMMEND_COUNT" 		property="recommendCount" 		/>
+    <result column="ADOPT_LINEREPLY" 		property="adoptLinereply" 		/>
+    <result column="USER_ENGLISH_NAME" 		property="userEnglishName" 		/>
+	<result column="TEAM_ENGLISH_NAME" 		property="teamEnglishName" 		/>
+	<result column="JOB_TITLE_ENGLISH_NAME" property="jobTitleEnglishName" 	/>
+  </resultMap>
+  
+ <resultMap id="IdLinereplyUserInfoResult" class="IdLinereply" extends="IdLinereplyResult">
+   <result column="TEAM_NAME" 				property="teamName" 		/>
+   <result column="JOB_TITLE_NAME" 			property="jobTitleName" 	/>
+  </resultMap>
+  
+   <resultMap id="IdLinereplyCountResult" class="IdLinereply" >
+    <result column="COUNT" 				property="count" />
+    <result column="ADOPT_LINEREPLY" 	property="adoptLinereply" nullValue="0"/>
+    <result column="RECOMMEND_COUNT" 	property="recommendCount" nullValue="0"/>
+  </resultMap>
+  
+  
+  <sql id="IdLinereply_Column_List" >
+    A.LINEREPLY_ID
+    ,A.ITEM_ID
+    ,A.LINEREPLY_PARENT_ID
+    ,A.CONTENTS
+    ,A.REGISTER_ID
+    ,A.REGISTER_NAME
+    ,A.REGIST_DATE
+    ,A.UPDATER_ID
+    ,A.UPDATER_NAME
+    ,A.UPDATE_DATE
+    ,A.LINEREPLY_GROUP_ID
+    ,A.STEP
+    ,A.INDENTATION
+    ,A.LINEREPLY_DELETE
+    ,A.RECOMMEND_COUNT
+    ,A.ADOPT_LINEREPLY
+    ,C.TEAM_NAME
+	,D.JOB_TITLE_NAME
+	,C.USER_ENGLISH_NAME
+  	,C.TEAM_ENGLISH_NAME
+  	,D.JOB_TITLE_ENGLISH_NAME
+  </sql>
+  
+   <insert id="create" parameterClass="IdLinereply" >
+    INSERT INTO 				/* [IdLinereply_SqlMap.xml] collpack.ideation.dao.IdLinereply.create */
+	     IKEP4_ID_LINEREPLY (
+	      ITEM_ID, 
+	      LINEREPLY_ID,
+	      LINEREPLY_PARENT_ID, 
+	      CONTENTS, 
+	      REGISTER_ID, 
+	      REGISTER_NAME, 
+	      REGIST_DATE, 
+	      UPDATER_ID, 
+	      UPDATER_NAME, 
+	      UPDATE_DATE, 
+	      LINEREPLY_GROUP_ID,
+	      STEP, 
+	      INDENTATION, 
+	      LINEREPLY_DELETE,
+	      RECOMMEND_COUNT,
+	      PORTAL_ID,
+	      ADOPT_LINEREPLY
+      ) VALUES (
+      	  #itemId#, 
+      	  #linereplyId#, 
+	      #linereplyParentId#, 
+      	  #contents#, 
+          #registerId#, 
+          #registerName#, 
+          sysdate,
+          #updaterId#, 
+          #updaterName#, 
+          sysdate, 
+          #linereplyGroupId#, 
+          #step#, 
+          #indentation#, 
+	      0,
+	      0,
+	      #portalId#,
+	      #adoptLinereply#
+       )
+  </insert>
+  
+  
+  <select id="get" parameterClass="String" resultMap="IdLinereplyResult">
+	   SELECT 									/* [IdLinereply_SqlMap.xml] collpack.ideation.dao.IdLinereply.get */
+	   		<include refid="IdLinereply_Column_List" />
+	   FROM	   IKEP4_ID_LINEREPLY A, IKEP4_EV_USER C, IKEP4_EV_JOB_TITLE D
+		 WHERE LINEREPLY_ID = #linereplyId#
+	    AND A.REGISTER_ID = C.USER_ID
+		AND C.JOB_TITLE_CODE = D.JOB_TITLE_CODE
+		 
+	</select>
+   
+  <select id="getCountByParentId" parameterClass="String" resultClass="int">
+	   SELECT 									/* [IdLinereply_SqlMap.xml] collpack.ideation.dao.IdLinereply.getCountByParentId */
+	   		COUNT(LINEREPLY_ID)
+	   FROM	   IKEP4_ID_LINEREPLY
+		 WHERE LINEREPLY_PARENT_ID = #linereplyParentId#
+	</select>
+	
+	
+   <select id="getCountes" resultMap="IdLinereplyCountResult" parameterClass="IdSearch" >
+	    SELECT								/* [IdLinereply_SqlMap.xml] collpack.ideation.dao.IdLinereply.getCountes */
+			COUNT(LINEREPLY_ID)				COUNT
+			, NVL(SUM(ADOPT_LINEREPLY),0)	ADOPT_LINEREPLY
+			, NVL(SUM(RECOMMEND_COUNT),0)	 RECOMMEND_COUNT   
+	    FROM IKEP4_ID_LINEREPLY
+	    WHERE REGISTER_ID = #userId#
+  </select>
+  
+  
+   <select id="listUserId" resultClass="String" parameterClass="String" >
+	    SELECT								/* [IdLinereply_SqlMap.xml] collpack.ideation.dao.IdLinereply.listUserId */
+			DISTINCT(REGISTER_ID)  
+	    FROM IKEP4_ID_LINEREPLY
+	    WHERE ITEM_ID = #itemId#
+  </select>
+  
+  
+  <select id="list" resultMap="IdLinereplyUserInfoResult" parameterClass="IdSearch" >
+    SELECT  					/* [IdLinereply_SqlMap.xml] collpack.ideation.dao.IdLinereply.list */  
+    		*
+	      FROM    (
+	                SELECT  ROWNUM NUM, F.*
+	                FROM
+                        (
+                          SELECT  
+                          
+                          		<include refid="IdLinereply_Column_List" />
+                          		
+                         FROM    IKEP4_ID_LINEREPLY A, IKEP4_EV_USER C, IKEP4_EV_JOB_TITLE D
+                         WHERE  A.REGISTER_ID = C.USER_ID
+								AND C.JOB_TITLE_CODE = D.JOB_TITLE_CODE
+						    <isNotEmpty prepend="AND" property="itemId">
+						    	A.ITEM_ID = #itemId#
+						    </isNotEmpty>
+					    	 <isNotEmpty prepend="AND" property="itemDelete">
+						    	A.LINEREPLY_DELETE = #itemDelete#
+						     </isNotEmpty>
+						    <isNotEmpty prepend="AND" property="userId">
+								A.REGISTER_ID = #userId#
+							</isNotEmpty>
+						    ORDER BY 
+							<isEmpty property="orderType" >
+								A.ADOPT_LINEREPLY DESC, A.LINEREPLY_GROUP_ID DESC, A.STEP ASC
+							</isEmpty>
+							<isEqual property="orderType" compareValue="best">
+								A.RECOMMEND_COUNT DESC
+							</isEqual>
+							<isNotEmpty prepend="AND" property="isAdopt">
+								A.ADOPT_LINEREPLY = 1
+							</isNotEmpty>
+					         
+	                  ) F
+	                WHERE   ROWNUM &lt;= #endRowIndex#
+	              )
+	      WHERE   NUM &gt; #startRowIndex#
+  </select>
+  
+  <select id="getCountList" resultClass="int" parameterClass="IdSearch" >
+       SELECT  			/* [IdLinereply_SqlMap.xml] collpack.ideation.dao.IdLinereply.getListCount */
+       		COUNT(A.LINEREPLY_ID) 
+         FROM    IKEP4_ID_LINEREPLY A
+         WHERE A.ITEM_ID = #itemId#
+    	  <isNotEmpty prepend="AND" property="itemDelete">
+	    	A.LINEREPLY_DELETE = #itemDelete#
+	     </isNotEmpty>
+	    <isNotEmpty prepend="AND" property="userId">
+			A.REGISTER_ID = #userId#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="isAdopt">
+			A.ADOPT_LINEREPLY = 1
+		</isNotEmpty>
+  </select>
+  
+  <update id="update" parameterClass="IdLinereply" >
+    UPDATE IKEP4_ID_LINEREPLY			/* [IdLinereply_SqlMap.xml] collpack.ideation.dao.IdLinereply.update */
+    SET 
+      	CONTENTS = #contents#,
+      	UPDATER_ID = #updaterId#,
+      	UPDATER_NAME = #updaterName#,
+      	UPDATE_DATE = sysdate
+    WHERE 
+    	LINEREPLY_ID = #linereplyId#
+  </update>
+  
+	<update id="updateLinereplyDelete" parameterClass="IdLinereply">
+		   UPDATE IKEP4_ID_LINEREPLY 			/* [IdLinereply_SqlMap.xml] collpack.ideation.dao.IdLinereply.updateLinereplyDelete */
+		   SET LINEREPLY_DELETE = #linereplyDelete# 
+		   WHERE LINEREPLY_ID = #linereplyId#
+	</update>
+	
+	<update id="updateAdoptLinereply" parameterClass="String">
+		   UPDATE IKEP4_ID_LINEREPLY 		/* [IdLinereply_SqlMap.xml] collpack.ideation.dao.IdLinereply.updateAdoptLinereply */
+		   SET ADOPT_LINEREPLY = 1 
+		   WHERE LINEREPLY_ID = #linereplyId#
+	</update>
+	
+	<update id="updateRecommendCount" parameterClass="String">
+		   UPDATE IKEP4_ID_LINEREPLY 		/* [IdLinereply_SqlMap.xml] collpack.ideation.dao.IdLinereply.updateRecommendCount */
+		   SET RECOMMEND_COUNT = (SELECT COUNT(LINEREPLY_ID) FROM IKEP4_ID_LINEREPLY_RECOMMEND WHERE LINEREPLY_ID = #linereplyId#) 
+		   WHERE LINEREPLY_ID = #linereplyId#
+	</update>
+  
+   <delete id="remove" parameterClass="String" >
+	    DELETE 								/* [IdLinereply_SqlMap.xml] collpack.ideation.dao.IdLinereply.remove */
+	    FROM IKEP4_ID_LINEREPLY
+	    WHERE 
+	    	LINEREPLY_ID IN(
+	      	SELECT LINEREPLY_ID
+			 FROM IKEP4_ID_LINEREPLY
+            START WITH LINEREPLY_ID =  #linereplyId# 
+            CONNECT BY PRIOR LINEREPLY_ID = LINEREPLY_PARENT_ID
+	       ) 
+   </delete>
+   
+    <delete id="removeByItemId" parameterClass="String" >
+	    DELETE 					/* [IdLinereply_SqlMap.xml] collpack.ideation.dao.IdLinereply.removeByItemId */
+	    FROM IKEP4_ID_LINEREPLY
+	    WHERE 
+	    	ITEM_ID = #itemId#
+   </delete>
+   
+   
+</sqlMap>

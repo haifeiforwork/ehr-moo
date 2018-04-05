@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="EUC-KR"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="support.rss.meta">
+
+	<typeAlias alias="channel" type="com.lgcns.ikep4.support.rss.model.Channel" />
+	<typeAlias alias="channelItem" type="com.lgcns.ikep4.support.rss.model.ChannelItem" />
+
+	<select id="getBoard" parameterClass="string" resultClass="channel">
+		<![CDATA[
+	    SELECT				/* [Meta_SqlMap.xml] getBoard */
+		    				BOARD_ID AS channelId,          
+		    				BOARD_NAME AS channelTitle, 
+		    				REGISTER_NAME AS ownerId
+	    FROM  				IKEP4_BD_BOARD
+	    WHERE 				BOARD_ID = #id#
+	    ]]>
+	</select>
+	
+	<select id="getBoardItemList" parameterClass="java.util.Map" resultClass="channelItem">  
+		<![CDATA[
+		SELECT				/* [Meta_SqlMap.xml] getBoardItemList */
+							A.BOARD_ID AS channelId,
+							A.ITEM_ID AS itemId, 
+						    A.TITLE AS itemTitle,
+						    A.CONTENTS AS itemDescription,
+						    B.USER_NAME AS itemRegister, 
+						    A.REGIST_DATE AS itemPublishDate 
+		FROM  				IKEP4_BD_ITEM A 
+		INNER JOIN 			IKEP4_EV_USER B
+		ON 					A.REGISTER_ID = B.USER_ID
+	    WHERE 				A.BOARD_ID = #boardId#
+	    AND 				A.ITEM_DELETE = 0
+	 	ORDER BY 			A.ITEM_ID DESC
+	 	LIMIT 20 
+		]]> 
+  	</select>   
+  
+  	<select id="getQna" parameterClass="string" resultClass="channel">
+  		<![CDATA[
+	    SELECT				/* [Meta_SqlMap.xml] getBoard */
+		    				CATEGORY_ID AS channelId,          
+		    				CATEGORY_NAME AS channelTitle
+	    FROM  				IKEP4_QA_CATEGORY
+	    WHERE 				CATEGORY_ID = #id#
+	    ]]>
+	</select>
+	
+	<select id="getQnaItemList" parameterClass="java.util.Map" resultClass="channelItem">  
+		<![CDATA[ 
+		SELECT				/* [Meta_SqlMap.xml] getBoardItemList */
+							A.CATEGORY_ID AS channelId,
+							A.QNA_GROUP_ID AS itemId, 
+						    A.TITLE AS itemTitle,
+						    A.CONTENTS AS itemDescription,
+						    C.USER_NAME AS itemRegister, 
+						    A.REGIST_DATE AS itemPublishDate 
+	    FROM  				IKEP4_QA_QNA A 
+		INNER JOIN 			IKEP4_EV_USER C
+		ON 					A.REGISTER_ID = C.USER_ID
+	    WHERE 				1 = 1
+		]]>
+		<isNotEmpty  property="itemDelete" prepend="AND" >
+		  					A.ITEM_DELETE = #itemDelete#
+	   	</isNotEmpty>
+        <isNotEmpty prepend="AND" property="portalId" >
+		  	 				A.PORTAL_ID = #portalId#
+   		</isNotEmpty>
+	  	<isNotEmpty prepend="AND" property="categoryId" >
+	  						A.CATEGORY_ID = #categoryId#
+	   	</isNotEmpty>
+	   	<isNotEmpty prepend="AND" property="urgent" >
+		  					A.URGENT = #urgent#
+	   	</isNotEmpty>
+		<isNotEmpty prepend="AND" property="newDate" >
+		  	 				A.REGIST_DATE &gt; DATE_SUB(NOW(), INTERVAL #newDate# DAY)
+	   	</isNotEmpty>
+	   	<isNotEmpty prepend="AND" property="registerId" >
+		  					A.REGISTER_ID = #registerId#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="answerAdopt">
+		  					A.ANSWER_ADOPT = #answerAdopt#
+		</isNotEmpty>
+		<isEqual prepend="AND" property="qnaType" compareValue="0">
+		  	 				A.QNA_TYPE = 0
+		</isEqual>
+		<isEqual prepend="AND" property="qnaType" compareValue="1">
+		  	 				A.QNA_TYPE = 1
+		</isEqual>
+	   	<isNotEmpty prepend="AND" property="status">
+		  	 				A.STATUS = #status#
+	   	</isNotEmpty>
+	   	<isNotEmpty prepend="AND" property="isNotAdopt">
+		  					A.STATUS IN (0,1)
+	   	</isNotEmpty>
+	   	<isNotEmpty prepend="AND" property="bestQna">
+		  	 				A.BEST_QNA = #bestQna#
+	   	</isNotEmpty>
+		<![CDATA[ 			    
+	 	ORDER BY 			A.QNA_ID DESC
+	 	LIMIT 20
+		]]> 
+  	</select>   
+  	
+  
+  	<select id="getWorkspace" parameterClass="string" resultClass="channel">
+  		<![CDATA[
+	    SELECT				/* [Meta_SqlMap.xml] getWorkspace */
+		    				BOARD_ID AS channelId,          
+		    				BOARD_NAME AS channelTitle, 
+		    				REGISTER_NAME AS ownerId
+	    FROM  				IKEP4_WS_BD_BOARD
+	    WHERE	 			BOARD_ID = #id#
+	    ]]>
+	</select>
+	
+	<select id="getWorkspaceItemList" parameterClass="java.util.Map" resultClass="channelItem">  
+		<![CDATA[ 
+		SELECT				/* [Meta_SqlMap.xml] getBoardItemList */
+							A.BOARD_ID AS channelId,
+							A.ITEM_ID AS itemId, 
+						    A.TITLE AS itemTitle,
+						    A.CONTENTS AS itemDescription,
+						    B.USER_NAME AS itemRegister,
+						    A.REGIST_DATE AS itemPublishDate 
+	    FROM  				IKEP4_WS_BD_ITEM A 
+	    INNER JOIN 			IKEP4_EV_USER B
+		ON 					A.REGISTER_ID = B.USER_ID
+	    WHERE 				A.BOARD_ID = #boardId#
+	    AND 				A.ITEM_DELETE = 0
+	 	ORDER BY 			A.ITEM_ID DESC
+	 	LIMIT 20
+		]]> 
+  	</select>   
+  	
+  	<select id="getBlog" parameterClass="string" resultClass="channel">
+	    <![CDATA[
+	    SELECT				/* [Meta_SqlMap.xml] getBlog */
+		    				BLOG_ID channelId,          
+		    				INTRODUCTION channelTitle, 
+		    				OWNER_ID ownerId
+	    FROM  				IKEP4_SB_BLOG
+	    WHERE 				OWNER_ID = #id#
+	    ]]>
+	</select>
+	
+	<select id="getBlogItemList" parameterClass="java.util.Map" resultClass="channelItem">  
+		<![CDATA[ 
+		SELECT /* [Meta_SqlMap.xml] "getBlogItemList" */
+			channelId, itemId, itemTitle, itemDescription, itemRegister, itemPublishDate 
+			FROM (
+				SELECT
+					ROWNUM, channelId, itemId, itemTitle, itemDescription, itemRegister, itemPublishDate 
+					FROM (
+						SELECT /* [Meta_SqlMap.xml] getBoardItemList */
+							A.ITEM_ID itemId, 
+						    A.REGISTER_ID channelId, 
+						    A.TITLE itemTitle,
+						    A.CONTENTS itemDescription,
+						    B.USER_NAME itemRegister, 
+						    B.USER_ENGLISH_NAME itemRegisterEnglish, 
+						    A.REGIST_DATE itemPublishDate 
+					    FROM  IKEP4_SB_BD_ITEM A INNER JOIN IKEP4_EV_USER B
+					    						ON A.REGISTER_ID = B.USER_ID
+					    WHERE A.REGISTER_ID = #boardId#
+					    AND A.READ_PERMISSION = '0'
+					 	ORDER BY A.ITEM_ID DESC
+					 )
+				)			 
+			WHERE ROWNUM < 21
+		]]> 
+  	</select>   
+  	
+  	<select id="getCafeBoard" parameterClass="string" resultClass="channel">
+	    <![CDATA[
+	    SELECT				/* [Meta_SqlMap.xml] getCafeBoard */
+		    				BOARD_ID AS channelId,          
+		    				BOARD_NAME AS channelTitle, 
+		    				REGISTER_NAME AS ownerId
+	    FROM  				IKEP4_CF_BD_BOARD
+	    WHERE 				BOARD_ID = #id#
+	    ]]>
+	</select>
+	
+	<select id="getCafeBoardItemList" parameterClass="java.util.Map" resultClass="channelItem">  
+		<![CDATA[ 
+		SELECT				/* [Meta_SqlMap.xml] getCafeBoardItemList */
+							A.BOARD_ID AS channelId,
+							A.ITEM_ID AS itemId, 
+						    A.TITLE AS itemTitle,
+						    A.CONTENTS AS itemDescription,
+						    B.USER_NAME AS itemRegister, 
+						    A.REGIST_DATE AS itemPublishDate 
+	    FROM  				IKEP4_CF_BD_ITEM A 
+	    INNER JOIN 			IKEP4_EV_USER B
+		ON 					A.REGISTER_ID = B.USER_ID
+	    WHERE 				A.BOARD_ID = #boardId#
+	    AND 				A.ITEM_DELETE = 0
+	 	ORDER BY 			A.ITEM_ID DESC
+	 	LIMIT				20
+		]]> 
+  	</select>   
+  	
+</sqlMap>

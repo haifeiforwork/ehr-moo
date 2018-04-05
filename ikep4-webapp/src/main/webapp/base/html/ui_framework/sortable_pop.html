@@ -1,0 +1,76 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ko">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Home</title>
+<link rel="stylesheet" type="text/css" href="../../css/guide.css" />
+<link rel="stylesheet" type="text/css" href="../../css/theme01/jquery_ui_custom.css" />
+<link rel="stylesheet" type="text/css" href="../../css/common.css" />
+<link rel="stylesheet" type="text/css" href="../../css/theme01/theme.css" />
+<script type="text/javascript" src="../../js/jquery/jquery-1.6.2.min.js"></script>
+<script type="text/javascript" src="../../js/jquery/jquery-ui-1.8.13.min.without.datepicker.js"></script>
+<script type="text/javascript" src="../../js/langResource/ko.js"></script>
+<script type="text/javascript" src="../../js/common.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$(document).ready(function() {
+		$("#ulSortable").sortable();
+		
+		$("#divContainer2").sortable({
+			revert:true,
+			connectWith:"#divContainer2, #divContainer3"
+		});
+		
+		$("#divContainer3").sortable({
+			revert:true,
+			connectWith:"#divContainer2, #divContainer3",
+			handle : "h4"
+		});
+	});
+})(jQuery);
+</script>
+<style type="text/css">
+	div#divContainer1 > ul { margin:0; }
+	div#divContainer1 > ul > li { padding:5px; width:100px; border:1px solid #ccc; background-color:white; }
+</style>
+</head>
+
+<body class="popup">
+	<div id="divContainer1">
+		<ul id="ulSortable">
+			<li>item 1</li>
+			<li>item 2</li>
+			<li>item 3</li>
+		</ul>
+	</div>
+	<br/><br/>
+	<div id="divContainer2" style="float:left; width:100px; min-height:10px; background-color:#eee;">
+		<div id="divDrag1" style="width:100px; height:60px; border:1px solid #ccc; background-color:white;">
+			<h4 style="background-color:#eee; cursor:default;">drag 1</h4>
+			<div style="padding:5px 10px;">drag</div>
+		</div>
+		<div id="divDrag2" style="width:100px; height:60px; border:1px solid #ccc; background-color:white;">
+			<h4 style="background-color:#eee; cursor:default;">drag 2</h4>
+			<div style="padding:5px 10px;">drag</div>
+		</div>
+		<div id="divDrag3" style="width:100px; height:60px; border:1px solid #ccc; background-color:white;">
+			<h4 style="background-color:#eee; cursor:default;">drag 3</h4>
+			<div style="padding:5px 10px;">drag</div>
+		</div>
+	</div>
+	<div id="divContainer3" style="float:left; margin-left:100px; width:100px; min-height:10px; background-color:#eee;">
+		<div id="divDrag4" style="width:100px; height:60px; border:1px solid #ccc; background-color:white;">
+			<h4 style="background-color:#eee; cursor:default;">drag 4</h4>
+			<div style="padding:5px 10px;">drag</div>
+		</div>
+		<div id="divDrag5" style="width:100px; height:60px; border:1px solid #ccc; background-color:white;">
+			<h4 style="background-color:#eee; cursor:default;">drag 5</h4>
+			<div style="padding:5px 10px;">drag</div>
+		</div>
+		<div id="divDrag6" style="width:100px; height:60px; border:1px solid #ccc; background-color:white;">
+			<h4 style="background-color:#eee; cursor:default;">drag 6</h4>
+			<div style="padding:5px 10px;">drag</div>
+		</div>
+	</div>
+</body>
+</html>

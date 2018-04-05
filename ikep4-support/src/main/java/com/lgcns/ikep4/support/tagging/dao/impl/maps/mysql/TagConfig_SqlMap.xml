@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="support.tagging.dao.TagConfig">
+  
+	<typeAlias alias ="Tag" type="com.lgcns.ikep4.support.tagging.model.Tag"/>
+  
+  <resultMap class="Tag" id="TagResult">
+    <result column="DISPLAY_STEP"  	property="displayStep" />
+    <result column="TAG_FREQUENCY" 	property="tagFrequency" />
+    <result column="PORTAL_ID" 		property="portalId" />
+  </resultMap>
+  
+  
+  <select id="selectByPortalId" parameterClass="String" resultMap="TagResult">
+    SELECT				/* [TagConfig_SqlMap.xml] TagConfig.selectByPortalId */
+    	DISPLAY_STEP
+    	,TAG_FREQUENCY
+    	,PORTAL_ID
+    FROM IKEP4_TG_CONFIG
+    WHERE PORTAL_ID = #portalId#
+  </select>
+  
+  
+  <insert id="insert" parameterClass="Tag">
+    INSERT 					/* [TagConfig_SqlMap.xml] TagConfig.insert */
+    INTO IKEP4_TG_CONFIG (
+    	 DISPLAY_STEP
+    	,TAG_FREQUENCY
+    	,PORTAL_ID
+    ) VALUES (
+	    #displayStep#
+	    ,#tagFrequency#
+	    ,#portalId#
+    )
+  </insert>
+  
+  <update id="update" parameterClass="Tag">
+    UPDATE 				/* [TagConfig_SqlMap.xml] TagConfig.update */
+    	IKEP4_TG_CONFIG
+    SET TAG_FREQUENCY = #tagFrequency#
+    WHERE DISPLAY_STEP = #displayStep#
+    	AND PORTAL_ID = #portalId#
+  </update>
+  
+  <delete id="delete" parameterClass="Tag">
+    DELETE 				/* [TagConfig_SqlMap.xml] TagConfig.delete */
+    FROM IKEP4_TG_CONFIG
+    WHERE DISPLAY_STEP = #displayStep#
+   	 AND PORTAL_ID = #portalId#
+  </delete>
+  
+  
+</sqlMap>

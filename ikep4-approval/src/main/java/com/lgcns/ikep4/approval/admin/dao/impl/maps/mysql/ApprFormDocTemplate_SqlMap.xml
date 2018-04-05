@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="approval.admin.dao.ApprFormDocTemplate" >
+	
+	<!-- class declare  -->
+	<typeAlias alias="apprFormDocTemplate" 			type="com.lgcns.ikep4.approval.admin.model.ApprFormDocTemplate" />
+	<typeAlias alias="apprFormSearchCondition"		type="com.lgcns.ikep4.approval.admin.search.ApprFormSearchCondition" />
+	
+	<!-- apprForm doc template list -->
+	<resultMap id="listResult" class="apprFormDocTemplate">
+		<result property="templateId" 		column="TEMPLATE_ID" 	jdbcType="VARCHAR"/>
+		<result property="templateType" 	column="TEMPLATE_TYPE" 	jdbcType="DECIMAL"/>
+		<result property="templateName" 	column="TEMPLATE_NAME" 	jdbcType="VARCHAR"/>
+		<result property="templateData" 	column="TEMPLATE_DATA"	jdbcType="VARCHAR"/>
+		<result property="registDate" 		column="REGIST_DATE" 	jdbcType="VARCHAR"/>
+	</resultMap>
+	
+  	<!--apprForm doc template 카운트 -->
+	<select id="countBySearchCondition" parameterClass="apprFormSearchCondition" resultClass="int">  
+  		<![CDATA[
+  		/* [Form_SqlMap.xml] approval.admin.dao.ApprFormDocTemplate.countBySearchCondition */
+		SELECT	COUNT(TEMPLATE_ID)
+		FROM 	IKEP4_APPR_FORM_DOC_TEMPLATE
+		WHERE	REGISTER_ID = #userId#
+		AND		TEMPLATE_TYPE = #templateType#
+        ]]>                      		
+  	</select> 
+  	
+  	<!--apprForm doc template 목록 -->
+  	<select id="listBySearchCondition" parameterClass="apprFormSearchCondition" resultMap="listResult">
+		<![CDATA[
+  		/* [Form_SqlMap.xml] approval.admin.dao.ApprFormDocTemplate.listBySearchCondition */
+		SELECT	TEMPLATE_ID,
+ 				TEMPLATE_TYPE,
+	       		TEMPLATE_NAME,       
+	       		TEMPLATE_DATA,
+	       		REGIST_DATE
+		FROM 	(	SELECT 	TEMPLATE_ID,
+							TEMPLATE_TYPE,
+					       	TEMPLATE_NAME,       
+					       	TEMPLATE_DATA,
+					       	REGIST_DATE
+					FROM 	IKEP4_APPR_FORM_DOC_TEMPLATE
+					WHERE	PORTAL_ID = #portalId#
+					AND		REGISTER_ID = #userId#
+					AND		TEMPLATE_TYPE = #templateType#							
+                	ORDER BY TEMPLATE_NAME 
+				) Z
+		LIMIT	#startRowIndex#, #endRowIndex# 
+	    					
+		]]>
+	</select>
+	
+	<!--apprForm doc template 생성 -->
+	<insert id="create"  parameterClass="apprFormDocTemplate"> 
+      	<![CDATA[
+      	/* [Form_SqlMap.xml] approval.admin.dao.ApprFormDocTemplate.create */ 
+      	INSERT 	INTO IKEP4_APPR_FORM_DOC_TEMPLATE ( 
+      												PORTAL_ID,
+										           	TEMPLATE_ID,
+										           	TEMPLATE_TYPE,
+										           	TEMPLATE_NAME,
+										           	TEMPLATE_DATA,
+										           	REGISTER_ID,
+										           	REGISTER_NAME,
+										           	REGIST_DATE 
+										       	) 
+		VALUES 									( 
+													#portalId#,
+										           	#templateId#,
+										           	#templateType#,
+										           	#templateName#,
+										           	#templateData#,
+										           	#registerId#,
+										           	#registerName#,
+										           	NOW() 
+										     	)
+    	]]>
+   </insert>
+   
+   <!--apprForm doc template 수정 -->
+   <update id="update" parameterClass="apprFormDocTemplate"> 
+      	<![CDATA[
+      	/* [Form_SqlMap.xml] approval.admin.dao.ApprFormDocTemplate.update */ 
+     	UPDATE 	IKEP4_APPR_FORM_DOC_TEMPLATE
+		SET 	TEMPLATE_NAME = #templateName#,
+		       	TEMPLATE_DATA = #templateData#
+		WHERE 	TEMPLATE_ID = #templateId#
+		AND		PORTAL_ID	= #portalId#
+		AND     REGISTER_ID = #registerId#
+		AND		TEMPLATE_TYPE = #templateType#
+	  	]]>
+   </update>
+   
+   <!--apprForm doc template 삭제 -->
+   <delete id="delete" parameterClass="apprFormDocTemplate">
+      	<![CDATA[
+      	/* [Form_SqlMap.xml] approval.admin.dao.ApprFormDocTemplate..delete */
+	  	DELETE FROM IKEP4_APPR_FORM_DOC_TEMPLATE 
+	   	WHERE 	REGISTER_ID = #registerId#
+	   	AND		TEMPLATE_TYPE = #templateType#
+	   	AND		PORTAL_ID	= #portalId#
+	   	AND 	TEMPLATE_ID
+	    ]]>
+		<iterate prepend="IN" property="templates" open="(" close=")" conjunction=",">
+		#templates[]#
+		</iterate>
+	</delete>
+</sqlMap>

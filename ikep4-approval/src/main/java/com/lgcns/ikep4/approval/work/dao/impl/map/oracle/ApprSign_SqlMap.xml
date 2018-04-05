@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="com.lgcns.ikep4.approval.work.dao.ApprSign" >
+
+	<typeAlias alias="apprSign" type="com.lgcns.ikep4.approval.work.model.ApprSign"/>
+	<typeAlias alias="user" type="com.lgcns.ikep4.support.user.member.model.User"/>
+	<typeAlias alias="ApprListSearchCondition"	type="com.lgcns.ikep4.approval.work.search.ApprListSearchCondition"/>
+	
+	<resultMap id="apprResult" class="apprSign">
+		<result property="signId" column="SIGN_ID" />
+		<result property="userId" column="USER_ID" />
+		<result property="signFileId" column="SING_FILE_ID" />
+		<result property="isDefault" column="IS_DEFAULT" />
+		<result property="signName" column="SING_NAME" />
+		<result property="registerId" column="REGISTER_ID" />
+		<result property="registerName" column="REGISTER_NAME" />
+		<result property="registDate" column="REGIST_DATE" />
+	</resultMap>
+	
+	<insert id="create" parameterClass="apprSign"> 
+      <![CDATA[ 
+           INSERT INTO IKEP4_APPR_SIGN 
+           		  (SIGN_ID, USER_ID, SING_FILE_ID, 
+				   IS_DEFAULT, SING_NAME, PORTAL_ID,
+				   REGISTER_ID, REGISTER_NAME, REGIST_DATE)
+           VALUES (#signId#, #userId#, #signFileId#,
+           			#isDefault#, #signName#, #portalId#,
+           			#registerId#, #registerName#, SYSDATE)
+       ]]>
+  	</insert>
+	
+	<update id="setDefault" parameterClass="apprSign">
+	  <![CDATA[
+		   	UPDATE 	IKEP4_APPR_SIGN 
+		   	SET 	IS_DEFAULT 	= 1 	
+		   	WHERE 	SIGN_ID = #signId#
+	   ]]>
+	</update>
+	
+	<update id="initDefault" parameterClass="apprSign">
+	  <![CDATA[
+		   	UPDATE 	IKEP4_APPR_SIGN 
+		   	SET 	IS_DEFAULT 	= 0 	
+		   	WHERE 	USER_ID = #userId#
+	   ]]>
+	</update>
+	
+	<delete id="delete" parameterClass="String">
+	  <![CDATA[
+		   	DELETE 	IKEP4_APPR_SIGN 
+		   		WHERE 	SIGN_ID = #signId#
+	   ]]>
+	</delete>
+	
+	<select id="select" parameterClass="apprSign" resultMap="apprResult">
+	  <![CDATA[
+		   	SELECT  SIGN_ID, USER_ID, SING_FILE_ID, 
+				   IS_DEFAULT, SING_NAME, 
+				   REGISTER_ID, REGISTER_NAME, REGIST_DATE
+			FROM 	IKEP4_APPR_SIGN
+			WHERE 	USER_ID 		= #userId#
+	   ]]>
+	   <isNotEmpty property="isDefault">
+	   		AND IS_DEFAULT = 1
+	   </isNotEmpty>
+	   ORDER BY REGIST_DATE DESC
+	</select>
+	
+	<select id="listBySearchCondition" parameterClass="ApprListSearchCondition" resultMap="apprResult">
+		SELECT /* [ApprSign_SqlMap.xml] listBySearchCondition */ 
+		       *
+		FROM ( 
+		     SELECT ROWNUM AS RNUM, A.* FROM ( 
+		         /* START========================================= */
+			        SELECT  SIGN_ID, USER_ID, SING_FILE_ID, 
+						   IS_DEFAULT, SING_NAME, 
+						   REGISTER_ID, REGISTER_NAME, REGIST_DATE
+					FROM 	IKEP4_APPR_SIGN
+					WHERE 	USER_ID 		= #userId#
+					AND   PORTAL_ID = #portalId#
+					ORDER BY REGIST_DATE DESC
+				 /* ===========================================END  */ 
+		<![CDATA[  
+		
+		    ) A WHERE ROWNUM <=  #endRowIndex# /* 종료  */
+		) WHERE RNUM >  #startRowIndex# /* 시작 */
+		]]> 
+	</select>
+	
+	<select id="countBySearchCondition" parameterClass="ApprListSearchCondition" resultClass="int">  
+		SELECT /* [ApprSign_SqlMap.xml] countBySearchCondition */ 
+	           COUNT(*)
+		FROM 	IKEP4_APPR_SIGN
+		WHERE 	USER_ID 		= #userId#
+		AND   PORTAL_ID = #portalId#
+	</select> 
+	
+	<update id="changeApprPassword" parameterClass="user">
+	  <![CDATA[
+		   	UPDATE 	IKEP4_EV_USER
+		   	SET 	APPROVAL_PASSWORD 	= #approvalPassword#	
+		   	WHERE 	USER_ID = #userId#
+	   ]]>
+	</update>
+	
+</sqlMap>

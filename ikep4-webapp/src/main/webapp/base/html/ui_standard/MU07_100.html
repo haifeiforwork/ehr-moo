@@ -1,0 +1,410 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ko">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>iKEP 4.00</title>
+<link rel="stylesheet" type="text/css" href="../../css/theme01/jquery_ui_custom.css" />
+<link rel="stylesheet" type="text/css" href="../../css/common.css" />
+<link rel="stylesheet" type="text/css" href="../../css/theme01/theme.css" />
+<script type="text/javascript" src="../../js/jquery/jquery-1.6.2.min.js"></script>
+<script type="text/javascript" src="../../js/jquery/jquery-ui-1.8.13.min.without.datepicker.js"></script>
+<script type="text/javascript" src="../../js/jquery/jquery.jstree.pack.js"></script>
+<script type="text/javascript" src="../../js/langResource/ko.js"></script>
+<script type="text/javascript" src="../../js/jquery/plugins.pack.js"></script>
+<script type="text/javascript" src="../../js/common.pack.js"></script>
+<script type="text/javascript">
+<!--
+var $portlets;
+var activePortlets = [
+	{id:"P003", layout:"r", seq:0},
+	{id:"P002", layout:"l", seq:2},
+	{id:"P007", layout:"l", seq:0},
+	{id:"P001", layout:"r", seq:1},
+	{id:"P005", layout:"l", seq:1}
+];
+
+(function($) {
+	var $portletLayout;
+	var tplPortlet = $.template(null, '<li><div class="moveButton_2"><a class="move_btn02" href="#a" title="\${id}"><span>\${desc}</span></a></div></li>');
+	
+	function getPortletItem(portletId) {	// portlet item result: checkbox element
+		var result = null;
+		$portlets.each(function() {
+			if(portletId == $(this).val()) {
+				result = this;
+				return false;
+			}
+		})
+		return result;
+	}
+	
+	
+	$(document).ready(function() {
+		$portletLayout = $("#portletLayout");
+		$portlets = $("input", "#ulPortletItems");
+		
+		var $ulLayout = $portletLayout.find("ul");
+		
+		$.each(activePortlets, function(){	// 활성화 되어 있는 포틀릿 생성
+			var $portletItem = $(getPortletItem(this.id)).attr("checked", "checked");
+			
+			var portletInfo = $.extend(this, {desc:$portletItem.attr("title")});
+			var $ul = null;
+			switch(portletInfo.layout) {
+				case "l" : $ul = $ulLayout.eq(0); break;
+				case "r" : $ul = $ulLayout.eq(1); break;
+			}
+			
+			var $displayPortlets = $ul.children();
+			var $appendPortlet = null;
+			if($displayPortlets.length > 0) {	// 해당 영역에 포틀릿이 있으면 순번에 맞춰 추가
+				$displayPortlets.each(function() {
+					if(portletInfo.seq < $.data(this, "seq")) {
+						$appendPortlet = $.tmpl(tplPortlet, portletInfo);
+						$.data($appendPortlet[0], {portletId:portletInfo.id, seq:portletInfo.seq});
+						$(this).before($appendPortlet);
+						return false;
+					}
+				});
+			}
+			
+			if($appendPortlet == null) {	// 포틀릿이 추가 되지 않았으면 해당 영역으 마지막에 추가
+				$appendPortlet = $.tmpl(tplPortlet, portletInfo);
+				$.data($appendPortlet[0], {portletId:portletInfo.id, seq:portletInfo.seq});
+				$ul.append($appendPortlet);
+			}
+		});
+		
+		var $divSortable = $portletLayout.find("ul");
+		$divSortable.sortable({
+			revert: true,
+			connectWith: $divSortable,
+			placeholder: "ui-state-highlight",
+			forcePlaceholderSize: true
+		});
+		
+		$("#ulPortletItems").click(function(event) {
+			if(event.target.tagName.toLowerCase() == "input") {
+				$portletItem = $(event.target);
+				if($portletItem.attr("checked") == true) {	// 생성
+					$appendPortlet = $.tmpl(tplPortlet, {id:$portletItem.val(), desc:$portletItem.attr("title")});
+					$.data($appendPortlet[0], "portletId", $portletItem.val());
+					$ulLayout.eq(0).prepend($appendPortlet);
+				} else {
+					$ulLayout.find("li").each(function() {
+						if($.data(this, "portletId") == $portletItem.val()) {
+							$(this).remove();
+							return false;
+						}
+					});
+				}
+			}
+		});
+		
+		$("#btnSave").click(function() {
+			var portletSet = [[], []];
+			if(confirm("저장하시겠습니까?")) {
+				$ulLayout.each(function(idx1) {
+					$(this).find("li").each(function(idx2) {
+						portletSet[idx1].push({portletId:$.data(this, "portletId"), seq:idx2});
+					});
+				});
+				
+				iKEP.debug(portletSet);	// 저장할 데이타
+			}
+		});
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		// collaboratoin left menu setting
+		iKEP.setLeftCollaborationMenu();
+		
+		$("#date1").datepicker().next().eq(0).click(function() { $(this).prev().eq(0).datepicker("show"); });
+		$("#date2").datepicker().next().eq(0).click(function() { $(this).prev().eq(0).datepicker("show"); });
+				
+		$("#divTab5").tabs();
+		
+		$("#categoryTree").jstree({
+			plugins:["themes", "ui", "json_data"],			
+			json_data:{data:[
+				{data:{title:"Database", icon:"dept", attr:{id:"category01", tag:"00001"}}},             
+				{data:{title:"기술분석"}, icon:"dept", attr:{id:"category02", tag:"00002"}, children:[
+   					{data:{title:"Java", icon:"dept"}, attr:{data:'{"id":"category03", "tag":"00021"}'}},
+   					{data:{title:"Spring", icon:"dept"}, attr:{data:'{"id":"category04", "tag":"00022"}'}},
+   					{data:{title:"Jquery", icon:"dept"}, attr:{data:'{"id":"category05", "tag":"00023"}'}}
+   				]},
+   				{data:{title:"비지니스, 경제"}, icon:"dept", attr:{id:"category06", tag:"00003"}, children:[
+					{data:{title:"금융", icon:"dept"}, attr:{data:'{"id":"category07", "tag":"00031"}'}},
+					{data:{title:"전자", icon:"dept"}, attr:{data:'{"id":"category08", "tag":"00032"}'}},
+					{data:{title:"제조", icon:"dept"}, attr:{data:'{"id":"category09", "tag":"00033"}'}}
+				]},
+				{data:{title:"사회, 문화"}, icon:"dept", attr:{id:"category10", tag:"00004"}, children:[
+					{data:{title:"해외여행", icon:"dept"}, attr:{data:'{"id":"category11", "tag":"00041"}'}},
+					{data:{title:"일본여행", icon:"dept"}, attr:{data:'{"id":"category12", "tag":"00042"}'}},
+					{data:{title:"유럽여행", icon:"dept"}, attr:{data:'{"id":"category13", "tag":"00043"}'}}
+				]},
+				{data:{title:"컴퓨터, 통신"}, icon:"dept", attr:{id:"category14", tag:"00005"}, children:[
+					{data:{title:"트위터", icon:"dept"}, attr:{data:'{"id":"category15", "tag":"00051"}'}},
+					{data:{title:"소셜네트워크", icon:"dept"}, attr:{data:'{"id":"category16", "tag":"00052"}'}},
+				    {data:{title:"iPhone", icon:"dept"}, attr:{data:'{"id":"category17", "tag":"00053"}'}},
+				    {data:{title:"갤럭시탭", icon:"dept"}, attr:{data:'{"id":"category18", "tag":"00054"}'}},
+				    {data:{title:"LG전자", icon:"dept"}, attr:{data:'{"id":"category19", "tag":"00055"}'}}
+				]},
+				{data:{title:"가정, 생활"}, icon:"dept", attr:{id:"category20", tag:"00006"}, children:[
+				     {data:{title:"물가대란", icon:"dept"}, attr:{data:'{"id":"category21", "tag":"00061"}'}},
+				     {data:{title:"스마트워킹", icon:"dept"}, attr:{data:'{"id":"category22", "tag":"00062"}'}},
+				     {data:{title:"교육제도", icon:"dept"}, attr:{data:'{"id":"category23", "tag":"00063"}'}},
+				     {data:{title:"쇼핑생활", icon:"dept"}, attr:{data:'{"id":"category24", "tag":"00064"}'}}
+				]},
+   			]}
+		});	
+		
+	});
+})(jQuery);
+-->
+</script>
+</head>
+
+<body>
+
+<!--skipNavigation Start-->
+<div id="skipNavigation">
+	<p><a href="#topInfo">헤더정보영역 바로가기</a></p>
+	<p><a href="#topMenu">탑메뉴 바로가기</a></p>	
+	<p><a href="#blockHeaderSub">퀵메뉴 바로가기</a></p>
+	<p><a href="#leftMenu">레프트메뉴 바로가기</a></p>	
+	<p><a href="#mainContents">컨텐츠영역 바로가기</a></p>	
+</div>
+<!--//skipNavigation End-->
+
+<!--wrapper Start-->
+<div id="wrapper">
+
+	<!--blockContainer Start-->
+	<div id="blockContainer">
+
+		<!--blockHeader Start-->
+		<div id="blockHeader">	
+		
+			<!--topInfo Start-->	
+			<div id="topInfo">
+				<h1 class="none">헤더정보영역</h1>
+				<div id="topLogo">
+					<a href="#a"><img src="../../images/common/logo.png" alt="iKEP Logo" /></a>
+				</div>
+			</div>
+			<!--//topInfo End-->
+						
+			<!--topMenu Start-->
+			<div id="topMenu">
+				<h1 class="none">탑메뉴</h1>			
+			</div>
+			<!--//topMenu End-->		
+
+			<!--blockHeaderSub Start-->
+			<div id="blockHeaderSub">
+				<h1 class="none">퀵메뉴</h1>		
+			</div>
+			<!--//blockHeaderSub End-->
+										
+		</div>
+		<!--//blockHeader End-->
+		
+		<!--blockMain Start-->
+		<div id="blockMain">
+
+			<!--leftMenu Start-->
+			<div id="leftMenu">
+				<h1 class="none">레프트메뉴</h1>	
+				<h2 class="coll_title">Team Coll's Name</h2>
+				<div class="left_fixed leftMenu_coll">
+					<div class="coll_menu">
+						<ul>
+							<li class="selected"><a href="#a">공지사항</a></li>
+							<li><a href="#a">Collaboration 일정</a></li>
+							<li><a href="#a">회원 Microblogging</a></li>
+							<li><a href="#a">[T]주간보고</a></li>
+							<li><a href="#a">[T]하위Coll. 주간보고</a></li>
+						</ul>
+					</div>
+					<!--tab Start-->		
+					<div id="divTab5" class="iKEP_tab_menu">
+						<ul>
+							<li	style="width:90px;"><a href="#tabs-1">첫번째탭</a></li>
+							<li	style="width:91px;"><a href="#tabs-2">두번째탭</a></li>
+						</ul>			
+					</div>	
+					<div class="treeBox_tab">
+						<div class="leftTree">
+							<div><img src="../../images/common/img_title_cate.gif" alt="category" /></div>
+							<div id="categoryTree"></div>
+						</div>
+					</div>		
+					<!--//tab End-->				
+					
+					<ul>
+						<li class="liFirst"><a href="#a">활동 통계</a></li>
+						<li><a href="#a">활동 통계</a>
+							<ul>
+								<li class="liLast opened"><a href="#a">iKEP Project</a>
+									<ul>
+										<li><a href="#a">회계관리 게시판</a></li>
+										<li><a href="#a">원가관리 실무</a></li>
+									</ul>
+								</li>
+							</ul>						
+						</li>
+						<li class="opened licurrent"><a href="#a">동맹 Collaboration</a>
+							<ul>
+								<li class="opened licurrent"><a href="#a">iKEP Project</a>
+									<ul>
+										<li class="licurrent"><a href="#a">회계관리 게시판</a></li>
+										<li><a href="#a">원가관리 실무</a></li>
+									</ul>
+								</li>
+								<li class="liLast"><a href="#a">iKEP TFT</a></li>
+							</ul>
+						</li>	
+						<li><a href="#a">Administration</a></li>				
+					</ul>
+					
+					<div class="coll_box">						
+						<h3>My Collaboration</h3>
+						<ul class="coll_list">
+							<li class="selected"><a href="#a" title="초고압선의 공간 초고압선의 공간"><span class="collName_my">초고압선의 공간 초고압선의 공간</span></a><a href="#a"><span class="arrow">기본</span></a></li>
+							<li><a href="#a" title="인프라서비스 부문"><span class="collName_my">인프라서비스 부문</span></a><a href="#a"><span class="arrow">기본</span></a></li>
+							<li><a href="#a" title="초고압선의 공간"><span class="collName_my">초고압선의 공간</span></a><a href="#a"><span class="arrow">기본</span></a></li>
+							<li><a href="#a" title="인프라서비스 부문"><span class="collName_my">인프라서비스 부문</span></a><a href="#a"><span class="arrow">기본</span></a></li>
+						</ul>
+						<div class="clear"></div>
+					</div>	
+									
+					<!--blockButton_2 Start-->
+					<div class="blockButton_2"> 
+						<a class="button_2 normal" href="#a"><span>회원가입 신청 / 회원탈퇴</span></a>				
+					</div>
+					<!--//blockButton_2 End-->						
+				</div>
+			</div>	
+			<!--//leftMenu End-->
+				
+			<!--mainContents Start-->
+			<div id="mainContents" class="conPadding_1">
+				<h1 class="none">컨텐츠영역</h1>
+				
+				<!--pageTitle Start-->
+				<div id="pageTitle">
+					<h2>Collaboration 레이아웃 관리</h2>
+				</div>
+				<!--//pageTitle End-->
+				
+				<div class="layout_group">
+					<!--layout Start-->
+					<div class="blockLeft" style="width:70%">
+						<div class="fixed_layout">
+							<div class="Leftmenu_fixed">
+								<div class="corner_RoundBox08 fixed01">
+									<div class="fixed01_txt" style="margin-left:-46px; margin-top:-6px;">좌측메뉴(Fixed)</div><!--글자길이에 따라 style의 margin값을 조절할 것-->
+									<div class="l_t_corner"></div>
+									<div class="r_t_corner"></div>
+									<div class="l_b_corner"></div>
+									<div class="r_b_corner"></div>
+								</div>
+							</div>
+						
+							<div class="Collaboration_fixed">
+								<div class="corner_RoundBox08 fixed02">
+									<div class="fixed02_txt">Collaboration 소개(Fixed)</div>
+									<div class="l_t_corner"></div>
+									<div class="r_t_corner"></div>
+									<div class="l_b_corner"></div>
+									<div class="r_b_corner"></div>
+								</div>
+								
+								<div id="portletLayout" class="moveButton_table">
+									<table summary="Collaboration 레이아웃 위치 설정 테이블">
+										<caption></caption>
+										<tbody>
+											<tr>
+												<td width="50%" class="paddingR"><ul class="moveButton"></ul></td>
+												<td width="50%"><ul class="moveButton"></ul></td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+												
+							</div>
+						</div>	
+					</div>
+					<!--//layout End-->
+					
+					<!--layout_portlet Start-->
+					<div class="blockRight" style="width:28%">
+						<div class="layout_portletList02">
+							<div class="portletList_title02"><strong>포틀릿 목록</strong></div>
+							<div class="portletList_s02">
+								<ul id="ulPortletItems">
+									<li><label><input type="checkbox" class="checkbox" title="개인 프로필" value="P001" /> 개인 프로필</label></li>
+									<li><label><input type="checkbox" class="checkbox" title="카테고리" value="P002" /> 카테고리</label></li>
+									<li><label><input type="checkbox" class="checkbox" title="Activity" value="P003" /> Activity</label></li>
+									<li><label><input type="checkbox" class="checkbox" title="포스팅 달력" value="P004" /> 포스팅 달력</label></li>
+									<li><label><input type="checkbox" class="checkbox" title="Following 정보" value="P005" /> Following 정보</label></li>
+									<li><label><input type="checkbox" class="checkbox" title="최근 댓글" value="P006" /> 최근 댓글</label></li>
+									<li><label><input type="checkbox" class="checkbox" title="태그 클라우드" value="P007" /> 태그 클라우드</label></li>
+									<li><label><input type="checkbox" class="checkbox" title="개인 프로필" value="P008" /> 개인 프로필</label></li>
+									<li><label><input type="checkbox" class="checkbox" title="카테고리" value="P009" /> 카테고리</label></li>
+									<li><label><input type="checkbox" class="checkbox" title="Activity" value="P010" /> Activity</label></li>
+									<li><label><input type="checkbox" class="checkbox" title="포스팅 달력" value="P011" /> 포스팅 달력</label></li>
+									<li><label><input type="checkbox" class="checkbox" title="Following 정보" value="P012" /> Following 정보</label></li>
+									<li><label><input type="checkbox" class="checkbox" title="최근 댓글" value="P013" /> 최근 댓글</label></li>
+									<li><label><input type="checkbox" class="checkbox" title="태그 클라우드" value="P014" /> 태그 클라우드</label></li>
+									<li><label><input type="checkbox" class="checkbox" title="개인 프로필" value="P015" /> 개인 프로필</label></li>
+									<li><label><input type="checkbox" class="checkbox" title="포스팅 달력" value="P016" /> 포스팅 달력</label></li>
+									<li><label><input type="checkbox" class="checkbox" title="Following 정보" value="P017" /> Following 정보</label></li>
+									<li><label><input type="checkbox" class="checkbox" title="최근 댓글" value="P018" /> 최근 댓글</label></li>
+									<li><label><input type="checkbox" class="checkbox" title="태그 클라우드" value="P019" /> 태그 클라우드</label></li>
+									<li><label><input type="checkbox" class="checkbox" title="개인 프로필" value="P020" /> 개인 프로필</label></li>
+								</ul>
+							</div>
+						</div>
+					</div>
+					<!--//layout_portlet End-->
+					<div class="clear"></div>
+				</div>
+				
+				<!--blockButton Start-->
+				<div class="blockButton"> 
+					<ul>
+						<li><a class="button" href="#a"><span>저장</span></a></li>
+					</ul>
+				</div>
+				<!--//blockButton End-->
+
+			
+			<!--//mainContents End-->
+			<div class="clear"></div>
+			
+			
+			
+		</div>
+		<!--//blockMain End-->
+		
+	</div>
+	<!--//blockContainer End-->
+	
+		
+</div>
+<!--//wrapper End-->
+</body>
+</html>

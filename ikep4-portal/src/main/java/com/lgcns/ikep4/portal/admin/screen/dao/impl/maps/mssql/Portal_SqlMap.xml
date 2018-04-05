@@ -1,0 +1,441 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="portal.admin.screen.portal" >
+	<typeAlias alias = "Portal" type="com.lgcns.ikep4.portal.main.model.Portal"/>
+	<typeAlias alias = "PortalSearchCondition" type="com.lgcns.ikep4.portal.main.model.PortalSearchCondition"/>
+
+	<!-- 포탈 테이블 조회 결과 -->
+	<resultMap id="portalResult" class="Portal">
+		<result property="portalId" column="PORTAL_ID"/>
+		<result property="portalName" column="PORTAL_NAME"/>
+		<result property="description" column="DESCRIPTION"/>
+		<result property="defaultOption" column="DEFAULT_OPTION"/>
+		<result property="loginImageId" column="LOGIN_IMAGE_ID"/>
+		<result property="logoImageId" column="LOGO_IMAGE_ID"/>
+		<result property="portalHost" column="PORTAL_HOST"/>
+		<result property="portalPath" column="PORTAL_PATH"/>
+		<result property="active" column="ACTIVE"/>
+		<result property="registerId" column="REGISTER_ID"/>
+		<result property="registerName" column="REGISTER_NAME"/>
+		<result property="registDate" column="REGIST_DATE"/>
+		<result property="updaterId" column="UPDATER_ID"/>
+		<result property="updaterName" column="UPDATER_NAME"/>
+		<result property="updateDate" column="UPDATE_DATE"/>
+		<result property="defaultLocaleCode" column="DEFAULT_LOCALE_CODE"/>
+		<result property="portalHostAlias" column="PORTAL_HOST_ALIAS"/>
+		<result property="cacheYn" column="CACHE_YN"/>
+	</resultMap>
+	
+	<!-- ANSI -->
+   <select id="getPortalContextPath" parameterClass="java.lang.String" resultMap="portalResult">
+	  <![CDATA[
+	  	   /* [Portal_SqlMap.xml] portal.admin.screen.portal.getPortalContextPath */
+		   SELECT 
+		   	   PORTAL_ID, 
+		   	   PORTAL_NAME, 
+		   	   DESCRIPTION, 
+		   	   DEFAULT_OPTION, 
+		   	   LOGIN_IMAGE_ID, 
+		   	   LOGO_IMAGE_ID, 
+		   	   PORTAL_HOST, 
+		   	   PORTAL_PATH, 
+		   	   ACTIVE, 
+		   	   REGISTER_ID, 
+		   	   REGISTER_NAME, 
+		   	   REGIST_DATE,
+		   	   UPDATER_ID, 
+		   	   UPDATER_NAME, 
+		   	   UPDATE_DATE,
+		   	   DEFAULT_LOCALE_CODE,
+		   	   PORTAL_HOST_ALIAS,
+		   	   CACHE_YN
+		   	 FROM IKEP4_PO_PORTAL
+		   	WHERE PORTAL_PATH = #contextPath#
+		      AND ACTIVE = 1 
+	   ]]>
+	</select>
+	
+	<!-- ANSI -->
+	<select id="getPortalDomain" parameterClass="java.lang.String" resultMap="portalResult">
+	  <![CDATA[
+	  	   /* [Portal_SqlMap.xml] portal.admin.screen.portal.getPortalDomain */
+		   SELECT 
+		   	   TOP 1
+		   	   PORTAL_ID, 
+		   	   PORTAL_NAME, 
+		   	   DESCRIPTION, 
+		   	   DEFAULT_OPTION, 
+		   	   LOGIN_IMAGE_ID, 
+		   	   LOGO_IMAGE_ID, 
+		   	   PORTAL_HOST, 
+		   	   PORTAL_PATH, 
+		   	   ACTIVE, 
+		   	   REGISTER_ID, 
+		   	   REGISTER_NAME, 
+		   	   REGIST_DATE,
+		   	   UPDATER_ID, 
+		   	   UPDATER_NAME, 
+		   	   UPDATE_DATE,
+		   	   DEFAULT_LOCALE_CODE,
+		   	   PORTAL_HOST_ALIAS,
+			   CACHE_YN
+		   	 FROM IKEP4_PO_PORTAL
+			WHERE (PORTAL_HOST = #domain# OR ',' + PORTAL_HOST_ALIAS + ',' LIKE '%,' + #domain# + ',%')
+		      AND ACTIVE = 1 
+	   ]]>
+	</select>
+	
+	<!-- ANSI -->
+   <select id="getPortalDefault" resultMap="portalResult">
+	  <![CDATA[
+	  	   /* [Portal_SqlMap.xml] portal.admin.screen.portal.getPortalDefault */
+		   SELECT 
+		   	   PORTAL_ID, 
+		   	   PORTAL_NAME, 
+		   	   DESCRIPTION, 
+		   	   DEFAULT_OPTION, 
+		   	   LOGIN_IMAGE_ID, 
+		   	   LOGO_IMAGE_ID, 
+		   	   PORTAL_HOST, 
+		   	   PORTAL_PATH, 
+		   	   ACTIVE, 
+		   	   REGISTER_ID, 
+		   	   REGISTER_NAME, 
+		   	   REGIST_DATE,
+		   	   UPDATER_ID, 
+		   	   UPDATER_NAME, 
+		   	   UPDATE_DATE,
+		   	   DEFAULT_LOCALE_CODE,
+		   	   PORTAL_HOST_ALIAS,
+		   	   CACHE_YN  
+		   	 FROM IKEP4_PO_PORTAL 
+		    WHERE DEFAULT_OPTION = 0
+		      AND ACTIVE = 1 
+	   ]]>
+	</select>
+	
+	<!-- ANSI -->
+	<update id="updatePortalLoginImageId" parameterClass="Portal">
+	  <![CDATA[
+	  	   /* [Portal_SqlMap.xml] portal.admin.screen.portal.updatePortalLoginImageId */
+		   UPDATE IKEP4_PO_PORTAL
+		      SET LOGIN_IMAGE_ID = #loginImageId#,
+		      	  UPDATER_ID = #updaterId#,
+		      	  UPDATER_NAME = #updaterName#,
+		      	  UPDATE_DATE = CURRENT_TIMESTAMP	 
+		    WHERE PORTAL_ID = #portalId#
+	   ]]>
+	</update>
+	
+	<!-- ANSI -->
+	<update id="updatePortalLogoImageId" parameterClass="Portal">
+	  <![CDATA[
+	  	   /* [Portal_SqlMap.xml] portal.admin.screen.portal.updatePortalLogoImageId */
+		   UPDATE IKEP4_PO_PORTAL
+		      SET LOGO_IMAGE_ID = #logoImageId#,
+		      	  UPDATER_ID = #updaterId#,
+		      	  UPDATER_NAME = #updaterName#,
+		      	  UPDATE_DATE = CURRENT_TIMESTAMP	 
+		    WHERE PORTAL_ID = #portalId#
+	   ]]>
+	</update>
+	
+	<!-- ANSI -->
+	<select id="getPortal" parameterClass="java.lang.String" resultMap="portalResult">
+	  <![CDATA[
+	  	   /* [Portal_SqlMap.xml] portal.admin.screen.portal.getPortal */
+		   SELECT 
+		   	   PORTAL_ID, 
+		   	   PORTAL_NAME, 
+		   	   DESCRIPTION, 
+		   	   DEFAULT_OPTION, 
+		   	   LOGIN_IMAGE_ID, 
+		   	   LOGO_IMAGE_ID, 
+		   	   PORTAL_HOST, 
+		   	   PORTAL_PATH, 
+		   	   ACTIVE, 
+		   	   REGISTER_ID, 
+		   	   REGISTER_NAME, 
+		   	   REGIST_DATE,
+		   	   UPDATER_ID, 
+		   	   UPDATER_NAME, 
+		   	   UPDATE_DATE,
+		   	   DEFAULT_LOCALE_CODE,
+		   	   PORTAL_HOST_ALIAS,
+			   CACHE_YN 
+		   	 FROM IKEP4_PO_PORTAL
+		   	WHERE PORTAL_ID = #portalId#
+	   ]]>
+	</select>
+	
+	<!-- ANSI -->
+	<insert id="createPortal" parameterClass="Portal"> 
+      <![CDATA[
+      	   /* [Portal_SqlMap.xml] portal.admin.screen.portal.createPortal */ 
+           INSERT INTO IKEP4_PO_PORTAL (PORTAL_ID, PORTAL_NAME, DESCRIPTION, DEFAULT_OPTION, LOGIN_IMAGE_ID, LOGO_IMAGE_ID, PORTAL_HOST, PORTAL_PATH, ACTIVE, REGISTER_ID, REGISTER_NAME, REGIST_DATE, UPDATER_ID, UPDATER_NAME, UPDATE_DATE, DEFAULT_LOCALE_CODE, PORTAL_HOST_ALIAS, CACHE_YN)  
+           VALUES (#portalId#, #portalName#, #description#, #defaultOption#, #loginImageId#, #logoImageId#, #portalHost#, #portalPath#, #active#, #registerId#, #registerName#, CURRENT_TIMESTAMP, #updaterId#, #updaterName#, CURRENT_TIMESTAMP, #defaultLocaleCode#, #portalHostAlias#, #cacheYn#)
+       ]]>
+   </insert>
+   
+   <!-- ANSI -->
+	<update id="updatePortal" parameterClass="Portal">
+		<![CDATA[
+		/* [Portal_SqlMap.xml] portal.admin.screen.portal.updatePortal */
+		UPDATE 				IKEP4_PO_PORTAL
+		SET 				PORTAL_NAME = #portalName#,
+							DESCRIPTION = #description#,
+							DEFAULT_OPTION = #defaultOption#,
+							PORTAL_HOST = #portalHost#,
+							PORTAL_PATH = #portalPath#,
+							ACTIVE = #active#,
+		      	  			DEFAULT_LOCALE_CODE = #defaultLocaleCode#,
+		      	  			CACHE_YN = #cacheYn#,
+		      	  			UPDATER_ID = #updaterId#,
+		      	  			UPDATER_NAME = #updaterName#,
+		      	  			UPDATE_DATE = CURRENT_TIMESTAMP,
+		      	  			PORTAL_HOST_ALIAS = #portalHostAlias#		 
+		WHERE 				PORTAL_ID = #portalId#
+	   ]]>
+	</update>
+	
+	<!-- MS SQL -->
+	<select id="countListPortal" parameterClass="PortalSearchCondition" resultClass="int">  
+  		<![CDATA[
+  		/* [Portal_SqlMap.xml] portal.admin.screen.portal.countListPortal */ 
+		SELECT
+			 count(*)
+		  FROM IKEP4_PO_PORTAL
+		 WHERE 1 = 1  			
+		]]>
+		<isNotEmpty property="searchColumn">
+			<isNotEmpty property="searchWord">
+				<isEqual property="searchColumn" compareValue="PORTAL_NAME">
+				AND UPPER(PORTAL_NAME) LIKE UPPER('%' + #searchWord# + '%')
+				</isEqual>
+			</isNotEmpty>
+		</isNotEmpty>
+  	</select>
+  	
+  	<!-- MS SQL -->
+  	<select id="listPortal" parameterClass="PortalSearchCondition" resultMap="portalResult">
+	 	<![CDATA[
+  		/* [Portal_SqlMap.xml] portal.admin.screen.portal.listPortal */
+		SELECT	*
+		FROM	(	SELECT	Row_number() OVER	(
+		]]>
+													<isNotEmpty property="sortColumn">
+											   			<isEqual property="sortColumn" compareValue="PORTAL_ID">
+												    		<isEqual property="sortType" compareValue="ASC">
+											    			ORDER BY 			PORTAL_ID ASC
+												    		</isEqual>
+												    		<isEqual property="sortType" compareValue="DESC">
+											    			ORDER BY 			PORTAL_ID DESC
+												    		</isEqual>
+												    	</isEqual>
+											   			<isEqual property="sortColumn" compareValue="PORTAL_NAME">
+												    		<isEqual property="sortType" compareValue="ASC">
+											    			ORDER BY 			PORTAL_NAME ASC
+												    		</isEqual>
+												    		<isEqual property="sortType" compareValue="DESC">
+											    			ORDER BY 			PORTAL_NAME DESC
+												    		</isEqual>
+												    	</isEqual>
+											   			<isEqual property="sortColumn" compareValue="DESCRIPTION">
+												    		<isEqual property="sortType" compareValue="ASC">
+											    			ORDER BY 			DESCRIPTION ASC
+												    		</isEqual>
+												    		<isEqual property="sortType" compareValue="DESC">
+											    			ORDER BY 			DESCRIPTION DESC
+												    		</isEqual>
+												    	</isEqual>
+												    	<isEqual property="sortColumn" compareValue="DEFAULT_OPTION">
+												    		<isEqual property="sortType" compareValue="ASC">
+											    			ORDER BY 			DEFAULT_OPTION ASC
+												    		</isEqual>
+												    		<isEqual property="sortType" compareValue="DESC">
+											    			ORDER BY 			DEFAULT_OPTION DESC
+												    		</isEqual>
+												    	</isEqual>
+												    	<isEqual property="sortColumn" compareValue="ACTIVE">
+												    		<isEqual property="sortType" compareValue="ASC">
+											    			ORDER BY 			ACTIVE ASC
+												    		</isEqual>
+												    		<isEqual property="sortType" compareValue="DESC">
+											    			ORDER BY 			ACTIVE DESC
+												    		</isEqual>
+												    	</isEqual>
+											   		</isNotEmpty>
+											   		<isEmpty property="sortColumn">
+										   			ORDER BY 			REGIST_DATE
+											   		</isEmpty>
+		<![CDATA[			
+											  	) AS RNUM,
+							PORTAL_ID, 
+							PORTAL_NAME, 
+							DESCRIPTION, 
+							DEFAULT_OPTION, 
+							LOGIN_IMAGE_ID, 
+							LOGO_IMAGE_ID, 
+							PORTAL_HOST, 
+							PORTAL_PATH, 
+							ACTIVE, 
+							REGISTER_ID, 
+							REGISTER_NAME, 
+							REGIST_DATE, 
+							UPDATER_ID, 
+							UPDATER_NAME, 
+							UPDATE_DATE, 
+							DEFAULT_LOCALE_CODE,
+							PORTAL_HOST_ALIAS,
+					   	   	CACHE_YN 
+					FROM IKEP4_PO_PORTAL
+					WHERE 1 = 1    
+		]]>								         	       
+	    			<isNotEmpty property="searchColumn">
+			 			<isNotEmpty property="searchWord">
+							<isEqual property="searchColumn" compareValue="PORTAL_NAME">
+								AND	UPPER(PORTAL_NAME) LIKE UPPER('%' + #searchWord# + '%')
+							</isEqual>
+						</isNotEmpty>
+					</isNotEmpty>
+		<![CDATA[
+				) C
+		WHERE C.RNUM > #startRowIndex# 
+			AND C.RNUM <= #endRowIndex#
+		]]>
+	</select>
+	
+	<!-- ANSI -->
+	<delete id="removePortal" parameterClass="String">
+      <![CDATA[
+      	   /* [Portal_SqlMap.xml] portal.admin.screen.portal.removePortal */
+	       DELETE FROM IKEP4_PO_PORTAL
+ 			WHERE portal_id = #portalId# 
+ 	   ]]>    
+	</delete>
+	
+	<!-- ANSI -->
+	<update id="resetDefaultOption">
+		<![CDATA[
+		/* [Portal_SqlMap.xml] portal.admin.screen.portal.resetDefaultOption */
+		UPDATE				IKEP4_PO_PORTAL
+		SET					DEFAULT_OPTION = '0'
+		WHERE				DEFAULT_OPTION = '1'
+		]]>
+	</update>
+	
+	<!-- ANSI -->
+	<select id="listAdminUser" parameterClass="java.util.Map" resultClass="com.lgcns.ikep4.support.user.member.model.User">
+		<![CDATA[
+		/* [Portal_SqlMap.xml] portal.admin.screen.portal.listAdminUser */
+		SELECT				USER_ID  		userId,
+							USER_NAME  		userName,
+							USER_PASSWORD	userPassword
+		FROM				IKEP4_EV_USER
+		WHERE 				PORTAL_ID = #portalId#
+		AND 				USER_ID
+		]]>
+		<dynamic prepend="IN">
+		<iterate property="assignUserIdList" open="(" conjunction="," close=")">	
+							#assignUserIdList[]#
+		</iterate>
+		</dynamic> 
+	</select>
+	
+	<!-- ANSI -->
+	<insert id="createAdminUser" parameterClass="com.lgcns.ikep4.support.user.member.model.User"> 
+		<![CDATA[
+		/* [Portal_SqlMap.xml] portal.admin.screen.portal.createAdminUser */
+		INSERT INTO			IKEP4_EV_USER
+							(
+							USER_ID,
+							PORTAL_ID,
+							USER_PASSWORD,
+							USER_STATUS,
+							USER_NAME,
+							USER_ENGLISH_NAME,
+							TEAM_NAME,
+							TIMEZONE_ID,
+							LEADER,
+							LOCALE_CODE,
+							REGISTER_ID,
+							REGISTER_NAME,
+							REGIST_DATE,
+							UPDATER_ID,
+							UPDATER_NAME,
+							UPDATE_DATE
+							)
+		VALUES				(
+							#userId#,
+							#portalId#,
+							#userPassword#,
+							#userStatus#,
+							#userName#,
+							#userEnglishName#,
+							#teamName#,
+							#timezoneId#,
+							#leader#,
+							#localeCode#,
+							#registerId#,
+							#registerName#,
+							CURRENT_TIMESTAMP,
+							#updaterId#,
+							#updaterName#,
+							CURRENT_TIMESTAMP
+							)
+		]]>
+	</insert>
+	
+	<update id="updateAdminUser" parameterClass="java.util.Map">
+		<![CDATA[
+		/* [Portal_SqlMap.xml] portal.admin.screen.portal.updateAdminUser */
+		UPDATE 				IKEP4_EV_USER
+		SET 				USER_PASSWORD = #userPassword#,
+							USER_NAME = #userName#,
+							UPDATER_ID = #updaterId#,
+							UPDATER_NAME = #updaterName#,
+							UPDATE_DATE = CURRENT_TIMESTAMP	
+		WHERE 				USER_ID = #userId#
+		AND					PORTAL_ID = #portalId#
+	   	]]>
+	</update>
+
+	<!-- ANSI -->	
+	<delete id="deleteAdminUser" parameterClass="java.util.Map">
+      	<![CDATA[
+		/* [Portal_SqlMap.xml] portal.admin.screen.portal.deleteAdminUser */
+		DELETE 
+		FROM 				IKEP4_EV_USER
+		WHERE 				USER_ID = #userId#
+		AND					PORTAL_ID = #portalId# 
+ 	   	]]>    
+	</delete>
+	
+	<select id="listPortalAll" resultMap="portalResult">
+	 	<![CDATA[
+  		/* [Portal_SqlMap.xml] portal.admin.screen.portal.listPortalAll */
+		SELECT				
+			PORTAL_ID, 
+		    PORTAL_NAME, 
+		    DESCRIPTION, 
+		    DEFAULT_OPTION, 
+		    LOGIN_IMAGE_ID, 
+		    LOGO_IMAGE_ID, 
+		    PORTAL_HOST, 
+		    PORTAL_PATH, 
+		    ACTIVE, 
+		    REGISTER_ID, 
+		    REGISTER_NAME, 
+		    REGIST_DATE, 
+		    UPDATER_ID, 
+		    UPDATER_NAME, 
+		    UPDATE_DATE, 
+		    DEFAULT_LOCALE_CODE,
+		    PORTAL_HOST_ALIAS,
+			CACHE_YN 
+		  FROM 	IKEP4_PO_PORTAL
+		]]>								         	       
+	       	       								
+	</select>
+</sqlMap>

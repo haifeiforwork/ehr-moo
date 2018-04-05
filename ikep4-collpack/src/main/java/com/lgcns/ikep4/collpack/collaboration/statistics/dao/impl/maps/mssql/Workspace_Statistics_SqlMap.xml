@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="collpack.collaboration.statistics.dao.WorkspaceStatistics">
+
+	<typeAlias alias="WorkspaceStatistics"		type="com.lgcns.ikep4.collpack.collaboration.statistics.model.WorkspaceStatistics"/>  
+	<typeAlias alias="StatisticsSearchCondition"	type="com.lgcns.ikep4.collpack.collaboration.statistics.search.StatisticsSearchCondition"/>
+
+	<!-- MS SQL -->
+	<!-- Workspace Statistics -->
+	<select id="listStatisticsByCollaboration" parameterClass="StatisticsSearchCondition" resultClass="WorkspaceStatistics">
+		WITH CTE AS (
+			SELECT	1 COL, CONVERT(DATETIME, #startPeriodFlag# + '01') AS YEAR_MONTH
+			UNION ALL
+			SELECT	COL + 1, DATEADD(MM, 1, CTE.YEAR_MONTH) AS YEAR_MONTH
+			FROM	CTE
+			WHERE	CTE.YEAR_MONTH &lt; CONVERT(DATETIME, #endPeriodFlag# + '01')
+		)
+		SELECT /* [WorkspaceStatistics_SqlMap.xml] collpack.collaboration.statistics.dao.WorkspaceStatistics.listStatisticsByCollaboration */ 
+			A.YEAR_MONTH AS yearMonth,
+			B.MEM_CNT						AS memCnt,
+			B.DOC_COUNT						AS docCount,
+			B.WEEKLY_COUNT					AS weeklyCount,
+			B.HIT_COUNT						AS hitCount,
+			B.RECOMMEND_COUNT				AS recommendCount,
+			B.LINEREPLY_COUNT				AS lineReplyCount,
+			B.FAVORITE_COUNT				AS favoriteCount,
+			CONVERT(NVARCHAR, ISNULL(ROUND(B.VISIT_RATIO,2),0))+'%'	AS visitRatio,
+			CONVERT(NVARCHAR, ISNULL(ROUND(B.WRITE_RATIO,2),0))+'%'	AS writeRatio,
+			CONVERT(NVARCHAR, ISNULL(ROUND(B.WEEKLY_RATIO,2),0))+'%'	AS weeklyRatio,
+			CONVERT(NVARCHAR, ISNULL(ROUND(B.LINEREPLY_RATIO,2),0))+'%' AS lineReplyRatio
+		FROM 
+		(
+			SELECT COL, 
+			substring(CONVERT(NVARCHAR, YEAR_MONTH, 23), 0,8) AS YEAR_MONTH 
+			FROM CTE
+		)A LEFT OUTER JOIN 
+		(
+			SELECT 
+				YEAR_MONTH,
+				MEM_CNT,
+				SUM(X.DOC_COUNT) AS DOC_COUNT , 
+				SUM(X.WEEKLY_COUNT) AS WEEKLY_COUNT, 
+				SUM(X.HIT_COUNT) AS HIT_COUNT,
+				SUM(X.RECOMMEND_COUNT) AS RECOMMEND_COUNT,
+				SUM(X.LINEREPLY_COUNT) AS LINEREPLY_COUNT,
+				SUM(X.FAVORITE_COUNT) AS FAVORITE_COUNT,
+				CONVERT(FLOAT, SUM(X.VISIT_MEMBER)*100)/MEM_CNT AS VISIT_RATIO, 
+				CONVERT(FLOAT, SUM(X.WRITE_MEMBER)*100)/MEM_CNT AS WRITE_RATIO,
+				CONVERT(FLOAT, SUM(X.WEEKLY_MEMBER)*100)/MEM_CNT AS WEEKLY_RATIO,
+				CONVERT(FLOAT, SUM(X.LINEREPLY_MEMBER)*100)/MEM_CNT AS LINEREPLY_RATIO
+			FROM
+			(
+				SELECT 
+					YEAR_MONTH,
+					MEMBER_ID, 
+					WS.MEM_CNT AS MEM_CNT,
+					DOC_COUNT,
+					WEEKLY_COUNT, 
+					HIT_COUNT,
+					RECOMMEND_COUNT,
+					LINEREPLY_COUNT,
+					FAVORITE_COUNT,
+					VISIT_MEMBER,
+					CASE  WHEN DOC_COUNT &gt;1 THEN 1 ELSE DOC_COUNT END WRITE_MEMBER,
+					CASE  WHEN WEEKLY_COUNT &gt;1 THEN 1 ELSE WEEKLY_COUNT END WEEKLY_MEMBER,
+					CASE  WHEN LINEREPLY_COUNT &gt;1 THEN 1 ELSE LINEREPLY_COUNT END LINEREPLY_MEMBER
+				FROM (
+					SELECT 
+						B.YEAR_MONTH, 
+						A.MEMBER_ID, 
+						MAX(A.WORKSPACE_ID) WORKSPACE_ID,
+						SUM(B.DOC_COUNT) AS DOC_COUNT ,
+						SUM(B.WEEKLY_COUNT) AS WEEKLY_COUNT,
+						SUM(B.HIT_COUNT) AS HIT_COUNT,
+						SUM(B.RECOMMEND_COUNT) AS RECOMMEND_COUNT, 
+						SUM(B.LINEREPLY_COUNT) AS LINEREPLY_COUNT, 
+						SUM(B.FAVORITE_COUNT) AS FAVORITE_COUNT,
+						SUM(B.IS_VISIT) AS VISIT_MEMBER
+					FROM 
+					IKEP4_WS_MEMBER A
+					LEFT OUTER JOIN IKEP4_WS_STATISTICS B ON 
+					( 
+						A.MEMBER_ID = B.USER_ID 
+						AND A.WORKSPACE_ID = B.WORKSPACE_ID
+						AND B.YEAR_MONTH &gt;= #startPeriodFlag# 
+						AND B.YEAR_MONTH &lt;= #endPeriodFlag#
+					)
+					INNER JOIN IKEP4_EV_USER_GROUP C ON A.MEMBER_ID = C.USER_ID
+					WHERE 
+						A.WORKSPACE_ID = #workspaceId#
+
+						<isEqual property="groupValue" compareValue="A">
+						AND   	C.REPRESENT_GROUP = 1
+						</isEqual>
+						<isEqual property="groupValue" compareValue="W">
+						AND   	C.GROUP_ID = #groupId#
+						</isEqual>
+
+						<isEqual property="memberFlag" compareValue="A">
+						AND 	A.MEMBER_LEVEL &lt;= 4
+						</isEqual>
+						<isEqual property="memberFlag" compareValue="M">
+						AND 	A.MEMBER_LEVEL &lt;= 3
+						</isEqual>  
+
+						GROUP BY 
+							B.YEAR_MONTH, A.MEMBER_ID
+				) MEM INNER JOIN
+				(
+					SELECT
+						WORKSPACE_ID, 
+						COUNT(MEMBER_ID) MEM_CNT 
+					FROM 
+						IKEP4_WS_MEMBER M
+						INNER JOIN IKEP4_EV_USER_GROUP G ON M.MEMBER_ID = G.USER_ID
+					WHERE 
+						1=1
+						<isEqual property="groupValue" compareValue="A">
+						AND   	G.REPRESENT_GROUP = 1
+						</isEqual>
+						<isEqual property="groupValue" compareValue="W">
+						AND   	G.GROUP_ID = #groupId#
+						</isEqual>
+						<isEqual property="memberFlag" compareValue="A">
+						AND 	M.MEMBER_LEVEL &lt;= 4
+						</isEqual>
+						<isEqual property="memberFlag" compareValue="M">
+						AND 	M.MEMBER_LEVEL &lt;= 3
+						</isEqual>  
+					GROUP BY 
+						M.WORKSPACE_ID
+				) WS ON  MEM.WORKSPACE_ID = WS.WORKSPACE_ID
+			) X
+			WHERE 
+				YEAR_MONTH IS NOT NULL
+			GROUP BY 
+				YEAR_MONTH, MEM_CNT
+		) B ON A.YEAR_MONTH = B.YEAR_MONTH
+		ORDER BY 
+			A.YEAR_MONTH ASC
+	</select>
+
+	<!-- ANSI -->
+	<!-- Workspace Member Statistics -->
+	<select id="listStatisticsByMember" parameterClass="StatisticsSearchCondition" resultClass="WorkspaceStatistics">
+	SELECT 
+			memberId,
+			memberLevel,
+			CASE WHEN memberLevel = 1 THEN '시샵' 
+			WHEN memberLevel = 2 THEN '운영진' 
+			WHEN memberLevel = 3 THEN '정회원' 
+			WHEN memberLevel = 4 THEN '준회원' END levelName,
+			CASE WHEN memberLevel = 1 THEN 'Sysop' 
+			WHEN memberLevel = 2 THEN 'Manager' 
+			WHEN memberLevel = 3 THEN 'Member' 
+			WHEN memberLevel = 4 THEN 'Associate Member' END levelEnglishName,
+			userName,
+			userEnglishName,
+			teamName,
+			teamEnglishName,
+			jobTitleName,
+			jobTitleEnglishName,
+			docCount,
+			weeklyCount,
+			hitCount,
+			recommendCount,
+			lineReplyCount,
+			favoriteCount
+	FROM (
+				SELECT /* [WorkspaceStatistics_SqlMap.xml] collpack.collaboration.statistics.dao.WorkspaceStatistics.listStatisticsByMember */ 
+					A.MEMBER_ID 				as memberId,
+					max(A.MEMBER_LEVEL) 		as memberLevel,
+					max(D.USER_NAME) 			as userName,
+					max(D.USER_ENGLISH_NAME)	as userEnglishName,
+					max(D.TEAM_NAME) 			as teamName,
+					max(D.TEAM_ENGLISH_NAME) 	as teamEnglishName,
+					max(E.JOB_TITLE_NAME) 		as jobTitleName,
+					max(E.JOB_TITLE_ENGLISH_NAME) 	as jobTitleEnglishName,
+					sum(B.DOC_COUNT) 			as docCount,
+					sum(B.WEEKLY_COUNT) 		as weeklyCount,
+					sum(B.HIT_COUNT) 			as hitCount,
+					sum(B.RECOMMEND_COUNT) 		as recommendCount,
+					sum(B.LINEREPLY_COUNT) 		as lineReplyCount,
+					sum(B.FAVORITE_COUNT)		as favoriteCount
+				FROM 
+					IKEP4_WS_MEMBER A 
+					LEFT OUTER JOIN IKEP4_WS_STATISTICS B ON 
+					(
+						A.MEMBER_ID = B.USER_ID 
+						AND A.WORKSPACE_ID = B.WORKSPACE_ID
+						AND B.YEAR_MONTH &gt;= #startPeriodFlag# 
+						AND B.YEAR_MONTH &lt;= #endPeriodFlag#
+					)
+					INNER JOIN IKEP4_EV_USER_GROUP C ON A.MEMBER_ID = C.USER_ID
+					INNER JOIN IKEP4_EV_USER D ON A.MEMBER_ID = D.USER_ID
+					INNER JOIN IKEP4_EV_JOB_TITLE E ON D.JOB_TITLE_CODE = E.JOB_TITLE_CODE
+				WHERE 	
+					A.WORKSPACE_ID = #workspaceId#
+					<isEqual property="groupValue" compareValue="A">
+					AND   	C.REPRESENT_GROUP = 1
+					</isEqual>
+					<isEqual property="groupValue" compareValue="W">
+					AND   	C.GROUP_ID = #groupId#
+					</isEqual>
+		
+					<isEqual property="memberFlag" compareValue="A">
+					AND 	A.MEMBER_LEVEL &lt;= 4
+					</isEqual>
+					<isEqual property="memberFlag" compareValue="M">
+					AND 	A.MEMBER_LEVEL &lt;= 3
+					</isEqual>  
+				GROUP BY 
+					A.MEMBER_ID
+			) TBL
+	</select>
+	
+	
+	<!-- MS SQL -->
+	<!-- Workspace Statistics procedure call -->
+	<procedure id="syncWorkspaceStatistics" parameterClass="String">
+		exec dbo.IKEP4_WS_SYNC_COLL_STATISTICS
+	</procedure>		
+	
+	
+	
+	<!-- ANSI -->
+	<delete id="physicalDeleteStatistics" parameterClass="String">
+	<![CDATA[
+		DELETE /* [WorkspaceStatistics_SqlMap.xml] collpack.collaboration.statistics.dao.WorkspaceStatistics.physicalDeleteStatistics */
+		FROM 
+			IKEP4_WS_STATISTICS
+		WHERE 
+			WORKSPACE_ID	=	#workspaceId#
+	]]>
+	</delete>
+</sqlMap> 

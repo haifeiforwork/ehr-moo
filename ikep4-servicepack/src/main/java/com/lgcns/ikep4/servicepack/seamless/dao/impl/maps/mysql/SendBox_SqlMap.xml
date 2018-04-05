@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="servicepack.seamlessmessage.sendbox">
+
+	<typeAlias alias="MessageBox" type="com.lgcns.ikep4.servicepack.seamless.model.MessageBox" />
+	<typeAlias alias="SeamlessmessageSearchCondition" type="com.lgcns.ikep4.servicepack.seamless.search.SeamlessmessageSearchCondition"/>
+	
+	<resultMap class="com.lgcns.ikep4.servicepack.seamless.model.MessageBox" id="resultBox">
+		<result column="MESSAGE_ID"            property="messageId"          jdbcType="VARCHAR" />
+	    <result column="MESSAGE_TYPE"          property="messageType"        jdbcType="VARCHAR" />
+	    <result column="TITLE"                 property="title"              jdbcType="VARCHAR" />
+	    <result column="CONTENTS"              property="contents"           jdbcType="VARCHAR" />
+	    <result column="ATTACH_COUNT"          property="attachCount"        jdbcType="DECIMAL" />
+	    <result column="RECEIVER_COUNT"        property="receiverCount"      jdbcType="DECIMAL" />
+	    <result column="SENDER_ID"             property="senderId"           jdbcType="VARCHAR" />
+	    <result column="SENDER_NAME"           property="senderName"         jdbcType="VARCHAR" />
+	    <result column="SEND_DATE"             property="sendDate"           jdbcType="TIMESTAMP" />
+	    <result column="MAIL_UID"              property="mailUid"            jdbcType="VARCHAR" />
+	    <result column="PICTURE_PATH"    		property="picturePath"    jdbcType="VARCHAR" />
+		<result column="PROFILE_PICTURE_PATH"    property="profilePicturePath"    jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<select id="get" parameterClass="SeamlessmessageSearchCondition" resultMap="resultBox">
+		<![CDATA[
+		/* [SendBox_SqlMap.xml] sendbox.get */
+		SELECT				A.MESSAGE_ID, 
+							A.MESSAGE_TYPE, 
+							A.TITLE, 
+							A.CONTENTS, 
+							A.ATTACH_COUNT, 
+							A.RECEIVER_COUNT, 
+							A.SENDER_ID, 
+							A.SENDER_NAME, 
+							A.SEND_DATE, 
+							A.MAIL_UID, 
+							B.PICTURE_PATH, 
+							B.PROFILE_PICTURE_PATH
+		FROM 				IKEP4_UM_SENDBOX A 
+		JOIN 				IKEP4_EV_USER B
+		ON 					A.SENDER_ID = B.USER_ID
+		WHERE 				A.IS_DELETE = '0'
+	  	AND 				A.MESSAGE_ID = #messageId#
+	  	AND 				A.SENDER_ID = #userId#
+	  	]]>
+	</select>
+	
+	<select id="exists" parameterClass="SeamlessmessageSearchCondition" resultClass="int">
+		<![CDATA[
+    	/* [SendBox_SqlMap.xml] sendbox.exists */
+    	SELECT				COUNT(*)
+	    FROM  				IKEP4_UM_SENDBOX
+		WHERE 				MESSAGE_ID = #messageId#
+		AND 				SENDER_ID = #userId#
+		]]>
+	</select> 
+	
+	<insert id="create" parameterClass="MessageBox">
+		<![CDATA[
+		/* [SendBox_SqlMap.xml] sendbox.create */
+		INSERT INTO 		IKEP4_UM_SENDBOX 
+							( 
+							MESSAGE_ID, 
+							MESSAGE_TYPE, 
+							TITLE, 
+							ATTACH_COUNT, 
+							RECEIVER_COUNT, 
+							SENDER_ID, 
+							SENDER_NAME, 
+							SEND_DATE, 
+							IS_DELETE, 
+							IS_INTERNAL_MESSAGE, 
+							CONTENTS, 
+							MAIL_UID
+							)
+	    VALUES				( 
+	    					#messageId#, 
+	    					#messageType#, 
+	    					#title#, 
+	    					IFNULL(#attachCount#, 0), 
+	    					#receiverCount#, 
+	    					#senderId#, 
+	    					#senderName#, 
+	    					#sendDate#, 
+	    					0, 
+	    					#isInternalMessage#, 
+	    					#contents#, 
+	    					#mailUid#
+	    					)
+		]]>
+    </insert>
+    
+    <update id="update" parameterClass="MessageBox">
+    	<![CDATA[
+    	/* [SendBox_SqlMap.xml] sendbox.update */
+	    UPDATE 				IKEP4_UM_SENDBOX 
+    	SET 				MESSAGE_ID = MESSAGE_ID
+    	]]>
+							<isNotEmpty property="messageType">
+							  , MESSAGE_TYPE = #messageType#
+							</isNotEmpty>
+							<isNotEmpty property="title">
+							  , TITLE = #title#
+							</isNotEmpty>
+							<isNotEmpty property="attachCount">
+							  , ATTACH_COUNT = #attachCount#
+							</isNotEmpty>
+							<isNotEmpty property="receiverCount">
+							  , RECEIVER_COUNT = #receiverCount#
+							</isNotEmpty>
+							<isNotEmpty property="senderId">
+							  , SENDER_ID = #senderId#
+							</isNotEmpty>
+							<isNotEmpty property="senderName">
+							  , SENDER_NAME = #senderName#
+							</isNotEmpty>
+							<isNotEmpty property="sendDate">
+							  , SEND_DATE = #sendDate#
+							</isNotEmpty>
+							<isNotEmpty property="isDelete">
+							  , IS_DELETE = #isDelete#
+							</isNotEmpty>
+							<isNotEmpty property="isInternalMessage">
+							  , IS_INTERNAL_MESSAGE = #isInternalMessage#
+							</isNotEmpty>
+							<isNotEmpty property="contents">
+							  , CONTENTS = #contents#
+							</isNotEmpty>
+		<![CDATA[
+	    WHERE 				MESSAGE_ID = #messageId#
+      	AND 				SENDER_ID = #senderId#
+      	]]>
+    </update>
+    
+	<delete id="remove" parameterClass="SeamlessmessageSearchCondition">
+		<![CDATA[
+		/* [SendBox_SqlMap.xml] sendbox.remove */
+		DELETE 
+		FROM 				IKEP4_UM_SENDBOX 
+		WHERE 				MESSAGE_ID = #messageId#
+		AND 				SENDER_ID = #userId#
+		]]>
+	</delete> 
+	
+	<typeAlias alias="Recipient" type="com.lgcns.ikep4.servicepack.seamless.model.Recipient" />
+	
+	<resultMap class="com.lgcns.ikep4.servicepack.seamless.model.Recipient" id="resultRecipient">
+		<result column="MESSAGE_ID"    property="messageId"    jdbcType="VARCHAR" />
+	    <result column="RECEIVER_ID"   property="receiverId"   jdbcType="VARCHAR" />
+	    <result column="RECEIVER_MAIL" property="receiverMail" jdbcType="VARCHAR" />
+	    <result column="RECEIVER_NAME" property="receiverName" jdbcType="VARCHAR" />
+	    <result column="RECEIVER_TYPE" property="receiverType" jdbcType="VARCHAR" />
+	    <result column="RECEIVE_TYPE"  property="receiveType"  jdbcType="VARCHAR" />
+	    <result column="RECEIVE_DATE"  property="receiveDate"  jdbcType="TIMESTAMP" />
+	    <result column="READ_DATE"     property="readDate"     jdbcType="TIMESTAMP" />
+	</resultMap>
+	
+	<select id="getRecipientList" parameterClass="String" resultMap="resultRecipient">
+		<![CDATA[
+		/* [SendBox_SqlMap.xml] sendbox.getRecipientList */
+		SELECT				MESSAGE_ID, 
+							RECEIVER_ID, 
+							RECEIVER_MAIL, 
+							RECEIVER_NAME, 
+							RECEIVER_TYPE, 
+							RECEIVE_TYPE, 
+							RECEIVE_DATE, 
+							READ_DATE
+	    FROM 				IKEP4_UM_SENDBOX_RECIPIENT
+	    WHERE 				MESSAGE_ID = #messageId#
+	    ]]>
+	</select>
+	
+	<insert id="createRecipient" parameterClass="Recipient">
+		<![CDATA[
+		/* [SendBox_SqlMap.xml] sendbox.createRecipient */
+		INSERT INTO 		IKEP4_UM_SENDBOX_RECIPIENT 
+							( 
+							MESSAGE_ID, 
+							RECEIVER_ID, 
+							RECEIVER_MAIL, 
+							RECEIVER_NAME, 
+							RECEIVER_TYPE, 
+							RECEIVE_TYPE, 
+							RECEIVE_DATE, 
+							READ_DATE 
+							)
+	    VALUES				( 
+	    					#messageId#, 
+	    					(SELECT IFNULL(MIN(USER_ID), #receiverId#) FROM IKEP4_EV_USER WHERE MAIL = #receiverMail# ), 
+	    					#receiverMail#, 
+	    					#receiverName#, 
+	    					#receiverType#, 
+	    					#receiveType#, 
+	    					#receiveDate#, 
+	    					#readDate# 
+	    					)
+	    ]]>
+	</insert>
+	
+	<delete id="removeRecipient" parameterClass="String">
+		<![CDATA[
+		/* [SendBox_SqlMap.xml] sendbox.removeRecipient */
+		DELETE 
+		FROM 				IKEP4_UM_SENDBOX_RECIPIENT 
+	    WHERE 				MESSAGE_ID = #messageId#
+	    ]]>
+	</delete>
+	
+	<typeAlias alias="AttachFile" type="com.lgcns.ikep4.servicepack.seamless.model.AttachFile" />
+	
+	<resultMap class="com.lgcns.ikep4.servicepack.seamless.model.AttachFile" id="resultAttachFile">
+		<result column="MESSAGE_ID"  property="messageId"  jdbcType="VARCHAR" />
+	    <result column="ATTACH_ID"   property="attachId"   jdbcType="VARCHAR" />
+	    <result column="ATTACH_NAME" property="attachName" jdbcType="VARCHAR" />
+	    <result column="ATTACH_SIZE" property="attachSize" jdbcType="DECIMAL" />
+	    <result column="MULTIPART_PATH" property="multipartPath" jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<select id="getAttachFileList" parameterClass="String" resultMap="resultAttachFile">
+		<![CDATA[
+		/* [SendBox_SqlMap.xml] sendbox.getAttachFileList */
+		SELECT				MESSAGE_ID, 
+							ATTACH_ID, 
+							ATTACH_NAME, 
+							ATTACH_SIZE, 
+							MULTIPART_PATH
+		FROM 				IKEP4_UM_SENDBOX_ATTACH
+		WHERE 				MESSAGE_ID = #messageId#
+		]]>
+	</select>
+	
+	<insert id="createAttachFile" parameterClass="AttachFile">
+		<![CDATA[
+		/* [SendBox_SqlMap.xml] sendbox.createAttachFile */
+		INSERT INTO 		IKEP4_UM_SENDBOX_ATTACH 
+							( 
+							MESSAGE_ID, 
+							ATTACH_ID, 
+							ATTACH_NAME, 
+							ATTACH_SIZE, 
+							MULTIPART_PATH 
+							)
+	    VALUES 				( 
+	    					#messageId#, 
+	    					#attachId#, 
+	    					#attachName#, 
+	    					#attachSize#, 
+	    					#multipartPath# 
+	    					)
+	    ]]>
+	</insert>
+	
+	<delete id="removeAttachFile" parameterClass="String">
+		<![CDATA[
+		/* [SendBox_SqlMap.xml] sendbox.removeAttachFile */
+		DELETE 
+		FROM 				IKEP4_UM_SENDBOX_ATTACH 
+	    WHERE 				MESSAGE_ID = #messageId#
+	    ]]>
+	</delete>
+	
+</sqlMap>

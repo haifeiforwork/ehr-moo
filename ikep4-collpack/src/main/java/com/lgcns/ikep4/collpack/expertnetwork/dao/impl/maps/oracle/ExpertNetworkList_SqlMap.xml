@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="collpack.expertnetwork.dao.ExpertNetworkList">
+	<typeAlias alias="ExpertNetworkListPK" type="com.lgcns.ikep4.collpack.expertnetwork.model.ExpertNetworkListPK"/>
+	<typeAlias alias="ExpertNetworkList" type="com.lgcns.ikep4.collpack.expertnetwork.model.ExpertNetworkList"/>
+	<typeAlias alias="ExpertNetworkBlockPageCondition" type="com.lgcns.ikep4.collpack.expertnetwork.search.ExpertNetworkBlockPageCondition"/>
+
+	<resultMap class="ExpertNetworkList" id="result">
+		<result column="USER_ID" property="userId" jdbcType="VARCHAR" javaType="String"/>
+		<result column="CATEGORY_ID" property="categoryId" jdbcType="VARCHAR" javaType="String"/>
+		<result column="IS_AUTHORIZED" property="isAuthorized" jdbcType="NUMBER" javaType="Integer"/>
+		<result column="MATCHING_SCORE" property="matchingScore" jdbcType="NUMBER" javaType="Integer"/>
+	</resultMap>
+
+	<resultMap class="ExpertNetworkList" extends="result" id="userResult">
+		<result column="EXPERT_FIELD" property="expertField" jdbcType="VARCHAR" javaType="String"/>
+		<result column="USER_NAME" property="userName" jdbcType="VARCHAR" javaType="String"/>
+		<result column="USER_ENGLISH_NAME" property="userEnglishName" jdbcType="VARCHAR" javaType="String"/>
+		<result column="TEAM_NAME" property="teamName" jdbcType="VARCHAR" javaType="String"/>
+		<result column="TEAM_ENGLISH_NAME" property="teamEnglishName" jdbcType="VARCHAR" javaType="String"/>
+		<result column="JOB_TITLE_NAME" property="jobTitleName" jdbcType="VARCHAR" javaType="String"/>
+		<result column="JOB_TITLE_ENGLISH_NAME" property="jobTitleEnglishName" jdbcType="VARCHAR" javaType="String"/>
+		<result column="PICTURE_PATH" property="picturePath" jdbcType="VARCHAR" javaType="String"/>
+		<result column="PROFILE_PICTURE_PATH" property="profilePicturePath" jdbcType="VARCHAR" javaType="String"/>
+	</resultMap>
+
+	<resultMap class="ExpertNetworkList" extends="userResult" id="extUserResult">
+		<result column="MOBILE" property="mobile" jdbcType="VARCHAR" javaType="String"/>
+		<result column="MAIL" property="mail" jdbcType="VARCHAR" javaType="String"/>
+	</resultMap>
+
+
+<!-- Expert 입력 -->
+	<insert id="create" parameterClass="ExpertNetworkList">
+	<![CDATA[
+		INSERT /* [ExpertNetworkList_SqlMap.xml] collpack.expertnetwork.dao.ExpertNetworkList.create */
+		       INTO IKEP4_EX_EXPERT (
+		       USER_ID
+		     , CATEGORY_ID
+		     , IS_AUTHORIZED
+		     , MATCHING_SCORE
+		     , REGISTER_ID
+		     , REGISTER_NAME
+		     , REGIST_DATE
+		       )
+		VALUES (
+		       #userId#
+		     , #categoryId#
+		     , #isAuthorized#
+		     , #matchingScore#
+		     , #registerId#
+		     , #registerName#
+		     , SYSDATE
+		       )
+	]]>
+	</insert>
+
+<!-- Expert 수정 -->
+	<update id="update" parameterClass="ExpertNetworkList">
+	<![CDATA[
+		UPDATE /* [ExpertNetworkList_SqlMap.xml] collpack.expertnetwork.dao.ExpertNetworkList.update */
+		       IKEP4_EX_EXPERT
+		   SET IS_AUTHORIZED = #isAuthorized#
+		     , MATCHING_SCORE = #matchingScore#
+		     , REGISTER_ID = #registerId#
+		     , REGISTER_NAME = #registerName#
+		     , REGIST_DATE = SYSDATE
+		 WHERE USER_ID = #userId#
+		   AND CATEGORY_ID = #categoryId#
+	]]>
+	</update>
+
+<!-- Expert 수정 -->
+	<update id="updateAuthorized" parameterClass="ExpertNetworkList">
+	<![CDATA[
+		UPDATE /* [ExpertNetworkList_SqlMap.xml] collpack.expertnetwork.dao.ExpertNetworkList.updateAuthorized */
+		       IKEP4_EX_EXPERT
+		   SET IS_AUTHORIZED = #isAuthorized#
+		     , REGISTER_ID = #registerId#
+		     , REGISTER_NAME = #registerName#
+		     , REGIST_DATE = SYSDATE
+		 WHERE USER_ID = #userId#
+		   AND CATEGORY_ID = #categoryId#
+	]]>
+	</update>
+
+<!-- Expert 삭제  -->
+	<delete id="remove" parameterClass="ExpertNetworkListPK">
+	<![CDATA[
+		DELETE /* [ExpertNetworkList_SqlMap.xml] collpack.expertnetwork.dao.ExpertNetworkList.remove */
+		       IKEP4_EX_EXPERT
+		 WHERE USER_ID = #userId#
+		   AND CATEGORY_ID = #categoryId#
+	]]>
+	</delete>
+
+<!-- Expert 조회 -->
+	<select id="get" parameterClass="ExpertNetworkListPK" resultMap="result">
+	<![CDATA[
+		SELECT /* [ExpertNetworkList_SqlMap.xml] collpack.expertnetwork.dao.ExpertNetworkList.get */
+		       USER_ID
+		     , CATEGORY_ID
+		     , IS_AUTHORIZED
+		     , MATCHING_SCORE
+		  FROM IKEP4_EX_EXPERT
+		 WHERE USER_ID = #userId#
+		   AND CATEGORY_ID = #categoryId#
+	]]>
+	</select>
+
+<!-- 카테고리별 전문가 삭제 -->
+	<delete id="removeByCategoryId" parameterClass="String">
+	<![CDATA[
+		DELETE /* [ExpertNetworkList_SqlMap.xml] collpack.expertnetwork.dao.ExpertNetworkList.removeByCategoryId */
+		       IKEP4_EX_EXPERT
+		 WHERE CATEGORY_ID = #categoryId#
+	]]>
+	</delete>
+
+
+<!-- 카테고리별 전문가 전체개수 반환 -->
+	<select id="countByCategoryId" parameterClass="String" resultClass="Integer">
+	<![CDATA[
+		SELECT /* [ExpertNetworkList_SqlMap.xml] collpack.expertnetwork.dao.ExpertNetworkList.countByCategoryId */
+		       COUNT(USER_ID) COUNT_USER_ID
+		  FROM IKEP4_EX_EXPERT
+		  JOIN IKEP4_EV_USER
+		 USING (USER_ID)
+		 WHERE CATEGORY_ID = #categoryId#
+	]]>
+	</select>
+
+<!-- 카테고리별 전문가 페이징 조회 -->
+	<select id="listByCategoryIdPage" parameterClass="ExpertNetworkBlockPageCondition" resultMap="userResult">
+	<![CDATA[
+		/* [ExpertNetworkList_SqlMap.xml] collpack.expertnetwork.dao.ExpertNetworkList.listByCategoryIdPage */
+		WITH MAIN_BODY AS (
+		    SELECT USER_ID, EXP.CATEGORY_ID, EXP.IS_AUTHORIZED, EXP.MATCHING_SCORE
+		         , USR.EXPERT_FIELD
+		         , USR.USER_NAME, USR.TEAM_NAME, USR.JOB_TITLE_NAME
+		         , USR.USER_ENGLISH_NAME, USR.TEAM_ENGLISH_NAME, USR.JOB_TITLE_ENGLISH_NAME
+		         , USR.PICTURE_PATH
+		     	 , USR.PROFILE_PICTURE_PATH
+		      FROM IKEP4_EX_EXPERT EXP
+		      JOIN (
+		            SELECT USR.USER_ID USER_ID
+		                 , USR.USER_NAME USER_NAME, USR.USER_ENGLISH_NAME USER_ENGLISH_NAME
+		                 , USR.TEAM_NAME TEAM_NAME, USR.TEAM_ENGLISH_NAME TEAM_ENGLISH_NAME
+		                 , JOB.JOB_TITLE_NAME JOB_TITLE_NAME, JOB.JOB_TITLE_ENGLISH_NAME JOB_TITLE_ENGLISH_NAME
+		                 , USR.JOB_POSITION_CODE, USR.JOB_RANK_CODE
+		                 , USR.EXPERT_FIELD
+		                 , USR.PICTURE_PATH
+		     	 		 , USR.PROFILE_PICTURE_PATH
+		              FROM IKEP4_EV_USER USR
+		              JOIN IKEP4_EV_JOB_TITLE JOB
+		             USING (JOB_TITLE_CODE)
+		           ) USR
+		     USING (USER_ID)
+		     WHERE EXP.CATEGORY_ID = #categoryId#
+		     ORDER BY EXP.MATCHING_SCORE DESC
+		            , EXP.IS_AUTHORIZED
+		            , (SELECT SORT_ORDER FROM IKEP4_EV_JOB_POSITION WHERE JOB_POSITION_CODE = USR.JOB_POSITION_CODE) /*직위*/
+		            , (SELECT SORT_ORDER FROM IKEP4_EV_JOB_RANK WHERE JOB_RANK_CODE = USR.JOB_RANK_CODE)             /*직급*/
+		            , USR.USER_NAME
+		)
+		SELECT USER_ID, CATEGORY_ID, IS_AUTHORIZED, MATCHING_SCORE, EXPERT_FIELD
+		     , USER_NAME, TEAM_NAME, JOB_TITLE_NAME
+		     , USER_ENGLISH_NAME, TEAM_ENGLISH_NAME, JOB_TITLE_ENGLISH_NAME
+		     , PICTURE_PATH , PROFILE_PICTURE_PATH
+		  FROM (
+		        SELECT ROWNUM SORT_ORDER, BODY.*
+		          FROM MAIN_BODY BODY
+		         WHERE ROWNUM <= #endOrder#
+		       )
+		 WHERE SORT_ORDER >= #startOrder#
+	]]>
+	</select>
+
+<!-- 카테고리별 전문가 랜덤하게 조회 -->
+	<select id="getByCategoryIdRandom" parameterClass="String" resultMap="extUserResult">
+	<![CDATA[
+		SELECT /* [ExpertNetworkList_SqlMap.xml] collpack.expertnetwork.dao.ExpertNetworkList.getByCategoryIdRandom */
+		       USER_ID, EXP.CATEGORY_ID, EXP.IS_AUTHORIZED, EXP.MATCHING_SCORE
+		     , USR.USER_NAME, USR.TEAM_NAME, USR.JOB_TITLE_NAME
+		     , USR.USER_ENGLISH_NAME, USR.TEAM_ENGLISH_NAME, USR.JOB_TITLE_ENGLISH_NAME
+		     , USR.EXPERT_FIELD, USR.MAIL, USR.MOBILE
+		     , USR.PICTURE_PATH
+		     , USR.PROFILE_PICTURE_PATH
+		  FROM (
+		        SELECT USER_ID, CATEGORY_ID, IS_AUTHORIZED, MATCHING_SCORE
+		          FROM (
+		                SELECT USER_ID, CATEGORY_ID, IS_AUTHORIZED, MATCHING_SCORE
+				          FROM IKEP4_EX_EXPERT
+				         WHERE IS_AUTHORIZED != 2
+				           AND MATCHING_SCORE >= 100
+				           AND CATEGORY_ID = #categoryId#
+				         ORDER BY DBMS_RANDOM.VALUE
+				       )
+				 WHERE ROWNUM = 1
+		       ) EXP
+		  JOIN (
+		        SELECT USR.USER_ID USER_ID
+		             , USR.USER_NAME USER_NAME, USR.USER_ENGLISH_NAME USER_ENGLISH_NAME
+		             , USR.TEAM_NAME TEAM_NAME, USR.TEAM_ENGLISH_NAME TEAM_ENGLISH_NAME
+		             , JOB.JOB_TITLE_NAME JOB_TITLE_NAME, JOB.JOB_TITLE_ENGLISH_NAME JOB_TITLE_ENGLISH_NAME
+		             , USR.EXPERT_FIELD, USR.MAIL, USR.MOBILE
+		             , USR.PICTURE_PATH
+		     	 	 , USR.PROFILE_PICTURE_PATH
+		          FROM IKEP4_EV_USER USR
+		          JOIN IKEP4_EV_JOB_TITLE JOB
+		         USING (JOB_TITLE_CODE)
+		       ) USR
+		 USING (USER_ID)
+	]]>
+	</select>
+
+<!-- 전문가 삭제(관리자에의한 등록 제외) -->
+	<delete id="removeByAuthorized">
+	<![CDATA[
+		DELETE /* [ExpertNetworkList_SqlMap.xml] collpack.expertnetwork.dao.ExpertNetworkList.rremoveByAuthorized */
+		       IKEP4_EX_EXPERT
+		 WHERE IS_AUTHORIZED != 0
+	]]>
+	</delete>
+
+<!-- 전문가 입력(배치) -->
+	<insert id="batchGatherExpert">
+	<![CDATA[
+		INSERT /* [ExpertNetworkList_SqlMap.xml] collpack.expertnetwork.dao.ExpertNetworkList.batchGatherExpert */
+		       INTO IKEP4_EX_EXPERT
+		     ( USER_ID, CATEGORY_ID, IS_AUTHORIZED, MATCHING_SCORE, REGIST_DATE )
+		SELECT TAG.USER_ID USER_ID
+		     , EXP.CATEGORY_ID CATEGORY_ID
+		     , 1 IS_AUTHORIZED
+		     , ROUND(COUNT(TAG_ID) / (SELECT COUNT(TAG)
+		                                FROM IKEP4_EX_TAGGING
+		                               WHERE CATEGORY_ID = EXP.CATEGORY_ID) * 100) MATCHING_SCORE
+		     , SYSDATE
+		  FROM (
+		        SELECT CAT.PORTAL_ID PORTAL_ID
+		             , TAG.TAG TAG_NAME
+		             , CATEGORY_ID
+		          FROM IKEP4_EX_CATEGORY CAT
+		          JOIN IKEP4_EX_TAGGING TAG
+		         USING (CATEGORY_ID)
+		       ) EXP
+		  JOIN (
+		        SELECT PORTAL_ID
+		             , DIC.TAG_NAME TAG_NAME
+		             , TAG_ID
+		             , TAG.TAG_ITEM_ID USER_ID
+		          FROM IKEP4_TG_LINK TAG
+		          JOIN IKEP4_TG_DICTIONARY DIC
+		         USING (PORTAL_ID, TAG_ID)
+		         WHERE TAG.TAG_ITEM_TYPE = 'PE'
+		       ) TAG
+		 USING (PORTAL_ID, TAG_NAME)
+		 GROUP BY PORTAL_ID, EXP.CATEGORY_ID, TAG.USER_ID
+		HAVING NOT EXISTS (SELECT 'A'
+		                 FROM IKEP4_EX_EXPERT
+		                WHERE USER_ID = TAG.USER_ID
+		                  AND CATEGORY_ID = EXP.CATEGORY_ID)
+	]]>
+	</insert>
+
+</sqlMap>

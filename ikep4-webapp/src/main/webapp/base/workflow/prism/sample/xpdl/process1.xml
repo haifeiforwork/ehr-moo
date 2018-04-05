@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xpdl:Package xmlns:tmax="http://www.tmaxsoft.com/bpm/2005/10/XPDL2.0/" xmlns:xpdl="http://www.wfmc.org/2004/XPDL2.0alpha" xmlns:pror="http://www.tmaxsoft.com/bpm/2006/01/ProRule/">
+  <xpdl:Pools>
+    <xpdl:Pool Id="Pool13015641045460046" Process="process6060" Orientation="VERTICAL">
+      <xpdl:Lanes>
+        <xpdl:Lane Id="Lane13015641047180047" Name="Lane" ParentPool="Pool13015641045460046">
+          <xpdl:NodeGraphicsInfos>
+            <xpdl:NodeGraphicsInfo Height="800.0" Width="300.0" BorderColor="c5ccfc"/>
+          </xpdl:NodeGraphicsInfos>
+        </xpdl:Lane>
+      </xpdl:Lanes>
+    </xpdl:Pool>
+  </xpdl:Pools>
+  <xpdl:WorkflowProcesses>
+    <xpdl:WorkflowProcess Id="파티션9090" Name="process6060">
+      <xpdl:ProcessHeader>
+        <xpdl:Created>2011-03-31T18:35:04+09:00</xpdl:Created>
+        <xpdl:Description>This is a workflow process</xpdl:Description>
+      </xpdl:ProcessHeader>
+      <xpdl:RedefinableHeader>
+        <xpdl:Author>admin</xpdl:Author>
+        <xpdl:Version>1.0</xpdl:Version>
+      </xpdl:RedefinableHeader>
+      <xpdl:Activities>
+        <xpdl:Activity Id="Event13015641197960052" Name="None">
+          <xpdl:Description>None</xpdl:Description>
+          <xpdl:Event>
+            <xpdl:StartEvent Trigger="None"/>
+          </xpdl:Event>
+          <xpdl:ExtendedAttributes>
+            <xpdl:ExtendedAttribute Name="BaseExtendedAttribute">
+              <tmax:BaseExtendedAttribute/>
+            </xpdl:ExtendedAttribute>
+          </xpdl:ExtendedAttributes>
+          <xpdl:NodeGraphicsInfos>
+            <xpdl:NodeGraphicsInfo>
+              <xpdl:Coordinates YCoordinate="127.0" XCoordinate="98.0"/>
+            </xpdl:NodeGraphicsInfo>
+          </xpdl:NodeGraphicsInfos>
+        </xpdl:Activity>
+        <xpdl:Activity Id="Event13015641223590053" Name="None">
+          <xpdl:Description>None</xpdl:Description>
+          <xpdl:Event>
+            <xpdl:EndEvent Result="None"/>
+          </xpdl:Event>
+          <xpdl:ExtendedAttributes>
+            <xpdl:ExtendedAttribute Name="BaseExtendedAttribute">
+              <tmax:BaseExtendedAttribute/>
+            </xpdl:ExtendedAttribute>
+          </xpdl:ExtendedAttributes>
+          <xpdl:NodeGraphicsInfos>
+            <xpdl:NodeGraphicsInfo>
+              <xpdl:Coordinates YCoordinate="127.0" XCoordinate="353.0"/>
+            </xpdl:NodeGraphicsInfo>
+          </xpdl:NodeGraphicsInfos>
+        </xpdl:Activity>
+        <xpdl:Activity Id="Activity13015641247030054" Name="Activity" StartMode="Manual" FinishMode="Manual">
+          <xpdl:Description>Activity</xpdl:Description>
+          <xpdl:Implementation>
+            <xpdl:Task>
+              <xpdl:TaskManual/>
+            </xpdl:Task>
+          </xpdl:Implementation>
+          <xpdl:Priority>50</xpdl:Priority>
+          <xpdl:ExtendedAttributes>
+            <xpdl:ExtendedAttribute Name="ProRuleExtendedAttribute">
+              <pror:ProRuleExtendedAttribute/>
+            </xpdl:ExtendedAttribute>
+            <xpdl:ExtendedAttribute Name="HumanActivityExtendedAttribute">
+              <tmax:HumanActivityExtendedAttribute type="HUMAN" skip="false" monitoring="true" commentable="true" pushMode="PULL"/>
+            </xpdl:ExtendedAttribute>
+          </xpdl:ExtendedAttributes>
+          <xpdl:NodeGraphicsInfos>
+            <xpdl:NodeGraphicsInfo tmax:fontColor="000000" Height="50.0" Width="118.0" FillColor="8080ff">
+              <xpdl:Coordinates YCoordinate="118.0" XCoordinate="180.0"/>
+            </xpdl:NodeGraphicsInfo>
+          </xpdl:NodeGraphicsInfos>
+        </xpdl:Activity>
+      </xpdl:Activities>
+      <xpdl:Transitions>
+        <xpdl:Transition Id="Transition13015641302180057" Name="Transition" From="Event13015641197960052" To="Activity13015641247030054">
+          <xpdl:Description>Transition</xpdl:Description>
+          <xpdl:ConnectorGraphicsInfos>
+            <xpdl:ConnectorGraphicsInfo FillColor="000000"/>
+          </xpdl:ConnectorGraphicsInfos>
+        </xpdl:Transition>
+        <xpdl:Transition Id="Transition13015641315460060" Name="Transition" From="Activity13015641247030054" To="Event13015641223590053">
+          <xpdl:Description>Transition</xpdl:Description>
+          <xpdl:ConnectorGraphicsInfos>
+            <xpdl:ConnectorGraphicsInfo FillColor="000000"/>
+          </xpdl:ConnectorGraphicsInfos>
+        </xpdl:Transition>
+      </xpdl:Transitions>
+      <xpdl:ExtendedAttributes>
+        <xpdl:ExtendedAttribute Name="ProcessExtendedAttribute">
+          <tmax:ProcessExtendedAttribute startMode="Automatic" backgroundColor="ffffff">
+            <tmax:StartCondition method="ARBITRARY" parallelExecutable="true" parallelExecutableBySameUser="true"/>
+          </tmax:ProcessExtendedAttribute>
+        </xpdl:ExtendedAttribute>
+      </xpdl:ExtendedAttributes>
+    </xpdl:WorkflowProcess>
+  </xpdl:WorkflowProcesses>
+</xpdl:Package>

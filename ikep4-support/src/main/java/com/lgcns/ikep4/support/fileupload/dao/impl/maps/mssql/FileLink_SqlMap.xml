@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="EUC-KR"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="support.fileupload.filelink">
+
+	<typeAlias alias="fileLink"
+		type="com.lgcns.ikep4.support.fileupload.model.FileLink" />
+	
+	<!-- ANSI -->
+	<insert id="insert" parameterClass="fileLink">
+		INSERT INTO IKEP4_DM_FILE_LINK (
+		FILE_LINK_ID, FILE_ID, ITEM_ID, ITEM_TYPE_CODE,
+		REGISTER_ID, REGISTER_NAME, REGIST_DATE,
+		UPDATER_ID, UPDATER_NAME, UPDATE_DATE)
+		values(#fileLinkId#, #fileId#, #itemId#, #itemTypeCode#
+		, #registerId#, #registerName#
+		<isNotEmpty property="registDate">
+		, #registDate#
+		</isNotEmpty> 
+		<isEmpty property="registDate">
+		, CURRENT_TIMESTAMP
+		</isEmpty>
+		
+		, #updaterId#
+		, #updaterName#
+		<isNotEmpty property="updateDate">
+		, #updateDate#
+		</isNotEmpty> 
+		<isEmpty property="updateDate">
+		, CURRENT_TIMESTAMP
+		</isEmpty>
+		)
+	</insert>
+	
+	<insert id="insertEcmFileLink" parameterClass="fileLink">
+		INSERT INTO IKEP4_DM_FILE_LINK_ECM (
+		FILE_LINK_ID, FILE_ID, ITEM_ID, ITEM_TYPE_CODE,
+		REGISTER_ID, REGISTER_NAME, REGIST_DATE,
+		UPDATER_ID, UPDATER_NAME, UPDATE_DATE)
+		values(#fileLinkId#, #fileId#, #itemId#, #itemTypeCode#
+		, #registerId#, #registerName#
+		<isNotEmpty property="registDate">
+		, #registDate#
+		</isNotEmpty> 
+		<isEmpty property="registDate">
+		, CURRENT_TIMESTAMP
+		</isEmpty>
+		
+		, #updaterId#
+		, #updaterName#
+		<isNotEmpty property="updateDate">
+		, #updateDate#
+		</isNotEmpty> 
+		<isEmpty property="updateDate">
+		, CURRENT_TIMESTAMP
+		</isEmpty>
+		)
+	</insert>
+	
+	<!-- ANSI -->
+	<delete id="delete" parameterClass="String">
+		DELETE FROM IKEP4_DM_FILE_LINK
+		WHERE FILE_ID = #fileId#
+    </delete>
+    
+    <delete id="deleteFileLink" parameterClass="fileLink">
+		DELETE FROM IKEP4_DM_FILE_LINK
+		WHERE FILE_ID = #fileId#
+		AND ITEM_ID = #itemId#
+    </delete>
+    
+    <delete id="deleteEcmFileLink" parameterClass="fileLink">
+		DELETE FROM IKEP4_DM_FILE_LINK_ECM
+		WHERE FILE_ID = #fileId#
+		AND ITEM_ID = #itemId#
+    </delete>
+    
+    <!-- ANSI -->
+    <select id="select" parameterClass="String" resultClass="fileLink">
+		SELECT
+			FILE_LINK_ID, FILE_ID, ITEM_ID, ITEM_TYPE_CODE,
+			REGISTER_ID, REGISTER_NAME, REGIST_DATE,
+			UPDATER_ID, UPDATER_NAME, UPDATE_DATE
+		FROM IKEP4_DM_FILE_LINK
+		WHERE FILE_ID = #fileId#
+    </select>
+
+
+
+</sqlMap>
+

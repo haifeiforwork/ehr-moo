@@ -1,0 +1,313 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ko">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Home</title>
+<link rel="stylesheet" type="text/css" href="../../css/guide.css" />
+<link rel="stylesheet" type="text/css" href="../../css/theme01/jquery_ui_custom.css" />
+<link rel="stylesheet" type="text/css" href="../../css/common.css" />
+<link rel="stylesheet" type="text/css" href="../../css/theme01/theme.css" />
+<link type="text/css" rel="stylesheet" href="../../css/syntaxhighlighter_3.0.83/shCoreDefault.css"/>
+<link rel="stylesheet" type="text/css" href="../../css/plot_chart/jquery.jqplot.css" />
+<script type="text/javascript" src="../../js/jquery/jquery-1.6.2.min.js"></script>
+<script type="text/javascript" src="../../js/jquery/jquery-ui-1.8.13.min.without.datepicker.js"></script>
+<script type="text/javascript" src="../../js/syntaxhighlighter_3.0.83/shCore.js"></script>
+<script type="text/javascript" src="../../js/syntaxhighlighter_3.0.83/shBrushJScript.js"></script>
+<script type="text/javascript" src="../../js/syntaxhighlighter_3.0.83/shBrushXml.js"></script>
+<script type="text/javascript" src="../../js/plot_chart/jquery.jqplot.min.js"></script>
+<script type="text/javascript" src="../../js/plot_chart/jqplot.dateAxisRenderer.min.js"></script>
+<script type="text/javascript" src="../../js/plot_chart/jqplot.highlighter.min.js"></script>
+<script type="text/javascript" src="../../js/plot_chart/jqplot.cursor.min.js"></script>
+<script type="text/javascript" src="../../js/langResource/ko.js"></script>
+<script type="text/javascript" src="../../js/common.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$(document).ready(function() {
+		//SyntaxHighlighter.all();
+		SyntaxHighlighter.highlight();
+	
+		$.jqplot.config.enablePlugins = true;
+	    
+	    s1 = [['2010-02',1],['2010-03',4],['2010-04',2],['2010-05',6]];
+
+	    s2 = [3,5,7,4,8];
+	    s3 = [9,11,15,8,15];
+	    s4 = [8,7,12,18,4];
+	    s5 = [13,17,21,19,11];
+	    
+	   	plot1 = $.jqplot('chart1',[s1],{
+	       title: 'Highlighting',
+	       legend: {show:true, location: 'nw', yoffset: 6},
+	       series: [{label: '과자값'}],
+	       axes: {
+	           xaxis: {
+	               renderer: $.jqplot.DateAxisRenderer,
+	               tickOptions: {
+	                   formatString: '%Y-%m'
+	               },
+	               numberTicks: 4
+	           },
+	           yaxis: {
+	               tickOptions: {
+	                   formatString: '$%.2f'
+	               }
+	           }
+	       },
+	       highlighter: {
+	           sizeAdjust: 10,
+	           tooltipLocation: 'e',
+	           tooltipAxes: 'y',
+	           useAxesFormatters: false,
+	           tooltipFormatString: '<b><i><span style="color:red;">hello</span></i></b> $%.2f'
+	       },
+	       cursor: {
+	           show: true
+	       }
+	   });
+	   
+	   plot2 = $.jqplot('chart2', [s2, s3, s4, s5], {
+		   legend: {
+			   show:true, 
+			   location: 'e', 
+			   placement: 'outside',
+			   labels:['BBS','SMS','Q&amp;A','MAIL']
+			  },
+		   highlighter: { 
+			   bringSeriesToFront: true, 
+			   tooltipLocation: 'e', 
+			   tooltipOffset: 0, 
+			   formatString: '<div class="jqplot-highlighter"><span>수치 :</span> %s: <strong>%s</strong></div>' 
+			} 
+	   });
+	   
+	   plot3 = $.jqplot('chart3', [s2, s3], { 
+		   legend: {
+			   show:true, 
+			   location: 'nw', 
+			   labels:['BBS','MAIL']
+			  }
+	   });
+	   
+	   plot4 = $.jqplot('chart4', [s2, s3, s4], { 
+		   highlighter: { 
+			   bringSeriesToFront: true, 
+			   tooltipLocation: 'e', 
+			   tooltipOffset: 0, 
+			   formatString: '<div class="jqplot-highlighter"><span>Data</span> %s: <strong>%s</strong></div>' 
+			} 
+	   });		
+	   
+	   line1 = [14, 32, 41, 44, 40, 47, 53, 67];
+	   plot5 = $.jqplot('chart5', [line1], {
+	       title: 'Chart with Point Labels', 
+	       seriesDefaults: {
+  	         showMarker:false
+  	       },
+  	       axes:{
+  	         xaxis:{min:3}
+  	       }
+	   });
+		
+		
+	});
+})(jQuery);
+</script>
+</head>
+
+<body>
+<!--guideWrapper Start-->
+<div id="guideConFrame">
+
+	<div class="guideConTitle"><h2>Bar Chart</h2><a class="refer" target="_blank" href="http://www.jqplot.com/docs/files/usage-txt.html">reference</a></div>
+	
+	<!--UI_sample_area Start-->
+	<h4>UI sample</h4>
+	<a target="_blank" href="line_chart_pop.html">New Window</a>
+	<div class="UI_sample">
+		
+		<!--UI_sample Start-->
+		<div style="width:60%;font-weight:bold;font-size:14px;padding-left:10px;margin-top:10px;"><span>예제1</span></div>
+		<div id="chart1" style="margin-top:20px; margin-left:20px; margin-bottom:20px; width:500px; height:300px;"></div>
+		<hr size="2" width="70%" align="left" color="#777777" style="display:block;">
+		<br/>
+		<div style="width:60%;font-weight:bold;font-size:14px;padding-left:10px;margin-top:10px;"><span>예제2</span></div>
+		<div id="chart2" style="margin-top:20px; margin-left:20px; margin-bottom:20px; width:500px; height:300px;"></div>
+		<hr size="2" width="70%" align="left" color="#777777" style="display:block;">
+		<br/>
+		<div style="width:60%;font-weight:bold;font-size:14px;padding-left:10px;margin-top:10px;"><span>예제3</span></div>
+		<div id="chart3" style="margin-top:20px; margin-left:20px; margin-bottom:20px; width:500px; height:300px;"></div>
+		<hr size="2" width="70%" align="left" color="#777777" style="display:block;">
+		<br/>
+		<div style="width:60%;font-weight:bold;font-size:14px;padding-left:10px;margin-top:10px;"><span>예제4</span></div>
+		<div id="chart4" style="margin-top:20px; margin-left:20px; margin-bottom:20px; width:500px; height:300px;"></div>
+		<hr size="2" width="70%" align="left" color="#777777" style="display:block;">
+		<br/>
+		<div style="width:60%;font-weight:bold;font-size:14px;padding-left:10px;margin-top:10px;"><span>예제5</span></div>
+		<div id="chart5" style="margin-top:20px; margin-left:20px; margin-bottom:20px; width:500px; height:300px;"></div>
+		<hr size="2" width="70%" align="left" color="#777777" style="display:block;">
+		<br/>
+		<!--//UI_sample End-->
+		
+		<div class="UI_sum">			
+		</div>
+	</div>
+	<!--//UI_sample_area End-->
+
+	<!--UI_source Start-->
+	<h4>View source</h4>
+	<div class="UI_source">
+		<h5>HTML</h5>
+		<pre class="brush: html;">
+		// html
+		&lt;div style="width:60%;font-weight:bold;font-size:14px;padding-left:10px;margin-top:10px;"&gt;&lt;span&gt;예제1&lt;/span&gt;&lt;/div&gt;
+		&lt;div id="chart1" style="margin-top:20px; margin-left:20px; margin-bottom:20px; width:500px; height:300px;"&gt;&lt;/div&gt;
+		&lt;hr size="2" width="70%" align="left" color="#777777" style="display:block;"&gt;
+		&lt;br/&gt;
+		&lt;div style="width:60%;font-weight:bold;font-size:14px;padding-left:10px;margin-top:10px;"&gt;&lt;span&gt;예제2&lt;/span&gt;&lt;/div&gt;
+		&lt;div id="chart2" style="margin-top:20px; margin-left:20px; margin-bottom:20px; width:500px; height:300px;"&gt;&lt;/div&gt;
+		&lt;hr size="2" width="70%" align="left" color="#777777" style="display:block;"&gt;
+		&lt;br/&gt;
+		&lt;div style="width:60%;font-weight:bold;font-size:14px;padding-left:10px;margin-top:10px;"&gt;&lt;span&gt;예제3&lt;/span&gt;&lt;/div&gt;
+		&lt;div id="chart3" style="margin-top:20px; margin-left:20px; margin-bottom:20px; width:500px; height:300px;"&gt;&lt;/div&gt;
+		&lt;hr size="2" width="70%" align="left" color="#777777" style="display:block;"&gt;
+		&lt;br/&gt;
+		&lt;div style="width:60%;font-weight:bold;font-size:14px;padding-left:10px;margin-top:10px;"&gt;&lt;span&gt;예제4&lt;/span&gt;&lt;/div&gt;
+		&lt;div id="chart4" style="margin-top:20px; margin-left:20px; margin-bottom:20px; width:500px; height:300px;"&gt;&lt;/div&gt;
+		&lt;hr size="2" width="70%" align="left" color="#777777" style="display:block;"&gt;
+		&lt;br/&gt;
+		&lt;div style="width:60%;font-weight:bold;font-size:14px;padding-left:10px;margin-top:10px;"&gt;&lt;span&gt;예제5&lt;/span&gt;&lt;/div&gt;
+		&lt;div id="chart5" style="margin-top:20px; margin-left:20px; margin-bottom:20px; width:500px; height:300px;"&gt;&lt;/div&gt;
+		&lt;hr size="2" width="70%" align="left" color="#777777" style="display:block;"&gt;
+		</pre>
+		
+		<h5 style="margin-top:20px;">JavaScript</h5>
+		<pre class="brush: js;">
+		// javascript
+		var s1,s2,s3,s4,s5;
+		$(document).ready(function () {
+		
+			$.jqplot.config.enablePlugins = true;
+	    
+		    s1 = [['2010-02',1],['2010-03',4],['2010-04',2],['2010-05',6]];  // 데이타
+	
+		    s2 = [3,5,7,4,8];
+		    s3 = [9,11,15,8,15];
+		    s4 = [8,7,12,18,4];
+		    s5 = [13,17,21,19,11];
+		    
+		   	plot1 = $.jqplot('chart1',[s1],{ 
+		       title: 'Highlighting',  // 타이틀 설정
+		       legend: {
+		       		show:true,     // 범주 사용여부
+		       		location: 'nw',  // 범주 위치(nw, n, ne, e, se, s, sw, w)
+		       		yoffset: 6,     // offset from the inside edge of the plot in the y direction in pixels.
+		       		labels:['과자값']  // 범주 이름 설정
+		       },  // 범주 옵션
+		       axes: {
+		           xaxis: {
+		               renderer: $.jqplot.DateAxisRenderer,  
+		               tickOptions: {
+		                   formatString: '%Y-%m'  // x축 하단 표시 설정
+		               },
+		               numberTicks: 4  // x축 하단 표시 갯수
+		           },
+		           yaxis: {
+		               tickOptions: {
+		                   formatString: '$%.2f'  // y 하단 표시 설정
+		               }
+		           }
+		       },
+		       highlighter: {
+		           sizeAdjust: 10,
+		           tooltipLocation: 'e',
+		           tooltipAxes: 'y',     
+		           useAxesFormatters: false,
+		           tooltipFormatString: '<b><i><span style="color:red;">hello</span></i></b> $%.2f'     // 표시 박스 설정
+		       },
+		       cursor: {
+		           show: true
+		       }
+		   });
+		   
+		   plot2 = $.jqplot('chart2', [s2, s3, s4, s5], {
+			   legend: {
+				   show:true, 
+				   location: 'e', 
+				   placement: 'outside',
+				   labels:['BBS','SMS','Q&amp;A','MAIL']
+				  },
+			   highlighter: { 
+				   bringSeriesToFront: true, 
+				   tooltipLocation: 'e', 
+				   tooltipOffset: 0, 
+				   formatString: '<div class="jqplot-highlighter"><span>수치 :</span> %s: <strong>%s</strong></div>' 
+				} 
+		   });
+		   
+		   plot3 = $.jqplot('chart3', [s2, s3], { 
+			   legend: {
+				   show:true, 
+				   location: 'nw', 
+				   labels:['BBS','MAIL']
+				  }
+		   });
+		   
+		   plot4 = $.jqplot('chart4', [s2, s3, s4], { 
+			   highlighter: { 
+				   bringSeriesToFront: true, 
+				   tooltipLocation: 'e', 
+				   tooltipOffset: 0, 
+				   formatString: '<div class="jqplot-highlighter"><span>Data</span> %s: <strong>%s</strong></div>' 
+				} 
+		   });
+		   
+		   line1 = [14, 32, 41, 44, 40, 47, 53, 67];
+       	   plot5 = $.jqplot('chart5', [line1], {
+       	       title: 'Chart with Point Labels', 
+       	       seriesDefaults: {
+       	         showMarker:false,   // 원 표시
+       	         pointLabels: {      // 포인트(데이타) 숫자 표시
+       	           edgeTolerance: 5  
+       	         }},
+       	       axes:{
+       	         xaxis:{min:3}
+       	       }
+       	   });
+            
+        });	
+		</pre>
+	</div>	
+	<!--UI_source End-->	
+
+	<!--Method Start-->	
+	<h4>Method & Properties</h4>
+	<div class="UI_method">
+		<ul>
+			<li>chart 생성 : $.jqplot(target, data, options);</li>
+			<li>options : </li>
+		</ul>
+		<p>* seriesColors : ["#4bb2c5", "#c5b47f", "#EAA228", ...] 계열(단위) 색상</p>
+		<p>* stackSeries : false 예제4,5와 같이 쌓아올리는 그래프 사용여부</p>
+		<p>* title : '' 차트 타이틀</p>
+		<p>* axesDefaults:{...} </p>
+		<p>* axes:{...} </p>
+		<p>* series:{...} </p>
+		<p>* legend:{...} </p>
+		<p>* grid:{...} </p>
+		<p>* seriesDefaults:{...} </p>
+		<p>* cursor:{...} </p>
+		<p>* dragable:{...} </p>
+		<p>* highlighter:{...} </p>
+		<p>자세한 내용은  reference 사이트 참조</p>
+	</div>
+	<!--//Method End-->
+	
+	<!-- //Event Start -->
+	<h4>Event</h4>
+	<div class="UI_event"></div>
+	<!-- //Event End -->
+	
+</div>
+<!--//guideWrapper End-->
+</body>
+</html>

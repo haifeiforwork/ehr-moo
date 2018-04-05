@@ -1,0 +1,115 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ko">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>iKEP 4.00</title>
+<link rel="stylesheet" type="text/css" href="/ikep4-webapp/base/css/theme01/jquery_ui_custom.css" />
+<link rel="stylesheet" type="text/css" href="/ikep4-webapp/base/css/common.css" />
+<link rel="stylesheet" type="text/css" href="/ikep4-webapp/base/css/theme01/theme.css" />
+</head>
+
+<body>
+
+<!-- Modal window Start -->
+<div class="" id="layer_p" title="Workspace Mail">
+	<!--blockDetail Start-->		
+	<div class="blockDetail">
+		<table summary="Workspace Mail">
+			<caption></caption>
+			<tbody>
+				#if($allianceStatus == 0)
+				<tr>
+					<th width="18%" scope="row">Contents</th>
+					<td width="82%">
+						<span class="colorBlue">*</span><span class="colorBlue">
+						${fromWorkspace.workspaceName}</span> workspace has requested an alliance to ${toWorkspace.workspaceName} workspace.<br />
+					</td>
+				</tr>
+				<tr>
+					<th width="18%" scope="row">Request Comment</th>
+					<td width="82%">
+						<span class="colorBlue">*</span><span class="colorBlue">
+						${alliance.requestReason}
+					</td>
+				</tr>				
+				<tr>
+					<th scope="row">Request Date</th>
+					<td>
+						<span>${registDate}</span>							
+					</td>
+				</tr>		
+				#elseif($allianceStatus == 1)
+				<tr>
+					<th width="18%" scope="row">Contents</th>
+					<td width="82%">
+						<span class="colorBlue">*</span> 
+						The request for alliance to <span class="colorBlue">${toWorkspace.workspaceName}</span> workspace was granted.
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">Grant Date</th>
+					<td>
+						<span>${alliance.updateDate}</span>							
+					</td>
+				</tr>
+											
+				#elseif($allianceStatus == 2)
+				<tr>
+					<th width="18%" scope="row">Contents</th>
+					<td width="82%">
+						<span class="colorBlue">*</span>
+						The request for alliance to <span class="colorBlue">${toWorkspace.workspaceName}</span> 
+						workspace was deferred.
+					</td>
+				</tr>	
+				<tr>
+					<th scope="row">Defer Date</th>
+					<td>
+						<span>${registDate}</span>							
+					</td>
+				</tr>				
+				#elseif($allianceStatus == 3)
+				<tr>
+					<th width="18%" scope="row">Contents</th>
+					<td width="82%">
+						<span class="colorBlue">*</span>
+						The alliance with <span class="colorBlue"> ${toWorkspace.workspaceName}</span> 
+						workspace was stopped.
+					</td>
+				</tr>
+				<tr>
+					<th scope="row">Stop Date</th>
+					<td>
+						<span>${registDate}</span>							
+					</td>
+				</tr>				
+				<tr>
+					<th scope="row">Person in Charge</th>
+					<td>
+						<span>${toWorkspace.sysopName} ${toWorkspace.workspaceName}</span>		
+					</td>
+				</tr>
+				#else
+				<tr>
+					<th width="18%" scope="row">Contents</th>
+					<td width="82%">
+						<span class="colorBlue">*</span>
+						<span class="colorBlue"> ${fromWorkspace.workspaceName}</span> workspace's alliance request to ${toWorkspace.workspaceName} workspace was canceled.<br/>
+					</td>
+				</tr>
+	
+				<tr>
+					<th scope="row">Cancel Date</th>
+					<td>
+						<span>${registDate}</span>							
+					</td>
+				</tr>					
+				#end
+			</tbody>
+		</table>
+	</div>			
+	<!--//blockDetail End-->	
+</div>	
+<!-- //Modal window End -->
+</body>
+</html>

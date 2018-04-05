@@ -1,0 +1,52 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ko">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Home</title>
+<link rel="stylesheet" type="text/css" href="../../css/guide.css" />
+<link rel="stylesheet" type="text/css" href="../../css/theme01/jquery_ui_custom.css" />
+<link rel="stylesheet" type="text/css" href="../../css/common.css" />
+<link rel="stylesheet" type="text/css" href="../../css/theme01/theme.css" />
+<script type="text/javascript" src="../../js/jquery/jquery-1.6.2.min.js"></script>
+<script type="text/javascript" src="../../js/jquery/jquery-ui-1.8.13.min.without.datepicker.js"></script>
+<script type="text/javascript" src="../../js/langResource/ko.js"></script>
+<script type="text/javascript" src="../../js/common.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$(document).ready(function() {
+		$("#divDrag2").draggable({handler:"h4", revert:"valid"});
+		$("#divDrag1, #divDrag3").draggable({ handler:"h4"});
+		
+		$("#divContainer").droppable({
+			//accept : "#divDrag1, #divDrag3",
+			activeClass : "drop-active",
+			drop : function(event, ui) {
+				//iKEP.debug(ui);	// draggable, helper, offset, position
+			}
+		});
+	});
+})(jQuery);
+</script>
+</head>
+
+<body class="popup">
+	<div>
+		<div id="divDrag1" style="float:left; width:70px; height:60px; border:1px solid #ccc; background-color:white;">
+			<h4 style="background-color:#eee; cursor:default;">drag 1</h4>
+			<div style="padding:5px 10px;">drag</div>
+		</div>
+		<div id="divDrag2" style="float:left; width:70px; height:60px; border:1px solid #ccc; background-color:white;">
+			<h4 style="background-color:#eee; cursor:default;">drag 2</h4>
+			<div style="padding:5px 10px;">drag</div>
+		</div>
+		<div id="divDrag3" style="float:left; width:70px; height:60px; border:1px solid #ccc; background-color:white;">
+			<h4 style="background-color:#eee; cursor:default;">drag 3</h4>
+			<div style="padding:5px 10px;">drag</div>
+		</div>
+	</div>
+	<div style="clear:both;"></div>
+
+	<div id="divContainer" style="margin-top:20px; width:200px; height:200px; background-color:#eee; border:1px dashed #999;">
+	</div>
+</body>
+</html>

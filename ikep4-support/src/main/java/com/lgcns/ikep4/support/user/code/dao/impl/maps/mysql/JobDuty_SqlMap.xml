@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="support.user.code.dao.JobDuty" >
+	<typeAlias alias = "JobDuty" type="com.lgcns.ikep4.support.user.code.model.JobDuty"/>
+	<typeAlias alias = "SearchCondition" type="com.lgcns.ikep4.support.user.code.model.AdminSearchCondition"/>
+
+	<resultMap id="result" class="JobDuty">
+		<result property="jobDutyCode" column="JOB_DUTY_CODE" />
+		<result property="portalId" column="PORTAL_ID" />
+		<result property="jobDutyName" column="JOB_DUTY_NAME" />
+		<result property="jobDutyEnglishName" column="JOB_DUTY_ENGLISH_NAME" />
+		<result property="sortOrder" column="SORT_ORDER" />
+		<result property="registerId" column="REGISTER_ID" />
+		<result property="registerName" column="REGISTER_NAME" />
+		<result property="updaterId" column="UPDATER_ID" />
+		<result property="updaterName" column="UPDATER_NAME" />
+		<result property="registDate" column="REGIST_DATE" />
+		<result property="updateDate" column="UPDATE_DATE" />
+		<result property="num" column="NUM" />
+	</resultMap>
+	
+	<resultMap id="getResult" class="JobDuty">
+		<result property="jobDutyCode" column="JOB_DUTY_CODE" />
+		<result property="portalId" column="PORTAL_ID" />
+		<result property="jobDutyName" column="JOB_DUTY_NAME" />
+		<result property="jobDutyEnglishName" column="JOB_DUTY_ENGLISH_NAME" />
+		<result property="sortOrder" column="SORT_ORDER" />
+		<result property="registerId" column="REGISTER_ID" />
+		<result property="registerName" column="REGISTER_NAME" />
+		<result property="updaterId" column="UPDATER_ID" />
+		<result property="updaterName" column="UPDATER_NAME" />
+		<result property="registDate" column="REGIST_DATE" />
+		<result property="updateDate" column="UPDATE_DATE" />
+	</resultMap>
+	
+	<resultMap id="sortOrderResult" class="JobDuty">
+		<result property="sortOrder" column="SORT_ORDER" />
+	</resultMap>
+	
+	<!-- 신규 등록 -->
+	<insert id="insert" parameterClass="JobDuty"> 
+	<![CDATA[
+		INSERT INTO /* [JobDuty_SqlMap.xml] support.user.code.dao.JobDuty.insert */
+			IKEP4_EV_JOB_DUTY (
+			JOB_DUTY_CODE,
+			PORTAL_ID, 
+			JOB_DUTY_NAME, 
+			JOB_DUTY_ENGLISH_NAME,
+			SORT_ORDER,
+			REGISTER_ID, 
+			REGISTER_NAME,
+			UPDATER_ID, 
+			UPDATER_NAME,
+			REGIST_DATE, 
+			UPDATE_DATE)
+		VALUES ( 
+			#jobDutyCode#,
+			#portalId#,
+			#jobDutyName#,
+			#jobDutyEnglishName#,
+			#sortOrder#,
+		    #registerId#,
+		    #registerName#,
+		    #updaterId#,
+		    #updaterName#,
+		    NOW(), 
+		    NOW())
+	]]>
+	</insert>
+   
+   <!-- 상세정보 -->
+	<select id="select" parameterClass="java.lang.String" resultMap="getResult">
+	<![CDATA[
+		SELECT /* [JobDuty_SqlMap.xml] support.user.code.dao.JobDuty.select */
+		    JOB_DUTY_CODE,
+		    JOB_DUTY_NAME,
+		    JOB_DUTY_ENGLISH_NAME,
+		    SORT_ORDER,
+		    PORTAL_ID,
+		    REGISTER_ID,
+		    REGISTER_NAME,
+		    UPDATER_ID,
+		    UPDATER_NAME,
+		    REGIST_DATE,
+		    UPDATE_DATE
+		FROM 
+		    IKEP4_EV_JOB_DUTY
+		WHERE
+			JOB_DUTY_CODE = #jobDutyCode#
+	]]>
+	</select>
+	
+	<!-- 기존 정보 수정 -->
+	<update id="update" parameterClass="JobDuty">
+	<![CDATA[
+		UPDATE /* [JobDuty_SqlMap.xml] support.user.code.dao.JobDuty.update */
+			IKEP4_EV_JOB_DUTY
+		SET
+			JOB_DUTY_NAME = #jobDutyName#,
+			JOB_DUTY_ENGLISH_NAME = #jobDutyEnglishName#,
+			SORT_ORDER = #sortOrder#,
+			PORTAL_ID = #portalId#,
+			UPDATER_ID = #updaterId#,
+			UPDATER_NAME = #updaterName#,
+			UPDATE_DATE = NOW()
+		WHERE
+			JOB_DUTY_CODE = #jobDutyCode#
+	]]>
+	</update>
+   
+	<!-- 삭제 -->
+	<delete id="delete" parameterClass="java.lang.String">
+	<![CDATA[
+		DELETE /* [JobDuty_SqlMap.xml] support.user.code.dao.JobDuty.delete */ 
+		FROM IKEP4_EV_JOB_DUTY
+		WHERE
+			JOB_DUTY_CODE = #jobDutyCode#
+	]]>
+	</delete>
+	
+	<!-- 목록 가져오기 -->
+	<select id="selectAll" parameterClass="SearchCondition" resultMap="result">
+		<![CDATA[
+		SELECT				/* [JobDuty_SqlMap.xml] support.user.code.dao.JobDuty.selectAll */
+							(CASE tbl1.JOB_DUTY_CODE WHEN tbl1.JOB_DUTY_CODE THEN @ROWNUM := @ROWNUM + 1 ELSE @ROWNUM := 1 END) AS NUM,
+		    				tbl1.*
+		FROM 				(
+							SELECT				JOB_DUTY_CODE,
+											    JOB_DUTY_NAME,
+											    JOB_DUTY_ENGLISH_NAME,
+											    SORT_ORDER,
+											    PORTAL_ID,
+											    REGISTER_ID,
+											    REGISTER_NAME,
+											    UPDATER_ID,
+											    UPDATER_NAME,
+											    REGIST_DATE,
+											    UPDATE_DATE
+							FROM 				IKEP4_EV_JOB_DUTY
+		        			WHERE 				1 = 1
+		]]>	
+							<isNotEmpty property="portalId">
+							AND 				PORTAL_ID = #portalId#
+							</isNotEmpty>
+							<isNotEmpty property="searchWord">
+							<isEqual property="searchColumn" compareValue="title">
+							AND					(UPPER(JOB_DUTY_NAME) LIKE CONCAT('%', UPPER(#searchWord#), '%') OR UPPER(JOB_DUTY_ENGLISH_NAME) LIKE CONCAT('%', UPPER(#searchWord#)))
+							</isEqual>
+							<isEqual property="searchColumn" compareValue="code">
+							AND					JOB_DUTY_CODE LIKE CONCAT('%', #searchWord#, '%')
+							</isEqual>
+							</isNotEmpty>
+							<isNotNull property="sortColumn">
+							<isEqual property="sortColumn" compareValue="SORT_ORDER">
+							<isEqual property="sortType" compareValue="ASC">
+							ORDER BY 			SORT_ORDER ASC
+							</isEqual>
+							<isEqual property="sortType" compareValue="DESC">
+							ORDER BY 			SORT_ORDER DESC
+							</isEqual>
+							</isEqual>
+							<isEqual property="sortColumn" compareValue="JOB_DUTY_CODE">
+							<isEqual property="sortType" compareValue="ASC">
+							ORDER BY 			JOB_DUTY_CODE ASC
+							</isEqual>
+							<isEqual property="sortType" compareValue="DESC">
+							ORDER BY 			JOB_DUTY_CODE DESC
+							</isEqual>
+							</isEqual>
+							<isEqual property="sortColumn" compareValue="JOB_DUTY_NAME">
+							<isEqual property="sortType" compareValue="ASC">
+							ORDER BY 			JOB_DUTY_NAME ASC
+							</isEqual>
+							<isEqual property="sortType" compareValue="DESC">
+							ORDER BY 			JOB_DUTY_NAME DESC
+							</isEqual>
+							</isEqual>
+							<isEqual property="sortColumn" compareValue="JOB_DUTY_ENGLISH_NAME">
+							<isEqual property="sortType" compareValue="ASC">
+							ORDER BY 			JOB_DUTY_ENGLISH_NAME ASC
+							</isEqual>
+							<isEqual property="sortType" compareValue="DESC">
+							ORDER BY 			JOB_DUTY_ENGLISH_NAME DESC
+							</isEqual>
+							</isEqual>
+							</isNotNull>
+							<isNull property="sortColumn">
+							ORDER BY 			SORT_ORDER ASC
+							</isNull>
+		<![CDATA[	
+							LIMIT				#startRowIndex#, #pagePerRecord#
+							) tbl1,
+							(
+							SELECT				@ROWNUM := #startRowIndex#
+							) tbl2
+		]]>	
+	</select>
+	
+	<select id="selectCount" parameterClass="SearchCondition" resultClass="int">
+	<![CDATA[
+	    SELECT /* [JobDuty_SqlMap.xml] support.user.code.dao.JobDuty.selectCount */ 
+	        COUNT(*)
+	    FROM 
+	        IKEP4_EV_JOB_DUTY
+	    WHERE 1 = 1
+	]]>    
+		<isNotEmpty property="portalId">
+				AND PORTAL_ID = #portalId#
+		</isNotEmpty>
+		<isNotEmpty property="searchWord">
+		    <isEqual property="searchColumn" compareValue="title">
+		     	AND	(UPPER(JOB_DUTY_NAME) LIKE CONCAT('%', UPPER(#searchWord#), '%') OR UPPER(JOB_DUTY_ENGLISH_NAME) LIKE CONCAT('%', UPPER(#searchWord#)))
+			</isEqual>
+		    <isEqual property="searchColumn" compareValue="code">
+		        AND JOB_DUTY_CODE LIKE CONCAT('%', #searchWord#, '%')
+		    </isEqual>
+		</isNotEmpty>
+	</select>
+
+	<select id="checkCode" parameterClass="java.lang.String" resultClass="java.lang.String">
+	<![CDATA[
+		SELECT /* [JobDuty_SqlMap.xml] support.user.code.dao.JobDuty.checkCode */
+			COUNT(JOB_DUTY_CODE)
+		FROM
+			IKEP4_EV_JOB_DUTY
+		WHERE
+			JOB_DUTY_CODE = #jobDutyCode#	
+	]]>
+	</select>
+	
+	<select id="getMaxSortOrder" resultClass="java.lang.String">
+	<![CDATA[
+		SELECT
+			LPAD((MAX(SORT_ORDER)+1), 6, '0') AS SORT_ORDER
+		FROM
+			IKEP4_EV_JOB_DUTY
+	]]>
+	</select>
+	
+	<insert id="updateSortOrder" parameterClass="JobDuty">
+	<![CDATA[
+		UPDATE /* [JobDuty_SqlMap.xml] support.user.code.dao.JobDuty.updateSortOrder */
+			IKEP4_EV_JOB_DUTY
+    	SET 
+    		SORT_ORDER = #sortOrder#
+    	WHERE 
+    		JOB_DUTY_CODE = #jobDutyCode#
+   	]]>
+	</insert>
+	
+	<select id="selectGoUp" parameterClass="java.util.Map" resultMap="getResult">
+	<![CDATA[	
+		SELECT				/* [JobDuty_SqlMap.xml] support.user.code.dao.JobDuty.selectGoUp */
+							tbl.*
+		FROM 				(
+							SELECT				* 
+							FROM 				IKEP4_EV_JOB_DUTY 
+							WHERE 				SORT_ORDER < #sortOrder#
+							ORDER BY 			SORT_ORDER DESC
+							) tbl 
+		LIMIT 1
+	]]>
+    </select>
+    
+    <select id="selectGoDown" parameterClass="java.util.Map" resultMap="getResult">
+	<![CDATA[	
+		SELECT				/* [JobDuty_SqlMap.xml] support.user.code.dao.JobDuty.selectGoDown */
+							tbl.*
+		FROM 				(
+							SELECT				* 
+							FROM 				IKEP4_EV_JOB_DUTY 
+							WHERE 				SORT_ORDER > #sortOrder#
+							ORDER BY 			SORT_ORDER ASC
+							) tbl 
+		LIMIT 1
+	]]>
+    </select>
+	
+	<!-- 목록 가져오기 -->
+	<select id="listJobDutyAll" parameterClass="java.lang.String" resultMap="getResult">
+	<![CDATA[
+		/* [JobDuty_SqlMap.xml] support.user.code.dao.JobDuty.listJobDutyAll */
+		SELECT 
+		    JOB_DUTY_CODE,
+		    JOB_DUTY_NAME,
+		    JOB_DUTY_ENGLISH_NAME,
+		    SORT_ORDER,
+		    PORTAL_ID,
+		    REGISTER_ID,
+		    REGISTER_NAME,
+		    UPDATER_ID,
+		    UPDATER_NAME,
+		    REGIST_DATE,
+		    UPDATE_DATE
+		FROM 
+		    IKEP4_EV_JOB_DUTY
+        WHERE PORTAL_ID = #portalId#
+	]]>	
+	</select>
+</sqlMap>

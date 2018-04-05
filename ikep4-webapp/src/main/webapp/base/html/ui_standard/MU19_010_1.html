@@ -1,0 +1,399 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ko">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>iKEP 4.00</title>
+<link rel="stylesheet" type="text/css" href="../../css/theme01/jquery_ui_custom.css" />
+<link rel="stylesheet" type="text/css" href="../../css/common.css" />
+<link rel="stylesheet" type="text/css" href="../../css/theme01/theme.css" />
+<link rel="stylesheet" type="text/css" href="../../css/plot_chart/jquery.jqplot.css" />
+<script type="text/javascript" src="../../js/jquery/jquery-1.6.2.min.js"></script>
+<script type="text/javascript" src="../../js/jquery/jquery-ui-1.8.13.min.without.datepicker.js"></script>
+<script type="text/javascript" src="../../js/plot_chart/jquery.jqplot.min.js"></script>
+<script type="text/javascript" src="../../js/plot_chart/excanvas.min.js"></script>
+<script type="text/javascript" src="../../js/plot_chart/jqplot.pieRenderer.min.js"></script>
+<script type="text/javascript" src="../../js/plot_chart/jqplot.barRenderer.min.js"></script>
+<script type="text/javascript" src="../../js/plot_chart/jqplot.categoryAxisRenderer.min.js"></script>
+<script type="text/javascript" src="../../js/plot_chart/jqplot.pointLabels.min.js"></script>
+<script type="text/javascript" src="../../js/langResource/ko.js"></script>
+<script type="text/javascript" src="../../js/common.pack.js"></script>
+<script type="text/javascript">
+<!--
+(function($) {
+	var remainingDay = 20;
+	var voteDay = 11;
+	var allday = 31;
+	var persent = 0;
+	$(document).ready(function() {
+		
+		// left menu setting
+		 iKEP.setLeftMenu();
+		
+		$("#divTab1").tabs({
+			selected : 1
+		});
+		$("#date1").datepicker().next().eq(0).click(function() { $(this).prev().eq(0).datepicker("show"); });
+		$("#date2").datepicker().next().eq(0).click(function() { $(this).prev().eq(0).datepicker("show"); });
+		
+		persent = voteDay/allday*100;
+		$("#voteRange").progressbar({ 
+  			value: persent 
+ 		});
+		$( "#days" ).text( remainingDay + "일");
+		
+		$("#voteRange1").progressbar({ 
+  			value: persent 
+ 		});
+		$( "#days1" ).text( remainingDay + "일");	
+				
+	});
+	
+	
+	pieChart = function(el, data) {  // el:차트가 들어갈 div 태그  이름, data : 차트 데이타
+		$.jqplot(el, [data], {
+            grid: {
+                drawBorder: false, 
+                drawGridlines: false,
+                background: '#FCFCFC',
+                shadow:false
+            },
+            seriesDefaults:{
+                renderer:$.jqplot.PieRenderer,
+                rendererOptions: {
+                    showDataLabels: true,
+                    shadow:false,
+                    sliceMargin:2
+                }
+            },
+            legend: {
+                show: true,                
+                location: 'e'
+            }
+        });
+	};
+	
+	barChart = function(el, data, ticks, maxNum) {	 // el:차트가 들어갈 div 태그 id 이름, data : 차트 데이타, ticks:데이타명, maxNum:데이타 최대값
+		$.jqplot(el, [data], {
+			grid: {                
+                background: '#FCFCFC'
+            },
+        	seriesDefaults:{
+                renderer:$.jqplot.BarRenderer,
+                pointLabels: { show: true }
+            },
+            axes: {
+                xaxis: {
+                    renderer: $.jqplot.CategoryAxisRenderer,
+                    ticks: ticks
+                },
+                yaxis: {
+                	max:maxNum
+                }
+            },
+            highlighter: { show: false }
+        });
+		
+	};
+	
+})(jQuery);
+-->
+</script>
+</head>
+
+<body>
+
+<!--skipNavigation Start-->
+<div id="skipNavigation">
+	<p><a href="#topInfo">헤더정보영역 바로가기</a></p>
+	<p><a href="#topMenu">탑메뉴 바로가기</a></p>	
+	<p><a href="#blockHeaderSub">퀵메뉴 바로가기</a></p>
+	<p><a href="#leftMenu">레프트메뉴 바로가기</a></p>	
+	<p><a href="#mainContents">컨텐츠영역 바로가기</a></p>	
+</div>
+<!--//skipNavigation End-->
+
+<!--wrapper Start-->
+<div id="wrapper">
+
+	<!--blockContainer Start-->
+	<div id="blockContainer">
+
+		<!--blockHeader Start-->
+		<div id="blockHeader">	
+		
+			<!--topInfo Start-->	
+			<div id="topInfo">
+				<h1 class="none">헤더정보영역</h1>
+				<div id="topLogo">
+					<a href="#a"><img src="../../images/common/logo.png" alt="iKEP Logo" /></a>
+				</div>
+			</div>
+			<!--//topInfo End-->
+						
+			<!--topMenu Start-->
+			<div id="topMenu">
+				<h1 class="none">탑메뉴</h1>			
+			</div>
+			<!--//topMenu End-->		
+
+			<!--blockHeaderSub Start-->
+			<div id="blockHeaderSub">
+				<h1 class="none">퀵메뉴</h1>		
+			</div>
+			<!--//blockHeaderSub End-->
+										
+		</div>
+		<!--//blockHeader End-->
+		
+		<!--blockMain Start-->
+		<div id="blockMain">
+
+			<!--leftMenu Start-->
+			<div id="leftMenu">
+				<h1 class="none">레프트메뉴</h1>	
+				<h2>Online Poll</h2>	
+				
+				<!--blockButton_2 Start-->
+				<div class="blockButton_2 mb10"> 				
+					<a class="button_2" href="#a"><span><img src="../../images/icon/ic_poll.gif" alt=""/> 투표등록</span></a>				
+				</div>
+				<!--//blockButton_2 End-->					
+				<div class="left_fixed">
+					<ul>			
+						<li class="liFirst no_child"><a href="#a">투표참여</a></li>
+						<li class="no_child"><a href="#a">My Online Poll</a></li>		
+						<li class="opened"><a href="#a">Administration</a>
+							<ul>
+								<li class="no_child liLast"><a href="#a">투표관리</a></li>
+							</ul>		
+						</li>							
+					</ul>
+				</div>
+			</div>	
+			<!--//leftMenu End-->
+				
+			<!--mainContents Start-->
+			<div id="mainContents" >
+				<h1 class="none">컨텐츠영역</h1>
+
+				<!--pageTitle Start-->
+				<div id="pageTitle">
+					<h2>투표참여</h2>
+				</div>
+				<!--//pageTitle End-->					
+					
+				<!--tab Start-->		
+				<div id="divTab1" class="iKEP_tab_poll">
+					<ul>
+						<li class="w50"><a href="#tabs-1">진행중인 투표</a></li>
+						<li class="w50"><a href="#tabs-2">완료된 투표</a></li>
+					</ul>			
+				</div>		
+				<!--//tab End-->				
+				
+				<!--blockButton Start-->
+				<div class="blockButton"> 
+					<ul>
+						<li><a class="button_s" href="#a"><span>전체</span></a></li>
+						<li><a class="button_s" href="#a"><span>참여한 투표</span></a></li>		
+						<li><a class="button_s" href="#a"><span>등록한 투표</span></a></li>												
+					</ul>
+				</div>
+				<!--//blockButton End-->	
+				
+				<!--online_poll Start-->
+				<div class="blockTableRead online_poll">
+					<h3 class="none">Question</h3>
+					<div class="qnaimg">
+						<img src="../../images/icon/ic_vote.gif" alt="" />
+					</div>				
+					<div class="blockTableRead_t">		
+						<p>다음 문화 상품중 어떤 것을 먼저 구입하시겠습니까? (긴문장 테스트 긴문장 테스트 )</p>
+						<div class="summaryViewInfo">
+							<span class="ty1">공개투표</span>
+							<span class="summaryViewInfo_name">진행자 : <a href="#a">홍길동 과장</a></span>
+							<span>투표기간 : <strong>2011.03.12~2011.03.15</strong></span>
+						</div>
+					</div>
+					
+					<table width="100%" summary="">
+						<caption></caption>
+						<tbody>
+							<tr>
+								<td valign="top">
+									<div class="online_poll_list">						
+										<ul>
+											<li><input name="" type="checkbox" class="checkbox" title="checkbox" value="" checked="checked" /> (1) 해설있는 클래식 CD 62장 셑</li>
+											<li><input name="" class="checkbox" title="checkbox" type="checkbox" value="" /> (2) 음악/영어뉴스 위성라디오</li>
+											<li><input name="" class="checkbox" title="checkbox" type="checkbox" value="" /> (3) 유명 오케스트라 내한 공연</li>
+											<li><input name="" class="checkbox" title="checkbox" type="checkbox" value="" /> (4) 대중가수의 콘서트</li>																					
+										</ul>
+									</div>
+									<div class="online_poll_num1 lp70"><img src="../../images/icon/ic_arrow_3.gif" alt="" /> 총 <span>1000</span> 명 참여</div>	
+								</td>
+								<td width="250" valign="top" height="200px;">
+									<div class="online_poll_graph1">
+										<div id="chart1" style="margin-top:10px;width:220px; height:180px;"></div>		
+										<script type="text/javascript">
+											$jq(document).ready(function() {barChart("chart1", [2, 6, 7, 10], ['1', '2', '3', '4'], 11.5);});
+										</script>								
+									</div>
+								</td>
+							</tr>
+						</tbody>
+					</table>						
+				</div>
+				<!--//online_poll End-->
+				
+				<!--online_poll Start-->
+				<div class="blockTableRead online_poll">
+					<h3 class="none">Question</h3>
+					<div class="qnaimg">
+						<img src="../../images/icon/ic_vote_select.gif" alt="" />
+					</div>				
+					<div class="blockTableRead_t">		
+						<p>다음 문화 상품중 어떤 것을 먼저 구입하시겠습니까? (긴문장 테스트 긴문장 테스트 )</p>
+						<div class="summaryViewInfo">
+							<span class="ty1">공개투표</span>
+							<span class="summaryViewInfo_name">진행자 : <a href="#a">홍길동 과장</a></span>
+							<span>투표기간 : <strong>2011.03.12~2011.03.15</strong></span>
+						</div>
+					</div>					
+					
+					<table width="100%" summary="">
+						<caption></caption>
+						<tbody>
+							<tr>
+								<td valign="top">		
+									<div class="online_poll_list">						
+										<ul>
+											<li>(1) 해설있는 클래식 CD 62장 셑</li>
+											<li>(2) 음악/영어뉴스 위성라디오</li>
+											<li class="selected"><em>(3) 유명 오케스트라 내한 공연</em></li>
+											<li>(4) 대중가수의 콘서트</li>																					
+										</ul>
+									</div>									
+									<div class="online_poll_num1 lp70"><img src="../../images/icon/ic_arrow_3.gif" alt="" /> 총 <span>1000</span> 명 참여</div>								
+								</td>
+								<td width="250" valign="top" height="240px;">
+									<div class="online_poll_graph1">
+										<div id="chart2" style="margin-right:20px;width:250px; height:230px;"></div>
+										<script type="text/javascript">
+											$jq(document).ready(function() {pieChart("chart2", [['1',7], ['2',14], ['3',25], ['4',8]]);});
+										</script>
+									</div>
+								</td>								
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<!--//online_poll End-->	
+				
+				<!--online_poll Start-->
+				<div class="blockTableRead online_poll">
+					<h3 class="none">Question</h3>
+					<div class="qnaimg">
+						<img src="../../images/icon/ic_vote_select.gif" alt="" />
+					</div>				
+					<div class="blockTableRead_t">		
+						<p>다음 문화 상품중 어떤 것을 먼저 구입하시겠습니까? (긴문장 테스트 긴문장 테스트 )</p>
+						<div class="summaryViewInfo">
+							<span class="ty1">공개투표</span>
+							<span class="summaryViewInfo_name">진행자 : <a href="#a">홍길동 과장</a></span>
+							<span>투표기간 : <strong>2011.03.12~2011.03.15</strong></span>
+						</div>
+					</div>					
+					
+					<table width="100%" summary="">
+						<caption></caption>
+						<tbody>
+							<tr>
+								<td valign="top">		
+									<div class="online_poll_list">						
+										<ul>
+											<li>(1) 해설있는 클래식 CD 62장 셑</li>
+											<li>(2) 음악/영어뉴스 위성라디오</li>
+											<li class="selected"><em>(3) 유명 오케스트라 내한 공연</em></li>
+											<li>(4) 대중가수의 콘서트</li>																					
+										</ul>
+									</div>									
+									<div class="online_poll_num1 lp70"><img src="../../images/icon/ic_arrow_3.gif" alt="" /> 총 <span>1000</span> 명 참여</div>								
+								</td>
+								<td width="250" valign="top" height="240px;">
+									<div class="online_poll_graph1">
+										<div id="chart3" style="margin-right:20px;width:250px; height:230px;"></div>
+										<script type="text/javascript">
+											$jq(document).ready(function() {pieChart("chart3", [['1',25], ['2',56], ['3',34], ['4',10]]);});
+										</script>
+									</div>
+								</td>								
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<!--//online_poll End-->
+				
+				<!--online_poll Start-->
+				<div class="blockTableRead online_poll">
+					<h3 class="none">Question</h3>
+					<div class="qnaimg">
+						<img src="../../images/icon/ic_vote_select.gif" alt="" />
+					</div>				
+					<div class="blockTableRead_t">		
+						<p>다음 문화 상품중 어떤 것을 먼저 구입하시겠습니까? (긴문장 테스트 긴문장 테스트 )</p>
+						<div class="summaryViewInfo">
+							<span class="ty1">공개투표</span>
+							<span class="summaryViewInfo_name">진행자 : <a href="#a">홍길동 과장</a></span>
+							<span>투표기간 : <strong>2011.03.12~2011.03.15</strong></span>
+						</div>
+					</div>					
+					
+					<table width="100%" summary="">
+						<caption></caption>
+						<tbody>
+							<tr>
+								<td valign="top">		
+									<div class="online_poll_list">						
+										<ul>
+											<li>(1) 해설있는 클래식 CD 62장 셑</li>
+											<li>(2) 음악/영어뉴스 위성라디오</li>
+											<li class="selected"><em>(3) 유명 오케스트라 내한 공연</em></li>
+											<li>(4) 대중가수의 콘서트</li>																					
+										</ul>
+									</div>									
+									<div class="online_poll_num1 lp70"><img src="../../images/icon/ic_arrow_3.gif" alt="" /> 총 <span>1000</span> 명 참여</div>								
+								</td>
+								<td width="250" valign="top" height="200px;">
+									<div class="online_poll_graph1">
+										<div id="chart4" style="margin-top:10px;width:220px; height:180px;"></div>
+										<script type="text/javascript">
+											$jq(document).ready(function() {barChart("chart4", [20, 43, 56, 10], ['1', '2', '3', '4'], 65);});
+										</script>
+									</div>
+								</td>								
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<!--//online_poll End-->			
+							
+				<!--blockButton_3 Start-->
+				<div class="blockButton_3"> 
+					<a class="button_3" href="#a"><span>추가 10건 더보기 <img src="../../images/icon/ic_more_ar.gif" alt="" /></span></a>				
+				</div>
+				<!--//blockButton_3 End-->								
+													
+			</div>
+			<!--//mainContents End-->
+			<div class="clear"></div>
+		</div>
+		<!--//blockMain End-->
+		
+	</div>
+	<!--//blockContainer End-->
+	
+		
+</div>
+<!--//wrapper End-->
+</body>
+</html>

@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="support.note.noteFolder">
+  <typeAlias alias="NoteFolder" type="com.lgcns.ikep4.support.note.model.NoteFolder" />
+  <resultMap id="noteFolderResult" class="com.lgcns.ikep4.support.note.model.NoteFolder"> 
+    <result column="FOLDER_ID"          jdbcType="VARCHAR" property="folderId" />
+    <result column="USER_ID"          	jdbcType="VARCHAR" property="userId" />
+    <result column="PORTAL_ID"          jdbcType="VARCHAR" property="portalId" />
+    <result column="FOLDER_PARENT_ID"   jdbcType="VARCHAR" property="folderParentId" />
+    <result column="FOLDER_NAME"        jdbcType="VARCHAR" property="folderName" />
+    <result column="FOLDER_TYPE"        jdbcType="DECIMAL" property="folderType" />
+    <result column="SORT_ORDER"         jdbcType="DECIMAL" property="sortOrder" />
+    <result column="DEFAULT_FLAG"      	jdbcType="DECIMAL" property="defaultFlag" />
+    <result column="COLOR"              jdbcType="VARCHAR" property="color" />
+    <result column="SHARED"         	jdbcType="DECIMAL" property="shared" />
+    <result column="REGISTER_ID"        jdbcType="VARCHAR" property="registerId" />
+    <result column="REGISTER_NAME"      jdbcType="VARCHAR" property="registerName" />
+    <result column="REGIST_DATE"        jdbcType="DATE"    property="registDate" />
+  </resultMap>                          
+  <resultMap id="noteFolderIndentationResult" extends="noteFolderResult" class="com.lgcns.ikep4.support.note.model.NoteFolder"> 
+    <result column="INDENTATION" 		jdbcType="VARCHAR" property="indentation" /> 
+    <result column="HAS_CHILDREN" 		jdbcType="DECIMAL" property="hasChildren" />
+    <result column="NOTE_COUNT" 		jdbcType="DECIMAL" property="noteCnt" />
+  </resultMap> 
+  <resultMap id="noteFolderResultEx" extends="noteFolderResult"  class="com.lgcns.ikep4.support.note.model.NoteFolder">  
+    <result column="HAS_CHILDREN" jdbcType="DECIMAL" property="hasChildren" />
+  </resultMap>   
+  <resultMap id="userFolderResult" class="com.lgcns.ikep4.support.note.model.NoteFolder"> 
+    <result column="FOLDER_ID"          jdbcType="VARCHAR" property="folderId" />
+    <result column="FOLDER_NAME"        jdbcType="VARCHAR" property="folderName" />
+    <result column="SORT_ORDER"         jdbcType="DECIMAL" property="sortOrder" />
+    <result column="COLOR"              jdbcType="VARCHAR" property="color" />
+    <result column="DEFAULT_FLAG"       jdbcType="DECIMAL" property="defaultFlag" />
+    <result column="USER_ID"          	jdbcType="VARCHAR" property="userId" />
+    <result column="USER_NAME"      	jdbcType="VARCHAR" property="userName" />
+    <result column="USER_TEAM_NAME"     jdbcType="VARCHAR" property="userTeamName" />
+    <result column="USER_TITLE_NAME"    jdbcType="VARCHAR" property="userTitleName" />
+  </resultMap>  	
+  <resultMap id="shareFolderResult" class="com.lgcns.ikep4.support.note.model.NoteFolder"> 
+    <result column="FOLDER_ID"          jdbcType="VARCHAR" property="folderId" />
+    <result column="FOLDER_NAME"        jdbcType="VARCHAR" property="folderName" />
+    <result column="SORT_ORDER"         jdbcType="DECIMAL" property="sortOrder" />
+    <result column="USER_ID"          	jdbcType="VARCHAR" property="userId" />
+    <result column="USER_NAME"      	jdbcType="VARCHAR" property="userName" />
+    <result column="USER_ENGLISH_NAME"  jdbcType="VARCHAR" property="userEnglishName" />
+    <result column="USER_TEAM_NAME"     jdbcType="VARCHAR" property="userTeamName" />
+    <result column="USER_TITLE_NAME"    jdbcType="VARCHAR" property="userTitleName" />
+    <result column="USER_TITLE_ENGLISH_NAME"    jdbcType="VARCHAR" property="userTitleEnglishName" />
+  </resultMap>                          
+  	
+  <sql id="sqlColumnList">
+    USER_ID, 
+    PORTAL_ID, 
+    FOLDER_PARENT_ID, 
+    FOLDER_NAME, 
+    FOLDER_TYPE, 
+    SORT_ORDER, 
+    DEFAULT_FLAG,
+    IFNULL(COLOR, 1) COLOR,
+    SHARED, 
+    REGISTER_ID, 
+    REGISTER_NAME, 
+    REGIST_DATE
+  </sql> 
+	
+	<select id="listByFolderRootId_old" parameterClass="map" resultMap="noteFolderIndentationResult"> 
+	   SELECT  /* [NoteFolder_SqlMap.xml] support.note.noteFolder.listByFolderRootId */ *
+	   FROM (
+			SELECT
+			       LEVEL - 1 AS INDENTATION,
+			       (SELECT COUNT(*) FROM IKEP4_NO_FOLDER B WHERE A.FOLDER_ID = B.FOLDER_PARENT_ID) AS HAS_CHILDREN,
+			       (SELECT COUNT(*) FROM IKEP4_NO_NOTE B WHERE A.PORTAL_ID = B.PORTAL_ID AND A.USER_ID = B.REGISTER_ID AND A.FOLDER_ID = B.FOLDER_ID AND B.NOTE_DELETE = 0) AS NOTE_COUNT,
+			       A.FOLDER_ID,
+		       	   <include refid="support.note.noteFolder.sqlColumnList"/>
+			FROM (
+					SELECT	fncChildNoteFolder() AS folder_id, @level as level, @rownum as rownum
+					FROM	(SELECT  @start_with := 'root', @id := @start_with, @level := 1, @rownum := 0, @sort_order := 0) tbl1, IKEP4_NO_FOLDER
+					WHERE	@id IS NOT NULL
+				 ) tbl2 inner join IKEP4_NO_FOLDER A
+					ON tbl2.folder_id = A.folder_id
+			where  	PORTAL_Id = #portalId#
+			and		USER_ID = #userId#
+			order by SORT_ORDER ASC
+		)   A   
+	</select>
+	    
+	<select id="listByFolderRootId" parameterClass="map" resultMap="noteFolderIndentationResult"> 
+	   SELECT  /* [NoteFolder_SqlMap.xml] support.note.noteFolder.listByFolderRootId */ *
+	   FROM (
+			SELECT
+			       1 AS INDENTATION,
+			       (SELECT COUNT(*) FROM IKEP4_NO_FOLDER B WHERE A.FOLDER_ID = B.FOLDER_PARENT_ID) AS HAS_CHILDREN,
+			       (SELECT COUNT(*) FROM IKEP4_NO_NOTE B WHERE A.PORTAL_ID = B.PORTAL_ID AND A.USER_ID = B.REGISTER_ID AND A.FOLDER_ID = B.FOLDER_ID AND B.NOTE_DELETE = 0) AS NOTE_COUNT,
+			       FOLDER_ID,
+		       	   <include refid="support.note.noteFolder.sqlColumnList"/>
+			FROM 	IKEP4_NO_FOLDER A
+			where  	PORTAL_Id = #portalId#
+			and		USER_ID = #userId#
+			order by SORT_ORDER ASC
+		)   A   
+	</select>
+	    
+	<select id="listByUserFolder" parameterClass="map" resultMap="userFolderResult"> 
+		SELECT 	/* [NoteFolder_SqlMap.xml] support.note.noteFolder.listByUserFolder */ 
+				main.FOLDER_ID AS FOLDER_ID,
+				main.FOLDER_NAME AS FOLDER_NAME,
+				main.SORT_ORDER AS SORT_ORDER,
+				main.COLOR AS COLOR,
+				main.DEFAULT_FLAG AS DEFAULT_FLAG,
+				usr.USER_ID AS USER_ID,
+				usr.USER_NAME AS USER_NAME,
+				usr.TEAM_NAME AS USER_TEAM_NAME,
+				(SELECT JOB_TITLE_NAME FROM IKEP4_EV_JOB_TITLE WHERE IKEP4_EV_JOB_TITLE.JOB_TITLE_CODE = usr.JOB_TITLE_CODE) AS USER_TITLE_NAME
+		FROM	IKEP4_NO_FOLDER main INNER JOIN IKEP4_EV_USER usr ON main.USER_ID = usr.USER_ID
+		WHERE 	main.PORTAL_ID = #portalId#
+		AND		main.USER_ID = #userId#
+		ORDER BY main.SORT_ORDER ASC
+	</select>
+	    
+	<select id="listBySharedFolder" parameterClass="map" resultMap="shareFolderResult"> 
+		SELECT 	/* [NoteFolder_SqlMap.xml] support.note.noteFolder.listBySharedFolder */ 
+				main.FOLDER_ID AS FOLDER_ID,
+				main.FOLDER_NAME AS FOLDER_NAME,
+				main.SORT_ORDER AS SORT_ORDER,
+				usr.USER_ID AS USER_ID,
+				usr.USER_NAME AS USER_NAME,
+				usr.USER_ENGLISH_NAME AS USER_ENGLISH_NAME,
+				usr.TEAM_NAME AS USER_TEAM_NAME,
+				(SELECT JOB_TITLE_NAME FROM IKEP4_EV_JOB_TITLE WHERE IKEP4_EV_JOB_TITLE.JOB_TITLE_CODE = usr.JOB_TITLE_CODE) AS USER_TITLE_NAME,
+				(SELECT JOB_TITLE_ENGLISH_NAME FROM IKEP4_EV_JOB_TITLE WHERE IKEP4_EV_JOB_TITLE.JOB_TITLE_CODE = usr.JOB_TITLE_CODE) AS USER_TITLE_ENGLISH_NAME
+		FROM	IKEP4_NO_FOLDER main INNER JOIN IKEP4_EV_USER usr ON main.USER_ID = usr.USER_ID, 
+				IKEP4_NO_SHARE shar
+		WHERE 	main.FOLDER_ID = shar.FOLDER_ID
+		AND		shar.PORTAL_ID = #portalId#
+		AND		shar.USER_ID = #userId#
+		AND   	main.USER_ID <![CDATA[<>]]> #userId#
+		ORDER BY main.USER_ID ASC, main.SORT_ORDER ASC
+	</select>
+	    
+	<select id="listByMoveUserFolder" parameterClass="map" resultMap="userFolderResult"> 
+		SELECT 	/* [NoteFolder_SqlMap.xml] support.note.noteFolder.listByUserFolder */ 
+				main.FOLDER_ID AS FOLDER_ID,
+				main.FOLDER_NAME AS FOLDER_NAME,
+				main.SORT_ORDER AS SORT_ORDER,
+				main.COLOR AS COLOR,
+				main.DEFAULT_FLAG AS DEFAULT_FLAG,
+				usr.USER_ID AS USER_ID,
+				usr.USER_NAME AS USER_NAME,
+				usr.TEAM_NAME AS USER_TEAM_NAME,
+				(SELECT JOB_TITLE_NAME FROM IKEP4_EV_JOB_TITLE WHERE IKEP4_EV_JOB_TITLE.JOB_TITLE_CODE = usr.JOB_TITLE_CODE) AS USER_TITLE_NAME
+		FROM	IKEP4_NO_FOLDER main INNER JOIN IKEP4_EV_USER usr ON main.USER_ID = usr.USER_ID
+		WHERE 	main.PORTAL_ID = #portalId#
+		AND		main.USER_ID = #userId#
+		AND		main.FOLDER_ID <![CDATA[<>]]> #folderId#
+		ORDER BY main.SORT_ORDER ASC
+	</select>
+	    
+	<select id="listChildrenNoteFolder" parameterClass="map" resultMap="noteFolderResultEx">
+		SELECT /* [NoteFolder_SqlMap.xml] support.note.noteFolder.listChildrenNoteFolder */ 
+				(SELECT COUNT(*) FROM IKEP4_NO_FOLDER B WHERE A.FOLDER_ID = B.FOLDER_PARENT_ID) AS HAS_CHILDREN,
+				FOLDER_ID,
+				<include refid="support.note.noteFolder.sqlColumnList"/>
+	   	FROM   IKEP4_NO_FOLDER A
+	   	<isNotEmpty property="folderId">
+		WHERE FOLDER_PARENT_ID = #folderId#
+		</isNotEmpty>
+	   	<isEmpty property="folderId">
+		WHERE FOLDER_PARENT_ID  = 'root'
+		</isEmpty>	
+		AND    PORTAL_ID = #portalId#
+		AND    USER_ID = #userId#
+	   	ORDER BY SORT_ORDER ASC
+	</select>
+  
+	<select id="existFolderName" parameterClass="java.util.Map" resultClass="int">
+		/* [NoteFolder_SqlMap.xml] support.note.noteFolder.existFolderName */
+	  	<![CDATA[
+		SELECT 	COUNT(FOLDER_ID) AS CNT
+		FROM	IKEP4_NO_FOLDER
+		WHERE	FOLDER_NAME = #folderName#
+		  AND   USER_ID = #userId#		  
+	   	]]>
+	   	<isNotEmpty property="folderId">
+		  AND 	FOLDER_ID <![CDATA[<>]]> #folderId#
+		</isNotEmpty>
+	</select>
+	
+	<insert id="createFolder" parameterClass="NoteFolder">
+  	/* [[NoteFolder_SqlMap.xml] support.note.noteFolder.createFolder */
+    INSERT INTO IKEP4_NO_FOLDER ( 
+     		FOLDER_ID,
+		    USER_ID,
+		    PORTAL_ID ,
+		    FOLDER_PARENT_ID ,
+		    FOLDER_NAME ,
+		    FOLDER_TYPE ,
+		    SORT_ORDER ,
+		    DEFAULT_FLAG,
+		    COLOR,
+		    SHARED,
+		    REGISTER_ID ,
+		    REGISTER_NAME ,
+		    REGIST_DATE 
+    ) VALUES (
+      #folderId#,
+      #userId#,
+      #portalId#,
+      <isEmpty property="folderParentId">
+      	'root',
+      </isEmpty>
+      <isNotEmpty property="folderParentId">
+      	#folderParentId#,   
+      </isNotEmpty>
+      #folderName#,
+      #folderType#,
+      <isNotEmpty property="folderParentId">
+	  	(SELECT IFNULL(MAX(SORT_ORDER) + 1, 1) FROM IKEP4_NO_FOLDER A WHERE FOLDER_PARENT_ID = #folderParentId#),  
+	  </isNotEmpty>
+      <isEmpty property="folderParentId">
+		(SELECT IFNULL(MAX(SORT_ORDER)+ 1, 1) FROM IKEP4_NO_FOLDER A WHERE FOLDER_PARENT_ID = 'root' AND USER_ID = #userId#),  
+	  </isEmpty>  
+      <isEmpty property="defaultFlag">
+      	0,
+      </isEmpty>
+      <isNotEmpty property="defaultFlag">
+      	#defaultFlag#,   
+      </isNotEmpty>
+      #color#,      
+      #shared#,  
+      #registerId#,       
+      #registerName#,     
+      now()       
+    )
+  </insert>
+
+   <update id="clearDefaultFolder" parameterClass="NoteFolder">
+   		/* [NoteFolder_SqlMap.xml]  support.note.noteFolder.updateFolder */
+	  	<![CDATA[
+		   	UPDATE 	IKEP4_NO_FOLDER 
+		   	SET 	DEFAULT_FLAG  = 0
+		   	WHERE 	USER_ID = #userId#
+	   	]]>
+	</update>
+	   
+   <update id="updateFolder" parameterClass="NoteFolder">
+   		/* [NoteFolder_SqlMap.xml]  support.note.noteFolder.updateFolder */
+	  	<![CDATA[
+		   	UPDATE 	IKEP4_NO_FOLDER 
+		   	SET 	FOLDER_NAME     = #folderName#
+		   			, DEFAULT_FLAG  = #defaultFlag#
+		   			, COLOR 		= #color#
+		   			, SHARED 		= #shared#
+		   	WHERE 	FOLDER_ID 		= #folderId#
+	   	]]>
+	</update>
+	   
+	<update id="updateMove" parameterClass="NoteFolder">
+	    UPDATE IKEP4_NO_FOLDER /* [NoteFolder_SqlMap.xml]  support.note.noteFolder.updateMove */
+	    <isNull property="folderParentId">
+	    SET    FOLDER_PARENT_ID  =  'root',
+	    </isNull>
+	    <isNotNull property="folderParentId">
+	    SET    FOLDER_PARENT_ID  =  #folderParentId#,
+	    </isNotNull>
+	           SORT_ORDER       =  #sortOrder#
+	    WHERE  FOLDER_ID = #folderId#
+	</update>   
+	
+  	<update id="updateSortOderIncrease" parameterClass="NoteFolder">
+	    UPDATE IKEP4_NO_FOLDER /* [NoteFolder_SqlMap.xml]  support.note.noteFolder.updateSortOderIncrease */
+	    SET    SORT_ORDER      =  SORT_ORDER + 1
+	    WHERE  1 = 1
+	    <isEmpty property="folderParentId">
+	    AND  FOLDER_PARENT_ID = 'root'
+	    </isEmpty>
+	    <isNotEmpty property="folderParentId">
+	    AND  FOLDER_PARENT_ID = #folderParentId#
+	    </isNotEmpty>
+	    AND    SORT_ORDER &gt;= #sortOrder#
+  	</update>  
+  	<update id="updateSortOderDecrease" parameterClass="NoteFolder">
+	    UPDATE IKEP4_NO_FOLDER /* [NoteFolder_SqlMap.xml]  support.note.noteFolder.updateSortOderDecrease */
+	    SET    SORT_ORDER      =  SORT_ORDER - 1
+	    WHERE  1 = 1
+	    <isEmpty property="folderParentId">
+	    AND  FOLDER_PARENT_ID = 'root'
+	    </isEmpty>
+	    <isNotEmpty property="folderParentId">
+	    AND  FOLDER_PARENT_ID = #folderParentId#
+	    </isNotEmpty>
+	    AND    SORT_ORDER &gt; #sortOrder#
+  	</update>  
+  
+	<delete id="physicalDeleteFolder" parameterClass="java.lang.String"> 
+	<![CDATA[
+		/* [NoteFolder_SqlMap.xml] support.note.noteFolder.physicalDeleteFolder */
+		DELETE 
+		FROM 
+			IKEP4_NO_FOLDER
+		WHERE
+			FOLDER_ID = #folderId#
+    	]]>
+	</delete>
+	
+  <select id="get" parameterClass="string" resultMap="noteFolderResult">
+    SELECT /* [NoteFolder_SqlMap.xml] support.note.dao.notefolder.get */ 
+    	FOLDER_ID,
+		<include refid="support.note.noteFolder.sqlColumnList"/>
+    FROM  IKEP4_NO_FOLDER
+    WHERE FOLDER_ID = #folderId#
+  </select>
+  
+  <select id="getDefaultFolder" parameterClass="string" resultMap="noteFolderResult">
+    SELECT /* [NoteFolder_SqlMap.xml] support.note.dao.notefolder.get */ 
+    	FOLDER_ID,
+		<include refid="support.note.noteFolder.sqlColumnList"/>
+    FROM  IKEP4_NO_FOLDER
+    WHERE USER_ID = #userId#
+    AND  DEFAULT_FLAG = 1
+  </select>
+</sqlMap>

@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="com.lgcns.ikep4.servicepack.survey.svQuestionGroup" >
+
+  <typeAlias alias="svQuestionGroup"                type="com.lgcns.ikep4.servicepack.survey.model.QuestionGroup"/>
+  <typeAlias alias="svQuestionGroupKey"             type="java.lang.String"/>
+  
+  <resultMap id="result" class="svQuestionGroup" >
+    <result column="QUESTION_GROUP_ID" property="questionGroupId" jdbcType="VARCHAR" />
+    <result column="SURVEY_ID" property="surveyId" jdbcType="VARCHAR" />
+    <result column="QUESTION_GROUP_SEQ" property="questionGroupSeq" jdbcType="DECIMAL" />
+    <result column="TITLE" property="title" jdbcType="VARCHAR" />
+    <result column="REGISTER_ID" property="registerId" jdbcType="VARCHAR" />
+    <result column="REGISTER_NAME" property="registerName" jdbcType="VARCHAR" />
+    <result column="REGIST_DATE" property="registDate" jdbcType="TIMESTAMP" />
+    <result column="UPDATER_ID" property="updaterId" jdbcType="VARCHAR" />
+    <result column="UPDATER_NAME" property="updaterName" jdbcType="VARCHAR" />
+    <result column="UPDATE_DATE" property="updateDate" jdbcType="TIMESTAMP" />
+    <result column="CONTENTS" property="contents" jdbcType="CLOB" />
+    <result property="jobTitleName" column="JOB_TITLE_NAME"/>
+	<result property="jobTitleEnglishName" column="JOB_TITLE_ENGLISH_NAME"/>
+	<result property="userName" column="USER_NAME"/>
+	<result property="userEnglishName" column="USER_ENGLISH_NAME"/>
+	<result property="teamName" column="TEAM_NAME"/>
+	<result property="teamEnglishName" column="TEAM_ENGLISH_NAME"/>
+  </resultMap>
+      
+  <sql id="sqlColumnList"> 
+	  s.QUESTION_GROUP_ID, 
+	  s.SURVEY_ID, 
+	  s.QUESTION_GROUP_SEQ, 
+	  s.TITLE, 
+	  s.REGISTER_ID, 
+	  s.REGISTER_NAME,
+      s.REGIST_DATE, 
+      s.UPDATER_ID, 
+      s.UPDATER_NAME, 
+      s.UPDATE_DATE, 
+      s.CONTENTS,
+      eu.USER_NAME, 
+      eu.USER_ENGLISH_NAME, 
+      eu.TEAM_NAME, 
+      eu.TEAM_ENGLISH_NAME,
+      ejt.JOB_TITLE_NAME, 
+      ejt.JOB_TITLE_ENGLISH_NAME
+  </sql> 
+  
+ <select id="get" parameterClass="svQuestionGroupKey" resultMap="result"> 
+    SELECT /* [svQuestionGroup_SqlMap.xml] svQuestionGroup.get */
+    <include refid="com.lgcns.ikep4.servicepack.survey.svQuestionGroup.sqlColumnList" />
+    FROM  IKEP4_SV_GROUP s,IKEP4_EV_USER eu,IKEP4_EV_JOB_TITLE ejt
+    WHERE   eu.job_title_code =ejt.job_title_code
+    		and s.REGISTER_ID = eu.user_id
+    		and QUESTION_GROUP_ID = #questionGroupId#
+  </select>
+  
+  <select id="getAllBySurveyId" parameterClass="String" resultMap="result"> 
+    SELECT /* [svQuestionGroup_SqlMap.xml] svQuestionGroup.get */
+    <include refid="com.lgcns.ikep4.servicepack.survey.svQuestionGroup.sqlColumnList" />
+    FROM  IKEP4_SV_GROUP s,IKEP4_EV_USER eu,IKEP4_EV_JOB_TITLE ejt
+    WHERE   eu.job_title_code =ejt.job_title_code
+    		and s.REGISTER_ID = eu.user_id
+   			and SURVEY_ID = #surveyId#
+	ORDER BY QUESTION_GROUP_SEQ asc
+  </select>
+  
+  <select id="exists" parameterClass="svQuestionGroupKey" resultClass="int"> 
+    SELECT /* [svQuestionGroup_SqlMap.xml] svQuestionGroup.exists */
+    	  COUNT(*)
+    FROM  IKEP4_SV_GROUP
+   WHERE QUESTION_GROUP_ID = #questionGroupId#
+  </select> 
+  
+  
+  <select id="maxQuestionGroupGroupSeq" parameterClass="svQuestionGroupKey" resultClass="int"> 
+    SELECT /* [svQuestionGroup_SqlMap.xml] svQuestionGroup.exists */
+    	  nvl(MAX(QUESTION_GROUP_SEQ),0)
+    FROM  IKEP4_SV_GROUP
+    WHERE SURVEY_ID = #surveyId#
+  </select> 
+ 
+  
+  <insert id="create" parameterClass="svQuestionGroup"> 
+    INSERT INTO IKEP4_SV_GROUP ( /* [svQuestionGroup_SqlMap.xml] svQuestionGroup.insert */
+	      QUESTION_GROUP_ID, 
+		  SURVEY_ID, 
+		  QUESTION_GROUP_SEQ, 
+		  TITLE, 
+		  REGISTER_ID, 
+		  REGISTER_NAME,
+	      REGIST_DATE, 
+	      UPDATER_ID, 
+	      UPDATER_NAME, 
+	      UPDATE_DATE, 
+	      CONTENTS
+      ) VALUES (
+      #questionGroupId#, 
+      #surveyId#, 
+      #questionGroupSeq#,
+      #title#, 
+      #registerId#, 
+      #registerName#, 
+      #registDate#,
+      #updaterId#, 
+      #updaterName#, 
+      #updateDate#, 
+      #contents#
+    )
+  </insert>
+  
+  <update id="update" parameterClass="svQuestionGroup"> 
+    update IKEP4_SV_GROUP
+    set QUESTION_GROUP_SEQ = #questionGroupSeq#,
+        TITLE = #title#,
+        UPDATER_ID = #updaterId#,
+        UPDATER_NAME = #updaterName#,
+        UPDATE_DATE = #updateDate#,
+        CONTENTS = #contents#
+    where QUESTION_GROUP_ID = #questionGroupId#
+  </update>
+  
+  <delete id="remove" parameterClass="svQuestionGroupKey"> 
+    DELETE FROM IKEP4_SV_GROUP /* [svQuestionGroup_SqlMap.xml] svQuestionGroup.remove */
+     where QUESTION_GROUP_ID = #questionGroupId#
+  </delete>  
+  
+   <delete id="removeAllBySurveyId" parameterClass="string"> 
+    DELETE FROM IKEP4_SV_GROUP /* [svQuestionGroup_SqlMap.xml] svQuestionGroup.removeAllBySurveyId */
+    WHERE SURVEY_ID = #surveyId#
+  </delete>     
+   
+</sqlMap>

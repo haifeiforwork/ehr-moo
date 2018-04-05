@@ -1,0 +1,481 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="support.user.role.dao.Role">
+	<typeAlias alias="RoleVo" type="com.lgcns.ikep4.support.user.role.model.Role" />
+	<typeAlias alias="RoleType" type="com.lgcns.ikep4.support.user.role.model.RoleType" />
+	<typeAlias alias="Group" type="com.lgcns.ikep4.support.user.group.model.Group" />
+	<typeAlias alias="User" type="com.lgcns.ikep4.support.user.member.model.User"/>
+	<typeAlias alias="userSearchCondition" type="com.lgcns.ikep4.support.user.member.model.UserSearchCondition"/>
+	<typeAlias alias="adminSearchCondition" type="com.lgcns.ikep4.support.user.code.model.AdminSearchCondition"/>
+
+	<resultMap id="result" class="RoleVo">
+		<result property="num" column="NUM" />
+		<result property="roleId" column="ROLE_ID" />
+		<result property="portalId" column="PORTAL_ID" />
+		<result property="roleName" column="ROLE_NAME" />
+		<result property="roleEnglishName" column="ROLE_ENGLISH_NAME" />
+		<result property="roleTypeId" column="ROLE_TYPE_ID" />
+		<result property="roleTypeName" column="ROLE_TYPE_NAME" />
+		<result property="description" column="DESCRIPTION" />
+		<result property="registerId" column="REGISTER_ID" />
+		<result property="registerName" column="REGISTER_NAME" />
+		<result property="updaterId" column="UPDATER_ID" />
+		<result property="updaterName" column="UPDATER_NAME" />
+		<result property="registDate" column="REGIST_DATE" />
+		<result property="updateDate" column="UPDATE_DATE" />
+	</resultMap>
+	
+	<resultMap id="resultRoleGroup" class="RoleVo">
+		<result property="roleId" column="ROLE_ID" />
+		<result property="groupId" column="GROUP_ID" />
+		<result property="groupName" column="GROUP_NAME" />
+		<result property="groupEnglishName" column="GROUP_ENGLISH_NAME" />
+	</resultMap>
+	
+	<resultMap id="resultRoleUser" class="java.util.HashMap">
+		<result property="roleId" column="ROLE_ID" />
+		<result property="userId" column="USER_ID" />
+		<result property="userName" column="USER_NAME" />
+		<result property="userEnglishName" column="USER_ENGLISH_NAME" />
+		<result property="groupName" column="GROUP_NAME" />
+		<result property="groupEnglishName" column="GROUP_ENGLISH_NAME" />
+		<result property="jobTitleCode" column="JOB_TITLE_CODE" />
+		<result property="jobTitleName" column="JOB_TITLE_NAME" />
+		<result property="jobTitleEnglishName" column="JOB_TITLE_ENGLISH_NAME" />
+	</resultMap>
+	
+	<!-- 신규 등록 -->
+	<insert id="insert" parameterClass="RoleVo"> 
+	<![CDATA[
+		INSERT INTO /* [Role_SqlMap.xml] support.user.role.dao.Role.insert */
+			IKEP4_EV_ROLE (
+				ROLE_ID,
+				PORTAL_ID, 
+				ROLE_NAME,
+				ROLE_ENGLISH_NAME,
+				ROLE_TYPE_ID,
+				DESCRIPTION,
+				REGISTER_ID, 
+				REGISTER_NAME,
+				UPDATER_ID, 
+				UPDATER_NAME,
+				REGIST_DATE, 
+				UPDATE_DATE)
+		VALUES ( 
+				#roleId#,
+			    #portalId#,
+				#roleName#,
+				#roleEnglishName#,
+				#roleTypeId#,
+				#description#,
+			    #registerId#, 
+			    #registerName#,
+			    #updaterId#, 
+			    #updaterName#,
+			    SYSDATE, 
+			    SYSDATE)
+	]]>
+	</insert>
+
+	<!-- 상세정보 -->
+	<select id="select" parameterClass="java.lang.String" resultClass="RoleVo">
+	<![CDATA[
+		SELECT /* [Role_SqlMap.xml] support.user.role.dao.Role.select */
+		    A.ROLE_ID AS roleId,
+		    A.ROLE_NAME AS roleName,
+		    A.ROLE_ENGLISH_NAME AS roleEnglishName,
+		    B.ROLE_TYPE_NAME AS roleTypeName,
+		    A.ROLE_TYPE_ID AS roleTypeId,
+		    A.DESCRIPTION AS description,
+		    A.PORTAL_ID AS portalId,
+		    A.REGISTER_ID AS registerId,
+		    A.REGISTER_NAME AS registerName,
+		    A.UPDATER_ID AS updaterId,
+		    A.UPDATER_NAME AS updaterName,
+		    A.REGIST_DATE AS registDate,
+		    A.UPDATE_DATE AS updateDate
+		FROM
+		    IKEP4_EV_ROLE A 
+		    JOIN IKEP4_EV_ROLE_TYPE B
+		    ON A.ROLE_TYPE_ID = B.ROLE_TYPE_ID
+		WHERE
+		    A.ROLE_ID = #roleId#
+	]]>
+	</select>
+
+	<!-- 기존 정보 수정 -->
+	<update id="update" parameterClass="RoleVo">
+	<![CDATA[
+		UPDATE /* [Role_SqlMap.xml] support.user.role.dao.Role.update */ 
+			IKEP4_EV_ROLE
+		SET
+			ROLE_NAME = #roleName#,
+			ROLE_ENGLISH_NAME = #roleEnglishName#,
+		    ROLE_TYPE_ID = #roleTypeId#,
+		    DESCRIPTION = #description#,
+		   	PORTAL_ID = #portalId#,
+			UPDATER_ID = #updaterId#,
+			UPDATER_NAME = #updaterName#,
+			UPDATE_DATE = SYSDATE
+		WHERE
+			ROLE_ID = #roleId#
+	]]>
+	</update>
+
+	<!-- 삭제 -->
+	<delete id="delete" parameterClass="java.lang.String">
+	<![CDATA[
+		DELETE /* [Role_SqlMap.xml] support.user.role.dao.Role.delete */ 
+		FROM IKEP4_EV_ROLE
+		WHERE
+			ROLE_ID = #roleId#
+	]]>
+	</delete>
+	
+	<!-- ROLE 목록 가져오기 -->
+	<select id="selectAllForList" parameterClass="adminSearchCondition" resultMap="result">
+	<![CDATA[
+		SELECT /* [Role_SqlMap.xml] support.user.role.dao.Role.selectAllForList */
+		    *
+		FROM 
+		( 
+		    SELECT 
+		        ROWNUM AS NUM, 
+		        A.* 
+		    FROM 
+		    ( 
+				SELECT 
+				    A.ROLE_ID AS ROLE_ID,
+				    A.ROLE_NAME,
+				    A.ROLE_ENGLISH_NAME,
+				    B.ROLE_TYPE_NAME AS ROLE_TYPE_NAME,
+				    A.ROLE_TYPE_ID AS ROLE_TYPE_ID,
+				    A.DESCRIPTION AS DESCRIPTION,
+				    A.PORTAL_ID AS PORTAL_ID,
+				    A.REGISTER_ID AS REGISTER_ID,
+				    A.REGISTER_NAME AS REGISTER_NAME,
+				    A.UPDATER_ID AS UPDATER_ID,
+				    A.UPDATER_NAME AS UPDATER_NAME,
+				    A.REGIST_DATE,
+			        A.UPDATE_DATE
+				FROM
+				    IKEP4_EV_ROLE A 
+				    JOIN IKEP4_EV_ROLE_TYPE B
+				    ON A.ROLE_TYPE_ID = B.ROLE_TYPE_ID
+		        WHERE 1 = 1
+		        ]]>	
+		<isNotEmpty property="portalId">
+				AND A.PORTAL_ID = #portalId#
+		</isNotEmpty>
+		<isNotEmpty property="searchColumn">
+			<isEqual property="searchColumn" compareValue="title">
+				AND	(UPPER(ROLE_NAME) LIKE '%' || UPPER(#searchWord#) || '%' OR UPPER(ROLE_ENGLISH_NAME) LIKE '%' || UPPER(#searchWord#))
+			</isEqual>
+			<isEqual property="searchColumn" compareValue="code">
+				AND	ROLE_ID LIKE '%' || #searchWord# || '%'
+			</isEqual>
+			<isEqual property="searchColumn" compareValue="roleType">
+				AND	ROLE_TYPE_ID LIKE '%' || #searchWord# || '%'
+			</isEqual>
+		</isNotEmpty>
+	    <isNotEmpty property="sortColumn" >
+			<isEqual property="sortColumn" compareValue="ROLE_NAME">
+	    		<isEqual property="userLocaleCode" compareValue="ko">
+		    		<isEqual property="sortType" compareValue="ASC">
+		    			ORDER BY A.ROLE_NAME ASC
+		    		</isEqual>
+		    		<isEqual property="sortType" compareValue="DESC">
+		    			ORDER BY A.ROLE_NAME DESC
+		    		</isEqual>
+		    	</isEqual>
+		    	<isNotEqual property="userLocaleCode" compareValue="ko">
+		    		<isEqual property="sortType" compareValue="ASC">
+		    			ORDER BY A.ROLE_ENGLISH_NAME ASC
+		    		</isEqual>
+		    		<isEqual property="sortType" compareValue="DESC">
+		    			ORDER BY A.ROLE_ENGLISH_NAME DESC
+		    		</isEqual>
+		    	</isNotEqual>
+	    	</isEqual>
+			<isEqual property="sortColumn" compareValue="ROLE_ID">
+	    		<isEqual property="sortType" compareValue="ASC">
+	    			ORDER BY A.ROLE_ID ASC
+	    		</isEqual>
+	    		<isEqual property="sortType" compareValue="DESC">
+	    			ORDER BY A.ROLE_ID DESC
+	    		</isEqual>
+	    	</isEqual>
+			<isEqual property="sortColumn" compareValue="DESCRIPTION">
+	    		<isEqual property="sortType" compareValue="ASC">
+	    			ORDER BY A.DESCRIPTION ASC
+	    		</isEqual>
+	    		<isEqual property="sortType" compareValue="DESC">
+	    			ORDER BY A.DESCRIPTION DESC
+	    		</isEqual>
+	    	</isEqual>
+			<isEqual property="sortColumn" compareValue="ROLE_TYPE_NAME">
+	    		<isEqual property="sortType" compareValue="ASC">
+	    			ORDER BY B.ROLE_TYPE_NAME ASC
+	    		</isEqual>
+	    		<isEqual property="sortType" compareValue="DESC">
+	    			ORDER BY B.ROLE_TYPE_NAME DESC
+	    		</isEqual>
+	    	</isEqual>
+		</isNotEmpty>
+		<isEmpty property="sortColumn" >
+			ORDER BY A.REGIST_DATE DESC, A.ROLE_ID ASC
+		</isEmpty>
+	<![CDATA[	
+			) A
+			WHERE ROWNUM <=  #endRowIndex# /* 종료  */
+		) 
+		WHERE NUM >  #startRowIndex# /* 시작 */
+	]]>	
+	</select>
+	
+	<!-- ROLE 목록 카운트 -->
+	<select id="selectCountForList" parameterClass="adminSearchCondition" resultClass="int">
+	<![CDATA[
+		SELECT /* [Role_SqlMap.xml] support.user.role.dao.Role.selectCountForList */ 
+		    COUNT(*)
+		FROM
+		    IKEP4_EV_ROLE A 
+		    JOIN IKEP4_EV_ROLE_TYPE B
+		    ON A.ROLE_TYPE_ID = B.ROLE_TYPE_ID
+        WHERE 1 = 1
+	]]>	
+		<isNotEmpty property="portalId">
+				AND A.PORTAL_ID = #portalId#
+		</isNotEmpty>
+		<isNotEmpty property="searchColumn">
+			<isEqual property="searchColumn" compareValue="title">
+				AND	(UPPER(ROLE_NAME) LIKE '%' || UPPER(#searchWord#) || '%' OR UPPER(ROLE_ENGLISH_NAME) LIKE '%' || UPPER(#searchWord#))
+			</isEqual>
+			<isEqual property="searchColumn" compareValue="code">
+				AND	A.ROLE_ID LIKE '%' || #searchWord# || '%'
+			</isEqual>
+			<isEqual property="searchColumn" compareValue="roleType">
+				AND	A.ROLE_TYPE_ID LIKE '%' || #searchWord# || '%'
+			</isEqual>
+		</isNotEmpty>
+	</select>
+
+	<!-- 검색조건없이 ROLE 목록 가져오기 -->
+	<select id="selectAll" resultClass="RoleVo">
+	<![CDATA[
+		SELECT /* [Role_SqlMap.xml] support.user.role.dao.Role.selectAll */
+		    A.ROLE_ID AS roleId, 
+		    A.ROLE_NAME AS roleName,
+		    A.ROLE_ENGLISH_NAME AS roleEnglishName,
+		    A.ROLE_TYPE_ID AS roleTypeId,
+		    B.ROLE_TYPE_NAME AS roleTypeName,
+		    A.DESCRIPTION AS description, 
+		    A.PORTAL_ID AS portalId,
+			A.REGISTER_ID AS registerId, 
+			A.REGISTER_NAME AS registerName, 
+		    A.UPDATER_ID AS updaterId, 
+		    A.UPDATER_NAME AS updaterName, 
+		    A.REGIST_DATE AS registDate,
+		    A.UPDATE_DATE AS updateDate
+		FROM 
+			IKEP4_EV_ROLE A
+		    JOIN IKEP4_EV_ROLE_TYPE B
+		    ON A.ROLE_TYPE_ID = B.ROLE_TYPE_ID
+	]]>
+	</select>
+
+	<!-- ROLE ID 중복체크 -->
+	<select id="checkId" parameterClass="java.lang.String" resultClass="java.lang.String">
+	<![CDATA[
+		SELECT /* [Role_SqlMap.xml] support.user.role.dao.Role.checkId */
+			COUNT(ROLE_ID)
+		FROM
+			IKEP4_EV_ROLE
+		WHERE
+			ROLE_ID = #roleId#	
+	]]>
+	</select>
+
+	<!-- ROLE TYPE 가져오기 -->
+	<select id="selectTypeId" parameterClass="java.lang.String" resultClass="RoleType">
+	<![CDATA[
+		SELECT /* [Role_SqlMap.xml] support.user.role.dao.Role.selectTypeId */
+		    A.ROLE_TYPE_ID AS roleTypeId, 
+		    A.ROLE_TYPE_NAME AS roleTypeName
+		FROM
+		    IKEP4_EV_ROLE_TYPE A
+		    JOIN IKEP4_I18N_MESSAGE B
+		    ON A.ROLE_TYPE_ID = B.ITEM_ID
+		WHERE
+		    B.LOCALE_CODE = #localeCode#
+	]]>
+	</select>
+	
+	<!-- Role-Group 매핑 리스트 가져오기 -->
+	<select id="selectRoleGroupList" parameterClass="java.lang.String" resultMap="resultRoleGroup">
+	<![CDATA[
+		SELECT /* [Role_SqlMap.xml] support.user.role.dao.Role.selectRoleGroupList */
+			A.ROLE_ID, 
+			C.GROUP_ID,
+			C.GROUP_NAME,
+			C.GROUP_ENGLISH_NAME
+		FROM 
+		    IKEP4_EV_ROLE A
+		    JOIN IKEP4_EV_GROUP_ROLE B
+		    ON A.ROLE_ID = B.ROLE_ID
+		    JOIN IKEP4_EV_GROUP C
+		    ON B.GROUP_ID = C.GROUP_ID
+		WHERE 
+			A.ROLE_ID = #roleId#
+	]]>
+	</select>
+	
+	<!-- Role-User 매핑 리스트 가져오기 -->
+	<select id="selectRoleUserList" parameterClass="java.lang.String" resultMap="resultRoleUser">
+	<![CDATA[
+		SELECT   /* [Role_SqlMap.xml] support.user.role.dao.Role.selectRoleUserList */
+			A.ROLE_ID, 
+			B.USER_ID, 
+			B.USER_NAME,
+			B.USER_ENGLISH_NAME,
+			D.GROUP_NAME,
+		    D.GROUP_ENGLISH_NAME,
+			E.JOB_TITLE_CODE,
+			E.JOB_TITLE_NAME,
+			E.JOB_TITLE_ENGLISH_NAME
+		FROM
+			IKEP4_EV_USER_ROLE A
+			LEFT OUTER JOIN IKEP4_EV_USER B
+			ON A.USER_ID = B.USER_ID
+		    LEFT OUTER JOIN IKEP4_EV_USER_GROUP C
+		    ON B.USER_ID = C.USER_ID
+		    LEFT OUTER JOIN IKEP4_EV_GROUP D
+		    ON C.GROUP_ID = D.GROUP_ID
+			LEFT OUTER JOIN IKEP4_EV_JOB_TITLE E
+			ON B.JOB_TITLE_CODE = E.JOB_TITLE_CODE
+		WHERE A.ROLE_ID = #roleId#
+		AND C.REPRESENT_GROUP = '1'
+	]]>	
+	</select>
+	
+	<!-- Role-Group 매핑 정보 생성 -->
+	<insert id="addRoleToGroup" parameterClass="Group">
+	<![CDATA[
+		INSERT INTO /* [Role_SqlMap.xml] support.user.role.dao.Role.addRoleToGroup */
+			IKEP4_EV_GROUP_ROLE
+			(
+			ROLE_ID, GROUP_ID, REGISTER_ID,
+			REGISTER_NAME, REGIST_DATE, UPDATER_ID,
+			UPDATER_NAME, UPDATE_DATE
+			) 
+		VALUES 
+			(
+			#roleId#, #groupId#, #registerId#,
+		    #registerName#, SYSDATE, #updaterId#,
+		    #updaterName#, SYSDATE
+		    )
+	]]>
+	</insert>
+	
+	<!-- Role-User 매핑 정보 생성 -->
+	<insert id="addRoleToUser" parameterClass="User">
+	<![CDATA[
+		INSERT INTO /* [Role_SqlMap.xml] support.user.role.dao.Role.addRoleToUser */
+			IKEP4_EV_USER_ROLE
+			(
+			ROLE_ID, USER_ID, REGISTER_ID,
+			REGISTER_NAME, REGIST_DATE, UPDATER_ID,
+			UPDATER_NAME, UPDATE_DATE
+			) 
+		VALUES 
+			(
+			#roleId#, #userId#, #registerId#,
+		    #registerName#, SYSDATE, #updaterId#,
+		    #updaterName#, SYSDATE
+		    )
+	]]>
+	</insert>
+	
+	<!-- Role-Group 매핑 정보 삭제 -->
+	<delete id="removeRoleFromGroup" parameterClass="RoleVo">
+	<![CDATA[
+		DELETE /* [Role_SqlMap.xml] support.user.role.dao.Role.removeRoleFromGroup */ 
+		FROM IKEP4_EV_GROUP_ROLE
+		WHERE
+			ROLE_ID = #roleId#
+			AND GROUP_ID = #groupId#
+	]]>
+	</delete>
+	
+	<!-- 특정 Role-User 매핑 정보 삭제 -->
+	<delete id="removeRoleFromUser" parameterClass="RoleVo">
+	<![CDATA[
+		DELETE /* [Role_SqlMap.xml] support.user.role.dao.Role.removeRoleFromUser */ 
+		FROM IKEP4_EV_USER_ROLE
+		WHERE
+			ROLE_ID = #roleId#
+			AND USER_ID = #userId#
+	]]>
+	</delete>
+	
+	<!-- Role-Group 매핑 정보 전체 삭제 -->
+	<delete id="deleteRoleFromGroup" parameterClass="java.lang.String">
+	<![CDATA[
+		DELETE /* [Role_SqlMap.xml] support.user.role.dao.Role.deleteRoleFromGroup */ 
+		FROM IKEP4_EV_GROUP_ROLE
+		WHERE
+			ROLE_ID = #roleId#
+	]]>
+	</delete>
+	
+	<!-- Role-User 매핑 정보 전체 삭제 -->
+	<delete id="deleteRoleFromUser" parameterClass="java.lang.String">
+	<![CDATA[
+		DELETE /* [Role_SqlMap.xml] support.user.role.dao.Role.deleteRoleFromUser */ 
+		FROM IKEP4_EV_USER_ROLE
+		WHERE
+			ROLE_ID = #roleId#
+	]]>
+	</delete>
+
+	<!-- Role-User 매핑 정보 전체 삭제 -->
+	<delete id="deleteRoleFromSysPermission" parameterClass="java.lang.String">
+	<![CDATA[
+		DELETE /* [Role_SqlMap.xml] support.user.role.dao.Role.deleteRoleFromSysPermission */ 
+		FROM IKEP4_EV_ROLE_SYS_PERMISSION
+		WHERE
+			ROLE_ID = #roleId#
+	]]>
+	</delete>
+	
+	<!-- Role-User 매핑 정보 전체 삭제 -->
+	<delete id="deleteRoleFromConPermission" parameterClass="java.lang.String">
+	<![CDATA[
+		DELETE /* [Role_SqlMap.xml] support.user.role.dao.Role.deleteRoleFromConPermission */ 
+		FROM IKEP4_EV_ROLE_CON_PERMISSION
+		WHERE
+			ROLE_ID = #roleId#
+	]]>
+	</delete>
+	<select id="listRoleAll" parameterClass="java.lang.String" resultClass="RoleVo">
+	<![CDATA[
+		SELECT /* [Role_SqlMap.xml] support.user.role.dao.Role.listRoleAll */
+		    A.ROLE_ID AS roleId, 
+		    A.ROLE_NAME AS roleName,
+		    A.ROLE_ENGLISH_NAME AS roleEnglishName,
+		    A.ROLE_TYPE_ID AS roleTypeId,
+		    A.DESCRIPTION AS description, 
+		    A.PORTAL_ID AS portalId,
+			A.REGISTER_ID AS registerId, 
+			A.REGISTER_NAME AS registerName, 
+		    A.UPDATER_ID AS updaterId, 
+		    A.UPDATER_NAME AS updaterName, 
+		    A.REGIST_DATE AS registDate,
+		    A.UPDATE_DATE AS updateDate
+		FROM 
+			IKEP4_EV_ROLE A
+	   WHERE A.PORTAL_ID = #portalId#	    
+	]]>
+	</select>
+</sqlMap>

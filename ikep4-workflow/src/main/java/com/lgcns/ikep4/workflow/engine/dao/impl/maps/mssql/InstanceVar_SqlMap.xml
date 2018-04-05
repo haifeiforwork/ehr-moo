@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="com.lgcns.ikep4.workflow.engine.model.InstanceVarBean" >
+	<typeAlias alias = "InstanceVarBean" type="com.lgcns.ikep4.workflow.engine.model.InstanceVarBean"/>
+	
+	<resultMap id="result" class="InstanceVarBean">
+		<result property="seqId"       		column="SEQ_ID"    columnIndex="1"/>
+		<result property="instanceId"       column="INSTANCE_ID"    columnIndex="2"/>
+		<result property="processId"     	column="PROCESS_ID"    	columnIndex="3"/>
+		<result property="processVer"     	column="PROCESS_VER"    columnIndex="4"/>
+		<result property="varId"      		column="VAR_ID"     	columnIndex="5"/>
+		<result property="varName" 			column="VAR_NAME"		columnIndex="6"/>
+		<result property="varType" 			column="VAR_TYPE"		columnIndex="7"/>
+		<result property="varKey" 			column="VAR_KEY"		columnIndex="8"/>
+		<result property="varValue" 		column="VAR_VALUE"		columnIndex="9"/>
+		<result property="createDate" 		column="CREATE_DATE"	columnIndex="10"/>
+	</resultMap>
+	
+	<!-- ANSI -->
+	<!-- insert -->
+	<insert id="insert" parameterClass="InstanceVarBean">
+      <![CDATA[ 
+      		/* [InstanceVar_SqlMap.xml] com.lgcns.ikep4.workflow.engine.model.InstanceVarBean.insert */ 
+      
+			INSERT INTO IKEP4_WF_INSTANCE_VAR			
+			(SEQ_ID, INSTANCE_ID, PROCESS_ID, PROCESS_VER, VAR_ID, VAR_NAME, VAR_TYPE, VAR_KEY, VAR_VALUE, CREATE_DATE)     					
+			VALUES ( #seqId#, #instanceId#, #processId#, #processVer#, #varId#, #varName#, #varType#, #varKey#, #varValue#, #createDate# )       			
+       ]]>
+   </insert>
+   
+   	<!-- ANSI -->
+	<!-- update -->
+	<update id="update" parameterClass="InstanceVarBean">
+      <![CDATA[ 
+			UPDATE IKEP4_WF_INSTANCE_VAR
+				SET VAR_VALUE = #varValue#,
+					VAR_KEY = #varKey#
+			WHERE INSTANCE_ID = #instanceId#
+			  AND VAR_ID = #varId#
+       ]]>
+   </update>   
+   
+   <!-- ANSI -->
+	<update id="delete" parameterClass="InstanceVarBean">
+      <![CDATA[ 
+			DELETE IKEP4_WF_INSTANCE_VAR
+			WHERE INSTANCE_ID = #instanceId#
+			  AND VAR_ID = #varId#
+       ]]>
+   </update>   
+   
+   <!-- ANSI -->
+	<!-- 워크플로우 - 현황관리 - 데시보드 - 단계별 진행현황 조회조건 -->
+	<sql id="update_condition">
+        
+        <isNotEqual property="dashBoardAdministrationSearchPartition" compareValue="all">
+        	<![CDATA[
+            AND    PARTITION_ID = #dashBoardAdministrationSearchPartition# 
+            ]]>
+        </isNotEqual>
+        
+        <isNotEqual property="dashBoardAdministrationSearchProcess" compareValue="all">
+        	<![CDATA[
+            AND    PROCESS_ID = #dashBoardAdministrationSearchProcess#
+            ]]>
+        </isNotEqual>
+        <isNotEmpty property="sortColumn" >
+        	<![CDATA[
+        	ORDER BY $sortColumn$ $sortType$
+        	]]>
+        </isNotEmpty>
+	</sql>	   
+</sqlMap>

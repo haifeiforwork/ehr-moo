@@ -1,0 +1,2195 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="collpack.collaboration.workspace.dao.Workspace">
+
+	<typeAlias alias="Workspace" type="com.lgcns.ikep4.collpack.collaboration.workspace.model.Workspace" />
+	<typeAlias alias="WorkspaceSearchCondition" type="com.lgcns.ikep4.collpack.collaboration.workspace.search.WorkspaceSearchCondition"/>
+	<typeAlias alias="Group" type="com.lgcns.ikep4.support.user.group.model.Group"/>
+	
+	<resultMap id="presentCollMenuResult" class="com.lgcns.ikep4.collpack.collaboration.workspace.model.Workspace" > 
+	    <result column="ITEM_ID"          		property="workspaceId"         jdbcType="VARCHAR" />
+	  </resultMap>
+	<sql id="sqlColumnList">
+		A.WORKSPACE_ID		AS workspaceId,
+		A.WORKSPACE_NAME	AS workspaceName,
+		A.TYPE_ID			AS typeId,
+		B.TYPE_NAME			AS typeName,
+		B.TYPE_ENGLISH_NAME AS typeEnglishName,
+		B.TYPE_DESCRIPTION	AS typeDescription,
+		B.IS_ORGANIZATION	AS isOrganization,
+		A.DESCRIPTION		AS description,
+		A.OPEN_DATE			AS openDate,
+		A.CLOSE_DATE		AS closeDate,
+		A.OPEN_APPLY_DATE	AS openApplyDate,
+		A.CLOSE_APPLY_DATE	AS closeApplyDate,
+		A.WORKSPACE_STATUS	AS workspaceStatus,
+		A.REGISTER_ID		AS registerId,
+		E.USER_NAME			AS registerName,
+		E.USER_ENGLISH_NAME	AS registerEnglishName,		
+		A.REGIST_DATE		AS registDate,
+		A.UPDATER_ID		AS updaterId,
+		F.USER_NAME			AS updaterName,
+		F.USER_ENGLISH_NAME	AS updaterEnglishName,		
+		A.UPDATE_DATE		AS updateDate,
+		A.CATEGORY_ID		AS categoryId,
+		C.CATEGORY_NAME		AS categoryName,
+		C.CATEGORY_ENGLISH_NAME AS categoryEnglishName,
+		A.TEAM_ID			AS teamId,
+		G.GROUP_NAME		AS groupName,
+		G.GROUP_ENGLISH_NAME AS groupEnglishName,
+		A.INTRODUCTION		AS introduction,
+		A.OPEN_TYPE			AS openType,
+		A.PORTAL_ID			AS portalId,
+		D.MEMBER_ID			AS sysopId,
+		U.USER_NAME			AS sysopName,
+		U.USER_ENGLISH_NAME AS sysopEnglishName,
+		(SELECT count(MEMBER_ID) FROM IKEP4_WS_MEMBER WHERE WORKSPACE_ID=A.WORKSPACE_ID AND MEMBER_LEVEL IN ('1','2','3','4') ) memberCount,
+		(SELECT count(MEMBER_ID) FROM IKEP4_WS_MEMBER WHERE WORKSPACE_ID=A.WORKSPACE_ID AND MEMBER_LEVEL='4') associateMemberCount
+	</sql>
+	
+	<sql id="sqlColumnPersonalList">
+		A.WORKSPACE_ID		AS workspaceId,
+		A.WORKSPACE_NAME	AS workspaceName,
+		A.TYPE_ID			AS typeId,
+		B.TYPE_NAME			AS typeName,
+		B.TYPE_ENGLISH_NAME AS typeEnglishName,
+		B.TYPE_DESCRIPTION	AS typeDescription,
+		B.IS_ORGANIZATION	AS isOrganization,
+		A.DESCRIPTION		AS description,
+		A.OPEN_DATE			AS openDate,
+		A.CLOSE_DATE		AS closeDate,
+		A.OPEN_APPLY_DATE	AS openApplyDate,
+		A.CLOSE_APPLY_DATE	AS closeApplyDate,
+		A.WORKSPACE_STATUS	AS workspaceStatus,
+		A.REGISTER_ID		AS registerId,
+		E.USER_NAME			AS registerName,
+		E.USER_ENGLISH_NAME	AS registerEnglishName,		
+		A.REGIST_DATE		AS registDate,
+		A.UPDATER_ID		AS updaterId,
+		F.USER_NAME			AS updaterName,
+		F.USER_ENGLISH_NAME	AS updaterEnglishName,		
+		A.UPDATE_DATE		AS updateDate,
+		A.CATEGORY_ID		AS categoryId,
+		C.CATEGORY_NAME		AS categoryName,
+		C.CATEGORY_ENGLISH_NAME AS categoryEnglishName,
+		A.TEAM_ID			AS teamId,
+		G.GROUP_NAME		AS groupName,
+		G.GROUP_ENGLISH_NAME AS groupEnglishName,
+		A.INTRODUCTION		AS introduction,
+		A.OPEN_TYPE			AS openType,
+		A.PORTAL_ID			AS portalId,
+		D.MEMBER_ID			AS sysopId,
+		U.USER_NAME			AS sysopName,
+		U.USER_ENGLISH_NAME AS sysopEnglishName,
+		X.JOIN_DATE			AS joinDate,
+		X.MEMBER_LEVEL		AS memberLevel,
+		CASE WHEN X.IS_DEFAULT is NULL THEN 0
+		ELSE	X.IS_DEFAULT END isDefault, 
+		(SELECT count(MEMBER_ID) FROM IKEP4_WS_MEMBER WHERE WORKSPACE_ID=A.WORKSPACE_ID AND MEMBER_LEVEL IN ('1','2','3','4') ) memberCount,
+		(SELECT count(MEMBER_ID) FROM IKEP4_WS_MEMBER WHERE WORKSPACE_ID=A.WORKSPACE_ID AND MEMBER_LEVEL='4') associateMemberCount
+	</sql>
+
+	<!-- MS SQL -->
+	<select id="listBySearchCondition" parameterClass="WorkspaceSearchCondition" resultClass="Workspace"> 
+	WITH CTE AS (
+		SELECT	*
+		FROM	IKEP4_EV_GROUP
+		WHERE	GROUP_ID = #groupId#
+		UNION ALL
+		SELECT	G.*
+		FROM	IKEP4_EV_GROUP G, CTE
+		WHERE	CTE.GROUP_ID = G.PARENT_GROUP_ID
+	)
+	SELECT /* [Workspace_SqlMap.xml] collpack.collaboration.workspace.dao.Workspace.listBySearchCondition */ 
+		*
+	FROM 
+	( 
+		SELECT A.* FROM 
+		( 
+			SELECT 	Row_number() OVER (
+										ORDER BY
+										<isNotEmpty property="sortColumn">
+								    	<isEqual property="sortColumn" compareValue="typeId">
+								    	typeId
+										</isEqual>
+										<isEqual property="sortColumn" compareValue="workspaceName">
+								    	workspaceName
+										</isEqual>
+								    	<isEqual property="sortColumn" compareValue="groupName">
+								    	groupName
+										</isEqual>
+										<isEqual property="sortColumn" compareValue="description">
+								    	description
+										</isEqual>
+								    	<isEqual property="sortColumn" compareValue="registerName">
+								    	registerName
+										</isEqual>
+										<isEqual property="sortColumn" compareValue="registDate">
+								    	registDate
+										</isEqual>
+								    	<isEqual property="sortColumn" compareValue="workspaceStatus">
+								    	workspaceStatus
+										</isEqual>
+										<isEqual property="sortColumn" compareValue="categoryName">
+								    	categoryName
+										</isEqual>
+								    	<isEqual property="sortColumn" compareValue="memberCount">
+								    	memberCount
+										</isEqual>
+										<isEqual property="sortColumn" compareValue="sysopName">
+								    	sysopName
+										</isEqual>
+								    	<isEqual property="sortColumn" compareValue="openDate">
+								    	openDate
+										</isEqual>
+								    	<isEqual property="sortColumn" compareValue="joinDate">
+								    	joinDate
+										</isEqual>					
+								    	<isEqual property="sortColumn" compareValue="memberLevel">
+								    	memberLevel
+										</isEqual>
+								    	<isEqual property="sortColumn" compareValue="isDefault">
+								    	isDefault
+										</isEqual>
+								    	<isEqual property="sortColumn" compareValue="updaterName">
+								    	updaterName
+										</isEqual>
+										<isEqual property="sortColumn" compareValue="updateDate">
+								    	updateDate
+										</isEqual>								
+										</isNotEmpty>
+								    	
+										<isNotEmpty property="sortType">
+								    	<isEqual property="sortType" compareValue="DESC">
+								    	DESC,
+										</isEqual>
+										<isEqual property="sortType" compareValue="ASC">
+								    	ASC,
+										</isEqual>
+										</isNotEmpty>
+							
+								    	openDate DESC ,workspaceName DESC
+										) AS RNUM,
+										AA.*
+			FROM
+			(
+						/* START========================================= */
+						SELECT 
+							<include refid="collpack.collaboration.workspace.dao.Workspace.sqlColumnList" /> 
+						FROM   
+							IKEP4_WS_WORKSPACE A
+							INNER JOIN IKEP4_WS_TYPE B ON A.TYPE_ID = B.TYPE_ID
+							LEFT OUTER JOIN IKEP4_WS_CATEGORY C ON A.CATEGORY_ID = C.CATEGORY_ID
+							LEFT OUTER JOIN IKEP4_WS_MEMBER D ON ( A.WORKSPACE_ID	=	D.WORKSPACE_ID AND D.MEMBER_LEVEL='1')
+							LEFT OUTER JOIN IKEP4_EV_USER E ON (A.REGISTER_ID = E.USER_ID)
+							LEFT OUTER JOIN IKEP4_EV_USER F ON (A.UPDATER_ID = F.USER_ID)
+							LEFT OUTER JOIN IKEP4_EV_USER U ON (D.MEMBER_ID = U.USER_ID)
+							LEFT OUTER JOIN IKEP4_EV_GROUP G ON ( A.TEAM_ID = G.GROUP_ID )
+						WHERE	
+							A.PORTAL_ID			=	#portalId#
+			
+							<isNotEmpty property="listType">
+								<isEqual property="listType" compareValue="WorkspaceType">
+									/** Type Search **/
+									
+									AND A.WORKSPACE_STATUS	IN ('O','WC')				
+									
+									<isNotEmpty property="typeId">
+									AND A.TYPE_ID	=	#typeId#
+									</isNotEmpty>
+					
+					<isNotEmpty property="categoryId">
+					<isEqual property="categoryId" compareValue="0">
+					AND A.CATEGORY_ID	=	''
+					</isEqual>
+					<isNotEqual property="categoryId" compareValue="0">
+					AND A.CATEGORY_ID	=	#categoryId#
+					</isNotEqual>					
+					</isNotEmpty>
+													
+									<isNotEmpty property="groupId">
+									AND A.TEAM_ID IN 
+									(
+										SELECT GROUP_ID FROM CTE
+									)
+									</isNotEmpty>
+													
+								</isEqual>
+								
+								<isEqual property="listType" compareValue="listAppWorkspace">
+									/** My Create,Close Workspace Search **/
+									
+									<isNotEmpty property="typeId">
+									AND A.TYPE_ID	=	#typeId#
+									</isNotEmpty>
+									
+									<isNotEmpty property="registerId">
+										AND ( (A.REGISTER_ID=#registerId# AND A.WORKSPACE_STATUS IN ('WO','O','WC','C')) OR (A.UPDATER_ID =	#registerId#  AND A.WORKSPACE_STATUS='WC') )
+									</isNotEmpty>
+									
+								</isEqual>
+					
+								<isEqual property="listType" compareValue="Close">
+									/** Close Workspace Search **/
+						
+									<isNotEmpty property="typeId">
+									AND A.TYPE_ID	=	#typeId#
+									</isNotEmpty>
+														
+									<isNotEmpty property="workspaceStatus">
+									AND A.WORKSPACE_STATUS	=	#workspaceStatus#
+									</isNotEmpty>	
+									
+								</isEqual>
+								
+								<isEqual property="listType" compareValue="WaitingOpen">
+									/** Open Waiting Workspace Search **/
+						
+									<isNotEmpty property="typeId">
+									AND A.TYPE_ID	=	#typeId#
+									</isNotEmpty>
+														
+									<isNotEmpty property="workspaceStatus">
+									AND A.WORKSPACE_STATUS	=	#workspaceStatus#
+									</isNotEmpty>	
+									
+								</isEqual>
+								<isEqual property="listType" compareValue="WaitingClose">
+									/** Close Waiting Workspace Search **/
+						
+									<isNotEmpty property="typeId">
+									AND A.TYPE_ID	=	#typeId#
+									</isNotEmpty>
+														
+									<isNotEmpty property="workspaceStatus">
+									AND A.WORKSPACE_STATUS	=	#workspaceStatus#
+									</isNotEmpty>	
+									
+								</isEqual>
+								<isEqual property="listType" compareValue="find">
+									/** Find Search **/
+									AND A.WORKSPACE_STATUS	IN ('O','WC')	
+									<isNotEmpty property="typeId">
+									AND A.TYPE_ID	=	#typeId#
+									</isNotEmpty>
+														
+									<isNotEmpty property="workspaceStatus">
+									AND A.WORKSPACE_STATUS	=	#workspaceStatus#
+									</isNotEmpty>	
+									
+								</isEqual>					
+							</isNotEmpty>
+							
+							<isEmpty property="listType">
+								AND A.WORKSPACE_STATUS	=	#workspaceStatus#
+								
+								<isNotEmpty property="typeId">
+								AND A.TYPE_ID	=	#typeId#
+								</isNotEmpty>
+			
+					<isNotEmpty property="categoryId">
+					<isEqual property="categoryId" compareValue="0">
+					AND A.CATEGORY_ID	=	''
+					</isEqual>
+					<isNotEqual property="categoryId" compareValue="0">
+					AND A.CATEGORY_ID	=	#categoryId#
+					</isNotEqual>					
+					</isNotEmpty>
+													
+							</isEmpty>
+								
+							<!-- 
+							<isNotEmpty property="workspaceStatus">
+							AND A.WORKSPACE_STATUS	=	#workspaceStatus#
+							</isNotEmpty>	
+			
+							<isNotEmpty property="typeId">
+							AND A.TYPE_ID	=	#typeId#
+							AND A.WORKSPACE_STATUS	IN ('O','WC')
+							</isNotEmpty>
+							
+							<isNotEmpty property="categoryId">
+							AND A.CATEGORY_ID	=	#categoryId#
+							AND A.WORKSPACE_STATUS IN ('O','WC')
+							</isNotEmpty>
+							
+							<isNotEmpty property="registerId">
+								AND ( (A.REGISTER_ID=#registerId# AND A.WORKSPACE_STATUS IN ('WO','O','WC','C')) OR (A.UPDATER_ID =	#registerId#  AND A.WORKSPACE_STATUS='WC') )
+							</isNotEmpty>	
+										
+							<isNotEmpty property="groupId">
+							AND A.TEAM_ID IN 
+							(
+								SELECT GROUP_ID FROM IKEP4_EV_GROUP
+								START WITH group_id = #groupId#
+								CONNECT BY  parent_group_id = prior group_id
+							)
+							AND A.WORKSPACE_STATUS	IN ('O','WC')
+							</isNotEmpty>
+							-->
+							
+							<isNotEmpty property="searchColumn">
+							<isEqual property="searchColumn" compareValue="WORKSPACE_NAME">
+							AND	replace(A.WORKSPACE_NAME,' ','') LIKE '%' + replace(#searchWord#,' ','') + '%'
+							</isEqual>
+							
+							<isEqual property="searchColumn" compareValue="REGISTER_NAME">
+							AND	( replace(E.USER_NAME,' ','') LIKE '%' + replace(#searchWord#,' ','') + '%' OR replace(E.USER_ENGLISH_NAME,' ','') LIKE '%' + replace(#searchWord#,' ','') + '%' )
+							</isEqual>
+							
+							<isEqual property="searchColumn" compareValue="UPDATER_NAME">
+							AND	( replace(F.USER_NAME,' ','') LIKE '%' + replace(#searchWord#,' ','') + '%' OR replace(F.USER_ENGLISH_NAME,' ','') LIKE '%' + replace(#searchWord#,' ','') + '%' )
+							</isEqual>
+							
+							<isEqual property="searchColumn" compareValue="SYSOP_NAME">
+							AND	( replace(U.USER_NAME,' ','') LIKE '%' + replace(#searchWord#,' ','') + '%' OR replace(U.USER_ENGLISH_NAME,' ','') LIKE '%' + replace(#searchWord#,' ','') + '%' )
+							</isEqual>						
+							</isNotEmpty>
+						/* ===========================================END  */ 
+			) AA						
+	<![CDATA[
+		) A WHERE RNUM <=  #endRowIndex# /* 종료  */
+	) TBL WHERE RNUM >  #startRowIndex# /* 시작 */
+	]]> 
+	</select>
+	
+	<!-- MS SQL --> 
+	<select id="countBySearchCondition" parameterClass="WorkspaceSearchCondition" resultClass="int">
+		WITH CTE AS (
+			SELECT	*
+			FROM	IKEP4_EV_GROUP
+			WHERE	GROUP_ID = #groupId#
+			UNION ALL
+			SELECT	G.*
+			FROM	IKEP4_EV_GROUP G, CTE
+			WHERE	CTE.GROUP_ID = G.PARENT_GROUP_ID
+		)
+		SELECT /* [Workspace_SqlMap.xml] collpack.collaboration.workspace.dao.Workspace.countBySearchCondition */ 
+	          COUNT(A.WORKSPACE_ID)
+		FROM   
+			IKEP4_WS_WORKSPACE A
+			INNER JOIN IKEP4_WS_TYPE B ON A.TYPE_ID = B.TYPE_ID
+			LEFT OUTER JOIN IKEP4_WS_CATEGORY C ON A.CATEGORY_ID = C.CATEGORY_ID
+			LEFT OUTER JOIN IKEP4_WS_MEMBER D ON ( A.WORKSPACE_ID	=	D.WORKSPACE_ID AND D.MEMBER_LEVEL='1')
+			LEFT OUTER JOIN IKEP4_EV_USER E ON (A.REGISTER_ID = E.USER_ID)
+			LEFT OUTER JOIN IKEP4_EV_USER F ON (A.UPDATER_ID = F.USER_ID)
+			LEFT OUTER JOIN IKEP4_EV_USER U ON (D.MEMBER_ID = U.USER_ID)			
+		WHERE	
+			A.PORTAL_ID			=	#portalId#	          
+			
+			<isNotEmpty property="listType">
+				<isEqual property="listType" compareValue="WorkspaceType">
+					/** Type Search **/
+					
+					AND A.WORKSPACE_STATUS	IN ('O','WC')				
+					
+					<isNotEmpty property="typeId">
+					AND A.TYPE_ID	=	#typeId#
+					</isNotEmpty>
+	
+					<isNotEmpty property="categoryId">
+					<isEqual property="categoryId" compareValue="0">
+					AND A.CATEGORY_ID	=	''
+					</isEqual>
+					<isNotEqual property="categoryId" compareValue="0">
+					AND A.CATEGORY_ID	=	#categoryId#
+					</isNotEqual>					
+					</isNotEmpty>
+									
+					<isNotEmpty property="groupId">
+					AND A.TEAM_ID IN 
+					(
+						SELECT GROUP_ID FROM CTE
+					)
+					</isNotEmpty>
+									
+				</isEqual>
+				
+				<isEqual property="listType" compareValue="listAppWorkspace">
+					/** My Create,Close Workspace Search **/
+					
+					<isNotEmpty property="typeId">
+					AND A.TYPE_ID	=	#typeId#
+					</isNotEmpty>
+					
+					<isNotEmpty property="registerId">
+						AND ( (A.REGISTER_ID=#registerId# AND A.WORKSPACE_STATUS IN ('WO','O','WC','C')) OR (A.UPDATER_ID =	#registerId#  AND A.WORKSPACE_STATUS='WC') )
+					</isNotEmpty>
+					
+				</isEqual>
+	
+				<isEqual property="listType" compareValue="Close">
+					/** Close Workspace Search **/
+		
+					<isNotEmpty property="typeId">
+					AND A.TYPE_ID	=	#typeId#
+					</isNotEmpty>
+										
+					<isNotEmpty property="workspaceStatus">
+					AND A.WORKSPACE_STATUS	=	#workspaceStatus#
+					</isNotEmpty>	
+					
+				</isEqual>
+				
+				<isEqual property="listType" compareValue="WaitingOpen">
+					/** Open Waiting Workspace Search **/
+		
+					<isNotEmpty property="typeId">
+					AND A.TYPE_ID	=	#typeId#
+					</isNotEmpty>
+										
+					<isNotEmpty property="workspaceStatus">
+					AND A.WORKSPACE_STATUS	=	#workspaceStatus#
+					</isNotEmpty>	
+					
+				</isEqual>
+				<isEqual property="listType" compareValue="WaitingClose">
+					/** Close Waiting Workspace Search **/
+		
+					<isNotEmpty property="typeId">
+					AND A.TYPE_ID	=	#typeId#
+					</isNotEmpty>
+										
+					<isNotEmpty property="workspaceStatus">
+					AND A.WORKSPACE_STATUS	=	#workspaceStatus#
+					</isNotEmpty>	
+					
+				</isEqual>
+				<isEqual property="listType" compareValue="find">
+					/** Find Search **/
+					AND A.WORKSPACE_STATUS	IN ('O','WC')	
+					<isNotEmpty property="typeId">
+					AND A.TYPE_ID	=	#typeId#
+					</isNotEmpty>
+										
+					<isNotEmpty property="workspaceStatus">
+					AND A.WORKSPACE_STATUS	=	#workspaceStatus#
+					</isNotEmpty>	
+					
+				</isEqual>
+			</isNotEmpty>
+			
+			<isEmpty property="listType">
+				AND A.WORKSPACE_STATUS	=	#workspaceStatus#
+				
+				<isNotEmpty property="typeId">
+				AND A.TYPE_ID	=	#typeId#
+				</isNotEmpty>
+				
+				<isNotEmpty property="categoryId">
+				<isEqual property="categoryId" compareValue="0">
+					AND A.CATEGORY_ID	=	''
+				</isEqual>
+				<isNotEqual property="categoryId" compareValue="0">
+					AND A.CATEGORY_ID	=	#categoryId#
+				</isNotEqual>
+				</isNotEmpty>
+									
+			</isEmpty>
+			
+			<isNotEmpty property="searchColumn">
+			<isEqual property="searchColumn" compareValue="WORKSPACE_NAME">
+			AND	replace(A.WORKSPACE_NAME,' ','') LIKE '%' + replace(#searchWord#,' ','') + '%'
+			</isEqual>
+			
+			<isEqual property="searchColumn" compareValue="REGISTER_NAME">
+			AND	( replace(E.USER_NAME,' ','') LIKE '%' + replace(#searchWord#,' ','') + '%' OR replace(E.USER_ENGLISH_NAME,' ','') LIKE '%' + replace(#searchWord#,' ','') + '%' )
+			</isEqual>
+			
+			<isEqual property="searchColumn" compareValue="UPDATER_NAME">
+			AND	( replace(F.USER_NAME,' ','') LIKE '%' + replace(#searchWord#,' ','') + '%' OR replace(F.USER_ENGLISH_NAME,' ','') LIKE '%' + replace(#searchWord#,' ','') + '%' )
+			</isEqual>
+			
+			<isEqual property="searchColumn" compareValue="SYSOP_NAME">
+			AND	( replace(U.USER_NAME,' ','') LIKE '%' + replace(#searchWord#,' ','') + '%' OR replace(U.USER_ENGLISH_NAME,' ','') LIKE '%' + replace(#searchWord#,' ','') + '%' )
+			</isEqual>		
+				
+			</isNotEmpty>
+	</select>
+	
+	<!-- MS SQL -->
+	<select id="listBySearchConditionPersonal" parameterClass="WorkspaceSearchCondition" resultClass="Workspace"> 
+	SELECT /* [Workspace_SqlMap.xml] collpack.collaboration.workspace.dao.Workspace.listBySearchConditionPersonal */ 
+		*
+	FROM 
+	( 
+		SELECT A.* FROM 
+		( 
+			SELECT	Row_number() OVER (
+										ORDER BY
+										<isNotEmpty property="sortColumn">
+								    	<isEqual property="sortColumn" compareValue="typeId">
+								    	typeId
+										</isEqual>
+										<isEqual property="sortColumn" compareValue="workspaceName">
+								    	workspaceName
+										</isEqual>
+								    	<isEqual property="sortColumn" compareValue="groupName">
+								    	groupName
+										</isEqual>
+										<isEqual property="sortColumn" compareValue="description">
+								    	description
+										</isEqual>
+								    	<isEqual property="sortColumn" compareValue="registerName">
+								    	registerName
+										</isEqual>
+										<isEqual property="sortColumn" compareValue="registDate">
+								    	registDate
+										</isEqual>
+								    	<isEqual property="sortColumn" compareValue="workspaceStatus">
+								    	workspaceStatus
+										</isEqual>
+										<isEqual property="sortColumn" compareValue="categoryName">
+								    	categoryName
+										</isEqual>
+								    	<isEqual property="sortColumn" compareValue="memberCount">
+								    	memberCount
+										</isEqual>
+										<isEqual property="sortColumn" compareValue="sysopName">
+								    	sysopName
+										</isEqual>
+								    	<isEqual property="sortColumn" compareValue="openDate">
+								    	openDate
+										</isEqual>
+								    	<isEqual property="sortColumn" compareValue="joinDate">
+								    	joinDate
+										</isEqual>					
+								    	<isEqual property="sortColumn" compareValue="memberLevel">
+								    	memberLevel
+										</isEqual>
+								    	<isEqual property="sortColumn" compareValue="isDefault">
+								    	isDefault
+										</isEqual>
+								    	<isEqual property="sortColumn" compareValue="updaterName">
+								    	updaterName
+										</isEqual>
+										<isEqual property="sortColumn" compareValue="updateDate">
+								    	updateDate
+										</isEqual>								
+										</isNotEmpty>
+								    	
+										<isNotEmpty property="sortType">
+								    	<isEqual property="sortType" compareValue="DESC">
+								    	DESC,
+										</isEqual>
+										<isEqual property="sortType" compareValue="ASC">
+								    	ASC,
+										</isEqual>
+										</isNotEmpty>
+							
+								    	openDate DESC ,workspaceName DESC
+										) AS RNUM, 
+										AA.*
+			FROM
+			(
+						/* START========================================= */
+						SELECT 
+							<include refid="collpack.collaboration.workspace.dao.Workspace.sqlColumnPersonalList" /> 
+						FROM   
+							IKEP4_WS_WORKSPACE A
+							INNER JOIN IKEP4_WS_TYPE B ON A.TYPE_ID = B.TYPE_ID
+							LEFT OUTER JOIN IKEP4_WS_CATEGORY C ON A.CATEGORY_ID = C.CATEGORY_ID
+							LEFT OUTER JOIN IKEP4_WS_MEMBER D ON ( A.WORKSPACE_ID	=	D.WORKSPACE_ID AND D.MEMBER_LEVEL='1')
+							LEFT OUTER JOIN IKEP4_EV_USER E ON (A.REGISTER_ID = E.USER_ID)
+							LEFT OUTER JOIN IKEP4_EV_USER F ON (A.UPDATER_ID = F.USER_ID)
+							LEFT OUTER JOIN IKEP4_EV_USER U ON (D.MEMBER_ID = U.USER_ID)
+							LEFT OUTER JOIN IKEP4_EV_GROUP G ON ( A.TEAM_ID = G.GROUP_ID )
+							INNER JOIN IKEP4_WS_MEMBER X ON ( A.WORKSPACE_ID	=	X.WORKSPACE_ID)
+						WHERE	
+							A.PORTAL_ID			=	#portalId#
+							AND A.WORKSPACE_STATUS	IN ('O','WC')
+							<isNotEmpty property="listType">
+							<isEqual property="listType" compareValue="listAppMember">
+								<isNotEmpty property="typeId">
+								AND A.TYPE_ID	=	#typeId#
+								</isNotEmpty>
+								
+								<isNotEmpty property="memberId">
+								AND X.MEMBER_ID			=	#memberId#
+								</isNotEmpty>				
+							</isEqual>
+							</isNotEmpty>
+							
+							<isEmpty property="listType">
+							<isNotEmpty property="typeId">
+							AND A.TYPE_ID	=	#typeId#
+							</isNotEmpty>
+							
+							<isNotEmpty property="memberId">
+							AND X.MEMBER_ID			=	#memberId#
+							AND X.MEMBER_LEVEL IN ('1','2','3','4')
+							</isNotEmpty>
+							</isEmpty>
+							
+							<isNotEmpty property="searchColumn">
+							<isEqual property="searchColumn" compareValue="WORKSPACE_NAME">
+							AND	replace(A.WORKSPACE_NAME,' ','') LIKE '%' + replace(#searchWord#,' ','') + '%'
+							</isEqual>
+							
+							<isEqual property="searchColumn" compareValue="REGISTER_NAME">
+							AND	( replace(E.USER_NAME,' ','') LIKE '%' + replace(#searchWord#,' ','') + '%' OR replace(E.USER_ENGLISH_NAME,' ','') LIKE '%' + replace(#searchWord#,' ','') + '%' )
+							</isEqual>
+							
+							<isEqual property="searchColumn" compareValue="UPDATER_NAME">
+							AND	( replace(F.USER_NAME,' ','') LIKE '%' + replace(#searchWord#,' ','') + '%' OR replace(F.USER_ENGLISH_NAME,' ','') LIKE '%' + replace(#searchWord#,' ','') + '%' )
+							</isEqual>
+							
+							<isEqual property="searchColumn" compareValue="SYSOP_NAME">
+							AND	( replace(U.USER_NAME,' ','') LIKE '%' + replace(#searchWord#,' ','') + '%' OR replace(U.USER_ENGLISH_NAME,' ','') LIKE '%' + replace(#searchWord#,' ','') + '%' )
+							</isEqual>	
+							</isNotEmpty>
+			
+						/* ===========================================END  */ 
+			 ) AA			
+	<![CDATA[
+		) A WHERE RNUM <=  #endRowIndex# /* 종료  */
+	) TBL WHERE RNUM >  #startRowIndex# /* 시작 */
+	]]> 
+	</select>
+	 
+	<!-- MS SQL -->
+	<select id="countBySearchConditionPersonal" parameterClass="WorkspaceSearchCondition" resultClass="int">
+		SELECT /* [Workspace_SqlMap.xml] collpack.collaboration.workspace.dao.Workspace.countBySearchConditionPersonal */ 
+	          COUNT(A.WORKSPACE_ID)
+		FROM   
+			IKEP4_WS_WORKSPACE A
+			INNER JOIN IKEP4_WS_TYPE B ON A.TYPE_ID = B.TYPE_ID
+			LEFT OUTER JOIN IKEP4_WS_CATEGORY C ON A.CATEGORY_ID = C.CATEGORY_ID
+			LEFT OUTER JOIN IKEP4_WS_MEMBER D ON ( A.WORKSPACE_ID	=	D.WORKSPACE_ID AND D.MEMBER_LEVEL='1')
+			LEFT OUTER JOIN IKEP4_EV_USER E ON (A.REGISTER_ID = E.USER_ID)
+			LEFT OUTER JOIN IKEP4_EV_USER F ON (A.UPDATER_ID = F.USER_ID)
+			LEFT OUTER JOIN IKEP4_EV_USER U ON (D.MEMBER_ID = U.USER_ID)			
+			INNER JOIN IKEP4_WS_MEMBER X ON ( A.WORKSPACE_ID	=	X.WORKSPACE_ID)
+		WHERE	
+			A.PORTAL_ID			=	#portalId#	          
+			AND A.WORKSPACE_STATUS	IN ('O','WC')
+			
+			<isNotEmpty property="listType">
+				<isEqual property="listType" compareValue="listAppMember">
+					<isNotEmpty property="typeId">
+					AND A.TYPE_ID	=	#typeId#
+					</isNotEmpty>
+					
+					<isNotEmpty property="memberId">
+					AND X.MEMBER_ID			=	#memberId#
+					</isNotEmpty>				
+				</isEqual>
+			</isNotEmpty>
+			
+			<isEmpty property="listType">
+				<isNotEmpty property="typeId">
+				AND A.TYPE_ID	=	#typeId#
+				</isNotEmpty>
+				
+				<isNotEmpty property="memberId">
+				AND X.MEMBER_ID			=	#memberId#
+				AND X.MEMBER_LEVEL IN ('1','2','3','4')
+				</isNotEmpty>
+			</isEmpty>
+			
+			<isNotEmpty property="searchColumn">
+			<isEqual property="searchColumn" compareValue="WORKSPACE_NAME">
+			AND	replace(A.WORKSPACE_NAME,' ','') LIKE '%' + replace(#searchWord#,' ','') + '%'
+			</isEqual>
+			<isEqual property="searchColumn" compareValue="REGISTER_NAME">
+			AND	( replace(E.USER_NAME,' ','') LIKE '%' + replace(#searchWord#,' ','') + '%' OR replace(E.USER_ENGLISH_NAME,' ','') LIKE '%' + replace(#searchWord#,' ','') + '%' )
+			</isEqual>
+			
+			<isEqual property="searchColumn" compareValue="UPDATER_NAME">
+			AND	( replace(F.USER_NAME,' ','') LIKE '%' + replace(#searchWord#,' ','') + '%' OR replace(F.USER_ENGLISH_NAME,' ','') LIKE '%' + replace(#searchWord#,' ','') + '%' )
+			</isEqual>
+			
+			<isEqual property="searchColumn" compareValue="SYSOP_NAME">
+			AND	( replace(U.USER_NAME,' ','') LIKE '%' + replace(#searchWord#,' ','') + '%' OR replace(U.USER_ENGLISH_NAME,' ','') LIKE '%' + replace(#searchWord#,' ','') + '%' )
+			</isEqual>	
+			</isNotEmpty>
+	</select>
+	
+	<!-- MS SQL -->
+	<select id="randomWorkspace" parameterClass="Map" resultClass="Workspace"> 
+	SELECT * FROM (
+		SELECT /* [Workspace_SqlMap.xml] collpack.collaboration.workspace.dao.Workspace.randomWorkspace */ 
+			A.WORKSPACE_ID		AS workspaceId,
+			A.WORKSPACE_NAME	AS workspaceName,
+			A.DESCRIPTION		AS description,
+			A.OPEN_DATE			AS openDate,
+			A.WORKSPACE_STATUS	AS workspaceStatus,
+			C.CATEGORY_NAME		AS categoryName,
+			A.TEAM_ID			AS teamId,
+			A.INTRODUCTION		AS introduction,
+			A.PORTAL_ID			AS portalId,
+			D.MEMBER_ID			AS sysopId,
+			E.USER_NAME			AS sysopName,
+			E.USER_ENGLISH_NAME AS sysopEnglishName,
+			D.JOIN_DATE			AS joinDate,
+			D.MEMBER_LEVEL		AS memberLevel,
+			CASE WHEN D.IS_DEFAULT is NULL THEN 0
+			ELSE	D.IS_DEFAULT END isDefault, 
+			(SELECT count(MEMBER_ID) FROM IKEP4_WS_MEMBER WHERE WORKSPACE_ID=A.WORKSPACE_ID) AS memberCount,
+			Row_number() OVER (ORDER BY A.WORKSPACE_ID) AS rnum
+		FROM   
+			IKEP4_WS_WORKSPACE A
+			INNER JOIN IKEP4_WS_TYPE B ON A.TYPE_ID = B.TYPE_ID
+			LEFT OUTER JOIN IKEP4_WS_CATEGORY C ON A.CATEGORY_ID = C.CATEGORY_ID
+			LEFT OUTER JOIN IKEP4_WS_MEMBER D ON ( A.WORKSPACE_ID	=	D.WORKSPACE_ID AND D.MEMBER_LEVEL='1')
+			LEFT OUTER JOIN IKEP4_EV_USER E ON ( D.MEMBER_ID = E.USER_ID )
+			LEFT OUTER JOIN IKEP4_AM_GROUP_PVI P ON ( A.TEAM_ID = P.GROUP_ID )
+		WHERE	
+			A.PORTAL_ID		=	#portalId#
+			AND A.WORKSPACE_STATUS	IN ('O','WC')
+	) TBL
+	WHERE rnum	= #rownum#
+	</select>
+	
+	<!-- ANSI -->
+	<select id="countRandomWorkspace" parameterClass="String" resultClass="int">
+		SELECT /* [Workspace_SqlMap.xml] collpack.collaboration.workspace.dao.Workspace.countRandomWorkspace */ 
+	          COUNT(A.WORKSPACE_ID)
+		FROM   
+			IKEP4_WS_WORKSPACE A
+			INNER JOIN IKEP4_WS_TYPE B ON A.TYPE_ID = B.TYPE_ID
+			LEFT OUTER JOIN IKEP4_WS_CATEGORY C ON A.CATEGORY_ID = C.CATEGORY_ID
+			LEFT OUTER JOIN IKEP4_WS_MEMBER D ON ( A.WORKSPACE_ID	=	D.WORKSPACE_ID AND D.MEMBER_LEVEL='1')
+			LEFT OUTER JOIN IKEP4_EV_USER E ON ( D.MEMBER_ID = E.USER_ID )		
+		WHERE	
+			A.PORTAL_ID			=	#portalId#	          
+			AND A.WORKSPACE_STATUS	IN ('O','WC')
+	</select>		
+	
+	<!-- ANSI -->
+	<select id="listMyCollaboration" parameterClass="Map"  resultClass="Workspace">
+	<![CDATA[
+		SELECT /* [Workspace_SqlMap.xml] collpack.collaboration.workspace.dao.Workspace.listMyCollaboration */
+			A.WORKSPACE_ID		AS workspaceId,
+			A.WORKSPACE_NAME	AS workspaceName,
+			A.TYPE_ID			AS typeId, 
+			B.TYPE_NAME			AS typeName,
+			B.TYPE_ENGLISH_NAME AS typeEnglishName,
+			CASE WHEN D.IS_DEFAULT is NULL THEN 0 ELSE	D.IS_DEFAULT END isDefault
+		FROM
+			IKEP4_WS_WORKSPACE A
+			INNER JOIN IKEP4_WS_TYPE B ON (A.TYPE_ID	=	B.TYPE_ID AND (B.PORTAL_ID		=	#portalId#	OR B.IS_ORGANIZATION=1))
+			INNER JOIN IKEP4_WS_MEMBER D ON (A.WORKSPACE_ID	=	D.WORKSPACE_ID AND D.MEMBER_LEVEL 	IN	('1','2','3','4'))
+		WHERE 
+			A.WORKSPACE_STATUS	IN	('O','WC')			
+			AND D.MEMBER_ID		=	#memberId#
+			AND A.type_id != '0'
+		UNION ALL
+		SELECT 
+			A.WORKSPACE_ID		AS workspaceId,
+			A.WORKSPACE_NAME	AS workspaceName,
+			A.TYPE_ID			AS typeId, 
+			B.TYPE_NAME			AS typeName,
+			B.TYPE_ENGLISH_NAME AS typeEnglishName,
+			CASE WHEN D.IS_DEFAULT is NULL THEN 0 ELSE	D.IS_DEFAULT END isDefault
+		FROM
+			IKEP4_WS_WORKSPACE A
+			INNER JOIN IKEP4_WS_TYPE B ON (A.TYPE_ID	=	B.TYPE_ID AND (B.PORTAL_ID		=	#portalId#	OR B.IS_ORGANIZATION=1))
+			INNER JOIN IKEP4_WS_MEMBER D ON (A.WORKSPACE_ID	=	D.WORKSPACE_ID AND D.MEMBER_LEVEL 	IN	('1','2','3','4'))
+		WHERE 
+			A.WORKSPACE_STATUS	IN	('O','WC')			
+			AND D.MEMBER_ID		=	#memberId#
+			AND A.team_id IN(select GROUP_ID from IKEP4_EV_USER_group
+			where user_id = #memberId#
+			and group_id in(select group_id from ikep4_ev_group
+			where group_type_id = 'G0001')) AND A.type_id = '0' 
+		ORDER BY typeId ASC, workspaceName ASC	
+		
+	]]>
+	</select>
+	
+	<select id="listMyScheduleCollaboration" parameterClass="Map"  resultClass="Workspace">
+	<![CDATA[
+		SELECT /* [Workspace_SqlMap.xml] collpack.collaboration.workspace.dao.Workspace.listMyCollaboration */
+			A.WORKSPACE_ID		AS workspaceId,
+			A.WORKSPACE_NAME	AS workspaceName,
+			A.TYPE_ID			AS typeId, 
+			B.TYPE_NAME			AS typeName,
+			B.TYPE_ENGLISH_NAME AS typeEnglishName,
+			CASE WHEN D.IS_DEFAULT is NULL THEN 0 ELSE	D.IS_DEFAULT END isDefault
+		FROM
+			IKEP4_WS_WORKSPACE A
+			INNER JOIN IKEP4_WS_TYPE B ON (A.TYPE_ID	=	B.TYPE_ID AND (B.PORTAL_ID		=	#portalId#	OR B.IS_ORGANIZATION=1))
+			INNER JOIN IKEP4_WS_MEMBER D ON (A.WORKSPACE_ID	=	D.WORKSPACE_ID AND D.MEMBER_LEVEL 	IN	('1','2','3','4'))
+		WHERE 
+			A.WORKSPACE_STATUS	IN	('O','WC')			
+			AND D.MEMBER_ID		=	#memberId#
+			AND A.team_id IN(select A.GROUP_ID from IKEP4_EV_GROUP A
+			INNER JOIN IKEP4_EV_USER_GROUP B
+			ON A.GROUP_ID = B.GROUP_ID
+			WHERE A.GROUP_TYPE_ID = 'G0001'
+			AND B.USER_ID = #memberId#)
+		ORDER BY
+			D.IS_DEFAULT DESC,B.IS_ORGANIZATION DESC, B.SORT_ORDER, A.WORKSPACE_NAME
+	]]>
+	</select>
+	
+	<select id="listMyCollaborationForMobile" parameterClass="Map"  resultClass="Workspace">
+	<![CDATA[
+		SELECT /* [Workspace_SqlMap.xml] collpack.collaboration.workspace.dao.Workspace.listMyCollaboration */
+			A.WORKSPACE_ID		AS workspaceId,
+			A.WORKSPACE_NAME	AS workspaceName,
+			A.TYPE_ID			AS typeId, 
+			B.TYPE_NAME			AS typeName,
+			B.TYPE_ENGLISH_NAME AS typeEnglishName,
+			CASE WHEN D.IS_DEFAULT is NULL THEN 0 ELSE	D.IS_DEFAULT END isDefault
+		FROM
+			IKEP4_WS_WORKSPACE A
+			INNER JOIN IKEP4_WS_TYPE B ON (A.TYPE_ID	=	B.TYPE_ID AND (B.PORTAL_ID		=	#portalId#	OR B.IS_ORGANIZATION=1))
+			INNER JOIN IKEP4_WS_MEMBER D ON (A.WORKSPACE_ID	=	D.WORKSPACE_ID AND D.MEMBER_LEVEL 	IN	('1','2','3','4'))
+			INNER JOIN (SELECT * FROM IKEP4_CO_MENULIST_MOBILE WHERE USER_ID=#memberId# and type='COLLABORATION') Aa ON A.workspace_id = Aa.ITEM_ID
+		WHERE 
+			A.WORKSPACE_STATUS	IN	('O','WC')			
+			AND D.MEMBER_ID		=	#memberId#
+		ORDER BY
+			D.IS_DEFAULT DESC,B.IS_ORGANIZATION DESC, B.SORT_ORDER, A.WORKSPACE_NAME
+	]]>
+	</select>
+	
+	<select id="listPlannerTeamForMobile" parameterClass="Map"  resultClass="Workspace">
+	<![CDATA[
+		SELECT /* [Workspace_SqlMap.xml] collpack.collaboration.workspace.dao.Workspace.listMyCollaboration */
+			A.WORKSPACE_ID		AS workspaceId,
+			A.WORKSPACE_NAME	AS workspaceName,
+			A.TYPE_ID			AS typeId, 
+			B.TYPE_NAME			AS typeName,
+			B.TYPE_ENGLISH_NAME AS typeEnglishName,
+			CASE WHEN D.IS_DEFAULT is NULL THEN 0 ELSE	D.IS_DEFAULT END isDefault
+		FROM
+			IKEP4_WS_WORKSPACE A
+			INNER JOIN IKEP4_WS_TYPE B ON (A.TYPE_ID	=	B.TYPE_ID AND (B.PORTAL_ID		=	#portalId#	OR B.IS_ORGANIZATION=1))
+			INNER JOIN IKEP4_WS_MEMBER D ON (A.WORKSPACE_ID	=	D.WORKSPACE_ID AND D.MEMBER_LEVEL 	IN	('1','2','3','4'))
+			INNER JOIN (SELECT * FROM IKEP4_CO_MENULIST_MOBILE WHERE USER_ID=#memberId# and type='PLANNER') Aa ON A.workspace_id = Aa.ITEM_ID
+		WHERE 
+			A.WORKSPACE_STATUS	IN	('O','WC')			
+			AND D.MEMBER_ID		=	#memberId#
+		ORDER BY
+			D.IS_DEFAULT DESC,B.IS_ORGANIZATION DESC, B.SORT_ORDER, A.WORKSPACE_NAME
+	]]>
+	</select>
+	
+	<!-- MS SQL -->
+	<select id="listNewCollaboration" parameterClass="Map"  resultClass="Workspace">
+	<![CDATA[
+		SELECT *  /* [Workspace_SqlMap.xml] collpack.collaboration.workspace.dao.Workspace.listNewCollaboration */
+		FROM 
+		( 
+			SELECT 
+				Row_number() OVER (ORDER BY A.OPEN_DATE DESC,B.IS_ORGANIZATION DESC,B.SORT_ORDER, A.WORKSPACE_NAME) AS RNUM,
+				A.WORKSPACE_ID		AS workspaceId,
+				A.WORKSPACE_NAME	AS workspaceName,
+				A.TYPE_ID			AS typeId, 
+				B.TYPE_NAME			AS typeName,
+				B.TYPE_ENGLISH_NAME AS typeEnglishName,
+				A.DESCRIPTION		AS description
+			FROM
+				IKEP4_WS_WORKSPACE A
+				INNER JOIN IKEP4_WS_TYPE B ON (A.TYPE_ID		=	B.TYPE_ID AND (B.PORTAL_ID		=	#portalId#	OR B.IS_ORGANIZATION=1)	)
+			WHERE 
+				A.WORKSPACE_STATUS	IN	('O','WC')
+				AND A.PORTAL_ID		=	#portalId#	
+		) TBL
+		WHERE RNUM<=5
+	]]>
+	</select>	
+	
+	<!-- ANSI -->
+	<select id="listWorkspaceManager" parameterClass="Map"  resultClass="Workspace">
+	<![CDATA[
+		SELECT /* [Workspace_SqlMap.xml] collpack.collaboration.workspace.dao.Workspace.listWorkspaceManager */
+			A.WORKSPACE_ID		as workspaceId,
+			A.WORKSPACE_NAME	as workspaceName,
+			A.TYPE_ID			as typeId, 
+			B.TYPE_NAME			as typeName,
+			B.TYPE_ENGLISH_NAME AS typeEnglishName,
+			U.USER_ID			as sysopId,
+			U.USER_NAME			as sysopName  		
+		FROM
+			IKEP4_WS_WORKSPACE A
+			INNER JOIN IKEP4_WS_TYPE B ON ( A.TYPE_ID	=	B.TYPE_ID AND (B.PORTAL_ID	=	#portalId#	OR B.IS_ORGANIZATION=1) )
+			INNER JOIN IKEP4_WS_MEMBER D ON ( A.WORKSPACE_ID	=	D.WORKSPACE_ID AND D.MEMBER_ID	=	#memberId# AND D.MEMBER_LEVEL 	IN	('1','2'))
+			INNER JOIN IKEP4_EV_USER U ON (D.MEMBER_ID=U.USER_ID )
+		WHERE 
+			A.WORKSPACE_STATUS	IN	('O','WC')			
+		ORDER BY
+			B.SORT_ORDER, A.WORKSPACE_NAME
+	]]>
+	</select>	
+	
+	<!-- ANSI -->
+	<select id="listWorkspaceByType" parameterClass="Map"  resultClass="Workspace">
+	<![CDATA[
+		SELECT /* [Workspace_SqlMap.xml] collpack.collaboration.workspace.dao.Workspace.listWorkspaceByType */
+			A.WORKSPACE_ID		AS workspaceId,
+			A.WORKSPACE_NAME	AS workspaceName,
+			A.TYPE_ID			AS typeId, 
+			B.TYPE_NAME			AS typeName,
+			B.TYPE_ENGLISH_NAME AS typeEnglishName	
+		FROM 
+			IKEP4_WS_WORKSPACE A
+			INNER JOIN IKEP4_WS_TYPE B ON ( A.TYPE_ID = B.TYPE_ID AND A.PORTAL_ID	=	B.PORTAL_ID AND B.TYPE_ID		=	#typeId#)
+		WHERE 
+			A.PORTAL_ID		=	#portalId#
+			AND A.WORKSPACE_STATUS	IN	('O','WC')			
+		ORDER BY
+			A.WORKSPACE_NAME
+	]]>
+	</select>
+	
+	<!-- ANSI -->
+	<select id="listWorkspaceByCategory" parameterClass="Map" resultClass="Workspace">
+
+	SELECT /* [Workspace_SqlMap.xml] collpack.collaboration.workspace.dao.Workspace.listWorkspaceByCategory */ 
+		A.WORKSPACE_ID		AS workspaceId,
+		A.WORKSPACE_NAME	AS workspaceName,
+		A.TYPE_ID			AS typeId,
+		B.TYPE_NAME			AS typeName,
+		B.TYPE_ENGLISH_NAME AS typeEnglishName,
+		B.IS_ORGANIZATION	AS isOrganization,
+		A.OPEN_DATE			AS openDate,
+		C.CATEGORY_NAME		AS categoryName,
+		C.CATEGORY_ENGLISH_NAME AS categoryEnglishName,
+		A.PORTAL_ID			AS portalId,
+		E.USER_ID			AS sysopId,
+		E.USER_NAME			AS sysopName,
+		E.USER_ENGLISH_NAME AS sysopEnglishName,
+		(SELECT count(MEMBER_ID) FROM IKEP4_WS_MEMBER WHERE WORKSPACE_ID=A.WORKSPACE_ID) AS memberCount
+	FROM   
+		IKEP4_WS_WORKSPACE A
+		INNER JOIN IKEP4_WS_TYPE B ON A.TYPE_ID = B.TYPE_ID
+		LEFT OUTER JOIN IKEP4_WS_CATEGORY C ON A.CATEGORY_ID = C.CATEGORY_ID
+		LEFT OUTER JOIN IKEP4_WS_MEMBER D ON ( A.WORKSPACE_ID	=	D.WORKSPACE_ID  AND D.MEMBER_LEVEL	=	'1' )
+		LEFT OUTER JOIN IKEP4_EV_USER E ON D.MEMBER_ID = E.USER_ID
+	WHERE	
+		A.PORTAL_ID			=	#portalId#
+		AND A.TYPE_ID		=	#typeId#
+		<isEqual property="categoryId" compareValue="0">
+		AND A.CATEGORY_ID	=	''
+		</isEqual>
+		<isNotEqual property="categoryId" compareValue="0">
+		AND A.CATEGORY_ID	=	#categoryId#
+		</isNotEqual>
+		AND A.WORKSPACE_STATUS	IN ('O','WC')
+   	ORDER BY workspaceName
+	</select>
+	
+	<!-- ANSI -->
+	<select id="listWorkspaceBySearch" parameterClass="Map" resultClass="Workspace">
+	SELECT /* [Workspace_SqlMap.xml] collpack.collaboration.workspace.dao.Workspace.listWorkspaceBySearch */ 
+		A.WORKSPACE_ID		AS workspaceId,
+		A.WORKSPACE_NAME	AS workspaceName,
+		A.TYPE_ID			AS typeId,
+		B.TYPE_NAME			AS typeName,
+		A.TEAM_ID			AS teamId,
+		B.TYPE_ENGLISH_NAME AS typeEnglishName,
+		B.IS_ORGANIZATION	AS isOrganization,
+		A.OPEN_DATE			AS openDate,
+		C.CATEGORY_NAME		AS categoryName,
+		C.CATEGORY_ENGLISH_NAME AS categoryEnglishName,
+		A.PORTAL_ID			AS portalId,
+		E.USER_ID			AS sysopId,
+		E.USER_NAME			AS sysopName,
+		E.USER_ENGLISH_NAME AS sysopEnglishName,
+		(SELECT count(MEMBER_ID) FROM IKEP4_WS_MEMBER WHERE WORKSPACE_ID=A.WORKSPACE_ID) AS memberCount
+	FROM   
+		IKEP4_WS_WORKSPACE A
+		INNER JOIN IKEP4_WS_TYPE B ON A.TYPE_ID = B.TYPE_ID
+		LEFT OUTER JOIN IKEP4_WS_CATEGORY C ON A.CATEGORY_ID = C.CATEGORY_ID
+		LEFT OUTER JOIN IKEP4_WS_MEMBER D ON ( A.WORKSPACE_ID	=	D.WORKSPACE_ID  AND D.MEMBER_LEVEL	=	'1' )
+		LEFT OUTER JOIN IKEP4_EV_USER E ON D.MEMBER_ID = E.USER_ID
+	WHERE	
+		A.PORTAL_ID			=	#portalId#
+		AND	UPPER(A.WORKSPACE_NAME) LIKE '%' + UPPER(#workspaceName#) + '%'
+		AND A.WORKSPACE_STATUS	IN ('O','WC')
+   	ORDER BY B.IS_ORGANIZATION DESC,B.SORT_ORDER , workspaceName
+	</select>
+	
+	<!-- MS SQL -->
+	<!-- create -->	
+	<insert id="create" parameterClass="Workspace"> 
+	<![CDATA[ 
+		INSERT INTO IKEP4_WS_WORKSPACE /* [Workspace_SqlMap.xml] collpack.collaboration.workspace.dao.Workspace.create */
+		(
+			WORKSPACE_ID,	WORKSPACE_NAME,		TYPE_ID,			DESCRIPTION,		OPEN_DATE, 
+			OPEN_APPLY_DATE,WORKSPACE_STATUS,	REGISTER_ID,
+			REGISTER_NAME,	REGIST_DATE,		UPDATER_ID,			UPDATER_NAME,		UPDATE_DATE,
+			CATEGORY_ID,	TEAM_ID,			INTRODUCTION,		OPEN_TYPE,			PORTAL_ID
+		)  
+		VALUES 
+		(	
+			#workspaceId#,	#workspaceName#,	#typeId#,			#description#,		CURRENT_TIMESTAMP,
+			CURRENT_TIMESTAMP,#workspaceStatus#,#registerId#,
+			#registerName#,	CURRENT_TIMESTAMP,			#updaterId#,		#updaterName#,		CURRENT_TIMESTAMP,
+			#categoryId#,	#teamId#,			#introduction#,		0,					#portalId#
+		)
+	]]>
+	</insert>	
+	
+	<!-- ANSI -->
+	<insert id="createWorkspaceVisit" parameterClass="Map"> 
+	<![CDATA[ 
+		INSERT INTO IKEP4_WS_WORKSPACE_VISIT /* [Workspace_SqlMap.xml] collpack.collaboration.workspace.dao.Workspace.createWorkspaceVisit */
+		(
+			WORKSPACE_ID,	VISITOR_ID,		VISIT_DATE
+		)  
+		VALUES 
+		(	
+			#workspaceId#,	#visitorId#,	CURRENT_TIMESTAMP
+		)
+	]]>
+	</insert>	
+	
+	<!-- MS SQL -->
+	<select id="existsWorkspaceVisit" parameterClass="Map" resultClass="java.lang.Integer">
+	<![CDATA[
+		SELECT /* [Workspace_SqlMap.xml] collpack.collaboration.workspace.dao.Workspace.existsWorkspaceVisit */
+			COUNT(WORKSPACE_ID) 
+		FROM 
+			IKEP4_WS_WORKSPACE_VISIT
+		WHERE 
+			WORKSPACE_ID	=	#workspaceId#
+			AND VISITOR_ID	=	#visitorId#
+			AND CONVERT(DATETIME, VISIT_DATE)  =  CONVERT(DATETIME, CURRENT_TIMESTAMP)
+	]]>
+	</select>
+	
+	<!-- ANSI -->
+	<!-- select -->
+	<select id="get" parameterClass="Workspace"  resultClass="Workspace">
+		SELECT /* [Workspace_SqlMap.xml] collpack.collaboration.workspace.dao.Workspace.get */
+			A.WORKSPACE_ID		AS workspaceId,
+			A.WORKSPACE_NAME	AS workspaceName,
+			A.TYPE_ID			AS typeId,
+			B.TYPE_NAME			AS typeName,
+			B.TYPE_ENGLISH_NAME AS typeEnglishName,
+			B.TYPE_DESCRIPTION	AS typeDescription,
+			B.IS_ORGANIZATION	AS isOrganization,
+			A.DESCRIPTION		AS description,
+			A.OPEN_DATE			AS openDate,
+			A.CLOSE_DATE		AS closeDate,
+			A.OPEN_APPLY_DATE	AS openApplyDate,
+			A.CLOSE_APPLY_DATE	AS closeApplyDate,
+			A.WORKSPACE_STATUS	AS workspaceStatus,
+			A.REGISTER_ID		AS registerId,
+			E.USER_NAME			AS registerName,
+			E.USER_ENGLISH_NAME	AS registerEnglishName,		
+			A.REGIST_DATE		AS registDate,
+			A.UPDATER_ID		AS updaterId,
+			F.USER_NAME			AS updaterName,
+			F.USER_ENGLISH_NAME	AS updaterEnglishName,		
+			A.UPDATE_DATE		AS updateDate,
+			A.CATEGORY_ID		AS categoryId,
+			C.CATEGORY_NAME		AS categoryName,
+			C.CATEGORY_ENGLISH_NAME AS categoryEnglishName,
+			A.TEAM_ID			AS teamId,
+			G.GROUP_NAME		AS groupName,
+			G.GROUP_ENGLISH_NAME AS groupEnglishName,
+			A.INTRODUCTION		AS introduction,
+			A.OPEN_TYPE			AS openType,
+			A.PORTAL_ID			AS portalId,
+			D.MEMBER_ID			AS sysopId,
+			U.USER_NAME			AS sysopName,
+			U.USER_ENGLISH_NAME AS sysopEnglishName,
+			isnull(ejd.JOB_DUTY_NAME, ejt.JOB_TITLE_NAME) AS jobTitleName , 
+      		'' AS jobTitleEnglishName,
+			(SELECT count(MEMBER_ID) FROM IKEP4_WS_MEMBER WHERE WORKSPACE_ID=A.WORKSPACE_ID AND MEMBER_LEVEL IN ('1','2','3','4') ) memberCount,
+			(SELECT count(MEMBER_ID) FROM IKEP4_WS_MEMBER WHERE WORKSPACE_ID=A.WORKSPACE_ID AND MEMBER_LEVEL='4') associateMemberCount
+		FROM 
+			IKEP4_WS_WORKSPACE A 
+			INNER JOIN IKEP4_WS_TYPE B ON A.TYPE_ID = B.TYPE_ID
+			LEFT OUTER JOIN IKEP4_WS_CATEGORY C ON A.CATEGORY_ID = C.CATEGORY_ID
+			LEFT OUTER JOIN IKEP4_WS_MEMBER D ON ( A.WORKSPACE_ID	=	D.WORKSPACE_ID AND D.MEMBER_LEVEL='1')
+			LEFT OUTER JOIN IKEP4_EV_USER E ON (A.REGISTER_ID = E.USER_ID)
+			LEFT OUTER JOIN IKEP4_EV_USER F ON (A.UPDATER_ID = F.USER_ID)
+			LEFT OUTER JOIN IKEP4_EV_USER U ON (D.MEMBER_ID = U.USER_ID)
+			LEFT OUTER JOIN IKEP4_EV_GROUP G ON ( A.TEAM_ID = G.GROUP_ID )
+			left outer join IKEP4_EV_JOB_TITLE ejt  on U.job_title_code =ejt.job_title_code
+        	left outer join IKEP4_EV_JOB_DUTY ejd  on U.job_duty_code = ejd.job_duty_code
+		WHERE 
+			A.PORTAL_ID			=	#portalId#
+			AND A.WORKSPACE_ID	=	#workspaceId#
+	</select>
+	
+	<!-- ANSI -->
+	<select id="getWorkspace" parameterClass="String"  resultClass="Workspace">
+		SELECT /* [Workspace_SqlMap.xml] collpack.collaboration.workspace.dao.Workspace.get */
+			<include refid="collpack.collaboration.workspace.dao.Workspace.sqlColumnList" />
+		FROM 
+			IKEP4_WS_WORKSPACE A 
+			INNER JOIN IKEP4_WS_TYPE B ON A.TYPE_ID = B.TYPE_ID
+			LEFT OUTER JOIN IKEP4_WS_CATEGORY C ON A.CATEGORY_ID = C.CATEGORY_ID
+			LEFT OUTER JOIN IKEP4_WS_MEMBER D ON ( A.WORKSPACE_ID	=	D.WORKSPACE_ID AND D.MEMBER_LEVEL='1')
+			LEFT OUTER JOIN IKEP4_EV_USER E ON (A.REGISTER_ID = E.USER_ID)
+			LEFT OUTER JOIN IKEP4_EV_USER F ON (A.UPDATER_ID = F.USER_ID)
+			LEFT OUTER JOIN IKEP4_EV_USER U ON (D.MEMBER_ID = U.USER_ID)
+			LEFT OUTER JOIN IKEP4_EV_GROUP G ON ( A.TEAM_ID = G.GROUP_ID )
+		WHERE 
+			A.WORKSPACE_ID	=	#workspaceId#
+	</select>
+	
+	<!-- MS SQL -->
+	<select id="getDefaultWorkspace" parameterClass="Map"  resultClass="Workspace">
+		SELECT TOP 1 * FROM 
+		(
+			SELECT /* [Workspace_SqlMap.xml] collpack.collaboration.workspace.dao.Workspace.get */
+				<include refid="collpack.collaboration.workspace.dao.Workspace.sqlColumnList" />
+			FROM 
+				IKEP4_WS_WORKSPACE A 
+				INNER JOIN IKEP4_WS_TYPE B ON A.TYPE_ID = B.TYPE_ID
+				LEFT OUTER JOIN IKEP4_WS_CATEGORY C ON A.CATEGORY_ID = C.CATEGORY_ID
+				LEFT OUTER JOIN IKEP4_WS_MEMBER D ON ( A.WORKSPACE_ID	=	D.WORKSPACE_ID AND D.MEMBER_LEVEL='1')
+				LEFT OUTER JOIN IKEP4_EV_USER E ON (A.REGISTER_ID = E.USER_ID)
+				LEFT OUTER JOIN IKEP4_EV_USER F ON (A.UPDATER_ID = F.USER_ID)
+				LEFT OUTER JOIN IKEP4_EV_USER U ON (D.MEMBER_ID = U.USER_ID)
+				LEFT OUTER JOIN IKEP4_EV_GROUP G ON ( A.TEAM_ID = G.GROUP_ID )
+				<isEmpty property="teamId">
+				INNER JOIN IKEP4_WS_MEMBER X ON (A.WORKSPACE_ID=X.WORKSPACE_ID AND X.IS_DEFAULT=1 AND X.MEMBER_ID=#memberId#)
+				</isEmpty>
+				<isNotEmpty property="teamId">
+				INNER JOIN IKEP4_WS_MEMBER X ON (A.WORKSPACE_ID=X.WORKSPACE_ID AND X.IS_DEFAULT=0 AND X.MEMBER_ID=#memberId#)
+				</isNotEmpty>				
+			WHERE
+				A.PORTAL_ID		=	#portalId#
+				<isNotEmpty property="teamId">
+				AND A.TEAM_ID	=	#teamId#
+				</isNotEmpty>				
+				AND A.WORKSPACE_STATUS IN ('O', 'WC')
+		) TBL
+	</select>		
+	
+	<!-- ANSI -->
+	<select id="checkWorkspaceName" parameterClass="Map" resultClass="java.lang.Integer">
+	<![CDATA[
+		SELECT /* [Workspace_SqlMap.xml] collpack.collaboration.workspace.dao.Workspace.checkWorkspaceName */
+			COUNT(WORKSPACE_ID) 
+		FROM 
+			IKEP4_WS_WORKSPACE 
+		WHERE 
+			PORTAL_ID				=	#portalId#
+			AND WORKSPACE_NAME		=	#workspaceName#
+			AND WORKSPACE_STATUS	IN	('WO','WC','O')
+	]]>
+	</select>
+	
+	<!-- ANSI -->
+	<select id="checkWorkspaceTeam" parameterClass="String" resultClass="String">
+	<![CDATA[
+		SELECT /* [Workspace_SqlMap.xml] collpack.collaboration.workspace.dao.Workspace.checkWorkspaceTeam */
+			WORKSPACE_STATUS
+		FROM
+			IKEP4_WS_WORKSPACE 
+		WHERE 
+			TEAM_ID		=	#teamId#
+	]]>
+	</select>	
+	
+	<!-- MS SQL -->
+	<select id="countWorkspaceByType" parameterClass="Map"  resultClass="Workspace">
+	<![CDATA[
+		SELECT *
+		FROM 
+		(
+			SELECT /* [Workspace_SqlMap.xml] collpack.collaboration.workspace.dao.countWorkspaceByType */
+				'ALL'   AS  categoryId,
+				'ALL'   AS  categoryName,
+				'ALL'	AS  categoryEnglishName,
+				-1	 AS sortOrder,
+				COUNT(1) AS countWorkspace
+			FROM 
+				IKEP4_WS_WORKSPACE
+			WHERE 
+				PORTAL_ID		=	#portalId#
+				AND TYPE_ID		=	#typeId#
+				AND WORKSPACE_STATUS IN ('O', 'WC')
+	
+			UNION ALL
+
+			SELECT 
+				ISNULL(A.CATEGORY_ID,   '0') AS  categoryId,
+				ISNULL(A.CATEGORY_NAME, '0') AS categoryName,
+				ISNULL(A.CATEGORY_ENGLISH_NAME,'0') AS categoryEnglishName,
+				ISNULL(A.SORT_ORDER,'0')			  AS sortOrder,
+				ISNULL(B.countWorkspace,0)   AS countWorkspace
+			FROM
+			(
+				SELECT 
+					CATEGORY_ID,
+					CATEGORY_NAME,
+					CATEGORY_ENGLISH_NAME,
+					SORT_ORDER,
+					0 countWorkspace
+				FROM 
+					IKEP4_WS_CATEGORY
+				WHERE
+					PORTAL_ID		=	#portalId#
+					AND TYPE_ID		=	#typeId#
+					AND IS_DELETE	=	0
+			) A
+			FULL OUTER JOIN
+			(
+				SELECT 
+					CATEGORY_ID,
+					COUNT(WORKSPACE_ID) AS countWorkspace
+				FROM 
+					IKEP4_WS_WORKSPACE
+				WHERE
+					PORTAL_ID		=	#portalId#
+					AND TYPE_ID		=	#typeId#
+					AND WORKSPACE_STATUS IN ('O', 'WC')
+				GROUP BY 
+					CATEGORY_ID
+			) B
+			ON 
+				(A.CATEGORY_ID = B.CATEGORY_ID)
+		) TBL
+		ORDER BY sortOrder, COALESCE(categoryId, '999999999999')
+	]]>
+	</select>
+	
+	<!-- MS SQL -->
+	<select id="countWorkspaceByTeam" parameterClass="Map"  resultClass="Workspace">
+		WITH GROUP_LIST AS /* [Workspace_SqlMap.xml] collpack.collaboration.workspace.dao.Workspace.countWorkspaceByTeam */
+		(
+			SELECT
+				G.GROUP_ID,
+				G.PARENT_GROUP_ID,
+				G.GROUP_NAME,
+				G.GROUP_ENGLISH_NAME,
+				W.WORKSPACE_ID
+			FROM 
+				IKEP4_EV_GROUP G
+				LEFT OUTER JOIN	IKEP4_WS_WORKSPACE W
+				ON G.GROUP_ID	=	W.TEAM_ID
+				AND W.TYPE_ID	=	#typeId#
+				AND W.WORKSPACE_STATUS IN ('O', 'WC')
+			WHERE 
+				G.GROUP_TYPE_ID	=	'G0001'
+				AND G.PORTAL_ID	=	#portalId#
+			
+		),
+		<isNotEmpty property="groupId">
+		CTE1 AS (
+			SELECT	*
+			FROM	GROUP_LIST
+			WHERE	GROUP_ID = #groupId#
+			UNION ALL
+			SELECT	GL.*
+			FROM	GROUP_LIST GL, CTE1
+			WHERE	CTE1.GROUP_ID = GL.PARENT_GROUP_ID	
+		),
+		</isNotEmpty>
+		TBL AS (
+			SELECT *
+			FROM 
+				IKEP4_EV_GROUP G
+			WHERE 
+				G.GROUP_TYPE_ID	=	'G0001'
+				AND G.PORTAL_ID	=	#portalId#
+				<isNotEmpty property="groupId">
+				AND G.GROUP_ID IN 
+				(
+					SELECT 
+						GROUP_ID
+					FROM 
+						IKEP4_EV_GROUP
+					WHERE 
+						GROUP_TYPE_ID	=	'G0001'
+						AND PORTAL_ID	=	#portalId#
+						AND GROUP_ID IN 
+						(
+							SELECT	GROUP_ID
+							FROM 	GROUP_LIST GG
+							WHERE	GG.PARENT_GROUP_ID  = #groupId#
+						)
+				)			
+				</isNotEmpty>
+				<isEmpty property="groupId">					
+				AND G.PARENT_GROUP_ID IN 
+				(
+					SELECT 
+						GROUP_ID
+					FROM 
+						IKEP4_EV_GROUP
+					WHERE 
+						GROUP_TYPE_ID	=	'G0001'
+						AND PORTAL_ID	=	#portalId#
+						AND PARENT_GROUP_ID	IS NULL
+				)
+				</isEmpty>
+		),
+		CTE2 AS (
+			SELECT	GL1.*, TBL.GROUP_ID AS REF_GROUP_ID
+			FROM	GROUP_LIST GL1, TBL
+			WHERE	GL1.GROUP_ID = TBL.GROUP_ID
+			UNION ALL
+			SELECT	GL2.*, CTE2.REF_GROUP_ID AS REF_GROUP_ID
+			FROM	GROUP_LIST GL2, CTE2
+			WHERE	CTE2.GROUP_ID = GL2.PARENT_GROUP_ID
+		)
+		SELECT
+			groupId,
+			groupName,
+			groupEnglishName,
+			countWorkspace
+		FROM (
+			SELECT
+				'ALL'    AS  groupId
+				,'ALL'    AS groupName
+				,'ALL'	AS groupEnglishName
+				,COUNT(1) AS countWorkspace
+				,'0' AS SORT_ORDER
+			FROM 
+				IKEP4_WS_WORKSPACE
+			WHERE 
+				TYPE_ID			=	#typeId#
+				AND PORTAL_ID	=	#portalId#
+				AND WORKSPACE_STATUS IN ('O', 'WC')
+				<isNotEmpty property="groupId">
+				AND TEAM_ID IN
+				(
+					SELECT GROUP_ID FROM CTE1	
+				)			
+				</isNotEmpty>				
+			UNION ALL
+			SELECT
+				GROUP_ID       AS  groupId,
+				GROUP_NAME     AS  groupName,
+				GROUP_ENGLISH_NAME AS groupEnglishName,
+				(SELECT COUNT(DISTINCT WORKSPACE_ID) FROM CTE2 WHERE REF_GROUP_ID = TBL.GROUP_ID) AS countWorkspace,
+				SORT_ORDER				
+			FROM TBL
+		) TBL2		
+		ORDER BY SORT_ORDER
+	</select>
+
+	<!-- ANSI -->
+	<select id="exists" parameterClass="Workspace" resultClass="java.lang.Integer">
+	<![CDATA[
+		SELECT /* [Workspace_SqlMap.xml] collpack.collaboration.workspace.dao.Workspace.exists */
+			COUNT(A.WORKSPACE_ID) 
+		FROM 
+			IKEP4_WS_WORKSPACE A
+			INNER JOIN IKEP4_WS_TYPE B ON A.TYPE_ID = B.TYPE_ID
+			LEFT OUTER JOIN IKEP4_WS_CATEGORY C ON A.CATEGORY_ID = C.CATEGORY_ID
+			LEFT OUTER JOIN IKEP4_WS_MEMBER D ON ( A.WORKSPACE_ID	=	D.WORKSPACE_ID  AND D.MEMBER_LEVEL	=	'1' )
+			LEFT OUTER JOIN IKEP4_EV_USER E ON D.MEMBER_ID = E.USER_ID
+		WHERE 
+			A.PORTAL_ID			=	#portalId#
+			AND A.WORKSPACE_ID	=	#workspaceId#
+	]]>
+	</select>
+
+
+
+
+	<!-- ANSI -->
+	<!-- update -->
+	<update id="update" parameterClass="Workspace">
+		UPDATE 
+			IKEP4_WS_WORKSPACE /* [Workspace_SqlMap.xml] collpack.collaboration.workspace.dao.Workspace.update */
+		SET 
+			WORKSPACE_NAME	=	#workspaceName#, 
+			<isEqual property="isOrganization" compareValue="0">
+			TYPE_ID			=	#typeId#,
+			CATEGORY_ID		=	#categoryId#,
+			</isEqual>
+			<isEqual property="isOrganization" compareValue="1">
+			<isNotEmpty property="teamId">
+			TEAM_ID			=   #teamId#,
+			</isNotEmpty>
+			</isEqual>			
+			DESCRIPTION		=	#description#,
+			UPDATER_ID		=	#updaterId#,
+			UPDATER_NAME	=	#updaterName#,
+			UPDATE_DATE		=	CURRENT_TIMESTAMP
+		WHERE 
+			WORKSPACE_ID	=	#workspaceId#
+	</update>
+	
+	<!-- ANSI -->
+	<update id="updateIntro" parameterClass="Workspace">
+		UPDATE 
+			IKEP4_WS_WORKSPACE /* [Workspace_SqlMap.xml] collpack.collaboration.workspace.dao.Workspace.updateIntro */
+		SET 
+			introduction	=	#introduction#, 
+			UPDATER_ID		=	#updaterId#,
+			UPDATER_NAME	=	#updaterName#,
+			UPDATE_DATE		=	CURRENT_TIMESTAMP
+		WHERE 
+			WORKSPACE_ID	=	#workspaceId#
+	</update>
+	
+	<!-- ANSI -->
+	<update id="updateStatus" parameterClass="Workspace">
+		UPDATE 
+			IKEP4_WS_WORKSPACE /* [Workspace_SqlMap.xml] collpack.collaboration.workspace.dao.Workspace.updateStatus */
+		SET 
+			
+			
+			<isNotEmpty property="workspaceStatus">
+			
+			<isEqual property="workspaceStatus" compareValue="O">
+			WORKSPACE_STATUS	=	#workspaceStatus#,
+			OPEN_DATE			=	CURRENT_TIMESTAMP,
+			</isEqual>
+			<isEqual property="workspaceStatus" compareValue="WC">
+			WORKSPACE_STATUS	=	#workspaceStatus#,
+			CLOSE_APPLY_DATE	=	CURRENT_TIMESTAMP,
+			</isEqual>
+			<isEqual property="workspaceStatus" compareValue="C">
+			WORKSPACE_STATUS	=	#workspaceStatus#,
+			CLOSE_DATE	=	CURRENT_TIMESTAMP,
+			</isEqual>
+			<isEqual property="workspaceStatus" compareValue="WR">
+			WORKSPACE_STATUS	=	#workspaceStatus#,
+			CLOSE_DATE	=	CURRENT_TIMESTAMP,
+			CLOSE_APPLY_DATE	=	NULL,
+			</isEqual>
+			<isEqual property="workspaceStatus" compareValue="ED">
+			WORKSPACE_STATUS	=	#workspaceStatus#,
+			CLOSE_DATE	=	CURRENT_TIMESTAMP,
+			CLOSE_APPLY_DATE	=	NULL,
+			</isEqual>			
+			<isEqual property="workspaceStatus" compareValue="Reject">
+			WORKSPACE_STATUS	=	'O',
+			CLOSE_APPLY_DATE	=	NULL,
+			</isEqual>	
+			</isNotEmpty>
+			
+			UPDATER_ID			=	#updaterId#,
+			UPDATER_NAME		=	#updaterName#,
+			UPDATE_DATE			=	CURRENT_TIMESTAMP			
+		WHERE 
+			WORKSPACE_ID		=	#workspaceId#
+	</update>
+	
+	<!-- ANSI -->
+	<update id="updateCloseRejectStatus" parameterClass="Workspace">
+		UPDATE 
+			IKEP4_WS_WORKSPACE /* [Workspace_SqlMap.xml] collpack.collaboration.workspace.dao.Workspace.updateCloseRejectStatus */
+		SET 
+			WORKSPACE_STATUS	=	#workspaceStatus#,
+			CLOSE_APPLY_DATE	=	NULL,
+			UPDATER_ID			=	#updaterId#,
+			UPDATER_NAME		=	#updaterName#,
+			UPDATE_DATE			=	CURRENT_TIMESTAMP			
+		WHERE 
+			WORKSPACE_ID		=	#workspaceId#
+	</update>
+
+	<!-- ANSI -->
+	<!-- delete -->
+	<delete id="physicalDelete" parameterClass="java.lang.String">
+	<![CDATA[
+		DELETE FROM 
+			IKEP4_WS_WORKSPACE /* [Workspace_SqlMap.xml] collpack.collaboration.workspace.dao.Workspace.physicalDelete */
+		WHERE 
+			WORKSPACE_ID	=	#workspaceId#
+	]]>
+	</delete>
+
+	<!-- MS SQL -->
+	<!-- Organization Workspace Manage-->
+	<!-- Organization Workspace Tree -->
+	<select id="selectOrgGroup" parameterClass="Map" resultClass="workspace">
+		WITH TARGET_TBL AS (
+			SELECT /* [Workspace_SqlMap.xml] collpack.collaboration.workspace.dao.Workspace.selectOrgGroup */ 
+				A.GROUP_ID,
+				A.GROUP_NAME,
+				A.GROUP_ENGLISH_NAME,
+				A.PARENT_GROUP_ID,
+				A.GROUP_TYPE_ID,
+				B.TEAM_ID,
+				A.SORT_ORDER
+			FROM 
+				IKEP4_EV_GROUP A 
+				LEFT OUTER JOIN IKEP4_WS_WORKSPACE B ON A.GROUP_ID=B.TEAM_ID AND B.WORKSPACE_STATUS ='O'
+			WHERE
+				A.GROUP_TYPE_ID = 'G0001'
+				AND A.PORTAL_ID	=	#portalId#
+				AND A.VIEW_OPTION = 1
+				<isNotEmpty property="groupId">
+					AND A.PARENT_GROUP_ID = #groupId#
+				</isNotEmpty>
+				<isEmpty property="groupId">
+					AND A.PARENT_GROUP_ID IS NULL
+				</isEmpty>
+		), ALL_CHILD_GROUPS AS (
+			SELECT	G1.GROUP_ID, G1.PARENT_GROUP_ID, TARGET_TBL.GROUP_ID AS ROOT_GROUP_ID
+			FROM	IKEP4_EV_GROUP G1, TARGET_TBL
+			WHERE	G1.GROUP_TYPE_ID = 'G0001'
+				AND	G1.PARENT_GROUP_ID = TARGET_TBL.GROUP_ID
+			UNION ALL
+			SELECT	G2.GROUP_ID, G2.PARENT_GROUP_ID, ALL_CHILD_GROUPS.ROOT_GROUP_ID AS ROOT_GROUP_ID
+			FROM	IKEP4_EV_GROUP G2, ALL_CHILD_GROUPS
+			WHERE	G2.GROUP_TYPE_ID='G0001'
+				AND	ALL_CHILD_GROUPS.GROUP_ID = G2.PARENT_GROUP_ID 			
+		), CNT_ALL_CHILD_GROUPS AS (
+			SELECT COUNT(GROUP_ID) AS CNT, ROOT_GROUP_ID FROM ALL_CHILD_GROUPS GROUP BY ROOT_GROUP_ID
+		), TEMP_TBL AS (
+			SELECT	X.GROUP_ID, X.PARENT_GROUP_ID, X.GROUP_TYPE_ID, Y.TEAM_ID
+			FROM	IKEP4_EV_GROUP X 
+					LEFT OUTER JOIN IKEP4_WS_WORKSPACE Y 
+						ON X.GROUP_ID = Y.TEAM_ID
+		), ALL_CHILD_WORKSPACES AS (
+			SELECT	T1.GROUP_ID, T1.PARENT_GROUP_ID, T1.TEAM_ID, TEMP_TBL.GROUP_ID AS ROOT_GROUP_ID
+			FROM	TEMP_TBL T1, TEMP_TBL
+			WHERE	T1.GROUP_TYPE_ID='G0001'
+				AND	T1.PARENT_GROUP_ID = TEMP_TBL.GROUP_ID
+			UNION ALL
+			SELECT	T2.GROUP_ID, T2.PARENT_GROUP_ID, T2.TEAM_ID, ALL_CHILD_WORKSPACES.ROOT_GROUP_ID AS ROOT_GROUP_ID
+			FROM	TEMP_TBL T2, ALL_CHILD_WORKSPACES
+			WHERE	T2.GROUP_TYPE_ID='G0001'
+				AND	ALL_CHILD_WORKSPACES.GROUP_ID = T2.PARENT_GROUP_ID
+		), SUM_ALL_CHILD_WORKSPACES AS (
+			SELECT	SUM(CASE WHEN TEAM_ID IS NULL THEN 0 ELSE 1 END) AS SUMM, ROOT_GROUP_ID FROM ALL_CHILD_WORKSPACES GROUP BY ROOT_GROUP_ID
+		)
+		SELECT	T.GROUP_ID AS groupId,
+				T.GROUP_NAME AS groupName,
+				T.GROUP_ENGLISH_NAME AS groupEnglishName,
+				T.PARENT_GROUP_ID AS parentGroupId,
+				T.GROUP_TYPE_ID AS groupTypeId,
+				ISNULL(TBL.CNT, 0) AS childGroupCount,
+				( CASE WHEN T.TEAM_ID IS NULL THEN 0 ELSE 1 END ) AS countWorkspace,
+				ISNULL(TBL.SUMM, 0) AS countChildWorkspace
+		FROM	TARGET_TBL T 
+				LEFT OUTER JOIN ( SELECT C.ROOT_GROUP_ID AS GROUP_ID, C.CNT, S.SUMM 
+								  FROM	 CNT_ALL_CHILD_GROUPS C 
+								 		 INNER JOIN SUM_ALL_CHILD_WORKSPACES S 
+								 			 ON C.ROOT_GROUP_ID = S.ROOT_GROUP_ID ) TBL
+				ON T.GROUP_ID = TBL.GROUP_ID
+		ORDER BY T.SORT_ORDER, T.GROUP_NAME
+	</select>
+	
+	<!-- MS SQL -->
+	<!-- Organization Workspace WaitingOpen Count -->
+	<select id="countBySearchConditionGroup" parameterClass="WorkspaceSearchCondition" resultClass="int">
+		SELECT /* [Workspace_SqlMap.xml] collpack.collaboration.workspace.dao.Workspace.countBySearchConditionGroup */ 
+				count(A.GROUP_ID)
+		FROM (
+				SELECT  
+					GROUP_ID,
+					GROUP_NAME,
+					FULL_PATH,
+					REGIST_DATE
+				FROM
+				    IKEP4_EV_GROUP  
+				WHERE
+					GROUP_ID NOT IN (SELECT TEAM_ID FROM IKEP4_WS_WORKSPACE WHERE TYPE_ID='0')
+					AND PARENT_GROUP_ID IS NOT NULL
+					AND GROUP_TYPE_ID='G0001'
+					AND PORTAL_ID	=	#portalId#
+				
+		) A LEFT OUTER JOIN (
+				SELECT 			
+					C.USER_ID,
+					C.USER_NAME, 
+					D.GROUP_ID
+				FROM
+					IKEP4_EV_USER C 
+					LEFT OUTER JOIN IKEP4_EV_USER_GROUP D ON C.USER_ID = D.USER_ID 
+				WHERE
+					C.LEADER='1'
+					AND C.PORTAL_ID	=	#portalId#
+		) B ON A.GROUP_ID = B.GROUP_ID
+		<isNotEmpty property="searchColumn">
+			<isEqual property="searchColumn" compareValue="groupName">
+				WHERE	replace(GROUP_NAME,' ','') LIKE '%' + replace(#searchWord#,' ','') + '%'
+			</isEqual>
+			<isEqual property="searchColumn" compareValue="groupLeaderName">
+				WHERE	replace(USER_NAME,' ','') LIKE '%' + replace(#searchWord#,' ','') + '%'
+			</isEqual>
+		</isNotEmpty>
+	</select>
+	
+	<!-- MS SQL -->
+	<!-- Organization Workspace WaitingOpen List -->
+	<select id="listBySearchConditionGroup" parameterClass="WorkspaceSearchCondition" resultClass="Workspace">
+	SELECT 
+			/* [Workspace_SqlMap.xml] collpack.collaboration.workspace.dao.Workspace.listBySearchConditionGroup */
+		GROUP_ID			AS groupId,
+		GROUP_NAME			AS groupName,
+		GROUP_ENGLISH_NAME	AS groupEnglishName,
+		REPLACE(FULL_PATH,'|','>')		AS fullPath,
+		USER_ID AS groupLeaderId,
+		USER_NAME AS groupLeaderName,
+		USER_ENGLISH_NAME AS groupLeaderEnglishName
+	FROM
+	(
+		SELECT 
+			E.GROUP_ID,
+			E.GROUP_NAME,
+			E.GROUP_ENGLISH_NAME,
+			E.FULL_PATH,
+			E.USER_ID,
+			E.USER_NAME,
+			E.USER_ENGLISH_NAME,
+			E.RNUM
+		FROM 
+		( 
+			SELECT 
+				Row_number() OVER (
+										ORDER BY
+										<isNotEmpty property="sortColumn">
+								    	<isEqual property="sortColumn" compareValue="groupName">
+								    	A.GROUP_NAME
+										</isEqual>
+										<isEqual property="sortColumn" compareValue="fullPath">
+								    	A.FULL_PATH
+										</isEqual>
+								    	<isEqual property="sortColumn" compareValue="groupLeaderName">
+								    	B.USER_NAME
+										</isEqual>
+										</isNotEmpty>
+								    	
+										<isNotEmpty property="sortType">
+								    	<isEqual property="sortType" compareValue="DESC">
+								    	DESC,
+										</isEqual>
+										<isEqual property="sortType" compareValue="ASC">
+								    	ASC,
+										</isEqual>
+										</isNotEmpty>
+							
+								    	A.REGIST_DATE DESC
+									) AS RNUM,
+				A.GROUP_ID		,
+				A.GROUP_NAME	,
+				A.GROUP_ENGLISH_NAME,
+				A.FULL_PATH,
+				B.USER_ID,
+				B.USER_NAME,
+				B.USER_ENGLISH_NAME
+			FROM 
+			(
+				SELECT  
+					GROUP_ID,
+					GROUP_NAME,
+					GROUP_ENGLISH_NAME,
+					REPLACE(FULL_PATH,'|','>') AS FULL_PATH,
+					REGIST_DATE
+				FROM    
+					IKEP4_EV_GROUP  
+				WHERE
+					GROUP_ID NOT IN ( SELECT ISNULL(TEAM_ID,' ') FROM IKEP4_WS_WORKSPACE X LEFT OUTER JOIN IKEP4_WS_TYPE T ON X.TYPE_ID=T.TYPE_ID AND IS_ORGANIZATION=1 )
+					AND PARENT_GROUP_ID IS NOT NULL
+					AND GROUP_TYPE_ID='G0001'
+					AND PORTAL_ID	=	#portalId#
+			) A LEFT OUTER JOIN (
+				SELECT 			
+					C.USER_ID,
+					C.USER_NAME,
+					C.USER_ENGLISH_NAME,
+					D.GROUP_ID
+				FROM 	
+					IKEP4_EV_USER C 
+					LEFT OUTER JOIN IKEP4_EV_USER_GROUP D  ON C.USER_ID = D.USER_ID 
+				WHERE C.LEADER='1'
+					AND C.PORTAL_ID	=	#portalId#
+			) B ON A.GROUP_ID = B.GROUP_ID
+
+			<isNotEmpty property="searchColumn">
+				<isEqual property="searchColumn" compareValue="groupName">
+				WHERE	replace(GROUP_NAME,' ','') LIKE '%' + replace(#searchWord#,' ','') + '%'
+				</isEqual>
+				<isEqual property="searchColumn" compareValue="groupLeaderName">
+					WHERE	replace(USER_NAME,' ','') LIKE '%' + replace(#searchWord#,' ','') + '%'
+				</isEqual>
+			</isNotEmpty>
+	<![CDATA[
+		)E WHERE 
+			RNUM <=  #endRowIndex#
+	) TBL WHERE 
+		RNUM >  #startRowIndex#
+	]]>
+	</select>
+
+	<!-- MS SQL -->
+	<select id="countBySearchConditionGroupHierarchy" parameterClass="WorkspaceSearchCondition" resultClass="int">
+		WITH CTE AS (
+			SELECT	*
+			FROM	IKEP4_EV_GROUP
+			WHERE	GROUP_TYPE_ID='G0001'
+				<isNotEmpty property="groupId">
+				AND PARENT_GROUP_ID = #groupId#
+				</isNotEmpty>
+				<isEmpty property="groupId">
+				AND PARENT_GROUP_ID IS NULL
+				</isEmpty>				
+			UNION ALL
+			SELECT	G.*
+			FROM	IKEP4_EV_GROUP G, CTE
+			WHERE	G.GROUP_TYPE_ID='G0001'
+				AND CTE.GROUP_ID  = G.PARENT_GROUP_ID 
+		)
+		SELECT /* [Workspace_SqlMap.xml] collpack.collaboration.workspace.dao.Workspace.countBySearchConditionGroupHierarchy */ 
+				count(A.GROUP_ID)
+		FROM (
+				SELECT  
+					GROUP_ID,
+					GROUP_NAME,
+					FULL_PATH,
+					REGIST_DATE
+				FROM CTE
+		) A LEFT OUTER JOIN (
+				SELECT 			
+					C.USER_ID,
+					C.USER_NAME, 
+					D.GROUP_ID
+				FROM
+					IKEP4_EV_USER C 
+					LEFT OUTER JOIN IKEP4_EV_USER_GROUP D ON C.USER_ID = D.USER_ID 
+				WHERE
+					C.LEADER='1'
+		) B ON A.GROUP_ID = B.GROUP_ID
+		<isNotEmpty property="searchColumn">
+			<isEqual property="searchColumn" compareValue="groupName">
+				WHERE	replace(GROUP_NAME,' ','') LIKE '%' + replace(#searchWord#,' ','') + '%'
+			</isEqual>
+			<isEqual property="searchColumn" compareValue="groupLeaderName">
+				WHERE	replace(USER_NAME,' ','') LIKE '%' + replace(#searchWord#,' ','') + '%'
+			</isEqual>
+		</isNotEmpty>
+	</select>
+	
+	<!-- MS SQL -->
+	<!-- Organization Workspace WaitingOpen List -->
+	<select id="listBySearchConditionGroupHierarchy" parameterClass="WorkspaceSearchCondition" resultClass="Workspace">
+	WITH CTE AS (
+		SELECT	*
+		FROM 	IKEP4_EV_GROUP
+		WHERE	GROUP_TYPE_ID='G0001'
+				<isNotEmpty property="groupId">
+				AND PARENT_GROUP_ID = #groupId#
+				</isNotEmpty>
+				<isEmpty property="groupId">
+				AND PARENT_GROUP_ID IS NULL
+				</isEmpty>	
+		UNION ALL
+		SELECT	G.*
+		FROM	IKEP4_EV_GROUP G, CTE
+		WHERE	G.GROUP_TYPE_ID='G0001'
+			AND	CTE.GROUP_ID  = G.PARENT_GROUP_ID 
+	)
+	SELECT 
+			/* [Workspace_SqlMap.xml] collpack.collaboration.workspace.dao.Workspace.listBySearchConditionGroupHierarchy */
+		GROUP_ID			AS groupId,
+		GROUP_NAME			AS groupName,
+		GROUP_ENGLISH_NAME	AS groupEnglishName,
+		REPLACE(FULL_PATH,'|','>')		AS fullPath, 
+		USER_ID AS groupLeaderId,
+		USER_NAME AS groupLeaderName,
+		CASE WHEN TEAM_ID IS NOT NULL THEN 1 ELSE 0 END countWorkspace,
+		TEAM_ID AS teamId,
+		WORKSPACE_ID AS workspaceId,
+		WORKSPACE_NAME AS workspaceName,
+		WORKSPACE_STATUS AS workspaceStatus,			
+		USER_ENGLISH_NAME AS groupLeaderEnglishName
+	FROM
+	(
+		SELECT 
+			E.GROUP_ID,
+			E.GROUP_NAME,
+			E.GROUP_ENGLISH_NAME,
+			E.FULL_PATH,
+			E.USER_ID,
+			E.USER_NAME,
+			E.TEAM_ID,
+			E.WORKSPACE_ID,
+			E.WORKSPACE_NAME,
+			E.WORKSPACE_STATUS,	
+			E.USER_ENGLISH_NAME,
+			E.RNUM
+		FROM 
+		( 
+			SELECT
+				Row_number() OVER (
+										ORDER BY
+										<isNotEmpty property="sortColumn">
+								    	<isEqual property="sortColumn" compareValue="groupName">
+								    	A.GROUP_NAME
+										</isEqual>
+										<isEqual property="sortColumn" compareValue="fullPath">
+								    	A.FULL_PATH
+										</isEqual>
+								    	<isEqual property="sortColumn" compareValue="groupLeaderName">
+								    	B.USER_NAME
+										</isEqual>
+										</isNotEmpty>
+								    	
+										<isNotEmpty property="sortType">
+								    	<isEqual property="sortType" compareValue="DESC">
+								    	DESC,
+										</isEqual>
+										<isEqual property="sortType" compareValue="ASC">
+								    	ASC,
+										</isEqual>
+										</isNotEmpty>
+							
+								    	A.REGIST_DATE DESC
+									) AS RNUM, 
+				A.GROUP_ID		,
+				A.GROUP_NAME	,
+				A.GROUP_ENGLISH_NAME,
+				A.FULL_PATH,
+				B.USER_ID,
+				B.USER_NAME,
+				W.TEAM_ID,
+				W.WORKSPACE_ID,
+				W.WORKSPACE_NAME,
+				W.WORKSPACE_STATUS,
+				B.USER_ENGLISH_NAME
+			FROM 
+			(
+				SELECT  
+					GROUP_ID,
+					GROUP_NAME,
+					GROUP_ENGLISH_NAME,
+					REPLACE(FULL_PATH,'|','>') AS FULL_PATH, 
+					REGIST_DATE
+				FROM CTE
+	
+			) A LEFT OUTER JOIN (
+				SELECT 			
+					C.USER_ID,
+					C.USER_NAME,
+					C.USER_ENGLISH_NAME,
+					D.GROUP_ID
+				FROM 	
+					IKEP4_EV_USER C 
+					LEFT OUTER JOIN IKEP4_EV_USER_GROUP D  ON C.USER_ID = D.USER_ID 
+				WHERE C.LEADER='1'
+			) B ON A.GROUP_ID = B.GROUP_ID
+			LEFT OUTER JOIN IKEP4_WS_WORKSPACE W ON ( A.GROUP_ID = W.TEAM_ID AND W.WORKSPACE_STATUS IN ('O','WC') )
+
+			
+			<isNotEmpty property="searchColumn">
+				<isEqual property="searchColumn" compareValue="groupName">
+					WHERE	replace(GROUP_NAME,' ','') LIKE '%' + replace(#searchWord#,' ','') + '%'
+				</isEqual>
+				<isEqual property="searchColumn" compareValue="groupLeaderName">
+					WHERE	replace(USER_NAME,' ','') LIKE '%' + replace(#searchWord#,' ','') + '%'
+				</isEqual>
+			</isNotEmpty>
+						
+	<![CDATA[
+		)E WHERE 
+			RNUM <=  #endRowIndex#
+	) TBL WHERE 
+		RNUM >  #startRowIndex#
+	]]>
+	</select>
+
+	<!-- ANSI -->
+	<!-- Organization Workspace Member get from user2group -->
+	<select id="listGroupMembers" parameterClass="java.lang.String" resultClass="Workspace">
+		SELECT	/* [Workspace_SqlMap.xml] collpack.collaboration.workspace.dao.Workspace.listGroupMembers*/
+			A.USER_ID as memberId
+		FROM 	
+			IKEP4_EV_USER_GROUP A
+			INNER JOIN IKEP4_EV_USER B ON ( A.USER_ID = B.USER_ID AND B.USER_STATUS='C' )
+		WHERE 	
+			A.GROUP_ID = #groupId#
+	</select>
+	
+	<!-- MS SQL -->
+	<!-- Organization Workspace WaitingClose Count -->
+	<select id="countBySearchConditionCloseGroup" parameterClass="WorkspaceSearchCondition" resultClass="int">
+		SELECT /* [Workspace_SqlMap.xml] collpack.collaboration.workspace.dao.Workspace.countBySearchConditionGroupClose*/ 
+				COUNT(A.WORKSPACE_ID)
+		FROM 
+			IKEP4_WS_WORKSPACE A 
+			LEFT OUTER JOIN IKEP4_EV_GROUP B ON (A.TEAM_ID= B.GROUP_ID)
+			LEFT OUTER JOIN IKEP4_WS_MEMBER D ON A.WORKSPACE_ID	=	D.WORKSPACE_ID
+			LEFT OUTER JOIN IKEP4_EV_USER E ON ( D.MEMBER_ID = E.USER_ID AND D.MEMBER_LEVEL	=	'1' )
+      		LEFT OUTER JOIN IKEP4_WS_TYPE F ON (A.TYPE_ID= F.TYPE_ID)
+		WHERE 
+			A.TYPE_ID = '0'
+			AND B.GROUP_NAME IS NULL
+			AND A.WORKSPACE_STATUS &lt;&gt; 'C'
+			AND A.PORTAL_ID=#portalId#
+		<isNotEmpty property="searchColumn">
+			<isEqual property="searchColumn" compareValue="sysopName">
+				AND	replace(E.USER_NAME,' ','') LIKE '%' + replace(#searchWord#,' ','') + '%'
+			</isEqual>
+			<isEqual property="searchColumn" compareValue="workspaceName">
+				AND	replace(A.WORKSPACE_NAME,' ','') LIKE '%' + replace(#searchWord#,' ','') + '%'
+			</isEqual>
+		</isNotEmpty>
+	</select>
+	
+	<!-- MS SQL -->
+	<!-- Organization Workspace WaitingClose List -->
+	<select id="listBySearchConditionCloseGroup" parameterClass="WorkspaceSearchCondition" resultClass="Workspace">
+	SELECT * FROM(
+		SELECT 
+			A.* 
+		FROM 
+		( 
+			SELECT /* [Workspace_SqlMap.xml] collpack.collaboration.workspace.dao.Workspace.listBySearchConditionGroupClose*/ 
+				Row_number() OVER (
+										ORDER BY
+										<isNotEmpty property="sortColumn">
+								    	<isEqual property="sortColumn" compareValue="typeName">
+								    	F.TYPE_NAME
+										</isEqual>
+										<isEqual property="sortColumn" compareValue="workspaceName">
+								    	A.WORKSPACE_NAME
+										</isEqual>
+								    	<isEqual property="sortColumn" compareValue="groupName">
+								    	B.GROUP_NAME
+										</isEqual>
+								    	<isEqual property="sortColumn" compareValue="groupId">
+								    	B.GROUP_ID
+										</isEqual>
+										<isEqual property="sortColumn" compareValue="sysopName">
+								    	E.USER_NAME
+										</isEqual>
+								    	<isEqual property="sortColumn" compareValue="openDate">
+								    	A.OPEN_DATE
+										</isEqual>	
+									    <isEqual property="sortColumn" compareValue="workspaceStatus">
+								    	A.WORKSPACE_STATUS
+										</isEqual>
+										</isNotEmpty>
+								    	
+										<isNotEmpty property="sortType">
+								    	<isEqual property="sortType" compareValue="DESC">
+								    	DESC, 
+										</isEqual>
+										<isEqual property="sortType" compareValue="ASC">
+								    	ASC,
+										</isEqual>
+										</isNotEmpty>
+								    	
+								    	A.REGIST_DATE DESC
+									) AS RNUM,
+				A.WORKSPACE_ID as workspaceId,
+				A.WORKSPACE_NAME as workspaceName,
+				A.TEAM_ID as teamId,
+        		A.OPEN_DATE as openDate,
+				A.WORKSPACE_STATUS as workspaceStatus,
+				B.GROUP_NAME as groupName,
+				B.GROUP_ENGLISH_NAME as groupEnglishName,
+				B.GROUP_ID as groupId,
+				D.MEMBER_ID as sysopId,
+				E.USER_NAME as sysopName,
+				E.USER_ENGLISH_NAME as sysopEnglishName,
+        		F.TYPE_NAME as typeName,
+        		F.TYPE_ENGLISH_NAME as typeEnglishName
+			FROM 
+				IKEP4_WS_WORKSPACE A 
+				LEFT OUTER JOIN IKEP4_EV_GROUP B ON (A.TEAM_ID= B.GROUP_ID)
+				LEFT OUTER JOIN IKEP4_WS_MEMBER D ON A.WORKSPACE_ID	=	D.WORKSPACE_ID
+				LEFT OUTER JOIN IKEP4_EV_USER E ON ( D.MEMBER_ID = E.USER_ID AND D.MEMBER_LEVEL	=	'1' )
+	      		LEFT OUTER JOIN IKEP4_WS_TYPE F ON (A.TYPE_ID= F.TYPE_ID)
+			WHERE A.TYPE_ID = '0' AND B.GROUP_NAME IS NULL
+			AND A.WORKSPACE_STATUS &lt;&gt; 'C'
+			AND A.PORTAL_ID=#portalId#
+			<isNotEmpty property="searchColumn">
+				<isEqual property="searchColumn" compareValue="sysopName">
+					AND	replace(E.USER_NAME,' ','') LIKE '%' + replace(#searchWord#,' ','') + '%'
+				</isEqual>
+				<isEqual property="searchColumn" compareValue="workspaceName">
+					AND	replace(A.WORKSPACE_NAME,' ','') LIKE '%' + replace(#searchWord#,' ','') + '%'
+				</isEqual>
+			</isNotEmpty>
+									
+		<![CDATA[
+			) A WHERE RNUM <=  #endRowIndex# /* 종료  */
+		) TBL WHERE RNUM >  #startRowIndex# /* 시작 */
+		]]> 
+	</select>
+
+	<!-- create Team procedure call -->
+	<procedure id="syncTeamWorkspace" parameterClass="String">
+		exec dbo.IKEP4_WS_SYNC_TEAM_COLL #userId#
+	</procedure>
+		
+	<!-- New Member(Team) Registration procedure call -->
+	<procedure id="syncUserWorkspace" parameterClass="String">
+		exec dbo.IKEP4_WS_SYNC_TEAM_COLL_USER #userId#
+	</procedure>		
+		
+	<!-- create Team procedure call -->
+	<procedure id="deleteWorkspaceBatch" parameterClass="String">
+		exec dbo.IKEP4_WS_DEL_WORKSPACE #workspaceId#
+	</procedure>		
+		
+		
+		
+	<!-- ANSI -->
+	<select id="listAllWorkspaceDelete" resultClass="Workspace">
+	<![CDATA[
+		SELECT /* [Workspace_SqlMap.xml] collpack.collaboration.workspace.dao.Workspace.listAllWorkspaceDelete */
+			A.WORKSPACE_ID		AS workspaceId,
+			A.WORKSPACE_NAME	AS workspaceName,
+			A.TYPE_ID			AS typeId, 
+			B.TYPE_NAME			AS typeName,
+			B.TYPE_ENGLISH_NAME AS typeEnglishName
+		FROM
+			IKEP4_WS_WORKSPACE A
+			LEFT OUTER JOIN IKEP4_WS_TYPE B ON (A.TYPE_ID	=	B.TYPE_ID )
+		WHERE 
+			A.WORKSPACE_STATUS	IN	('ED')	
+		ORDER BY
+			B.IS_ORGANIZATION DESC, B.SORT_ORDER, A.WORKSPACE_NAME
+	]]>
+	</select>
+	
+	<!-- ANSI -->
+	<delete id="physicalDeleteWorkspaceVisit" parameterClass="String">
+	<![CDATA[
+		DELETE /* [Workspace_SqlMap.xml] collpack.collaboration.workspace.dao.Workspace.physicalDeleteWorkspaceVisit */
+		FROM 
+			IKEP4_WS_WORKSPACE_VISIT
+		WHERE 
+			WORKSPACE_ID	=	#workspaceId#
+	]]>
+	</delete>
+	
+	<!-- MS SQL -->
+	<select id="listGroupHierarchy" parameterClass="String" resultClass="Workspace">
+	WITH CTE AS (
+		SELECT	1 LV, *
+		FROM 	IKEP4_EV_GROUP
+		WHERE	GROUP_TYPE_ID = 'G0001'
+			AND	GROUP_ID = #groupId#
+		UNION ALL
+		SELECT	LV + 1, G.*
+		FROM 	IKEP4_EV_GROUP G, CTE
+		WHERE	G.GROUP_TYPE_ID = 'G0001'
+			AND	CTE.PARENT_GROUP_ID = G.GROUP_ID
+	)
+	SELECT /* [Workspace_SqlMap.xml] collpack.collaboration.workspace.dao.Workspace.listGroupHierarchy */
+               A.GROUP_ID           AS groupId,
+               A.GROUP_NAME         AS groupName,
+               A.PARENT_GROUP_ID    AS parentGroupId,
+               A.GROUP_TYPE_ID      AS groupTypeId,
+               A.GROUP_ENGLISH_NAME AS groupEnglishName,
+               B.WORKSPACE_ID       AS workspaceId,
+               B.WORKSPACE_NAME     AS workspaceName,
+               A.lv
+	  FROM CTE A 
+	                LEFT OUTER JOIN IKEP4_WS_WORKSPACE B ON (A.GROUP_ID = B.TEAM_ID AND    B.WORKSPACE_STATUS IN  ('O', 'WC'))
+	 ORDER BY LV DESC
+	</select>	
+	
+	<select id="getWorkspaceImageFile" parameterClass="WorkspaceSearchCondition" resultClass="Workspace"> 
+	<![CDATA[
+ 		SELECT	/* [Workspace_SqlMap.xml] getWorkspaceImageFile */  AA.* 
+ 		FROM (
+			SELECT Row_number() OVER (ORDER BY A.REGIST_DATE DESC) AS RNUM,
+			   A.FILE_ID fileId,
+		       A.FILE_REAL_NAME fileName,
+		       A.REGISTER_ID registerId,
+		       A.REGISTER_NAME registerName,
+		       A.REGIST_DATE registDate
+			FROM IKEP4_DM_FILE A
+		       INNER JOIN IKEP4_DM_FILE_LINK B ON A.FILE_ID = B.FILE_ID
+		       INNER JOIN IKEP4_WS_BD_ITEM C ON B.ITEM_ID = C.ITEM_ID
+		       INNER JOIN IKEP4_WS_BD_BOARD D ON C.BOARD_ID = D.BOARD_ID AND D.WORKSPACE_ID = #workspaceId#
+			WHERE UPPER(A.FILE_EXTENSION) IN ('JPG','JPEG','PNG','GIF','BMP')
+	]]>
+			<isEqual property="searchColumn" compareValue="fileName">
+				AND	replace(A.FILE_REAL_NAME,' ','') LIKE '%' + replace(#searchWord#,' ','') + '%'
+			</isEqual>
+	<![CDATA[
+	    	) AA
+	    	WHERE 			RNUM <= #endRowIndex#		 
+	]]>
+	</select>
+	
+	<!-- MS SQL -->
+	<select id="getPresentCollMenuList" parameterClass="String" resultMap="presentCollMenuResult"> 
+   /* [Workspace_SqlMap.xml] getPresentCollMenuList */ 
+  	SELECT * 
+  	FROM		IKEP4_CO_MENULIST_MOBILE
+  	WHERE 	USER_ID = #userId# 
+  	AND 		TYPE = 'COLLABORATION';
+    </select>
+    
+    <delete id="deleteCollMenuList" parameterClass="String">
+    /* [Workspace_SqlMap.xml] deleteCollMenuList */ 
+    DELETE 
+    FROM 		IKEP4_CO_MENULIST_MOBILE
+    WHERE		USER_ID = #userId#
+    AND 		TYPE = 'COLLABORATION'
+    </delete>
+    
+    <insert id="insertCollMenuList" parameterClass="Map">
+    /* [Workspace_SqlMap.xml] insertCollMenuList */ 
+	INSERT 
+	INTO      IKEP4_CO_MENULIST_MOBILE
+	VALUES ( #itemId#,#userId#,'COLLABORATION', GetDate())
+	</insert>
+	
+	<select id="getPresentPlannerMenuList" parameterClass="String" resultMap="presentCollMenuResult"> 
+   /* [Workspace_SqlMap.xml] getPresentCollMenuList */ 
+  	SELECT a.* 
+  	FROM		IKEP4_CO_MENULIST_MOBILE a left outer join
+		(SELECT '전체' code, 1 val UNION ALL
+		SELECT '본사' code, 2 val UNION ALL
+		SELECT '진주' code, 3 val UNION ALL
+		SELECT '울산' code, 4 val UNION ALL
+		SELECT '대구' code, 5) b
+		on a.item_id = b.code
+	  	WHERE 	USER_ID = #userId#
+  	AND 	TYPE = 'PLANNER'
+	ORDER BY  b.val
+    </select>
+    
+    <delete id="deletePlannerMenuList" parameterClass="String">
+    /* [Workspace_SqlMap.xml] deleteCollMenuList */ 
+    DELETE 
+    FROM 		IKEP4_CO_MENULIST_MOBILE
+    WHERE		USER_ID = #userId#
+    AND			TYPE = 'PLANNER'
+    </delete>
+    
+    <insert id="insertPlannerMenuList" parameterClass="Map">
+    /* [Workspace_SqlMap.xml] insertCollMenuList */ 
+	INSERT 
+	INTO      IKEP4_CO_MENULIST_MOBILE
+	VALUES ( #itemId#,#userId#,'PLANNER', GetDate())
+	</insert>
+	
+	<select id="getTeamPlannerMenuList" parameterClass="String" resultMap="presentCollMenuResult"> 
+   /* [Workspace_SqlMap.xml] getTeamCollMenuList */ 
+  	SELECT a.* 
+  	FROM	IKEP4_CO_MENULIST_MOBILE a 
+	WHERE 	a.USER_ID = #userId#
+  	AND 	a.TYPE = 'PLANNER'
+	</select>
+	
+	 <delete id="deleteMovePlannerMenuList" parameterClass="Map">
+    /* [Workspace_SqlMap.xml] deleteMovePlannerMenuList */ 
+    DELETE 
+    FROM 		IKEP4_CO_MENULIST_MOBILE
+    WHERE		USER_ID = #memberId#
+    AND			ITEM_ID = #oldItemId#
+    AND			TYPE = 'PLANNER'
+    </delete>
+    
+    <insert id="insertMovePlannerMenuList" parameterClass="Map">
+    /* [Workspace_SqlMap.xml] insertPlannerMoveMenuList */ 
+	INSERT 
+	INTO      IKEP4_CO_MENULIST_MOBILE
+	VALUES ( #itemId#,#memberId#,'PLANNER', GetDate())
+	</insert>
+	
+	<select id="myTeamWorkspace" parameterClass="String" resultClass="String">
+	<![CDATA[
+		SELECT /* [Workspace_SqlMap.xml] collpack.collaboration.workspace.dao.Workspace.myTeamWorkspace */
+			max(WORKSPACE_ID)
+		FROM
+			IKEP4_WS_WORKSPACE 
+		WHERE 
+			TEAM_ID		in (select group_id from IKEP4_EV_USER_group
+			where user_id = #userId#
+			and group_id in(select group_id from ikep4_ev_group
+			where group_type_id = 'G0001'))
+	]]>
+	</select>
+</sqlMap>

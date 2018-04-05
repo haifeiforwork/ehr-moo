@@ -1,0 +1,341 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ko">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>iKEP 4.00</title>
+<link rel="stylesheet" type="text/css" href="../../css/theme01/jquery_ui_custom.css" />
+<link rel="stylesheet" type="text/css" href="../../css/common.css" />
+<link rel="stylesheet" type="text/css" href="../../css/theme01/theme.css" />
+<script type="text/javascript" src="../../js/jquery/jquery-1.6.2.min.js"></script>
+<script type="text/javascript" src="../../js/jquery/jquery-ui-1.8.13.min.without.datepicker.js"></script>
+<script type="text/javascript" src="../../js/jquery/jquery.jstree.pack.js"></script>
+<script type="text/javascript" src="../../js/langResource/ko.js"></script>
+<script type="text/javascript" src="../../js/common.pack.js"></script>
+
+<script type="text/javascript">
+<!--
+(function($) {
+	$(document).ready(function() {		
+		$("#divTab1").tabs();
+		
+		$("#categoryTree").jstree({
+			plugins:["themes", "ui", "json_data"],			
+			json_data:{data:[
+				{data:{title:"Database", icon:"dept", attr:{id:"category01", tag:"00001"}}},             
+				{data:{title:"기술분석"}, icon:"dept", attr:{id:"category02", tag:"00002"}, children:[
+   					{data:{title:"Java", icon:"dept"}, attr:{data:'{"id":"category03", "tag":"00021"}'}},
+   					{data:{title:"Spring", icon:"dept"}, attr:{data:'{"id":"category04", "tag":"00022"}'}},
+   					{data:{title:"Jquery", icon:"dept"}, attr:{data:'{"id":"category05", "tag":"00023"}'}}
+   				]},
+   				{data:{title:"비지니스, 경제"}, icon:"dept", attr:{id:"category06", tag:"00003"}, children:[
+					{data:{title:"금융", icon:"dept"}, attr:{data:'{"id":"category07", "tag":"00031"}'}},
+					{data:{title:"전자", icon:"dept"}, attr:{data:'{"id":"category08", "tag":"00032"}'}},
+					{data:{title:"제조", icon:"dept"}, attr:{data:'{"id":"category09", "tag":"00033"}'}}
+				]},
+				{data:{title:"사회, 문화"}, icon:"dept", attr:{id:"category10", tag:"00004"}, children:[
+					{data:{title:"해외여행", icon:"dept"}, attr:{data:'{"id":"category11", "tag":"00041"}'}},
+					{data:{title:"일본여행", icon:"dept"}, attr:{data:'{"id":"category12", "tag":"00042"}'}},
+					{data:{title:"유럽여행", icon:"dept"}, attr:{data:'{"id":"category13", "tag":"00043"}'}}
+				]},
+				{data:{title:"컴퓨터, 통신"}, icon:"dept", attr:{id:"category14", tag:"00005"}, children:[
+					{data:{title:"트위터", icon:"dept"}, attr:{data:'{"id":"category15", "tag":"00051"}'}},
+					{data:{title:"소셜네트워크", icon:"dept"}, attr:{data:'{"id":"category16", "tag":"00052"}'}},
+				    {data:{title:"iPhone", icon:"dept"}, attr:{data:'{"id":"category17", "tag":"00053"}'}},
+				    {data:{title:"갤럭시탭", icon:"dept"}, attr:{data:'{"id":"category18", "tag":"00054"}'}},
+				    {data:{title:"LG전자", icon:"dept"}, attr:{data:'{"id":"category19", "tag":"00055"}'}}
+				]},
+				{data:{title:"가정, 생활"}, icon:"dept", attr:{id:"category20", tag:"00006"}, children:[
+				     {data:{title:"물가대란", icon:"dept"}, attr:{data:'{"id":"category21", "tag":"00061"}'}},
+				     {data:{title:"스마트워킹", icon:"dept"}, attr:{data:'{"id":"category22", "tag":"00062"}'}},
+				     {data:{title:"교육제도", icon:"dept"}, attr:{data:'{"id":"category23", "tag":"00063"}'}},
+				     {data:{title:"쇼핑생활", icon:"dept"}, attr:{data:'{"id":"category24", "tag":"00064"}'}}
+				]},
+   			]}
+		});
+		
+	});
+})(jQuery);
+-->
+</script>
+</head>
+
+<body>
+
+<!--popup Start-->
+<div id="popup" style="min-width:800px"><!--다단의 경우 검색영역이나 테이블이 좁아지면 컨텐츠가 깨지므로 min-width를 상황에 따라 설정할 것-->
+
+	<!--popup_title Start-->
+	<div id="popup_title">
+		<h1>결재선 지정</h1>
+		<a href="#a"><span>닫기</span></a> 
+	</div>
+	<!--//popup_title End-->
+	
+	<!--popup_contents Start-->
+	<div id="popup_contents">
+
+		<!--tab Start-->		
+		<div id="divTab1" class="iKEP_tab">
+			<ul>
+				<li><a href="#tabs-1">결재선 검색</a></li>
+				<li><a href="#tabs-2">사용자 정의 결재선</a></li>
+			</ul>				
+		</div>		
+		<!--//tab End-->
+		
+		<!--blockLeft Start-->		
+		<div class="blockLeft" style="width:35%; border:2px solid #eee; padding:10px;">
+		
+			<!--blockSearch Start-->
+			<div class="blockSearch">
+				<div class="subTitle_2 noline">
+					<h3>검색어</h3>
+				</div>				
+				<div class="corner_RoundBox03">
+					<form action="">
+					<table summary="검색테이블">
+						<caption></caption>
+						<tbody>
+							<tr>
+								<th scope="row" width="5%">이름</th>
+								<td width="65%">
+									<input type="text" class="inputbox" title="결재선명" name="" value="" size="20" />								
+								</td>								
+							</tr>
+						</tbody>
+					</table>
+					<div class="searchBtn"><a href="#a"><span>Search</span></a></div> 
+
+					</form>
+					<div class="l_t_corner"></div>
+					<div class="r_t_corner"></div>
+					<div class="l_b_corner"></div>
+					<div class="r_b_corner"></div>				
+				</div>
+			</div>	
+			<!--//blockSearch End-->
+			
+			<div class="leftTree treeBox">
+				<div id="categoryTree"></div>
+			</div>			
+
+				<!--blockDetail Start-->					
+				<div class="blockDetail" style="height:156px; overflow:auto;">
+					<table summary="기안/결재">
+						<caption></caption>
+						<thead>
+							<tr>
+								<th scope="col" width="30" class="textCenter"><input name="input3" type="checkbox" class="checkbox" title="checkbox" value="" checked="checked" /></th>
+								<th scope="col" class="textCenter">사용자정보&nbsp;<a href="#a"><img src="../../images/icon/ic_tablesort_up.gif" alt="오름차순"/></a><a href="#a"><img src="../../images/icon/ic_tablesort_down.gif" alt="내림차순" /></a></th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td class="textCenter"><input name="input" type="checkbox" class="checkbox" title="checkbox" value="" /></td>
+								<td class="textCenter">홍길동/인사팀/부장</td>
+							</tr>
+							<tr>
+								<td class="textCenter"><input name="input4" type="checkbox" class="checkbox" title="checkbox" value="" /></td>
+								<td class="textCenter">홍길동/인사팀/부장</td>
+							</tr>
+							<tr>
+								<td class="textCenter"><input name="input6" type="checkbox" class="checkbox" title="checkbox" value="" /></td>
+								<td class="textCenter">홍길동/인사팀/부장</td>
+							</tr>
+							<tr>
+								<td class="textCenter"><input name="input5" type="checkbox" class="checkbox" title="checkbox" value="" /></td>
+								<td class="textCenter">홍길동/인사팀/부장</td>
+							</tr>
+							<tr>
+								<td class="textCenter"><input name="input2" type="checkbox" class="checkbox" title="checkbox" value="" /></td>
+								<td class="textCenter">홍길동/인사팀/부장</td>
+							</tr>
+							<tr>
+								<td class="textCenter"><input name="input5" type="checkbox" class="checkbox" title="checkbox" value="" /></td>
+								<td class="textCenter">홍길동/인사팀/부장</td>
+							</tr>
+							<tr>
+								<td class="textCenter"><input name="input2" type="checkbox" class="checkbox" title="checkbox" value="" /></td>
+								<td class="textCenter">홍길동/인사팀/부장</td>
+							</tr>							
+						</tbody>
+					</table>
+				</div>
+				<!--//blockDetail End-->
+							
+		</div>
+		<!--//blockLeft End-->
+		
+		<!--blockcenter Start-->		
+		<div class="shuttle_m" style="width:12%; margin-top:150px;"><!--margin-top을 셔틀높이에 맞게 설정할 것-->
+			<div class="centerBox"> 
+				<ul>
+					<li><strong>결재방법</strong></li>				
+					<li><input name="" class="radio" type="radio" value="" />결재</li>
+					<li><input name="" class="radio" type="radio" value="" />합의</li>													
+					<li><a href="#a"><img src="../../images/common/btn_shuttle_add.gif" alt="Add" /></a></li>
+					<li><a href="#a"><img src="../../images/common/btn_shuttle_del.gif" alt="Del" /></a></li>
+				</ul>				
+			</div>									
+		</div>
+		<!--//blockcenter End-->		
+		
+		<!--blockRight Start-->		
+		<div class="blockRight" style="width:45%; border:2px solid #eee; padding:10px 10px 0 10px;">
+
+			<div class="subTitle_2 noline">
+				<h3>결재선 정보</h3>
+			</div>	
+			
+			<!--blockSearch Start-->
+			<div class="blockSearch">
+				<div class="corner_RoundBox03">
+					<form action="">
+					<table summary="검색테이블">
+						<caption></caption>
+						<tbody>
+							<tr>
+								<th scope="row" width="5%">사용자 결재선</th>
+								<td width="65%">
+									<select title="사용자 결재선" name="select">
+										<option value="">결재선 모델1</option>
+									</select>
+								</td>								
+							</tr>
+						</tbody>
+					</table>
+					<div class="searchBtn"><a href="#a"><span>Search</span></a></div> 
+
+					</form>
+					<div class="l_t_corner"></div>
+					<div class="r_t_corner"></div>
+					<div class="l_b_corner"></div>
+					<div class="r_b_corner"></div>				
+				</div>
+			</div>	
+			<!--//blockSearch End-->			
+
+			<div class="subTitle_2 noline">
+				<h3>결재자</h3>
+				<div class="btn_more"><a href="#a"><img src="../../images/icon/ic_ar_up.gif" alt="up" /></a> <a href="#a"><img src="../../images/icon/ic_ar_down.gif" alt="down" /></a></div>				
+			</div>			
+			<!--blockDetail Start-->					
+			<div class="blockDetail" style="height:260px; overflow:auto;">
+				<table summary="기안/결재">
+					<caption></caption>
+					<thead>
+						<tr>
+							<th scope="col" width="30" class="textCenter"><input name="input3" type="checkbox" class="checkbox" title="checkbox" value="" checked="checked" /></th>
+							<th scope="col" width="60" class="textCenter">구분</th>
+							<th scope="col" class="textCenter">부서/직위</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td class="textCenter"><input name="input4" type="checkbox" class="checkbox" title="checkbox" value="" /></td>
+							<td class="textCenter">결재</td>
+							<td class="textCenter">홍길동/인사팀/부장</td>
+						</tr>
+						<tr>
+							<td class="textCenter"><input name="input4" type="checkbox" class="checkbox" title="checkbox" value="" /></td>
+							<td class="textCenter">합의</td>
+							<td class="textCenter">홍길동/인사팀/부장</td>
+						</tr>
+						<tr>
+							<td class="textCenter"><input name="input4" type="checkbox" class="checkbox" title="checkbox" value="" /></td>
+							<td class="textCenter">결재</td>
+							<td class="textCenter">홍길동/인사팀/부장</td>
+						</tr>
+						<tr>
+							<td class="textCenter"><input name="input4" type="checkbox" class="checkbox" title="checkbox" value="" /></td>
+							<td class="textCenter">합의</td>
+							<td class="textCenter">홍길동/인사팀/부장</td>
+						</tr>	
+						<tr>
+							<td class="textCenter"><input name="input4" type="checkbox" class="checkbox" title="checkbox" value="" /></td>
+							<td class="textCenter">결재</td>
+							<td class="textCenter">홍길동/인사팀/부장</td>
+						</tr>
+						<tr>
+							<td class="textCenter"><input name="input4" type="checkbox" class="checkbox" title="checkbox" value="" /></td>
+							<td class="textCenter">합의</td>
+							<td class="textCenter">홍길동/인사팀/부장</td>
+						</tr>	
+						<tr>
+							<td class="textCenter"><input name="input4" type="checkbox" class="checkbox" title="checkbox" value="" /></td>
+							<td class="textCenter">결재</td>
+							<td class="textCenter">홍길동/인사팀/부장</td>
+						</tr>
+						<tr>
+							<td class="textCenter"><input name="input4" type="checkbox" class="checkbox" title="checkbox" value="" /></td>
+							<td class="textCenter">합의</td>
+							<td class="textCenter">홍길동/인사팀/부장</td>
+						</tr>		
+						<tr>
+							<td class="textCenter"><input name="input4" type="checkbox" class="checkbox" title="checkbox" value="" /></td>
+							<td class="textCenter">결재</td>
+							<td class="textCenter">홍길동/인사팀/부장</td>
+						</tr>	
+						<tr>
+							<td class="textCenter"><input name="input4" type="checkbox" class="checkbox" title="checkbox" value="" /></td>
+							<td class="textCenter">합의</td>
+							<td class="textCenter">홍길동/인사팀/부장</td>
+						</tr>		
+						<tr>
+							<td class="textCenter"><input name="input4" type="checkbox" class="checkbox" title="checkbox" value="" /></td>
+							<td class="textCenter">결재</td>
+							<td class="textCenter">홍길동/인사팀/부장</td>
+						</tr>																														
+					</tbody>
+				</table>
+			</div>
+			<!--//blockDetail End-->
+			
+			<!--blockSearch Start-->
+			<div class="blockSearch">
+				<div class="corner_RoundBox03">
+					<form action="">
+					<table summary="검색테이블">
+						<caption></caption>
+						<tbody>
+							<tr>
+								<td scope="row" width="5%">
+									<select title="유형" name="select2">
+										<option value="">유형</option>
+									</select>
+								</td>
+								<th scope="row" width="5%">결재선명</th>
+								<td width="65%"><input type="text" class="inputbox" title="결재선명" name="input7" value="선택된 결재선명" size="15" /></td>								
+							</tr>
+						</tbody>
+					</table>
+					<div class="searchBtn"><a href="#a"><span>Search</span></a></div> 
+
+					</form>
+					<div class="l_t_corner"></div>
+					<div class="r_t_corner"></div>
+					<div class="l_b_corner"></div>
+					<div class="r_b_corner"></div>				
+				</div>
+			</div>	
+			<!--//blockSearch End-->					
+									
+		</div>
+		<div class="clear"></div>
+		<!--//blockRight End-->		
+		
+				
+	</div>
+	<!--//popup_contents End-->
+
+	<!--popup_footer Start-->
+	<div id="popup_footer">
+		<!--Copyright © 2011. All Rights Reserved. Powered by iKEP4-->
+	</div>
+	<!--//popup_footer End-->
+			
+</div>
+<!--//popup End-->
+
+</body>
+</html>

@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="portal.admin.screen.portalPortletConfig" >
+	<typeAlias alias = "PortalPortletConfig" type="com.lgcns.ikep4.portal.admin.screen.model.PortalPortletConfig"/>
+	
+	<!-- 레이아웃 테이블 조회 결과 -->
+	<resultMap id="portletConfigResult" class="PortalPortletConfig">
+		<result property="portletConfigId" column="PORTLET_CONFIG_ID" columnIndex="1"/>
+		<result property="pageLayoutId" column="PAGE_LAYOUT_ID" columnIndex="2"/>
+		<result property="portletId" column="PORTLET_ID" columnIndex="3"/>
+		<result property="colIndex" column="COL_INDEX" columnIndex="4"/>
+		<result property="rowIndex" column="ROW_INDEX" columnIndex="5"/>
+		<result property="registerId" column="REGISTER_ID" columnIndex="6"/>
+		<result property="registerName" column="REGISTER_NAME" columnIndex="7"/>
+		<result property="registDate" column="REGIST_DATE" columnIndex="8"/>
+		<result property="updaterId" column="UPDATER_ID" columnIndex="9"/>
+		<result property="updaterName" column="UPDATER_NAME" columnIndex="10"/>
+		<result property="updateDate" column="UPDATE_DATE" columnIndex="11"/>
+		<result property="viewMode" column="VIEW_MODE" columnIndex="12"/>
+	</resultMap>
+	
+	<insert id="createPortletConfig" parameterClass="PortalPortletConfig"> 
+      <![CDATA[
+      	   /* [PortalPortletConfig_SqlMap.xml] portal.admin.screen.portalPortletConfig.createPortletConfig */ 
+           INSERT INTO IKEP4_PO_PORTLET_CONFIG (PORTLET_CONFIG_ID, PAGE_LAYOUT_ID, PORTLET_ID, COL_INDEX, ROW_INDEX, REGISTER_ID, REGISTER_NAME, REGIST_DATE, UPDATER_ID, UPDATER_NAME, UPDATE_DATE, VIEW_MODE)  
+           VALUES (#portletConfigId#, #pageLayoutId#, #portletId#, #colIndex#, #rowIndex#, #registerId#, #registerName#, sysdate, #updaterId#, #updaterName#, sysdate, #viewMode#)
+       ]]>
+   </insert>
+   
+	<update id="updatePortletConfig" parameterClass="PortalPortletConfig">
+	  <![CDATA[
+	  	   /* [PortalPortletConfig_SqlMap.xml] portal.admin.screen.portalPortletConfig.updatePortletConfig */
+		   UPDATE IKEP4_PO_PORTLET_CONFIG
+			  SET col_index = #colIndex#,
+			      row_index = #rowIndex#,
+			      page_layout_id = #pageLayoutId#,
+			      UPDATER_ID = #updaterId#, 
+			      UPDATER_NAME = #updaterName#
+			WHERE portlet_config_id = #portletConfigId#
+	   ]]>
+	</update>
+	
+    <delete id="removePortletConfig" parameterClass="PortalPortletConfig">
+      <![CDATA[
+      	   /* [PortalPortletConfig_SqlMap.xml] portal.admin.screen.portalPortletConfig.removePortletConfig */
+	       DELETE FROM IKEP4_PO_PORTLET_CONFIG 
+	        WHERE portlet_config_id = #portletConfigId#
+	   ]]>
+	</delete>
+	
+   <select id="getPortletConfig" parameterClass="String" resultMap="portletConfigResult">
+	  <![CDATA[
+	  	   /* [PortalPortletConfig_SqlMap.xml] portal.admin.screen.portalPortletConfig.getPortletConfig */
+		   SELECT
+		   	   PORTLET_CONFIG_ID, 
+		   	   PAGE_LAYOUT_ID, 
+		   	   PORTLET_ID, 
+		   	   COL_INDEX, 
+		   	   ROW_INDEX, 
+		   	   REGISTER_ID, 
+		   	   REGISTER_NAME, 
+		   	   REGIST_DATE, 
+		   	   UPDATER_ID, 
+		   	   UPDATER_NAME, 
+		   	   UPDATE_DATE,
+		   	   VIEW_MODE 
+		   	 FROM IKEP4_PO_PORTLET_CONFIG
+		   	WHERE PORTLET_CONFIG_ID = #portletConfigId#
+	   ]]>
+	</select>
+	
+	<update id="updatePortletConfigRowIndex" parameterClass="PortalPortletConfig">
+	  <![CDATA[
+	  	   /* [PortalPortletConfig_SqlMap.xml] portal.admin.screen.portalPortletConfig.updatePortletConfigRowIndex */
+		   update IKEP4_PO_PORTLET_CONFIG
+			  set ROW_INDEX = #rowIndex#
+			where PORTLET_CONFIG_ID = #portletConfigId#
+	   ]]>
+	</update>
+	
+	<update id="updatePortletConfigViewMode" parameterClass="PortalPortletConfig">
+	  <![CDATA[
+		   update IKEP4_PO_PORTLET_CONFIG
+			  set VIEW_MODE = #viewMode#
+			where PORTLET_CONFIG_ID = #portletConfigId#
+	   ]]>
+	</update>
+	
+	<delete id="removePageLayoutPortletConfig" parameterClass="String">
+      <![CDATA[
+      	   /* [PortalPortletConfig_SqlMap.xml] portal.admin.screen.portalPortletConfig.removePageLayoutPortletConfig */
+	       DELETE FROM IKEP4_PO_PORTLET_CONFIG 
+	        WHERE page_layout_id = #pageLayoutId#
+	   ]]>
+	</delete>
+	
+	<delete id="removePageLayoutPortletConfigAll" parameterClass="java.util.HashMap">
+      <![CDATA[
+      	   /* [PortalPortletConfig_SqlMap.xml] portal.admin.screen.portalPortletConfig.removePageLayoutPortletConfigAll */
+	       DELETE FROM IKEP4_PO_PORTLET_CONFIG 
+	        WHERE page_layout_id in 
+	   ]]>
+	   		<iterate property="pageLayoutList" open="(" close=")" conjunction=",">
+				#pageLayoutList[].pageLayoutId#
+			</iterate>
+	</delete>
+	
+	<delete id="removePortletConfigAll" parameterClass="String">
+      <![CDATA[
+      	   /* [PortalPortletConfig_SqlMap.xml] portal.admin.screen.portalPortletConfig.removePortletConfigAll */
+	       DELETE FROM IKEP4_PO_PORTLET_CONFIG 
+	        WHERE portlet_id = #portletId# 
+	   ]]>
+	</delete>
+	
+	<select id="listLayoutMovePortletConfig" resultMap="portletConfigResult">
+	  <![CDATA[
+	  	   /* [PortalPortletConfig_SqlMap.xml] portal.admin.screen.portalPortletConfig.listLayoutMovePortletConfig */
+		   Select 
+		       A.PORTLET_CONFIG_ID, 
+		   	   A.PAGE_LAYOUT_ID, 
+		   	   A.PORTLET_ID, 
+		   	   A.COL_INDEX, 
+		   	   A.ROW_INDEX, 
+		   	   A.REGISTER_ID, 
+		   	   A.REGISTER_NAME, 
+		   	   A.REGIST_DATE, 
+		   	   A.UPDATER_ID, 
+		   	   A.UPDATER_NAME, 
+		   	   A.UPDATE_DATE,
+		   	   A.VIEW_MODE
+		   From Ikep4_Po_Portlet_Config A Inner Join 
+		        Ikep4_Po_Page_Layout B On A.Page_Layout_Id = B.Page_Layout_Id Inner Join
+		        IKEP4_PO_LAYOUT C on B.layout_id = C.layout_id
+		  Where B.Owner_Id = #ownerId#
+		    And B.Page_Id = #pageId#
+		    and C.common = 0
+		    And B.Col_Index > #colIndex#
+		  order by A.col_index, A.row_index
+		]]>
+	</select>
+	
+	<select id="pageLayoutMaxRowIndex" parameterClass="String" resultClass="int">
+	  <![CDATA[
+	  	   /* [PortalPortletConfig_SqlMap.xml] portal.admin.screen.portalPortletConfig.pageLayoutMaxRowIndex */
+		   Select max(row_index) From Ikep4_Po_Portlet_Config
+  			where Page_Layout_Id = #pageLayoutId#
+		]]>
+	</select>
+	
+</sqlMap>

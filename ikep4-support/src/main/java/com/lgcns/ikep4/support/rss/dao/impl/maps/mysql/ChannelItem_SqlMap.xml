@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="EUC-KR"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="support.rss.channelItem">
+
+	<typeAlias alias="channelItem" type="com.lgcns.ikep4.support.rss.model.ChannelItem" />
+	<typeAlias alias="channelSearchCondition" type="com.lgcns.ikep4.support.rss.model.ChannelSearchCondition"/>
+
+	<resultMap id="channelItemResult" class="channelItem">
+		<result property="channelId" column="channel_id" />
+		<result property="itemId" column="item_id" />
+		<result property="itemUrl" column="item_url" />
+		<result property="itemTitle" column="item_title" />
+		<result property="itemDescription" column="item_description" />
+		<result property="itemRegister" column="item_register" />
+		<result property="itemPublishDate" column="item_publish_date" />
+	</resultMap>
+
+	<insert id="insert" parameterClass="channelItem">
+		<![CDATA[
+		/* [ChannelItem_SqlMap.xml] support.rss.channelItem.insert */
+		INSERT INTO			IKEP4_RS_CHANNEL_ITEM 
+							(
+							CHANNEL_ID, 
+							ITEM_ID, 
+							ITEM_URL,
+							ITEM_TITLE, 
+							ITEM_DESCRIPTION, 
+							ITEM_REGISTER, 
+							ITEM_PUBLISH_DATE
+							)
+		VALUES				(
+							#channelId#, 
+							#itemId#, 
+							#itemUrl#,
+							#itemTitle#,
+							#itemDescription#, 
+							#itemRegister#, 
+							#itemPublishDate#
+							)
+		]]>
+	</insert>
+	
+	<insert id="channelItemInsert" parameterClass="java.util.Map">
+		<![CDATA[
+		/* [ChannelItem_SqlMap.xml] support.rss.channelItem.channelItemInsert */
+		INSERT INTO 		IKEP4_RS_CHANNEL_ITEM 
+							(
+							CHANNEL_ID, 
+							ITEM_ID, 
+							ITEM_URL,
+							ITEM_TITLE,
+							ITEM_REGISTER, 
+							ITEM_PUBLISH_DATE
+							)
+		VALUES				(
+							#channelItem.channelId#, 
+							#channelItem.itemId#, 
+							#channelItem.itemUrl#,
+							#channelItem.itemTitle#, 
+							#channelItem.itemRegister#, 
+							#channelItem.itemPublishDate#
+							)
+		]]>	
+	</insert>
+	
+	<delete id="delete" parameterClass="String">
+		<![CDATA[
+		/* [ChannelItem_SqlMap.xml] support.rss.channelItem.delete */
+		DELETE 
+		FROM 				IKEP4_RS_CHANNEL_ITEM
+		WHERE 				ITEM_ID = #itemId#
+		]]>
+    </delete>
+
+	<select id="select" parameterClass="String" resultMap="channelItemResult">
+		<![CDATA[
+		SELECT				/* [ChannelItem_SqlMap.xml] support.rss.channelItem.select */
+							CHANNEL_ID, 
+							ITEM_ID, 
+							ITEM_URL,
+							ITEM_TITLE, 
+							ITEM_DESCRIPTION, 
+							ITEM_REGISTER, 
+							ITEM_PUBLISH_DATE
+		FROM 				IKEP4_RS_CHANNEL_ITEM
+		WHERE 				ITEM_ID = #itemId#
+		]]>
+    </select>
+    
+    <select id="exists" parameterClass="java.util.Map" resultMap="channelItemResult">
+		<![CDATA[
+		SELECT				/* [ChannelItem_SqlMap.xml] support.rss.channelItem.exists */
+							CHANNEL_ID, 
+							ITEM_ID, 
+							ITEM_URL,
+							ITEM_TITLE, 
+							ITEM_DESCRIPTION, 
+							ITEM_REGISTER, 
+							ITEM_PUBLISH_DATE
+		FROM 				IKEP4_RS_CHANNEL_ITEM
+		WHERE 				ITEM_URL = #itemUrl#
+		AND 				CHANNEL_ID = #channelId#
+		LIMIT 1
+		]]>
+    </select>
+
+	<select id="selectAll" parameterClass="channelSearchCondition" resultMap="channelItemResult">
+		<![CDATA[
+		SELECT				/* [ChannelItem_SqlMap.xml] support.rss.channelItem.selectAll */ 
+		       				A.CHANNEL_ID, 
+		       				A.ITEM_ID, 
+		       				A.ITEM_URL,
+							A.ITEM_TITLE, 
+							A.ITEM_DESCRIPTION, 
+							A.ITEM_REGISTER, 
+							A.ITEM_PUBLISH_DATE
+		FROM 				IKEP4_RS_CHANNEL_ITEM A 
+		INNER JOIN 			IKEP4_RS_CHANNEL B
+		ON 					(A.CHANNEL_ID = B.CHANNEL_ID)
+		WHERE 				B.OWNER_ID = #ownerId#
+		]]>
+		<isNotEmpty prepend="AND" property="channelId">
+							A.CHANNEL_ID = #channelId#
+		</isNotEmpty>
+		
+		<isNotEmpty property="searchWord">
+		<isEqual property="searchColumn" compareValue="title">
+		AND					A.ITEM_TITLE LIKE CONCAT('%', #searchWord#, '%')
+		</isEqual>
+		<isEqual property="searchColumn" compareValue="registerName">
+		AND					A.ITEM_REGISTER LIKE CONCAT('%', #searchWord#, '%')
+		</isEqual>
+		</isNotEmpty>
+		
+	    <isNotEmpty property="sortColumn" >
+    	<isEqual property="sortColumn" compareValue="ITEM_TITLE">
+   		<isEqual property="sortType" compareValue="ASC">
+		ORDER BY 			ITEM_TITLE ASC
+   		</isEqual>
+   		<isEqual property="sortType" compareValue="DESC">
+		ORDER BY 			ITEM_TITLE DESC
+   		</isEqual>
+    	</isEqual>
+    	
+    	<isEqual property="sortColumn" compareValue="ITEM_REGISTER">
+   		<isEqual property="sortType" compareValue="ASC">
+   		ORDER BY 			ITEM_REGISTER ASC
+   		</isEqual>
+   		<isEqual property="sortType" compareValue="DESC">
+   		ORDER BY 			ITEM_REGISTER DESC
+   		</isEqual>
+    	</isEqual>
+    	
+    	<isEqual property="sortColumn" compareValue="ITEM_PUBLISH_DATE">
+   		<isEqual property="sortType" compareValue="ASC">
+		ORDER BY 			ITEM_PUBLISH_DATE ASC
+   		</isEqual>
+   		<isEqual property="sortType" compareValue="DESC">
+		ORDER BY 			ITEM_PUBLISH_DATE DESC
+   		</isEqual>
+    	</isEqual>
+	    </isNotEmpty> 
+		<![CDATA[  
+		LIMIT				#startRowIndex#, #pagePerRecord#
+		]]> 
+	</select>
+	
+	<select id="countBySearchCondition" parameterClass="channelSearchCondition" resultClass="int">  
+		<![CDATA[
+		SELECT				/* [ChannelItem_SqlMap.xml] support.rss.channelItem.countBySearchCondition */ 
+	           				COUNT(*)
+		FROM 				IKEP4_RS_CHANNEL_ITEM A 
+		INNER JOIN 			IKEP4_RS_CHANNEL B
+		ON 					(A.CHANNEL_ID = B.CHANNEL_ID)
+		WHERE 				B.OWNER_ID = #ownerId#
+		]]>
+		<isNotEmpty prepend="AND" property="channelId">
+							A.CHANNEL_ID = #channelId#
+		</isNotEmpty>
+		
+		<isNotEmpty property="searchWord">
+		<isEqual property="searchColumn" compareValue="title">
+		<![CDATA[
+		AND					A.ITEM_TITLE LIKE CONCAT('%', #searchWord#, '%')
+		]]>
+		</isEqual>
+		<isEqual property="searchColumn" compareValue="registerName">
+		<![CDATA[
+		AND					A.ITEM_REGISTER LIKE CONCAT('%', #searchWord#, '%')
+		]]>
+		</isEqual>
+		</isNotEmpty>
+	</select> 
+    
+</sqlMap>

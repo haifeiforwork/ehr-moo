@@ -1,0 +1,47 @@
+
+
+1. WLP 10.3 just doesn't support JSR286 yet.
+
+Kevin,
+
+I think you deserve more than 10 points for walking me through this. I can finally see my JSR168 portlet on my sample.portal page. All I did on this last part was manually go to the JSP file on the server and change the http://java.sun.com/portlet_2_0 to http://java.sun.com/portlet. Then it worked!
+
+I still have questions about how I can get the patch for the import tool but I will make that a different thread.
+
+I couldn't imagine going through all of this for a portlet that has more files than the minimum number that my test portlet had.
+
+Thanks so much for all the help,
+Barbara
+kfrender 	
+
+Posts: 824
+Registered: 07/18/08
+	
+	Re: How to add JSR 168 portlets to Web Logic portal
+Posted: 2009. 11. 11 오전 9:41   in response to: user3582320 in response to: user3582320 	  	
+Click to report abuse... 	  	Click to reply to this thread 	Reply
+Hello Barbara,
+
+Glad you got it to work!
+
+The JSP tag library issue you would have run into using the JSR168 import tool as well; the issue there is that WLP 10.3 just doesn't support JSR286 yet.
+
+If you are developing additional portlets from scratch, you can just start off by putting them all in the same webapp; you don't need to make each one its own WAR. That makes it vastly easier to get everything running too!
+
+Kevin
+
+
+2. weblogic.xml 추가
+<?xml version="1.0" encoding="UTF-8"?>
+<wls:weblogic-web-app xmlns:wls="http://xmlns.oracle.com/weblogic/weblogic-web-app" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/ejb-jar_3_0.xsd http://xmlns.oracle.com/weblogic/weblogic-web-app http://xmlns.oracle.com/weblogic/weblogic-web-app/1.2/weblogic-web-app.xsd">
+    <wls:jsp-descriptor>
+        <wls:keepgenerated>true</wls:keepgenerated>
+        <wls:working-dir>C:\ikep4j-project\workspace\.metadata\.plugins\org.eclipse.wst.server.core\tmp1\ikep4_domain\work\testsuite</wls:working-dir>
+        <wls:debug>false</wls:debug>
+    </wls:jsp-descriptor>
+    <wls:container-descriptor> 
+        <wls:prefer-web-inf-classes>false</wls:prefer-web-inf-classes> 
+    </wls:container-descriptor> 
+    <wls:context-root>testsuite</wls:context-root>
+    <wls:weblogic-version>10.3.4</wls:weblogic-version>
+</wls:weblogic-web-app>

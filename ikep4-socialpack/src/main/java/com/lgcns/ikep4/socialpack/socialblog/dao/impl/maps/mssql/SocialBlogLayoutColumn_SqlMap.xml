@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="socialpack.socialblog.dao.SocialBlogLayoutColumn">
+
+	<typeAlias alias="SocialBlogLayoutColumn" type="com.lgcns.ikep4.socialpack.socialblog.model.SocialBlogLayoutColumn"/>
+  
+	<!-- IKEP4_AD_ADDRGROUP 테이블 조회 결과 -->
+	<resultMap id="resultSocialBlogLayoutColumn" class="SocialBlogLayoutColumn">
+		<result property="layoutId" column="LAYOUT_ID" columnIndex="1"/>
+		<result property="colIndex" column="COL_INDEX" columnIndex="2"/>
+		<result property="width" column="WIDTH" columnIndex="3"/>
+		<result property="isFixed" column="IS_FIXED" columnIndex="4"/>
+	</resultMap>
+
+	<sql id="sqlColumnList"> 
+	    LAYOUT_ID, 
+	    COL_INDEX, 
+	    WIDTH,
+	    IS_FIXED
+	</sql>  
+
+	<!-- ANSI -->    
+	<select id="get" parameterClass="SocialBlogLayoutColumn" resultMap="resultSocialBlogLayoutColumn"> 
+		SELECT 
+			/* [SocialBlogLayoutColumn_SqlMap.xml] socialpack.socialblog.dao.SocialBlogLayoutColumn.get */
+			<include refid="socialpack.socialblog.dao.SocialBlogLayoutColumn.sqlColumnList" /> 
+		FROM  IKEP4_SB_LAYOUT_COLUMN
+    	WHERE LAYOUT_ID = #layoutId# 
+    	AND   COL_INDEX = #colIndex# 
+	</select>
+
+	<!-- ANSI -->  
+	<select id="exists" parameterClass="SocialBlogLayoutColumn" resultClass="int"> 
+		SELECT /* [SocialBlogLayoutColumn_SqlMap.xml] socialpack.socialblog.dao.SocialBlogLayoutColumn.exists */
+			COUNT(*)
+		FROM  IKEP4_SB_LAYOUT_COLUMN
+		WHERE LAYOUT_ID = #layoutId# 
+    	AND   COL_INDEX = #colIndex#  
+	</select> 
+
+	<!-- ANSI -->  
+	<select id="listByLayoutId" parameterClass="java.lang.String" resultMap="resultSocialBlogLayoutColumn">  
+		SELECT 
+			/* [SocialBlogLayoutColumn_SqlMap.xml] socialpack.socialblog.dao.SocialBlogLayoutColumn.listByBlogId */ 
+			<include refid="socialpack.socialblog.dao.SocialBlogLayoutColumn.sqlColumnList" /> 
+		FROM   IKEP4_SB_LAYOUT_COLUMN 
+		WHERE  LAYOUT_ID = #layoutId# 
+		ORDER BY COL_INDEX
+	</select>   
+
+	<!-- ANSI -->
+	<select id="countByLayoutId" parameterClass="java.lang.String" resultClass="int">  
+		SELECT /* [SocialBlogLayoutColumn_SqlMap.xml] socialpack.socialblog.dao.SocialBlogLayoutColumn.countBlogId */ 
+           COUNT(*)
+		FROM   IKEP4_SB_LAYOUT_COLUMN 
+		WHERE  LAYOUT_ID = #layoutId# 
+  	</select>
+
+	<!-- ANSI -->  	
+  	<select id="getFixedLayoutColumn" parameterClass="java.lang.String" resultClass="int"> 
+		SELECT
+			/* [SocialBlogLayoutColumn_SqlMap.xml] socialpack.socialblog.dao.SocialBlogLayoutColumn.getMaxSortOrder */ 
+			COL_INDEX
+		FROM IKEP4_SB_LAYOUT_COLUMN 
+		WHERE  LAYOUT_ID = #layoutId# 
+		AND IS_FIXED = '1'
+	</select>
+
+	<!-- ANSI --> 
+	<insert id="create" parameterClass="SocialBlogLayoutColumn"> 
+		INSERT INTO IKEP4_SB_LAYOUT_COLUMN ( 
+			/* [SocialBlogLayoutColumn_SqlMap.xml] socialpack.socialblog.dao.SocialBlogLayoutColumn.create */
+			<include refid="socialpack.socialblog.dao.SocialBlogLayoutColumn.sqlColumnList" />
+		) VALUES (
+			#layoutId#, 
+			#colIndex#, 
+			#width#, 
+			#isFixed#
+    	) 
+	</insert>
+
+	<!-- ANSI -->	
+	<update id="update" parameterClass="SocialBlogLayoutColumn"> 
+		UPDATE IKEP4_SB_LAYOUT_COLUMN 
+			/* [SocialBlogLayoutColumn_SqlMap.xml] socialpack.socialblog.dao.SocialBlogLayoutColumn.update */
+    	SET WIDTH     	= #width#,
+          	IS_FIXED  	= #isFixed#
+		WHERE LAYOUT_ID = #layoutId#
+		AND   COL_INDEX = #colIndex#
+	</update>
+
+	<!-- ANSI --> 
+	<delete id="physicalDelete" parameterClass="SocialBlogLayoutColumn"> 
+		DELETE FROM IKEP4_SB_LAYOUT_COLUMN 
+			/* [SocialBlogLayoutColumn_SqlMap.xml] socialpack.socialblog.dao.SocialBlogLayoutColumn.physicalDelete */
+		WHERE LAYOUT_ID = #layoutId#
+		AND   COL_INDEX = #colIndex#
+	</delete>  
+	  
+</sqlMap> 

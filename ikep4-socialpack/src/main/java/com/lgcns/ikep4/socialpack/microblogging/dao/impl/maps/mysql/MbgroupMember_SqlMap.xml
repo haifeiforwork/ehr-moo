@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="socialpack.microblogging.dao.mbgroupMember" >
+	<typeAlias alias = "MbgroupMember" 			type="com.lgcns.ikep4.socialpack.microblogging.model.MbgroupMember"/>
+	<typeAlias alias = "InvitingInfo" 			type="com.lgcns.ikep4.socialpack.microblogging.model.InvitingInfo"/>
+	<typeAlias alias = "User"  					type="com.lgcns.ikep4.support.user.member.model.User"/>
+	<typeAlias alias = "MblogSearchCondition" 	type="com.lgcns.ikep4.socialpack.microblogging.search.MblogSearchCondition"/>
+	
+	<!-- IKEP4_MB_MBGROUP_MEMBER 테이블 조회 결과 -->
+	<resultMap id="result" class="MbgroupMember">
+		<result property="memberId" 			column="MEMBER_ID" 			/>
+		<result property="mbgroupId" 			column="MBGROUP_ID" 		/>
+		<result property="status" 				column="STATUS" 			/>
+		<result property="registDate" 			column="REGIST_DATE" 		/>
+		<result property="registerId" 			column="REGISTER_ID" 		/>
+		<result property="registerName" 		column="REGISTER_NAME" 		/>
+		<result property="registerEnglishName" 	column="REGISTER_ENGLISH_NAME" 	/>
+		<result property="picturePath" 		column="PICTURE_PATH" 		/>
+		<result property="profilePicturePath" 		column="PROFILE_PICTURE_PATH" 		/>
+	</resultMap>
+	
+	<!-- IKEP4_MB_MBGROUP_MEMBER + IKEP4_EV_USER 테이블 조회 결과 -->
+	<resultMap id="resultInvitingInfo" class="InvitingInfo">
+		<result property="memberId" 			column="MEMBER_ID" 				/>
+		<result property="mbgroupId" 			column="MBGROUP_ID" 			/>
+		<result property="status" 				column="STATUS" 				/>
+		<result property="registDate" 			column="REGIST_DATE" 			/>
+		<result property="registerId" 			column="REGISTER_ID" 			/>
+		<result property="registerName" 		column="REGISTER_NAME" 			/>
+		<result property="registerEnglishName" 	column="REGISTER_ENGLISH_NAME" 	/>
+		<result property="teamName" 			column="TEAM_NAME" 				/>
+		<result property="teamEnglishName" 		column="TEAM_ENGLISH_NAME" 		/>
+		<result property="memberName" 			column="MEMBER_NAME" 			/>
+		<result property="memberEnglishName"	column="MEMBER_ENGLISH_NAME" 	/>
+		<result property="jobTitleName" 		column="JOB_TITLE_NAME" 		/>
+		<result property="jobTitleEnglishName" 	column="JOB_TITLE_ENGLISH_NAME" />
+		<result property="mbgroupName" 			column="MBGROUP_NAME" 			/>
+	</resultMap>
+
+	<resultMap id="userResult" class="User">
+		<result property="userId" 			column="USER_ID" 			/>
+		<result property="userName" 		column="USER_NAME" 			/>
+		<result property="userEnglishName" 	column="USER_ENGLISH_NAME" 	/>
+		<result property="teamName" 		column="TEAM_NAME" 			/>
+		<result property="pictureId" 		column="PICTURE_ID" 		/>
+		<result property="profilePictureId" column="PROFILE_PICTURE_ID" />
+		<result property="expertField" 		column="EXPERT_FIELD" 		/>
+		<result property="picturePath" 		column="PICTURE_PATH" 		/>
+		<result property="profilePicturePath" 		column="PROFILE_PICTURE_PATH" 		/>
+	</resultMap>
+		
+  <sql id="sqlUserColumnList"> 
+	USER_ID,
+	USER_NAME, 
+	USER_ENGLISH_NAME,
+	TEAM_NAME,
+	PICTURE_ID,
+	PROFILE_PICTURE_ID,
+    EXPERT_FIELD,
+    PICTURE_PATH,
+    PROFILE_PICTURE_PATH
+  </sql>  
+
+
+	<!-- insert -->
+	<insert id="insert" parameterClass="MbgroupMember"> 
+      <![CDATA[ 
+           INSERT INTO IKEP4_MB_MBGROUP_MEMBER ( /* [MbgroupMember_SqlMap.xml] mbgroupMember.insert */
+           MEMBER_ID, MBGROUP_ID, STATUS, REGISTER_NAME, REGIST_DATE, REGISTER_ID)  
+           VALUES (#memberId#, #mbgroupId#, #status#, #registerName#, NOW(), #registerId#)
+       ]]>
+   </insert>
+   
+   <!-- select -->
+	<select id="select" parameterClass="MbgroupMember" resultMap="result">
+	  <![CDATA[
+		   SELECT /* [MbgroupMember_SqlMap.xml] mbgroupMember.select */ 
+				mbgroupMember.MEMBER_ID,
+				mbgroupMember.MBGROUP_ID,
+				mbgroupMember.STATUS,
+				mbgroupMember.REGIST_DATE,
+				mbgroupMember.REGISTER_ID,
+				evUser.USER_NAME AS REGISTER_NAME,
+				evUser.USER_ENGLISH_NAME AS REGISTER_ENGLISH_NAME,
+				evUser.PICTURE_PATH,
+				evUser.PROFILE_PICTURE_PATH
+		    FROM IKEP4_MB_MBGROUP_MEMBER mbgroupMember,  IKEP4_EV_USER evUser
+		    WHERE mbgroupMember.MEMBER_ID	 	= #memberId# 
+		      AND mbgroupMember.MBGROUP_ID 		= #mbgroupId# 
+        	  AND mbgroupMember.REGISTER_ID 	= evUser.USER_ID 
+	   ]]>
+	</select>
+	   
+	<!-- update -->
+	<update id="update" parameterClass="MbgroupMember">
+	  <![CDATA[
+		   UPDATE IKEP4_MB_MBGROUP_MEMBER  /* [MbgroupMember_SqlMap.xml] mbgroupMember.update */ 
+		   SET STATUS 		= #status#
+		   WHERE MEMBER_ID	= #memberId# 
+		     AND MBGROUP_ID = #mbgroupId# 
+	   ]]>
+	</update>
+	
+   <!-- delete -->
+   <delete id="delete" parameterClass="MbgroupMember">
+      <![CDATA[
+	       DELETE FROM IKEP4_MB_MBGROUP_MEMBER   /* [MbgroupMember_SqlMap.xml] mbgroupMember.delete */ 
+		    WHERE MEMBER_ID	 = #memberId# 
+		      AND MBGROUP_ID = #mbgroupId# 
+	   ]]>
+	</delete>
+	
+	<!-- list -->
+	<select id="selectMbgroupMemberList" parameterClass="MbgroupMember" resultMap="result">
+	  <![CDATA[
+		   SELECT /* [MbgroupMember_SqlMap.xml] mbgroupMember.selectMbgroupMemberList */
+				mbgroupMember.MEMBER_ID,
+				mbgroupMember.MBGROUP_ID,
+				mbgroupMember.STATUS,
+				mbgroupMember.REGIST_DATE,
+				mbgroupMember.REGISTER_ID,
+				evUser.USER_NAME AS REGISTER_NAME,
+				evUser.USER_ENGLISH_NAME AS REGISTER_ENGLISH_NAME,
+				evUser.PICTURE_PATH,
+				evUser.PROFILE_PICTURE_PATH
+		   FROM IKEP4_MB_MBGROUP_MEMBER mbgroupMember,  IKEP4_EV_USER evUser 
+		   WHERE mbgroupMember.MBGROUP_ID 	= #mbgroupId# 
+		     AND mbgroupMember.STATUS	 	= #status# 
+        	 AND mbgroupMember.MEMBER_ID 	= evUser.USER_ID 
+	   ]]>
+	</select>
+	
+	<!-- list -->
+	<select id="selectMbgroupMemberUserList" parameterClass="MblogSearchCondition" resultMap="userResult">
+		SELECT /* [MbgroupMember_SqlMap.xml] mbgroupMember.selectMbgroupMemberUserList */ 
+    			<include refid="socialpack.microblogging.dao.mbgroupMember.sqlUserColumnList" />
+		FROM ( 
+             SELECT evUser.* 
+             FROM ( 
+                     /* START========================================= */
+					 SELECT  * 
+					 FROM IKEP4_MB_MBGROUP_MEMBER 
+					 WHERE MBGROUP_ID 	= #mbgroupId# 
+					  AND STATUS		= '1' 
+                     ORDER BY  MEMBER_ID 
+                     /* ===========================================END  */ 
+            ) A,  IKEP4_EV_USER evUser
+            WHERE A.MEMBER_ID = evUser.USER_ID
+			<isNotEmpty property="standardUserId">
+				<isEqual property="standardType" compareValue="pre">
+	                 AND A.MEMBER_ID <![CDATA[ <  ]]> #standardUserId#
+				</isEqual>
+				<isEqual property="standardType" compareValue="post">
+	                 AND A.MEMBER_ID <![CDATA[ >  ]]> #standardUserId#
+				</isEqual>
+			</isNotEmpty>
+				  ORDER BY  A.MEMBER_ID DESC
+			<isNotEmpty property="standardType">
+				<isEqual property="standardType" compareValue="pre">
+				  LIMIT #fetchSize# /* fetchSize  */
+				</isEqual>
+			</isNotEmpty>				  
+		)
+	</select>
+	
+	<!-- list -->
+	<select id="selectInvitingInfoList" parameterClass="MblogSearchCondition" resultMap="resultInvitingInfo">
+		   SELECT /* [MbgroupMember_SqlMap.xml] mbgroupMember.selectInvitingInfoList */ 
+            	mbgroupMember.MEMBER_ID,
+				mbgroupMember.MBGROUP_ID,
+				mbgroupMember.STATUS,
+				mbgroupMember.REGIST_DATE,
+				mbgroupMember.REGISTER_ID,
+				evUser1.TEAM_NAME, 
+				evUser1.TEAM_ENGLISH_NAME,  
+	            evUser1.USER_NAME 			AS MEMBER_NAME, 
+	            evUser1.USER_ENGLISH_NAME 	AS MEMBER_ENGLISH_NAME,  
+	            jobTitle.JOB_TITLE_NAME, 
+	            jobTitle.JOB_TITLE_ENGLISH_NAME, 
+				evUser2.USER_NAME 			AS REGISTER_NAME,
+				evUser2.USER_ENGLISH_NAME 	AS REGISTER_ENGLISH_NAME, 
+            	mbgroup.MBGROUP_NAME
+           FROM IKEP4_MB_MBGROUP_MEMBER mbgroupMember, IKEP4_MB_MBGROUP mbgroup, IKEP4_EV_USER evUser1, IKEP4_EV_JOB_TITLE jobTitle,  IKEP4_EV_USER evUser2
+           WHERE mbgroup.MBGROUP_ID 			= mbgroupMember.MBGROUP_ID
+             AND mbgroupMember.MEMBER_ID 		= evUser1.USER_ID
+             AND evUser1.JOB_TITLE_CODE 		= jobTitle.JOB_TITLE_CODE
+             AND mbgroupMember.REGISTER_ID 		= evUser2.USER_ID 
+			<isEqual property="searchType" compareValue="GROUP">
+            	AND mbgroupMember.MBGROUP_ID 	= #mbgroupId# 
+			</isEqual>
+			<isEqual property="searchType" compareValue="MEMBER">
+             	AND mbgroupMember.MEMBER_ID		= #memberId# 
+			</isEqual>
+             AND STATUS         				= '0' 
+	</select>
+		
+	<!-- selectCount -->
+	<select id="selectCount" parameterClass="MbgroupMember" resultClass="java.lang.Integer">
+	  <![CDATA[
+			SELECT /* [MbgroupMember_SqlMap.xml] mbgroup.selectCount */ 
+			 COUNT(*) 
+			FROM IKEP4_MB_MBGROUP_MEMBER 
+		    WHERE MEMBER_ID	 = #memberId# 
+		      AND MBGROUP_ID = #mbgroupId# 
+		      AND STATUS	 = '1'
+	   ]]>
+	</select>
+	
+	
+</sqlMap>

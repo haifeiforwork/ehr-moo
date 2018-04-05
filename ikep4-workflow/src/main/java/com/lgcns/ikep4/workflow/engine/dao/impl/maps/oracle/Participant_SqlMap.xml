@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="com.lgcns.ikep4.workflow.engine.model.ParticipantBean" >
+	<typeAlias alias = "ParticipantBean" type="com.lgcns.ikep4.workflow.engine.model.ParticipantBean"/>
+	
+	<resultMap id="result" class="ParticipantBean" groupBy="participantSeq">
+		<result property="participantSeq"       column="PARTICIPANT_SEQ"      	columnIndex="1"/>
+		<result property="participantId"     	column="PARTICIPANT_ID"    		columnIndex="2"/>
+		<result property="participantName"      column="PARTICIPANT_NAME"     	columnIndex="3"/>
+		<result property="participantType"    	column="PARTICIPANT_TYPE"    	columnIndex="4"/>
+		<result property="performerId"     		column="PERFORMER_ID"    		columnIndex="5"/>
+		<result property="indexVar"   			column="INDEX_VAR"  			columnIndex="6"/>
+		<result property="activityId"          	column="TITLE"          		columnIndex="7"/>
+		<result property="processId"         	column="PERFORMER_ID"    	 	columnIndex="8"/>
+		<result property="createDate"         	column="CREATE_DATE"    	 	columnIndex="9"/>
+	</resultMap> 	
+	
+	<!-- insert -->
+	<insert id="insert" parameterClass="ParticipantBean">
+      <![CDATA[ 
+			INSERT INTO IKEP4_WF_PARTICIPANT					
+			(PARTICIPANT_SEQ, PARTICIPANT_ID, PARTICIPANT_NAME, PARTICIPANT_TYPE, PERFORMER_ID, INDEX_VAR, RULE_CONSTRAINT, PROCESS_ID, ACTIVITY_ID, PROCESS_VER, CREATE_DATE)     					
+			VALUES ( #participantSeq#, #participantId#, #participantName#, #participantType#, #performerId#, #indexVar#, #ruleContraint#, #processId#, #activityId#, #processVer#, #createDate# )       			
+       ]]>
+   </insert>
+   
+</sqlMap>

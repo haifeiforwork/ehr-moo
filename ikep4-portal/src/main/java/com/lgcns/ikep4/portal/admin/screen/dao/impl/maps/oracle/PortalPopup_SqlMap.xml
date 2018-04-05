@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="portal.admin.screen.popup" >
+	<typeAlias alias = "PortalPopup" type="com.lgcns.ikep4.portal.admin.screen.model.PortalPopup"/>
+	<typeAlias alias = "PortalPopupSearchCondition" type="com.lgcns.ikep4.portal.admin.screen.search.PortalPopupSearchCondition"/>
+
+	<!-- 포탈 팝업 테이블 조회 결과 -->
+	<resultMap id="portalPopupResult" class="portalPopup">
+		<result property="popupId" column="POPUP_ID"/>
+		<result property="popupName" column="POPUP_NAME"/>
+		<result property="popupUrl" column="POPUP_URL"/>
+		<result property="portalId" column="PORTAL_ID"/>
+		<result property="popupWidth" column="POPUP_WIDTH"/>
+		<result property="popupHeight" column="POPUP_HEIGHT"/>
+		<result property="popupStartDate" column="POPUP_START_DATE"/>
+		<result property="popupEndDate" column="POPUP_END_DATE"/>
+		<result property="popupType" column="POPUP_TYPE"/>
+		<result property="popupActive" column="POPUP_ACTIVE"/>
+		<result property="registerId" column="REGISTER_ID"/>
+		<result property="registerName" column="REGISTER_NAME"/>
+		<result property="registDate" column="REGIST_DATE"/>
+		<result property="updaterId" column="UPDATER_ID"/>
+		<result property="updaterName" column="UPDATER_NAME"/>
+		<result property="updateDate" column="UPDATE_DATE"/>
+		<result property="contents" column="CONTENTS"/>
+		<result property="windowYn" column="WINDOW_YN"/>
+		<result property="popupTheme" column="POPUP_THEME"/>
+	</resultMap>
+	
+	<select id="countListPopup" parameterClass="PortalPopupSearchCondition" resultClass="int">  
+  		<![CDATA[
+  		/* [PortalPopup_SqlMap.xml] portal.admin.screen.popup.countListPopup */ 
+		SELECT
+			 count(*)
+		  FROM IKEP4_PO_POPUP
+		 WHERE PORTAL_ID = #portalId#  			
+		]]>
+		<isNotEmpty property="searchColumn">
+			<isNotEmpty property="searchWord">
+				<isEqual property="searchColumn" compareValue="POPUP_NAME">
+				AND UPPER(POPUP_NAME) LIKE UPPER('%' || #searchWord# || '%')
+				</isEqual>
+			</isNotEmpty>
+		</isNotEmpty>
+  	</select>
+  	
+  	<select id="listPopup" parameterClass="PortalPopupSearchCondition" resultMap="portalPopupResult">
+	 	<![CDATA[
+  		/* [PortalPopup_SqlMap.xml] portal.admin.screen.popup.listPopup */
+		SELECT	*
+		FROM	(	SELECT	Row_number() OVER	(
+		]]>
+													<isNotEmpty property="sortColumn">
+											   			<isEqual property="sortColumn" compareValue="POPUP_NAME">
+												    		<isEqual property="sortType" compareValue="ASC">
+												    			ORDER BY POPUP_NAME ASC
+												    		</isEqual>
+												    		<isEqual property="sortType" compareValue="DESC">
+												    			ORDER BY POPUP_NAME DESC
+												    		</isEqual>
+												    	</isEqual>
+											   			<isEqual property="sortColumn" compareValue="POPUP_URL">
+												    		<isEqual property="sortType" compareValue="ASC">
+												    			ORDER BY POPUP_URL ASC
+												    		</isEqual>
+												    		<isEqual property="sortType" compareValue="DESC">
+												    			ORDER BY POPUP_URL DESC
+												    		</isEqual>
+												    	</isEqual>
+											   			<isEqual property="sortColumn" compareValue="POPUP_START_DATE">
+												    		<isEqual property="sortType" compareValue="ASC">
+												    			ORDER BY POPUP_START_DATE ASC
+												    		</isEqual>
+												    		<isEqual property="sortType" compareValue="DESC">
+												    			ORDER BY POPUP_START_DATE DESC
+												    		</isEqual>
+												    	</isEqual>
+												    	<isEqual property="sortColumn" compareValue="POPUP_END_DATE">
+												    		<isEqual property="sortType" compareValue="ASC">
+												    			ORDER BY POPUP_END_DATE ASC
+												    		</isEqual>
+												    		<isEqual property="sortType" compareValue="DESC">
+												    			ORDER BY POPUP_END_DATE DESC
+												    		</isEqual>
+												    	</isEqual>
+												    	<isEqual property="sortColumn" compareValue="POPUP_ACTIVE">
+												    		<isEqual property="sortType" compareValue="ASC">
+												    			ORDER BY POPUP_ACTIVE ASC
+												    		</isEqual>
+												    		<isEqual property="sortType" compareValue="DESC">
+												    			ORDER BY POPUP_ACTIVE DESC
+												    		</isEqual>
+												    	</isEqual>
+												    	<isEqual property="sortColumn" compareValue="WINDOW_YN">
+												    		<isEqual property="sortType" compareValue="ASC">
+												    			ORDER BY WINDOW_YN ASC
+												    		</isEqual>
+												    		<isEqual property="sortType" compareValue="DESC">
+												    			ORDER BY WINDOW_YN DESC
+												    		</isEqual>
+												    	</isEqual>
+											   		</isNotEmpty>
+											   		<isEmpty property="sortColumn">
+											   			ORDER BY REGIST_DATE DESC
+											   		</isEmpty>
+		<![CDATA[			
+											  	) AS RNUM,
+						   POPUP_ID, 
+					   	   POPUP_NAME,
+					   	   POPUP_URL, 
+					   	   PORTAL_ID, 
+					   	   POPUP_WIDTH, 
+					   	   POPUP_HEIGHT, 
+			               SUBSTR(POPUP_START_DATE, 1, 4) || '.' || SUBSTR(POPUP_START_DATE, 5, 2) || '.' || SUBSTR(POPUP_START_DATE, 7, 2) POPUP_START_DATE,
+			               SUBSTR(POPUP_END_DATE, 1, 4) || '.' || SUBSTR(POPUP_END_DATE, 5, 2) || '.' || SUBSTR(POPUP_END_DATE, 7, 2) POPUP_END_DATE,
+			               POPUP_TYPE,
+					   	   POPUP_ACTIVE, 
+					   	   REGISTER_ID, 
+					   	   REGISTER_NAME, 
+					   	   REGIST_DATE, 
+					   	   UPDATER_ID, 
+					   	   UPDATER_NAME, 
+					   	   UPDATE_DATE,
+					   	   CONTENTS,
+					   	   WINDOW_YN,
+					   	   POPUP_THEME,
+					   	   POPUPZONE_YN
+					FROM IKEP4_PO_POPUP
+					WHERE PORTAL_ID = #portalId#    
+		]]>								         	       
+	    			<isNotEmpty property="searchColumn">
+			 			<isNotEmpty property="searchWord">
+							<isEqual property="searchColumn" compareValue="POPUP_NAME">
+								AND	UPPER(POPUP_NAME) LIKE UPPER('%' || #searchWord# || '%')
+							</isEqual>
+						</isNotEmpty>
+					</isNotEmpty>
+		<![CDATA[
+				) C
+		WHERE C.RNUM > #startRowIndex# 
+	      AND C.RNUM <= #endRowIndex#
+		]]>
+	</select>
+	
+	<insert id="createPopup" parameterClass="PortalPopup"> 
+      <![CDATA[
+      	   /* [PortalPopup_SqlMap.xml] portal.admin.screen.popup.createPopup */ 
+           INSERT INTO IKEP4_PO_POPUP (POPUP_ID, POPUP_NAME, POPUP_URL, PORTAL_ID, POPUP_WIDTH, POPUP_HEIGHT, POPUP_START_DATE, POPUP_END_DATE, POPUP_TYPE, POPUP_ACTIVE, REGISTER_ID, REGISTER_NAME, REGIST_DATE, UPDATER_ID, UPDATER_NAME, UPDATE_DATE, CONTENTS, WINDOW_YN, POPUP_THEME)  
+           VALUES (#popupId#, #popupName#, #popupUrl#, #portalId#, #popupWidth#, #popupHeight#, #popupStartDate#, #popupEndDate#, #popupType#, #popupActive#, #registerId#, #registerName#, CURRENT_TIMESTAMP, #updaterId#, #updaterName#, CURRENT_TIMESTAMP, #contents#, #windowYn#, #popupTheme#)
+       ]]>
+   </insert>
+   
+   <select id="getPopup" parameterClass="java.lang.String" resultMap="portalPopupResult">
+	  <![CDATA[
+	  	   /* [PortalPopup_SqlMap.xml] portal.admin.screen.popup.getPopup */
+		   SELECT 
+		   	   POPUP_ID, 
+		   	   POPUP_NAME,
+		   	   POPUP_URL, 
+		   	   PORTAL_ID, 
+		   	   POPUP_WIDTH, 
+		   	   POPUP_HEIGHT, 
+               SUBSTR(POPUP_START_DATE, 1, 4) || '.' || SUBSTR(POPUP_START_DATE, 5, 2) || '.' || SUBSTR(POPUP_START_DATE, 7, 2) POPUP_START_DATE,
+               SUBSTR(POPUP_END_DATE, 1, 4) || '.' || SUBSTR(POPUP_END_DATE, 5, 2) || '.' || SUBSTR(POPUP_END_DATE, 7, 2) POPUP_END_DATE,
+               POPUP_TYPE,
+		   	   POPUP_ACTIVE, 
+		   	   REGISTER_ID, 
+		   	   REGISTER_NAME, 
+		   	   REGIST_DATE, 
+		   	   UPDATER_ID, 
+		   	   UPDATER_NAME, 
+		   	   UPDATE_DATE,
+		   	   CONTENTS,
+		   	   WINDOW_YN,
+		   	   POPUP_THEME
+		   	 FROM IKEP4_PO_POPUP
+		   	WHERE POPUP_ID = #popupId#
+	   ]]>
+	</select>
+	
+	<delete id="removePopup" parameterClass="String">
+      <![CDATA[
+      	   /* [PortalPopup_SqlMap.xml] portal.admin.screen.popup.removePopup */
+	       DELETE FROM IKEP4_PO_POPUP
+ 			WHERE popup_id = #popupId# 
+ 	   ]]>    
+	</delete>
+	
+	<update id="updatePopup" parameterClass="PortalPopup">
+	  <![CDATA[
+	  	   /* [PortalPopup_SqlMap.xml] portal.admin.screen.popup.updatePopup */
+		   UPDATE IKEP4_PO_POPUP
+		      SET POPUP_NAME = #popupName#,
+				  POPUP_URL = #popupUrl#,
+				  POPUP_WIDTH = #popupWidth#,
+				  POPUP_HEIGHT = #popupHeight#,
+				  POPUP_START_DATE = #popupStartDate#,
+				  POPUP_END_DATE = #popupEndDate#,
+				  POPUP_TYPE = #popupType#,
+				  POPUP_ACTIVE = #popupActive#,
+		      	  UPDATER_ID = #updaterId#,
+		      	  UPDATER_NAME = #updaterName#,
+		      	  UPDATE_DATE = CURRENT_TIMESTAMP,
+		      	  CONTENTS = #contents#,
+		      	  WINDOW_YN = #windowYn#,
+		      	  POPUP_THEME = #popupTheme#
+		    WHERE POPUP_ID = #popupId#
+	   ]]>
+	</update>
+	
+	<select id="listPopupUse" parameterClass="java.util.HashMap" resultMap="portalPopupResult">
+	 	<![CDATA[
+	 		/* [PortalPopup_SqlMap.xml] portal.admin.screen.popup.listPopupUse */
+  			SELECT 
+		   	   A.POPUP_ID, 
+		   	   A.POPUP_NAME,
+		   	   A.POPUP_URL, 
+		   	   A.PORTAL_ID, 
+		   	   A.POPUP_WIDTH, 
+		   	   A.POPUP_HEIGHT, 
+		   	   A.POPUP_START_DATE, 
+			   A.POPUP_END_DATE,
+			   A.POPUP_TYPE,
+		   	   A.POPUP_ACTIVE, 
+		   	   A.REGISTER_ID, 
+		   	   A.REGISTER_NAME, 
+		   	   A.REGIST_DATE, 
+		   	   A.UPDATER_ID, 
+		   	   A.UPDATER_NAME, 
+		   	   A.UPDATE_DATE,
+		   	   A.CONTENTS,
+		   	   A.WINDOW_YN,
+		   	   A.POPUP_THEME
+		   	 FROM IKEP4_PO_POPUP A inner join 
+			      IKEP4_VW_PERMIT_SYS_RESOURCE B ON A.POPUP_ID = B.RESOURCE_NAME
+		   	WHERE A.PORTAL_ID = #portalId#
+   			  AND A.POPUP_ACTIVE = 1'
+   			  AND to_char(SYSDATE,'yyyymmdd') BETWEEN A.POPUP_START_DATE AND A.POPUP_END_DATE
+   			  AND B.OPERATION_NAME IN ('READ')
+			  AND B.CLASS_NAME='Portal-Popup'
+			  AND B.USER_ID IN (#userId#, 'OPEN')
+   			ORDER BY A.REGIST_DATE
+		]]>
+	</select>
+</sqlMap>

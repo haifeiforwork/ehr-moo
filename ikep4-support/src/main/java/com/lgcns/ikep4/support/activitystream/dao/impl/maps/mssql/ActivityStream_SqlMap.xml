@@ -1,0 +1,409 @@
+<?xml version="1.0" encoding="EUC-KR"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="support.activityStream">
+
+	<typeAlias alias="activityStream" type="com.lgcns.ikep4.support.activitystream.model.ActivityStream" />
+	<typeAlias alias="activityStreamSearchCondition" type="com.lgcns.ikep4.support.activitystream.model.ActivityStreamSearchCondition"/>
+
+	<resultMap id="activityStreamResult" class="activityStream">
+		<result property="activityStreamId" column="activity_stream_id" />
+		<result property="itemTypeCode" column="item_type_code" />
+		<result property="itemTypeName" column="item_type_name" />
+		<result property="activityCode" column="activity_code" />
+		<result property="activityName" column="activity_name" />
+		<result property="activityDescription" column="activity_description" />
+		<result property="activityEnglishDescription" column="activity_english_description" />
+		<result property="actorId" column="actor_id" />
+		<result property="actorName" column="actor_name" />
+		<result property="actorEnglishName" column="actor_english_name" />
+		<result property="targetId" column="target_id" />
+		<result property="targetName" column="target_name" />
+		<result property="targetEnglishName" column="target_english_name" />
+		<result property="objectId" column="object_id" />
+		<result property="objectTitle" column="object_title" />
+		<result property="objectType" column="object_type" />
+		<result property="activityDate" column="activity_date" />
+		<result property="targetCount" column="target_count" />
+		<result property="placeId" column="place_id" />
+		<result property="placeName" column="place_name" />
+	</resultMap>
+	
+
+	<!-- ANSI -->
+	<insert id="insert" parameterClass="activityStream">
+		INSERT INTO IKEP4_AS_ACTIVITY_STREAM (
+		   	ACTIVITY_STREAM_ID, ITEM_TYPE_CODE, ACTIVITY_CODE, 
+   			ACTOR_ID, TARGET_ID, OBJECT_ID, TARGET_COUNT,
+   			OBJECT_TITLE, OBJECT_TYPE, ACTIVITY_DATE, PLACE_ID, PLACE_NAME,
+		   	REGISTER_ID, REGISTER_NAME, REGIST_DATE, 
+		   	UPDATER_NAME, UPDATER_ID, UPDATE_DATE)
+		values(#activityStreamId#, #itemTypeCode#, #activityCode#,
+			#actorId#, #targetId#, #objectId#, #targetCount#,
+			#objectTitle#, #objectType#, CURRENT_TIMESTAMP, #placeId#, #placeName#,
+			#registerId#, #registerName#, CURRENT_TIMESTAMP,
+			#updaterId#, #updaterName#, CURRENT_TIMESTAMP)
+	</insert>
+	
+	<!-- ANSI -->
+	<select id="select" parameterClass="String" resultClass="activityStream">
+		SELECT 
+				ACTIVITY_STREAM_ID, ITEM_TYPE_CODE, ACTIVITY_CODE, 
+   				ACTOR_ID, TARGET_ID, OBJECT_ID, TARGET_COUNT,
+   				OBJECT_TITLE, OBJECT_TYPE, ACTIVITY_DATE, PLACE_ID, PLACE_NAME,
+			   	REGISTER_ID, REGISTER_NAME, REGIST_DATE, 
+			   	UPDATER_NAME, UPDATER_ID, UPDATE_DATE
+			FROM IKEP4_AS_ACTIVITY_STREAM
+			WHERE ACTIVITY_STREAM_ID = #activityStreamId#
+	</select>
+	
+  	<!-- MS SQL -->
+  	<select id="listBySearchCondition" parameterClass="activityStreamSearchCondition" resultMap="activityStreamResult">  
+		SELECT			/* [ActivityStream_SqlMap.xml] activityStream.listBySearchCondition */
+						*
+		FROM 			(
+	     				SELECT			 
+	     					AA.* 
+	     				FROM 			(
+					         			SELECT			Row_number() OVER(ORDER BY A.ACTIVITY_DATE DESC) AS RNUM,
+					         							A.ACTIVITY_STREAM_ID, 
+					         							A.ITEM_TYPE_CODE, 
+					         							A.ITEM_TYPE_NAME, 
+													   	A.ACTIVITY_CODE, 
+													   	A.ACTIVITY_NAME,
+													   	A.ACTIVITY_DESCRIPTION,
+													   	A.ACTIVITY_ENGLISH_DESCRIPTION,
+					         							A.ACTOR_ID, 
+					         							A.ACTOR_NAME, 
+					         							A.ACTOR_ENGLISH_NAME, 
+					         							A.TARGET_ID, 
+					         							A.TARGET_NAME, 
+					         							A.TARGET_ENGLISH_NAME,
+					         							A.OBJECT_ID, 
+   														A.OBJECT_TITLE, 
+   														A.OBJECT_TYPE,
+   														A.ACTIVITY_DATE,
+   														A.TARGET_COUNT,
+   														A.PLACE_ID,
+   														A.PLACE_NAME
+										FROM   			
+											(
+												<isNotEmpty property="isMy">
+													<isEmpty property="isAll">
+												 	SELECT A.* FROM IKEP4_VW_ACTIVITY_STREAM A 
+												 		WHERE A.ACTOR_ID=#registerId#
+												 	</isEmpty>
+                 								</isNotEmpty>
+                 								
+                 							 	<isNotEmpty property="groupList">
+                 							 		SELECT A.* FROM IKEP4_VW_ACTIVITY_STREAM A 
+	                 							 		WHERE A.ACTOR_ID IN (SELECT USER_ID FROM IKEP4_EV_USER_GROUP 
+														<iterate property="groupList" prepend="WHERE GROUP_ID IN" open="(" close=")" conjunction="," >  
+																#groupList[]#   
+															</iterate>  
+														 )
+                 							 	</isNotEmpty>
+                 							 	
+                 							 	<isNotEmpty property="isAll">
+                 									UNION
+                 								</isNotEmpty>
+                 							 	
+                 							 	<isNotEmpty property="isFollowing">
+                 							 		 SELECT /*+ INDEX(A IDX_AS_ACTIVITY_STREAM_IE2 )*/
+						                                   A.ACTIVITY_STREAM_ID,
+						                                    A.ITEM_TYPE_CODE,
+						                                    B.ITEM_TYPE_NAME,
+						                                    A.ACTIVITY_CODE,
+						                                    C.ACTIVITY_NAME,
+						                                    C.ACTIVITY_DESCRIPTION,
+						                                    C.ACTIVITY_ENGLISH_DESCRIPTION,
+						                                    A.ACTOR_ID,
+						                                    D.USER_NAME ACTOR_NAME,
+						                                    D.USER_ENGLISH_NAME ACTOR_ENGLISH_NAME,
+						                                    A.TARGET_ID,
+						                                    E.USER_NAME TARGET_NAME,
+						                                    E.USER_ENGLISH_NAME TARGET_ENGLISH_NAME,
+						                                    A.OBJECT_ID,
+						                                    A.OBJECT_TITLE,
+						                                    A.OBJECT_TYPE,
+						                                    A.ACTIVITY_DATE,
+						                                    A.TARGET_COUNT,
+						                                    A.PLACE_ID,
+						                                    A.PLACE_NAME
+						                               FROM IKEP4_AS_ACTIVITY_STREAM A
+						                                    JOIN IKEP4_EV_ITEM_TYPE B
+						                                       ON A.ITEM_TYPE_CODE = B.ITEM_TYPE_CODE
+						                                    JOIN IKEP4_AS_ACTIVITY_CODE C
+						                                       ON A.ACTIVITY_CODE = C.ACTIVITY_CODE
+						                                    JOIN IKEP4_EV_USER D
+						                                       ON A.ACTOR_ID = D.USER_ID
+						                                    LEFT JOIN IKEP4_EV_USER E
+						                                       ON A.TARGET_ID = E.USER_ID
+						                                    JOIN IKEP4_MB_FOLLOW F
+						                                       ON A.ACTOR_ID = F.FOLLOWING_USER_ID
+						                                          AND F.USER_ID = #registerId#
+                                          		</isNotEmpty>
+												
+												<isNotEmpty property="isAll">
+                 									UNION
+                 								</isNotEmpty>
+												
+												<isNotEmpty property="isFavorite">
+													SELECT /*+ INDEX(A IDX_AS_ACTIVITY_STREAM_IE2 )*/
+						                                   A.ACTIVITY_STREAM_ID,
+						                                    A.ITEM_TYPE_CODE,
+						                                    B.ITEM_TYPE_NAME,
+						                                    A.ACTIVITY_CODE,
+						                                    C.ACTIVITY_NAME,
+						                                    C.ACTIVITY_DESCRIPTION,
+						                                    C.ACTIVITY_ENGLISH_DESCRIPTION,
+						                                    A.ACTOR_ID,
+						                                    D.USER_NAME ACTOR_NAME,
+						                                    D.USER_ENGLISH_NAME ACTOR_ENGLISH_NAME,
+						                                    A.TARGET_ID,
+						                                    E.USER_NAME TARGET_NAME,
+						                                    E.USER_ENGLISH_NAME TARGET_ENGLISH_NAME,
+						                                    A.OBJECT_ID,
+						                                    A.OBJECT_TITLE,
+						                                    A.OBJECT_TYPE,
+						                                    A.ACTIVITY_DATE,
+						                                    A.TARGET_COUNT,
+						                                    A.PLACE_ID,
+						                                    A.PLACE_NAME
+						                               FROM IKEP4_AS_ACTIVITY_STREAM A
+						                                    JOIN IKEP4_EV_ITEM_TYPE B
+						                                       ON A.ITEM_TYPE_CODE = B.ITEM_TYPE_CODE
+						                                    JOIN IKEP4_AS_ACTIVITY_CODE C
+						                                       ON A.ACTIVITY_CODE = C.ACTIVITY_CODE
+						                                    JOIN IKEP4_EV_USER D
+						                                       ON A.ACTOR_ID = D.USER_ID
+						                                    LEFT JOIN IKEP4_EV_USER E
+						                                       ON A.TARGET_ID = E.USER_ID
+						                                    JOIN IKEP4_AS_FAVORITE F
+						                                       ON A.ACTOR_ID = F.TARGET_ID
+						                                          AND F.REGISTER_ID = #registerId#
+                                          		</isNotEmpty>
+												
+												EXCEPT
+                          
+						                           SELECT A.*
+						                            FROM    IKEP4_VW_ACTIVITY_STREAM A
+						                           WHERE A.ITEM_TYPE_CODE = 'ME' 
+						                           AND A.ACTOR_ID != #registerId#  
+						                           AND A.TARGET_ID != #registerId#
+						                           
+						                        EXCEPT
+                          
+						                           SELECT A.*
+						                            FROM    IKEP4_VW_ACTIVITY_STREAM A
+						                           WHERE A.ITEM_TYPE_CODE = 'SM' 
+						                           AND A.ACTOR_ID != #registerId#  
+						                           AND A.TARGET_ID != #registerId#
+												
+											) A
+					         				<isNotEmpty property="isUserCode">
+					         				INNER JOIN		IKEP4_AS_USER_ACTIVITY_CODE H
+					         					ON				A.ACTIVITY_CODE = H.ACTIVITY_CODE AND H.USER_ID = #registerId#
+					         				</isNotEmpty>
+							 			WHERE  			1 = 1
+							 				<isNotEmpty property="searchWord">
+												<isEqual property="searchColumn" compareValue="title">
+													AND	UPPER(A.OBJECT_TITLE) LIKE UPPER('%' + #searchWord# + '%')
+												</isEqual>
+											</isNotEmpty>
+		<![CDATA[
+	    								) AA
+	    				WHERE 			RNUM <= #endRowIndex#		 
+						) TBL
+		WHERE 			RNUM > #startRowIndex#
+		]]>
+  	</select>   
+  	
+  	<!-- MS SQL -->
+  	<select id="countBySearchCondition" parameterClass="activityStreamSearchCondition" resultClass="int">  
+		SELECT 			/* [ActivityStream_SqlMap.xml] activityStream.countBySearchCondition */ 
+           				COUNT(*)
+										FROM   			
+											(
+												<isNotEmpty property="isMy">
+													<isEmpty property="isAll">
+												 	SELECT A.* FROM IKEP4_VW_ACTIVITY_STREAM A 
+												 		WHERE A.ACTOR_ID=#registerId#
+												 	</isEmpty>
+                 								</isNotEmpty>
+                 								
+                 							 	<isNotEmpty property="groupList">
+                 							 		SELECT A.* FROM IKEP4_VW_ACTIVITY_STREAM A 
+	                 							 		WHERE A.ACTOR_ID IN (SELECT USER_ID FROM IKEP4_EV_USER_GROUP 
+														<iterate property="groupList" prepend="WHERE GROUP_ID IN" open="(" close=")" conjunction="," >  
+																#groupList[]#   
+															</iterate>  
+														 )
+                 							 	</isNotEmpty>
+                 							 	
+                 							 	<isNotEmpty property="isAll">
+                 									UNION
+                 								</isNotEmpty>
+                 							 	
+                 							 	<isNotEmpty property="isFollowing">
+                 							 		 SELECT /*+ INDEX(A IDX_AS_ACTIVITY_STREAM_IE2 )*/
+						                                   A.ACTIVITY_STREAM_ID,
+						                                    A.ITEM_TYPE_CODE,
+						                                    B.ITEM_TYPE_NAME,
+						                                    A.ACTIVITY_CODE,
+						                                    C.ACTIVITY_NAME,
+						                                    C.ACTIVITY_DESCRIPTION,
+						                                    C.ACTIVITY_ENGLISH_DESCRIPTION,
+						                                    A.ACTOR_ID,
+						                                    D.USER_NAME ACTOR_NAME,
+						                                    D.USER_ENGLISH_NAME ACTOR_ENGLISH_NAME,
+						                                    A.TARGET_ID,
+						                                    E.USER_NAME TARGET_NAME,
+						                                    E.USER_ENGLISH_NAME TARGET_ENGLISH_NAME,
+						                                    A.OBJECT_ID,
+						                                    A.OBJECT_TITLE,
+						                                    A.OBJECT_TYPE,
+						                                    A.ACTIVITY_DATE,
+						                                    A.TARGET_COUNT,
+						                                    A.PLACE_ID,
+						                                    A.PLACE_NAME
+						                               FROM IKEP4_AS_ACTIVITY_STREAM A
+						                                    JOIN IKEP4_EV_ITEM_TYPE B
+						                                       ON A.ITEM_TYPE_CODE = B.ITEM_TYPE_CODE
+						                                    JOIN IKEP4_AS_ACTIVITY_CODE C
+						                                       ON A.ACTIVITY_CODE = C.ACTIVITY_CODE
+						                                    JOIN IKEP4_EV_USER D
+						                                       ON A.ACTOR_ID = D.USER_ID
+						                                    LEFT JOIN IKEP4_EV_USER E
+						                                       ON A.TARGET_ID = E.USER_ID
+						                                    JOIN IKEP4_MB_FOLLOW F
+						                                       ON A.ACTOR_ID = F.FOLLOWING_USER_ID
+						                                          AND F.USER_ID = #registerId#
+                                          		</isNotEmpty>
+												
+												<isNotEmpty property="isAll">
+                 									UNION
+                 								</isNotEmpty>
+												
+												<isNotEmpty property="isFavorite">
+													SELECT /*+ INDEX(A IDX_AS_ACTIVITY_STREAM_IE2 )*/
+						                                   A.ACTIVITY_STREAM_ID,
+						                                    A.ITEM_TYPE_CODE,
+						                                    B.ITEM_TYPE_NAME,
+						                                    A.ACTIVITY_CODE,
+						                                    C.ACTIVITY_NAME,
+						                                    C.ACTIVITY_DESCRIPTION,
+						                                    C.ACTIVITY_ENGLISH_DESCRIPTION,
+						                                    A.ACTOR_ID,
+						                                    D.USER_NAME ACTOR_NAME,
+						                                    D.USER_ENGLISH_NAME ACTOR_ENGLISH_NAME,
+						                                    A.TARGET_ID,
+						                                    E.USER_NAME TARGET_NAME,
+						                                    E.USER_ENGLISH_NAME TARGET_ENGLISH_NAME,
+						                                    A.OBJECT_ID,
+						                                    A.OBJECT_TITLE,
+						                                    A.OBJECT_TYPE,
+						                                    A.ACTIVITY_DATE,
+						                                    A.TARGET_COUNT,
+						                                    A.PLACE_ID,
+						                                    A.PLACE_NAME
+						                               FROM IKEP4_AS_ACTIVITY_STREAM A
+						                                    JOIN IKEP4_EV_ITEM_TYPE B
+						                                       ON A.ITEM_TYPE_CODE = B.ITEM_TYPE_CODE
+						                                    JOIN IKEP4_AS_ACTIVITY_CODE C
+						                                       ON A.ACTIVITY_CODE = C.ACTIVITY_CODE
+						                                    JOIN IKEP4_EV_USER D
+						                                       ON A.ACTOR_ID = D.USER_ID
+						                                    LEFT JOIN IKEP4_EV_USER E
+						                                       ON A.TARGET_ID = E.USER_ID
+						                                    JOIN IKEP4_AS_FAVORITE F
+						                                       ON A.ACTOR_ID = F.TARGET_ID
+						                                          AND F.REGISTER_ID = #registerId#
+                                          		</isNotEmpty>
+												
+												EXCEPT
+                          
+						                           SELECT A.*
+						                            FROM    IKEP4_VW_ACTIVITY_STREAM A
+						                           WHERE A.ITEM_TYPE_CODE = 'ME' 
+						                           AND A.ACTOR_ID != #registerId#  
+						                           AND A.TARGET_ID != #registerId#
+						                           
+						                        EXCEPT
+                          
+						                           SELECT A.*
+						                            FROM    IKEP4_VW_ACTIVITY_STREAM A
+						                           WHERE A.ITEM_TYPE_CODE = 'SM' 
+						                           AND A.ACTOR_ID != #registerId#  
+						                           AND A.TARGET_ID != #registerId#
+												
+											) A
+					         				<isNotEmpty property="isUserCode">
+					         				INNER JOIN		IKEP4_AS_USER_ACTIVITY_CODE H
+					         					ON				A.ACTIVITY_CODE = H.ACTIVITY_CODE AND H.USER_ID = #registerId#
+					         				</isNotEmpty>
+							 			WHERE  			1 = 1
+								 			<isNotEmpty property="searchWord">
+												<isEqual property="searchColumn" compareValue="title">
+													AND	UPPER(A.OBJECT_TITLE) LIKE UPPER('%' + #searchWord# + '%')
+												</isEqual>
+											</isNotEmpty>
+											
+  	</select> 
+  	
+  	<!-- MS SQL -->
+	<select id="listBySearchConditionWorkspace" parameterClass="activityStreamSearchCondition" resultMap="activityStreamResult">  
+	 	SELECT /* [ActivityStream_SqlMap.xml] activityStream.listBySearchConditionWorkspace */
+		  *
+		FROM   (SELECT AA.*
+		        FROM   (SELECT Row_number() OVER (ORDER BY A.ACTIVITY_DATE DESC) AS RNUM,
+		        			   A.ACTIVITY_STREAM_ID,
+		                       A.ITEM_TYPE_CODE,
+		                       B.ITEM_TYPE_NAME,
+		                       A.ACTIVITY_CODE,
+		                       C.ACTIVITY_NAME,
+		                       C.ACTIVITY_DESCRIPTION,
+		                       C.ACTIVITY_ENGLISH_DESCRIPTION,
+		                       A.ACTOR_ID,
+		                       D.USER_NAME ACTOR_NAME,
+		                       D.USER_ENGLISH_NAME ACTOR_ENGLISH_NAME,
+		                       A.TARGET_ID,
+		                       E.USER_NAME TARGET_NAME,
+		                       E.USER_ENGLISH_NAME TARGET_ENGLISH_NAME,
+		                       A.OBJECT_ID,
+		                       A.OBJECT_TITLE,
+		                       A.OBJECT_TYPE,
+		                       A.ACTIVITY_DATE,
+		                       A.TARGET_COUNT,
+		                       A.PLACE_ID,
+		                       A.PLACE_NAME
+		                FROM   IKEP4_AS_ACTIVITY_STREAM A 
+		                		JOIN IKEP4_EV_ITEM_TYPE B ON A.ITEM_TYPE_CODE = B.ITEM_TYPE_CODE 
+		                		JOIN IKEP4_AS_ACTIVITY_CODE C ON A.ACTIVITY_CODE = C.ACTIVITY_CODE 
+		                		JOIN IKEP4_EV_USER D ON A.ACTOR_ID = D.USER_ID 
+		                		LEFT JOIN IKEP4_EV_USER E ON A.TARGET_ID = E.USER_ID
+		                		<isNotEmpty property="isUserCode">
+		         					INNER JOIN		IKEP4_AS_USER_ACTIVITY_CODE H
+		         					ON A.ACTIVITY_CODE = H.ACTIVITY_CODE AND H.USER_ID = #registerId#
+		         				</isNotEmpty>
+		                WHERE  A.ACTOR_ID IN (	SELECT MEMBER_ID
+						                        FROM   IKEP4_WS_MEMBER
+						                       	<iterate property="groupList" prepend="WHERE WORKSPACE_ID IN" open="(" close=") AND MEMBER_LEVEL !=5" conjunction="," >  
+														#groupList[]#   
+												</iterate>  
+											 )
+		                AND    A.ITEM_TYPE_CODE NOT IN ('ME', 'SM')
+		                <isNotEmpty property="searchWord">
+							<isEqual property="searchColumn" compareValue="title">
+								AND	UPPER(A.OBJECT_TITLE) LIKE UPPER('%' + #searchWord# + '%')
+							</isEqual>
+						</isNotEmpty>
+		<![CDATA[		                
+		                ) AA
+		        WHERE  RNUM <= #endRowIndex#	 ) TBL
+		WHERE  RNUM > #startRowIndex# 
+		]]>	
+  	</select>    	
+    
+</sqlMap>
+

@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="socialpack.socialblog.dao.SocialBoardLinereply">
+
+	<typeAlias alias="SocialBoardLinereply"                	type="com.lgcns.ikep4.socialpack.socialblog.model.SocialBoardLinereply"/>
+	<typeAlias alias="SocialBoardLinereplySearchCondition" 	type="com.lgcns.ikep4.socialpack.socialblog.search.SocialBoardLinereplySearchCondition"/>
+
+	<!-- IKEP4_AD_ADDRGROUP 테이블 조회 결과 -->
+	<resultMap id="resultSocialBoardLinereply" class="SocialBoardLinereply" groupBy="linereplyId">
+		<result property="linereplyId" column="LINEREPLY_ID" columnIndex="1"/>
+		<result property="itemId" column="ITEM_ID" columnIndex="2"/>
+		<result property="linereplyGroupId" column="LINEREPLY_GROUP_ID" columnIndex="3"/>
+		<result property="linereplyParentId" column="LINEREPLY_PARENT_ID" columnIndex="4"/>
+		<result property="step" column="STEP" columnIndex="5"/>
+		<result property="indentation" column="INDENTATION" columnIndex="6"/>
+		<result property="contents" column="CONTENTS" columnIndex="7"/>
+		<result property="linereplyDelete" column="LINEREPLY_DELETE" columnIndex="8"/>
+		<result property="registerId" column="REGISTER_ID" columnIndex="9"/>
+		<result property="registerName" column="REGISTER_NAME" columnIndex="10"/>
+		<result property="registDate" column="REGIST_DATE" columnIndex="11"/>
+		<result property="updaterId" column="UPDATER_ID" columnIndex="12"/>
+		<result property="updaterName" column="UPDATER_NAME" columnIndex="13"/>
+		<result property="updateDate" column="UPDATE_DATE" columnIndex="14"/>
+		
+		<result property="registerEnglishName" column="REGISTER_ENGLISH_NAME" columnIndex="15"/>
+		
+		<result property="registerJobTitleCode" column="REGISTER_JOB_TITLE_CODE" columnIndex="16"/>
+		<result property="registerJobTitleName" column="REGISTER_JOB_TITLE_NAME" columnIndex="17"/>
+		<result property="registerJobTitleEngName" column="REGISTER_JOB_TITLE_ENG_NAME" columnIndex="18"/>
+		
+		<result property="registerTeamName" column="REGISTER_TEAM_NAME" columnIndex="19"/>
+		<result property="registerTeamEngName" column="REGISTER_TEAM_ENG_NAME" columnIndex="20"/>
+		
+		<result property="picturePath" column="PICTURE_PATH" columnIndex="21"/>
+		<result property="profilePicturePath" column="PROFILE_PICTURE_PATH" columnIndex="22"/>
+		
+	</resultMap>
+
+	<sql id="sqlColumnList"> 
+		LINEREPLY_ID,
+		ITEM_ID,
+		LINEREPLY_GROUP_ID,
+		LINEREPLY_PARENT_ID,
+		STEP,
+		INDENTATION,
+		CONTENTS,
+		LINEREPLY_DELETE,
+		REGISTER_ID,
+		REGISTER_NAME,
+		REGIST_DATE,
+		UPDATER_ID,
+		UPDATER_NAME,
+		UPDATE_DATE
+	</sql>  
+	
+	<!-- MS SQL -->
+	<sql id="sqlExtendColumnList"> 
+		LNRP.LINEREPLY_ID 								AS LINEREPLY_ID,
+		LNRP.ITEM_ID 									AS ITEM_ID,
+		LNRP.LINEREPLY_GROUP_ID 						AS LINEREPLY_GROUP_ID,
+		LNRP.LINEREPLY_PARENT_ID 						AS LINEREPLY_PARENT_ID,
+		LNRP.STEP 										AS STEP,
+		LNRP.INDENTATION 								AS INDENTATION,
+		LNRP.CONTENTS 									AS CONTENTS,
+		LNRP.LINEREPLY_DELETE 							AS LINEREPLY_DELETE,
+		LNRP.REGISTER_ID 								AS REGISTER_ID,
+		USR.USER_NAME 									AS REGISTER_NAME,
+		LNRP.REGIST_DATE 								AS REGIST_DATE,
+		LNRP.UPDATER_ID 								AS UPDATER_ID,
+		LNRP.UPDATER_NAME 								AS UPDATER_NAME,
+		LNRP.UPDATE_DATE 								AS UPDATE_DATE,
+		USR.USER_ENGLISH_NAME 							AS REGISTER_ENGLISH_NAME,
+		
+		USR.JOB_TITLE_CODE 								AS REGISTER_JOB_TITLE_CODE, 
+		(SELECT JOB_TITLE_NAME  FROM IKEP4_EV_JOB_TITLE WHERE JOB_TITLE_CODE = USR.JOB_TITLE_CODE ) AS REGISTER_JOB_TITLE_NAME,
+		(SELECT JOB_TITLE_ENGLISH_NAME FROM IKEP4_EV_JOB_TITLE WHERE JOB_TITLE_CODE = USR.JOB_TITLE_CODE ) AS REGISTER_JOB_TITLE_ENG_NAME,
+  			   
+	    (SELECT TOP 1 EG.GROUP_NAME FROM IKEP4_EV_USER_GROUP UG, IKEP4_EV_GROUP EG
+			WHERE UG.GROUP_ID = EG.GROUP_ID and UG.USER_ID = LNRP.REGISTER_ID AND UG.REPRESENT_GROUP = '1') AS REGISTER_TEAM_NAME,
+		(SELECT TOP 1 EG.GROUP_ENGLISH_NAME FROM IKEP4_EV_USER_GROUP UG, IKEP4_EV_GROUP EG
+			WHERE UG.GROUP_ID = EG.GROUP_ID and UG.USER_ID = LNRP.REGISTER_ID AND UG.REPRESENT_GROUP = '1') AS REGISTER_TEAM_ENG_NAME,
+		USR.PICTURE_PATH,
+		USR.PROFILE_PICTURE_PATH
+	</sql> 
+   
+ 	<!-- ANSI -->
+	<select id="get" parameterClass="java.lang.String" resultMap="resultSocialBoardLinereply"> 
+		SELECT 
+			/* [SocialBoardLinereply_SqlMap.xml] socialpack.socialblog.dao.SocialBoardLinereply.get */
+          	<include refid="socialpack.socialblog.dao.SocialBoardLinereply.sqlExtendColumnList" /> 
+		FROM  IKEP4_SB_BD_LINEREPLY LNRP, IKEP4_EV_USER USR
+		WHERE LNRP.REGISTER_ID = USR.USER_ID
+    	AND LNRP.LINEREPLY_ID = #linereplyId# 
+	</select>
+ 
+	<!-- ANSI -->
+	<select id="exists" parameterClass="java.lang.String" resultClass="int"> 
+		SELECT 
+			/* [BoardLinereply_SqlMap.xml] SocialBoardLinereply.exists */
+			COUNT(*)
+		FROM  IKEP4_SB_BD_LINEREPLY LNRP
+				INNER JOIN IKEP4_EV_USER USR
+					ON LNRP.REGISTER_ID = USR.USER_ID
+		WHERE LNRP.LINEREPLY_ID = #linereplyId# 
+	</select> 
+  	
+  	<!-- MS SQL -->
+	<select id="listBySearchCondition" parameterClass="SocialBoardLinereplySearchCondition" resultMap="resultSocialBoardLinereply">  
+		SELECT /* [SocialBoardLinereply_SqlMap.xml] socialpack.socialblog.dao.SocialBoardLinereply.listBySearchCondition */ 
+	       *
+		FROM ( 
+			SELECT 
+				A.* 
+			FROM ( 
+				SELECT Row_number() OVER (ORDER BY LNRP.LINEREPLY_GROUP_ID DESC,  LNRP.STEP ASC) AS RNUM,
+	         		<include refid="socialpack.socialblog.dao.SocialBoardLinereply.sqlExtendColumnList" /> 
+			 	FROM  IKEP4_SB_BD_LINEREPLY LNRP
+						INNER JOIN IKEP4_EV_USER USR
+							ON LNRP.REGISTER_ID = USR.USER_ID
+			 	WHERE 1=1
+			 
+			 	<dynamic>
+					<!-- 해당 블로그 글 ItemId 해당덧글 만 조회시 사용 항상 포함 -->
+					<isNotEmpty property="itemId" prepend="AND">
+						LNRP.ITEM_ID = #itemId#
+					</isNotEmpty>
+						
+					<!-- 같은 LINEREPLY_GROUP_ID를 가진  덧글만 조회시 사용 -->
+					<isNotEmpty property="linereplyGroupId" prepend="AND">
+						LNRP.LINEREPLY_GROUP_ID = #linereplyGroupId#
+					</isNotEmpty>
+						
+					<!-- 같은 LINEREPLY_PARENT_ID를 가진  덧글만 조회시 사용 -->
+					<isNotEmpty property="linereplyParentId" prepend="AND">
+						LNRP.LINEREPLY_PARENT_ID = #linereplyParentId#
+					</isNotEmpty>
+				</dynamic>
+	<![CDATA[  
+	    	) A WHERE RNUM <=  #endRowIndex# /* 종료  */
+		) TBL WHERE RNUM >  #startRowIndex# /* 시작 */
+	]]> 
+	</select>
+    
+    <!-- ANSI --> 
+	<select id="countBySearchCondition" parameterClass="SocialBoardLinereplySearchCondition" resultClass="int">  
+		SELECT 
+			/* [SocialBoardLinereply_SqlMap.xml] socialpack.socialblog.dao.SocialBoardLinereply.countBySearchCondition */ 
+			COUNT(*)
+		FROM  IKEP4_SB_BD_LINEREPLY LNRP
+				INNER JOIN IKEP4_EV_USER USR
+					ON LNRP.REGISTER_ID = USR.USER_ID
+		WHERE 1=1
+			 
+		<dynamic>
+			<!-- 해당 블로그 글 ItemId 해당덧글 만 조회시 사용 항상 포함 -->
+			<isNotEmpty property="itemId" prepend="AND">
+				LNRP.ITEM_ID = #itemId#
+			</isNotEmpty>
+					
+			<!-- 같은 LINEREPLY_GROUP_ID를 가진  덧글만 조회시 사용 -->
+			<isNotEmpty property="linereplyGroupId" prepend="AND">
+				LNRP.LINEREPLY_GROUP_ID = #linereplyGroupId#
+			</isNotEmpty>
+					
+			<!-- 같은 LINEREPLY_PARENT_ID를 가진  덧글만 조회시 사용 -->
+			<isNotEmpty property="linereplyParentId" prepend="AND">
+				LNRP.LINEREPLY_PARENT_ID = #linereplyParentId#
+			</isNotEmpty>
+		</dynamic>
+		
+	</select> 
+  
+  	<!-- ANSI -->
+	<select id="countChildren" parameterClass="java.lang.String" resultClass="int">  
+		SELECT 
+			/* [SocialBoardLinereply_SqlMap.xml] socialpack.socialblog.dao.SocialBoardLinereply.countChildren */ 
+			COUNT(*)
+		FROM   IKEP4_SB_BD_LINEREPLY
+    	WHERE  LINEREPLY_PARENT_ID = #linereplyId#  
+  	</select> 
+  	
+  	<!-- MS SQL -->
+  	<select id="listTopXLinereply" parameterClass="java.util.Map" resultMap="resultSocialBoardLinereply"> 
+  		<![CDATA[
+  			SELECT * FROM (
+			SELECT 
+				/* [SocialBoardLinereply_SqlMap.xml] socialpack.socialblog.dao.SocialBoardLinereply.listTopXLinereply */
+		]]>  
+				Row_number() OVER (ORDER BY LNRP.REGIST_DATE DESC) AS RNUM,
+				<include refid="socialpack.socialblog.dao.SocialBoardLinereply.sqlExtendColumnList" /> 
+		<![CDATA[ 
+			FROM  IKEP4_SB_BD_LINEREPLY LNRP, IKEP4_EV_USER USR
+			WHERE LNRP.REGISTER_ID = USR.USER_ID
+			AND LNRP.ITEM_ID IN (SELECT SBI.ITEM_ID FROM IKEP4_SB_BD_ITEM SBI
+			                     WHERE SBI.REGISTER_ID = #blogOwnerId#  )
+			) TBL
+			WHERE RNUM <= #rowTopXCount#
+		]]> 
+	</select>
+ 	
+ 	<!-- ANSI -->
+  	<insert id="create" parameterClass="SocialBoardLinereply"> 
+    	INSERT INTO IKEP4_SB_BD_LINEREPLY ( 
+    		/* [SocialBoardLinereply_SqlMap.xml] socialpack.socialblog.dao.SocialBoardLinereply.insert */
+     		<include refid="socialpack.socialblog.dao.SocialBoardLinereply.sqlColumnList" /> 
+     	) VALUES (
+      		#linereplyId#,       
+      		#itemId#,          
+      		#linereplyGroupId#,  
+      		#linereplyParentId#, 
+      		#step#,             
+      		#indentation#,     
+      		#contents#,
+      		#linereplyDelete#,
+      		#registerId#,
+      		#registerName#,
+      		CURRENT_TIMESTAMP,
+      		#updaterId#,
+      		#updaterName#,
+      		CURRENT_TIMESTAMP
+    	)  
+	</insert>
+	
+	<!-- ANSI -->
+	<update id="update" parameterClass="SocialBoardLinereply"> 
+		UPDATE IKEP4_SB_BD_LINEREPLY 
+			/* [SocialBoardLinereply_SqlMap.xml] socialpack.socialblog.dao.SocialBoardLinereply.update */
+		SET ITEM_ID             = #itemId#,    
+          	LINEREPLY_GROUP_ID  = #linereplyGroupId#,
+          	LINEREPLY_PARENT_ID = #linereplyParentId#,
+          	STEP                = #step#,  
+          	INDENTATION         = #indentation#,
+          	CONTENTS            = #contents#,
+          	LINEREPLY_DELETE    = #linereplyDelete#,
+          	UPDATER_ID          = #updaterId#,
+          	UPDATER_NAME        = #updaterName#,
+          	UPDATE_DATE         = CURRENT_TIMESTAMP 
+    	WHERE LINEREPLY_ID = #linereplyId# 
+	</update>
+  
+  	<!-- ANSI -->
+	<update id="updateStep" parameterClass="SocialBoardLinereply"> 
+		UPDATE IKEP4_SB_BD_LINEREPLY 
+			/* [SocialBoardLinereply_SqlMap.xml] socialpack.socialblog.dao.SocialBoardLinereply.updateStep */
+		SET   STEP = STEP +1 
+		WHERE LINEREPLY_GROUP_ID = #linereplyGroupId# 
+		AND   STEP >= #step#  
+	</update>
+
+	<!-- ANSI -->  
+	<update id="logicalDelete" parameterClass="SocialBoardLinereply">  
+		UPDATE IKEP4_SB_BD_LINEREPLY 
+    		/* [SocialBoardLinereply_SqlMap.xml] socialpack.socialblog.dao.SocialBoardLinereply.logicalDelete */
+		SET LINEREPLY_DELETE    = 1,
+          	UPDATER_ID          = #updaterId#,
+          	UPDATER_NAME        = #updaterName#,
+          	UPDATE_DATE         = CURRENT_TIMESTAMP  
+		WHERE LINEREPLY_ID = #linereplyId# 
+	</update>   
+   
+   	<!-- ANSI -->
+	<delete id="physicalDelete" parameterClass="java.lang.String"> 
+    	DELETE FROM IKEP4_SB_BD_LINEREPLY 
+    		/* [SocialBoardLinereply_SqlMap.xml] socialpack.socialblog.dao.SocialBoardLinereply.physicalDelete */
+    	WHERE LINEREPLY_ID = #linereplyId# 
+	</delete>    
+  
+	<!-- MS SQL -->
+	<delete id="physicalDeleteThreadByLinereplyId" parameterClass="java.lang.String">  
+		WITH CTE AS (
+			SELECT LINEREPLY_ID 
+		    FROM IKEP4_SB_BD_LINEREPLY
+            WHERE LINEREPLY_ID =  #linereplyId#
+            UNION ALL
+            SELECT TBL.LINEREPLY_ID
+            FROM IKEP4_SB_BD_LINEREPLY TBL, CTE
+            WHERE CTE.LINEREPLY_ID = TBL.LINEREPLY_PARENT_ID 
+		)
+ 		DELETE FROM  IKEP4_SB_BD_LINEREPLY 
+ 			/* [SocialBoardLinereply_SqlMap.xml] socialpack.socialblog.dao.SocialBoardLinereply.physicalDeleteThread */
+ 		WHERE  LINEREPLY_ID IN ( SELECT * FROM CTE )   
+	</delete> 
+	
+	<!-- ANSI -->
+	<delete id="physicalDeleteThreadByItemId" parameterClass="java.lang.String">  
+ 		DELETE FROM  IKEP4_SB_BD_LINEREPLY 
+ 			/* [SocialBoardLinereply_SqlMap.xml] socialpack.socialblog.dao.SocialBoardLinereply.physicalDeleteThreadByItemId */
+		WHERE  LINEREPLY_GROUP_ID IN (
+								      	SELECT LINEREPLY_GROUP_ID
+									    FROM IKEP4_SB_BD_LINEREPLY
+							            WHERE ITEM_ID =  #itemId#   
+									)   
+	</delete>  
+	  
+</sqlMap> 

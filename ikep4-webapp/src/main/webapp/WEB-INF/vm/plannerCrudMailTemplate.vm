@@ -1,0 +1,47 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ko">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Planner</title>
+<style>
+body {background: none repeat scroll 0 0 #FFFFFF;color: #555555;font: 12px Tahoma,'돋움','Dotum';height: 100%;}
+h1{font-size:14px;font-weight:bold;color:#333;}
+.blockDetail { position:relative; margin-bottom:10px; width:100%; border-top:2px solid #919fb2; }
+.blockDetail table { width:100%; border-collapse:collapse; table-layout:fixed; }
+.blockDetail table caption { display:none; }
+.blockDetail table th { font-weight:bold; line-height:19px; text-align:right; color:#333; padding:3px 5px; border:1px solid #e0e0e0; border-top:none; background:#f3f3f3; }
+.blockDetail table th a:link, .blockDetail table th a:visited, .blockDetail table th a:active, .blockDetail table th a:hover { color:#333; text-decoration:none; }
+.blockDetail table td { line-height:19px; padding:3px 5px; word-break:break-all; border:1px solid #e0e0e0; border-top:none; background-color:#fff; }
+.blockDetail .bgSelected { background-color: #edf2f5; }
+.blockDetail table td .radio, .blockDetail table td .checkbox { vertical-align:middle; }
+.blockDetail table td .button_s { vertical-align:middle; margin:-1px 3px -2px 0; }
+* {margin: 0;padding: 0;}
+.colorBlue {color: #5F84C2;}
+.schedule_bg01 {margin: 5px;}
+.ml5 {margin-left: 5px;}
+.schedule_bg01 span {margin-right: 5px;}
+.colorPoint {color: #C50050 !important;}
+</style>
+</head>
+
+
+<body>
+	<h1>제목 : #if(${message})${message}#end</h1>
+	<h1>기간 : ${startStr} ~ ${endStr}</h1>
+	#if($place)
+	<h1>장소 : ${place}</h1>
+	#else
+	#end
+	<br>
+	<p>
+	#if($url)
+		#if($roomApproveMail)
+		<span><a href="${url}">상세 보기</a></span>
+		#else
+		<span onclick="window.open('${url}','planner', 'scrollbars=yes', 'width=800px, height=500px, left=0px, top=0px');" style="cursor:pointer">상세 보기</span>
+		#end
+	#else
+		<span>#if(${content})${content}#end</span>
+	#end
+</body>
+</html>

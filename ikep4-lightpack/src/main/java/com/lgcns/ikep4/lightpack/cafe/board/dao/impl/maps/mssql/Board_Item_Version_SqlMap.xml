@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="lightpack.cafe.board.dao.boardItemVersion">
+
+	<typeAlias alias="cfBoardItemVersion"				type="com.lgcns.ikep4.lightpack.cafe.board.model.BoardItemVersion"/>  
+
+	<typeAlias alias="cfBoardItemVersionSearchCondition"		type="com.lgcns.ikep4.lightpack.cafe.board.search.BoardItemVersionSearchCondition"/>
+
+	<sql id="sqlColumnList"> 
+		VERSION_ID			as	versionId,
+		VERSION				as	version,
+		ITEM_ID				as	itemId,
+		ITEM_TYPE			as	itemType,
+		ITEM_DISPLAY		as	itemDisplay,
+		TITLE				as	title,
+		CONTENTS			as	contents,
+		ATTACH_FILE_COUNT	as attachFileCount,
+		START_DATE			as	startDate,
+		END_DATE			as	endDate,
+		REGISTER_ID			as	registerId,
+		REGISTER_NAME		as	registerName,
+		REGIST_DATE			as	registDate
+	</sql>  
+
+	<!-- ANSI -->
+	<select id="get" parameterClass="string" resultClass="cfBoardItemVersion"> 
+		SELECT /* [BoardItem_SqlMap.xml] lightpack.cafe.board.dao.boardItemVersion.get */
+			A.VERSION_ID			as	versionId,
+			A.VERSION				as	version,
+			A.ITEM_ID				as	itemId,
+			A.ITEM_TYPE			as	itemType,
+			A.ITEM_DISPLAY		as	itemDisplay,
+			A.TITLE				as	title,
+			A.CONTENTS			as	contents,
+			A.ATTACH_FILE_COUNT	as attachFileCount,
+			A.START_DATE			as	startDate,
+			A.END_DATE			as	endDate,
+			A.REGISTER_ID			as	registerId,
+			A.REGISTER_NAME		as	registerName,
+			A.REGIST_DATE			as	registDate
+		FROM  
+			IKEP4_CF_BD_ITEM_VERSION A,
+			(
+				SELECT 
+					ITEM_ID,MAX(VERSION) VERSION
+				FROM 
+					IKEP4_CF_BD_ITEM_VERSION
+				WHERE 
+					ITEM_ID=#itemId#
+				GROUP BY 
+					ITEM_ID
+			) B
+		WHERE
+			A.ITEM_ID		=	B.ITEM_ID
+			AND	A.ITEM_ID	=	#itemId#
+			AND A.VERSION	=	B.VERSION
+	</select>
+	
+	<!-- ANSI -->
+	<select id="getVersionItem" parameterClass="string" resultClass="cfBoardItemVersion"> 
+		SELECT /* [BoardItem_SqlMap.xml] lightpack.cafe.board.dao.boardItemVersion.get */
+			A.VERSION_ID			as	versionId,
+			A.VERSION				as	version,
+			A.ITEM_ID				as	itemId,
+			A.ITEM_TYPE			as	itemType,
+			A.ITEM_DISPLAY		as	itemDisplay,
+			A.TITLE				as	title,
+			A.CONTENTS			as	contents,
+			A.ATTACH_FILE_COUNT	as attachFileCount,
+			A.START_DATE			as	startDate,
+			A.END_DATE			as	endDate,
+			A.REGISTER_ID			as	registerId,
+			A.REGISTER_NAME		as	registerName,
+			A.REGIST_DATE			as	registDate
+		FROM  
+			IKEP4_CF_BD_ITEM_VERSION A
+		WHERE
+			A.VERSION_ID	=	#versionId#
+	</select>
+	
+	<!-- MS SQL -->
+	<select id="getMaxVersionId" parameterClass="string" resultClass="cfBoardItemVersion"> 
+		SELECT TOP 1 * FROM
+		(
+		SELECT /* [BoardItem_SqlMap.xml] lightpack.cafe.board.dao.boardItemVersion.getMaxVersionId */
+			A.VERSION_ID			as	versionId,
+			A.VERSION				as	version,
+			A.ITEM_ID				as	itemId,
+			A.ITEM_TYPE			as	itemType,
+			A.ITEM_DISPLAY		as	itemDisplay,
+			A.TITLE				as	title,
+			A.CONTENTS			as	contents,
+			A.ATTACH_FILE_COUNT	as attachFileCount,
+			A.START_DATE			as	startDate,
+			A.END_DATE			as	endDate,
+			A.REGISTER_ID			as	registerId,
+			A.REGISTER_NAME		as	registerName,
+			A.REGIST_DATE			as	registDate
+		FROM  
+			IKEP4_CF_BD_ITEM_VERSION A
+		WHERE
+			A.ITEM_ID	=	#itemId#
+		) TBL ORDER BY VERSION DESC
+	</select>	
+	
+	<!-- ANSI -->
+	<select id="exists" parameterClass="string" resultClass="int"> 
+		SELECT /* [BoardItem_SqlMap.xml] lightpack.cafe.board.dao.boardItemVersion.exists */
+			COUNT(*)
+		FROM
+			IKEP4_CF_BD_ITEM_VERSION
+		WHERE
+			ITEM_ID = #itemId# 
+	</select> 
+	
+	<!-- MS SQL -->
+	<select id="listBySearchCondition" parameterClass="cfBoardItemVersionSearchCondition" resultClass="cfBoardItemVersion">  
+		SELECT /* [BoardItem_SqlMap.xml] lightpack.cafe.board.dao.boardItemVersion.listBySearchCondition */ 
+			*
+		FROM 
+		( 
+			SELECT 
+				A.* 
+			FROM 
+			( 
+				/* START========================================= */
+				SELECT
+					Row_number() OVER (ORDER BY version DESC) AS RNUM,
+					<include refid="lightpack.cafe.board.dao.boardItemVersion.sqlColumnList" /> 
+				FROM
+					IKEP4_CF_BD_ITEM_VERSION 
+				WHERE
+					ITEM_ID = #itemId#  
+					<isNotEmpty property="searchColumn">
+					<isEqual property="searchColumn" compareValue="title">
+					AND	TITLE LIKE '%' + #searchWord# + '%'
+					</isEqual>
+					<isEqual property="searchColumn" compareValue="registerName">
+					AND	REGISTER_NAME LIKE '%' + #searchWord# + '%'
+					</isEqual>
+					</isNotEmpty>
+				/* ===========================================END  */  
+
+			<![CDATA[   
+			)	A 
+			WHERE
+				RNUM <=  #endRowIndex# /* 종료  */
+		) TBL
+		WHERE
+			RNUM >  #startRowIndex# /* 시작 */
+		]]> 
+	</select>   
+
+	<!-- MS SQL -->
+	<select id="countBySearchCondition" parameterClass="cfBoardItemVersionSearchCondition" resultClass="int">  
+		SELECT /* [Board_SqlMap.xml] lightpack.cafe.board.dao.boardItemVersion.countBySearchCondition */ 
+			COUNT(*)
+		FROM
+			IKEP4_CF_BD_ITEM_VERSION
+		WHERE
+			ITEM_ID = #itemId#  
+			<isNotEmpty property="searchColumn">
+			<isEqual property="searchColumn" compareValue="title">
+				AND TITLE LIKE '%' + #searchWord# + '%'
+			</isEqual>
+			<isEqual property="searchColumn" compareValue="registerName">
+				AND REGISTER_NAME LIKE '%' + #searchWord# + '%'
+			</isEqual>
+			</isNotEmpty> 
+	</select> 
+
+	<!-- MS SQL -->
+	<insert id="create" parameterClass="cfBoardItemVersion"> 
+	INSERT INTO /* [boardItem_SqlMap.xml] lightpack.cafe.board.dao.boardItemVersion.insert */
+	IKEP4_CF_BD_ITEM_VERSION 
+	( 
+		VERSION_ID,
+		VERSION,
+		ITEM_ID,
+		ITEM_TYPE,
+		ITEM_DISPLAY,
+		TITLE,
+		CONTENTS,
+		ATTACH_FILE_COUNT,
+		START_DATE,
+		END_DATE,
+		REGISTER_ID,
+		REGISTER_NAME,
+		REGIST_DATE
+	) VALUES (
+		#versionId#,
+		(SELECT ISNULL(MAX(VERSION+0.1), 1.0) FROM IKEP4_CF_BD_ITEM_VERSION WHERE ITEM_ID = #itemId#),
+		#itemId#,
+		#itemType#,
+		#itemDisplay#,
+		#title#,
+		#contents#,
+		#attachFileCount#,
+		CURRENT_TIMESTAMP,
+		DATEADD(DD, 10000, CURRENT_TIMESTAMP),
+		#registerId#,
+		#registerName#,
+		CURRENT_TIMESTAMP
+	) 
+	</insert>
+   	
+   	<!-- ANSI -->
+	<delete id="physicalDelete" parameterClass="string"> 
+		DELETE FROM	 /* [BoardItem_SqlMap.xml] lightpack.cafe.board.dao.boardItemVersion.physicalDelete */
+			IKEP4_CF_BD_ITEM_VERSION
+		WHERE
+			ITEM_ID = #itemId# 
+	</delete>    
+	
+	<!-- MS SQL -->
+  	<delete id="physicalDeleteThread" parameterClass="string"> 
+  		WITH CTE AS (
+  			SELECT	*
+  			FROM 	IKEP4_CF_BD_ITEM
+  			WHERE	ITEM_ID =  #itemId# 
+  			UNION ALL
+  			SELECT	I.*
+  			FROM	IKEP4_CF_BD_ITEM I, CTE
+  			WHERE	CTE.ITEM_ID = I.ITEM_PARENT_ID 
+  		)
+		DELETE FROM	 /* [BoardItem_SqlMap.xml] lightpack.cafe.board.dao.boardItemVersion.physicalDeleteThread */
+			IKEP4_CF_BD_ITEM_VERSION
+		WHERE
+			ITEM_ID IN ( 
+	      		SELECT ITEM_ID FROM CTE
+			)   
+	</delete>  	
+</sqlMap> 

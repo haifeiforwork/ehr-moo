@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="support.profile.dao.ProfileExpertFellow">
+
+	<typeAlias alias="ProfileExpertFellow" type="com.lgcns.ikep4.support.profile.model.ProfileExpertFellow"/>
+
+	<resultMap class="ProfileExpertFellow" id="result">
+		<result column="EXPERT_USER_ID" property="expertUserId" jdbcType="VARCHAR" javaType="String"/>
+		<result column="MATCHING_SCORE" property="matchingScore" jdbcType="NUMERIC" javaType="Integer"/>
+		<result column="EXPERT_COUNT" property="expertCount" jdbcType="NUMERIC" javaType="Integer"/>
+		<result column="USER_NAME" property="userName" jdbcType="VARCHAR" javaType="String"/>
+		<result column="USER_ENGLISH_NAME" property="userEnglishName" jdbcType="VARCHAR" javaType="String"/>
+		<result column="TEAM_NAME" property="teamName" jdbcType="VARCHAR" javaType="String"/>
+		<result column="EXPERT_FIELD" property="expertField" jdbcType="VARCHAR" javaType="String"/>
+		<result column="JOB_TITLE_NAME" property="jobTitleName" jdbcType="VARCHAR" javaType="String"/>
+		<result property="picturePath" column="picture_path" />
+		<result property="profilePicturePath" column="profile_picture_path" />
+	</resultMap>
+
+	<!-- MS SQL -->
+	<select id="listProfileFellowExpert" parameterClass="java.lang.String" resultMap="result">
+		<![CDATA[	
+		SELECT	/* [ProfileExpertFellow_SqlMap.xml] support.profile.dao.ProfileExpertFellow.listProfileFellowExpert */
+				TOP 10
+				A.USER_ID AS EXPERT_USER_ID,
+				A.MATCHING_SCORE,
+				A.EXPERT_COUNT,
+				B.USER_NAME,
+				B.USER_ENGLISH_NAME,
+				B.TEAM_NAME,
+				B.EXPERT_FIELD,
+				(	SELECT	JOB_TITLE_NAME
+					FROM	IKEP4_EV_JOB_TITLE Z 
+					WHERE	Z.JOB_TITLE_CODE = B.JOB_TITLE_CODE ) AS JOB_TITLE_NAME,
+				B.PICTURE_PATH,
+			    ISNULL(B.PROFILE_PICTURE_PATH, B.sap_profile_picture_path) as PROFILE_PICTURE_PATH
+		FROM	(	SELECT	TAG_ITEM_ID USER_ID,
+							CAST(ROUND(CONVERT(FLOAT, COUNT(TAG_ID)) / (SELECT COUNT(TAG_ID) FROM IKEP4_TG_LINK WHERE TAG_ITEM_ID = #userId# AND TAG_ITEM_TYPE = 'PE') * 100, 0) AS DECIMAL) MATCHING_SCORE,
+							(	SELECT	COUNT(USER_ID)
+								FROM	IKEP4_EX_EXPERT
+								WHERE	USER_ID = #userId#
+									AND IS_AUTHORIZED = '1'	) EXPERT_COUNT
+					FROM	IKEP4_TG_LINK
+					WHERE	TAG_ITEM_TYPE = 'PE'
+						AND TAG_ID IN (	SELECT	TAG_ID
+										FROM	IKEP4_TG_LINK
+										WHERE	TAG_ITEM_TYPE = 'PE'
+											AND TAG_ITEM_ID = #userId# )
+						AND TAG_ITEM_ID != #userId#
+					GROUP BY TAG_ITEM_ID ) A,
+				IKEP4_EV_USER B
+		WHERE	A.USER_ID = B.USER_ID
+		ORDER BY	EXPERT_COUNT DESC,
+					MATCHING_SCORE DESC,
+					(	SELECT	SORT_ORDER
+						FROM	IKEP4_EV_JOB_POSITION Z
+						WHERE	Z.JOB_POSITION_CODE = B.JOB_POSITION_CODE ),	/*직위*/
+					(	SELECT	SORT_ORDER 
+						FROM	IKEP4_EV_JOB_RANK Z
+						WHERE	Z.JOB_RANK_CODE = B.JOB_RANK_CODE ),			/*직급*/
+					B.USER_NAME
+		]]>
+	</select>
+
+</sqlMap>

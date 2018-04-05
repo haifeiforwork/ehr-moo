@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="collpack.assess.dao.AssessmentManagementPviSymbol">
+	<typeAlias alias="AssessmentManagementPviSymbolPK" type="com.lgcns.ikep4.collpack.assess.model.AssessmentManagementPviSymbolPK"/>
+	<typeAlias alias="AssessmentManagementPviSymbol" type="com.lgcns.ikep4.collpack.assess.model.AssessmentManagementPviSymbol"/>
+
+	<resultMap class="AssessmentManagementPviSymbol" id="result">
+		<result column="SYMBOL_ID" property="symbolId" jdbcType="VARCHAR" javaType="String"/>
+		<result column="STEP" property="step" jdbcType="NUMBER" javaType="Integer"/>
+		<result column="SECTION_VALUE" property="sectionValue" jdbcType="NUMBER" javaType="Integer"/>
+		<result column="SECTION_START_SCORE" property="sectionStartScore" jdbcType="NUMBER" javaType="Integer"/>
+		<result column="SECTION_END_SCORE" property="sectionEndScore" jdbcType="NUMBER" javaType="Integer"/>
+	</resultMap>
+
+<!-- Symbol 입력 -->
+	<insert id="create" parameterClass="AssessmentManagementPviSymbol">
+	<![CDATA[
+		INSERT /* [AssessmentManagementPviSymbol_SqlMap.xml] collpack.assess.dao.AssessmentManagementPviSymbol.create */
+		       INTO IKEP4_AM_PVI_SYMBOL (
+		       SYMBOL_ID
+		     , STEP
+		     , SECTION_VALUE
+		     , SECTION_START_SCORE
+		     , SECTION_END_SCORE
+		     , PORTAL_ID
+		     , REGISTER_ID
+		     , REGIST_DATE
+		       )
+		VALUES (
+		       #symbolId#
+		     , #step#
+		     , #sectionValue#
+		     , #sectionStartScore#
+		     , #sectionEndScore#
+		     , #portalId#
+		     , #registerId#
+		     , NOW()
+		       )
+	]]>
+	</insert>
+
+<!-- Symbol정보 조회 -->
+	<select id="listByPortalId" parameterClass="String" resultMap="result">
+	<![CDATA[
+		SELECT /* [AssessmentManagementPviSymbol_SqlMap.xml] collpack.assess.dao.AssessmentManagementPviSymbol.listByPortalId */
+		       SYMBOL_ID, STEP, SECTION_VALUE, SECTION_START_SCORE, SECTION_END_SCORE
+		  FROM IKEP4_AM_PVI_SYMBOL
+		 WHERE PORTAL_ID = #portalId#
+		 ORDER BY STEP
+	]]>
+	</select>
+
+<!-- Symbol정보 수정 -->
+	<update id="update" parameterClass="AssessmentManagementPviSymbol">
+	<![CDATA[
+		UPDATE /* [AssessmentManagementPviSymbol_SqlMap.xml] collpack.assess.dao.AssessmentManagementPviSymbol.update */
+		       IKEP4_AM_PVI_SYMBOL
+		   SET STEP = #step#
+		     , SECTION_VALUE = #sectionValue#
+		     , SECTION_START_SCORE = #sectionStartScore#
+		     , SECTION_END_SCORE = #sectionEndScore#
+		     , REGISTER_ID = #registerId#
+		     , REGIST_DATE = NOW()
+		 WHERE SYMBOL_ID = #symbolId#
+	]]>
+	</update>
+
+</sqlMap>

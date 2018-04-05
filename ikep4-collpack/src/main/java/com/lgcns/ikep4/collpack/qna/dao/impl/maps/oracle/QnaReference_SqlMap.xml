@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="collpack.qna.dao.QnaReference" >
+  
+ <typeAlias alias = "QnaReference" type="com.lgcns.ikep4.collpack.qna.model.QnaReference"/>
+  
+  
+  <resultMap id="QnaReferenceResultMap" class="QnaReference" >
+    <result column="QNA_ID" 				property="qnaId"  />
+    <result column="REGISTER_ID" 		property="registerId"  />
+    <result column="REGIST_DATE" 		property="registDate"  />
+  </resultMap>
+  
+   <insert id="create" parameterClass="QnaReference" >
+    INSERT INTO IKEP4_QA_REFERENCE (				/* [QnaReference_SqlMap.xml] QnaReference.create */
+    	QNA_ID, 
+    	REGISTER_ID, 
+      	REGIST_DATE
+      ) VALUES (
+      	#qnaId#, 
+      	#registerId#, 
+      	sysdate
+     )
+  </insert>
+  
+  <select id="getCountByRegisterId" parameterClass="QnaReference" resultClass="int" >
+    SELECT 					/* [QnaReference_SqlMap.xml] QnaReference.getCount */
+    	COUNT(QNA_ID) 
+    FROM IKEP4_QA_REFERENCE
+    WHERE QNA_ID = #qnaId#
+    AND REGISTER_ID = #registerId#
+  </select>
+  
+  
+  <delete id="removeQna" parameterClass="String" >
+    DELETE 					/* [QnaReference_SqlMap.xml] QnaReference.removeQna */
+    FROM IKEP4_QA_REFERENCE
+    WHERE 
+    	QNA_ID = #qnaId#
+  </delete>
+  
+</sqlMap>

@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="com.lgcns.ikep4.wfapproval.admin.dao.ApFormTpl" >
+	<typeAlias alias="ApFormTpl" 	type="com.lgcns.ikep4.wfapproval.admin.model.ApFormTpl"/>
+	
+	<!-- 양식 템플릿 테이블 조회 결과 -->
+	<resultMap id="ApFormTplResult" class="ApFormTpl" groupBy="formId">
+		<result property="formId" 			column="FORM_ID" 			jdbcType="VARCHAR"/>
+		<result property="processId" 		column="PROCESS_ID" 		jdbcType="VARCHAR"/>
+		<result property="processType" 		column="PROCESS_TYPE" 		jdbcType="VARCHAR"/>
+		<result property="authCd" 			column="AUTH_CD" 			jdbcType="VARCHAR"/>
+		<result property="mailReqCd" 		column="MAIL_REQ_CD" 		jdbcType="VARCHAR"/>
+		<result property="mailEndCd" 		column="MAIL_END_CD" 		jdbcType="VARCHAR"/>
+		<result property="mailReqWayCd" 	column="MAIL_REQ_WAY_CD" 	jdbcType="VARCHAR"/>
+		<result property="mailEndWayCd" 	column="MAIL_END_WAY_CD" 	jdbcType="VARCHAR"/>
+		<result property="isNoneForm"		column="IS_NONE_FORM" 		jdbcType="VARCHAR"/>
+		<result property="isAppr" 			column="IS_APPR" 			jdbcType="VARCHAR"/>
+		<result property="isDiscuss" 		column="IS_DISCUSS" 		jdbcType="VARCHAR"/>
+		<result property="discussCd" 		column="DISCUSS_CD" 		jdbcType="VARCHAR"/>
+		<result property="apprLineCnt" 		column="APPR_LINE_CNT" 		jdbcType="NUMERIC"/>
+		<result property="discussLineCnt" 	column="DISCUSS_LINE_CNT" 	jdbcType="NUMERIC"/>
+		<result property="isApprPeriod" 	column="IS_APPR_PERIOD" 	jdbcType="VARCHAR"/>
+		<result property="apprPeriodCd" 	column="APPR_PERIOD_CD" 	jdbcType="VARCHAR"/>
+		<result property="isApprType" 		column="IS_APPR_TYPE" 		jdbcType="VARCHAR"/>
+		<result property="apprTypeCd" 		column="APPR_TYPE_CD" 		jdbcType="VARCHAR"/>
+		<result property="isApprDoc" 		column="IS_APPR_DOC" 		jdbcType="VARCHAR"/>
+		<result property="apprDocCd" 		column="APPR_DOC_CD" 		jdbcType="VARCHAR"/>
+		<result property="apprTitle" 		column="APPR_TITLE" 		jdbcType="VARCHAR"/>
+		<result property="isApprTitle" 		column="IS_APPR_TITLE" 		jdbcType="VARCHAR"/>
+		<result property="isApprAttach" 	column="IS_APPR_ATTACH" 	jdbcType="VARCHAR"/>
+		<result property="registUserId" 	column="REGIST_USER_ID" 	jdbcType="VARCHAR"/>
+		<result property="registDate" 		column="REGIST_DATE" 		jdbcType="DATE"/>
+		<result property="modifyUserId" 	column="MODIFY_USER_ID" 	jdbcType="VARCHAR"/>
+		<result property="modifyDate" 		column="MODIFY_DATE" 		jdbcType="DATE"/>
+		<result property="apprFormData" 	column="APPR_FORM_DATA" 	jdbcType="VARCHAR"/>
+	</resultMap>
+	
+	<!-- ANSI -->
+	<!-- insert -->
+	<insert id="create" parameterClass="ApFormTpl"> 
+      <![CDATA[ 
+           	INSERT INTO IKEP4_AP_FORM_TEMPLATE
+						(FORM_ID, PROCESS_ID, PROCESS_TYPE,MAIL_REQ_CD,MAIL_END_CD,MAIL_REQ_WAY_CD
+						,MAIL_END_WAY_CD,IS_NONE_FORM,IS_APPR,IS_DISCUSS,DISCUSS_CD,APPR_LINE_CNT
+						,DISCUSS_LINE_CNT,IS_APPR_PERIOD,APPR_PERIOD_CD,IS_APPR_TYPE,APPR_TYPE_CD
+						,IS_APPR_DOC,APPR_DOC_CD,APPR_TITLE,IS_APPR_TITLE,IS_APPR_ATTACH
+						,REGIST_USER_ID,REGIST_DATE,MODIFY_USER_ID,MODIFY_DATE,APPR_FORM_DATA)
+			VALUES		(#formId#,#processId#,#processType#,#mailReqCd#,#mailEndCd#,#mailReqWayCd#
+						,#mailEndWayCd#,#isNoneForm#,#isAppr#,#isDiscuss#,#discussCd#,#apprLineCnt#
+						,#discussLineCnt#,#isApprPeriod#,#apprPeriodCd#,#isApprType#,#apprTypeCd#
+						,#isApprDoc#,#apprDocCd#,#apprTitle#,#isApprTitle#,#isApprAttach#
+						,#registUserId#,CURRENT_TIMESTAMP,#modifyUserId#,CURRENT_TIMESTAMP,#apprFormData#)
+       ]]>
+   </insert>
+   
+   	<!-- ANSI -->
+   	<!-- select -->
+	<select id="select" parameterClass="java.lang.String" resultMap="ApFormTplResult">
+	  <![CDATA[
+		   	SELECT * FROM IKEP4_AP_FORM_TEMPLATE WHERE FORM_ID = #formId#
+	   ]]>
+	</select>
+	
+	<!-- ANSI -->
+	<!-- update -->
+	<update id="update" parameterClass="ApFormTpl">
+	  <![CDATA[
+			UPDATE 	IKEP4_AP_FORM_TEMPLATE 
+			SET 	PROCESS_ID	      	= #processId#
+				  , PROCESS_TYPE		= #processType#
+				  , AUTH_CD		    	= #authCd#        		
+			      , MAIL_REQ_CD	    	= #mailReqCd#       		
+			      , MAIL_END_CD	    	= #mailEndCd#       		
+			      , MAIL_REQ_WAY_CD	   	= #mailReqWayCd#       		
+			      , MAIL_END_WAY_CD	  	= #mailEndWayCd#
+				  , IS_NONE_FORM		= #isNoneForm#
+			      , IS_APPR	        	= #isAppr#          		
+			      , IS_DISCUSS	    	= #isDiscuss#       		
+			      , DISCUSS_CD	    	= #discussCd#       		
+			      , APPR_LINE_CNT	  	= #apprLineCnt#     		
+			      , DISCUSS_LINE_CNT	= #discussLineCnt#  		
+			      , IS_APPR_PERIOD		= #isApprPeriod#    		
+			      , APPR_PERIOD_CD		= #apprPeriodCd#    		
+			      , IS_APPR_TYPE	  	= #isApprType#      		
+			      , APPR_TYPE_CD	  	= #apprTypeCd#      		
+			      , IS_APPR_DOC	    	= #isApprDoc#       		
+			      , APPR_DOC_CD	    	= #apprDocCd#       		
+			      , APPR_TITLE	    	= #apprTitle#       		
+			      , IS_APPR_TITLE	  	= #isApprTitle#     		
+			      , IS_APPR_ATTACH		= #isApprAttach#
+			      , MODIFY_USER_ID		= #modifyUserId#    		
+			      , MODIFY_DATE	    	= CURRENT_TIMESTAMP      		
+			      , APPR_FORM_DATA  	= #apprFormData#
+			WHERE 	FORM_ID 		    = #formId#
+	   ]]>
+	</update>
+   
+   <!-- ANSI -->
+   <!-- delete -->
+   <delete id="delete" parameterClass="java.lang.String">
+      <![CDATA[
+	       	DELETE FROM IKEP4_AP_FORM_TEMPLATE WHERE FORM_ID = #formId#
+	   ]]>
+	</delete>
+	
+	<!-- ANSI -->
+	<!-- selectAll -->
+	<select id="selectAll" resultMap="ApFormTplResult">
+	  <![CDATA[
+		   	SELECT * FROM IKEP4_AP_FORM_TEMPLATE ORDER BY REGIST_DATE DESC
+	   ]]>
+	</select>
+	
+	<!-- ANSI -->
+	<!-- selectCount -->
+	<select id="selectCount" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+	  <![CDATA[
+		   	SELECT COUNT(FORM_ID) FROM IKEP4_AP_FORM_TEMPLATE WHERE FORM_ID = #formId#
+	   ]]>
+	</select>
+	
+</sqlMap>

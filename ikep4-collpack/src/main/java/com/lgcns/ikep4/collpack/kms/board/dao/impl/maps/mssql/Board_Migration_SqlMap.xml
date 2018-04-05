@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="collpack.kms.board.dao.BoardMigration"> 
+  
+  <select id="getBoardId" parameterClass="java.util.HashMap" resultClass="String">
+		SELECT BOARD_ID 
+		  FROM IKEP4_KMS_BD_BOARD_MAPPING
+		 WHERE GROUPINGID3 = #GROUPINGID3#
+  </select>
+  
+  <insert id="createItemMapping" parameterClass="java.util.HashMap"> 
+		INSERT INTO IKEP4_KMS_BD_ITEM_MAPPING ( DATE, SLIPNO, ITEM_ID )
+		VALUES ( #DATE#, #SLIPNO#, #ITEMID#)
+  </insert>
+  
+  <select id="getItemId" parameterClass="java.util.HashMap" resultClass="String">
+    SELECT ITEM_ID
+    FROM   IKEP4_KMS_BD_ITEM_MAPPING
+    WHERE  DATE = #DATE#
+    AND    SLIPNO = #SLIPNO#
+  </select>
+
+	<select id="listBoardItem" resultClass="java.util.HashMap">  
+		SELECT DATE,
+	    	   SLIPNO,
+	       	   ITEM_ID 
+	  	FROM IKEP4_KMS_BD_ITEM_MAPPING	
+	</select>
+  
+  <delete id="deleteBoardItem">
+    DELETE IKEP4_KMS_BD_ITEM_MAPPING
+  </delete>  
+  
+	<select id="migrateBoardItemChkCnt" parameterClass="java.util.HashMap" resultClass="int">  
+		SELECT COUNT(*)
+		  FROM IKEP4_KMS_BD_ITEM_MAPPING
+		 WHERE Date = #DATE#
+		   AND SlipNo = #SLIPNO#
+	</select>
+</sqlMap>

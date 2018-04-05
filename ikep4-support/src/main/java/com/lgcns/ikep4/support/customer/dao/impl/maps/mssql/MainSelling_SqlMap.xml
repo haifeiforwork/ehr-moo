@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="support.customer.dao.mainSelling">
+
+<typeAlias alias="MainSellingSearchCondition" type="com.lgcns.ikep4.support.customer.search.MainSellingSearchCondition" />
+<typeAlias alias="MainSelling" type="com.lgcns.ikep4.support.customer.model.MainSelling" />
+
+<resultMap id="MainSellingResult" class="com.lgcns.ikep4.support.customer.model.MainSelling" >
+	    <result column="ROWNUM" 		    property="rowNum" 			 />
+		<result column="ID" 			    property="customerId" 		 />
+		<result column="CUSTOMER" 			property="customer" 		 />
+		<result column="CHARGE" 		    property="chargeEmployee" 	 />
+		<result column="SELLING_CNT" 		property="sellingCnt" 		 />
+		<result column="REGISTER_ID" 	    property="registerId"   	 />
+		<result column="REGISTER_NAME"  	property="registerName" 	 />	
+		<result column="REGIST_DATE"  	    property="registDate" 	     />		
+		<result column="HIT_COUNT"  	    property="hitCount" 	     />	
+</resultMap>
+
+<resultMap id="MainSellingDetailResult" class="com.lgcns.ikep4.support.customer.model.MainSelling">
+	<result column="SEQNUM" 			property="seqNum" 			/>
+	<result column="ID" 				property="customerId" 		/>
+	<result column="SELLING_ID" 		property="sellingId" 		/>
+	<result column="INOUT_FLAG" 		property="inoutFlag" 		/>
+	<result column="SELLING_NAME" 		property="sellingName" 		/>
+	<result column="SELLING_TYPE" 		property="sellingType"	    />
+	<result column="ADDRESS" 			property="address" 			/>
+	<result column="FAX" 				property="fax" 				/>
+	<result column="TEL" 				property="tel" 				/>
+	<result column="BUYING_EMPLOYEE" 	property="buyingEmployee" 	/>
+	<result column="DEAL_FORM" 			property="dealForm" 		/>
+	<result column="BUYING_AMT" 		property="buyingAmt" 		/>
+	<result column="P_NAME" 			property="pName" 			/>
+	<result column="REGISTER_ID" 		property="registerId" 		/>
+	<result column="REGISTER_NAME" 		property="registerName" 	/>
+</resultMap>
+
+<sql id="sqlColumnList">
+	 SEQNUM
+	,ID
+	,SELLING_ID
+	,INOUT_FLAG
+	,SELLING_NAME
+	,SELLING_TYPE
+	,ADDRESS
+	,FAX
+	,TEL
+	,BUYING_EMPLOYEE
+	,DEAL_FORM
+	,BUYING_AMT
+	,P_NAME
+	,REGISTER_ID
+	,REGISTER_NAME
+</sql>	
+
+<select id="countBySearchCondition" parameterClass="MainSellingSearchCondition" resultClass="int">
+	SELECT COUNT(*) from (
+		   SELECT A.NAME 
+		   FROM MAIN_SELLING A
+		   LEFT JOIN BASICINFO_MASTER C
+		   ON A.ID = C.ID
+		   WHERE A.DELETE_FLAG = 'N'
+	 <isNotEmpty property="searchColumn">
+			<isNotEmpty property="searchWord">
+				<isEqual property="searchColumn" compareValue="customer">
+					AND 
+					A.NAME LIKE '%' + #searchWord# + '%'
+				</isEqual>
+				<isEqual property="searchColumn" compareValue="chargeEmployee">
+					AND 
+					C.CHARGE LIKE '%' + #searchWord# + '%'
+				</isEqual>
+				<isEqual property="searchColumn" compareValue="registerName">
+					AND A.REGISTER_NAME
+					LIKE '%' + #searchWord# + '%'
+				</isEqual>	
+			</isNotEmpty>
+	 </isNotEmpty>
+		   GROUP BY A.ID , A.NAME , C.CHARGE, A.REGISTER_NAME, A.REGIST_DATE
+       ) D 
+	
+</select>
+
+<select id="mainSellingListBySearchCondition" parameterClass="MainSellingSearchCondition" resultMap="MainSellingResult">
+SELECT /* [MainSelling_SqlMap.xml] mainSellingListBySearchCondition */
+		*
+		FROM (
+		SELECT AA.* FROM (
+		/* START========================================= */
+		SELECT ROW_NUMBER() OVER(ORDER BY 
+		 						 <isNotEmpty property="sortColumn">
+		 						   	<isEqual property="sortColumn" compareValue="NAME">
+										<isEqual property="sortType" compareValue="DESC">
+											A.NAME DESC , A.REGIST_DATE DESC
+										</isEqual>
+										<isEqual property="sortType" compareValue="ASC">
+											A.NAME ASC , A.REGIST_DATE DESC
+										</isEqual>
+									</isEqual>
+									<isEqual property="sortColumn" compareValue="CHARGE">
+										<isEqual property="sortType" compareValue="DESC">
+											 C.CHARGE DESC, A.REGIST_DATE DESC
+										</isEqual>
+										<isEqual property="sortType" compareValue="ASC">
+											 C.CHARGE ASC, A.REGIST_DATE DESC
+										</isEqual>
+									</isEqual>
+									<isEqual property="sortColumn" compareValue="REGIST_DATE">
+										<isEqual property="sortType" compareValue="DESC">
+											A.REGIST_DATE DESC
+										</isEqual>
+										<isEqual property="sortType" compareValue="ASC">
+											A.REGIST_DATE ASC
+										</isEqual>
+									</isEqual>
+									<isEqual property="sortColumn" compareValue="REGISTER_NAME">
+										<isEqual property="sortType" compareValue="DESC">
+											A.REGISTER_NAME DESC, A.REGIST_DATE DESC
+										</isEqual>
+										<isEqual property="sortType" compareValue="ASC">
+											A.REGISTER_NAME ASC, A.REGIST_DATE DESC
+										</isEqual>
+									</isEqual> 
+		 						   </isNotEmpty>
+		 						 <isEmpty property="sortColumn">  
+		 							  A.REGIST_DATE DESC
+		 						 </isEmpty>  ) AS ROWNUM , 
+	   A.ID,
+	   A.NAME AS CUSTOMER,
+       C.CHARGE,  
+       (select COUNT(D.ID) from MAIN_SELLING D WHERE D.ID=A.ID AND D.DELETE_FLAG = 'N') SELLING_CNT,
+       A.REGISTER_ID,
+       A.REGISTER_NAME,  
+       A.REGIST_DATE,
+       A.HIT_COUNT
+       FROM MAIN_SELLING A with (nolock)
+       LEFT JOIN BASICINFO_MASTER C with (nolock)
+       ON A.ID = C.ID   
+	   WHERE A.DELETE_FLAG = 'N'
+	  <isNotEmpty property="searchColumn">
+			<isNotEmpty property="searchWord">
+				<isEqual property="searchColumn" compareValue="customer">
+					AND 
+					A.NAME LIKE '%' + #searchWord# + '%'
+				</isEqual>
+				<isEqual property="searchColumn" compareValue="chargeEmployee">
+					AND 
+					C.CHARGE LIKE '%' + #searchWord# + '%'
+				</isEqual>
+				<isEqual property="searchColumn" compareValue="registerName">
+					AND A.REGISTER_NAME
+					LIKE '%' + #searchWord# + '%'
+				</isEqual>	
+			</isNotEmpty>
+	 </isNotEmpty>
+	   GROUP BY A.ID , A.NAME , C.CHARGE, A.REGISTER_NAME, A.REGIST_DATE, A.REGISTER_ID,A.HIT_COUNT	
+		/* ===========================================END */  
+		<![CDATA[   
+		    ) AA WHERE ROWNUM <=  #endRowIndex# /* 종료  */
+		) TBL WHERE ROWNUM >  #startRowIndex# /* 시작 */ 
+		ORDER BY REGIST_DATE DESC
+	    ]]> ;		
+	 
+</select>
+
+<select id="getMainSellingList" parameterClass="string" resultMap="MainSellingDetailResult">
+	SELECT /* [MainSelling_SqlMap.xml] getMainSellingList */
+ 	 <include refid="support.customer.dao.mainSelling.sqlColumnList" />
+	FROM MAIN_SELLING with (nolock)
+	WHERE DELETE_FLAG = 'N'
+	AND ID = #customerId#
+</select>
+
+<select id="getSellingId" parameterClass="string" resultClass = "int">
+
+	select top(1) SELLING_ID from MAIN_SELLING with (nolock)
+	where ID= #customerId#
+	order by SELLING_ID desc;
+
+</select>
+
+
+<insert id="createMainSelling" parameterClass="MainSelling">
+	
+		INSERT INTO MAIN_SELLING
+	(
+		 ID
+		,NAME 
+		,SELLING_ID
+		,INOUT_FLAG
+		,SELLING_NAME
+		,SELLING_TYPE
+		,ADDRESS
+		,FAX
+		,TEL
+		,BUYING_EMPLOYEE
+		,DEAL_FORM
+		,BUYING_AMT
+		,P_NAME
+		,DELETE_FLAG
+		,UPDATER_NAME
+		,UPDATER_ID
+		,UPDATE_DATE
+		,REGISTER_NAME
+		,REGISTER_ID
+		,REGIST_DATE	
+	)VALUES(
+		#customerId#,
+		#customer#,
+		#sellingId#,
+		#inoutFlag#,
+		#sellingName#,
+		#sellingType#,
+		#address#,
+		#fax#,
+		#tel#,
+		#buyingEmployee#,
+		#dealForm#,
+		#buyingAmt#,
+		#pName#,
+		#deleteFlag#,
+		#updaterName#,
+		#updaterId#,
+		CURRENT_TIMESTAMP,
+		#registerName#,
+		#registerId#,
+		CURRENT_TIMESTAMP
+	)
+</insert>
+
+
+<update id="updateRegistInfo" parameterClass="MainSelling">
+ UPDATE MAIN_SELLING
+ SET REGISTER_ID = #registerId#,
+     REGISTER_NAME = #registerName#,
+     REGIST_DATE = CURRENT_TIMESTAMP,
+     UPDATER_ID = #updaterId#,
+     UPDATER_NAME = #updaterName#,
+     UPDATE_DATE = CURRENT_TIMESTAMP
+ WHERE ID = #customerId#
+</update>
+
+
+<update id="modifyMainSelling" parameterClass="MainSelling">
+UPDATE MAIN_SELLING
+SET SELLING_NAME = #sellingName#,
+    SELLING_TYPE = #sellingType#,
+    ADDRESS = #address#,
+    FAX = #fax#,
+    TEL = #tel#,
+    BUYING_EMPLOYEE = #buyingEmployee#,
+    DEAL_FORM = #dealForm#,
+    BUYING_AMT = #buyingAmt#,
+    P_NAME = #pName#,
+    UPDATER_ID = #updaterId#,
+    UPDATER_NAME = #updaterName#,
+    UPDATE_DATE = CURRENT_TIMESTAMP
+WHERE SEQNUM = #seqNum#
+</update>
+
+<select id="getMainSellingItem" parameterClass="int" resultMap="MainSellingDetailResult">
+    SELECT /* [MainSelling_SqlMap.xml] getMainSellingItem */
+ 	 <include refid="support.customer.dao.mainSelling.sqlColumnList" />
+	FROM MAIN_SELLING with (nolock)
+	WHERE seqNum = #seqNum#
+</select>
+
+<update id="deleteMainSelling" parameterClass="MainSelling">
+	UPDATE MAIN_SELLING
+	SET DELETE_FLAG = 'Y'
+	WHERE SEQNUM = #seqNum#
+</update>
+
+<select id="checkMainSelling" parameterClass="String" resultClass="int">
+
+	select COUNT(*) 
+	from MAIN_SELLING with (nolock)
+	where ID = #customerId#
+	and delete_flag = 'N'
+
+</select>
+
+<update id="syncCustomerName" parameterClass="MainSelling">
+
+	UPDATE MAIN_SELLING
+	SET NAME = #customer#
+	WHERE ID = #customerId#
+
+</update>
+
+
+
+
+</sqlMap>

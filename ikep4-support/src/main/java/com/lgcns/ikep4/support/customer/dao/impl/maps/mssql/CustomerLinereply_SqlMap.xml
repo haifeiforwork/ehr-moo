@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="support.customer.dao.customerLinereply">
+
+<typeAlias alias="CustomerLinereply" type="com.lgcns.ikep4.support.customer.model.CustomerLinereply" />
+<typeAlias alias="CustomerLinereplySearchCondition" type="com.lgcns.ikep4.support.customer.search.CustomerLinereplySearchCondition" />
+ 
+   <resultMap id="CustomerLinereplyResult" class="CustomerLinereply" >
+    <result column="LINEREPLY_ID" 			property="linereplyId" 			/>
+    <result column="ITEM_TYPE" 				property="itemType" 				/>
+    <result column="ITEM_ID" 				property="itemId" 				/>
+    <result column="LINEREPLY_GROUP_ID" 	property="linereplyGroupId" 	/>
+    <result column="LINEREPLY_PARENT_ID" 	property="linereplyParentId" 	/>
+    <result column="STEP" 					property="step" 				/>
+    <result column="INDENTATION" 			property="indentation" 			/>
+    <result column="CONTENTS"				property="contents" 			/>
+    <result column="RECOMMEND_COUNT" 		property="recommendCount" 		/>
+    <result column="LINEREPLY_DELETE" 		property="linereplyDelete" 		/>
+    <result column="UPDATER_ID" 			property="updaterId" 			/>
+    <result column="UPDATER_NAME" 			property="updaterName" 			/>
+    <result column="UPDATE_DATE" 			property="updateDate" 			/>
+    <result column="REGISTER_ID" 			property="registerId" 			/>
+    <result column="REGISTER_NAME" 			property="registerName" 		/>
+    <result column="REGIST_DATE" 			property="registDate" 			/>
+  </resultMap>
+  <resultMap id="CustomerLinereplyExtendResult" extends="CustomerLinereplyResult" class="CustomerLinereply">
+    <result column="TEAM_NAME" 				property="teamName" 			/>
+   	<result column="JOB_TITLE_NAME" 		    property="jobTitleName" 		/>
+    <result column="USER_ENGLISH_NAME" 		    property="userEnglishName" 		/>
+	<result column="TEAM_ENGLISH_NAME" 		    property="teamEnglishName" 		/>
+	<result column="JOB_TITLE_ENGLISH_NAME"     property="jobTitleEnglishName" 	/>
+	<result column="PICTURE_PATH"			    property="picturePath"  	 	/>   
+    <result column="PROFILE_PICTURE_PATH"	    property="profilePicturePath" 	/> 
+  </resultMap> 
+ 
+ <sql id="CustomerLinereply_Column_List" >
+     A.LINEREPLY_ID
+    ,A.ITEM_TYPE 
+    ,A.ITEM_ID
+    ,A.LINEREPLY_GROUP_ID
+    ,A.LINEREPLY_PARENT_ID
+    ,A.STEP
+    ,A.INDENTATION
+    ,A.CONTENTS
+    ,A.RECOMMEND_COUNT
+    ,A.LINEREPLY_DELETE 
+    ,A.UPDATER_ID
+    ,A.UPDATER_NAME
+    ,A.UPDATE_DATE   
+    ,A.REGISTER_ID
+    ,A.REGISTER_NAME
+    ,A.REGIST_DATE
+    ,C.TEAM_NAME
+	,D.JOB_TITLE_NAME
+	,C.USER_ENGLISH_NAME
+  	,C.TEAM_ENGLISH_NAME
+  	,D.JOB_TITLE_ENGLISH_NAME
+  	,C.PICTURE_PATH
+	,C.PROFILE_PICTURE_PATH
+  </sql>
+  
+    <sql id="sqlExtendColumnList"> 
+    linereply.LINEREPLY_ID        AS LINEREPLY_ID,
+    linereply.ITEM_TYPE           AS ITEM_TYPE,         
+    linereply.ITEM_ID             AS ITEM_ID,            
+    linereply.LINEREPLY_GROUP_ID  AS LINEREPLY_GROUP_ID, 
+    linereply.LINEREPLY_PARENT_ID AS LINEREPLY_PARENT_ID,
+    linereply.STEP                AS STEP,               
+    linereply.INDENTATION         AS INDENTATION,        
+    linereply.CONTENTS            AS CONTENTS,           
+    linereply.RECOMMEND_COUNT     AS RECOMMEND_COUNT,           
+    linereply.LINEREPLY_DELETE    AS LINEREPLY_DELETE,          
+    linereply.UPDATER_ID          AS UPDATER_ID,         
+    linereply.UPDATER_NAME        AS UPDATER_NAME,       
+    linereply.UPDATE_DATE         AS UPDATE_DATE,
+    linereply.REGISTER_ID         AS REGISTER_ID,        
+    linereply.REGISTER_NAME       AS REGISTER_NAME,      
+    linereply.REGIST_DATE         AS REGIST_DATE,    
+    usr.TEAM_NAME                 AS TEAM_NAME,
+    (SELECT JOB_TITLE_NAME FROM IKEP4_EV_JOB_TITLE WHERE IKEP4_EV_JOB_TITLE.JOB_TITLE_CODE = usr.JOB_TITLE_CODE)AS JOB_TITLE_NAME,       
+    usr.USER_ENGLISH_NAME  AS USER_ENGLISH_NAME,
+    usr.TEAM_ENGLISH_NAME  AS TEAM_ENGLISH_NAME,
+    (SELECT JOB_TITLE_ENGLISH_NAME FROM IKEP4_EV_JOB_TITLE WHERE IKEP4_EV_JOB_TITLE.JOB_TITLE_CODE = usr.JOB_TITLE_CODE) AS JOB_TITLE_ENGLISH_NAME,  
+    usr.PICTURE_PATH              AS PICTURE_PATH, 
+    usr.PROFILE_PICTURE_PATH      AS PROFILE_PICTURE_PATH       	
+  </sql>  
+
+ <!-- ANSI -->
+ <select id="get" parameterClass="string" resultMap="CustomerLinereplyResult"> 
+   SELECT /*  [CustomerLinereply_SqlMap.xml] support.customer.customerLinereply.get */
+   <include refid="support.customer.dao.customerLinereply.sqlExtendColumnList" />
+	FROM  CUSTOMER_LINEREPLY linereply WITH (NOLOCK) INNER JOIN IKEP4_EV_USER usr WITH (NOLOCK)
+    ON    linereply.REGISTER_ID = usr.USER_ID 
+    WHERE linereply.LINEREPLY_ID = #linereplyId# 
+ </select>
+
+
+<insert id="create" parameterClass="CustomerLinereply" > 
+
+	INSERT INTO  /* [CustomerLinereply_SqlMap.xml] support.customer.customerLinereply.create  */
+		CUSTOMER_LINEREPLY(
+		  LINEREPLY_ID,
+		  ITEM_TYPE,
+		  ITEM_ID,
+		  LINEREPLY_GROUP_ID,    
+	      LINEREPLY_PARENT_ID, 
+	      STEP, 
+	      INDENTATION,
+	      CONTENTS, 
+	      RECOMMEND_COUNT,
+	      LINEREPLY_DELETE,	      
+	      UPDATER_ID, 
+	      UPDATER_NAME, 
+	      UPDATE_DATE, 
+	      REGISTER_ID, 
+	      REGISTER_NAME, 
+	      REGIST_DATE
+		)VALUES(
+		#linereplyId#,
+		#itemType#,
+		#itemId#,
+		#linereplyGroupId#,
+		#linereplyParentId#,
+		#step#,
+		#indentation#,
+		#contents#,
+		0,
+		#linereplyDelete#,
+		#updaterId#,
+		#updaterName#,
+		<isNotEmpty property="updateDate">
+			#updateDate#,
+		</isNotEmpty>
+		<isEmpty property="updateDate">
+			CURRENT_TIMESTAMP,
+		</isEmpty>		
+		#registerId#,
+		#registerName#,
+		<isNotEmpty property="registDate">
+			#registDate#
+		</isNotEmpty>
+		<isEmpty property="registDate">
+			CURRENT_TIMESTAMP
+		</isEmpty>	
+		)
+
+</insert>
+
+
+
+  <!-- MS SQL -->
+  <select id="listBySearchCondition" parameterClass="CustomerLinereplySearchCondition" resultMap="CustomerLinereplyExtendResult">  
+	SELECT /* * [CustomerLinereply_SqlMap.xml] support.customer.customerLinereply.listBySearchCondition */ 
+	       *
+	FROM ( 
+	     SELECT A.* FROM ( 
+	         /* START========================================= */
+	         SELECT <include refid="support.customer.dao.customerLinereply.sqlExtendColumnList" />
+	         		, Row_number() OVER (ORDER BY linereply.LINEREPLY_GROUP_ID DESC, linereply.STEP ASC) AS RNUM
+	         FROM (
+		         SELECT *
+				 FROM  CUSTOMER_LINEREPLY WITH (NOLOCK) 
+				 WHERE ITEM_ID = #itemId# 
+				 AND   ITEM_TYPE = #itemType#
+			 ) linereply INNER JOIN IKEP4_EV_USER usr
+			 ON    linereply.REGISTER_ID = usr.USER_ID  
+			 /* ===========================================END  */ 
+	<![CDATA[   
+	    ) A WHERE RNUM <=  #endRowIndex# /* 종료  */
+	) TBL WHERE RNUM >  #startRowIndex# /* 시작 */
+	]]> 
+  </select>  
+
+   <!-- ANSI -->
+  <select id="countBySearchCondition" parameterClass="CustomerLinereplySearchCondition" resultClass="int">  
+	SELECT /* [CustomerLinereply_SqlMap.xml] support.customer.customerLinereply.countBySearchCondition */ COUNT(*) 
+    FROM (
+	    SELECT *
+		FROM  CUSTOMER_LINEREPLY WITH (NOLOCK)
+		WHERE ITEM_ID = #itemId#
+		AND   ITEM_TYPE = #itemType# 
+	) linereply INNER JOIN IKEP4_EV_USER usr 
+	ON    linereply.REGISTER_ID = usr.USER_ID
+  </select> 
+
+
+  <!-- ANSI -->
+  <update id="updateStep" parameterClass="CustomerLinereply"> 
+    UPDATE CUSTOMER_LINEREPLY /* [CustomerLinereply_SqlMap.xml] support.customer.customerLinereply.updateStep */
+    SET   STEP = STEP + 1 
+    WHERE LINEREPLY_GROUP_ID = #linereplyGroupId#
+    AND   STEP >= #step#  
+  </update>
+
+<!-- ANSI -->
+  <update id="update" parameterClass="CustomerLinereply"> 
+    UPDATE CUSTOMER_LINEREPLY /* [CustomerLinereply_SqlMap.xml] support.customer.customerLinereply.update */
+    SET   LINEREPLY_ID        = #linereplyId#,       
+          ITEM_ID             = #itemId#,   
+          LINEREPLY_GROUP_ID  = #linereplyGroupId#,
+          LINEREPLY_PARENT_ID = #linereplyParentId#,
+          STEP                = #step#,  
+          INDENTATION         = #indentation#,
+          CONTENTS            = #contents#,
+          LINEREPLY_DELETE    = #linereplyDelete#,
+          UPDATER_ID          = #updaterId#,
+          UPDATER_NAME        = #updaterName#,
+          UPDATE_DATE         = CURRENT_TIMESTAMP 
+    WHERE LINEREPLY_ID = #linereplyId# 
+  </update>
+
+
+  <!-- ANSI -->
+  <update id="logicalDelete" parameterClass="CustomerLinereply">  
+    UPDATE CUSTOMER_LINEREPLY /* [CustomerLinereply_SqlMap.xml] support.customer.customerLinereply.logicalDelete */
+    SET   LINEREPLY_DELETE    = 1,
+          UPDATER_ID          = #updaterId#,
+          UPDATER_NAME        = #updaterName#,
+          UPDATE_DATE         = CURRENT_TIMESTAMP  
+    WHERE LINEREPLY_ID = #linereplyId# 
+  </update>  
+
+
+  <!-- ANSI -->
+  <select id="countChildren" parameterClass="String" resultClass="int">  
+	SELECT /* [CustomerLinereply_SqlMap.xml] support.customer.customerLinereply.countBySearchCondition */ 
+           COUNT(*)
+	FROM   CUSTOMER_LINEREPLY WITH (NOLOCK)
+    WHERE  LINEREPLY_PARENT_ID = #linereplyId#  
+  </select> 
+
+
+
+  
+  <!-- ANSI -->
+  <delete id="physicalDelete" parameterClass="string"> 
+    DELETE FROM CUSTOMER_LINEREPLY /* [CustomerLinereply_SqlMap.xml] support.customer.customerLinereply.physicalDelete */
+    WHERE LINEREPLY_ID = #linereplyId# 
+  </delete>    
+
+  <!-- MS SQL -->
+  <delete id="physicalDeleteThreadByLinereplyId" parameterClass="string">  
+  	WITH CTE AS (
+  		SELECT	LINEREPLY_ID 
+	    FROM 	CUSTOMER_LINEREPLY
+        WHERE	LINEREPLY_ID =  #linereplyId# 
+        UNION ALL
+        SELECT	TBL.LINEREPLY_ID 
+	    FROM 	CUSTOMER_LINEREPLY TBL, CTE
+	    WHERE	CTE.LINEREPLY_ID = TBL.LINEREPLY_PARENT_ID 
+  	)
+ 	DELETE FROM  CUSTOMER_LINEREPLY /* [CustomerLinereply_SqlMap.xml] support.customer.customerLinereply.physicalDeleteThread */
+ 	WHERE  LINEREPLY_ID IN ( 
+	      	SELECT LINEREPLY_ID 
+		    FROM CTE
+	)   
+  </delete>  
+
+
+	<select id="listHistorysMemo" resultClass="java.util.HashMap">
+		SELECT  
+			/* [CustomerLinereply_SqlMap.xml] support.customer.customerLinereply.listHistorysMemo */
+			CASE(FLAG)
+			WHEN 'Counsel' THEN
+				'CH'
+			ELSE
+				'QC'
+			END AS FLAG, CONVERT(NVARCHAR, A.SEQNUM) SEQNUM, A.MEMO_CONTENT, B.USER_ID,
+			B.USER_NAME, CONVERT(NVARCHAR, A.CREATEDATE) AS CREATEDATE
+				
+			FROM HISTORYS_MEMO A WITH (NOLOCK) INNER JOIN IKEP4_EV_USER B WITH (NOLOCK)
+			ON A.EPUSERID = B.user_id
+	</select>
+
+
+
+
+
+
+
+
+
+
+
+
+</sqlMap>

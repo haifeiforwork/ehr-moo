@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="collpack.knowledgehub.dao.KnowledgeMapRecommendTag">
+	<typeAlias alias="KnowledgeMapRecommendTagPK" type="com.lgcns.ikep4.collpack.knowledgehub.model.KnowledgeMapRecommendTagPK"/>
+	<typeAlias alias="KnowledgeMapRecommendTag" type="com.lgcns.ikep4.collpack.knowledgehub.model.KnowledgeMapRecommendTag"/>
+
+	<resultMap class="KnowledgeMapRecommendTag" id="result">
+		<result column="RECOMMEND_TAG_ID" property="recommendTagId" jdbcType="VARCHAR" javaType="String"/>
+		<result column="TAG_NAME" property="tagName" jdbcType="VARCHAR" javaType="String"/>
+	</resultMap>
+
+<!-- ANSI -->
+<!-- RecommendTag 입력 -->
+	<insert id="create" parameterClass="KnowledgeMapRecommendTag">
+	<![CDATA[
+		INSERT /* [KnowledgeMapTagging_SqlMap.xml] collpack.knowledgehub.dao.KnowledgeMapTagging.create */
+		       INTO IKEP4_KM_RECOMMEND_TAG (
+		       USER_ID
+		     , RECOMMEND_TAG_ID
+		     , SORT_ORDER
+		     , REGIST_DATE
+		       )
+		VALUES (
+		       #userId#
+		     , #recommendTagId#
+		     , #sortOrder#
+		     , CURRENT_TIMESTAMP
+		       )
+	]]>
+	</insert>
+
+<!-- 사용자별 추천태그 조회 -->
+	<select id="listByUserId" parameterClass="Map" resultMap="result">
+	<![CDATA[
+		SELECT /* [KnowledgeMapRecommendTag_SqlMap.xml] collpack.knowledgehub.dao.KnowledgeMapRecommendTag.listByUserId */
+		       RECOMMEND_TAG_ID, TAG_NAME
+		  FROM (
+		        SELECT Row_number() OVER(ORDER BY COUNT(TAG.TAG_ID) DESC, TAG.TAG_ID DESC) AS RNUM
+		        	 , TAG.TAG_ID RECOMMEND_TAG_ID
+		             , MAX(TAG.TAG_NAME) TAG_NAME
+		          FROM IKEP4_TG_LINK LNK
+			           INNER JOIN (
+					                /* favorite */
+					                SELECT TARGET_ID TARGET_USER_ID
+					                  FROM IKEP4_AS_FAVORITE
+					                 WHERE ITEM_TYPE_CODE = 'PF' /* type = 'PEOPLE' 인 경우는 프로파일에서만 존재한다 */
+					                   AND REGISTER_ID = #userId#
+					                UNION ALL
+					                /* follow */
+					                SELECT FOLLOWING_USER_ID TARGET_USER_ID
+					                  FROM IKEP4_MB_FOLLOW
+					                 WHERE USER_ID = #userId#
+					               ) USR
+			            	ON USR.TARGET_USER_ID = LNK.TAG_ITEM_ID
+			           INNER JOIN IKEP4_TG_DICTIONARY TAG
+			            	ON TAG.TAG_ID = LNK.TAG_ID
+		         WHERE LNK.TAG_ITEM_TYPE IN ('PE', 'PI')
+		           AND NOT EXISTS (SELECT 1 /* 자신의 전문,관심분야 태그는 제외 */
+		                             FROM IKEP4_TG_LINK Z
+		                            WHERE Z.TAG_ID = TAG.TAG_ID
+		                              AND Z.TAG_ITEM_ID = #userId#
+		                              AND Z.TAG_ITEM_TYPE IN ('PE', 'PI')
+		                          )
+		         GROUP BY TAG.TAG_ID
+		       ) TBL
+		 WHERE RNUM < #rowCount#
+	]]>
+	</select>
+
+<!-- ANSI -->
+<!-- 전체 삭제 -->
+	<delete id="removeAll">
+	<![CDATA[
+		DELETE /* [KnowledgeMapRecommendTag_SqlMap.xml] collpack.knowledgehub.dao.KnowledgeMapRecommendTag.removeAll */
+		       IKEP4_KM_RECOMMEND_TAG
+	]]>
+	</delete>
+
+<!-- ANSI -->
+<!-- 추천태그 수집 배치 -->
+	<insert id="batchGatherTags">
+	<![CDATA[
+		INSERT /* [KnowledgeMapRecommendTag_SqlMap.xml] collpack.knowledgehub.dao.KnowledgeMapRecommendTag.batchGatherTags */
+		       INTO IKEP4_KM_RECOMMEND_TAG (USER_ID, RECOMMEND_TAG_ID, SORT_ORDER, REGIST_DATE)
+		SELECT USR.USER_ID, TAG.TAG_ID, COUNT(TAG_ID) RANK, CURRENT_TIMESTAMP
+		  FROM IKEP4_TG_LINK TAG
+			   INNER JOIN (
+					        /* favorite */
+					        SELECT REGISTER_ID USER_ID, TARGET_ID TARGET_USER_ID
+					          FROM IKEP4_AS_FAVORITE
+					         WHERE ITEM_TYPE_CODE = 'PF' /* type = 'PEOPLE' 인 경우는 프로파일에서만 존재한다 */
+					        UNION ALL
+					        /* follow */
+					        SELECT USER_ID, FOLLOWING_USER_ID TARGET_USER_ID
+					          FROM IKEP4_MB_FOLLOW
+					       ) USR
+				    ON USR.TARGET_USER_ID = TAG.TAG_ITEM_ID
+		 WHERE TAG.TAG_ITEM_TYPE IN ('PE', 'PI')
+		   AND NOT EXISTS (SELECT 1 /* 자신의 전문,관심분야 태그는 제외 */
+		                     FROM IKEP4_TG_LINK Z
+		                    WHERE Z.TAG_ID = TAG.TAG_ID 
+		                      AND Z.TAG_ITEM_ID = USR.USER_ID
+		                      AND Z.TAG_ITEM_TYPE IN ('PE', 'PI')
+		                  )
+		 GROUP BY USR.USER_ID, TAG.TAG_ID
+	]]>
+	</insert>
+
+</sqlMap>

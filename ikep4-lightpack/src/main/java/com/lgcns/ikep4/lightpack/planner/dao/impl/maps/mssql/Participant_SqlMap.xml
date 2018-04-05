@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="lightpack.planner.dao.Participant" >
+	<typeAlias alias = "Participant" type="com.lgcns.ikep4.lightpack.planner.model.Participant"/>
+	
+	<resultMap id="participantResult" class="Participant">
+		<result property="scheduleId" column="scheduleId"/>
+		<result property="targetUserId" column="targetUserId"/>
+		<result property="targetType" column="targetType"/>
+		<result property="isAccept" column="isAccept"/>
+		<result property="abscentReason" column="abscentReason"/>	
+		<result property="targetUserInfo" column="targetUserInfo"/>	
+	</resultMap>
+	
+	<!-- ANSI -->
+	<!-- insert -->
+	<insert id="insert" parameterClass="Participant"> 
+		Insert into IKEP4_SD_PARTICIPANT (SCHEDULE_ID,TARGET_USER_ID,TARGET_TYPE,PARTICIPATION,ABSENCE_REASON) 
+		VALUES (#scheduleId#,#targetUserId#,#targetType#,#isAccept#,#abscentReason#)
+   </insert>	
+   	
+   	<!-- MS SQL -->
+	<!-- insert list -->
+	<insert id="insertList" parameterClass="map"> 
+		<iterate conjunction=" " property="items">		
+		  Insert 
+		  into IKEP4_SD_PARTICIPANT (SCHEDULE_ID,TARGET_USER_ID,TARGET_TYPE,PARTICIPATION,ABSENCE_REASON) 
+		  VALUES (#items[].scheduleId#,#items[].targetUserId#,#items[].targetType#,#items[].isAccept#,#items[].abscentReason#)
+		</iterate>		
+   </insert>
+   
+   	<!-- MS SQL -->
+	<!-- insert list -->
+	<insert id="insertListWithScheduleId" parameterClass="map"> 
+		<iterate conjunction=" " property="items">	
+		  Insert 	
+		  into IKEP4_SD_PARTICIPANT (SCHEDULE_ID,TARGET_USER_ID,TARGET_TYPE,PARTICIPATION,ABSENCE_REASON) 
+		  VALUES (#scheduleId#,#items[].targetUserId#,#items[].targetType#,#items[].isAccept#,#items[].abscentReason#)
+		</iterate>		
+   </insert>
+   
+   <!-- select -->
+	<select id="select" parameterClass="java.lang.String" resultClass="Participant">
+	  <![CDATA[
+
+	   ]]>
+	</select>
+
+	<!-- MS SQL -->
+   <!-- select list -->
+	<select id="selectList" parameterClass="java.lang.String" resultClass="Participant">
+	  <![CDATA[
+		select schedule_id "scheduleId", target_user_id "targetUserId", target_type "targetType",
+		participation "isAccept", absence_reason "abscentReason", b.mail "mail",
+    	user_name "targetUserName", USER_ENGLISH_NAME "targetUserEnglishName",
+    	isnull(JOB_DUTY_NAME, JOB_TITLE_NAME) "targetUserJobTitleName", team_name "targetUserTeamName",
+    	JOB_TITLE_ENGLISH_NAME "targetUserJobTitleEnglishName", TEAM_ENGLISH_NAME "targetUserTeamEnglishName",
+    	user_name + ' ' + isnull(JOB_DUTY_NAME, JOB_TITLE_NAME) + ' ' + team_name "targetuserInfo",
+    	USER_ENGLISH_NAME + ' ' + JOB_TITLE_ENGLISH_NAME + ' ' + TEAM_ENGLISH_NAME "targetuserEnglishInfo",
+    	mobile "targetUserMobile"
+		FROM   ikep4_sd_participant a
+		       inner join ikep4_ev_user b
+		         ON b.user_id = A.target_user_id
+		       inner join ikep4_ev_job_title c
+		         ON c.job_title_code = b.job_title_code
+		         LEFT OUTER JOIN IKEP4_EV_JOB_DUTY D
+                    ON  b.JOB_DUTY_CODE = D.JOB_DUTY_CODE
+		WHERE  schedule_id = #scheduleId# 
+	   ]]>
+	</select>
+	
+	<!-- update -->
+	<update id="update" parameterClass="Participant">
+	  <![CDATA[
+
+	   ]]>
+	</update>
+	
+	<!-- ANSI -->
+	<!-- updateAcceptInfo -->
+	<update id="updateAcceptInfo" parameterClass="map">
+	  <![CDATA[
+		UPDATE IKEP4_SD_PARTICIPANT
+		SET PARTICIPATION  = #isAccept#,
+		  ABSENCE_REASON   = #reason#
+		WHERE SCHEDULE_ID  = #scheduleId#
+		AND TARGET_USER_ID = #targetUserId#
+		AND TARGET_TYPE    = 1		
+	   ]]>
+	</update>
+	
+	<!-- getList -->
+	<select id="getList" resultClass="Participant">
+	  <![CDATA[
+
+	   ]]>
+	</select>
+	
+	<!-- ANSI -->
+   <!-- delete -->
+   <delete id="delete" parameterClass="java.lang.String">
+      <![CDATA[
+		delete from ikep4_sd_participant
+		where schedule_id = #userId#			
+	   ]]>
+	</delete>
+</sqlMap>

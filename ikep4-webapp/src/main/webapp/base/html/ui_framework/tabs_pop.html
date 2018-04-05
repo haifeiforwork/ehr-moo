@@ -1,0 +1,64 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ko">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Tabs</title>
+<link rel="stylesheet" type="text/css" href="../../css/guide.css" />
+<link rel="stylesheet" type="text/css" href="../../css/theme01/jquery_ui_custom.css" />
+<link rel="stylesheet" type="text/css" href="../../css/common.css" />
+<link rel="stylesheet" type="text/css" href="../../css/theme01/theme.css" />
+<script type="text/javascript" src="../../js/jquery/jquery-1.6.2.min.js"></script>
+<script type="text/javascript" src="../../js/jquery/jquery-ui-1.8.13.min.without.datepicker.js"></script>
+<script type="text/javascript" src="../../js/langResource/ko.js"></script>
+<script type="text/javascript" src="../../js/common.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$(document).ready(function(){
+		$("#divTab1").tabs();
+	   
+		$("#divTab2").tabs({
+			selected : 1,
+			cache : true,
+			ajaxOptions: {
+				error: function( xhr, status, index, anchor ) {
+					$( anchor.hash ).html("Couldn't load this tab. We'll try to fix this as soon as possible. If this wouldn't be a demo." );
+				}
+			},
+			select : function(event, ui) {
+				//iKEP.debug(ui);
+			},
+			load : function(event, ui) {
+				//iKEP.debug(event);
+			}
+		});
+	});
+})(jQuery);
+</script>
+</head>
+
+<body class="popup">
+		<div id="divTab1" class="iKEP_tab">
+			<ul>
+				<li><a href="#tabs-1">첫번째탭</a></li>
+				<li><a href="#tabs-2">두번째탭</a></li>
+				<li><a href="#tabs-3">세번째탭</a></li>
+			</ul>
+			<div class="tab_con">
+				<div id="tabs-1">첫번째 탭 내용</div>
+				<div id="tabs-2">두번째 탭 내용</div>
+				<div id="tabs-3">세번째 탭 내용</div>
+			</div>				
+		</div>		
+		<div id="divTab2" class="iKEP_tab">
+			<ul>
+				<li><a href="accordion.html">Accordion</a></li>
+				<li><a href="datepicker.html">Datepicker</a></li>
+				<li><a href="http://www.naver.com">Naver</a></li>
+			</ul>
+			<div class="tab_conbox">
+				<div id="ui-tabs-1"></div>
+			</div>
+		</div>
+
+</body>
+</html>

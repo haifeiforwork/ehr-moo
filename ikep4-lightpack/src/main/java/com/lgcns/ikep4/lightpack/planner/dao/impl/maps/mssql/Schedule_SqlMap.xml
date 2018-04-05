@@ -1,0 +1,4149 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="lightpack.planner.dao.Schedule" >
+	<typeAlias alias = "Schedule" type="com.lgcns.ikep4.lightpack.planner.model.Schedule"/>
+	<typeAlias alias = "Recurrences" type="com.lgcns.ikep4.lightpack.planner.model.Recurrences"/>
+	<typeAlias alias = "Participant" type="com.lgcns.ikep4.lightpack.planner.model.Participant"/>
+	<typeAlias alias = "Alarm" type="com.lgcns.ikep4.lightpack.planner.model.Alarm"/>
+	<typeAlias alias = "Mandator" type="com.lgcns.ikep4.lightpack.planner.model.Mandator"/>
+	<typeAlias alias = "Holiday" type="com.lgcns.ikep4.lightpack.planner.model.Holiday"/>
+	<typeAlias alias = "User" type="com.lgcns.ikep4.support.user.member.model.User"/>
+	<typeAlias alias="ScheduleSearchCondition" type="com.lgcns.ikep4.lightpack.planner.search.ScheduleSearchCondition"/>
+	<typeAlias alias="ScheduleDetail" type="com.lgcns.ikep4.util.model.ScheduleDetail" />
+	
+	<resultMap id="scheduleOrg" class="Schedule" groupBy="scheduleId">
+		<result property="scheduleId" column="scheduleId"/>
+		<result property="wholeday" column="wholeday"/>
+		<result property="repeat" column="repeat"/>
+		<result property="title" column="title"/>
+		<result property="place" column="place"/>
+		<result property="contents" column="contents"/>
+		<result property="workspaceId" column="workspaceId"/>
+		<result property="workspaceName" column="workspaceName"/>
+		<result property="attendanceRequest" column="attendanceRequest"/>
+		<result property="registerId" column="registerId"/>
+		<result property="registerName" column="registerName"/>
+		<result property="registDate" column="registDate"/>
+		<result property="updaterId" column="updaterId"/>
+		<result property="updateDate" column="updateDate"/>
+		<result property="alarmRequest" column="alarmRequest"/>
+		<result property="schedulePublic" column="schedulePublic"/>
+		<result property="categoryId" column="categoryId"/>
+		<result property="categoryName" column="categoryName"/>
+		<result property="startDate" column="startDate"/>
+		<result property="endDate" column="endDate"/>	
+		<result property="userInfo" column="userInfo" nullValue=""/>
+		<result property="userEnglishInfo" column="userEnglishInfo" nullValue=""/>	
+		
+	</resultMap>
+	
+	<resultMap id="favoriteTeam" class="com.lgcns.ikep4.lightpack.planner.model.FavoriteTarget" >
+		<result column="targetGroupId"           property="targetGroupId"               jdbcType="VARCHAR" />
+		<result column="targetGroupName"          property="targetGroupName"              jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<resultMap id="favoriteUser" class="com.lgcns.ikep4.lightpack.planner.model.FavoriteTarget" >
+		<result column="targetGroupId"           property="targetGroupId"               jdbcType="VARCHAR" />
+		<result column="targetGroupName"          property="targetGroupName"              jdbcType="VARCHAR" />
+		<result column="jobTitleName"           property="jobTitleName"               jdbcType="VARCHAR" />
+		<result column="teamName"          property="teamName"              jdbcType="VARCHAR" />
+	</resultMap>
+	
+	<resultMap id="sapScheduleDetail" class="Schedule">
+		<result property="pernr" column="pernr"/>
+		<result property="begda" column="begda"/>
+		<result property="endda" column="endda"/>
+		<result property="atext" column="atext"/>
+		<result property="whole" column="whole"/>
+		<result property="awart" column="awart"/>
+		<result property="requestReason" column="requestReason"/>
+	</resultMap>
+	
+	<resultMap id="scheduleResult" class="Schedule" groupBy="scheduleId" extends="lightpack.planner.dao.Schedule.scheduleOrg">
+		<result property="meetingRoomId" column="meetingRoomId"/>
+		<result property="recurrences" resultMap="lightpack.planner.dao.Schedule.recurrencesResult"/>
+		<result property="everyoneSchedule" column="everyoneSchedule" nullValue="0"/>
+		<result property="workAreaName" column="workAreaName" />
+		<result property="updateDisplay" column="updateDisplay" nullValue="0"/>	
+		<result property="managerId" column="managerId"/>
+		<result property="schedulePrivate" column="schedulePrivate"/>
+		<result property="color"					column="color" />
+		<result property="cartooletcId" column="cartooletcId"/>
+		<result property="cartooletcName" column="cartooletcName"/>
+		<result property="searchCode" column="searchCode"/>
+	</resultMap>
+	
+	<resultMap id="exportScheduleResult" class="Schedule" groupBy="scheduleId" extends="lightpack.planner.dao.Schedule.scheduleOrg">
+		<result property="participantList" column="scheduleId" select="lightpack.planner.dao.Schedule.exportScheduleWithParticipant"/>
+		<result property="alarmList" column="scheduleId" select="lightpack.planner.dao.Alarm.selectList"/>
+		<result property="recurrences" column="scheduleId" select="lightpack.planner.dao.Schedule.exportScheduleWithRepeat"/>
+	</resultMap>	
+	
+	<resultMap id="recurrencesResult" class="Recurrences">
+		<result property="scheduleId" column="scheduleId"/>
+		<result property="repeatType" column="repeatType"/>
+		<result property="repeatPeriod" column="repeatPeriod"/>
+		<result property="repeatPeriodOption" column="repeatPeriodOption"/>
+		<result property="startDate" column="repeatStartDate"/>
+		<result property="endDate" column="repeatEndDate"/>
+		<result property="sdStartDate" column="startDate"/>
+		<result property="sdEndDate" column="endDate"/>		
+	</resultMap>
+	
+	<resultMap id="selectByPeriodResultMapBase" class="java.util.HashMap">
+		<result property="startDate" column="startDate" typeHandler="com.ibatis.sqlmap.engine.type.SqlTimestampTypeHandler" javaType="java.util.Date"/>
+		<result property="endDate" column="endDate" typeHandler="com.ibatis.sqlmap.engine.type.SqlTimestampTypeHandler" javaType="java.util.Date"/>
+		<result property="title" column="title"/>
+		<result property="scheduleId" column="scheduleId"/>
+		<result property="repeatType" column="repeatType"/>
+		<result property="repeatPeriod" column="repeatPeriod"/>
+		<result property="repeatPeriodOption" column="repeatPeriodOption"/>		
+		<result property="repeatStartDate" column="repeatStartDate"/>
+		<result property="repeatEndDate" column="repeatEndDate"/>
+		<result property="categoryId" column="categoryId"/>
+		<result property="workspaceId" column="workspaceId"/>		
+		<result property="place" column="place"/>
+		<result property="wholeday" column="wholeday"/>
+		<result property="schedulePublic" column="schedulePublic"/>
+		<result property="attendanceRequest" column="attendanceRequest"/>
+		<result property="registerId" column="registerId"/>									
+	</resultMap>
+	
+	<resultMap id="selectByPeriodResultMap" class="java.util.HashMap" extends="selectByPeriodResultMapBase"> 
+		<result property="categoryName" column="categoryName" nullValue=""/>
+		<result property="color" column="color"/>					
+		<result property="participantId" column="participantId"/>	
+		<result property="meetingRoomId" column="meetingRoomId" nullValue=""/>
+		<result property="pacYn" column="pacYn"/>	
+		<result property="refYn" column="refYn"/>	
+		<result property="schedulePrivate" column="schedulePrivate"/>	
+	</resultMap>
+
+
+	<resultMap id="selectByPeriodResultMap2" class="java.util.HashMap" extends="selectByPeriodResultMapBase"> 
+		<result property="color" column="color"/>					
+		<result property="participantId" column="participantId"/>	
+		<result property="cartooletcId" column="cartooletcId" nullValue=""/>
+	</resultMap>
+	
+	<resultMap id="selectByPeriodResultMap3" class="java.util.HashMap" extends="selectByPeriodResultMapBase"> 
+		<result property="categoryName" column="categoryName" nullValue=""/>
+		<result property="color" column="color"/>					
+		<result property="participantId" column="participantId"/>	
+		<result property="meetingRoomId" column="meetingRoomId" nullValue=""/>
+		<result property="updateDisplay" column="updateDisplay" nullValue="0"/>	
+		<result property="workAreaName" column="workAreaName" />
+	</resultMap>
+	
+	<resultMap id="selectByPeriodSearchResultMap" class="java.util.HashMap" extends="selectByPeriodResultMap">
+		<result property="userName" column="userName" nullValue=""/>
+	</resultMap>
+	
+	<resultMap id="selectByPeriodResultMapForCompany" class="java.util.HashMap" extends="selectByPeriodResultMap"> 
+		<result property="userInfo" column="userInfo" nullValue=""/>							
+	</resultMap>
+	
+		
+	<resultMap id="selectByPeriodResultMapForMeetingRoom" class="java.util.HashMap" extends="selectByPeriodResultMap"> 
+		<result property="meetingRoomName" column="meetingRoomName"/>
+		<result property="buildingName" column="buildingName"/>			
+		<result property="floorName" column="floorName"/>
+		<result property="approveStatus" column="approveStatus"/>									
+	</resultMap>
+		 
+	<resultMap id="selectByPeriodResultMapForCartooletc" class="java.util.HashMap" extends="selectByPeriodResultMap2"> 
+		<result property="cartooletcName" column="cartooletcName"/>
+		<result property="categoryName" column="categoryName"/>			
+		<result property="regionName" column="regionName"/>
+		<result property="approveStatus" column="approveStatus"/>									
+	</resultMap>
+	  
+	<resultMap id="alarmTargetRecurrEventResult" class="java.util.HashMap">
+		<result property="startDate" column="startDate" typeHandler="com.ibatis.sqlmap.engine.type.SqlTimestampTypeHandler" javaType="java.util.Date"/>
+		<result property="endDate" column="endDate" typeHandler="com.ibatis.sqlmap.engine.type.SqlTimestampTypeHandler" javaType="java.util.Date"/>
+		<result property="scheduleId" column="scheduleId"/>
+		<result property="repeatType" column="repeatType"/>
+		<result property="repeatPeriod" column="repeatPeriod"/>
+		<result property="repeatPeriodOption" column="repeatPeriodOption"/>		
+		<result property="repeatStartDate" column="repeatStartDate"/>
+		<result property="repeatEndDate" column="repeatEndDate"/>
+		<result property="registerId" column="registerId"/>							
+	</resultMap>
+	
+	<resultMap id="alarmTargetListResult" class="java.util.HashMap" groupBy="scheduleId">
+		<result property="scheduleId" column="SCHEDULEID" />
+		<result property="startDate" column="STARTDATE" javaType="java.util.Date"  />		
+		<result property="endDate" column="ENDDATE" javaType="java.util.Date"  />	
+		<result property="senderUserId" column="SENDERUSERID" />
+		<result property="sender" column="SENDER" />
+		<result property="fromMail" column="FROMMAIL" />
+		<result property="mailPassword" column="mailPassword" />
+		<result property="title" column="TITLE" />	
+		<result property="details" javaType="java.util.ArrayList" resultMap="lightpack.planner.dao.Schedule.alarmTargetListResultSub" />	
+	</resultMap>
+	
+	<resultMap id="alarmTargetListResultSub" class="java.util.HashMap">
+		<result property="atime" column="ATIME" javaType="java.util.Date" typeHandler="com.ibatis.sqlmap.engine.type.SqlTimestampTypeHandler" />
+		<result property="alarmId" column="ALARM_ID" />
+		<result property="alarmType" column="ALARM_TYPE" />
+		<result property="targetUserId" column="TARGETUSERID" />
+		<result property="targetUser" column="TARGETUSER" />	
+		<result property="toMail" column="TOMAIL" />	
+		<result property="mobile" column="MOBILE" />	
+	</resultMap>	
+	
+	<resultMap id="holidayResult" class="java.util.HashMap">
+		<result property="startDate" column="startDate" typeHandler="com.ibatis.sqlmap.engine.type.SqlTimestampTypeHandler" javaType="java.util.Date"/>
+		<result property="title" column="title" javaType="java.lang.String" />		
+	</resultMap>
+	
+	<resultMap id="readUsersScheduleMap" class="java.util.HashMap">
+		<result property="startDate" column="startDate" typeHandler="com.ibatis.sqlmap.engine.type.SqlTimestampTypeHandler" javaType="java.util.Date"/>
+		<result property="endDate" column="endDate" typeHandler="com.ibatis.sqlmap.engine.type.SqlTimestampTypeHandler" javaType="java.util.Date"/>
+		<result property="title" column="title"/>
+		<result property="scheduleId" column="scheduleId"/>
+		<result property="repeatType" column="repeatType"/>
+		<result property="repeatPeriod" column="repeatPeriod"/>
+		<result property="repeatPeriodOption" column="repeatPeriodOption"/>		
+		<result property="repeatStartDate" column="repeatStartDate"/>
+		<result property="repeatEndDate" column="repeatEndDate"/>
+		<result property="categoryId" column="categoryId"/>
+		<result property="workspaceId" column="workspaceId"/>		
+		<result property="place" column="place"/>
+		<result property="wholeday" column="wholeday"/>
+		<result property="schedulePublic" column="schedulePublic"/>
+		<result property="attendanceRequest" column="attendanceRequest"/>
+		<result property="registerId" column="registerId"/>				
+		<result property="participantId" column="participantId"/>						
+	</resultMap>
+
+
+	<typeAlias alias="CSExcelDownSearchCondition" type="com.lgcns.ikep4.lightpack.planner.model.CSExcelDownSearchCondition"/>
+	
+	<resultMap id="fileResult" class="java.util.HashMap">
+		<result property="num" column="num" />
+		<result property="fileId" column="file_id" />
+		<result property="filePath" column="file_path" />
+		<result property="fileName" column="file_name" />
+		<result property="fileRealName" column="file_real_name" />
+		<result property="fileContentsType" column="file_contents_type" />
+		<result property="fileExtension" column="file_extension" />
+		<result property="fileSize" column="file_size" />
+		<result property="editorAttach" column="editor_attach" />
+		<result property="registerId" column="register_id" />
+		<result property="registerName" column="register_name" />
+		<result property="registDate" column="regist_date" />
+		<result property="updaterId" column="updater_id" />
+		<result property="updaterName" column="updater_name" />
+		<result property="updateDate" column="update_date" />
+		<result property="itemId" column="item_id" />
+		<result property="itemTypeCode" column="item_type_code" />
+		<result property="fileUrl1" column="file_url1" />
+		<result property="fileUrl2" column="file_url2" />
+	</resultMap>
+	
+	<!-- MS SQL -->
+	<select id="selectByPeriod" parameterClass="map" resultMap="selectByPeriodResultMap">
+    <![CDATA[ 
+	  select p.*, category_name "categoryName", color "color", 
+	  CASE WHEN "schedulePublic" =  1 THEN dbo.IKEP4_SD_GET_PARTICIPANT_LIST("scheduleId") ELSE '' END "participantId"
+	  from (
+	      select      	
+	        start_date "startDate",
+	        end_date "endDate", 
+	        title "title", a.schedule_id "scheduleId", null "repeatType",null "repeatPeriod",
+	        null "repeatPeriodOption", null "repeatStartDate",null "repeatEndDate",
+	        a.category_id "categoryId", workspace_id "workspaceId", place "place", wholeday "wholeday", 
+	        schedule_public "schedulePublic", attendance_request "attendanceRequest", a.register_id "registerId",
+	        a.meeting_room_id "meetingRoomId"   
+	        ,(select count(*) from ikep4_sd_participant where schedule_id = a.schedule_id and target_type = '1' and target_user_id = #userId#) "pacYn"
+			,(select count(*) from ikep4_sd_participant where schedule_id = a.schedule_id and target_type = '2' and target_user_id = #userId#) "refYn"
+	      	,a.schedule_private "schedulePrivate"
+	      from ikep4_sd_schedule a
+	      where a.register_id = #userId#
+	      and a.everyone_schedule = 0
+	      /*and meeting_room_id is null*/
+	      and isnull(a.meeting_room_id,'') =''
+	      and isnull(a.cartooletc_id,'') =''
+	      and repeat = 0
+	      and start_date < DATEADD(DD, 1, #endDate#)
+	      and end_date >=  #startDate#     
+	      union all
+	      select 
+	        start_date "startDate",
+	        end_date "endDate", 
+	        title "title", a.schedule_id "scheduleId", null "repeatType",null "repeatPeriod",
+	        null "repeatPeriodOption", null "repeatStartDate",null "repeatEndDate",
+	        a.category_id "categoryId", workspace_id "workspaceId", place "place", wholeday "wholeday", 
+	        schedule_public "schedulePublic", attendance_request "attendanceRequest", a.register_id "registerId",
+	        a.meeting_room_id "meetingRoomId"  
+	        ,(select count(*) from ikep4_sd_participant where schedule_id = a.schedule_id and target_type = '1' and target_user_id = #userId#) "pacYn"
+			,(select count(*) from ikep4_sd_participant where schedule_id = a.schedule_id and target_type = '2' and target_user_id = #userId#) "refYn"
+	      ,a.schedule_private "schedulePrivate"
+	      from ikep4_sd_schedule a INNER JOIN ikep4_sd_participant c   
+	      		ON a.schedule_id = c.schedule_id
+	      WHERE target_user_id = #userId#
+	      and a.everyone_schedule = 0
+	      and c.target_type in ('1','2')
+	      /*and meeting_room_id is null*/
+	      and isnull(a.meeting_room_id,'') =''
+	      and isnull(a.cartooletc_id,'') =''
+	      and repeat = 0
+	      and start_date < DATEADD(DD, 1, #endDate#)
+	      and end_date >=  #startDate#        
+	      union all
+	    select 
+		  SD_START_DATE "startDate",
+		  SD_END_DATE "endDate", 
+		  title "title", a.schedule_id "scheduleId", REPEAT_TYPE "repeatType", REPEAT_PERIOD "repeatPeriod",
+		  REPEAT_PERIOD_OPTION "repeatPeriodOption", repeat_start_date "repeatStartDate",repeat_end_date "repeatEndDate",
+		  a.category_id "categoryId", workspace_id "workspaceId",place "place",wholeday "wholeday", 
+	      schedule_public "schedulePublic", attendance_request "attendanceRequest", a.register_id "registerId",
+	      a.meeting_room_id "meetingRoomId"
+	      ,(select count(*) from ikep4_sd_participant where schedule_id = a.schedule_id and target_type = '1' and target_user_id = #userId#) "pacYn"
+			,(select count(*) from ikep4_sd_participant where schedule_id = a.schedule_id and target_type = '2' and target_user_id = #userId#) "refYn"
+	    ,a.schedule_private "schedulePrivate"
+	    from ikep4_sd_schedule a INNER JOIN ikep4_sd_repeat b
+	    		ON b.schedule_id = a.schedule_id
+	    WHERE a.register_id = #userId#
+	    and a.everyone_schedule = 0
+	      /*and meeting_room_id is null*/
+	      and isnull(meeting_room_id,'') =''
+	      and isnull(cartooletc_id,'') =''
+	    and repeat = 1
+	    and repeat_start_date < DATEADD(DD, 1, #endDate#)
+	    and repeat_end_date >=  #startDate# 
+	    union all
+	    select 
+		  SD_START_DATE "startDate",
+		  SD_END_DATE "endDate", 
+		  title "title", a.schedule_id "scheduleId", REPEAT_TYPE "repeatType", REPEAT_PERIOD "repeatPeriod",
+		  REPEAT_PERIOD_OPTION "repeatPeriodOption", repeat_start_date "repeatStartDate",repeat_end_date "repeatEndDate",
+		  a.category_id "categoryId", workspace_id "workspaceId",place "place",wholeday "wholeday", 
+	      schedule_public "schedulePublic", attendance_request "attendanceRequest", a.register_id "registerId",
+	      a.meeting_room_id "meetingRoomId"
+	      ,(select count(*) from ikep4_sd_participant where schedule_id = a.schedule_id and target_type = '1' and target_user_id = #userId#) "pacYn"
+			,(select count(*) from ikep4_sd_participant where schedule_id = a.schedule_id and target_type = '2' and target_user_id = #userId#) "refYn"
+	    ,a.schedule_private "schedulePrivate"
+	    from ikep4_sd_schedule a 
+	    	 INNER JOIN ikep4_sd_repeat b
+	    	 	ON b.schedule_id = a.schedule_id
+			 INNER JOIN ikep4_sd_participant d
+			 	ON d.schedule_id = a.schedule_id
+	    where target_user_id = #userId#
+	    and a.everyone_schedule = 0
+	      /*and meeting_room_id is null*/
+	      and isnull(a.meeting_room_id,'') =''
+	      and isnull(a.cartooletc_id,'') =''
+	    and repeat = 1
+	    and d.target_type in('1','2')
+	    and repeat_start_date < DATEADD(DD, 1, #endDate#)
+	    and repeat_end_date >=  #startDate# 
+	    
+	    union all
+	    
+	    select      	
+	        a.start_date "startDate",
+	        a.end_date "endDate", 
+	        a.title "title", a.schedule_id "scheduleId", null "repeatType",null "repeatPeriod",
+	        null "repeatPeriodOption", null "repeatStartDate",null "repeatEndDate",
+	        a.category_id "categoryId", a.workspace_id "workspaceId", a.place "place", a.wholeday "wholeday", 
+	        a.schedule_public "schedulePublic", a.attendance_request "attendanceRequest", a.register_id "registerId",
+	        a.meeting_room_id "meetingRoomId" 
+	        ,(select count(*) from ikep4_sd_participant where schedule_id = a.schedule_id and target_type = '1' and target_user_id = #userId#) "pacYn"
+			,(select count(*) from ikep4_sd_participant where schedule_id = a.schedule_id and target_type = '2' and target_user_id = #userId#) "refYn"
+	      ,a.schedule_private "schedulePrivate"
+	      from ikep4_sd_schedule a
+	      inner join ikep4_mr_approve b
+	      on a.schedule_id = b.schedule_id
+	      where a.register_id = #userId#
+	      and a.everyone_schedule = 0
+	      /*and a.meeting_room_id is not null*/
+	      and isnull(a.meeting_room_id,'') !=''
+	      and b.meeting_room_id not in(select cartooletc_id from IKEP4_MR_CARTOOLETC) 
+	      and b.approve_status in ('A', 'W')
+	      and a.repeat = 0
+	      and a.start_date < DATEADD(DD, 1, #endDate#)
+	      and a.end_date >=  #startDate#     
+	      union all
+	      select 
+	        a.start_date "startDate",
+	        a.end_date "endDate", 
+	        a.title "title", a.schedule_id "scheduleId", null "repeatType",null "repeatPeriod",
+	        null "repeatPeriodOption", null "repeatStartDate",null "repeatEndDate",
+	        a.category_id "categoryId", a.workspace_id "workspaceId", a.place "place", a.wholeday "wholeday", 
+	        a.schedule_public "schedulePublic", a.attendance_request "attendanceRequest", a.register_id "registerId",
+	        a.meeting_room_id "meetingRoomId"   
+	        ,(select count(*) from ikep4_sd_participant where schedule_id = a.schedule_id and target_type = '1' and target_user_id = #userId#) "pacYn"
+			,(select count(*) from ikep4_sd_participant where schedule_id = a.schedule_id and target_type = '2' and target_user_id = #userId#) "refYn"
+	      ,a.schedule_private "schedulePrivate"
+	      from ikep4_sd_schedule a INNER JOIN ikep4_sd_participant c   
+	      		ON a.schedule_id = c.schedule_id
+	      inner join ikep4_mr_approve b
+	      on a.schedule_id = b.schedule_id
+	      WHERE c.target_user_id = #userId#
+	      and a.everyone_schedule = 0
+	      and c.target_type in('1','2')
+	      /*and a.meeting_room_id is not null*/
+	      and isnull(a.meeting_room_id,'') !=''
+	      and b.meeting_room_id not in(select cartooletc_id from IKEP4_MR_CARTOOLETC) 
+	      and b.approve_status in ('A', 'W')
+	      and a.repeat = 0
+	      and a.start_date < DATEADD(DD, 1, #endDate#)
+	      and a.end_date >=  #startDate#        
+	      union all
+	    select 
+		  b.SD_START_DATE "startDate",
+		  b.SD_END_DATE "endDate", 
+		  a.title "title", a.schedule_id "scheduleId", b.REPEAT_TYPE "repeatType", b.REPEAT_PERIOD "repeatPeriod",
+		  b.REPEAT_PERIOD_OPTION "repeatPeriodOption", b.repeat_start_date "repeatStartDate",b.repeat_end_date "repeatEndDate",
+		  a.category_id "categoryId", a.workspace_id "workspaceId",a.place "place",a.wholeday "wholeday", 
+	      a.schedule_public "schedulePublic", a.attendance_request "attendanceRequest", a.register_id "registerId",
+	      a.meeting_room_id "meetingRoomId" 
+	      ,(select count(*) from ikep4_sd_participant where schedule_id = a.schedule_id and target_type = '1' and target_user_id = #userId#) "pacYn"
+			,(select count(*) from ikep4_sd_participant where schedule_id = a.schedule_id and target_type = '2' and target_user_id = #userId#) "refYn"
+	    ,a.schedule_private "schedulePrivate"
+	    from ikep4_sd_schedule a INNER JOIN ikep4_sd_repeat b
+	    		ON b.schedule_id = a.schedule_id
+	    inner join ikep4_mr_approve c
+	    on a.schedule_id = c.schedule_id
+	    WHERE a.register_id = #userId#
+	    and a.everyone_schedule = 0
+	      /*and a.meeting_room_id is not null*/
+	      and isnull(a.meeting_room_id,'') !=''
+	      and c.meeting_room_id not in(select cartooletc_id from IKEP4_MR_CARTOOLETC) 
+	    and c.approve_status in ('A', 'W')
+	    and a.repeat = 1
+	    and b.repeat_start_date < DATEADD(DD, 1, #endDate#)
+	    and b.repeat_end_date >=  #startDate# 
+	    union all
+	    select 
+		  b.SD_START_DATE "startDate",
+		  b.SD_END_DATE "endDate", 
+		  a.title "title", a.schedule_id "scheduleId", b.REPEAT_TYPE "repeatType", b.REPEAT_PERIOD "repeatPeriod",
+		  b.REPEAT_PERIOD_OPTION "repeatPeriodOption", b.repeat_start_date "repeatStartDate",b.repeat_end_date "repeatEndDate",
+		  a.category_id "categoryId", a.workspace_id "workspaceId",a.place "place",a.wholeday "wholeday", 
+	      a.schedule_public "schedulePublic", a.attendance_request "attendanceRequest", a.register_id "registerId",
+	      a.meeting_room_id "meetingRoomId" 
+	      ,(select count(*) from ikep4_sd_participant where schedule_id = a.schedule_id and target_type = '1' and target_user_id = #userId#) "pacYn"
+			,(select count(*) from ikep4_sd_participant where schedule_id = a.schedule_id and target_type = '2' and target_user_id = #userId#) "refYn"
+	    ,a.schedule_private "schedulePrivate"
+	    from ikep4_sd_schedule a 
+	    	 INNER JOIN ikep4_sd_repeat b
+	    	 	ON b.schedule_id = a.schedule_id
+			 INNER JOIN ikep4_sd_participant d
+			 	ON d.schedule_id = a.schedule_id
+		inner join ikep4_mr_approve c
+	    on a.schedule_id = c.schedule_id
+	    where d.target_user_id = #userId#
+	    and a.everyone_schedule = 0
+	      /*and a.meeting_room_id is not null*/
+	      and isnull(a.meeting_room_id,'') !=''
+	      and c.meeting_room_id not in(select cartooletc_id from IKEP4_MR_CARTOOLETC) 
+	    and c.approve_status in ('A', 'W')
+	    and a.repeat = 1
+	    and d.target_type in('1','2')
+	    and b.repeat_start_date < DATEADD(DD, 1, #endDate#)
+	    and b.repeat_end_date >=  #startDate# 
+	    ) p INNER JOIN ikep4_sd_category q
+	    	ON p."categoryId" = q.category_id
+    ]]>
+	</select>	
+	
+	<select id="selectByPeriodHb" parameterClass="map" resultMap="selectByPeriodResultMap">
+    <![CDATA[ 
+	  select p.*, category_name "categoryName", color "color", 
+	  CASE WHEN "schedulePublic" =  1 THEN dbo.IKEP4_SD_GET_PARTICIPANT_LIST("scheduleId") ELSE '' END "participantId"
+	  from (
+	      select      	
+	        start_date "startDate",
+	        end_date "endDate", 
+	        title "title", a.schedule_id "scheduleId", null "repeatType",null "repeatPeriod",
+	        null "repeatPeriodOption", null "repeatStartDate",null "repeatEndDate",
+	        a.category_id "categoryId", workspace_id "workspaceId", place "place", wholeday "wholeday", 
+	        schedule_public "schedulePublic", attendance_request "attendanceRequest", a.register_id "registerId",
+	        a.meeting_room_id "meetingRoomId"   
+	        ,(select count(*) from ikep4_sd_participant where schedule_id = a.schedule_id and target_type = '1' and target_user_id = #userId#) "pacYn"
+			,(select count(*) from ikep4_sd_participant where schedule_id = a.schedule_id and target_type = '2' and target_user_id = #userId#) "refYn"
+	      	,a.schedule_private "schedulePrivate"
+	      from ikep4_sd_schedule a
+	      where a.register_id = #userId#
+	       ]]>
+	      <isNotEmpty property="hbName">
+	      	and a.search_code = #hbName#
+	      </isNotEmpty>
+	      <![CDATA[ 
+	      and a.everyone_schedule = 0
+	      /*and meeting_room_id is null*/
+	      and isnull(a.meeting_room_id,'') =''
+	      and isnull(a.cartooletc_id,'') =''
+	      and repeat = 0
+	      and start_date < DATEADD(DD, 1, #endDate#)
+	      and end_date >=  #startDate#     
+	      union all
+	      select 
+	        start_date "startDate",
+	        end_date "endDate", 
+	        title "title", a.schedule_id "scheduleId", null "repeatType",null "repeatPeriod",
+	        null "repeatPeriodOption", null "repeatStartDate",null "repeatEndDate",
+	        a.category_id "categoryId", workspace_id "workspaceId", place "place", wholeday "wholeday", 
+	        schedule_public "schedulePublic", attendance_request "attendanceRequest", a.register_id "registerId",
+	        a.meeting_room_id "meetingRoomId"  
+	        ,(select count(*) from ikep4_sd_participant where schedule_id = a.schedule_id and target_type = '1' and target_user_id = #userId#) "pacYn"
+			,(select count(*) from ikep4_sd_participant where schedule_id = a.schedule_id and target_type = '2' and target_user_id = #userId#) "refYn"
+	      ,a.schedule_private "schedulePrivate"
+	      from ikep4_sd_schedule a INNER JOIN ikep4_sd_participant c   
+	      		ON a.schedule_id = c.schedule_id
+	      WHERE target_user_id = #userId#
+	       ]]>
+	      <isNotEmpty property="hbName">
+	      	and a.search_code = #hbName#
+	      </isNotEmpty>
+	      <![CDATA[ 
+	      and a.everyone_schedule = 0
+	      and c.target_type in ('1','2')
+	      /*and meeting_room_id is null*/
+	      and isnull(a.meeting_room_id,'') =''
+	      and isnull(a.cartooletc_id,'') =''
+	      and repeat = 0
+	      and start_date < DATEADD(DD, 1, #endDate#)
+	      and end_date >=  #startDate#        
+	      union all
+	    select 
+		  SD_START_DATE "startDate",
+		  SD_END_DATE "endDate", 
+		  title "title", a.schedule_id "scheduleId", REPEAT_TYPE "repeatType", REPEAT_PERIOD "repeatPeriod",
+		  REPEAT_PERIOD_OPTION "repeatPeriodOption", repeat_start_date "repeatStartDate",repeat_end_date "repeatEndDate",
+		  a.category_id "categoryId", workspace_id "workspaceId",place "place",wholeday "wholeday", 
+	      schedule_public "schedulePublic", attendance_request "attendanceRequest", a.register_id "registerId",
+	      a.meeting_room_id "meetingRoomId"
+	      ,(select count(*) from ikep4_sd_participant where schedule_id = a.schedule_id and target_type = '1' and target_user_id = #userId#) "pacYn"
+			,(select count(*) from ikep4_sd_participant where schedule_id = a.schedule_id and target_type = '2' and target_user_id = #userId#) "refYn"
+	    ,a.schedule_private "schedulePrivate"
+	    from ikep4_sd_schedule a INNER JOIN ikep4_sd_repeat b
+	    		ON b.schedule_id = a.schedule_id
+	    WHERE a.register_id = #userId#
+	     ]]>
+	      <isNotEmpty property="hbName">
+	      	and a.search_code = #hbName#
+	      </isNotEmpty>
+	      <![CDATA[ 
+	    and a.everyone_schedule = 0
+	      /*and meeting_room_id is null*/
+	      and isnull(meeting_room_id,'') =''
+	      and isnull(cartooletc_id,'') =''
+	    and repeat = 1
+	    and repeat_start_date < DATEADD(DD, 1, #endDate#)
+	    and repeat_end_date >=  #startDate# 
+	    union all
+	    select 
+		  SD_START_DATE "startDate",
+		  SD_END_DATE "endDate", 
+		  title "title", a.schedule_id "scheduleId", REPEAT_TYPE "repeatType", REPEAT_PERIOD "repeatPeriod",
+		  REPEAT_PERIOD_OPTION "repeatPeriodOption", repeat_start_date "repeatStartDate",repeat_end_date "repeatEndDate",
+		  a.category_id "categoryId", workspace_id "workspaceId",place "place",wholeday "wholeday", 
+	      schedule_public "schedulePublic", attendance_request "attendanceRequest", a.register_id "registerId",
+	      a.meeting_room_id "meetingRoomId"
+	      ,(select count(*) from ikep4_sd_participant where schedule_id = a.schedule_id and target_type = '1' and target_user_id = #userId#) "pacYn"
+			,(select count(*) from ikep4_sd_participant where schedule_id = a.schedule_id and target_type = '2' and target_user_id = #userId#) "refYn"
+	    ,a.schedule_private "schedulePrivate"
+	    from ikep4_sd_schedule a 
+	    	 INNER JOIN ikep4_sd_repeat b
+	    	 	ON b.schedule_id = a.schedule_id
+			 INNER JOIN ikep4_sd_participant d
+			 	ON d.schedule_id = a.schedule_id
+	    where target_user_id = #userId#
+	     ]]>
+	      <isNotEmpty property="hbName">
+	      	and a.search_code = #hbName#
+	      </isNotEmpty>
+	      <![CDATA[ 
+	    and a.everyone_schedule = 0
+	      /*and meeting_room_id is null*/
+	      and isnull(a.meeting_room_id,'') =''
+	      and isnull(a.cartooletc_id,'') =''
+	    and repeat = 1
+	    and d.target_type in('1','2')
+	    and repeat_start_date < DATEADD(DD, 1, #endDate#)
+	    and repeat_end_date >=  #startDate# 
+	    
+	    union all
+	    
+	    select      	
+	        a.start_date "startDate",
+	        a.end_date "endDate", 
+	        a.title "title", a.schedule_id "scheduleId", null "repeatType",null "repeatPeriod",
+	        null "repeatPeriodOption", null "repeatStartDate",null "repeatEndDate",
+	        a.category_id "categoryId", a.workspace_id "workspaceId", a.place "place", a.wholeday "wholeday", 
+	        a.schedule_public "schedulePublic", a.attendance_request "attendanceRequest", a.register_id "registerId",
+	        a.meeting_room_id "meetingRoomId" 
+	        ,(select count(*) from ikep4_sd_participant where schedule_id = a.schedule_id and target_type = '1' and target_user_id = #userId#) "pacYn"
+			,(select count(*) from ikep4_sd_participant where schedule_id = a.schedule_id and target_type = '2' and target_user_id = #userId#) "refYn"
+	      ,a.schedule_private "schedulePrivate"
+	      from ikep4_sd_schedule a
+	      inner join ikep4_mr_approve b
+	      on a.schedule_id = b.schedule_id
+	      where a.register_id = #userId#
+	       ]]>
+	      <isNotEmpty property="hbName">
+	      	and a.search_code = #hbName#
+	      </isNotEmpty>
+	      <![CDATA[ 
+	      and a.everyone_schedule = 0
+	      /*and a.meeting_room_id is not null*/
+	      and isnull(a.meeting_room_id,'') !=''
+	      and b.meeting_room_id not in(select cartooletc_id from IKEP4_MR_CARTOOLETC) 
+	      and b.approve_status in ('A', 'W')
+	      and a.repeat = 0
+	      and a.start_date < DATEADD(DD, 1, #endDate#)
+	      and a.end_date >=  #startDate#     
+	      union all
+	      select 
+	        a.start_date "startDate",
+	        a.end_date "endDate", 
+	        a.title "title", a.schedule_id "scheduleId", null "repeatType",null "repeatPeriod",
+	        null "repeatPeriodOption", null "repeatStartDate",null "repeatEndDate",
+	        a.category_id "categoryId", a.workspace_id "workspaceId", a.place "place", a.wholeday "wholeday", 
+	        a.schedule_public "schedulePublic", a.attendance_request "attendanceRequest", a.register_id "registerId",
+	        a.meeting_room_id "meetingRoomId"   
+	        ,(select count(*) from ikep4_sd_participant where schedule_id = a.schedule_id and target_type = '1' and target_user_id = #userId#) "pacYn"
+			,(select count(*) from ikep4_sd_participant where schedule_id = a.schedule_id and target_type = '2' and target_user_id = #userId#) "refYn"
+	      ,a.schedule_private "schedulePrivate"
+	      from ikep4_sd_schedule a INNER JOIN ikep4_sd_participant c   
+	      		ON a.schedule_id = c.schedule_id
+	      inner join ikep4_mr_approve b
+	      on a.schedule_id = b.schedule_id
+	      WHERE c.target_user_id = #userId#
+	       ]]>
+	      <isNotEmpty property="hbName">
+	      	and a.search_code = #hbName#
+	      </isNotEmpty>
+	      <![CDATA[ 
+	      and a.everyone_schedule = 0
+	      and c.target_type in('1','2')
+	      /*and a.meeting_room_id is not null*/
+	      and isnull(a.meeting_room_id,'') !=''
+	      and b.meeting_room_id not in(select cartooletc_id from IKEP4_MR_CARTOOLETC) 
+	      and b.approve_status in ('A', 'W')
+	      and a.repeat = 0
+	      and a.start_date < DATEADD(DD, 1, #endDate#)
+	      and a.end_date >=  #startDate#        
+	      union all
+	    select 
+		  b.SD_START_DATE "startDate",
+		  b.SD_END_DATE "endDate", 
+		  a.title "title", a.schedule_id "scheduleId", b.REPEAT_TYPE "repeatType", b.REPEAT_PERIOD "repeatPeriod",
+		  b.REPEAT_PERIOD_OPTION "repeatPeriodOption", b.repeat_start_date "repeatStartDate",b.repeat_end_date "repeatEndDate",
+		  a.category_id "categoryId", a.workspace_id "workspaceId",a.place "place",a.wholeday "wholeday", 
+	      a.schedule_public "schedulePublic", a.attendance_request "attendanceRequest", a.register_id "registerId",
+	      a.meeting_room_id "meetingRoomId" 
+	      ,(select count(*) from ikep4_sd_participant where schedule_id = a.schedule_id and target_type = '1' and target_user_id = #userId#) "pacYn"
+			,(select count(*) from ikep4_sd_participant where schedule_id = a.schedule_id and target_type = '2' and target_user_id = #userId#) "refYn"
+	    ,a.schedule_private "schedulePrivate"
+	    from ikep4_sd_schedule a INNER JOIN ikep4_sd_repeat b
+	    		ON b.schedule_id = a.schedule_id
+	    inner join ikep4_mr_approve c
+	    on a.schedule_id = c.schedule_id
+	    WHERE a.register_id = #userId#
+	     ]]>
+	      <isNotEmpty property="hbName">
+	      	and a.search_code = #hbName#
+	      </isNotEmpty>
+	      <![CDATA[ 
+	    and a.everyone_schedule = 0
+	      /*and a.meeting_room_id is not null*/
+	      and isnull(a.meeting_room_id,'') !=''
+	      and c.meeting_room_id not in(select cartooletc_id from IKEP4_MR_CARTOOLETC) 
+	    and c.approve_status in ('A', 'W')
+	    and a.repeat = 1
+	    and b.repeat_start_date < DATEADD(DD, 1, #endDate#)
+	    and b.repeat_end_date >=  #startDate# 
+	    union all
+	    select 
+		  b.SD_START_DATE "startDate",
+		  b.SD_END_DATE "endDate", 
+		  a.title "title", a.schedule_id "scheduleId", b.REPEAT_TYPE "repeatType", b.REPEAT_PERIOD "repeatPeriod",
+		  b.REPEAT_PERIOD_OPTION "repeatPeriodOption", b.repeat_start_date "repeatStartDate",b.repeat_end_date "repeatEndDate",
+		  a.category_id "categoryId", a.workspace_id "workspaceId",a.place "place",a.wholeday "wholeday", 
+	      a.schedule_public "schedulePublic", a.attendance_request "attendanceRequest", a.register_id "registerId",
+	      a.meeting_room_id "meetingRoomId" 
+	      ,(select count(*) from ikep4_sd_participant where schedule_id = a.schedule_id and target_type = '1' and target_user_id = #userId#) "pacYn"
+			,(select count(*) from ikep4_sd_participant where schedule_id = a.schedule_id and target_type = '2' and target_user_id = #userId#) "refYn"
+	    ,a.schedule_private "schedulePrivate"
+	    from ikep4_sd_schedule a 
+	    	 INNER JOIN ikep4_sd_repeat b
+	    	 	ON b.schedule_id = a.schedule_id
+			 INNER JOIN ikep4_sd_participant d
+			 	ON d.schedule_id = a.schedule_id
+		inner join ikep4_mr_approve c
+	    on a.schedule_id = c.schedule_id
+	    where d.target_user_id = #userId#
+	     ]]>
+	      <isNotEmpty property="hbName">
+	      	and a.search_code = #hbName#
+	      </isNotEmpty>
+	      <![CDATA[ 
+	    and a.everyone_schedule = 0
+	      /*and a.meeting_room_id is not null*/
+	      and isnull(a.meeting_room_id,'') !=''
+	      and c.meeting_room_id not in(select cartooletc_id from IKEP4_MR_CARTOOLETC) 
+	    and c.approve_status in ('A', 'W')
+	    and a.repeat = 1
+	    and d.target_type in('1','2')
+	    and b.repeat_start_date < DATEADD(DD, 1, #endDate#)
+	    and b.repeat_end_date >=  #startDate# 
+	    ) p INNER JOIN ikep4_sd_category q
+	    	ON p."categoryId" = q.category_id
+    ]]>
+	</select>
+	
+	<select id="selectByPeriodNew" parameterClass="map" resultMap="selectByPeriodResultMap">
+    <![CDATA[ 
+	  select p.*, category_name "categoryName", color "color", 
+	  CASE WHEN "schedulePublic" =  1 THEN dbo.IKEP4_SD_GET_PARTICIPANT_LIST("scheduleId") ELSE '' END "participantId"
+	  from (
+	      select      	
+	        start_date "startDate",
+	        end_date "endDate", 
+	        title "title", a.schedule_id "scheduleId", null "repeatType",null "repeatPeriod",
+	        null "repeatPeriodOption", null "repeatStartDate",null "repeatEndDate",
+	        a.category_id "categoryId", workspace_id "workspaceId", place "place", wholeday "wholeday", 
+	        schedule_public "schedulePublic", attendance_request "attendanceRequest", a.register_id "registerId",
+	        a.meeting_room_id "meetingRoomId"   
+	        ,(select count(*) from ikep4_sd_participant where schedule_id = a.schedule_id and target_type = '1' and target_user_id = #userId#) "pacYn"
+			,(select count(*) from ikep4_sd_participant where schedule_id = a.schedule_id and target_type = '2' and target_user_id = #userId#) "refYn"
+	      ,a.schedule_private "schedulePrivate"
+	      from ikep4_sd_schedule a
+	      where a.register_id = #userId#
+	      and a.everyone_schedule = 0
+	      /*and meeting_room_id is null*/
+	      and isnull(a.meeting_room_id,'') =''
+	      and isnull(a.cartooletc_id,'') =''
+	      and (a.schedule_private = '0' 
+		  or (a.schedule_private = '1' 
+		  and (a.schedule_id in 
+		  (select schedule_id from ikep4_sd_participant b 
+		  where b.target_user_id = #sessionUserId# 
+		  and b.schedule_id = a.schedule_id 
+		  and b.target_type in ('1','2'))
+		  or a.register_id = #sessionUserId#)))
+	      and repeat = 0
+	      and start_date < DATEADD(DD, 1, #endDate#)
+	      and end_date >=  #startDate#     
+	      union all
+	      select 
+	        start_date "startDate",
+	        end_date "endDate", 
+	        title "title", a.schedule_id "scheduleId", null "repeatType",null "repeatPeriod",
+	        null "repeatPeriodOption", null "repeatStartDate",null "repeatEndDate",
+	        a.category_id "categoryId", workspace_id "workspaceId", place "place", wholeday "wholeday", 
+	        schedule_public "schedulePublic", attendance_request "attendanceRequest", a.register_id "registerId",
+	        a.meeting_room_id "meetingRoomId"  
+	        ,(select count(*) from ikep4_sd_participant where schedule_id = a.schedule_id and target_type = '1' and target_user_id = #userId#) "pacYn"
+			,(select count(*) from ikep4_sd_participant where schedule_id = a.schedule_id and target_type = '2' and target_user_id = #userId#) "refYn"
+	      ,a.schedule_private "schedulePrivate"
+	      from ikep4_sd_schedule a INNER JOIN ikep4_sd_participant c   
+	      		ON a.schedule_id = c.schedule_id
+	      WHERE target_user_id = #userId#
+	      and a.everyone_schedule = 0
+	      and c.target_type in ('1','2')
+	      /*and meeting_room_id is null*/
+	      and isnull(a.meeting_room_id,'') =''
+	      and isnull(a.cartooletc_id,'') =''
+	      and (a.schedule_private = '0' 
+		  or (a.schedule_private = '1' 
+		  and (a.schedule_id in 
+		  (select schedule_id from ikep4_sd_participant b 
+		  where b.target_user_id = #sessionUserId# 
+		  and b.schedule_id = a.schedule_id 
+		  and b.target_type in ('1','2'))
+		  or a.register_id = #sessionUserId#)))
+	      and repeat = 0
+	      and start_date < DATEADD(DD, 1, #endDate#)
+	      and end_date >=  #startDate#        
+	      union all
+	    select 
+		  SD_START_DATE "startDate",
+		  SD_END_DATE "endDate", 
+		  title "title", a.schedule_id "scheduleId", REPEAT_TYPE "repeatType", REPEAT_PERIOD "repeatPeriod",
+		  REPEAT_PERIOD_OPTION "repeatPeriodOption", repeat_start_date "repeatStartDate",repeat_end_date "repeatEndDate",
+		  a.category_id "categoryId", workspace_id "workspaceId",place "place",wholeday "wholeday", 
+	      schedule_public "schedulePublic", attendance_request "attendanceRequest", a.register_id "registerId",
+	      a.meeting_room_id "meetingRoomId"
+	      ,(select count(*) from ikep4_sd_participant where schedule_id = a.schedule_id and target_type = '1' and target_user_id = #userId#) "pacYn"
+			,(select count(*) from ikep4_sd_participant where schedule_id = a.schedule_id and target_type = '2' and target_user_id = #userId#) "refYn"
+	    ,a.schedule_private "schedulePrivate"
+	    from ikep4_sd_schedule a INNER JOIN ikep4_sd_repeat b
+	    		ON b.schedule_id = a.schedule_id
+	    WHERE a.register_id = #userId#
+	    and a.everyone_schedule = 0
+	    and (a.schedule_private = '0' 
+		  or (a.schedule_private = '1' 
+		  and (a.schedule_id in 
+		  (select schedule_id from ikep4_sd_participant b 
+		  where b.target_user_id = #sessionUserId# 
+		  and b.schedule_id = a.schedule_id 
+		  and b.target_type in ('1','2'))
+		  or a.register_id = #sessionUserId#)))
+	      /*and meeting_room_id is null*/
+	      and isnull(meeting_room_id,'') =''
+	      and isnull(cartooletc_id,'') =''
+	    and repeat = 1
+	    and repeat_start_date < DATEADD(DD, 1, #endDate#)
+	    and repeat_end_date >=  #startDate# 
+	    union all
+	    select 
+		  SD_START_DATE "startDate",
+		  SD_END_DATE "endDate", 
+		  title "title", a.schedule_id "scheduleId", REPEAT_TYPE "repeatType", REPEAT_PERIOD "repeatPeriod",
+		  REPEAT_PERIOD_OPTION "repeatPeriodOption", repeat_start_date "repeatStartDate",repeat_end_date "repeatEndDate",
+		  a.category_id "categoryId", workspace_id "workspaceId",place "place",wholeday "wholeday", 
+	      schedule_public "schedulePublic", attendance_request "attendanceRequest", a.register_id "registerId",
+	      a.meeting_room_id "meetingRoomId"
+	      ,(select count(*) from ikep4_sd_participant where schedule_id = a.schedule_id and target_type = '1' and target_user_id = #userId#) "pacYn"
+			,(select count(*) from ikep4_sd_participant where schedule_id = a.schedule_id and target_type = '2' and target_user_id = #userId#) "refYn"
+	    ,a.schedule_private "schedulePrivate"
+	    from ikep4_sd_schedule a 
+	    	 INNER JOIN ikep4_sd_repeat b
+	    	 	ON b.schedule_id = a.schedule_id
+			 INNER JOIN ikep4_sd_participant d
+			 	ON d.schedule_id = a.schedule_id
+	    where target_user_id = #userId#
+	    and a.everyone_schedule = 0
+	    and (a.schedule_private = '0' 
+		  or (a.schedule_private = '1' 
+		  and (a.schedule_id in 
+		  (select schedule_id from ikep4_sd_participant b 
+		  where b.target_user_id = #sessionUserId# 
+		  and b.schedule_id = a.schedule_id 
+		  and b.target_type in ('1','2'))
+		  or a.register_id = #sessionUserId#)))
+	      /*and meeting_room_id is null*/
+	      and isnull(a.meeting_room_id,'') =''
+	      and isnull(a.cartooletc_id,'') =''
+	    and repeat = 1
+	    and d.target_type in('1','2')
+	    and repeat_start_date < DATEADD(DD, 1, #endDate#)
+	    and repeat_end_date >=  #startDate# 
+	    
+	    union all
+	    
+	    select      	
+	        a.start_date "startDate",
+	        a.end_date "endDate", 
+	        a.title "title", a.schedule_id "scheduleId", null "repeatType",null "repeatPeriod",
+	        null "repeatPeriodOption", null "repeatStartDate",null "repeatEndDate",
+	        a.category_id "categoryId", a.workspace_id "workspaceId", a.place "place", a.wholeday "wholeday", 
+	        a.schedule_public "schedulePublic", a.attendance_request "attendanceRequest", a.register_id "registerId",
+	        a.meeting_room_id "meetingRoomId" 
+	        ,(select count(*) from ikep4_sd_participant where schedule_id = a.schedule_id and target_type = '1' and target_user_id = #userId#) "pacYn"
+			,(select count(*) from ikep4_sd_participant where schedule_id = a.schedule_id and target_type = '2' and target_user_id = #userId#) "refYn"
+	      ,a.schedule_private "schedulePrivate"
+	      from ikep4_sd_schedule a
+	      inner join ikep4_mr_approve b
+	      on a.schedule_id = b.schedule_id
+	      where a.register_id = #userId#
+	      and a.everyone_schedule = 0
+	      and (a.schedule_private = '0' 
+		  or (a.schedule_private = '1' 
+		  and (a.schedule_id in 
+		  (select schedule_id from ikep4_sd_participant b 
+		  where b.target_user_id = #sessionUserId# 
+		  and b.schedule_id = a.schedule_id 
+		  and b.target_type in ('1','2'))
+		  or a.register_id = #sessionUserId#)))
+	      /*and a.meeting_room_id is not null*/
+	      and isnull(a.meeting_room_id,'') !=''
+	      and b.meeting_room_id not in(select cartooletc_id from IKEP4_MR_CARTOOLETC) 
+	      and b.approve_status in ('A', 'W')
+	      and a.repeat = 0
+	      and a.start_date < DATEADD(DD, 1, #endDate#)
+	      and a.end_date >=  #startDate#     
+	      union all
+	      select 
+	        a.start_date "startDate",
+	        a.end_date "endDate", 
+	        a.title "title", a.schedule_id "scheduleId", null "repeatType",null "repeatPeriod",
+	        null "repeatPeriodOption", null "repeatStartDate",null "repeatEndDate",
+	        a.category_id "categoryId", a.workspace_id "workspaceId", a.place "place", a.wholeday "wholeday", 
+	        a.schedule_public "schedulePublic", a.attendance_request "attendanceRequest", a.register_id "registerId",
+	        a.meeting_room_id "meetingRoomId"   
+	        ,(select count(*) from ikep4_sd_participant where schedule_id = a.schedule_id and target_type = '1' and target_user_id = #userId#) "pacYn"
+			,(select count(*) from ikep4_sd_participant where schedule_id = a.schedule_id and target_type = '2' and target_user_id = #userId#) "refYn"
+	      ,a.schedule_private "schedulePrivate"
+	      from ikep4_sd_schedule a INNER JOIN ikep4_sd_participant c   
+	      		ON a.schedule_id = c.schedule_id
+	      inner join ikep4_mr_approve b
+	      on a.schedule_id = b.schedule_id
+	      WHERE c.target_user_id = #userId#
+	      and a.everyone_schedule = 0
+	      and (a.schedule_private = '0' 
+		  or (a.schedule_private = '1' 
+		  and (a.schedule_id in 
+		  (select schedule_id from ikep4_sd_participant b 
+		  where b.target_user_id = #sessionUserId# 
+		  and b.schedule_id = a.schedule_id 
+		  and b.target_type in ('1','2'))
+		  or a.register_id = #sessionUserId#)))
+	      and c.target_type in('1','2')
+	      /*and a.meeting_room_id is not null*/
+	      and isnull(a.meeting_room_id,'') !=''
+	      and b.meeting_room_id not in(select cartooletc_id from IKEP4_MR_CARTOOLETC) 
+	      and b.approve_status in ('A', 'W')
+	      and a.repeat = 0
+	      and a.start_date < DATEADD(DD, 1, #endDate#)
+	      and a.end_date >=  #startDate#        
+	      union all
+	    select 
+		  b.SD_START_DATE "startDate",
+		  b.SD_END_DATE "endDate", 
+		  a.title "title", a.schedule_id "scheduleId", b.REPEAT_TYPE "repeatType", b.REPEAT_PERIOD "repeatPeriod",
+		  b.REPEAT_PERIOD_OPTION "repeatPeriodOption", b.repeat_start_date "repeatStartDate",b.repeat_end_date "repeatEndDate",
+		  a.category_id "categoryId", a.workspace_id "workspaceId",a.place "place",a.wholeday "wholeday", 
+	      a.schedule_public "schedulePublic", a.attendance_request "attendanceRequest", a.register_id "registerId",
+	      a.meeting_room_id "meetingRoomId" 
+	      ,(select count(*) from ikep4_sd_participant where schedule_id = a.schedule_id and target_type = '1' and target_user_id = #userId#) "pacYn"
+			,(select count(*) from ikep4_sd_participant where schedule_id = a.schedule_id and target_type = '2' and target_user_id = #userId#) "refYn"
+	    ,a.schedule_private "schedulePrivate"
+	    from ikep4_sd_schedule a INNER JOIN ikep4_sd_repeat b
+	    		ON b.schedule_id = a.schedule_id
+	    inner join ikep4_mr_approve c
+	    on a.schedule_id = c.schedule_id
+	    WHERE a.register_id = #userId#
+	    and a.everyone_schedule = 0
+	    and (a.schedule_private = '0' 
+		  or (a.schedule_private = '1' 
+		  and (a.schedule_id in 
+		  (select schedule_id from ikep4_sd_participant b 
+		  where b.target_user_id = #sessionUserId# 
+		  and b.schedule_id = a.schedule_id 
+		  and b.target_type in ('1','2'))
+		  or a.register_id = #sessionUserId#)))
+	      /*and a.meeting_room_id is not null*/
+	      and isnull(a.meeting_room_id,'') !=''
+	      and c.meeting_room_id not in(select cartooletc_id from IKEP4_MR_CARTOOLETC) 
+	    and c.approve_status in ('A', 'W')
+	    and a.repeat = 1
+	    and b.repeat_start_date < DATEADD(DD, 1, #endDate#)
+	    and b.repeat_end_date >=  #startDate# 
+	    union all
+	    select 
+		  b.SD_START_DATE "startDate",
+		  b.SD_END_DATE "endDate", 
+		  a.title "title", a.schedule_id "scheduleId", b.REPEAT_TYPE "repeatType", b.REPEAT_PERIOD "repeatPeriod",
+		  b.REPEAT_PERIOD_OPTION "repeatPeriodOption", b.repeat_start_date "repeatStartDate",b.repeat_end_date "repeatEndDate",
+		  a.category_id "categoryId", a.workspace_id "workspaceId",a.place "place",a.wholeday "wholeday", 
+	      a.schedule_public "schedulePublic", a.attendance_request "attendanceRequest", a.register_id "registerId",
+	      a.meeting_room_id "meetingRoomId" 
+	      ,(select count(*) from ikep4_sd_participant where schedule_id = a.schedule_id and target_type = '1' and target_user_id = #userId#) "pacYn"
+			,(select count(*) from ikep4_sd_participant where schedule_id = a.schedule_id and target_type = '2' and target_user_id = #userId#) "refYn"
+	    ,a.schedule_private "schedulePrivate"
+	    from ikep4_sd_schedule a 
+	    	 INNER JOIN ikep4_sd_repeat b
+	    	 	ON b.schedule_id = a.schedule_id
+			 INNER JOIN ikep4_sd_participant d
+			 	ON d.schedule_id = a.schedule_id
+		inner join ikep4_mr_approve c
+	    on a.schedule_id = c.schedule_id
+	    where d.target_user_id = #userId#
+	    and a.everyone_schedule = 0
+	    and (a.schedule_private = '0' 
+		  or (a.schedule_private = '1' 
+		  and (a.schedule_id in 
+		  (select schedule_id from ikep4_sd_participant b 
+		  where b.target_user_id = #sessionUserId# 
+		  and b.schedule_id = a.schedule_id 
+		  and b.target_type in ('1','2'))
+		  or a.register_id = #sessionUserId#)))
+	      /*and a.meeting_room_id is not null*/
+	      and isnull(a.meeting_room_id,'') !=''
+	      and c.meeting_room_id not in(select cartooletc_id from IKEP4_MR_CARTOOLETC) 
+	    and c.approve_status in ('A', 'W')
+	    and a.repeat = 1
+	    and d.target_type in('1','2')
+	    and b.repeat_start_date < DATEADD(DD, 1, #endDate#)
+	    and b.repeat_end_date >=  #startDate# 
+	    ) p INNER JOIN ikep4_sd_category q
+	    	ON p."categoryId" = q.category_id
+    ]]>
+	</select>	
+	
+	<select id="selectByPeriodNewHb" parameterClass="map" resultMap="selectByPeriodResultMap">
+    <![CDATA[ 
+	  select p.*, category_name "categoryName", color "color", 
+	  CASE WHEN "schedulePublic" =  1 THEN dbo.IKEP4_SD_GET_PARTICIPANT_LIST("scheduleId") ELSE '' END "participantId"
+	  from (
+	      select      	
+	        start_date "startDate",
+	        end_date "endDate", 
+	        title "title", a.schedule_id "scheduleId", null "repeatType",null "repeatPeriod",
+	        null "repeatPeriodOption", null "repeatStartDate",null "repeatEndDate",
+	        a.category_id "categoryId", workspace_id "workspaceId", place "place", wholeday "wholeday", 
+	        schedule_public "schedulePublic", attendance_request "attendanceRequest", a.register_id "registerId",
+	        a.meeting_room_id "meetingRoomId"   
+	        ,(select count(*) from ikep4_sd_participant where schedule_id = a.schedule_id and target_type = '1' and target_user_id = #userId#) "pacYn"
+			,(select count(*) from ikep4_sd_participant where schedule_id = a.schedule_id and target_type = '2' and target_user_id = #userId#) "refYn"
+	      ,a.schedule_private "schedulePrivate"
+	      from ikep4_sd_schedule a
+	      where a.register_id = #userId#
+	      ]]>
+	      <isNotEmpty property="hbName">
+	      	and a.search_code = #hbName#
+	      </isNotEmpty>
+	      <![CDATA[ 
+	      and a.everyone_schedule = 0
+	      /*and meeting_room_id is null*/
+	      and isnull(a.meeting_room_id,'') =''
+	      and isnull(a.cartooletc_id,'') =''
+	      and (a.schedule_private = '0' 
+		  or (a.schedule_private = '1' 
+		  and (a.schedule_id in 
+		  (select schedule_id from ikep4_sd_participant b 
+		  where b.target_user_id = #sessionUserId# 
+		  and b.schedule_id = a.schedule_id 
+		  and b.target_type in ('1','2'))
+		  or a.register_id = #sessionUserId#)))
+	      and repeat = 0
+	      and start_date < DATEADD(DD, 1, #endDate#)
+	      and end_date >=  #startDate#     
+	      union all
+	      select 
+	        start_date "startDate",
+	        end_date "endDate", 
+	        title "title", a.schedule_id "scheduleId", null "repeatType",null "repeatPeriod",
+	        null "repeatPeriodOption", null "repeatStartDate",null "repeatEndDate",
+	        a.category_id "categoryId", workspace_id "workspaceId", place "place", wholeday "wholeday", 
+	        schedule_public "schedulePublic", attendance_request "attendanceRequest", a.register_id "registerId",
+	        a.meeting_room_id "meetingRoomId"  
+	        ,(select count(*) from ikep4_sd_participant where schedule_id = a.schedule_id and target_type = '1' and target_user_id = #userId#) "pacYn"
+			,(select count(*) from ikep4_sd_participant where schedule_id = a.schedule_id and target_type = '2' and target_user_id = #userId#) "refYn"
+	      ,a.schedule_private "schedulePrivate"
+	      from ikep4_sd_schedule a INNER JOIN ikep4_sd_participant c   
+	      		ON a.schedule_id = c.schedule_id
+	      WHERE target_user_id = #userId#
+	      ]]>
+	      <isNotEmpty property="hbName">
+	      	and a.search_code = #hbName#
+	      </isNotEmpty>
+	      <![CDATA[ 
+	      and a.everyone_schedule = 0
+	      and c.target_type in ('1','2')
+	      /*and meeting_room_id is null*/
+	      and isnull(a.meeting_room_id,'') =''
+	      and isnull(a.cartooletc_id,'') =''
+	      and (a.schedule_private = '0' 
+		  or (a.schedule_private = '1' 
+		  and (a.schedule_id in 
+		  (select schedule_id from ikep4_sd_participant b 
+		  where b.target_user_id = #sessionUserId# 
+		  and b.schedule_id = a.schedule_id 
+		  and b.target_type in ('1','2'))
+		  or a.register_id = #sessionUserId#)))
+	      and repeat = 0
+	      and start_date < DATEADD(DD, 1, #endDate#)
+	      and end_date >=  #startDate#        
+	      union all
+	    select 
+		  SD_START_DATE "startDate",
+		  SD_END_DATE "endDate", 
+		  title "title", a.schedule_id "scheduleId", REPEAT_TYPE "repeatType", REPEAT_PERIOD "repeatPeriod",
+		  REPEAT_PERIOD_OPTION "repeatPeriodOption", repeat_start_date "repeatStartDate",repeat_end_date "repeatEndDate",
+		  a.category_id "categoryId", workspace_id "workspaceId",place "place",wholeday "wholeday", 
+	      schedule_public "schedulePublic", attendance_request "attendanceRequest", a.register_id "registerId",
+	      a.meeting_room_id "meetingRoomId"
+	      ,(select count(*) from ikep4_sd_participant where schedule_id = a.schedule_id and target_type = '1' and target_user_id = #userId#) "pacYn"
+			,(select count(*) from ikep4_sd_participant where schedule_id = a.schedule_id and target_type = '2' and target_user_id = #userId#) "refYn"
+	    ,a.schedule_private "schedulePrivate"
+	    from ikep4_sd_schedule a INNER JOIN ikep4_sd_repeat b
+	    		ON b.schedule_id = a.schedule_id
+	    WHERE a.register_id = #userId#
+	    ]]>
+	      <isNotEmpty property="hbName">
+	      	and a.search_code = #hbName#
+	      </isNotEmpty>
+	      <![CDATA[ 
+	    and a.everyone_schedule = 0
+	    and (a.schedule_private = '0' 
+		  or (a.schedule_private = '1' 
+		  and (a.schedule_id in 
+		  (select schedule_id from ikep4_sd_participant b 
+		  where b.target_user_id = #sessionUserId# 
+		  and b.schedule_id = a.schedule_id 
+		  and b.target_type in ('1','2'))
+		  or a.register_id = #sessionUserId#)))
+	      /*and meeting_room_id is null*/
+	      and isnull(meeting_room_id,'') =''
+	      and isnull(cartooletc_id,'') =''
+	    and repeat = 1
+	    and repeat_start_date < DATEADD(DD, 1, #endDate#)
+	    and repeat_end_date >=  #startDate# 
+	    union all
+	    select 
+		  SD_START_DATE "startDate",
+		  SD_END_DATE "endDate", 
+		  title "title", a.schedule_id "scheduleId", REPEAT_TYPE "repeatType", REPEAT_PERIOD "repeatPeriod",
+		  REPEAT_PERIOD_OPTION "repeatPeriodOption", repeat_start_date "repeatStartDate",repeat_end_date "repeatEndDate",
+		  a.category_id "categoryId", workspace_id "workspaceId",place "place",wholeday "wholeday", 
+	      schedule_public "schedulePublic", attendance_request "attendanceRequest", a.register_id "registerId",
+	      a.meeting_room_id "meetingRoomId"
+	      ,(select count(*) from ikep4_sd_participant where schedule_id = a.schedule_id and target_type = '1' and target_user_id = #userId#) "pacYn"
+			,(select count(*) from ikep4_sd_participant where schedule_id = a.schedule_id and target_type = '2' and target_user_id = #userId#) "refYn"
+	    ,a.schedule_private "schedulePrivate"
+	    from ikep4_sd_schedule a 
+	    	 INNER JOIN ikep4_sd_repeat b
+	    	 	ON b.schedule_id = a.schedule_id
+			 INNER JOIN ikep4_sd_participant d
+			 	ON d.schedule_id = a.schedule_id
+	    where target_user_id = #userId#
+	    ]]>
+	      <isNotEmpty property="hbName">
+	      	and a.search_code = #hbName#
+	      </isNotEmpty>
+	      <![CDATA[ 
+	    and a.everyone_schedule = 0
+	    and (a.schedule_private = '0' 
+		  or (a.schedule_private = '1' 
+		  and (a.schedule_id in 
+		  (select schedule_id from ikep4_sd_participant b 
+		  where b.target_user_id = #sessionUserId# 
+		  and b.schedule_id = a.schedule_id 
+		  and b.target_type in ('1','2'))
+		  or a.register_id = #sessionUserId#)))
+	      /*and meeting_room_id is null*/
+	      and isnull(a.meeting_room_id,'') =''
+	      and isnull(a.cartooletc_id,'') =''
+	    and repeat = 1
+	    and d.target_type in('1','2')
+	    and repeat_start_date < DATEADD(DD, 1, #endDate#)
+	    and repeat_end_date >=  #startDate# 
+	    
+	    union all
+	    
+	    select      	
+	        a.start_date "startDate",
+	        a.end_date "endDate", 
+	        a.title "title", a.schedule_id "scheduleId", null "repeatType",null "repeatPeriod",
+	        null "repeatPeriodOption", null "repeatStartDate",null "repeatEndDate",
+	        a.category_id "categoryId", a.workspace_id "workspaceId", a.place "place", a.wholeday "wholeday", 
+	        a.schedule_public "schedulePublic", a.attendance_request "attendanceRequest", a.register_id "registerId",
+	        a.meeting_room_id "meetingRoomId" 
+	        ,(select count(*) from ikep4_sd_participant where schedule_id = a.schedule_id and target_type = '1' and target_user_id = #userId#) "pacYn"
+			,(select count(*) from ikep4_sd_participant where schedule_id = a.schedule_id and target_type = '2' and target_user_id = #userId#) "refYn"
+	      ,a.schedule_private "schedulePrivate"
+	      from ikep4_sd_schedule a
+	      inner join ikep4_mr_approve b
+	      on a.schedule_id = b.schedule_id
+	      where a.register_id = #userId#
+	      ]]>
+	      <isNotEmpty property="hbName">
+	      	and a.search_code = #hbName#
+	      </isNotEmpty>
+	      <![CDATA[ 
+	      and a.everyone_schedule = 0
+	      and (a.schedule_private = '0' 
+		  or (a.schedule_private = '1' 
+		  and (a.schedule_id in 
+		  (select schedule_id from ikep4_sd_participant b 
+		  where b.target_user_id = #sessionUserId# 
+		  and b.schedule_id = a.schedule_id 
+		  and b.target_type in ('1','2'))
+		  or a.register_id = #sessionUserId#)))
+	      /*and a.meeting_room_id is not null*/
+	      and isnull(a.meeting_room_id,'') !=''
+	      and b.meeting_room_id not in(select cartooletc_id from IKEP4_MR_CARTOOLETC) 
+	      and b.approve_status in ('A', 'W')
+	      and a.repeat = 0
+	      and a.start_date < DATEADD(DD, 1, #endDate#)
+	      and a.end_date >=  #startDate#     
+	      union all
+	      select 
+	        a.start_date "startDate",
+	        a.end_date "endDate", 
+	        a.title "title", a.schedule_id "scheduleId", null "repeatType",null "repeatPeriod",
+	        null "repeatPeriodOption", null "repeatStartDate",null "repeatEndDate",
+	        a.category_id "categoryId", a.workspace_id "workspaceId", a.place "place", a.wholeday "wholeday", 
+	        a.schedule_public "schedulePublic", a.attendance_request "attendanceRequest", a.register_id "registerId",
+	        a.meeting_room_id "meetingRoomId"   
+	        ,(select count(*) from ikep4_sd_participant where schedule_id = a.schedule_id and target_type = '1' and target_user_id = #userId#) "pacYn"
+			,(select count(*) from ikep4_sd_participant where schedule_id = a.schedule_id and target_type = '2' and target_user_id = #userId#) "refYn"
+	      ,a.schedule_private "schedulePrivate"
+	      from ikep4_sd_schedule a INNER JOIN ikep4_sd_participant c   
+	      		ON a.schedule_id = c.schedule_id
+	      inner join ikep4_mr_approve b
+	      on a.schedule_id = b.schedule_id
+	      WHERE c.target_user_id = #userId#
+	      ]]>
+	      <isNotEmpty property="hbName">
+	      	and a.search_code = #hbName#
+	      </isNotEmpty>
+	      <![CDATA[ 
+	      and a.everyone_schedule = 0
+	      and (a.schedule_private = '0' 
+		  or (a.schedule_private = '1' 
+		  and (a.schedule_id in 
+		  (select schedule_id from ikep4_sd_participant b 
+		  where b.target_user_id = #sessionUserId# 
+		  and b.schedule_id = a.schedule_id 
+		  and b.target_type in ('1','2'))
+		  or a.register_id = #sessionUserId#)))
+	      and c.target_type in('1','2')
+	      /*and a.meeting_room_id is not null*/
+	      and isnull(a.meeting_room_id,'') !=''
+	      and b.meeting_room_id not in(select cartooletc_id from IKEP4_MR_CARTOOLETC) 
+	      and b.approve_status in ('A', 'W')
+	      and a.repeat = 0
+	      and a.start_date < DATEADD(DD, 1, #endDate#)
+	      and a.end_date >=  #startDate#        
+	      union all
+	    select 
+		  b.SD_START_DATE "startDate",
+		  b.SD_END_DATE "endDate", 
+		  a.title "title", a.schedule_id "scheduleId", b.REPEAT_TYPE "repeatType", b.REPEAT_PERIOD "repeatPeriod",
+		  b.REPEAT_PERIOD_OPTION "repeatPeriodOption", b.repeat_start_date "repeatStartDate",b.repeat_end_date "repeatEndDate",
+		  a.category_id "categoryId", a.workspace_id "workspaceId",a.place "place",a.wholeday "wholeday", 
+	      a.schedule_public "schedulePublic", a.attendance_request "attendanceRequest", a.register_id "registerId",
+	      a.meeting_room_id "meetingRoomId" 
+	      ,(select count(*) from ikep4_sd_participant where schedule_id = a.schedule_id and target_type = '1' and target_user_id = #userId#) "pacYn"
+			,(select count(*) from ikep4_sd_participant where schedule_id = a.schedule_id and target_type = '2' and target_user_id = #userId#) "refYn"
+	    ,a.schedule_private "schedulePrivate"
+	    from ikep4_sd_schedule a INNER JOIN ikep4_sd_repeat b
+	    		ON b.schedule_id = a.schedule_id
+	    inner join ikep4_mr_approve c
+	    on a.schedule_id = c.schedule_id
+	    WHERE a.register_id = #userId#
+	    ]]>
+	      <isNotEmpty property="hbName">
+	      	and a.search_code = #hbName#
+	      </isNotEmpty>
+	      <![CDATA[ 
+	    and a.everyone_schedule = 0
+	    and (a.schedule_private = '0' 
+		  or (a.schedule_private = '1' 
+		  and (a.schedule_id in 
+		  (select schedule_id from ikep4_sd_participant b 
+		  where b.target_user_id = #sessionUserId# 
+		  and b.schedule_id = a.schedule_id 
+		  and b.target_type in ('1','2'))
+		  or a.register_id = #sessionUserId#)))
+	      /*and a.meeting_room_id is not null*/
+	      and isnull(a.meeting_room_id,'') !=''
+	      and c.meeting_room_id not in(select cartooletc_id from IKEP4_MR_CARTOOLETC) 
+	    and c.approve_status in ('A', 'W')
+	    and a.repeat = 1
+	    and b.repeat_start_date < DATEADD(DD, 1, #endDate#)
+	    and b.repeat_end_date >=  #startDate# 
+	    union all
+	    select 
+		  b.SD_START_DATE "startDate",
+		  b.SD_END_DATE "endDate", 
+		  a.title "title", a.schedule_id "scheduleId", b.REPEAT_TYPE "repeatType", b.REPEAT_PERIOD "repeatPeriod",
+		  b.REPEAT_PERIOD_OPTION "repeatPeriodOption", b.repeat_start_date "repeatStartDate",b.repeat_end_date "repeatEndDate",
+		  a.category_id "categoryId", a.workspace_id "workspaceId",a.place "place",a.wholeday "wholeday", 
+	      a.schedule_public "schedulePublic", a.attendance_request "attendanceRequest", a.register_id "registerId",
+	      a.meeting_room_id "meetingRoomId" 
+	      ,(select count(*) from ikep4_sd_participant where schedule_id = a.schedule_id and target_type = '1' and target_user_id = #userId#) "pacYn"
+			,(select count(*) from ikep4_sd_participant where schedule_id = a.schedule_id and target_type = '2' and target_user_id = #userId#) "refYn"
+	    ,a.schedule_private "schedulePrivate"
+	    from ikep4_sd_schedule a 
+	    	 INNER JOIN ikep4_sd_repeat b
+	    	 	ON b.schedule_id = a.schedule_id
+			 INNER JOIN ikep4_sd_participant d
+			 	ON d.schedule_id = a.schedule_id
+		inner join ikep4_mr_approve c
+	    on a.schedule_id = c.schedule_id
+	    where d.target_user_id = #userId#
+	    ]]>
+	      <isNotEmpty property="hbName">
+	      	and a.search_code = #hbName#
+	      </isNotEmpty>
+	      <![CDATA[ 
+	    and a.everyone_schedule = 0
+	    and (a.schedule_private = '0' 
+		  or (a.schedule_private = '1' 
+		  and (a.schedule_id in 
+		  (select schedule_id from ikep4_sd_participant b 
+		  where b.target_user_id = #sessionUserId# 
+		  and b.schedule_id = a.schedule_id 
+		  and b.target_type in ('1','2'))
+		  or a.register_id = #sessionUserId#)))
+	      /*and a.meeting_room_id is not null*/
+	      and isnull(a.meeting_room_id,'') !=''
+	      and c.meeting_room_id not in(select cartooletc_id from IKEP4_MR_CARTOOLETC) 
+	    and c.approve_status in ('A', 'W')
+	    and a.repeat = 1
+	    and d.target_type in('1','2')
+	    and b.repeat_start_date < DATEADD(DD, 1, #endDate#)
+	    and b.repeat_end_date >=  #startDate# 
+	    ) p INNER JOIN ikep4_sd_category q
+	    	ON p."categoryId" = q.category_id
+    ]]>
+	</select>
+	
+	<select id="selectFavoriteTeam" parameterClass="string" resultMap="favoriteTeam">
+		select a.target_id as targetGroupId, b.group_name as targetGroupName
+		from IKEP4_AS_FAVORITE a 
+		inner join IKEP4_EV_GROUP b 
+		on a.target_id = b.group_id
+		where a.register_id = #userId#
+		and a.item_type_code = 'GP'
+		and b.view_option = '1'
+	</select>
+	
+	<select id="selectFavoriteUser" parameterClass="string" resultMap="favoriteUser">
+		select a.target_id as targetGroupId, b.user_name as targetGroupName,
+		c.job_title_name as jobTitleName,b.team_name as teamName
+		from IKEP4_AS_FAVORITE a 
+		inner join IKEP4_EV_USER b 
+		on a.target_id = b.user_id
+		inner join IKEP4_EV_JOB_TITLE c
+		on c.job_title_code = b.job_title_code
+		where a.register_id = #userId#
+		and a.item_type_code = 'PF'
+		and b.user_status = 'C'
+	</select>
+
+	<select id="selectCompanyScheduleWaitList" parameterClass="java.util.HashMap" resultMap="selectByPeriodResultMapForCompany">
+    <![CDATA[ 
+    /* [Schedule_SqlMap.xml] selectCompanyScheduleWaitList */
+	  select p.*, category_name "categoryName", color "color", 
+	    user_name + ' ' + isnull(JOB_DUTY_NAME,JOB_TITLE_NAME)  + ' ' + team_name "userInfo",
+	  CASE WHEN "schedulePublic" =  1 THEN dbo.IKEP4_SD_GET_PARTICIPANT_LIST("scheduleId") ELSE '' END "participantId"
+	  from (
+      select 
+        a.start_date "startDate",
+        a.end_date "endDate", 
+        a.title "title", a.schedule_id "scheduleId", null "repeatType",null "repeatPeriod",
+        null "repeatPeriodOption", null "repeatStartDate",null "repeatEndDate",
+        a.category_id "categoryId", a.workspace_id "workspaceId", a.place "place", a.wholeday "wholeday", 
+        a.schedule_public "schedulePublic", a.attendance_request "attendanceRequest", a.register_id "registerId",
+        a.meeting_room_id "meetingRoomId" , '' "pacYn", '' "refYn"
+        ,a.schedule_private "schedulePrivate"
+      from ikep4_sd_schedule a
+      where a.everyone_schedule = 1  and  a.approve_result = 0 
+       ]]>
+      <isNotEmpty property="workAreaName">
+      and a.work_area_name = #workAreaName#
+      </isNotEmpty>
+        <![CDATA[ 
+      /*and a.meeting_room_id is null*/
+      and isnull(a.meeting_room_id,'') =''
+      and a.repeat = 0
+    
+      union all
+      select 
+	    b.SD_START_DATE "startDate",
+	    b.SD_END_DATE "endDate", 
+        a.title "title", a.schedule_id "scheduleId", b.REPEAT_TYPE "repeatType", b.REPEAT_PERIOD "repeatPeriod",
+        b.REPEAT_PERIOD_OPTION "repeatPeriodOption", b.repeat_start_date "repeatStartDate",b.repeat_end_date "repeatEndDate",
+        a.category_id "categoryId", a.workspace_id "workspaceId",a.place "place",a.wholeday "wholeday", 
+        a.schedule_public "schedulePublic", a.attendance_request "attendanceRequest", a.register_id "registerId",
+        a.meeting_room_id "meetingRoomId", '' "pacYn", '' "refYn"
+        ,a.schedule_private "schedulePrivate"
+      from ikep4_sd_schedule a INNER JOIN ikep4_sd_repeat b
+      			ON b.schedule_id = a.schedule_id
+      and a.everyone_schedule = 1 and a.approve_result = 0 
+       ]]>
+      <isNotEmpty property="workAreaName">
+      and a.work_area_name = #workAreaName#
+      </isNotEmpty>
+      <![CDATA[ 
+      /*and a.meeting_room_id is null*/
+      and isnull(a.meeting_room_id,'') =''
+      and a.repeat = 1
+
+
+      union all
+      
+      select 
+        a.start_date "startDate",
+        a.end_date "endDate", 
+        a.title "title", a.schedule_id "scheduleId", null "repeatType",null "repeatPeriod",
+        null "repeatPeriodOption", null "repeatStartDate",null "repeatEndDate",
+        a.category_id "categoryId", a.workspace_id "workspaceId", a.place "place", a.wholeday "wholeday", 
+        a.schedule_public "schedulePublic", a.attendance_request "attendanceRequest", a.register_id "registerId",
+        a.meeting_room_id "meetingRoomId"    , '' "pacYn", '' "refYn" 
+        ,a.schedule_private "schedulePrivate"
+      from ikep4_sd_schedule a
+      inner join ikep4_mr_approve b
+	  on a.schedule_id = b.schedule_id
+      where a.everyone_schedule = 1 and a.approve_result = 0 
+       ]]>
+      <isNotEmpty property="workAreaName">
+      and a.work_area_name = #workAreaName#
+      </isNotEmpty>
+      <![CDATA[ 
+      /*and a.meeting_room_id is not null*/
+      and isnull(a.meeting_room_id,'') !=''
+	  and b.approve_status in ('A', 'W')
+      and a.repeat = 0
+ 
+      union all
+      select 
+	    b.SD_START_DATE "startDate",
+	    b.SD_END_DATE "endDate", 
+        a.title "title", a.schedule_id "scheduleId", b.REPEAT_TYPE "repeatType", b.REPEAT_PERIOD "repeatPeriod",
+        b.REPEAT_PERIOD_OPTION "repeatPeriodOption", b.repeat_start_date "repeatStartDate",b.repeat_end_date "repeatEndDate",
+        a.category_id "categoryId", a.workspace_id "workspaceId",a.place "place",a.wholeday "wholeday", 
+        a.schedule_public "schedulePublic", a.attendance_request "attendanceRequest", a.register_id "registerId",
+        a.meeting_room_id "meetingRoomId", '' "pacYn", '' "refYn"
+        ,a.schedule_private "schedulePrivate"
+      from ikep4_sd_schedule a INNER JOIN ikep4_sd_repeat b
+      			ON b.schedule_id = a.schedule_id
+	  inner join ikep4_mr_approve c
+	  on a.schedule_id = c.schedule_id   
+	  and a.everyone_schedule = 1 and a.approve_result = 0 
+	   ]]>   			
+      <isNotEmpty property="workAreaName">
+      and a.work_area_name = #workAreaName#
+      </isNotEmpty>
+     <![CDATA[ 
+      /*and a.meeting_room_id is not null*/
+      and isnull(a.meeting_room_id,'') !=''
+	  and c.approve_status in ('A', 'W')
+      and a.repeat = 1
+
+      ) p INNER JOIN ikep4_sd_category q
+      			ON p."categoryId" = q.category_id
+     INNER JOIN  ikep4_ev_user u on p."registerId" = u.user_id
+	 INNER JOIN  ikep4_ev_job_title t on u.job_title_code = t.job_title_code
+	 LEFT OUTER JOIN IKEP4_EV_JOB_DUTY D
+                    ON  u.JOB_DUTY_CODE = D.JOB_DUTY_CODE
+    ]]>
+	</select>	
+	
+	<select id="selectByPeriodForCompany" parameterClass="java.util.HashMap" resultMap="selectByPeriodResultMap3">
+    <![CDATA[ 
+    /* [Schedule_SqlMap.xml] selectByPeriodForCompany */
+	  select p.*, category_name "categoryName", color "color", 
+	  CASE WHEN "schedulePublic" =  1 THEN dbo.IKEP4_SD_GET_PARTICIPANT_LIST("scheduleId") ELSE 'company' END "participantId"
+	  from (
+      select 
+        a.start_date "startDate",
+        a.end_date "endDate", 
+        a.title "title", a.schedule_id "scheduleId", null "repeatType",null "repeatPeriod",
+        null "repeatPeriodOption", null "repeatStartDate",null "repeatEndDate",
+        a.category_id "categoryId", a.workspace_id "workspaceId", a.place "place", a.wholeday "wholeday", 
+        a.schedule_public "schedulePublic", a.attendance_request "attendanceRequest", a.register_id "registerId",
+        a.meeting_room_id "meetingRoomId"   ,
+        a.update_display "updateDisplay"  ,
+         a.work_area_name "workAreaName"
+      from ikep4_sd_schedule a
+      where a.everyone_schedule = 1  and  a.approve_result = 1 
+       ]]>
+      <isNotEmpty property="workAreaName">
+      and a.work_area_name = #workAreaName#
+      </isNotEmpty>
+        <![CDATA[ 
+      /*and a.meeting_room_id is null*/
+      and isnull(a.meeting_room_id,'') =''
+      and isnull(a.cartooletc_id,'') =''
+      and a.repeat = 0
+      and a.start_date < DATEADD(DD, 1, #endDate#)
+      and a.end_date >=  #startDate#       
+      union all
+      select 
+	    b.SD_START_DATE "startDate",
+	    b.SD_END_DATE "endDate", 
+        a.title "title", a.schedule_id "scheduleId", b.REPEAT_TYPE "repeatType", b.REPEAT_PERIOD "repeatPeriod",
+        b.REPEAT_PERIOD_OPTION "repeatPeriodOption", b.repeat_start_date "repeatStartDate",b.repeat_end_date "repeatEndDate",
+        a.category_id "categoryId", a.workspace_id "workspaceId",a.place "place",a.wholeday "wholeday", 
+        a.schedule_public "schedulePublic", a.attendance_request "attendanceRequest", a.register_id "registerId",
+        a.meeting_room_id "meetingRoomId" ,
+        a.update_display "updateDisplay"   ,
+         a.work_area_name "workAreaName"
+      from ikep4_sd_schedule a INNER JOIN ikep4_sd_repeat b
+      			ON b.schedule_id = a.schedule_id
+      and a.everyone_schedule = 1 and a.approve_result = 1 
+       ]]>
+      <isNotEmpty property="workAreaName">
+      and a.work_area_name = #workAreaName#
+      </isNotEmpty>
+      <![CDATA[ 
+      /*and a.meeting_room_id is null*/
+      and isnull(a.meeting_room_id,'') =''
+      and isnull(a.cartooletc_id,'') =''
+      and a.repeat = 1
+      and b.repeat_start_date < DATEADD(DD, 1, #endDate#)
+      and b.repeat_end_date >=  #startDate# 
+      
+      union all
+      
+      select 
+        a.start_date "startDate",
+        a.end_date "endDate", 
+        a.title "title", a.schedule_id "scheduleId", null "repeatType",null "repeatPeriod",
+        null "repeatPeriodOption", null "repeatStartDate",null "repeatEndDate",
+        a.category_id "categoryId", a.workspace_id "workspaceId", a.place "place", a.wholeday "wholeday", 
+        a.schedule_public "schedulePublic", a.attendance_request "attendanceRequest", a.register_id "registerId",
+        a.meeting_room_id "meetingRoomId"   ,
+        a.update_display "updateDisplay"     ,
+         a.work_area_name "workAreaName"
+      from ikep4_sd_schedule a
+      inner join ikep4_mr_approve b
+	  on a.schedule_id = b.schedule_id
+      where a.everyone_schedule = 1 and a.approve_result = 1 
+       ]]>
+      <isNotEmpty property="workAreaName">
+      and a.work_area_name = #workAreaName#
+      </isNotEmpty>
+      <![CDATA[ 
+      /*and a.meeting_room_id is not null*/
+      and isnull(a.meeting_room_id,'') !=''
+      and isnull(a.cartooletc_id,'') =''
+	  and b.approve_status in ('A', 'W')
+      and a.repeat = 0
+      and a.start_date < DATEADD(DD, 1, #endDate#)
+      and a.end_date >=  #startDate#       
+      union all
+      select 
+	    b.SD_START_DATE "startDate",
+	    b.SD_END_DATE "endDate", 
+        a.title "title", a.schedule_id "scheduleId", b.REPEAT_TYPE "repeatType", b.REPEAT_PERIOD "repeatPeriod",
+        b.REPEAT_PERIOD_OPTION "repeatPeriodOption", b.repeat_start_date "repeatStartDate",b.repeat_end_date "repeatEndDate",
+        a.category_id "categoryId", a.workspace_id "workspaceId",a.place "place",a.wholeday "wholeday", 
+        a.schedule_public "schedulePublic", a.attendance_request "attendanceRequest", a.register_id "registerId",
+        a.meeting_room_id "meetingRoomId",
+        a.update_display "updateDisplay"   ,
+         a.work_area_name "workAreaName"
+      from ikep4_sd_schedule a INNER JOIN ikep4_sd_repeat b
+      			ON b.schedule_id = a.schedule_id
+	  inner join ikep4_mr_approve c
+	  on a.schedule_id = c.schedule_id   
+	  and a.everyone_schedule = 1 and a.approve_result = 1 
+	   ]]>   			
+      <isNotEmpty property="workAreaName">
+      and a.work_area_name = #workAreaName#
+      </isNotEmpty>
+     <![CDATA[ 
+      /*and a.meeting_room_id is not null*/
+      and isnull(a.meeting_room_id,'') !=''
+      and isnull(a.cartooletc_id,'') =''
+	  and c.approve_status in ('A', 'W')
+      and a.repeat = 1
+      and b.repeat_start_date < DATEADD(DD, 1, #endDate#)
+      and b.repeat_end_date >=  #startDate#
+      ) p INNER JOIN ikep4_sd_category q
+      			ON p."categoryId" = q.category_id
+    ]]>
+	</select>	
+	
+	<select id="selectByPeriodForCompanyPortlet" parameterClass="java.util.HashMap" resultMap="selectByPeriodResultMap3">
+    <![CDATA[ 
+    /* [Schedule_SqlMap.xml] selectByPeriodForCompany */
+	  select p.*, category_name "categoryName", color "color", 
+	  CASE WHEN "schedulePublic" =  1 THEN dbo.IKEP4_SD_GET_PARTICIPANT_LIST("scheduleId") ELSE 'company' END "participantId"
+	  from (
+      select 
+        a.start_date "startDate",
+        a.end_date "endDate", 
+        a.title "title", a.schedule_id "scheduleId", null "repeatType",null "repeatPeriod",
+        null "repeatPeriodOption", null "repeatStartDate",null "repeatEndDate",
+        a.category_id "categoryId", a.workspace_id "workspaceId", a.place "place", a.wholeday "wholeday", 
+        a.schedule_public "schedulePublic", a.attendance_request "attendanceRequest", a.register_id "registerId",
+        a.meeting_room_id "meetingRoomId"   ,
+        a.update_display "updateDisplay"  ,
+         a.work_area_name "workAreaName"
+      from ikep4_sd_schedule a
+      where a.everyone_schedule = 1  and  a.approve_result = 1 
+      and a.update_display in ('0','1')
+       ]]>
+      <isNotEmpty property="workAreaName">
+      and a.work_area_name = #workAreaName#
+      </isNotEmpty>
+        <![CDATA[ 
+      /*and a.meeting_room_id is null*/
+      and isnull(a.meeting_room_id,'') =''
+      and isnull(a.cartooletc_id,'') =''
+      and a.repeat = 0
+      and a.start_date < DATEADD(DD, 1, #endDate#)
+      and a.end_date >=  #startDate#       
+      union all
+      select 
+	    b.SD_START_DATE "startDate",
+	    b.SD_END_DATE "endDate", 
+        a.title "title", a.schedule_id "scheduleId", b.REPEAT_TYPE "repeatType", b.REPEAT_PERIOD "repeatPeriod",
+        b.REPEAT_PERIOD_OPTION "repeatPeriodOption", b.repeat_start_date "repeatStartDate",b.repeat_end_date "repeatEndDate",
+        a.category_id "categoryId", a.workspace_id "workspaceId",a.place "place",a.wholeday "wholeday", 
+        a.schedule_public "schedulePublic", a.attendance_request "attendanceRequest", a.register_id "registerId",
+        a.meeting_room_id "meetingRoomId" ,
+        a.update_display "updateDisplay"   ,
+         a.work_area_name "workAreaName"
+      from ikep4_sd_schedule a INNER JOIN ikep4_sd_repeat b
+      			ON b.schedule_id = a.schedule_id
+      and a.everyone_schedule = 1 and a.approve_result = 1 
+      and a.update_display in ('0','1')
+       ]]>
+      <isNotEmpty property="workAreaName">
+      and a.work_area_name = #workAreaName#
+      </isNotEmpty>
+      <![CDATA[ 
+      /*and a.meeting_room_id is null*/
+      and isnull(a.meeting_room_id,'') =''
+      and isnull(a.cartooletc_id,'') =''
+      and a.repeat = 1
+      and b.repeat_start_date < DATEADD(DD, 1, #endDate#)
+      and b.repeat_end_date >=  #startDate# 
+      
+      union all
+      
+      select 
+        a.start_date "startDate",
+        a.end_date "endDate", 
+        a.title "title", a.schedule_id "scheduleId", null "repeatType",null "repeatPeriod",
+        null "repeatPeriodOption", null "repeatStartDate",null "repeatEndDate",
+        a.category_id "categoryId", a.workspace_id "workspaceId", a.place "place", a.wholeday "wholeday", 
+        a.schedule_public "schedulePublic", a.attendance_request "attendanceRequest", a.register_id "registerId",
+        a.meeting_room_id "meetingRoomId"   ,
+        a.update_display "updateDisplay"     ,
+         a.work_area_name "workAreaName"
+      from ikep4_sd_schedule a
+      inner join ikep4_mr_approve b
+	  on a.schedule_id = b.schedule_id
+      where a.everyone_schedule = 1 and a.approve_result = 1 
+      and a.update_display in ('0','1')
+       ]]>
+      <isNotEmpty property="workAreaName">
+      and a.work_area_name = #workAreaName#
+      </isNotEmpty>
+      <![CDATA[ 
+      /*and a.meeting_room_id is not null*/
+      and isnull(a.meeting_room_id,'') !=''
+      and isnull(a.cartooletc_id,'') =''
+	  and b.approve_status in ('A', 'W')
+      and a.repeat = 0
+      and a.start_date < DATEADD(DD, 1, #endDate#)
+      and a.end_date >=  #startDate#       
+      union all
+      select 
+	    b.SD_START_DATE "startDate",
+	    b.SD_END_DATE "endDate", 
+        a.title "title", a.schedule_id "scheduleId", b.REPEAT_TYPE "repeatType", b.REPEAT_PERIOD "repeatPeriod",
+        b.REPEAT_PERIOD_OPTION "repeatPeriodOption", b.repeat_start_date "repeatStartDate",b.repeat_end_date "repeatEndDate",
+        a.category_id "categoryId", a.workspace_id "workspaceId",a.place "place",a.wholeday "wholeday", 
+        a.schedule_public "schedulePublic", a.attendance_request "attendanceRequest", a.register_id "registerId",
+        a.meeting_room_id "meetingRoomId",
+        a.update_display "updateDisplay"   ,
+         a.work_area_name "workAreaName"
+      from ikep4_sd_schedule a INNER JOIN ikep4_sd_repeat b
+      			ON b.schedule_id = a.schedule_id
+	  inner join ikep4_mr_approve c
+	  on a.schedule_id = c.schedule_id   
+	  and a.everyone_schedule = 1 and a.approve_result = 1 
+	  and a.update_display in ('0','1')
+	   ]]>   			
+      <isNotEmpty property="workAreaName">
+      and a.work_area_name = #workAreaName#
+      </isNotEmpty>
+     <![CDATA[ 
+      /*and a.meeting_room_id is not null*/
+      and isnull(a.meeting_room_id,'') !=''
+      and isnull(a.cartooletc_id,'') =''
+	  and c.approve_status in ('A', 'W')
+      and a.repeat = 1
+      and b.repeat_start_date < DATEADD(DD, 1, #endDate#)
+      and b.repeat_end_date >=  #startDate#
+      ) p INNER JOIN ikep4_sd_category q
+      			ON p."categoryId" = q.category_id
+    ]]>
+	</select>	
+	
+	
+	<!-- MS SQL -->
+	<select id="selectByPeriodForWorkspace" parameterClass="java.util.HashMap" resultMap="selectByPeriodResultMap">
+    <![CDATA[ 
+	  select p.*, category_name "categoryName", color "color", 
+	  CASE WHEN "schedulePublic" =  1 THEN dbo.IKEP4_SD_GET_PARTICIPANT_LIST("scheduleId") ELSE '' END "participantId"
+	  from (
+      select 
+        a.start_date "startDate",
+        a.end_date "endDate", 
+        a.title "title", a.schedule_id "scheduleId", null "repeatType",null "repeatPeriod",
+        null "repeatPeriodOption", null "repeatStartDate",null "repeatEndDate",
+        a.category_id "categoryId", a.workspace_id "workspaceId", a.place "place", a.wholeday "wholeday", 
+        a.schedule_public "schedulePublic", a.attendance_request "attendanceRequest", a.register_id "registerId",
+        a.meeting_room_id "meetingRoomId"  , '' "pacYn", '' "refYn"   
+      ,a.schedule_private "schedulePrivate"
+      from ikep4_sd_schedule a
+      where a.workspace_id = #workspaceId#
+      /*and a.meeting_room_id is null*/
+      and isnull(a.meeting_room_id,'') =''
+      and a.repeat = 0
+      and a.start_date < DATEADD(DD, 1, #endDate#)
+      and a.end_date >=  #startDate#       
+      union all
+      select 
+	    b.SD_START_DATE "startDate",
+	    b.SD_END_DATE "endDate", 
+        a.title "title", a.schedule_id "scheduleId", b.REPEAT_TYPE "repeatType", b.REPEAT_PERIOD "repeatPeriod",
+        b.REPEAT_PERIOD_OPTION "repeatPeriodOption", b.repeat_start_date "repeatStartDate",b.repeat_end_date "repeatEndDate",
+        a.category_id "categoryId", a.workspace_id "workspaceId",a.place "place",a.wholeday "wholeday", 
+        a.schedule_public "schedulePublic", a.attendance_request "attendanceRequest", a.register_id "registerId",
+        a.meeting_room_id "meetingRoomId", '' "pacYn", '' "refYn"
+      ,a.schedule_private "schedulePrivate"
+      from ikep4_sd_schedule a INNER JOIN ikep4_sd_repeat b
+      			ON b.schedule_id = a.schedule_id
+      and a.workspace_id = #workspaceId#
+      /*and a.meeting_room_id is null*/
+      and isnull(a.meeting_room_id,'') =''
+      and a.repeat = 1
+      and b.repeat_start_date < DATEADD(DD, 1, #endDate#)
+      and b.repeat_end_date >=  #startDate# 
+      
+      union all
+      
+      select 
+        a.start_date "startDate",
+        a.end_date "endDate", 
+        a.title "title", a.schedule_id "scheduleId", null "repeatType",null "repeatPeriod",
+        null "repeatPeriodOption", null "repeatStartDate",null "repeatEndDate",
+        a.category_id "categoryId", a.workspace_id "workspaceId", a.place "place", a.wholeday "wholeday", 
+        a.schedule_public "schedulePublic", a.attendance_request "attendanceRequest", a.register_id "registerId",
+        a.meeting_room_id "meetingRoomId"  , '' "pacYn", '' "refYn"   
+      ,a.schedule_private "schedulePrivate"
+      from ikep4_sd_schedule a
+      inner join ikep4_mr_approve b
+	  on a.schedule_id = b.schedule_id
+      where a.workspace_id = #workspaceId#
+      /*and a.meeting_room_id is not null*/
+      and isnull(a.meeting_room_id,'') !=''
+      and b.meeting_room_id not in(select cartooletc_id from IKEP4_MR_CARTOOLETC) 
+	  and b.approve_status in ('A', 'W')
+      and a.repeat = 0
+      and a.start_date < DATEADD(DD, 1, #endDate#)
+      and a.end_date >=  #startDate#       
+      union all
+      select 
+	    b.SD_START_DATE "startDate",
+	    b.SD_END_DATE "endDate", 
+        a.title "title", a.schedule_id "scheduleId", b.REPEAT_TYPE "repeatType", b.REPEAT_PERIOD "repeatPeriod",
+        b.REPEAT_PERIOD_OPTION "repeatPeriodOption", b.repeat_start_date "repeatStartDate",b.repeat_end_date "repeatEndDate",
+        a.category_id "categoryId", a.workspace_id "workspaceId",a.place "place",a.wholeday "wholeday", 
+        a.schedule_public "schedulePublic", a.attendance_request "attendanceRequest", a.register_id "registerId",
+        a.meeting_room_id "meetingRoomId", '' "pacYn", '' "refYn"
+      ,a.schedule_private "schedulePrivate"
+      from ikep4_sd_schedule a INNER JOIN ikep4_sd_repeat b
+      			ON b.schedule_id = a.schedule_id
+	  inner join ikep4_mr_approve c
+	  on a.schedule_id = c.schedule_id      			
+      and a.workspace_id = #workspaceId#
+      /*and a.meeting_room_id is not null*/
+      and isnull(a.meeting_room_id,'') !=''
+      and c.meeting_room_id not in(select cartooletc_id from IKEP4_MR_CARTOOLETC) 
+	  and c.approve_status in ('A', 'W')
+      and a.repeat = 1
+      and b.repeat_start_date < DATEADD(DD, 1, #endDate#)
+      and b.repeat_end_date >=  #startDate#
+      ) p INNER JOIN ikep4_sd_category q
+      			ON p."categoryId" = q.category_id
+    ]]>
+	</select>	
+	
+	
+	<select id="selectByPeriodForWorkspaceHb" parameterClass="java.util.HashMap" resultMap="selectByPeriodResultMap">
+    <![CDATA[ 
+	  select p.*, category_name "categoryName", color "color", 
+	  CASE WHEN "schedulePublic" =  1 THEN dbo.IKEP4_SD_GET_PARTICIPANT_LIST("scheduleId") ELSE '' END "participantId"
+	  from (
+      select 
+        a.start_date "startDate",
+        a.end_date "endDate", 
+        a.title "title", a.schedule_id "scheduleId", null "repeatType",null "repeatPeriod",
+        null "repeatPeriodOption", null "repeatStartDate",null "repeatEndDate",
+        a.category_id "categoryId", a.workspace_id "workspaceId", a.place "place", a.wholeday "wholeday", 
+        a.schedule_public "schedulePublic", a.attendance_request "attendanceRequest", a.register_id "registerId",
+        a.meeting_room_id "meetingRoomId"  , '' "pacYn", '' "refYn"   
+      ,a.schedule_private "schedulePrivate"
+      from ikep4_sd_schedule a
+      where a.workspace_id = #workspaceId#
+       ]]>
+	      <isNotEmpty property="hbName">
+	      	and a.search_code = #hbName#
+	      </isNotEmpty>
+	      <![CDATA[ 
+      /*and a.meeting_room_id is null*/
+      and isnull(a.meeting_room_id,'') =''
+      and a.repeat = 0
+      and a.start_date < DATEADD(DD, 1, #endDate#)
+      and a.end_date >=  #startDate#       
+      union all
+      select 
+	    b.SD_START_DATE "startDate",
+	    b.SD_END_DATE "endDate", 
+        a.title "title", a.schedule_id "scheduleId", b.REPEAT_TYPE "repeatType", b.REPEAT_PERIOD "repeatPeriod",
+        b.REPEAT_PERIOD_OPTION "repeatPeriodOption", b.repeat_start_date "repeatStartDate",b.repeat_end_date "repeatEndDate",
+        a.category_id "categoryId", a.workspace_id "workspaceId",a.place "place",a.wholeday "wholeday", 
+        a.schedule_public "schedulePublic", a.attendance_request "attendanceRequest", a.register_id "registerId",
+        a.meeting_room_id "meetingRoomId", '' "pacYn", '' "refYn"
+      ,a.schedule_private "schedulePrivate"
+      from ikep4_sd_schedule a INNER JOIN ikep4_sd_repeat b
+      			ON b.schedule_id = a.schedule_id
+      and a.workspace_id = #workspaceId#
+       ]]>
+	      <isNotEmpty property="hbName">
+	      	and a.search_code = #hbName#
+	      </isNotEmpty>
+	      <![CDATA[ 
+      /*and a.meeting_room_id is null*/
+      and isnull(a.meeting_room_id,'') =''
+      and a.repeat = 1
+      and b.repeat_start_date < DATEADD(DD, 1, #endDate#)
+      and b.repeat_end_date >=  #startDate# 
+      
+      union all
+      
+      select 
+        a.start_date "startDate",
+        a.end_date "endDate", 
+        a.title "title", a.schedule_id "scheduleId", null "repeatType",null "repeatPeriod",
+        null "repeatPeriodOption", null "repeatStartDate",null "repeatEndDate",
+        a.category_id "categoryId", a.workspace_id "workspaceId", a.place "place", a.wholeday "wholeday", 
+        a.schedule_public "schedulePublic", a.attendance_request "attendanceRequest", a.register_id "registerId",
+        a.meeting_room_id "meetingRoomId"  , '' "pacYn", '' "refYn"   
+      ,a.schedule_private "schedulePrivate"
+      from ikep4_sd_schedule a
+      inner join ikep4_mr_approve b
+	  on a.schedule_id = b.schedule_id
+      where a.workspace_id = #workspaceId#
+       ]]>
+	      <isNotEmpty property="hbName">
+	      	and a.search_code = #hbName#
+	      </isNotEmpty>
+	      <![CDATA[ 
+      /*and a.meeting_room_id is not null*/
+      and isnull(a.meeting_room_id,'') !=''
+      and b.meeting_room_id not in(select cartooletc_id from IKEP4_MR_CARTOOLETC) 
+	  and b.approve_status in ('A', 'W')
+      and a.repeat = 0
+      and a.start_date < DATEADD(DD, 1, #endDate#)
+      and a.end_date >=  #startDate#       
+      union all
+      select 
+	    b.SD_START_DATE "startDate",
+	    b.SD_END_DATE "endDate", 
+        a.title "title", a.schedule_id "scheduleId", b.REPEAT_TYPE "repeatType", b.REPEAT_PERIOD "repeatPeriod",
+        b.REPEAT_PERIOD_OPTION "repeatPeriodOption", b.repeat_start_date "repeatStartDate",b.repeat_end_date "repeatEndDate",
+        a.category_id "categoryId", a.workspace_id "workspaceId",a.place "place",a.wholeday "wholeday", 
+        a.schedule_public "schedulePublic", a.attendance_request "attendanceRequest", a.register_id "registerId",
+        a.meeting_room_id "meetingRoomId", '' "pacYn", '' "refYn"
+      ,a.schedule_private "schedulePrivate"
+      from ikep4_sd_schedule a INNER JOIN ikep4_sd_repeat b
+      			ON b.schedule_id = a.schedule_id
+	  inner join ikep4_mr_approve c
+	  on a.schedule_id = c.schedule_id      			
+      and a.workspace_id = #workspaceId#
+       ]]>
+	      <isNotEmpty property="hbName">
+	      	and a.search_code = #hbName#
+	      </isNotEmpty>
+	      <![CDATA[ 
+      /*and a.meeting_room_id is not null*/
+      and isnull(a.meeting_room_id,'') !=''
+      and c.meeting_room_id not in(select cartooletc_id from IKEP4_MR_CARTOOLETC) 
+	  and c.approve_status in ('A', 'W')
+      and a.repeat = 1
+      and b.repeat_start_date < DATEADD(DD, 1, #endDate#)
+      and b.repeat_end_date >=  #startDate#
+      ) p INNER JOIN ikep4_sd_category q
+      			ON p."categoryId" = q.category_id
+    ]]>
+	</select>	
+	<!-- MS SQL -->
+	<select id="readUsersSchedule" parameterClass="map" resultMap="readUsersScheduleMap">
+   	<![CDATA[
+      select 
+        start_date "startDate",
+        end_date "endDate", 
+        title "title", a.schedule_id "scheduleId", null "repeatType",null "repeatPeriod",
+        null "repeatPeriodOption", null "repeatStartDate",null "repeatEndDate",
+        a.category_id "categoryId", workspace_id "workspaceId", place "place", wholeday "wholeday", 
+        schedule_public "schedulePublic", attendance_request "attendanceRequest", 
+        a.register_id "registerId", null "participantId"  
+      from ikep4_sd_schedule a
+      where a.register_id in 
+	]]>
+	      <iterate open="(" close=")" conjunction="," property="users">
+	      		#users[]#
+	      </iterate>      
+   	<![CDATA[	      
+      and repeat = 0
+      and start_date < DATEADD(DD, 1, #endDate#)
+      and end_date >=  #startDate#     
+      union all
+      select 
+        start_date "startDate",
+        end_date "endDate", 
+        title "title", a.schedule_id "scheduleId", null "repeatType",null "repeatPeriod",
+        null "repeatPeriodOption", null "repeatStartDate",null "repeatEndDate",
+        a.category_id "categoryId", workspace_id "workspaceId", place "place", wholeday "wholeday", 
+        schedule_public "schedulePublic", attendance_request "attendanceRequest", 
+        null "registerId", target_user_id "participantId"  
+      from ikep4_sd_schedule a INNER JOIN ikep4_sd_participant c   
+      			ON a.schedule_id = c.schedule_id
+      WHERE target_user_id in 
+	]]>      
+	      <iterate open="(" close=")" conjunction="," property="users">
+	      		#users[]#
+	      </iterate>      
+   	<![CDATA[	
+      and repeat = 0
+      and start_date < DATEADD(DD, 1, #endDate#)
+      and end_date >=  #startDate#   
+      union all
+      select 
+        SD_START_DATE "startDate",
+        SD_END_DATE "endDate", 
+        title "title", a.schedule_id "scheduleId", REPEAT_TYPE "repeatType", REPEAT_PERIOD "repeatPeriod",
+        REPEAT_PERIOD_OPTION "repeatPeriodOption", repeat_start_date "repeatStartDate",repeat_end_date "repeatEndDate",
+        a.category_id "categoryId", workspace_id "workspaceId",place "place",wholeday "wholeday", 
+        schedule_public "schedulePublic", attendance_request "attendanceRequest", 
+        a.register_id "registerId", null "participantId"
+      from ikep4_sd_schedule a INNER JOIN ikep4_sd_repeat b
+      			ON b.schedule_id = a.schedule_id
+      WHERE a.register_id in 
+	]]>      
+	      <iterate open="(" close=")" conjunction="," property="users">
+	      		#users[]#
+	      </iterate>      
+   	<![CDATA[	
+      and repeat = 1
+      and repeat_start_date < DATEADD(DD, 1, #endDate#)
+      and repeat_end_date >=  #startDate#
+      union all
+      select 
+        SD_START_DATE "startDate",
+        SD_END_DATE "endDate", 
+        title "title", a.schedule_id "scheduleId", REPEAT_TYPE "repeatType", REPEAT_PERIOD "repeatPeriod",
+        REPEAT_PERIOD_OPTION "repeatPeriodOption", repeat_start_date "repeatStartDate",repeat_end_date "repeatEndDate",
+        a.category_id "categoryId", workspace_id "workspaceId",place "place",wholeday "wholeday", 
+        schedule_public "schedulePublic", attendance_request "attendanceRequest", 
+        null "registerId", target_user_id "participantId"
+      from ikep4_sd_schedule a 
+      		INNER JOIN ikep4_sd_repeat b
+      			ON b.schedule_id = a.schedule_id
+			INNER JOIN ikep4_sd_participant d
+				ON d.schedule_id = a.schedule_id
+      where target_user_id in 
+	]]>      
+	      <iterate open="(" close=")" conjunction="," property="users">
+	      		#users[]#
+	      </iterate>      
+   	<![CDATA[	
+      and repeat = 1
+      and repeat_start_date < DATEADD(DD, 1, #endDate#)
+      and repeat_end_date >=  #startDate# 
+	]]>
+	</select>
+	
+	<!-- MS SQL -->
+	<select id="getUserNormalEventCount" parameterClass="map" resultClass="int">
+	   	<![CDATA[
+			select count(*) cnt
+			from (
+			select schedule_id
+			from ikep4_sd_schedule 
+			where register_id = #userId# 
+			and everyone_schedule != '1'
+			and start_date < DATEADD(DD, 1, #endDate#)
+			and end_date >=  #startDate#
+			and repeat = 0
+			union all
+			select b.schedule_id
+			from ikep4_sd_participant a INNER JOIN ikep4_sd_schedule b
+					ON b.schedule_id = a.schedule_id
+			WHERE target_user_id = #userId#
+			and start_date < DATEADD(DD, 1, #endDate#)
+			and end_date >=  #startDate#
+			and repeat = 0 
+			and a.target_type <> '2' ) TBL
+		]]>
+	</select>
+	
+	<!-- MS SQL -->
+	<select id="readUserRecurrence" parameterClass="map" resultMap="selectByPeriodResultMapBase">
+   	<![CDATA[
+		select 
+		  SD_START_DATE "startDate",
+		  SD_END_DATE "endDate", 
+		  null "title", null "scheduleId", REPEAT_TYPE "repeatType", REPEAT_PERIOD "repeatPeriod",
+		  REPEAT_PERIOD_OPTION "repeatPeriodOption", repeat_start_date "repeatStartDate",repeat_end_date "repeatEndDate",
+		  null "categoryId", null "workspaceId",null "place",wholeday "wholeday", 
+	      null "schedulePublic", null "attendanceRequest", null "registerId"
+		from (
+		select schedule_id, wholeday
+		from ikep4_sd_schedule
+		where register_id = #userId#
+		and everyone_schedule != '1' 
+		and repeat = 1
+		union all
+		select b.schedule_id, wholeday
+		from ikep4_sd_participant a INNER JOIN ikep4_sd_schedule b
+					ON b.schedule_id = a.schedule_id
+		WHERE target_user_id = #userId#
+		and everyone_schedule != '1' 
+		and repeat = 1 ) p INNER JOIN ikep4_sd_repeat q
+					ON q.schedule_id = p.schedule_id
+		WHERE repeat_start_date < DATEADD(DD, 1, #endDate#)
+		and repeat_end_date >=  #startDate# 
+	]]>
+	</select>
+	
+	<!-- MS SQL -->
+	<!-- 일반일정의 알람 대상 읽기 -->
+	<select id="getAlarmTargetNormalList" parameterClass="map" resultMap="alarmTargetListResult">
+	  <![CDATA[
+		select 		
+		  DATEADD(MI, -1 *convert(numeric, alarm_time), startDate) atime, a.*
+		from (
+		select 
+		  start_date startDate, end_date endDate, p.schedule_id scheduleId, 
+		  title title, q.alarm_time alarm_time, alarm_type, alarm_id,
+		  p.register_id SENDERUSERID, p.register_name SENDER, mail FROMMAIL, mail_password mailPassword, 
+		  user_id TARGETUSERID, user_name TARGETUSER, mail TOMAIL, mobile MOBILE
+		FROM ikep4_sd_schedule p
+			 INNER JOIN ikep4_sd_alarm q
+			 	ON q.schedule_id = p.schedule_id
+			 INNER JOIN ikep4_ev_user u
+			 	ON u.user_id = p.register_id
+		where p.repeat = 0
+		and sent =0 
+		and start_date <=  DATEADD(MI, (convert(numeric, alarm_time)+ 5), #jobDateTime#) 
+		and q.alarm_time <>0
+		union all
+		select 
+		  start_date startDate, end_date endDate, p.schedule_id scheduleId, 
+		  title title, q.alarm_time alarm_time, alarm_type, alarm_id,
+		  p.register_id SENDERUSERID, p.register_name SENDER, mail FROMMAIL, mail_password mailPassword, 
+		  user_id TARGETUSERID, user_name TARGETUSER, mail TOMAIL, mobile MOBILE
+		FROM ikep4_sd_schedule p
+			 INNER JOIN ikep4_sd_alarm q
+			 	ON q.schedule_id = p.schedule_id
+			 INNER JOIN ikep4_sd_participant b
+			 	ON b.schedule_id = p.schedule_id
+			 INNER JOIN ikep4_ev_user u
+			 	ON u.user_id = b.target_user_id
+		where p.repeat = 0
+		and sent =0
+		and q.alarm_time <>0
+		and start_date <=  DATEADD(MI, (convert(numeric,alarm_time) + 5), #jobDateTime#)) a
+		where DATEADD(MI, -1 *convert(numeric, alarm_time), startDate) > DATEADD(MI, -10,  CURRENT_TIMESTAMP) 
+	   ]]>
+	</select>
+	
+	<!-- MS SQL -->
+	<!-- 반복일정의 알람 대상 읽기 -->
+	<select id="getAlarmTargetRecurrenceEvents" parameterClass="map" resultMap="alarmTargetRecurrEventResult">
+	  <![CDATA[
+		select 
+		  SD_START_DATE "startDate",
+		  SD_END_DATE "endDate", 
+		  REPEAT_TYPE "repeatType", REPEAT_PERIOD "repeatPeriod", REPEAT_PERIOD_OPTION "repeatPeriodOption", 
+		  repeat_start_date "repeatStartDate",repeat_end_date "repeatEndDate",  
+		  p.schedule_id scheduleId, register_id registerId
+		FROM ikep4_sd_schedule p INNER JOIN ikep4_sd_repeat k
+				ON k.schedule_id = p.schedule_id
+		WHERE p.repeat = 1
+		and repeat_start_date < DATEADD(DD, 1, #jobDate#)
+		and repeat_end_date >=  #jobDate#
+		and exists (select schedule_id
+			from ikep4_sd_alarm
+			where k.schedule_id = schedule_id)	  
+	   ]]>
+	</select>	
+	
+	<!-- MS SQL -->
+	<!-- 반복일정의 알람정보 읽기 -->
+	<select id="getAlarmInfo" parameterClass="map" resultMap="alarmTargetListResult">
+	  <![CDATA[
+		select 			
+		  DATEADD(MI, -1 * convert(numeric, alarm_time), startDate) atime, a.*
+		from (
+		select 
+		  #startDate# startDate, #endDate# endDate, #scheduleId# scheduleId, 
+		  title title, q.alarm_time alarm_time, alarm_type, alarm_id,
+		  p.register_id SENDERUSERID, user_name SENDER, mail FROMMAIL, mail_password mailPassword, 
+		  user_id TARGETUSERID, user_name TARGETUSER, mail TOMAIL, mobile MOBILE
+		FROM ikep4_sd_schedule p, ikep4_sd_alarm q, ikep4_ev_user u
+		where q.schedule_id = #scheduleId#
+		and p.schedule_id = #scheduleId#
+		and u.user_id = p.register_id
+		and #startDate# between DATEADD(MI, convert(numeric, alarm_time), #jobDateTime#) and DATEADD(MI, (convert(numeric,alarm_time) + #interval#), #jobDateTime#) 
+		union all
+		select 
+		  #startDate# startDate, #endDate# endDate, #scheduleId# scheduleId, 
+		  title title, q.alarm_time alarm_time, alarm_type, alarm_id,
+		  p.register_id SENDERUSERID, user_name SENDER, mail FROMMAIL, mail_password mailPassword, 
+		  user_id TARGETUSERID, user_name TARGETUSER, mail TOMAIL, mobile MOBILE
+		FROM ikep4_sd_schedule p, ikep4_sd_alarm q, ikep4_ev_user u, ikep4_sd_participant b
+		where q.schedule_id = #scheduleId#
+		and p.schedule_id = #scheduleId#
+		and u.user_id = b.target_user_id
+		and b.schedule_id = #scheduleId#
+		and #startDate# between DATEADD(MI, convert(numeric,alarm_time), #jobDateTime#) and DATEADD(MI, (convert(numeric,alarm_time) + #interval#), #jobDateTime#) ) a
+	   ]]>
+	</select>	
+	
+	<!-- ANSI -->
+	<!-- insert IKEP4_SD_SCHEDULE -->
+	<insert id="insertSchedule" parameterClass="Schedule"> 
+      <![CDATA[ 
+           Insert INTO IKEP4_SD_SCHEDULE (
+           	SCHEDULE_ID,CATEGORY_ID,START_DATE,END_DATE,WHOLEDAY,
+           	REPEAT,REPEAT_GROUP_ID,SCHEDULE_PUBLIC,SCHEDULE_PRIVATE,ATTENDANCE_REQUEST,ALARM_REQUEST,
+           	TITLE,PLACE,CONTENTS,ATTACH_FILE_COUNT,PORTAL_ID,
+           	REGISTER_ID,REGISTER_NAME,UPDATER_ID,UPDATER_NAME,WORKSPACE_ID, 
+           	MEETING_ROOM_ID, UPDATE_DISPLAY, WORK_AREA_NAME, EVERYONE_SCHEDULE, APPROVE_RESULT , CARTOOLETC_ID,SEARCH_CODE
+           ) VALUES (
+           	#scheduleId#,#categoryId#,#startDate#,#endDate#,#wholeday#,
+           	#repeat#,#repeatGroupId#,#schedulePublic#,#schedulePrivate#,#attendanceRequest#,#alarmRequest#,
+           	#title#,#place#,#contents#,#attachFileCount#,#portalId#,
+           	#registerId#,#registerName#,#updaterId#,#updaterName#,#workspaceId#,
+           	#meetingRoomId#,#updateDisplay#,#workAreaName#,#everyoneSchedule#,#approveResult# ,#cartooletcId#,#searchCode#
+           )
+       ]]>
+   </insert>	
+   
+   	<!-- ANSI -->
+	<!-- insert IKEP4_SD_SCHEDULE 수임자가 등록 -->
+	<insert id="insertScheduleByTrustee" parameterClass="Schedule"> 
+      <![CDATA[ 
+           Insert INTO IKEP4_SD_SCHEDULE (
+           SCHEDULE_ID,CATEGORY_ID,START_DATE,END_DATE,WHOLEDAY,
+           REPEAT,REPEAT_GROUP_ID,SCHEDULE_PUBLIC,ATTENDANCE_REQUEST,ALARM_REQUEST,
+           TITLE,PLACE,CONTENTS,ATTACH_FILE_COUNT,PORTAL_ID,
+           REGISTER_ID,REGISTER_NAME,UPDATER_ID,UPDATER_NAME,WORKSPACE_ID,
+           MEETING_ROOM_ID,SEARCH_CODE) 
+           SELECT 
+           #scheduleId#,#categoryId#,#startDate#,#endDate#,#wholeday#,
+           #repeat#,#repeatGroupId#,#schedulePublic#,#attendanceRequest#,#alarmRequest#,
+           #title#,#place#,#contents#,#attachFileCount#,#portalId#,
+           user_id,user_name,user_id,user_name,#workspaceId#,
+           #meetingRoomId#,#searchCode#
+           FROM IKEP4_EV_USER
+           WHERE user_id = #mandatorId#
+       ]]>
+   </insert>
+   
+   	<!-- ANSI -->
+	<!-- insert IKEP4_SD_MANDATE -->
+	<insert id="insertMandator" parameterClass="Mandator"> 
+      <![CDATA[ 
+           insert into ikep4_sd_mandate (mandator_id,trustee_id,start_date,end_date,portal_id,register_id,register_name,regist_date) 
+           VALUES (#mandatorId#,#trusteeId#,#startDate#,#endDate#,#portalId#,#registerId#,#registerName#,#registDate#)
+       ]]>
+   </insert>
+   
+   	<!-- ANSI -->
+	<select id="getMandator"  resultClass="User">
+		select user_id "userId", user_name "userName"
+		from ikep4_ev_user
+		where user_id = #value#
+	</select>
+   
+   	<!-- ANSI -->
+	<select id="getUserInfo"  resultClass="java.util.HashMap">
+		select user_id "userId", user_name "userName", isnull(D.JOB_DUTY_NAME,b.JOB_TITLE_NAME) "jobTitleName", team_name "teamName",
+    	USER_ENGLISH_NAME "userEnglishName", JOB_TITLE_ENGLISH_NAME "jobTitleEnglishName", TEAM_ENGLISH_NAME "teamEnglishName"   
+		from ikep4_ev_user a INNER JOIN ikep4_ev_job_title b
+			ON b.job_title_code = a.job_title_code
+			LEFT OUTER JOIN IKEP4_EV_JOB_DUTY D
+                    ON  a.JOB_DUTY_CODE = D.JOB_DUTY_CODE
+		where a.user_id = #value#
+	</select>
+	
+	<!-- ANSI -->
+	<!-- insert IKEP4_SD_HOLYDAY -->
+	<insert id="insertHoliday" parameterClass="Holiday"> 
+      <![CDATA[ 
+           insert into ikep4_sd_holiday (holiday_id,year_repeat,holiday_date,holiday_name,portal_id,register_id,register_name,regist_date,nation) 
+           values (#holidayId#,#yearRepeat#,#holidayDate#,#holidayName#,#portalId#,#registerId#,#registerName#,CURRENT_TIMESTAMP,#nation#)
+       ]]>
+   </insert>
+	
+	<!-- ANSI -->
+	<select id="getHolidayList"  resultClass="java.util.HashMap">
+		select holiday_id "holidayId",year_repeat "yearRepeat",holiday_date "holidayDate",holiday_name "holidayName",
+		a.register_name "registerName",a.regist_date "registDate", nation_name "nationName"
+		from ikep4_sd_holiday a INNER JOIN ikep4_ev_nation b
+    		ON a.nation = b.nation_code
+		order by holiday_date
+	</select>
+	
+	<!-- MS SQL -->
+	<select id="getHolidayByPeriod" parameterClass="map" resultMap="holidayResult">
+		select
+			<![CDATA[
+			case when month(#start#) <= month(#end#)  then cast(cast(year(#start#) as varchar(4))+right(convert(varchar(10), holiday_date, 120),6) as smalldatetime)
+			else
+				case when month(holiday_date) <= month(#end#) then cast(cast(year(#end#) as varchar(4))+right(convert(varchar(10), holiday_date, 120),6) as smalldatetime)
+				else cast(cast(year(#start#) as varchar(4))+right(convert(varchar(10), holiday_date, 120),6) as smalldatetime)
+				end
+			end as startDate, holiday_name as title
+			]]>
+		from ikep4_sd_holiday
+		where (
+				( year_repeat = 1 and holiday_date between #start# and #end# )
+				or ( year_repeat = 0
+				<isEqual prepend="and" property="isTwoYear" compareValue="true">
+					<![CDATA[
+					( right(convert(varchar(8), holiday_date, 112),4) >= right(convert(varchar(8), #start#, 112),4) or right(convert(varchar(8), holiday_date, 112),4) < right(convert(varchar(8), #end#, 112),4) )
+					]]>
+				</isEqual>
+
+				<isEqual prepend="and" property="isTwoYear" compareValue="false">
+					<![CDATA[
+					right(convert(varchar(8), holiday_date, 112),4) between right(convert(varchar(8), #start#, 112),4) and (right(convert(varchar(8), #end#, 112),4)-1)
+					]]>
+				</isEqual>
+	            )
+	        )
+			<isNotNull prepend="and" property="nation">
+				nation = #nation#
+			</isNotNull>
+	</select>
+	
+	<!-- ANSI -->
+	<select id="getHoliday"  parameterClass="string" resultClass="Holiday">
+		select holiday_id "holidayId",year_repeat "yearRepeat",holiday_date "holidayDate",holiday_name "holidayName",
+		portal_id "portalId",register_id "registerId",register_name "registerName",regist_date "registDate",nation "nation"
+		from ikep4_sd_holiday
+		where holiday_id = #value#
+	</select>
+	
+	<!-- ANSI -->
+	<update id="updateHoliday" parameterClass="Holiday">
+	  <![CDATA[
+		update ikep4_sd_holiday 
+		set year_repeat = #yearRepeat#, holiday_date = #holidayDate#, holiday_name = #holidayName#, nation=#nation#
+		where holiday_id = #holidayId#
+	   ]]>
+	</update>	
+	
+	<!-- ANSI -->
+	<delete id="deleteHoliday">
+	      delete from ikep4_sd_holiday where holiday_id in
+	      <iterate open="(" close=")" conjunction=",">
+	      		#[]#
+	      </iterate>
+	</delete>
+   
+   	<!-- ANSI -->
+	<!-- insert REPEAT -->
+	<insert id="insertRecurrences" parameterClass="Recurrences"> 
+      <![CDATA[ 
+           INSERT INTO IKEP4_SD_REPEAT(SCHEDULE_ID,REPEAT_TYPE,REPEAT_PERIOD,REPEAT_PERIOD_OPTION,REPEAT_START_DATE,REPEAT_END_DATE,SD_START_DATE,SD_END_DATE)
+           VALUES (#scheduleId#,#repeatType#,#repeatPeriod#,#repeatPeriodOption#,#startDate#,#endDate#,#sdStartDate#,#sdEndDate#)
+       ]]>
+   </insert>	
+	
+	<!-- ANSI -->
+	<!-- update -->
+	<update id="update" parameterClass="Schedule">
+	  <![CDATA[
+		update ikep4_sd_schedule
+		set category_id = #categoryId#, start_date = #startDate#, end_date = #endDate#, wholeday = #wholeday#,
+		repeat = #repeat#, schedule_public = #schedulePublic#, schedule_private = #schedulePrivate#, attendance_request = #attendanceRequest#, alarm_request = #alarmRequest#,
+		title = #title#, place = #place#, contents = #contents#, workspace_id = #workspaceId#, update_display=#updateDisplay#, work_area_name=#workAreaName#, 
+		meeting_room_id =#meetingRoomId#,cartooletc_id =#cartooletcId#,search_code = #searchCode#  
+		where schedule_id = #scheduleId#		
+	   ]]>
+	</update>
+
+	<!-- MS SQL -->
+	<!-- scheduleMove -->
+	<update id="scheduleMove" parameterClass="map">
+	  <![CDATA[
+		update ikep4_sd_schedule 
+		set start_date = DATEADD(MI, #minuteDelta#, DATEADD(DD, #dayDelta#, start_date)),
+			end_date = DATEADD(MI, #minuteDelta#, DATEADD(DD, #dayDelta#, end_date)),
+			updater_id=#user.userId#, updater_name=#user.userName#, update_date=CURRENT_TIMESTAMP
+		where schedule_id = #sid#
+	   ]]>
+	</update>
+	
+	<!-- MS SQL -->
+	<!-- scheduleMoveAllday -->
+	<update id="scheduleMoveAllday" parameterClass="map">
+	  <![CDATA[
+		update ikep4_sd_schedule 
+		set start_date = DATEADD(MI, #minuteDelta#, DATEADD(DD, #dayDelta#, start_date)),
+			end_date = DATEADD(MI, #minuteDelta#, DATEADD(DD, #dayDelta#, end_date)),
+			updater_id=#user.userId#, updater_name=#user.userName#, update_date=CURRENT_TIMESTAMP
+		where schedule_id = #sid#
+	   ]]>
+	</update>
+	
+	<!-- ANSI -->
+	<!-- scheduleMoveTime -->
+	<update id="scheduleMoveTime" parameterClass="map">
+	  <![CDATA[
+		update ikep4_sd_schedule 
+		set start_date = #startDate#, 
+			end_date = #endDate#,
+			wholeday = #wholeday#,
+			updater_id=#user.userId#, updater_name=#user.userName#, update_date=CURRENT_TIMESTAMP
+		where schedule_id = #sid#
+	   ]]>
+	</update>
+	
+	<!-- MS SQL -->
+	<!-- scheduleResize -->
+	<update id="scheduleResize" parameterClass="map">
+	  <![CDATA[
+		update ikep4_sd_schedule 
+		set end_date = DATEADD(MI, #minuteDelta#, DATEADD(DD, #dayDelta#, end_date)),
+			updater_id=#user.userId#, updater_name=#user.userName#, update_date=CURRENT_TIMESTAMP
+		where schedule_id = #sid#
+	   ]]>
+	</update>
+	
+	<!-- MS SQL -->
+	<!-- updatePrevRecurrenceEndDate -->
+	<update id="updatePrevRecurrenceEndDate" parameterClass="map">
+	  <![CDATA[
+	      UPDATE IKEP4_SD_REPEAT 
+	        SET REPEAT_END_DATE = CONVERT(DATETIME, CONVERT(VARCHAR, #prevEnd#, 23))
+	      WHERE SCHEDULE_ID = #scheduleId#
+	      AND CONVERT(DATETIME, CONVERT(VARCHAR, #prevStart#, 23)) BETWEEN  REPEAT_START_DATE AND REPEAT_END_DATE			
+	   ]]>
+	</update>
+	
+	<!-- ANSI -->
+	<!-- updateScheduleDate -->
+	<update id="updateScheduleDate" parameterClass="map">
+	  <![CDATA[
+	      UPDATE IKEP4_SD_SCHEDULE SET 
+			START_DATE = #start#,
+	        END_DATE = #end#
+	      WHERE SCHEDULE_ID = #scheduleId#	
+	   ]]>
+	</update>
+	
+	<update id="updateScheduleUpdateDisplay" parameterClass="map">
+	  <![CDATA[
+	      UPDATE IKEP4_SD_SCHEDULE SET 
+			update_display = #updateDisplay#
+	      WHERE SCHEDULE_ID = #scheduleId#	
+	   ]]>
+	</update>
+	
+	<!-- MS SQL -->
+	<!-- shiftLeftRepeatDate -->
+	<update id="shiftLeftRepeatDate" parameterClass="map">
+	  <![CDATA[
+	      UPDATE IKEP4_SD_REPEAT SET 
+		      REPEAT_START_DATE = CONVERT(DATETIME, CONVERT(VARCHAR, #start#, 23)),
+		      SD_START_DATE = #start#,
+		      SD_END_DATE = #end#
+	      WHERE SCHEDULE_ID = #scheduleId#
+	      AND CONVERT(DATETIME, CONVERT(VARCHAR, #start#, 23)) BETWEEN  REPEAT_START_DATE AND REPEAT_END_DATE			
+	   ]]>
+	</update>
+	
+	<!-- MS SQL -->
+	<!-- shiftPrevRepeatDate -->
+	<update id="shiftPrevRepeatDate" parameterClass="map">
+	  <![CDATA[
+	      UPDATE IKEP4_SD_REPEAT SET 
+		      REPEAT_END_DATE = CONVERT(DATETIME, CONVERT(VARCHAR, #start#, 23))
+	      WHERE SCHEDULE_ID = #scheduleId#
+	      AND CONVERT(DATETIME, CONVERT(VARCHAR, #start#, 23)) BETWEEN  REPEAT_START_DATE AND REPEAT_END_DATE			
+	   ]]>
+	</update>
+	
+	<!-- MS SQL -->
+	<!-- updateRepeatScheduleDate -->
+	<update id="updateRepeatScheduleDate" parameterClass="map">
+	  <![CDATA[
+	      UPDATE IKEP4_SD_REPEAT SET 
+		      REPEAT_START_DATE = CONVERT(DATETIME, CONVERT(VARCHAR, #start#, 23)),
+		      REPEAT_END_DATE = CONVERT(DATETIME, CONVERT(VARCHAR, #end#, 23)),
+		      SD_START_DATE = #start#,
+		      SD_END_DATE = #end#
+	      WHERE SCHEDULE_ID = #scheduleId#		
+	   ]]>
+	</update>
+	
+	<!-- MS SQL -->
+	<!-- updateMoveAfterEvents -->
+	<update id="updateMoveAfterEvents" parameterClass="map">
+	  <![CDATA[
+	      UPDATE IKEP4_SD_REPEAT 
+	        SET REPEAT_END_DATE = CONVERT(DATETIME, CONVERT(VARCHAR, #sco.prevStart#, 23))
+	      WHERE SCHEDULE_ID = #scheduleId#
+	      AND CONVERT(DATETIME, CONVERT(VARCHAR, #sco.prevStart#, 23)) BETWEEN  REPEAT_START_DATE AND REPEAT_END_DATE			
+	   ]]>
+	</update>
+	
+	<!-- MS SQL -->
+	<!-- updateAfterRepeatScheduleId -->
+	<update id="updateAfterRepeatScheduleId" parameterClass="map">
+	  <![CDATA[
+	      UPDATE IKEP4_SD_REPEAT 
+	        SET SCHEDULE_ID = #newScheduleId#
+	      WHERE SCHEDULE_ID = #scheduleId#
+	      AND CONVERT(VARCHAR, REPEAT_START_DATE, 23) > CONVERT(VARCHAR, #start#, 23)
+	   ]]>
+	</update>
+	
+	<!-- ANSI -->
+	<!-- updateRepeatScheduleId -->
+	<update id="updateRepeatScheduleId" parameterClass="map">
+	  <![CDATA[
+		update ikep4_sd_repeat set schedule_id = #newScheduleId#
+		where schedule_id = #oldScheduleId#			
+	   ]]>
+	</update>
+	
+	<!-- MS SQL -->
+	<!-- insertMoveAfterEvents @Deprecated -->
+	<insert id="insertMoveAfterEvents" parameterClass="map"> 
+      <![CDATA[ 
+		INSERT INTO IKEP4_SD_REPEAT (SCHEDULE_ID,REPEAT_TYPE,REPEAT_PERIOD,REPEAT_PERIOD_OPTION,
+			REPEAT_START_DATE,REPEAT_END_DATE,SD_START_DATE,SD_END_DATE) 
+			SELECT SCHEDULE_ID,REPEAT_TYPE,REPEAT_PERIOD,REPEAT_PERIOD_OPTION,
+			CONVERT(DATETIME, CONVERT(VARCHAR, #updateStart#, 23)),
+			REPEAT_END_DATE,
+			#updateStart#, 
+			#updateEnd#
+		FROM IKEP4_SD_REPEAT
+		WHERE SCHEDULE_ID = #scheduleId#
+		AND CONVERT(DATETIME, CONVERT(VARCHAR, #start#, 23)) BETWEEN  REPEAT_START_DATE AND REPEAT_END_DATE
+      ]]>
+   </insert>
+   
+   <!-- MS SQL -->
+	<!-- insertNextRecurrence -->
+	<insert id="insertNextRecurrence" parameterClass="map"> 
+      <![CDATA[ 
+	    INSERT INTO IKEP4_SD_REPEAT (SCHEDULE_ID,REPEAT_TYPE,REPEAT_PERIOD,REPEAT_PERIOD_OPTION,
+	      REPEAT_START_DATE,REPEAT_END_DATE,SD_START_DATE,SD_END_DATE) 
+	    SELECT SCHEDULE_ID,REPEAT_TYPE,REPEAT_PERIOD,REPEAT_PERIOD_OPTION,
+	    CONVERT(DATETIME, #nextStart#),
+	    REPEAT_END_DATE,
+	    #nextStart#, 
+	    #nextEnd#
+	    FROM IKEP4_SD_REPEAT
+	    WHERE SCHEDULE_ID = #scheduleId#
+	    AND CONVERT(DATETIME, #start#) BETWEEN  REPEAT_START_DATE AND REPEAT_END_DATE
+      ]]>
+   </insert>
+
+   	<!-- ANSI -->
+	<!-- copySchedule -->
+	<insert id="copySchedule" parameterClass="map"> 
+      <![CDATA[ 
+	    INSERT INTO IKEP4_SD_SCHEDULE (SCHEDULE_ID,CATEGORY_ID,START_DATE,END_DATE,WHOLEDAY,REPEAT,REPEAT_GROUP_ID,SCHEDULE_PUBLIC,ATTENDANCE_REQUEST,ALARM_REQUEST,TITLE,PLACE,CONTENTS,ATTACH_FILE_COUNT,PORTAL_ID,REGISTER_ID,REGISTER_NAME,REGIST_DATE,UPDATER_ID,UPDATER_NAME,UPDATE_DATE,WORKSPACE_ID) 
+	    SELECT #newScheduleId#, CATEGORY_ID,
+	    #start#,
+	    #end#,
+	    WHOLEDAY,
+	    0,
+	    REPEAT_GROUP_ID,SCHEDULE_PUBLIC,ATTENDANCE_REQUEST,ALARM_REQUEST,TITLE,PLACE,CONTENTS,ATTACH_FILE_COUNT,PORTAL_ID,REGISTER_ID,REGISTER_NAME,REGIST_DATE,
+	    UPDATER_ID,UPDATER_NAME,
+	    CURRENT_TIMESTAMP,
+	    WORKSPACE_ID
+	    FROM IKEP4_SD_SCHEDULE
+	    where SCHEDULE_ID = #scheduleId#
+      ]]>
+   </insert>
+   
+   <insert id="copyMySchedule" parameterClass="map"> 
+      <![CDATA[ 
+	    INSERT INTO IKEP4_SD_SCHEDULE (
+	    	schedule_id
+			,category_id
+			,start_date
+			,end_date
+			,wholeday
+			,repeat
+			,repeat_group_id
+			,schedule_public
+			,attendance_request
+			,alarm_request
+			,title
+			,place
+			,attach_file_count
+			,portal_id
+			,register_id
+			,register_name
+			,regist_date
+			,updater_id
+			,updater_name
+			,update_date
+			,workspace_id
+			,contents
+			,meeting_room_id
+			,update_display
+			,work_area_name
+			,everyone_schedule
+			,approve_result
+			,cartooletc_id
+	    ) 
+	    SELECT 
+	    	#newScheduleId#
+			,'1'
+			,start_date
+			,end_date
+			,wholeday
+			,repeat
+			,repeat_group_id
+			,schedule_public
+			,attendance_request
+			,alarm_request
+			,title
+			,place
+			,attach_file_count
+			,portal_id
+			,#userId#
+			,#userName#
+			,CURRENT_TIMESTAMP
+			,#userId#
+			,#userName#
+			,CURRENT_TIMESTAMP
+			,''
+			,contents
+			,''
+			,'0'
+			,work_area_name
+			,'0'
+			,'0'
+			,null
+			FROM IKEP4_SD_SCHEDULE
+	   	 	where SCHEDULE_ID = #scheduleId#
+
+      ]]>
+   </insert>
+   
+   <insert id="copyTeamSchedule" parameterClass="map"> 
+      <![CDATA[ 
+	    INSERT INTO IKEP4_SD_SCHEDULE (
+	    	schedule_id
+			,category_id
+			,start_date
+			,end_date
+			,wholeday
+			,repeat
+			,repeat_group_id
+			,schedule_public
+			,attendance_request
+			,alarm_request
+			,title
+			,place
+			,attach_file_count
+			,portal_id
+			,register_id
+			,register_name
+			,regist_date
+			,updater_id
+			,updater_name
+			,update_date
+			,workspace_id
+			,contents
+			,meeting_room_id
+			,update_display
+			,work_area_name
+			,everyone_schedule
+			,approve_result
+			,cartooletc_id
+	    ) 
+	    SELECT 
+	    	#newScheduleId#
+			,'1'
+			,start_date
+			,end_date
+			,wholeday
+			,repeat
+			,repeat_group_id
+			,schedule_public
+			,attendance_request
+			,alarm_request
+			,title
+			,place
+			,attach_file_count
+			,portal_id
+			,#userId#
+			,#userName#
+			,CURRENT_TIMESTAMP
+			,#userId#
+			,#userName#
+			,CURRENT_TIMESTAMP
+			,(select workspace_id from IKEP4_WS_WORKSPACE
+				where team_id = (select group_id from ikep4_ev_group where group_id = #groupId#))
+			,contents
+			,''
+			,'0'
+			,work_area_name
+			,'0'
+			,'0'
+			,null
+			FROM IKEP4_SD_SCHEDULE
+	   	 	where SCHEDULE_ID = #scheduleId#
+
+      ]]>
+   </insert>
+   
+   <insert id="copyTeamSapSchedule" parameterClass="map"> 
+   		DECLARE @chcker INTEGER;
+		
+		SELECT @chcker = COUNT(*) from IKEP4_SD_SCHEDULE t 
+		WHERE t.schedule_id = #scheduleId#
+		
+		if(@chcker > 0)
+			BEGIN
+	    	INSERT INTO IKEP4_SD_SCHEDULE (
+	    	schedule_id
+			,category_id
+			,start_date
+			,end_date
+			,wholeday
+			,repeat
+			,repeat_group_id
+			,schedule_public
+			,attendance_request
+			,alarm_request
+			,title
+			,place
+			,attach_file_count
+			,portal_id
+			,register_id
+			,register_name
+			,regist_date
+			,updater_id
+			,updater_name
+			,update_date
+			,workspace_id
+			,contents
+			,meeting_room_id
+			,update_display
+			,work_area_name
+			,everyone_schedule
+			,approve_result
+			,cartooletc_id
+			,search_code
+	    	) 
+	    	SELECT 
+	    	#newScheduleId#
+			,#categoryId#
+			,A.start_date
+			,A.end_date
+			,A.wholeday
+			,A.repeat
+			,A.repeat_group_id
+			,A.schedule_public
+			,A.attendance_request
+			,A.alarm_request
+			<isEqual property="categoryId" compareValue="2">
+	      		,'['+ #awart# +']'+A.register_name+' '+(select job_title_name from ikep4_ev_job_title where job_title_code = (select job_title_code from ikep4_ev_user where User_id = A.register_id))
+	      </isEqual>
+	      <isEqual property="categoryId" compareValue="1">
+	      	,'['+A.title+']'+A.register_name+' '+(select job_title_name from ikep4_ev_job_title where job_title_code = (select job_title_code from ikep4_ev_user where User_id = A.register_id))
+	      </isEqual>
+			,A.place
+			,A.attach_file_count
+			,A.portal_id
+			,'BATCHADMIN'
+			,'BATCHADMIN'
+			,CURRENT_TIMESTAMP
+			,A.updater_id
+			,A.updater_name
+			,CURRENT_TIMESTAMP
+			,(select top 1 workspace_id from IKEP4_WS_WORKSPACE
+				where team_id = (select group_id from ikep4_ev_group
+				where group_type_id = 'G0001'
+				and group_id in (select group_id from IKEP4_EV_USER_GROUP
+				where user_id = A.register_id)))
+			,A.contents
+			,''
+			,'0'
+			,A.work_area_name
+			,'0'
+			,'0'
+			,null
+			,A.search_code
+			FROM IKEP4_SD_SCHEDULE A
+	   	 	where A.SCHEDULE_ID = #scheduleId#
+		END
+   </insert>
+   
+	<!-- MS SQL -->			
+	<!-- select -->
+	<select id="select"  parameterClass="map" resultMap="scheduleResult">
+		SELECT a.schedule_id                                      "scheduleId",
+		       wholeday                                           "wholeday",
+				c.color color,
+		       repeat                                             "repeat",
+		       title                                              "title",
+		       place                                              "place",
+		       contents                                           "contents",
+		       workspace_id                                       "workspaceId",
+		       CASE WHEN workspace_id IS NULL THEN ''
+		       		WHEN workspace_id = '' THEN ''
+		       		ELSE dbo.IKEP4_SD_GET_WORKSPACE_NAME(workspace_id)
+		       END												  "workspaceName",
+		       attendance_request                                 "attendanceRequest",
+		       a.register_id                                      "registerId",
+		       a.register_name                                    "registerName",
+		       a.regist_date                                      "registDate",
+		       a.updater_id                                       "updaterId",
+		       a.update_date                                      "updateDate",
+		       alarm_request                                      "alarmRequest",
+		       schedule_public                                    "schedulePublic",
+		       schedule_private                                   "schedulePrivate",
+		       a.category_id                                      "categoryId",
+		       a.search_code										"searchCode",
+   		       cc.category_name                                      "categoryName",
+		       repeat_type                                        "repeatType",
+		       repeat_period                                      "repeatPeriod",
+		       repeat_period_option                               "repeatPeriodOption",
+		       CASE WHEN sd_start_date IS NULL THEN start_date
+		       		ELSE sd_start_date END               		  "startDate",
+		       CASE WHEN sd_end_date IS NULL THEN end_date
+		       		ELSE sd_end_date END						  "endDate",
+		       CASE WHEN repeat_start_date IS NULL THEN start_date
+		       		ELSE repeat_start_date END					  "repeatStartDate",
+		       CASE WHEN repeat_end_date IS NULL THEN end_date
+		       		ELSE repeat_end_date END					  "repeatEndDate",
+		       user_name + ' ' + isnull(Dd.JOB_DUTY_NAME, q.JOB_TITLE_NAME)  + ' ' + team_name "userInfo",
+		       user_english_name + ' ' + job_title_english_name + ' ' + team_english_name  "userEnglishInfo",
+		       a.meeting_room_id "meetingRoomId",
+		       a.everyone_schedule "everyoneSchedule",
+		       a.work_area_name "workAreaName",
+		       a.update_display "updateDisplay",
+		       rm.manager_id										"managerId",
+		       e.cartooletc_id "cartooletcId", 
+		       e.cartooletc_name "cartooletcName"
+			FROM  ikep4_sd_schedule a 
+			 inner join ikep4_ev_user p on p.user_id = a.register_id 
+			 left OUTER join ikep4_ev_job_title q on q.job_title_code = p.job_title_code 
+			 left OUTER join  IKEP4_EV_JOB_DUTY Dd on p.JOB_DUTY_CODE = Dd.JOB_DUTY_CODE
+			 left OUTER join  IKEP4_MR_MEETING_ROOM rm on rm.meeting_room_id = a.meeting_room_id
+			 and rm.auto_approve = 'N'
+			 inner join ikep4_sd_category c on c.category_id = a.category_id
+			 inner join IKEP4_SD_CATEGORY_LOCALE cc on cc.category_id = c.category_id 
+			 LEFT OUTER JOIN ikep4_sd_repeat b ON b.schedule_id = a.schedule_id 
+			 left outer join IKEP4_MR_CARTOOLETC e on e.cartooletc_id = a.cartooletc_id
+			WHERE a.schedule_id = #scheduleId# 
+			and cc.locale_code = 'ko'
+			 order by repeat_start_date 
+	</select>
+
+	<!-- MS SQL -->
+	<!-- select -->
+	<select id="selectByLocale"  parameterClass="map" resultMap="scheduleResult">
+		SELECT a.schedule_id                                      "scheduleId",
+		       wholeday                                           "wholeday",
+		       repeat                                             "repeat",
+		       title                                              "title",
+		       color												"color",
+		       place                                              "place",
+		       contents                                           "contents",
+		       workspace_id                                       "workspaceId",
+		       CASE WHEN workspace_id IS NULL THEN ''
+		       		WHEN workspace_id = '' THEN ''
+		       		ELSE dbo.IKEP4_SD_GET_WORKSPACE_NAME(workspace_id)
+		       END												  "workspaceName",
+		       attendance_request                                 "attendanceRequest",
+		       a.register_id                                      "registerId",
+		       a.register_name                                    "registerName",
+		       a.regist_date                                      "registDate",
+		       a.updater_id                                       "updaterId",
+		       a.update_date                                      "updateDate",
+		       alarm_request                                      "alarmRequest",
+		       schedule_public                                    "schedulePublic",
+		       schedule_private                                   "schedulePrivate",
+		       a.category_id                                      "categoryId",
+		       a.search_code										"searchCode",
+		       d.category_name                                    "categoryName",
+		       repeat_type                                        "repeatType",
+		       repeat_period                                      "repeatPeriod",
+		       repeat_period_option                               "repeatPeriodOption",
+		       CASE WHEN sd_start_date IS NULL THEN start_date
+		       		ELSE sd_start_date END               		  "startDate",
+		       CASE WHEN sd_end_date IS NULL THEN end_date
+		       		ELSE sd_end_date END						  "endDate",
+		       CASE WHEN repeat_start_date IS NULL THEN start_date
+		       		ELSE repeat_start_date END					  "repeatStartDate",
+		       CASE WHEN repeat_end_date IS NULL THEN end_date
+		       		ELSE repeat_end_date END					  "repeatEndDate",
+		       user_name + ' ' +  isnull(Dd.JOB_DUTY_NAME, q.JOB_TITLE_NAME) + ' ' + team_name "userInfo",
+		       user_english_name + ' ' + job_title_english_name + ' ' + team_english_name  "userEnglishInfo",
+    		   a.meeting_room_id "meetingRoomId",
+		       a.everyone_schedule "everyoneSchedule",
+		       a.work_area_name "workAreaName",
+		       a.update_display "updateDisplay",
+		       rm.manager_id										"managerId",
+		       e.cartooletc_id "cartooletcId", 
+		       e.cartooletc_name "cartooletcName"
+			FROM  ikep4_sd_schedule a 
+			 inner join ikep4_ev_user p on p.user_id = a.updater_id 
+			 left OUTER join ikep4_ev_job_title q on q.job_title_code = p.job_title_code 
+			 left OUTER join  IKEP4_EV_JOB_DUTY Dd on p.JOB_DUTY_CODE = Dd.JOB_DUTY_CODE
+			 left OUTER join  IKEP4_MR_MEETING_ROOM rm on rm.meeting_room_id = a.meeting_room_id
+			 and rm.auto_approve = 'N'
+			 inner join ikep4_sd_category c on c.category_id = a.category_id
+			 inner join ikep4_sd_category_locale d on d.category_id = c.category_id and d.locale_code = 'ko'
+			 LEFT OUTER JOIN ikep4_sd_repeat b ON b.schedule_id = a.schedule_id 
+			 left outer join IKEP4_MR_CARTOOLETC e on e.cartooletc_id = a.cartooletc_id
+			WHERE a.schedule_id = #scheduleId# 
+			 order by repeat_start_date 
+	</select>
+	
+	<!-- ANSI -->
+	<select id="getCountRepeatEvents" parameterClass="string" resultClass="int">
+		select count(*)
+		from ikep4_sd_repeat
+		where schedule_id = #value#
+	</select>	
+	
+	<!-- MS SQL -->
+	<select id="isFirstRepeatRow" parameterClass="map" resultClass="int">
+		<![CDATA[	  
+		select count(*) cnt
+		from ikep4_sd_repeat
+		where schedule_id = #scheduleId#
+		and CONVERT(VARCHAR, REPEAT_START_DATE, 23) <  CONVERT(VARCHAR, #repeatStartDate#, 23)
+		]]>
+	</select>	
+	
+	<!-- MS SQL -->
+	<select id="getTrustee"  parameterClass="string" resultClass="Mandator">
+		select mandator_id "mandatorId",trustee_id "trusteeId",
+		start_date "startDate",end_date "endDate",a.portal_id "portalId",
+		a.register_id "registerId", a.register_name "registerName", a.regist_date "registDate",
+	    b.user_name + ' ' + isnull(D.JOB_DUTY_NAME, c.JOB_TITLE_NAME) + ' ' + team_name "trusteeName",
+	    b.user_english_name + ' ' + job_title_english_name + ' ' + team_english_name "trusteeEnglishName"
+
+		from 
+		ikep4_sd_mandate a 
+		left outer join ikep4_ev_user b on b.user_id = a.trustee_id 
+		left outer join ikep4_ev_job_title c on c.job_title_code = b.job_title_code  
+		left outer join IKEP4_EV_JOB_DUTY D  on b.JOB_DUTY_CODE = D.JOB_DUTY_CODE 
+		where 
+		a.register_id = #value#
+		and end_date = CONVERT(DATETIME, '9999-12-31') 
+	</select>
+
+	<!-- MS SQL -->
+	<select id="getMyMandators"  parameterClass="string" resultClass="java.util.HashMap">
+		select mandator_id "mandatorId",
+		user_name "userName", isnull(D.JOB_DUTY_NAME, c.JOB_TITLE_NAME)  "jobTitleName", team_name "teamName",
+		USER_ENGLISH_NAME "userEnglishName", JOB_TITLE_ENGLISH_NAME "jobTitleEnglishName", TEAM_ENGLISH_NAME "teamEnglishName" 
+		from ikep4_sd_mandate a
+		left outer join ikep4_ev_user b on b.user_id = a.mandator_id 
+		left outer join ikep4_ev_job_title c on c.job_title_code = b.job_title_code  
+		left outer join IKEP4_EV_JOB_DUTY D  on b.JOB_DUTY_CODE = D.JOB_DUTY_CODE 
+		where a.trustee_id = #value#
+		and end_date = CONVERT(DATETIME, '9999-12-31')
+	</select>
+		
+	<!-- ANSI -->	
+   <!-- delete -->
+	<delete id="delete-schedule" parameterClass="java.lang.String">
+      <![CDATA[
+		delete from ikep4_sd_schedule
+		where schedule_id = #scheduleId#			
+	   ]]>
+	</delete>
+	
+	<delete id="delete-team-schedule" parameterClass="java.lang.String">
+      <![CDATA[
+		delete from IKEP4_SD_SCHEDULE
+		where schedule_id in(
+		select a.schedule_id from IKEP4_SD_SCHEDULE a inner join IKEP4_SD_SCHEDULE b
+		on a.updater_id = b.updater_id
+		and a.start_date = b.start_date
+		and a.end_date = b.end_date
+		and a.contents = b.contents
+		and b.schedule_id = #scheduleId#
+		and isnull(a.workspace_id,'') != '')			
+	   ]]>
+	</delete>
+	
+	<delete id="delete-sap-schedule" parameterClass="java.lang.String">
+      <![CDATA[
+		delete from IKEP4_SD_SCHEDULE_sap 
+		from 
+		IKEP4_SD_SCHEDULE_sap d,
+		(select c.begda as bda, c.endda as eda, c.pernr as eno from ikep4_ev_user a inner join IKEP4_SD_SCHEDULE b
+		on a.user_id = b.updater_id
+		and b.schedule_id = #scheduleId#
+		inner join IKEP4_SD_SCHEDULE_sap c 
+		on a.emp_no = c.pernr
+		and b.start_date = c.begda 
+		and b.end_date = c.endda) e
+		where d.begda = e.bda and d.endda = e.eda		
+		and d.pernr = e.eno		
+	   ]]>
+	</delete>
+	
+	<!-- MS SQL -->
+   <!-- deleteCurrenctRepeat -->
+	<delete id="deleteCurrenctRepeat" parameterClass="map">
+      <![CDATA[
+		delete from ikep4_sd_repeat
+		where schedule_id = #scheduleId#	
+		and CONVERT(DATETIME, CONVERT(VARCHAR, #start#, 23)) between repeat_start_date and repeat_end_date				
+	   ]]>
+	</delete>
+	
+	<!-- MS SQL -->
+   <!-- deleteAfterRepeat -->
+	<delete id="deleteAfterRepeat" parameterClass="map">
+      <![CDATA[
+		delete from ikep4_sd_repeat
+		where schedule_id = #scheduleId#	
+		and CONVERT(VARCHAR, repeat_start_date, 23) > CONVERT(VARCHAR, #start#, 23)	
+	   ]]>
+	</delete>
+	
+	<!-- MS SQL -->
+   <!-- deleteAfterRecurrences -->
+	<delete id="deleteAfterRecurrences" parameterClass="map">
+      <![CDATA[
+		DELETE FROM IKEP4_SD_REPEAT 
+		WHERE SCHEDULE_ID = #scheduleId#
+		AND CONVERT(VARCHAR, REPEAT_START_DATE, 23) > CONVERT(VARCHAR, #start#, 23)
+	   ]]>
+	</delete>
+	
+	<!-- MS SQL -->
+   <delete id="delete-recurrence" parameterClass="java.lang.String">
+      <![CDATA[
+		delete from ikep4_sd_repeat
+		where schedule_id = #scheduleId#			
+	   ]]>
+	</delete>
+	
+	<!-- MS SQL -->
+   <delete id="delete-participant" parameterClass="java.lang.String">
+      <![CDATA[
+		delete from ikep4_sd_participant
+		where schedule_id = #scheduleId#			
+	   ]]>
+	</delete>		
+	
+	<!-- MS SQL -->
+   <delete id="delete-alarm" parameterClass="java.lang.String">
+      <![CDATA[
+		delete from ikep4_sd_alarm
+		where schedule_id = #scheduleId#		
+	   ]]>
+	</delete>
+	
+	<!-- MS SQL -->
+   <!-- delete -->
+   <delete id="deleteMandator" parameterClass="string">
+      <![CDATA[
+		delete from ikep4_sd_mandate
+		where mandator_id = #value#			
+	   ]]>
+	</delete>
+	
+	<!-- ANSI -->
+	<!-- updateToDefaultCategory -->
+	<update id="updateToDefaultCategory" parameterClass="map">
+		update ikep4_sd_schedule
+		set category_id = #defaultCid#
+		where category_id in 
+	      <iterate open="(" close=")" conjunction="," property="cid">
+	      		#cid[]#
+	      </iterate>		
+	</update>
+	
+	<!-- ANSI -->
+	<update id="updateCompanyScheduleApprove">
+		update ikep4_sd_schedule
+		set approve_result = 1
+		where schedule_id in 
+       <iterate open="(" close=")" conjunction=",">
+       		#[]#
+       </iterate>	
+	</update>
+	
+	<!-- MS SQL -->
+	<select id="findUserByName" parameterClass="map" resultClass="string">  
+		select 
+			<isNotNull property="maxCount">
+				<![CDATA[
+				 TOP $maxCount$ 
+				]]>
+			</isNotNull> user_id "userId"
+		from ikep4_ev_user
+		where #userName# in (user_name, user_english_name)
+	</select>
+	
+	<!-- ANSI -->
+	<select id="isExistHolidayName" parameterClass="map" resultClass="int">  
+		<![CDATA[
+		select count(*) mcnt
+		from ikep4_sd_holiday
+		where nation = #nation#
+		and holiday_name = #holidayName#
+		]]>
+	</select>
+	
+	<select id="selectExportSchedule"  parameterClass="map" resultMap="exportScheduleResult">
+    <![CDATA[ 
+		select * from (
+			select  a.schedule_id scheduleId, a.wholeday, a.repeat, a.title, a.place, a.contents, a.workspace_id workspaceId, 
+				CASE WHEN a.workspace_id IS NULL THEN '' WHEN a.workspace_id = '' THEN '' ELSE dbo.IKEP4_SD_GET_WORKSPACE_NAME(a.workspace_id) END workspaceName, 
+				a.attendance_Request attendanceRequest,
+				a.register_id registerId, a.register_name registerName, a.regist_date registDate, a.updater_id updaterId, a.update_date updateDate, a.alarm_request alarmRequest, a.schedule_public schedulePublic,
+				a.category_id categoryId, c.category_name categoryName, NULL repeatType, NULL repeatPeriod, NULL repeatPeriodOption,
+				a.start_date startDate, a.end_date endDate, a.start_date repeatStartDate, a.end_date repeatEndDate,
+				u.user_name + ' ' + q.job_title_name + ' ' + u.team_name as userInfo, u.user_english_name + ' ' + q.job_title_english_name + ' ' + u.team_english_name as userEnglishInfo
+			from ikep4_sd_schedule a
+				inner join ikep4_ev_user u on u.user_id = a.register_id
+				inner join ikep4_ev_job_title q on q.job_title_code = u.job_title_code
+				inner join ikep4_sd_category c on c.category_id = a.category_id
+				left outer join ikep4_sd_participant p on a.schedule_id = p.schedule_id
+			where (a.register_id = #userId# or (p.target_user_id = #userId# and p.target_type = 1)) and repeat = 0
+						and ( (start_date between #startDate# and DATEADD(DD, 1, #endDate#))
+							or (end_date between #startDate# and DATEADD(DD, 1, #endDate#)) )
+			union all
+			select  a.schedule_id scheduleId, a.wholeday, a.repeat, a.title, a.place, a.contents, a.workspace_id workspaceId, 
+				CASE WHEN a.workspace_id IS NULL THEN '' WHEN a.workspace_id = '' THEN '' ELSE dbo.IKEP4_SD_GET_WORKSPACE_NAME(a.workspace_id) END workspaceName, 
+				a.attendance_Request attendanceRequest,
+				a.register_id registerId, a.register_name registerName, a.regist_date registDate, a.updater_id updaterId, a.update_date updateDate, a.alarm_request alarmRequest, a.schedule_public schedulePublic,
+				a.category_id categoryId, c.category_name categoryName, b.repeat_type repeatType, b.repeat_period repeatPeriod, b.repeat_period_option repeatPeriodOption,
+				
+				CASE WHEN b.sd_start_date IS NULL THEN a.start_date ELSE b.sd_start_date END startDate,
+				CASE WHEN b.sd_end_date IS NULL THEN a.end_date ELSE b.sd_end_date END endDate,
+				
+				b.repeat_start_date repeatStartDate, b.repeat_end_date repeatEndDate,
+				u.user_name + ' ' + q.job_title_name + ' ' + u.team_name as userInfo, u.user_english_name + ' ' + q.job_title_english_name + ' ' + u.team_english_name as userEnglishInfo
+			from ikep4_sd_schedule a
+				inner join ikep4_ev_user u on u.user_id = a.register_id
+				inner join ikep4_ev_job_title q on q.job_title_code = u.job_title_code
+				inner join ikep4_sd_category c on c.category_id = a.category_id
+				inner join ikep4_sd_repeat b on b.schedule_id = a.schedule_id
+				left outer join ikep4_sd_participant p on a.schedule_id = p.schedule_id
+			where (a.register_id = #userId# or (p.target_user_id = #userId# and p.target_type = 1)) and repeat = 1
+						and ( (repeat_start_date <= #startDate# and repeat_end_date >= #endDate#)
+							or (repeat_start_date between #startDate# and #endDate#)
+							or (repeat_end_date between #startDate# and #endDate#) )
+		) schedule
+    ]]>
+	</select>
+	
+	<select id="exportScheduleWithRepeat" parameterClass="java.lang.String" resultMap="recurrencesResult">
+		select schedule_id as scheduleId, repeat_type as repeatType, repeat_period as repeatPeriod, repeat_period_option as repeatPeriodOption,
+			repeat_start_date as repeatStartDate, repeat_end_date as repeatEndDate, sd_start_date as startDate, sd_end_date as endDate
+		from ikep4_sd_repeat
+		where schedule_id = #scheduleId#
+	</select>
+	
+	<select id="exportScheduleWithParticipant" parameterClass="java.lang.String" resultClass="Participant">
+	  <![CDATA[
+		select schedule_id as scheduleId, target_user_id as targetUserId, target_type as targetType, participation as isAccept, absence_reason as abscentReason,
+			b.mail, user_name as targetUserName, user_english_name as targetUserEnglishName, job_title_name as targetUserJobTitleName, team_name as targetUserTeamName,
+			job_title_english_name as targetUserJobTitleEnglishName, team_english_name as targetUserTeamEnglishName, mobile as targetUserMobile,
+    		user_name + ' ' + job_title_name + ' ' + team_name as targetuserInfo, user_english_name + ' ' + job_title_english_name + ' ' + team_english_name as targetuserEnglishInfo
+    	from ikep4_sd_participant a inner join ikep4_ev_user b ON b.user_id = A.target_user_id
+			inner join ikep4_ev_job_title c ON c.job_title_code = b.job_title_code
+		WHERE  schedule_id = #scheduleId# and target_type = 1
+	   ]]>
+	</select>
+	
+	<select id="selectMeetingRoomByReserveList" parameterClass="map" resultMap="selectByPeriodResultMapForMeetingRoom">
+	  select p.*, category_name categoryName, color color, 
+	  CASE WHEN schedulePublic =  1 THEN dbo.IKEP4_SD_GET_PARTICIPANT_LIST(scheduleId) ELSE '' END participantId
+	  from (
+	  		select a.startDate, a.endDate, a.title, a.scheduleId, a.repeatType, a.repeatPeriod,
+	      		a.repeatPeriodOption, a.repeatStartDate, a.repeatEndDate,
+	      		a.categoryId, a.workspaceId, a.place, a.wholeday, 
+	      		a.schedulePublic, a.attendanceRequest, a.registerId,
+	      		m.meeting_room_id meetingRoomId, m.meeting_room_name meetingRoomName,
+	      		b.building_floor_name buildingName, f.building_floor_name floorName,
+	      		a.approve_status approveStatus, '' pacYn, '' refYn,
+	      		a.schedule_private schedulePrivate
+	  		from
+		  		(select      	
+			        sch.start_date startDate,
+			        sch.end_date endDate, 
+			        sch.title title, sch.schedule_id scheduleId, null repeatType,null repeatPeriod,
+			        null repeatPeriodOption, null repeatStartDate,null repeatEndDate,
+			        sch.category_id categoryId, sch.workspace_id workspaceId, sch.place place, sch.wholeday wholeday, 
+			        sch.schedule_public schedulePublic, sch.attendance_request attendanceRequest, sch.register_id registerId,
+			        sch.meeting_room_id, app.approve_status,sch.schedule_private
+			      from ikep4_sd_schedule sch
+			      inner join ikep4_mr_approve app on sch.schedule_id = app.schedule_id and sch.meeting_room_id = app.meeting_room_id
+			      where repeat = 0 and app.approve_status  in ('A', 'W') and sch.meeting_room_id = #meetingRoomId#
+			      <isNotEmpty property="scheduleId">
+		      		and sch.schedule_id != #scheduleId#
+		      	  </isNotEmpty>
+			      	<![CDATA[ 
+			      		and sch.start_date < DATEADD(DD, 1, #endDate#)
+			      		and sch.end_date >=  #startDate#     
+			 		]]>
+			 	) a
+			 	inner join ikep4_mr_meeting_room m on a.meeting_room_id = m.meeting_room_id and  m.meeting_room_id = #meetingRoomId#
+			 	left join ikep4_mr_building_floor b on m.building_id = b.building_floor_id
+				left join ikep4_mr_building_floor f on m.floor_id = f.building_floor_id
+	      union all
+	      	select a.startDate, a.endDate, a.title, a.scheduleId, a.repeatType, a.repeatPeriod,
+	      		a.repeatPeriodOption, a.repeatStartDate, a.repeatEndDate,
+	      		a.categoryId, a.workspaceId, a.place, a.wholeday, 
+	      		a.schedulePublic, a.attendanceRequest, a.registerId,
+	      		m.meeting_room_id meetingRoomId, m.meeting_room_name meetingRoomName,
+	      		b.building_floor_name buildingName, f.building_floor_name floorName,
+	      		a.approve_status approveStatus, '' pacYn, '' refYn,
+	      		a.schedule_private schedulePrivate
+	      	from 
+			    (select 
+					  rep.SD_START_DATE startDate,
+					  rep.SD_END_DATE endDate, 
+					  sch.title title, sch.schedule_id scheduleId, rep.REPEAT_TYPE repeatType, rep.REPEAT_PERIOD repeatPeriod,
+					  rep.REPEAT_PERIOD_OPTION repeatPeriodOption, rep.repeat_start_date repeatStartDate,rep.repeat_end_date repeatEndDate,
+					  sch.category_id categoryId, sch.workspace_id workspaceId,sch.place place,sch.wholeday wholeday, 
+				      sch.schedule_public schedulePublic, sch.attendance_request attendanceRequest, sch.register_id registerId,
+				      sch.meeting_room_id, app.approve_status,sch.schedule_private
+				    from ikep4_sd_schedule sch 
+				     inner join ikep4_mr_approve app
+			      	on sch.schedule_id = app.schedule_id
+			      	and sch.meeting_room_id = app.meeting_room_id
+				    left outer join ikep4_sd_repeat rep
+				    on sch.schedule_id = rep.schedule_id
+				    where sch.repeat = 1 and app.approve_status  in ('A', 'W') and sch.meeting_room_id = #meetingRoomId#
+					<isNotEmpty property="scheduleId">
+		      			and sch.schedule_id != #scheduleId#
+		      	    </isNotEmpty>
+					<![CDATA[ 
+					    and rep.repeat_start_date < DATEADD(DD, 1, #endDate#)
+					    and rep.repeat_end_date >=  #startDate# 
+					]]>
+				) 
+		      	a join ikep4_mr_meeting_room m on a.meeting_room_id = m.meeting_room_id and m.meeting_room_id = #meetingRoomId#
+		      	left join ikep4_mr_building_floor b on m.building_id = b.building_floor_id
+				left join ikep4_mr_building_floor f on m.floor_id = f.building_floor_id
+		    ) p left join ikep4_sd_category q on p.categoryId = q.category_id
+	</select>
+	
+	<select id="selectCartooletcByReserveList" parameterClass="map" resultMap="selectByPeriodResultMapForCartooletc">
+	  select p.*,  '' as color, 
+	  '' as participantId
+	  from (
+	  		select a.startDate, a.endDate, a.title, a.scheduleId, a.repeatType, a.repeatPeriod,
+	      		a.repeatPeriodOption, a.repeatStartDate, a.repeatEndDate,
+	      		a.categoryId, a.workspaceId, a.place, a.wholeday, 
+	      		a.schedulePublic, a.attendanceRequest, a.registerId,
+	      		m.cartooletc_id cartooletcId, m.cartooletc_name cartooletcName,
+	      		m.category_name categoryName, m.region_name regionName,
+	      		a.approve_status approveStatus
+	  		from
+		  		(select      	
+			        sch.start_date startDate,
+			        sch.end_date endDate, 
+			        sch.title title, sch.schedule_id scheduleId, null repeatType,null repeatPeriod,
+			        null repeatPeriodOption, null repeatStartDate,null repeatEndDate,
+			        sch.category_id categoryId, sch.workspace_id workspaceId, sch.place place, sch.wholeday wholeday, 
+			        sch.schedule_public schedulePublic, sch.attendance_request attendanceRequest, sch.register_id registerId,
+			        sch.cartooletc_id, app.approve_status
+			      from ikep4_sd_schedule sch
+			      inner join ikep4_mr_approve app 
+			      on sch.schedule_id = app.schedule_id 
+			      and sch.cartooletc_id = app.meeting_room_id
+			      where repeat = 0 and app.approve_status  in ('A', 'W') and sch.cartooletc_id = #cartooletcId#
+			      <isNotEmpty property="scheduleId">
+		      		and sch.schedule_id != #scheduleId#
+		      	  </isNotEmpty>
+			      	<![CDATA[ 
+			      		and sch.start_date < DATEADD(DD, 1, #endDate#)
+			      		and sch.end_date >=  #startDate#     
+			 		]]>
+			 	) a
+			 	inner join ikep4_mr_cartooletc m on a.cartooletc_id = m.cartooletc_id and  m.cartooletc_id = #cartooletcId#
+
+	      union all
+	      	select a.startDate, a.endDate, a.title, a.scheduleId, a.repeatType, a.repeatPeriod,
+	      		a.repeatPeriodOption, a.repeatStartDate, a.repeatEndDate,
+	      		a.categoryId, a.workspaceId, a.place, a.wholeday, 
+	      		a.schedulePublic, a.attendanceRequest, a.registerId,
+				m.cartooletc_id cartooletcId, m.cartooletc_name cartooletcName,
+	      		m.category_name categoryName, m.region_name regionName,
+	      		a.approve_status approveStatus
+	      	from 
+			    (select 
+					  rep.SD_START_DATE startDate,
+					  rep.SD_END_DATE endDate, 
+					  sch.title title, sch.schedule_id scheduleId, rep.REPEAT_TYPE repeatType, rep.REPEAT_PERIOD repeatPeriod,
+					  rep.REPEAT_PERIOD_OPTION repeatPeriodOption, rep.repeat_start_date repeatStartDate,rep.repeat_end_date repeatEndDate,
+					  sch.category_id categoryId, sch.workspace_id workspaceId,sch.place place,sch.wholeday wholeday, 
+				      sch.schedule_public schedulePublic, sch.attendance_request attendanceRequest, sch.register_id registerId,
+				      sch.cartooletc_id, app.approve_status
+				    from ikep4_sd_schedule sch 
+				     inner join ikep4_mr_approve app
+			      	on sch.schedule_id = app.schedule_id
+			      	and sch.cartooletc_id = app.meeting_room_id
+				    left outer join ikep4_sd_repeat rep
+				    on sch.schedule_id = rep.schedule_id
+				    where sch.repeat = 1 and app.approve_status  in ('A', 'W') and sch.cartooletc_id = #cartooletcId#
+					<isNotEmpty property="scheduleId">
+		      			and sch.schedule_id != #scheduleId#
+		      	    </isNotEmpty>
+					<![CDATA[ 
+					    and rep.repeat_start_date < DATEADD(DD, 1, #endDate#)
+					    and rep.repeat_end_date >=  #startDate# 
+					]]>
+				) 
+		      	a join ikep4_mr_cartooletc m on a.cartooletc_id = m.cartooletc_id and m.cartooletc_id = #cartooletcId#
+		    ) p 
+	</select>
+	
+	
+	<select id="selectByPeriodForMeetingRoom" parameterClass="map" resultMap="selectByPeriodResultMapForMeetingRoom">
+	  select p.*, category_name categoryName, color color,
+	  CASE WHEN schedulePublic =  1 THEN dbo.IKEP4_SD_GET_PARTICIPANT_LIST(scheduleId) ELSE '' END participantId
+	  from (
+	  		select a.startDate, a.endDate, a.title, a.scheduleId, a.repeatType, a.repeatPeriod,
+	      		a.repeatPeriodOption, a.repeatStartDate, a.repeatEndDate,
+	      		a.categoryId, a.workspaceId, a.place, a.wholeday, 
+	      		a.schedulePublic, a.attendanceRequest, a.registerId,
+	      		m.meeting_room_id meetingRoomId, m.meeting_room_name meetingRoomName,
+	      		b.building_floor_name buildingName, f.building_floor_name floorName,
+	      		a.approve_status approveStatus, '' pacYn, '' refYn,
+	      		a.schedule_private schedulePrivate
+	  		from
+		  		(select      	
+			        sch.start_date startDate,
+			        sch.end_date endDate, 
+			        sch.title title, sch.schedule_id scheduleId, null repeatType,null repeatPeriod,
+			        null repeatPeriodOption, null repeatStartDate,null repeatEndDate,
+			        sch.category_id categoryId, sch.workspace_id workspaceId, sch.place place, sch.wholeday wholeday, 
+			        sch.schedule_public schedulePublic, sch.attendance_request attendanceRequest, sch.register_id registerId,
+			        sch.meeting_room_id, app.approve_status,sch.schedule_private
+			      from ikep4_sd_schedule sch
+			      inner join ikep4_mr_approve app
+			      on sch.schedule_id = app.schedule_id
+			      and sch.meeting_room_id = app.meeting_room_id
+			      where repeat = 0 and app.approve_status in ('A', 'W')
+			      <isEmpty property="meetingRoomId">
+			      /*AND sch.meeting_room_id IS NOT NULL*/
+			      AND isnull(sch.meeting_room_id,'') !=''
+			      </isEmpty>
+			      <isNotEmpty property="meetingRoomId">
+		      		and sch.meeting_room_id = #meetingRoomId#
+		      		</isNotEmpty>
+			      	<![CDATA[ 
+			      		and sch.start_date < DATEADD(DD, 1, #endDate#)
+			      		and sch.end_date >=  #startDate#     
+			 		]]>
+			 	)
+			 	a inner join ikep4_mr_meeting_room m on a.meeting_room_id = m.meeting_room_id
+			 	LEFT JOIN ikep4_mr_building_floor b
+				ON m.building_id = b.building_floor_id
+				LEFT JOIN ikep4_mr_building_floor f
+				ON m.floor_id = f.building_floor_id
+	      		<isNotEmpty property="meetingRoomId">
+		      		and m.meeting_room_id = #meetingRoomId#
+		      	</isNotEmpty>
+		      	<isNotEmpty property="buildingId">
+		      		and m.building_id = #buildingId#
+		      	</isNotEmpty>
+		      	<isNotEmpty property="floorId">
+		      		and m.floor_id = #floorId#
+		      	</isNotEmpty>
+	      union all
+	      	select a.startDate, a.endDate, a.title, a.scheduleId, a.repeatType, a.repeatPeriod,
+	      		a.repeatPeriodOption, a.repeatStartDate, a.repeatEndDate,
+	      		a.categoryId, a.workspaceId, a.place, a.wholeday, 
+	      		a.schedulePublic, a.attendanceRequest, a.registerId,
+	      		m.meeting_room_id meetingRoomId, m.meeting_room_name meetingRoomName,
+	      		b.building_floor_name buildingName, f.building_floor_name floorName,
+	      		a.approve_status approveStatus, '' pacYn, '' refYn,
+	      		a.schedule_private schedulePrivate
+	      	from 
+			    (select 
+					  rep.SD_START_DATE startDate,
+					  rep.SD_END_DATE endDate, 
+					  sch.title title, sch.schedule_id scheduleId, rep.REPEAT_TYPE repeatType, rep.REPEAT_PERIOD repeatPeriod,
+					  rep.REPEAT_PERIOD_OPTION repeatPeriodOption, rep.repeat_start_date repeatStartDate,rep.repeat_end_date repeatEndDate,
+					  sch.category_id categoryId, sch.workspace_id workspaceId,sch.place place,sch.wholeday wholeday, 
+				      sch.schedule_public schedulePublic, sch.attendance_request attendanceRequest, sch.register_id registerId,
+				      sch.meeting_room_id, app.approve_status,sch.schedule_private
+				    from ikep4_sd_schedule sch 
+				     inner join ikep4_mr_approve app
+			      	on sch.schedule_id = app.schedule_id
+			      	and sch.meeting_room_id = app.meeting_room_id
+				    left outer join ikep4_sd_repeat rep
+				    on sch.schedule_id = rep.schedule_id
+				    where sch.repeat = 1 and app.approve_status in ('A', 'W')
+				    <isEmpty property="meetingRoomId">
+			     /*AND sch.meeting_room_id IS NOT NULL*/
+			     AND isnull(sch.meeting_room_id,'') !=''
+			      </isEmpty>
+			      <isNotEmpty property="meetingRoomId">
+		      		and sch.meeting_room_id = #meetingRoomId#
+		      		</isNotEmpty>
+					<![CDATA[ 
+					    and rep.repeat_start_date < DATEADD(DD, 1, #endDate#)
+					    and rep.repeat_end_date >=  #startDate# 
+					]]>
+				) 
+		      	a join ikep4_mr_meeting_room m on a.meeting_room_id = m.meeting_room_id
+		      	LEFT JOIN ikep4_mr_building_floor b
+				ON m.building_id = b.building_floor_id
+				LEFT JOIN ikep4_mr_building_floor f
+				ON m.floor_id = f.building_floor_id
+	      		<isNotEmpty property="meetingRoomId">
+		      		and m.meeting_room_id = #meetingRoomId#
+		      	</isNotEmpty>
+		      	<isNotEmpty property="buildingId">
+		      		and m.building_id = #buildingId#
+		      	</isNotEmpty>
+		      	<isNotEmpty property="floorId">
+		      		and m.floor_id = #floorId#
+		      	</isNotEmpty>
+		    ) p left join ikep4_sd_category q
+		    	on p.categoryId = q.category_id
+		    order by meetingRoomId, startDate 
+	</select>
+	
+	<select id="selectByPeriodForCartooletc" parameterClass="map" resultMap="selectByPeriodResultMapForCartooletc">
+	  select p.*,  ''  as color,
+	   '' as participantId
+	  from (
+	  		select a.startDate, a.endDate, a.title, a.scheduleId, a.repeatType, a.repeatPeriod,
+	      		a.repeatPeriodOption, a.repeatStartDate, a.repeatEndDate,
+	      		a.categoryId, a.workspaceId, a.place, a.wholeday, 
+	      		a.schedulePublic, a.attendanceRequest, a.registerId,
+	      		m.cartooletc_id cartooletcId, m.cartooletc_name cartooletcName,
+	      		m.category_name categoryName, m.region_name regionName,
+	      		a.approve_status approveStatus
+	  		from
+		  		(select      	
+			        sch.start_date startDate,
+			        sch.end_date endDate, 
+			        sch.title title, sch.schedule_id scheduleId, null repeatType,null repeatPeriod,
+			        null repeatPeriodOption, null repeatStartDate,null repeatEndDate,
+			        sch.category_id categoryId, sch.workspace_id workspaceId, sch.place place, sch.wholeday wholeday, 
+			        sch.schedule_public schedulePublic, sch.attendance_request attendanceRequest, sch.register_id registerId,
+			        sch.cartooletc_id, app.approve_status
+			      from ikep4_sd_schedule sch
+			      inner join ikep4_mr_approve app
+			      on sch.schedule_id = app.schedule_id
+			      and sch.cartooletc_id = app.meeting_room_id
+			      where repeat = 0 and app.approve_status in ('A', 'W')
+			      <isEmpty property="cartooletcId">
+			      AND isnull(sch.cartooletc_id,'') !=''
+			      </isEmpty>
+			      <isNotEmpty property="cartooletcId">
+		      		and sch.cartooletc_id = #cartooletcId#
+		      		</isNotEmpty>
+			      	<![CDATA[ 
+			      		and sch.start_date < DATEADD(DD, 1, #endDate#)
+			      		and sch.end_date >=  #startDate#     
+			 		]]>
+			 	)
+			 	a inner join ikep4_mr_cartooletc m on a.cartooletc_id = m.cartooletc_id
+			 	
+	      		<isNotEmpty property="cartooletcId">
+		      		and m.cartooletc_id = #cartooletcId#
+		      	</isNotEmpty>
+		      	<isNotEmpty property="categoryId">
+		      		and m.category_id = #categoryId#
+		      	</isNotEmpty>
+		      	<isNotEmpty property="regionId">
+		      		and m.region_id = #regionId#
+		      	</isNotEmpty>
+	      union all
+	      	select a.startDate, a.endDate, a.title, a.scheduleId, a.repeatType, a.repeatPeriod,
+	      		a.repeatPeriodOption, a.repeatStartDate, a.repeatEndDate,
+	      		a.categoryId, a.workspaceId, a.place, a.wholeday, 
+	      		a.schedulePublic, a.attendanceRequest, a.registerId,
+	      		m.cartooletc_id cartooletcId, m.cartooletc_name cartooletcName,
+	      		m.category_name categoryName, m.region_name regionName,
+	      		a.approve_status approveStatus
+	      	from 
+			    (select 
+					  rep.SD_START_DATE startDate,
+					  rep.SD_END_DATE endDate, 
+					  sch.title title, sch.schedule_id scheduleId, rep.REPEAT_TYPE repeatType, rep.REPEAT_PERIOD repeatPeriod,
+					  rep.REPEAT_PERIOD_OPTION repeatPeriodOption, rep.repeat_start_date repeatStartDate,rep.repeat_end_date repeatEndDate,
+					  sch.category_id categoryId, sch.workspace_id workspaceId,sch.place place,sch.wholeday wholeday, 
+				      sch.schedule_public schedulePublic, sch.attendance_request attendanceRequest, sch.register_id registerId,
+				      sch.cartooletc_id, app.approve_status
+				    from ikep4_sd_schedule sch 
+				     inner join ikep4_mr_approve app
+			      	on sch.schedule_id = app.schedule_id
+			      	and sch.cartooletc_id = app.meeting_room_id
+				    left outer join ikep4_sd_repeat rep
+				    on sch.schedule_id = rep.schedule_id
+				    where sch.repeat = 1 and app.approve_status in ('A', 'W')
+				   <isEmpty property="cartooletcId">
+			     AND isnull(sch.cartooletc_id,'') !=''
+			      </isEmpty>
+			      <isNotEmpty property="cartooletcId">
+		      		and sch.cartooletc_id = #cartooletcId#
+		      		</isNotEmpty>
+					<![CDATA[ 
+					    and rep.repeat_start_date < DATEADD(DD, 1, #endDate#)
+					    and rep.repeat_end_date >=  #startDate# 
+					]]>
+				) 
+		      	a join ikep4_mr_cartooletc m on a.cartooletc_id = m.cartooletc_id
+	      		<isNotEmpty property="cartooletcId">
+		      		and m.cartooletc_id = #cartooletcId#
+		      	</isNotEmpty>
+		      	<isNotEmpty property="categoryId">
+		      		and m.category_id = #categoryId#
+		      	</isNotEmpty>
+		      	<isNotEmpty property="regionId">
+		      		and m.region_id = #regionId#
+		      	</isNotEmpty>
+		    ) p 
+		    order by cartooletcId, startDate 
+	</select>
+	
+	<select id="selectByPeriodForMeetingRoomByFavorite" parameterClass="map" resultMap="selectByPeriodResultMapForMeetingRoom">
+	  select p.*, category_name categoryName, color color,
+	  CASE WHEN schedulePublic =  1 THEN dbo.IKEP4_SD_GET_PARTICIPANT_LIST(scheduleId) ELSE '' END participantId
+	  from (
+	  		select a.startDate, a.endDate, a.title, a.scheduleId, a.repeatType, a.repeatPeriod,
+	      		a.repeatPeriodOption, a.repeatStartDate, a.repeatEndDate,
+	      		a.categoryId, a.workspaceId, a.place, a.wholeday, 
+	      		a.schedulePublic, a.attendanceRequest, a.registerId,
+	      		m.meeting_room_id meetingRoomId, m.meeting_room_name meetingRoomName,
+	      		b.building_floor_name buildingName, f.building_floor_name floorName,
+	      		a.approve_status approveStatus,
+	      		a.schedule_private schedulePrivate
+	  		from
+		  		(select      	
+			        sch.start_date startDate,
+			        sch.end_date endDate, 
+			        sch.title title, sch.schedule_id scheduleId, null repeatType,null repeatPeriod,
+			        null repeatPeriodOption, null repeatStartDate,null repeatEndDate,
+			        sch.category_id categoryId, sch.workspace_id workspaceId, sch.place place, sch.wholeday wholeday, 
+			        sch.schedule_public schedulePublic, sch.attendance_request attendanceRequest, sch.register_id registerId,
+			        sch.meeting_room_id, app.approve_status,sch.schedule_private
+			      from ikep4_sd_schedule sch 
+			      inner join ikep4_mr_approve app
+			      on sch.schedule_id = app.schedule_id
+			      and sch.meeting_room_id = app.meeting_room_id
+			      where sch.repeat = 0 and app.approve_status in ('A', 'W')
+			      	<![CDATA[ 
+			      		and sch.start_date < DATEADD(DD, 1, #endDate#)
+			      		and sch.end_date >=  #startDate#     
+			 		]]>
+			 	)
+			 	a join ikep4_mr_meeting_room m on a.meeting_room_id = m.meeting_room_id
+			 	INNER JOIN IKEP4_MR_FAVORITE fa
+		      	ON m.meeting_room_id = fa.meeting_room_id
+		      	LEFT JOIN ikep4_mr_building_floor b
+				ON m.building_id = b.building_floor_id
+				LEFT JOIN ikep4_mr_building_floor f
+				ON m.floor_id = f.building_floor_id
+				WHERE m.portal_id = #portalId#
+				AND fa.user_id = #userId#
+	      union all
+	      	select a.startDate, a.endDate, a.title, a.scheduleId, a.repeatType, a.repeatPeriod,
+	      		a.repeatPeriodOption, a.repeatStartDate, a.repeatEndDate,
+	      		a.categoryId, a.workspaceId, a.place, a.wholeday, 
+	      		a.schedulePublic, a.attendanceRequest, a.registerId,
+	      		m.meeting_room_id meetingRoomId, m.meeting_room_name meetingRoomName,
+	      		b.building_floor_name buildingName, f.building_floor_name floorName,
+	      		a.approve_status approveStatus,
+	      		a.schedule_private schedulePrivate      
+	      	from 
+			    (select 
+					  rep.SD_START_DATE startDate,
+					  rep.SD_END_DATE endDate, 
+					  sch.title title, sch.schedule_id scheduleId, rep.REPEAT_TYPE repeatType, rep.REPEAT_PERIOD repeatPeriod,
+					  rep.REPEAT_PERIOD_OPTION repeatPeriodOption, rep.repeat_start_date repeatStartDate, rep.repeat_end_date repeatEndDate,
+					  sch.category_id categoryId, sch.workspace_id workspaceId, sch.place place, sch.wholeday wholeday, 
+				      sch.schedule_public schedulePublic, sch.attendance_request attendanceRequest, sch.register_id registerId,
+				      sch.meeting_room_id, app.approve_status,sch.schedule_private
+				    from ikep4_sd_schedule sch
+				    inner join ikep4_mr_approve app
+				    on sch.schedule_id = app.schedule_id
+			      	and sch.meeting_room_id = app.meeting_room_id
+				    left outer join ikep4_sd_repeat rep
+				   	on sch.schedule_id = rep.schedule_id
+				    where sch.repeat = 1 and app.approve_status in ('A', 'W')
+					<![CDATA[ 
+					    and rep.repeat_start_date < DATEADD(DD, 1, #endDate#)
+					    and rep.repeat_end_date >=  #startDate# 
+					]]>
+				) 
+		      	a join ikep4_mr_meeting_room m on a.meeting_room_id = m.meeting_room_id
+		      	INNER JOIN IKEP4_MR_FAVORITE fa
+		      	ON m.meeting_room_id = fa.meeting_room_id
+		      	LEFT JOIN ikep4_mr_building_floor b
+				ON m.building_id = b.building_floor_id
+				LEFT JOIN ikep4_mr_building_floor f
+				ON m.floor_id = f.building_floor_id
+				WHERE m.portal_id = #portalId#
+				AND fa.user_id = #userId#
+		    ) p left join ikep4_sd_category q
+		    	on p.categoryId = q.category_id
+		    order by meetingRoomId, startDate 
+	</select>
+	
+	<select id="selectByPeriodForMeetingRoomByRecent" parameterClass="map" resultMap="selectByPeriodResultMapForMeetingRoom">
+	  select p.*, category_name categoryName, color color, 
+	  CASE WHEN schedulePublic =  1 THEN dbo.IKEP4_SD_GET_PARTICIPANT_LIST(scheduleId) ELSE '' END participantId
+	  from (
+	  		select a.startDate, a.endDate, a.title, a.scheduleId, a.repeatType, a.repeatPeriod,
+	      		a.repeatPeriodOption, a.repeatStartDate, a.repeatEndDate,
+	      		a.categoryId, a.workspaceId, a.place, a.wholeday, 
+	      		a.schedulePublic, a.attendanceRequest, a.registerId,
+	      		m.meeting_room_id meetingRoomId, m.meeting_room_name meetingRoomName,
+	      		b.building_floor_name buildingName, f.building_floor_name floorName,
+	      		a.approve_status approveStatus,
+	      		a.schedule_private schedulePrivate    
+	  		from
+		  		(select      	
+			        sch.start_date startDate,
+			        sch.end_date endDate, 
+			        sch.title title, sch.schedule_id scheduleId, null repeatType,null repeatPeriod,
+			        null repeatPeriodOption, null repeatStartDate,null repeatEndDate,
+			        sch.category_id categoryId, sch.workspace_id workspaceId, sch.place place, sch.wholeday wholeday, 
+			        sch.schedule_public schedulePublic, sch.attendance_request attendanceRequest, sch.register_id registerId,
+			        sch.meeting_room_id, app.approve_status,sch.schedule_private
+			      from ikep4_sd_schedule sch
+			      inner join ikep4_mr_approve app
+			      on sch.schedule_id = app.schedule_id
+			      and sch.meeting_room_id = app.meeting_room_id
+			      where sch.repeat = 0 and app.approve_status in ('A', 'W')
+			      /*AND sch.meeting_room_id IS NOT NULL*/
+			       AND  isnull(sch.meeting_room_id,'') !=''
+			      	<![CDATA[ 
+			      		and sch.start_date < DATEADD(DD, 1, #endDate#)
+			      		and sch.end_date >=  #startDate#     
+			 		]]>
+			 	)
+			 	a join ikep4_mr_meeting_room m on a.meeting_room_id = m.meeting_room_id
+		      	LEFT JOIN ikep4_mr_building_floor b
+				ON m.building_id = b.building_floor_id
+				LEFT JOIN ikep4_mr_building_floor f
+				ON m.floor_id = f.building_floor_id
+				WHERE m.portal_id = #portalId#
+	      union all
+	      	select a.startDate, a.endDate, a.title, a.scheduleId, a.repeatType, a.repeatPeriod,
+	      		a.repeatPeriodOption, a.repeatStartDate, a.repeatEndDate,
+	      		a.categoryId, a.workspaceId, a.place, a.wholeday, 
+	      		a.schedulePublic, a.attendanceRequest, a.registerId,
+	      		m.meeting_room_id meetingRoomId, m.meeting_room_name meetingRoomName,
+	      		b.building_floor_name buildingName, f.building_floor_name floorName,
+	      		a.approve_status approveStatus,
+	      		a.schedule_private schedulePrivate
+	      	from 
+			    (select 
+					  rep.SD_START_DATE startDate,
+					  rep.SD_END_DATE endDate, 
+					  sch.title title, sch.schedule_id scheduleId, rep.REPEAT_TYPE repeatType, rep.REPEAT_PERIOD repeatPeriod,
+					  rep.REPEAT_PERIOD_OPTION repeatPeriodOption, rep.repeat_start_date repeatStartDate,rep.repeat_end_date repeatEndDate,
+					  sch.category_id categoryId, sch.workspace_id workspaceId, sch.place place, sch.wholeday wholeday, 
+				      sch.schedule_public schedulePublic, sch.attendance_request attendanceRequest, sch.register_id registerId,
+				      sch.meeting_room_id, app.approve_status,sch.schedule_private
+				    from ikep4_sd_schedule sch
+				    inner join ikep4_mr_approve app
+				    on sch.schedule_id = app.schedule_id
+				    and sch.meeting_room_id = app.meeting_room_id 
+				    left outer join ikep4_sd_repeat rep
+				    on sch.schedule_id = rep.schedule_id
+				    where sch.repeat = 1 and app.approve_status in ('A', 'W')
+				    /*AND sch.meeting_room_id IS NOT NULL*/
+				    AND isnull(sch.meeting_room_id,'') !=''
+					<![CDATA[ 
+					    and rep.repeat_start_date < DATEADD(DD, 1, #endDate#)
+					    and rep.repeat_end_date >=  #startDate# 
+					]]>
+				) 
+		      	a join ikep4_mr_meeting_room m on a.meeting_room_id = m.meeting_room_id
+		      	LEFT JOIN ikep4_mr_building_floor b
+				ON m.building_id = b.building_floor_id
+				LEFT JOIN ikep4_mr_building_floor f
+				ON m.floor_id = f.building_floor_id
+				WHERE m.portal_id = #portalId#
+		    ) p left join ikep4_sd_category q
+		    	on p.categoryId = q.category_id
+		    order by meetingRoomId, startDate 
+	</select>
+	
+	<select id="selectByPeriodForCartooletcByFavorite" parameterClass="map" resultMap="selectByPeriodResultMapForCartooletc">
+	/*selectByPeriodForCartooletcByFavorite*/
+	  select p.*,  ''  as color,
+	   '' as participantId
+	  from (
+	  		select a.startDate, a.endDate, a.title, a.scheduleId, a.repeatType, a.repeatPeriod,
+	      		a.repeatPeriodOption, a.repeatStartDate, a.repeatEndDate,
+	      		a.categoryId, a.workspaceId, a.place, a.wholeday, 
+	      		a.schedulePublic, a.attendanceRequest, a.registerId,
+	      		m.cartooletc_id cartooletcId, m.cartooletc_name cartooletcName,
+	      		m.category_name categoryName, m.region_name regionName,
+	      		a.approve_status approveStatus
+	  		from
+		  		(select      	
+			        sch.start_date startDate,
+			        sch.end_date endDate, 
+			        sch.title title, sch.schedule_id scheduleId, null repeatType,null repeatPeriod,
+			        null repeatPeriodOption, null repeatStartDate,null repeatEndDate,
+			        sch.category_id categoryId, sch.workspace_id workspaceId, sch.place place, sch.wholeday wholeday, 
+			        sch.schedule_public schedulePublic, sch.attendance_request attendanceRequest, sch.register_id registerId,
+			        sch.cartooletc_id, app.approve_status
+			      from ikep4_sd_schedule sch
+			      inner join ikep4_mr_approve app
+			      on sch.schedule_id = app.schedule_id
+			      and sch.cartooletc_id = app.meeting_room_id
+			      where repeat = 0 and app.approve_status in ('A', 'W')
+
+			      AND  isnull(sch.cartooletc_id,'') !=''
+
+			      	<![CDATA[ 
+			      		and sch.start_date < DATEADD(DD, 1, #endDate#)
+			      		and sch.end_date >=  #startDate#     
+			 		]]>
+			 	)
+			 	a inner join ikep4_mr_cartooletc m on a.cartooletc_id = m.cartooletc_id
+			 	INNER JOIN IKEP4_MR_CARFAVORITE fa
+		      	ON m.cartooletc_id = fa.cartooletc_id
+		      	WHERE m.portal_id = #portalId#
+				AND fa.user_id = #userId#
+
+	      union all
+	      	select a.startDate, a.endDate, a.title, a.scheduleId, a.repeatType, a.repeatPeriod,
+	      		a.repeatPeriodOption, a.repeatStartDate, a.repeatEndDate,
+	      		a.categoryId, a.workspaceId, a.place, a.wholeday, 
+	      		a.schedulePublic, a.attendanceRequest, a.registerId,
+	      		m.cartooletc_id cartooletcId, m.cartooletc_name cartooletcName,
+	      		m.category_name categoryName, m.region_name regionName,
+	      		a.approve_status approveStatus
+	      	from 
+			    (select 
+					  rep.SD_START_DATE startDate,
+					  rep.SD_END_DATE endDate, 
+					  sch.title title, sch.schedule_id scheduleId, rep.REPEAT_TYPE repeatType, rep.REPEAT_PERIOD repeatPeriod,
+					  rep.REPEAT_PERIOD_OPTION repeatPeriodOption, rep.repeat_start_date repeatStartDate,rep.repeat_end_date repeatEndDate,
+					  sch.category_id categoryId, sch.workspace_id workspaceId,sch.place place,sch.wholeday wholeday, 
+				      sch.schedule_public schedulePublic, sch.attendance_request attendanceRequest, sch.register_id registerId,
+				      sch.cartooletc_id, app.approve_status
+				    from ikep4_sd_schedule sch 
+				     inner join ikep4_mr_approve app
+			      	on sch.schedule_id = app.schedule_id
+			      	and sch.cartooletc_id = app.meeting_room_id
+				    left outer join ikep4_sd_repeat rep
+				    on sch.schedule_id = rep.schedule_id
+				    where sch.repeat = 1 and app.approve_status in ('A', 'W')
+
+			     AND isnull(sch.cartooletc_id,'') !=''
+			     
+					<![CDATA[ 
+					    and rep.repeat_start_date < DATEADD(DD, 1, #endDate#)
+					    and rep.repeat_end_date >=  #startDate# 
+					]]>
+				) 
+		      	a join ikep4_mr_cartooletc m on a.cartooletc_id = m.cartooletc_id
+				INNER JOIN IKEP4_MR_CARFAVORITE fa
+		      	ON m.cartooletc_id = fa.cartooletc_id
+		      	WHERE m.portal_id = #portalId#
+				AND fa.user_id = #userId#
+		    ) p 
+		    order by cartooletcId, startDate 
+	</select>
+	
+	<select id="selectByPeriodForCartooletcByRecent" parameterClass="map" resultMap="selectByPeriodResultMapForCartooletc">
+	/*selectByPeriodForCartooletcByRecent*/
+	  select p.*,  ''  as color,
+	   '' as participantId
+	  from (
+	  		select a.startDate, a.endDate, a.title, a.scheduleId, a.repeatType, a.repeatPeriod,
+	      		a.repeatPeriodOption, a.repeatStartDate, a.repeatEndDate,
+	      		a.categoryId, a.workspaceId, a.place, a.wholeday, 
+	      		a.schedulePublic, a.attendanceRequest, a.registerId,
+	      		m.cartooletc_id cartooletcId, m.cartooletc_name cartooletcName,
+	      		m.category_name categoryName, m.region_name regionName,
+	      		a.approve_status approveStatus
+	  		from
+		  		(select      	
+			        sch.start_date startDate,
+			        sch.end_date endDate, 
+			        sch.title title, sch.schedule_id scheduleId, null repeatType,null repeatPeriod,
+			        null repeatPeriodOption, null repeatStartDate,null repeatEndDate,
+			        sch.category_id categoryId, sch.workspace_id workspaceId, sch.place place, sch.wholeday wholeday, 
+			        sch.schedule_public schedulePublic, sch.attendance_request attendanceRequest, sch.register_id registerId,
+			        sch.cartooletc_id, app.approve_status
+			      from ikep4_sd_schedule sch
+			      inner join ikep4_mr_approve app
+			      on sch.schedule_id = app.schedule_id
+			      and sch.cartooletc_id = app.meeting_room_id
+			      where repeat = 0 and app.approve_status in ('A', 'W')
+
+			      AND isnull(sch.cartooletc_id,'') !=''
+
+			      	<![CDATA[ 
+			      		and sch.start_date < DATEADD(DD, 1, #endDate#)
+			      		and sch.end_date >=  #startDate#     
+			 		]]>
+			 	)
+			 	a inner join ikep4_mr_cartooletc m on a.cartooletc_id = m.cartooletc_id
+			 	
+
+	      union all
+	      	select a.startDate, a.endDate, a.title, a.scheduleId, a.repeatType, a.repeatPeriod,
+	      		a.repeatPeriodOption, a.repeatStartDate, a.repeatEndDate,
+	      		a.categoryId, a.workspaceId, a.place, a.wholeday, 
+	      		a.schedulePublic, a.attendanceRequest, a.registerId,
+	      		m.cartooletc_id cartooletcId, m.cartooletc_name cartooletcName,
+	      		m.category_name categoryName, m.region_name regionName,
+	      		a.approve_status approveStatus
+	      	from 
+			    (select 
+					  rep.SD_START_DATE startDate,
+					  rep.SD_END_DATE endDate, 
+					  sch.title title, sch.schedule_id scheduleId, rep.REPEAT_TYPE repeatType, rep.REPEAT_PERIOD repeatPeriod,
+					  rep.REPEAT_PERIOD_OPTION repeatPeriodOption, rep.repeat_start_date repeatStartDate,rep.repeat_end_date repeatEndDate,
+					  sch.category_id categoryId, sch.workspace_id workspaceId,sch.place place,sch.wholeday wholeday, 
+				      sch.schedule_public schedulePublic, sch.attendance_request attendanceRequest, sch.register_id registerId,
+				      sch.cartooletc_id, app.approve_status
+				    from ikep4_sd_schedule sch 
+				     inner join ikep4_mr_approve app
+			      	on sch.schedule_id = app.schedule_id
+			      	and sch.cartooletc_id = app.meeting_room_id
+				    left outer join ikep4_sd_repeat rep
+				    on sch.schedule_id = rep.schedule_id
+				    where sch.repeat = 1 and app.approve_status in ('A', 'W')
+
+			     AND isnull(sch.cartooletc_id,'') !=''
+			     
+					<![CDATA[ 
+					    and rep.repeat_start_date < DATEADD(DD, 1, #endDate#)
+					    and rep.repeat_end_date >=  #startDate# 
+					]]>
+				) 
+		      	a join ikep4_mr_cartooletc m on a.cartooletc_id = m.cartooletc_id
+
+		    ) p 
+		    order by cartooletcId, startDate 
+	</select>
+	
+	<select id="selectCompanyScheduleExcelFile" parameterClass="CSExcelDownSearchCondition" resultMap="fileResult">
+		/* File_SqlMap.xml  selectCompanyScheduleExcelFile */
+	
+		SELECT				tbl3.*
+		FROM				(
+							SELECT				tbl2.*
+							FROM				(
+												SELECT				Row_number() OVER (ORDER BY 
+																		<isNotNull property="sortColumn">
+																			<isEqual property="sortColumn" compareValue="FILE_REAL_NAME">
+																				<isEqual property="sortType" compareValue="ASC">FILE_REAL_NAME ASC</isEqual>
+																				<isEqual property="sortType" compareValue="DESC">FILE_REAL_NAME DESC</isEqual>
+																			</isEqual>
+																			
+																			<isEqual property="sortColumn" compareValue="REGIST_DATE">
+																				<isEqual property="sortType" compareValue="ASC">REGIST_DATE ASC</isEqual>
+																				<isEqual property="sortType" compareValue="DESC">REGIST_DATE DESC</isEqual>
+																			</isEqual>
+																		</isNotNull>
+																		<isNull property="sortColumn">FILE_REAL_NAME desc</isNull>
+																		) AS NUM,
+																	tbl1.*
+												FROM				(
+		<![CDATA[ 
+																			SELECT
+																				A.FILE_ID, A.FILE_PATH, A.FILE_NAME,
+																				A.FILE_REAL_NAME, A.FILE_CONTENTS_TYPE, A.FILE_EXTENSION, A.FILE_SIZE, A.EDITOR_ATTACH,
+																				A.REGISTER_ID, A.REGISTER_NAME, A.REGIST_DATE,
+																				A.UPDATER_ID, A.UPDATER_NAME, A.UPDATE_DATE,
+																				'' ITEM_ID, '' ITEM_TYPE_CODE,
+																				(SELECT E.file_url1 FROM IKEP4_DM_FILE_ECM E 
+																				WHERE E.file_id = (SELECT EL.FILE_ID FROM IKEP4_DM_FILE_LINK_ECM EL WHERE EL.file_link_id = B.file_link_id AND EL.ITEM_TYPE_CODE = 'SDC')) AS FILE_URL1,
+																				(SELECT E.file_url2 FROM IKEP4_DM_FILE_ECM E 
+																				WHERE E.file_id = (SELECT EL.FILE_ID FROM IKEP4_DM_FILE_LINK_ECM EL WHERE EL.file_link_id = B.file_link_id AND EL.ITEM_TYPE_CODE = 'SDC')) AS FILE_URL2
+																			FROM IKEP4_DM_FILE A INNER JOIN IKEP4_DM_FILE_LINK B
+																				ON A.FILE_ID = B.FILE_ID
+																			WHERE B.ITEM_TYPE_CODE = 'SDC'
+																			AND convert(datetime, substring(A.FILE_REAL_NAME, 1,4)+substring(A.FILE_REAL_NAME, 6,2)+'01') < DATEADD(DD, 1, #endDate#)
+																			AND convert(datetime, substring(A.FILE_REAL_NAME, 1,4)+substring(A.FILE_REAL_NAME, 6,2)+'01')  >= #startDate# 
+																	
+																	) tbl1
+												) tbl2
+							WHERE				NUM <= #endRowIndex#
+							) tbl3	
+		WHERE				NUM > #startRowIndex#
+		]]>
+	</select>
+	
+	<select id="selectCount" parameterClass="CSExcelDownSearchCondition" resultClass="int">
+		
+			SELECT COUNT(*) FROM (
+				SELECT
+					A.FILE_ID, A.FILE_PATH, A.FILE_NAME,
+					A.FILE_REAL_NAME, A.FILE_CONTENTS_TYPE, A.FILE_EXTENSION, A.FILE_SIZE, A.EDITOR_ATTACH,
+					A.REGISTER_ID, A.REGISTER_NAME, A.REGIST_DATE,
+					A.UPDATER_ID, A.UPDATER_NAME, A.UPDATE_DATE,
+					'' ITEM_ID, '' ITEM_TYPE_CODE
+				FROM IKEP4_DM_FILE A INNER JOIN IKEP4_DM_FILE_LINK B
+					ON A.FILE_ID = B.FILE_ID
+				WHERE B.ITEM_TYPE_CODE = 'SDC'
+				<![CDATA[ 
+				AND convert(datetime, substring(A.FILE_REAL_NAME, 1,4)+substring(A.FILE_REAL_NAME, 6,2)+'01') < DATEADD(DD, 1, #endDate#)
+				AND convert(datetime, substring(A.FILE_REAL_NAME, 1,4)+substring(A.FILE_REAL_NAME, 6,2)+'01')  >= #startDate# 	
+						]]>												
+			) tbl1
+
+	</select>
+	
+	<procedure id="portalQuickMenuCountAll" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		/* lightpack.planner.dao.Schedule.portalQuickMenuCountAll */
+		exec procGetPortalQuickMenuCountAll #userId#, #startDate#, #startDate#;
+	</procedure>
+	
+	<select id="searchScheduleCount" parameterClass="ScheduleSearchCondition" resultClass="int">
+		/* lightpack.planner.dao.Schedule.searchScheduleCount */
+		SELECT	count(*)
+	  	FROM (
+			SELECT	a.CATEGORY_ID
+			FROM	IKEP4_SD_SCHEDULE a
+				LEFT OUTER JOIN IKEP4_SD_PARTICIPANT c on a.SCHEDULE_ID = c.SCHEDULE_ID AND c.TARGET_TYPE = 1
+				LEFT OUTER JOIN IKEP4_SD_REPEAT b ON a.SCHEDULE_GROUP_ID = b.SCHEDULE_GROUP_ID and CONVERT(DATETIME, CONVERT(VARCHAR, a.START_DATE, 23)) BETWEEN b.REPEAT_START_DATE AND b.REPEAT_END_DATE
+			WHERE	1 = 1
+				<isEqual property="targetType" compareValue="user">
+					AND (
+							a.WORKSPACE_ID in (SELECT wm.WORKSPACE_ID FROM IKEP4_WS_MEMBER wm
+								INNER JOIN IKEP4_WS_WORKSPACE ww on wm.WORKSPACE_ID = ww.WORKSPACE_ID
+								WHERE wm.MEMBER_ID = #targetId# AND wm.MEMBER_LEVEL IN ('1', '2', '3', '4'))
+							OR (c.TARGET_USER_ID = #targetId#)
+						)
+				</isEqual>
+				<isEqual property="targetType" compareValue="workspace">
+					AND a.WORKSPACE_ID = #targetId#
+				</isEqual>
+				<![CDATA[
+				AND ( (a.wholeday = 0 AND a.START_DATE < DATEADD(DD, 1, #endDate#) AND a.END_DATE > #startDate#)
+						OR (a.wholeday = 1 AND a.START_DATE < DATEADD(DD, 1, #endDate#) AND a.END_DATE >= #startDate#) ) 
+				]]>
+				<isNotEmpty property="keyword">
+					<iterate property="searchFields" open="and (" close=")" conjunction=" or ">
+ 						UPPER(a.$searchFields[]$) like ('%' + UPPER(#keyword#) + '%')
+					</iterate>
+				</isNotEmpty>
+		) p,
+			IKEP4_SD_CATEGORY q
+		WHERE	p.CATEGORY_ID = q.CATEGORY_ID
+	</select>
+	
+	<select id="searchSchedule" parameterClass="ScheduleSearchCondition" resultMap="selectByPeriodSearchResultMap">
+		/* lightpack.planner.dao.Schedule.searchSchedule */
+		SELECT *
+		FROM (
+			SELECT *
+			FROM (
+			  	SELECT	p.*,
+			  			q.CATEGORY_NAME AS categoryName,
+			  			q.ICON AS "icon",
+			  			CASE 
+		                   WHEN p.schedulePublic = 1 
+		                   THEN dbo.IKEP4_SD_GET_PARTICIPANT_LIST(p.scheduleId) 
+		                   ELSE '' 
+		               END participantId, Row_number() OVER (ORDER BY startDate desc) AS RNUM 
+			  	FROM (
+					SELECT	a.START_DATE  AS startDate, a.END_DATE AS endDate, a.TITLE, a.SCHEDULE_ID AS scheduleId,
+						b.REPEAT_TYPE AS repeatType, b.REPEAT_PERIOD AS repeatPeriod, b.REPEAT_PERIOD_OPTION AS repeatPeriodOption,
+						b.REPEAT_START_DATE AS repeatStartDate, b.REPEAT_END_DATE AS repeatEndDate,
+						a.CATEGORY_ID AS categoryId, a.WORKSPACE_ID AS workspaceId, a.PLACE, a.WHOLEDAY,
+						a.SCHEDULE_PUBLIC AS schedulePublic, a.ATTENDANCE_REQUEST AS attendanceRequest, a.REGISTER_ID AS registerId,
+						a.SENDMAIL, a.COLOR, a.SCHEDULE_GROUP_ID as scheduleGroupId, null as facilityId,
+						u.user_name
+						as userName, a.SCHEDULE_TYPE as scheduleType
+					FROM	IKEP4_SD_SCHEDULE a
+						INNER JOIN IKEP4_EV_USER u ON a.REGISTER_ID = u.USER_ID
+						LEFT OUTER JOIN IKEP4_SD_PARTICIPANT c on a.SCHEDULE_ID = c.SCHEDULE_ID AND c.TARGET_TYPE = 1
+						LEFT OUTER JOIN IKEP4_SD_REPEAT b ON a.SCHEDULE_GROUP_ID = b.SCHEDULE_GROUP_ID and CONVERT(DATETIME, CONVERT(VARCHAR, a.START_DATE, 23)) BETWEEN b.REPEAT_START_DATE AND b.REPEAT_END_DATE
+					WHERE	1 = 1
+						<isEqual property="targetType" compareValue="user">
+							AND (
+									a.WORKSPACE_ID in (SELECT wm.WORKSPACE_ID FROM IKEP4_WS_MEMBER wm
+										INNER JOIN IKEP4_WS_WORKSPACE ww on wm.WORKSPACE_ID = ww.WORKSPACE_ID
+										WHERE wm.MEMBER_ID = #targetId# AND wm.MEMBER_LEVEL IN ('1', '2', '3', '4'))
+									OR (c.TARGET_USER_ID = #targetId#)
+								)
+						</isEqual>
+						<isEqual property="targetType" compareValue="workspace">
+							AND a.WORKSPACE_ID = #targetId#
+						</isEqual>
+						<![CDATA[
+						AND ( (a.wholeday = 0 AND a.START_DATE < DATEADD(DD, 1, #endDate#) AND a.END_DATE > #startDate#)
+								OR (a.wholeday = 1 AND a.START_DATE < DATEADD(DD, 1, #endDate#) AND a.END_DATE >= #startDate#) ) 
+						]]>
+						<isNotEmpty property="keyword">
+							<iterate property="searchFields" open="and (" close=")" conjunction=" or ">
+		 						UPPER(a.$searchFields[]$) like ('%' + UPPER(#keyword#) + '%')
+							</iterate>
+						</isNotEmpty>
+				) p,
+					IKEP4_SD_CATEGORY q
+				WHERE	p.categoryId = q.CATEGORY_ID
+			) TBL1
+		<![CDATA[
+			WHERE RNUM <= #endRowIndex#
+		) TBL2
+		WHERE RNUM > #startRowIndex#
+		]]>
+	</select>
+	
+	<update id="updateScheduleSyncData" parameterClass="ScheduleDetail"> 
+ 		<![CDATA[
+		 /* [User_SqlMap.xml] lightpack.planner.dao.Schedule.updateScheduleSyncData */
+		DECLARE @chcker INTEGER;
+		
+		SELECT @chcker = COUNT(*) from IKEP4_SD_SCHEDULE_SAP t WHERE t.pernr = #pernr# and t.begda = cast(#begda#+' '+#beguz#  as datetime) and t.endda = cast(#endda#+' '+#enduz#  as datetime)
+		if(@chcker = 0)
+			BEGIN
+				INSERT INTO 
+					IKEP4_SD_SCHEDULE_SAP (
+					pernr,           
+					begda,         
+					endda,
+					atext, 
+					request_reason,
+					flg,
+					whole,
+					awart,
+					regist_date,
+					update_date
+				    )
+				select
+					#pernr#,
+					cast(#begda#+' '+#beguz#  as datetime), 
+					cast(#endda#+' '+#enduz#  as datetime),
+					#atext#, 
+					#requestReason#,
+					'1',
+					#whole#,
+					#awart#,
+					CURRENT_TIMESTAMP,
+					CURRENT_TIMESTAMP 
+				   	from IKEP4_EV_USER
+					where emp_no = #pernr#
+					and user_status = 'C'	
+			END
+			ELSE
+			BEGIN
+				UPDATE
+				   IKEP4_SD_SCHEDULE_SAP
+				SET
+					pernr = #pernr#,
+					begda = cast(#begda#+' '+#beguz#  as datetime),
+					endda = cast(#endda#+' '+#enduz#  as datetime),
+					atext = #atext#,
+					whole = #whole#,
+					awart = #awart#,
+					request_reason = #requestReason#,
+					update_date = CURRENT_TIMESTAMP
+				WHERE pernr = #pernr# and begda = cast(#begda#+' '+#beguz#  as datetime) and endda = cast(#endda#+' '+#enduz#  as datetime)	
+				and pernr in (select emp_no from IKEP4_EV_USER where user_status = 'C')
+		END
+       ]]> 
+  	</update>
+  	
+  	<select id="sapScheduleList" parameterClass="Schedule" resultMap="sapScheduleDetail">
+		/* lightpack.planner.dao.Schedule.sapScheduleList */
+		<![CDATA[
+		select  
+			pernr as pernr,           
+			begda as begda,         
+			endda as endda,    
+			atext as atext, 
+			whole as whole,
+			case when awart = '0100' then '연차휴가' 
+			 when awart = '0130' then '건강휴가'
+			 when awart = '0570' then '기념일휴가'
+			 when awart = '0150' then '연차휴가'
+			 when awart = '0160' then '연차휴가'
+			 else '기타휴가'
+			end as awart,
+			request_reason as requestReason
+		from IKEP4_SD_SCHEDULE_SAP
+		where flg = '1'
+		and pernr in(select emp_no from IKEP4_EV_USER where user_status = 'C')
+		order by atext
+		]]> 
+	</select>
+	
+	<insert id="insertSapSchedule" parameterClass="Schedule"> 
+		DECLARE @chcker INTEGER;
+		
+		SELECT @chcker = COUNT(*) from IKEP4_SD_SCHEDULE t 
+		WHERE t.updater_id = (select user_id from ikep4_ev_user where emp_no = #pernr# and user_status = 'C') 
+		and t.start_date = #begda# and t.end_date = #endda# 
+		and isnull(t.workspace_id,'') =''
+		and CONTENTS = #requestReason#
+		
+		if(@chcker = 0)
+			BEGIN
+				Insert INTO IKEP4_SD_SCHEDULE (
+				SCHEDULE_ID,
+				CATEGORY_ID,
+				START_DATE,
+				END_DATE,
+				WHOLEDAY,
+				REPEAT,
+				REPEAT_GROUP_ID,
+				SCHEDULE_PUBLIC,
+				SCHEDULE_PRIVATE,
+				ATTENDANCE_REQUEST,
+				ALARM_REQUEST,
+				TITLE,
+				PLACE,
+				CONTENTS,
+				ATTACH_FILE_COUNT,
+				PORTAL_ID,
+				REGISTER_ID,
+				REGISTER_NAME,
+				UPDATER_ID,
+				UPDATER_NAME,
+				WORKSPACE_ID,
+				MEETING_ROOM_ID,
+				UPDATE_DISPLAY,
+				WORK_AREA_NAME,
+				EVERYONE_SCHEDULE,
+				APPROVE_RESULT ,
+				CARTOOLETC_ID,
+				SEARCH_CODE
+			   ) 
+				select 
+				#scheduleId#,
+				#categoryId#,
+				#begda#,
+				#endda#,
+				#whole#,
+				'0',
+				null,
+				'0',
+				'0',
+				'0',
+				'0',
+				<isEqual property="categoryId" compareValue="2">
+		      		#awart#,
+		      </isEqual>
+		      <isEqual property="categoryId" compareValue="1">
+		      	#atext#,
+		      </isEqual>
+				'',
+				#requestReason#,
+				'0',
+				'P000001',
+				user_id,
+				user_name,
+				user_id,
+				user_name,
+				'',
+				'',
+				'0',
+				null,
+				'0',
+				'0',
+				'',
+				#searchCode#
+				 from IKEP4_EV_USER
+				where emp_no = #pernr#
+				and user_status = 'C'
+			END
+     
+   </insert>
+   
+   <delete id="deleteFavoriteSetting" parameterClass="Schedule">
+      <![CDATA[
+		delete from IKEP4_AS_FAVORITE
+		where register_id = #registerId#
+		and item_type_code = #itemTypeCode#		
+	   ]]>
+	</delete>
+   
+   <insert id="insertFavoriteTeam" parameterClass="Schedule"> 
+      <![CDATA[ 
+      DECLARE @chcker INTEGER;
+      SELECT @chcker = COUNT(*) from IKEP4_AS_FAVORITE t WHERE t.register_id = #registerId# and t.target_id = #targetGroupId# and t.item_type_code = 'GP'
+		if(@chcker = 0)
+			BEGIN
+			insert into
+           IKEP4_AS_FAVORITE (
+					favorite_id,
+					item_type_code,
+					type,
+					target_id,
+					target_title,
+					target_url,
+					register_id,
+					register_name,
+					regist_date,
+					updater_id,
+					updater_name,
+					update_date
+		   ) 
+			select 
+			#favoriteId#,
+			#itemTypeCode#	,
+			#type#,
+			#targetGroupId#,
+			group_name,
+			null,
+			#registerId#,
+			#registerName#,
+			CURRENT_TIMESTAMP,
+			#updaterId#,
+			#updaterName#,
+			CURRENT_TIMESTAMP
+			 from ikep4_ev_group
+			where group_id = #targetGroupId#
+			and view_option = '1'
+			
+			END
+       ]]>
+   </insert>
+   
+   <insert id="insertFavoriteUser" parameterClass="Schedule"> 
+      <![CDATA[ 
+      DECLARE @chcker INTEGER;
+      SELECT @chcker = COUNT(*) from IKEP4_AS_FAVORITE t WHERE t.register_id = #registerId# and t.target_id = #targetGroupId# and t.item_type_code = 'PF'
+		if(@chcker = 0)
+			BEGIN
+			insert into
+           IKEP4_AS_FAVORITE (
+					favorite_id,
+					item_type_code,
+					type,
+					target_id,
+					target_title,
+					target_url,
+					register_id,
+					register_name,
+					regist_date,
+					updater_id,
+					updater_name,
+					update_date
+		   ) 
+			select 
+			#favoriteId#,
+			#itemTypeCode#	,
+			#type#,
+			#targetGroupId#,
+			user_name,
+			null,
+			#registerId#,
+			#registerName#,
+			CURRENT_TIMESTAMP,
+			#updaterId#,
+			#updaterName#,
+			CURRENT_TIMESTAMP
+			 from ikep4_ev_user
+			where user_id = #targetGroupId#
+			and user_status = 'C'
+			END
+       ]]>
+   </insert>
+   
+   <update id="updateScheduleSyncDataEnd" parameterClass="ScheduleDetail"> 
+ 		<![CDATA[
+		
+				UPDATE
+				   IKEP4_SD_SCHEDULE_SAP
+				SET
+					flg = '2'
+				WHERE flg = '1'
+       ]]> 
+  	</update>
+</sqlMap>

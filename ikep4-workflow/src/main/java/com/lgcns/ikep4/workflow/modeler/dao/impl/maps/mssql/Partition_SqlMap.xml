@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="workflow.modeler.dao.Partition" >
+	<typeAlias alias = "Partition" type="com.lgcns.ikep4.workflow.modeler.model.Partition"/>
+	
+	<!-- Partition 테이블 조회 결과 -->
+	<resultMap id="PartitionResult" class="Partition">
+		<result property="partitionId" column="PARTITION_ID" columnIndex="1"/>
+		<result property="partitionName" column="PARTITION_NAME" columnIndex="2"/>
+		<result property="description" column="DESCRIPTION" columnIndex="3"/>
+		<result property="createDate" column="CREATE_DATE" columnIndex="4"/>
+		<result property="updateDate" column="UPDATE_DATE" columnIndex="5"/>
+	</resultMap>
+	
+	<!-- MS SQL -->
+	<!-- insert -->
+	<insert id="insert" parameterClass="Partition">
+      <![CDATA[ 
+           INSERT INTO IKEP4_WF_PARTITION (PARTITION_ID, PARTITION_NAME, DESCRIPTION, CREATE_DATE, UPDATE_DATE)  
+           VALUES (#partitionId#, #partitionName#, #description#, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+       ]]>
+       <selectKey resultClass="String" keyProperty="partitionId" type="pre"> 
+         <![CDATA[ 
+               SELECT #partitionId# AS PARTITION_ID
+            ]]>
+      </selectKey>
+   </insert>
+   
+   <!-- ANSI -->
+   <!-- select -->
+	<select id="select" parameterClass="java.lang.String" resultMap="PartitionResult">
+	  <![CDATA[
+		   SELECT * FROM IKEP4_WF_PARTITION WHERE PARTITION_ID = #partitionId#
+	   ]]>
+	</select>
+	
+	<!-- ANSI -->
+	<!-- update -->
+	<update id="update" parameterClass="Partition">
+	  <![CDATA[
+	  		UPDATE IKEP4_WF_PARTITION
+			   SET PARTITION_NAME = #partitionName#
+			     , DESCRIPTION = #description#
+				 , UPDATE_DATE = CURRENT_TIMESTAMP
+			 WHERE PARTITION_ID = #partitionId#
+	   ]]>
+	</update>
+   
+   <!-- ANSI -->
+   <!-- delete -->
+   <delete id="delete" parameterClass="java.lang.String">
+      <![CDATA[
+	  		DELETE IKEP4_WF_PARTITION
+			 WHERE PARTITION_ID = #partitionId#
+	   ]]>
+	</delete>
+	
+	<!-- ANSI -->
+	<!-- selectAll -->
+	<select id="selectAll" resultMap="PartitionResult">
+	  <![CDATA[
+		   SELECT * FROM IKEP4_WF_PARTITION ORDER BY PARTITION_ID DESC
+	   ]]>
+	</select>
+	
+	<!-- ANSI -->
+	<!-- selectCount -->
+	<select id="selectCount" parameterClass="String" resultClass="String">
+	  <![CDATA[
+		   SELECT COUNT(PARTITION_ID) FROM IKEP4_WF_PARTITION WHERE PARTITION_ID = #partitionId#
+	   ]]>
+	</select>
+	
+</sqlMap>

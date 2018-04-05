@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="collpack.workmanual.dao.readUser">
+	<typeAlias alias = "ReadUser" type="com.lgcns.ikep4.collpack.workmanual.model.ReadUser"/>
+	
+	<!-- 테이블 조회 결과 -->
+	<resultMap id="readUserResult" class="ReadUser">
+		<result property="readUserId"                   column="READ_USER_ID"              />
+		<result property="categoryId"                   column="CATEGORY_ID"               />
+		<result property="readUserName"                 column="READ_USER_NAME"            />
+		<result property="readUserTeamName"             column="READ_USER_TEAM_NAME"       />
+		<result property="readUserJobTitleName"         column="READ_USER_JOB_TITLE_NAME"  />
+		<result property="readUserEnglishName"          column="READ_USER_ENGLISH_NAME"    />
+		<result property="readUserTeamEnglishName"      column="TEAM_ENGLISH_NAME"         />
+		<result property="readUserJobTitleEnglishName"  column="JOB_TITLE_ENGLISH_NAME"    />
+	</resultMap>
+	
+	<insert id="create" parameterClass="ReadUser"> 
+      <![CDATA[ 
+           INSERT INTO IKEP4_WM_READ_USER (/* [ReadUser_SqlMap.xml] ReadUser.create */
+           		READ_USER_ID, CATEGORY_ID)  
+           VALUES (#readUserId#, #categoryId#)
+       ]]>
+   </insert>
+   
+	<select id="get" parameterClass="ReadUser" resultMap="readUserResult">
+	  <![CDATA[
+		   SELECT /* [ReadUser_SqlMap.xml] ReadUser.get */
+				  READ_USER_ID,
+				  CATEGORY_ID,
+				  '' AS READ_USER_NAME,          
+				  '' AS READ_USER_TEAM_NAME,     
+				  '' AS READ_USER_JOB_TITLE_NAME,
+				  '' AS READ_USER_ENGLISH_NAME,  
+				  '' AS TEAM_ENGLISH_NAME,       
+				  '' AS JOB_TITLE_ENGLISH_NAME
+		     FROM IKEP4_WM_READ_USER
+		    WHERE READ_USER_ID = #readUserId#
+		      AND CATEGORY_ID = #categoryId#
+	   ]]>
+	</select>
+	
+	<update id="update" parameterClass="ReadUser">
+	  <![CDATA[
+		   UPDATE IKEP4_WM_READ_USER /* [ReadUser_SqlMap.xml] ReadUser.update */ 
+		      SET CATEGORY_ID = #categoryId#
+		    WHERE READ_USER_ID = #readUserId#
+		      AND CATEGORY_ID = #categoryId#
+	   ]]>
+	</update>
+   
+   <delete id="remove" parameterClass="ReadUser">
+      <![CDATA[
+	       DELETE FROM IKEP4_WM_READ_USER /* [ReadUser_SqlMap.xml] ReadUser.remove */ 
+	        WHERE READ_USER_ID = #readUserId#
+		      AND CATEGORY_ID = #categoryId#
+	   ]]>
+	</delete>
+	
+	<select id="count" parameterClass="ReadUser" resultClass="java.lang.Integer">
+	  <![CDATA[
+		   SELECT /* [ReadUser_SqlMap.xml] ReadUser.count */ 
+		   		  COUNT(1) 
+		     FROM IKEP4_WM_READ_USER 
+		    WHERE READ_USER_ID = #readUserId#
+		      AND CATEGORY_ID = #categoryId#
+	   ]]>
+	</select>
+   
+	<!-- //문서 조회 담당자 정보 -->
+	<select id="listReadUser" parameterClass="java.lang.String" resultMap="readUserResult">
+	  <![CDATA[
+		   SELECT /* [ReadUser_SqlMap.xml] ReadUser.listReadUser */
+				  A.READ_USER_ID,  
+				  A.CATEGORY_ID,       
+		          B.USER_NAME AS READ_USER_NAME,       
+		          B.TEAM_NAME AS READ_USER_TEAM_NAME,  
+		          C.JOB_TITLE_NAME AS READ_USER_JOB_TITLE_NAME,
+				  B.USER_ENGLISH_NAME AS READ_USER_ENGLISH_NAME,  
+				  B.TEAM_ENGLISH_NAME AS TEAM_ENGLISH_NAME,       
+				  C.JOB_TITLE_ENGLISH_NAME AS JOB_TITLE_ENGLISH_NAME
+		     FROM IKEP4_WM_READ_USER A,
+		          IKEP4_EV_USER B, 
+                  IKEP4_EV_JOB_TITLE C 
+		    WHERE A.CATEGORY_ID = #categoryId#
+		      AND A.READ_USER_ID = B.USER_ID
+		      AND B.JOB_TITLE_CODE = C.JOB_TITLE_CODE
+		      AND B.PORTAL_ID = C.PORTAL_ID
+	   ]]>
+	</select>
+   
+   <!-- //카테고리 아이디로 삭제 -->
+   <delete id="removeByCategoryId" parameterClass="java.lang.String">
+      <![CDATA[
+	       DELETE FROM IKEP4_WM_READ_USER /* [ReadUser_SqlMap.xml] ReadUser.removeByCategoryId */ 
+	        WHERE CATEGORY_ID = #categoryId#
+	   ]]>
+	</delete>
+</sqlMap>

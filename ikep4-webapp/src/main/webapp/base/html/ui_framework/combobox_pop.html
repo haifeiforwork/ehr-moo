@@ -1,0 +1,62 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ko">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Home</title>
+<link rel="stylesheet" type="text/css" href="../../css/guide.css" />
+<link rel="stylesheet" type="text/css" href="../../css/theme01/jquery_ui_custom.css" />
+<link rel="stylesheet" type="text/css" href="../../css/common.css" />
+<link rel="stylesheet" type="text/css" href="../../css/theme01/theme.css" />
+<script type="text/javascript" src="../../js/jquery/jquery-1.6.2.min.js"></script>
+<script type="text/javascript" src="../../js/jquery/jquery-ui-1.8.13.min.without.datepicker.js"></script>
+<script type="text/javascript" src="../../js/langResource/ko.js"></script>
+<script type="text/javascript" src="../../js/common.pack.js"></script>
+<script type="text/javascript">
+(function($) {
+	$(document).ready(function() {
+		$("#btnCreateCombo").click(function(event) {
+			var combo1 = $('<select id="combo1"/>').appendTo("#divDynamic");
+			combo1.append('<option>selection</option>');
+			combo1.append('<option>item 1</option>');
+			combo1.append('<option>item 2</option>');
+			
+			var combo2 = $('<select/>').appendTo("#divDynamic");
+			combo2.attr("url", "dynamic_combo_items.json");
+			combo2.attr("ref", "#combo1");
+			
+			iKEP.initDynamicCombo();
+		});
+	});
+})(jQuery);
+</script>
+</head>
+
+<body class="popup">
+	<div>
+		<form>
+			<label>combo 1 : <select name="sel1"><option value="00">item 1</option><option value="01">item 2</option></select></label><br/>
+			<label>combo 2 : <select name="sel2" url="dynamic_combo_items.json" ref="sel1"></select></label><br/>
+		</form>
+		<br/><br/>
+		<form>
+			<label>combo 3 : <select name="sel1"><option value="00">item 1</option><option value="01">item 2</option></select></label><br/>
+			<label>combo 4 : <select name="sel2" url="dynamic_combo_items.json" ref="sel1"></select></label><br/>
+			<label>combo 5 : <select name="sel3" url="dynamic_combo_items.json" ref="sel2"></select></label><br/>
+		</form>
+	</div>
+	
+	<div>
+		<!--blockButton Start-->
+		<div class="blockButton"> 
+			<ul>
+				<li><a id="btnCreateCombo" class="button"><span>동적 생성</span></a></li>
+			</ul>
+		</div>
+		<!--//blockButton End-->
+		
+		<div id="divDynamic">
+			
+		</div>
+	</div>
+</body>
+</html>

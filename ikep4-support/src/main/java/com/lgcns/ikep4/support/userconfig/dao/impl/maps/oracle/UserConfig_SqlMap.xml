@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="support.userconfig.dao.UserConfig" >
+  <resultMap id="userConfigResult" class="com.lgcns.ikep4.support.userconfig.model.UserConfig" > 
+    <result column="ID"          property="id"         jdbcType="VARCHAR" />
+    <result column="USER_ID"     property="userId"     jdbcType="VARCHAR" />
+    <result column="MODULE_ID"   property="moduleId"   jdbcType="VARCHAR" />
+    <result column="PAGE_COUNT"  property="pageCount"  jdbcType="DECIMAL" />
+    <result column="LAYOUT"      property="layout"     jdbcType="VARCHAR" />
+    <result column="PORTAL_ID"   property="portalId"   jdbcType="VARCHAR" />
+    <result column="REGIST_DATE" property="registDate" jdbcType="DATE" />
+  </resultMap> 
+  <sql id="sqlColumnList" > 
+    ID,
+    USER_ID,
+    MODULE_ID,
+    PAGE_COUNT,
+    LAYOUT,
+    PORTAL_ID,
+    REGIST_DATE
+  </sql>
+  <select id="listByUserId" resultMap="userConfigResult" parameterClass="string" >
+    SELECT  /* [UserConfig_SqlMap.xml] support.userconfig.dao.boardItem.listByUserId */
+    <include refid="support.userconfig.dao.UserConfig.sqlColumnList" />
+    FROM IKEP4_CO_USER_CONFIG
+    WHERE  USER_ID = #id#
+  </select> 
+  <select id="get" resultMap="userConfigResult" parameterClass="string" >
+    SELECT  /* [UserConfig_SqlMap.xml] support.userconfig.dao.boardItem.get */
+    <include refid="support.userconfig.dao.UserConfig.sqlColumnList" />
+    FROM IKEP4_CO_USER_CONFIG
+    WHERE  ID = #id#
+  </select> 
+  <select id="getByUserIdAndModuleId" resultMap="userConfigResult" parameterClass="com.lgcns.ikep4.support.userconfig.model.UserConfig" >
+    SELECT  /* [UserConfig_SqlMap.xml] support.userconfig.dao.boardItem.getByUserIdAndModuleId */
+    <include refid="support.userconfig.dao.UserConfig.sqlColumnList" />
+    FROM IKEP4_CO_USER_CONFIG
+    WHERE USER_ID = #userId#
+    AND   MODULE_ID = #moduleId#
+    AND   PORTAL_ID = #portalId#
+  </select> 
+  <delete id="remove" parameterClass="string" > 
+    DELETE FROM /* [UserConfig_SqlMap.xml] support.userconfig.dao.UserConfig.get */ IKEP4_CO_USER_CONFIG
+    WHERE  ID = #id#
+  </delete>
+  <delete id="removeUserConfigByUserIdAndModuleId" parameterClass="com.lgcns.ikep4.support.userconfig.model.UserConfig" > 
+    DELETE FROM /* [UserConfig_SqlMap.xml] support.userconfig.dao.UserConfig.com.lgcns.ikep4.support.userconfig.model.UserConfig */ IKEP4_CO_USER_CONFIG
+    WHERE USER_ID = #userId#
+    AND   MODULE_ID = #moduleId#
+    AND   PORTAL_ID = #portalId#
+  </delete>
+  <insert id="create" parameterClass="com.lgcns.ikep4.support.userconfig.model.UserConfig" > 
+    INSERT INTO /* [UserConfig_SqlMap.xml] support.userconfig.dao.UserConfig.insert */ IKEP4_CO_USER_CONFIG ( 
+      <include refid="support.userconfig.dao.UserConfig.sqlColumnList" />
+    ) VALUES (
+       #id#, 
+       #userId#, 
+       #moduleId#, 
+       #pageCount#, 
+       #layout#, 
+       #portalId#, 
+       SYSDATE
+    )
+  </insert> 
+  <select id="exists" resultClass="int" parameterClass="string" >
+    SELECT  /* [UserConfig_SqlMap.xml] support.userconfig.dao.UserConfig.exists */
+         COUNT(*)
+    FROM IKEP4_CO_USER_CONFIG
+    WHERE ID = #id#
+  </select> 
+  <select id="existsByUserIdAndModuleId" resultClass="int" parameterClass="com.lgcns.ikep4.support.userconfig.model.UserConfig" >
+    SELECT  /* [UserConfig_SqlMap.xml] support.userconfig.dao.UserConfig.exists */
+         COUNT(*)
+    FROM IKEP4_CO_USER_CONFIG
+    WHERE USER_ID   = #userId#
+    AND   MODULE_ID = #moduleId#
+    AND   PORTAL_ID = #portalId#
+  </select> 
+  <update id="update" parameterClass="com.lgcns.ikep4.support.userconfig.model.UserConfig" >
+    UPDATE IKEP4_CO_USER_CONFIG
+    SET USER_ID     = #userId#,
+        MODULE_ID   = #moduleId#,
+        PAGE_COUNT  = #pageCount#,
+        LAYOUT      = #layout#,
+        PORTAL_ID   = #portalId#
+    WHERE ID = #id#
+  </update>
+  <update id="updateByUserIdAndModuleId" parameterClass="com.lgcns.ikep4.support.userconfig.model.UserConfig" >
+    UPDATE IKEP4_CO_USER_CONFIG
+    SET    PAGE_COUNT  = #pageCount#,
+           LAYOUT      = #layout#,
+           PORTAL_ID   = #portalId#
+    WHERE  USER_ID = #userId#
+    AND    MODULE_ID = #moduleId#
+    AND    PORTAL_ID = #portalId#
+  </update>
+</sqlMap>

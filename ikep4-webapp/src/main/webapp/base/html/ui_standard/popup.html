@@ -1,0 +1,75 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ko">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Popup</title>
+<link rel="stylesheet" type="text/css" href="../../css/guide.css" />
+<link rel="stylesheet" type="text/css" href="../../css/theme01/jquery_ui_custom.css" />
+<link rel="stylesheet" type="text/css" href="../../css/common.css" />
+<link rel="stylesheet" type="text/css" href="../../css/theme01/theme.css" />
+
+<script type="text/javascript" src="../../js/jquery/jquery-1.6.2.min.js"></script>
+<script type="text/javascript" src="../../js/jquery/jquery-ui-1.8.13.min.without.datepicker.js"></script>
+<script type="text/javascript">var contextRoot = "/ikep4-webapp";</script>
+<script type="text/javascript" src="../../js/langResource/ko.js"></script>
+<script type="text/javascript" src="../../js/common.pack.js"></script>
+
+<script type="text/javascript">
+function openCommonPopup() {
+	var url = iKEP.getContextRoot() + "/basicpack/board/boardItem/readBoardItemLinkView.do?popupYn=true&itemId=100001143245&callback=setResult";
+	var options = {
+		windowTitle : "엎친데 덮친 소니, 32억달러 손실",
+		documentTitle : "게시판 내용보기",
+		width:600, height:500, modal:true,
+		argument:{arg1:"argValue1", arg2:[123, "abc", "가나다"]},
+		callback : function(result) {
+			iKEP.debug(result);
+		}
+	};
+	iKEP.portletPopupOpen(url, options);
+}
+
+(function($){
+	$(document).ready(function() {
+		
+	});
+})(jQuery);
+</script>
+</head>
+
+<body>
+<!--guideWrapper Start-->
+<div id="guideConFrame">
+
+	<div class="guideConTitle"><h2>Popup</h2></div>
+	
+	<div style="width:500px; padding:10px; border:1px solid #f1f1f1;" class="mb20">
+		<a href="popup_1.html" target="_blank"><img src="../../images/guide/temp_popup_1.gif" alt="" /></a>
+	</div>
+	
+	<div>
+		<div><a href="#a" onclick="openCommonPopup()">팝업 오픈</a></div>
+		<div>
+			<pre>
+	var url = iKEP.getContextRoot() + "/basicpack/board/boardItem/readBoardItemLinkView.do?popupYn=true&itemId=100001143245&callback=setResult";
+	var options = {
+		windowTitle : "엎친데 덮친 소니, 32억달러 손실",
+		documentTitle : "게시판 내용보기",
+		width:600, height:500, modal:true,
+		argument:{arg1:"argValue1", arg2:[123, "abc", "가나다"]},
+		callback : function(result) {
+			iKEP.debug(result);
+		}
+	};
+	iKEP.portletPopupOpen(url, options);
+			</pre>
+		</div>
+	</div>
+	<div style="width:500px; padding:10px; border:1px solid #f1f1f1;">
+		<a href="#a" onclick="openCommonPopup()"><img src="../../images/guide/temp_popup_2.gif" alt="" /></a>
+	</div>	
+		
+</div>
+<!--//guideWrapper End-->
+</body>
+</html>

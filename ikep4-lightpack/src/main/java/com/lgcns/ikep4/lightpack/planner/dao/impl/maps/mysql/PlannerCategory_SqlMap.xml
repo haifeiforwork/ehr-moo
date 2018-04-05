@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="lightpack.planner.dao.PlannerCategory" >
+	<typeAlias alias = "plannerCategory" type="com.lgcns.ikep4.lightpack.planner.model.PlannerCategory"/>
+	<typeAlias alias = "plannerCategoryLocale" type="com.lgcns.ikep4.lightpack.planner.model.PlannerCategoryLocale"/>
+		
+	<resultMap id="categoryResult" class="plannerCategory" groupBy="categoryId">
+		<result property="categoryId" column="categoryId"/>
+		<result property="seqId" column="seqId"/>
+		<result property="description" column="DESCRIPTION"/>
+		<result property="color" column="COLOR"/>
+		<result property="registerId" column="registerId"/>
+		<result property="registerName" column="registerName"/>
+		<result property="registDate" column="registDate"/>
+		<result property="plannerCategoryLocaleList" resultMap="lightpack.planner.dao.PlannerCategory.localeListResult"/>	
+	</resultMap>
+
+	<resultMap id="localeListResult" class="plannerCategoryLocale">
+		<result property="categoryName" column="categoryName" nullValue=""/>
+		<result property="localeCode" column="localeCode"/>
+		<result property="localeName" column="localeName"/>	
+	</resultMap>
+	
+	<!-- insert -->
+	<insert id="insert" parameterClass="plannerCategory"> 
+      	<![CDATA[ 
+  		INSERT INTO			IKEP4_SD_CATEGORY 
+  							(
+  							PORTAL_ID,
+  							CATEGORY_ID,
+  							CATEGORY_SEQ_ID,
+  							CATEGORY_NAME,
+  							CATEGORY_TYPE,
+  							DESCRIPTION,
+  							COLOR,
+  							REGISTER_ID,
+  							REGISTER_NAME,
+  							REGIST_DATE
+  							)  
+		VALUES 				(
+							#portalId#,
+							#categoryId#, 
+							#seqId#, 
+							#categoryName#, 
+							#categoryType#, 
+							#description#, 
+							#color#, 
+							#registerId#, 
+							#registerName#,
+							NOW()
+							)
+		]]>
+	</insert>	
+   
+	<!-- insert -->
+	<insert id="createCategoryLocale" parameterClass="plannerCategoryLocale"> 
+      	<![CDATA[ 
+		INSERT INTO			IKEP4_SD_CATEGORY_LOCALE
+							(
+							CATEGORY_ID,
+							CATEGORY_NAME,
+							LOCALE_CODE,
+							LOCALE_NAME
+							)
+		VALUES				(
+							#categoryId#,
+							#categoryName#,
+							#localeCode#,
+							#localeName#
+							)
+       	]]>
+   	</insert>	
+   
+   	<!-- select -->
+	<select id="select" parameterClass="java.lang.String" resultMap="categoryResult">
+	  	<![CDATA[
+	 	SELECT				a.CATEGORY_ID AS categoryId,
+	 						a.CATEGORY_SEQ_ID AS seqId,
+	 						a.DESCRIPTION AS descrpition,
+	 						a.COLOR AS color,
+	 						a.REGISTER_ID AS registerId,
+	 						a.REGISTER_NAME AS registerName,
+	 						a.REGIST_DATE AS registDate,
+ 		 					b.CATEGORY_NAME AS categoryName, 
+ 		 					b.LOCALE_CODE AS localeCode, 
+ 		 					b.LOCALE_NAME AS localeName
+		FROM 				IKEP4_SD_CATEGORY a, 
+							IKEP4_SD_CATEGORY_LOCALE b
+		WHERE 				b.CATEGORY_ID = a.CATEGORY_ID
+		AND 				a.CATEGORY_ID = #value#
+	   	]]>
+	</select>
+	
+   	<!-- readWithLocale -->
+	<select id="readWithLocale" parameterClass="java.lang.String" resultMap="categoryResult">
+	  	<![CDATA[
+     	SELECT				IFNULL(b.CATEGORY_ID, #value#) AS categoryId, 
+     						b.CATEGORY_SEQ_ID AS seqId, 
+     						b.DESCRIPTION AS description, 
+     						b.COLOR AS color, 
+     						b.REGISTER_ID AS registerId, 
+     						b.REGISTER_NAME AS registerName, 
+     						b.REGIST_DATE AS registDate,
+	      					b.CATEGORY_NAME AS categoryName, 
+	      					a.LOCALE_CODE AS localeCode, 
+	      					a.LOCALE_NAME AS localeName
+		FROM				IKEP4_EV_LOCALE a 
+		LEFT OUTER JOIN 	(
+							SELECT				q.CATEGORY_ID,
+												q.CATEGORY_SEQ_ID, 
+												q.DESCRIPTION, 
+												q.COLOR, 
+												q.REGISTER_ID, 
+												q.REGISTER_NAME, 
+												q.REGIST_DATE,
+	      										p.CATEGORY_NAME, 
+	      										p.locale_code
+	     					FROM				IKEP4_SD_CATEGORY_LOCALE p, 
+	     										IKEP4_SD_CATEGORY q
+	     					WHERE				p.CATEGORY_ID = q.CATEGORY_ID
+	     					AND					p.CATEGORY_ID = #value#
+	     					) b 
+		ON					a.LOCALE_CODE = b.LOCALE_CODE
+		ORDER BY			a.SORT_ORDER
+	   	]]>
+	</select>
+	
+   	<!-- getLocaleList -->
+	<select id="getLocaleList" resultClass="java.util.HashMap">
+	  	<![CDATA[
+		SELECT				LOCALE_CODE AS localeCode, 
+							LOCALE_NAME AS localeName, 
+							DESCRIPTION AS description, 
+							SORT_ORDER AS sortOrder
+		FROM				IKEP4_EV_LOCALE
+		ORDER BY			SORT_ORDER
+	   	]]>
+	</select>
+	
+	<!-- update -->
+	<update id="update" parameterClass="plannerCategory">
+	  	<![CDATA[
+	   	UPDATE 				IKEP4_SD_CATEGORY 
+		SET					CATEGORY_NAME = #categoryName#,
+							COLOR = #color#	   
+	   	WHERE 				CATEGORY_ID = #categoryId#
+	   	]]>
+	</update>
+	
+	<!-- getList -->
+	<select id="getList" resultMap="categoryResult">
+	  	<![CDATA[
+	 	SELECT				a.CATEGORY_ID AS categoryId,
+	 						a.CATEGORY_SEQ_ID AS seqId,
+	 						a.DESCRIPTION AS description,
+	 						a.COLOR AS color,
+	 						a.REGISTER_ID AS registerId,
+	 						a.REGISTER_NAME AS registerName,
+	 						a.REGIST_DATE AS registDate,
+ 		 					b.CATEGORY_NAME AS categoryName, 
+ 		 					b.LOCALE_CODE AS localeCode, 
+ 		 					b.LOCALE_NAME AS localeName,
+							(CASE
+								WHEN b.LOCALE_CODE = 'ko' THEN 1
+								WHEN b.LOCALE_CODE = 'en' THEN 2
+								ELSE 3
+							END) AS locale_order
+	 	FROM 				IKEP4_SD_CATEGORY a, IKEP4_SD_CATEGORY_LOCALE b
+	 	WHERE 				b.CATEGORY_ID = a.CATEGORY_ID
+	 	ORDER BY 			a.REGIST_DATE DESC, locale_order
+		]]>
+	</select>
+	
+	<!-- getListByLocale -->
+	<select id="getListByLocale" parameterClass="java.lang.String" resultClass="plannerCategory">
+  		<![CDATA[
+	 	SELECT				a.CATEGORY_ID AS categoryId, 
+	 						a.COLOR AS color, 
+	 						b.CATEGORY_NAME AS categoryName
+	 	FROM 				IKEP4_SD_CATEGORY a, 
+	 						IKEP4_SD_CATEGORY_LOCALE b
+	 	WHERE 				b.CATEGORY_ID = a.CATEGORY_ID
+     	AND					b.LOCALE_CODE = #value#
+	 	ORDER BY 			a.CATEGORY_ID DESC
+   		]]>
+	</select>
+	
+   	<!-- delete -->
+   	<delete id="delete" parameterClass="java.lang.String">
+    	<![CDATA[
+       	DELETE 
+       	FROM				IKEP4_SD_CATEGORY 
+       	WHERE 				CATEGORY_ID = #value#
+	   	]]>
+	</delete>
+	
+   	<!-- deletePlannerCategoryLocaleList -->
+   	<delete id="deletePlannerCategoryLocaleList" parameterClass="java.lang.String">
+      	<![CDATA[
+       	DELETE 
+       	FROM 				IKEP4_SD_CATEGORY_LOCALE 
+       	WHERE 				CATEGORY_ID = #value#
+	   	]]>
+	</delete>
+	
+   	<delete id="deletePlannerCategoryLocaleListByMultiCid">
+   		<![CDATA[
+       	DELETE 
+       	FROM 				IKEP4_SD_CATEGORY_LOCALE 
+       	WHERE 				CATEGORY_ID IN
+       	]]>
+					       	<iterate open="(" close=")" conjunction=",">
+					   			#[]#
+					       	</iterate>
+	</delete>
+	
+   	<delete id="deleteList">
+   		<![CDATA[
+    	DELETE 
+    	FROM				IKEP4_SD_CATEGORY 
+    	WHERE 				CATEGORY_ID IN
+    	]]>
+					       	<iterate open="(" close=")" conjunction=",">
+					   			#[]#
+					       	</iterate>
+	</delete>
+	
+	<!-- isDuplicate -->
+	<select id="isDuplicate" parameterClass="plannerCategoryLocale" resultClass="int">
+		<![CDATA[
+		SELECT				COUNT(*)
+		FROM				IKEP4_SD_CATEGORY_LOCALE
+		WHERE				LOCALE_CODE = #localeCode#
+		AND					CATEGORY_NAME = #categoryName#
+		]]>
+		<isNotNull property="categoryId">
+		<![CDATA[
+		AND					CATEGORY_ID != #categoryId#
+		]]>
+		</isNotNull>
+	</select>
+	
+</sqlMap>

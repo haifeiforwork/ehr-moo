@@ -1,0 +1,43 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ko">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Home</title>
+<link rel="stylesheet" type="text/css" href="../../css/guide.css" />
+<link rel="stylesheet" type="text/css" href="../../css/theme01/jquery_ui_custom.css" />
+<link rel="stylesheet" type="text/css" href="../../css/common.css" />
+<link rel="stylesheet" type="text/css" href="../../css/theme01/theme.css" />
+<script type="text/javascript" src="../../js/jquery/jquery-1.6.2.min.js"></script>
+<script type="text/javascript" src="../../js/jquery/jquery-ui-1.8.13.min.without.datepicker.js"></script>
+<script type="text/javascript" src="../../js/langResource/ko.js"></script>
+<script type="text/javascript" src="../../js/common.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$(document).ready(function() {
+		$("a.command_help").parents("div.toolbar").hide();
+		
+		$("#tags").autocomplete({
+			// source에서의 result 중 첫번째 아이템이 객체형으로 쓰여지면 이후 문자형 아이템으로 혼영해서 사용하면 오류발생
+			source : "ajax_result/autocomplete_items.json",
+			change : function(event) {
+			},
+			select : function(event, item) {
+				this.blur();			
+			}
+		});
+		$("#tags").bind("keypress", function(event) {
+			if(event.which == 13) {
+			}
+		});
+	});
+})(jQuery);
+</script>
+</head>
+
+<body class="popup">
+<div>
+	<label for="tags">Tags: </label>
+	<input id="tags" />
+</div>
+</body>
+</html>

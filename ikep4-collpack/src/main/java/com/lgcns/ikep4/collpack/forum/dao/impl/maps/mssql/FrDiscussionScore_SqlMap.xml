@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="collpack.fourm.dao.FrDiscussionScore" >
+
+	<typeAlias alias = "FrDiscussionScore" type="com.lgcns.ikep4.collpack.forum.model.FrDiscussionScore"/>
+	
+  <resultMap id="FrDiscussionScoreResult" class="com.lgcns.ikep4.collpack.forum.model.FrDiscussionScore" >
+    <result column="DISCUSSION_ID" property="discussionId" />
+    <result column="DISCUSSION_SCORE" property="discussionScore"  />
+  </resultMap>
+  
+  <!-- ANSI -->
+  <insert id="create" parameterClass="FrDiscussionScore" >
+    INSERT 		/* [FrDiscussionScore_SqlMap.xml] FrDiscussionScore.create */
+    INTO IKEP4_FR_DISCUSSION_SCORE (
+	    DISCUSSION_ID
+	    , DISCUSSION_SCORE
+    ) VALUES (
+	    #discussionId#
+	    , #discussionScore#
+    )
+  </insert>
+  
+  <!-- ANSI -->
+    <delete id="remove" parameterClass="String">
+    DELETE 					/* [FrDiscussionScore_SqlMap.xml] FrDiscussionScore.remove */
+    FROM IKEP4_FR_DISCUSSION_SCORE
+    WHERE DISCUSSION_ID = #discussionId#
+  </delete>
+  
+  <!-- ANSI -->
+   <delete id="removeAll" >
+    DELETE 					/* [FrDiscussionScore_SqlMap.xml] FrDiscussionScore.removeAll */
+    FROM IKEP4_FR_DISCUSSION_SCORE
+  </delete>
+  
+  <!-- MSSQL -->
+   <delete id="removeCount" parameterClass="int" >
+      DELETE 					/* [FrDiscussionScore_SqlMap.xml] FrItemScore.removeCount */
+    FROM IKEP4_FR_DISCUSSION_SCORE
+    WHERE DISCUSSION_ID IN ( SELECT TOP $endRowIndex$ DISCUSSION_ID FROM IKEP4_FR_DISCUSSION_SCORE ORDER BY DISCUSSION_SCORE DESC )    
+  </delete>
+  
+</sqlMap>

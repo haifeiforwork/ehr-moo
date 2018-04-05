@@ -1,0 +1,2120 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="lightpack.officeway.dao.officeway" >
+	
+	<typeAlias alias="OfficeWay" type="com.lgcns.ikep4.lightpack.officeway.model.OfficeWay"/>
+	<typeAlias alias="OfficeWaySearchCondition" type="com.lgcns.ikep4.lightpack.officeway.model.OfficeWaySearchCondition"/>
+	
+	<resultMap id="resultMyRequest" class="java.util.HashMap">
+		<result property="officewayId" column="officewayId" />
+		<result property="productName" column="productName" />
+		<result property="productNo" column="productNo" />
+		<result property="registerId" column="registerId" />
+		<result property="registerName" column="registerName" />
+		<result property="registDate" column="registDate" />
+		<result property="updaterId" column="updaterId" />
+		<result property="updaterName" column="updaterName" />
+		<result property="updateDate" column="updateDate" />
+		<result property="price2" column="price2" />
+		<result property="price1" column="price1" />
+		<result property="unit" column="unit" />
+		<result property="status1" column="status1"/>
+		<result property="status2" column="status2"/>
+		<result property="amount1" column="amount1"/>
+		<result property="category1" column="category1"/>
+		<result property="category2" column="category2"/>
+		<result property="categoryName1" column="categoryName1"/>
+		<result property="categoryName2" column="categoryName2"/>
+		<result property="remark" column="remark"/>
+		<result property="teamId" column="teamId"/>
+		<result property="teamName" column="teamName"/>
+	</resultMap>
+	
+	<resultMap id="resultTeamRequest" class="com.lgcns.ikep4.lightpack.officeway.model.OfficeWay">
+		<result property="officewayId" column="officewayId" />
+		<result property="productName" column="productName" />
+		<result property="productNo" column="productNo" />
+		<result property="registerId" column="registerId" />
+		<result property="registerName" column="registerName" />
+		<result property="registDate" column="registDate" />
+		<result property="updaterId" column="updaterId" />
+		<result property="updaterName" column="updaterName" />
+		<result property="updateDate" column="updateDate" />
+		<result property="price2" column="price2" />
+		<result property="price1" column="price1" />
+		<result property="unit" column="unit" />
+		<result property="status1" column="status1"/>
+		<result property="status2" column="status2"/>
+		<result property="amount1" column="amount1"/>
+		<result property="category1" column="category1"/>
+		<result property="category2" column="category2"/>
+		<result property="categoryName1" column="categoryName1"/>
+		<result property="categoryName2" column="categoryName2"/>
+		<result property="remark" column="remark"/>
+		<result property="teamId" column="teamId"/>
+		<result property="teamName" column="teamName"/>
+	</resultMap>
+	
+	<resultMap id="resultExceptOfficeway" class="java.util.HashMap">
+		<result property="productName" column="productName" />
+		<result property="productNo" column="productNo" />
+	</resultMap>
+	
+	<resultMap id="officewayTeam" class="java.util.HashMap">
+		<result property="teamName" column="teamName" />
+		<result property="teamId" column="teamId" />
+	</resultMap>
+	
+	<resultMap id="resultTeamsRequest" class="java.util.HashMap">
+		<result property="productName" column="productName" />
+		<result property="productCnt" column="productCnt" />
+		<result property="price2" column="price2" />
+		<result property="teamId" column="teamId"/>
+		<result property="teamName" column="teamName"/>
+	</resultMap>
+	<resultMap id="resultTeamsRequestDetail" class="com.lgcns.ikep4.lightpack.officeway.model.OfficeWay">
+		<result property="registerName" column="registerName" />
+		<result property="registDate" column="registDate" />
+		<result property="teamId" column="teamId"/>
+		<result property="productNo" column="productNo" />
+		<result property="productName" column="productName" />
+		<result property="amount1" column="amount1"/>
+		<result property="unit" column="unit" />
+		<result property="price1" column="price1" />
+		<result property="price2" column="price2" />
+		<result property="category1" column="category1"/>
+		<result property="category2" column="category2"/>
+		<result property="categoryName1" column="categoryName1"/>
+		<result property="categoryName2" column="categoryName2"/>
+		<result property="remark" column="remark"/>
+		<result property="status1" column="status1"/>
+		<result property="status2" column="status2"/>
+	</resultMap>
+	<resultMap id="resultOfficeWayAdmin" class="com.lgcns.ikep4.lightpack.officeway.model.OfficeWay">
+		<result property="managerId" column="managerId" />
+	</resultMap>
+	<resultMap id="resultCategory" class="com.lgcns.ikep4.lightpack.officeway.model.OfficeWay" > 
+    <result column="CATEGORY_ID"          property="categoryId"         jdbcType="VARCHAR" />
+    <result column="CATEGORY_NAME"        property="categoryName"       jdbcType="VARCHAR" />
+    <result column="CATEGORY_SEQ_ID"      property="categorySeqId"      jdbcType="VARCHAR" />
+    <result column="CATEGORY_TYPE"        property="categoryType"       jdbcType="VARCHAR" />
+    <result column="COLOR"                property="color"              jdbcType="VARCHAR" />
+    <result column="DESCRIPTION"          property="description"        jdbcType="VARCHAR" />
+    <result column="PORTAL_ID"            property="portalId"           jdbcType="VARCHAR" />
+    <result column="REGISTER_ID"          property="registerId"         jdbcType="VARCHAR" />
+    <result column="REGISTER_NAME"        property="registerName"       jdbcType="VARCHAR" />
+    <result column="REGIST_DATE"          property="registDate"         jdbcType="DATE" />
+  </resultMap> 
+	
+	<resultMap id="resultStatistics1" class="com.lgcns.ikep4.lightpack.officeway.model.OfficeWay" > 
+	    <result column="cal_mnt"          	property="calMnt"         	jdbcType="VARCHAR" />
+	    <result column="team_id"        	property="teamId"       	jdbcType="VARCHAR" />
+	    <result column="team_name"      	property="teamName"      	jdbcType="VARCHAR" />
+	    <result column="price2"           	property="price2"           jdbcType="VARCHAR" />
+  	</resultMap>
+  	
+  	<resultMap id="resultStatistics2" class="com.lgcns.ikep4.lightpack.officeway.model.OfficeWay" > 
+	    <result column="team_id"        	property="teamId"       	jdbcType="VARCHAR" />
+	    <result column="price2"           	property="price2"           jdbcType="VARCHAR" />
+	    <result column="team_name"      	property="teamName"      	jdbcType="VARCHAR" />
+  	</resultMap>
+  	
+  	<resultMap id="resultStatistics3" class="com.lgcns.ikep4.lightpack.officeway.model.OfficeWay" > 
+	    <result column="cal_mnt"          	property="calMnt"         	jdbcType="VARCHAR" />
+	    <result column="price2"           	property="price2"           jdbcType="VARCHAR" />
+  	</resultMap>
+  
+	<select id="listCategory" resultMap="resultCategory">   
+	SELECT 
+	         CATEGORY_ID
+			,CATEGORY_NAME
+			,CATEGORY_SEQ_ID
+			,CATEGORY_TYPE
+			,COLOR
+			,DESCRIPTION
+			,PORTAL_ID
+			,REGISTER_ID
+			,REGISTER_NAME
+			,REGIST_DATE
+			,DELETE_YN
+			,BOARD_ID
+	FROM  ikep4_officeway_category
+	WHERE DELETE_YN = 'Y'
+	  AND BOARD_ID  = #boardId#
+	 ORDER BY CATEGORY_SEQ_ID, CATEGORY_ID
+  </select> 
+  
+  <insert id="createCategoryNm" parameterClass="OfficeWay">
+		INSERT INTO ikep4_officeway_category (
+		 BOARD_ID,CATEGORY_ID,CATEGORY_NAME,REGISTER_ID,REGISTER_NAME, REGIST_DATE,DELETE_YN
+		) VALUES (
+		 #boardId#,#categoryId#,#addNameList#,#registerId#,#registerName#, CURRENT_TIMESTAMP,'Y'
+		)
+  </insert>
+	
+  <update id="deleteCategoryNm" parameterClass="OfficeWay">
+	    UPDATE ikep4_officeway_category 
+	    SET DELETE_YN = 'N'
+	    WHERE CATEGORY_ID = #delIdList#
+	     AND BOARD_ID     = #boardId#
+  </update>
+  
+  <update id="updateCategoryNm" parameterClass="OfficeWay">
+	    UPDATE ikep4_officeway_category 
+	      SET CATEGORY_NAME = #updateNameList#, CATEGORY_SEQ_ID=#alignList#
+	     WHERE CATEGORY_ID  = #updateIdList#
+	      AND BOARD_ID      = #boardId#
+  </update>
+  
+  <update id="updateCategoryAlign" parameterClass="OfficeWay">
+	    UPDATE ikep4_officeway_category
+	      SET  CATEGORY_SEQ_ID=#categorySeqId#
+	     WHERE CATEGORY_NAME = #alignList#
+	      AND BOARD_ID      = #boardId#
+  </update>
+	
+  	<insert id="officewayUseRequest" parameterClass="OfficeWay"> 
+		<![CDATA[
+		INSERT INTO			ikep4_officeway
+							(
+							officeway_id,
+							product_name,
+							product_no,
+							register_id,
+							register_name,
+							regist_date,
+							updater_id,
+							updater_name,
+							update_date,
+							price2,
+							unit,
+							status1,
+							price1,
+							amount1,
+							category1,
+							category2,
+							remark,
+							team_id
+							) 
+		VALUES 				( 
+							#officewayId#,
+							#productName#,
+							#productNo#,
+							#registerId#,
+							#registerName#,
+							GETDATE(),
+							#updaterId#,
+							#updaterName#,
+							GETDATE(),
+							#price2#,
+							#unit#,
+							#status1#,
+							#price1#,
+							#amount1#,
+							#category1#,
+							#category2#,
+							#remark#,
+							#teamId#
+							)
+		]]>
+   	</insert>	
+   	<select id="getTeamLeader" parameterClass="String" resultClass="String">
+		<![CDATA[
+		select top 1 user_id as userId
+		from ikep4_ev_user
+		where user_id in (select user_id from IKEP4_EV_USER
+		where user_id in(
+		select user_id from IKEP4_EV_USER_GROUP
+		where group_id = (
+		select group_id from IKEP4_EV_USER_GROUP
+		where user_id = #userId#
+		and group_id in (select group_id from IKEP4_EV_GROUP
+		where  group_type_id = 'G0001'
+		and view_option = '1')))
+		and user_status = 'C'
+		and leader = '1'
+		and job_duty_code in ('18','68','19')
+		)
+		]]>
+	</select>
+	
+	<select id="checkProductNo" parameterClass="java.lang.String" resultClass="java.lang.String">
+	<![CDATA[
+		SELECT 
+			COUNT(product_no)
+		FROM
+			ikep4_officeway_except
+		WHERE
+			product_no = #productNo#	
+	]]>
+	</select>
+	
+	<select id="selectPeriodListCount" parameterClass="java.lang.String" resultClass="int">
+	<![CDATA[
+		SELECT 
+			count(*)
+		FROM
+			ikep4_officeway_period
+		WHERE
+			year = #year#	
+	]]>
+	</select>
+	
+	<insert id="insertDefaultPeriod" parameterClass="String"> 
+		<![CDATA[
+		DECLARE @I INT
+		
+		SET @I = 1
+		
+		WHILE @I < 13
+		BEGIN
+		
+		INSERT INTO			ikep4_officeway_period
+							(
+							year,
+							month,
+							status
+							) 
+		VALUES 				( 
+							#year#,
+							@I,
+							'N'
+							)
+		SET @I = @I + 1
+		END		
+		]]>			
+   	</insert>
+	
+	<select id="periodCheck" parameterClass="java.lang.String" resultClass="String">
+	<![CDATA[
+		SELECT 
+			count(*)
+		FROM
+			ikep4_officeway_period
+		WHERE current_timestamp between start_date and  DATEADD(DD, +1, end_date)	
+		and status = 'Y'
+		and year+convert(varchar(2), Right('0'+Ltrim(Str(month)),2), 112) = convert(varchar(6), start_date, 112)
+	]]>
+	</select>
+	
+	<select id="teamManagerCheck" parameterClass="Map" resultClass="String">
+	<![CDATA[
+		select count(*) from ikep4_officeway_team_manager
+		where team_manager_id = #userId#
+		and use_yn = 'Y'
+	]]>
+	</select>
+	
+	<select id="teamLeaderCheck" parameterClass="Map" resultClass="String">
+	<![CDATA[
+		select count(*) from ikep4_officeway_team_manager
+		where team_leader_id = #userId#
+		and use_yn = 'Y'
+	]]>
+	</select>
+	
+	<select id="selectMyRequestCount" parameterClass="OfficeWaySearchCondition" resultClass="int">
+		select count(*) from ikep4_officeway
+		where register_id = #userId#
+		and team_id = #teamId#
+		<isNotEmpty property="searchWord">
+			<isEqual property="searchColumn" compareValue="productName">
+				AND	UPPER(product_name) LIKE '%' + UPPER(#searchWord#) + '%'
+			</isEqual>
+			<isEqual property="searchColumn" compareValue="productNo">
+				AND	product_no LIKE '%' + #searchWord# + '%'
+			</isEqual>
+		</isNotEmpty>
+		<isNotEmpty property="searchStatus">
+			<isEqual property="searchStatus" compareValue="MA">
+				and status1 = 'S' and status2 = 'A'
+			</isEqual>
+			<isEqual property="searchStatus" compareValue="MR">
+				and status1 = 'S' and status2 = 'R'
+			</isEqual>
+			<isEqual property="searchStatus" compareValue="MC">
+				and status1 = 'S' and status2 = 'C'
+			</isEqual>
+			<isEqual property="searchStatus" compareValue="TA">
+				and status1 = 'S' and isnull(status2,'') =''
+			</isEqual>
+			<isEqual property="searchStatus" compareValue="TR">
+				and status1 = 'R' and isnull(status2,'') =''
+			</isEqual>
+			<isEqual property="searchStatus" compareValue="TC">
+				and status1 = 'C' and isnull(status2,'') =''
+			</isEqual>
+			<isEqual property="searchStatus" compareValue="TS">
+				and status1 = 'S' and isnull(status2,'') =''
+			</isEqual>
+			<isEqual property="searchStatus" compareValue="TT">
+				and status1 = 'T' and isnull(status2,'') =''
+			</isEqual>
+		</isNotEmpty>
+		<isNotEmpty property="status1">
+				and status1 = #status1#
+		</isNotEmpty>
+		<isNotNull property="searchEndDate">
+		<![CDATA[
+		AND convert(varchar(6), regist_date, 112) <= #searchEndDate#
+		]]>	
+		</isNotNull>
+		<isNotNull property="searchStartDate">
+		<![CDATA[
+		AND convert(varchar(6), regist_date, 112) >= #searchStartDate# 
+		]]>	
+		</isNotNull>
+	</select>
+	
+	<select id="selectTeamRequestCount" parameterClass="OfficeWaySearchCondition" resultClass="int">
+		select count(*) from ikep4_officeway
+		where 1=1
+		and status1 in ('S','C','A','R')
+		<isNotEmpty property="searchWord">
+				<isEqual property="searchColumn" compareValue="productName">
+					AND	UPPER(product_name) LIKE '%' + UPPER(#searchWord#) + '%'
+				</isEqual>
+				<isEqual property="searchColumn" compareValue="productNo">
+					AND	product_no LIKE '%' + #searchWord# + '%'
+				</isEqual>
+			</isNotEmpty>
+			<isNotEmpty property="searchStatus">
+				<isEqual property="searchStatus" compareValue="MA">
+					and status1 = 'S' and status2 = 'A'
+				</isEqual>
+				<isEqual property="searchStatus" compareValue="MR">
+					and status1 = 'S' and status2 = 'R'
+				</isEqual>
+				<isEqual property="searchStatus" compareValue="MC">
+					and status1 = 'S' and status2 = 'C'
+				</isEqual>
+				<isEqual property="searchStatus" compareValue="TA">
+					and status1 = 'S' and isnull(status2,'') =''
+				</isEqual>
+				<isEqual property="searchStatus" compareValue="TR">
+					and status1 = 'R' and isnull(status2,'') =''
+				</isEqual>
+				<isEqual property="searchStatus" compareValue="TC">
+					and status1 = 'C' and isnull(status2,'') =''
+				</isEqual>
+				<isEqual property="searchStatus" compareValue="TS">
+					and status1 = 'S' and isnull(status2,'') =''
+				</isEqual>
+			</isNotEmpty>
+			<isNotEmpty property="auth">
+				<isEqual property="auth" compareValue="TR">
+					<isNotEmpty property="userId">
+						and team_id in (select team_id from ikep4_officeway_team_manager where team_manager_id = #userId#)
+						<isNotEmpty property="teamId">
+							and team_id = #teamId#
+						</isNotEmpty>
+					</isNotEmpty>
+				</isEqual>
+				<isEqual property="auth" compareValue="TC">
+					<isNotEmpty property="userId">
+						and team_id in (select team_id from ikep4_officeway_team_manager where team_leader_id = #userId#)
+						<isNotEmpty property="teamId">
+							and team_id = #teamId#
+						</isNotEmpty>
+					</isNotEmpty>
+				</isEqual>
+			</isNotEmpty>
+			<isNotEmpty property="status1">
+				and status1 = #status1#
+			</isNotEmpty>
+			<isNotEmpty property="teamId">
+				and team_id = #teamId#
+			</isNotEmpty>
+			<isNotNull property="searchEndDate">
+			<![CDATA[
+			AND convert(varchar(6), regist_date, 112) <= #searchEndDate#
+			]]>	
+			</isNotNull>
+			<isNotNull property="searchStartDate">
+			<![CDATA[
+			AND convert(varchar(6), regist_date, 112) >= #searchStartDate# 
+			]]>	
+			</isNotNull>
+	</select>
+	
+	<select id="selectTeamsRequestCount" parameterClass="OfficeWaySearchCondition" resultClass="int">
+		select count(*) from ikep4_officeway
+		where  1=1
+		<isNotNull property="searchEndDate">
+		<![CDATA[
+		AND convert(varchar(6), regist_date, 112) <= #searchEndDate#
+		]]>	
+		</isNotNull>
+		<isNotNull property="searchStartDate">
+		<![CDATA[
+		AND convert(varchar(6), regist_date, 112) >= #searchStartDate# 
+		]]>	
+		</isNotNull>
+		<isNotEmpty property="searchStatus">
+				<isEqual property="searchStatus" compareValue="MA">
+					and status1 = 'S' and status2 = 'A'
+				</isEqual>
+				<isEqual property="searchStatus" compareValue="MR">
+					and status1 = 'S' and status2 = 'R'
+				</isEqual>
+				<isEqual property="searchStatus" compareValue="MC">
+					and status1 = 'S' and status2 = 'C'
+				</isEqual>
+				<isEqual property="searchStatus" compareValue="TA">
+					and status1 = 'S' and isnull(status2,'') =''
+				</isEqual>
+			</isNotEmpty>
+	</select>
+	
+	<select id="officewayUseTeamList" resultMap="officewayTeam">
+		select team_id as teamId, team_name as teamName from ikep4_officeway_team_manager
+		where use_yn = 'Y'
+		and (team_leader_id = #userId# or team_manager_id = #userId#)
+		order by team_name
+	</select>
+	
+	<select id="officewayUseTeamListAll" resultMap="officewayTeam">
+		select team_id as teamId, team_name as teamName from ikep4_officeway_team_manager
+		where use_yn = 'Y'
+		order by team_name
+	</select>
+	
+	<select id="selectTeamsRequestPrice" parameterClass="OfficeWaySearchCondition" resultClass="int">
+		select isnull(sum(o.price2),0) from ikep4_officeway_team_manager m
+		left outer join ikep4_officeway o
+		on m.team_id = o.team_id
+		and use_yn = 'Y'
+		and o.status1 = 'S'
+		 <isNotNull property="searchEndDate">
+			<![CDATA[
+			AND convert(varchar(6), o.regist_date, 112) <= #searchEndDate#
+			]]>	
+			</isNotNull>
+			<isNotNull property="searchStartDate">
+			<![CDATA[
+			AND convert(varchar(6), o.regist_date, 112) >= #searchStartDate# 
+			]]>	
+			</isNotNull>
+			<isNotEmpty property="searchStatus">
+				<isEqual property="searchStatus" compareValue="MA">
+					and o.status1 = 'S' and o.status2 = 'A'
+				</isEqual>
+				<isEqual property="searchStatus" compareValue="MR">
+					and o.status1 = 'S' and o.status2 = 'R'
+				</isEqual>
+				<isEqual property="searchStatus" compareValue="MC">
+					and o.status1 = 'S' and o.status2 = 'C'
+				</isEqual>
+				<isEqual property="searchStatus" compareValue="TA">
+					and o.status1 = 'S' and isnull(o.status2,'') =''
+				</isEqual>
+			</isNotEmpty>
+	</select>
+	
+	<select id="selectTeamRequestPrice1" parameterClass="OfficeWaySearchCondition" resultClass="int">
+		<![CDATA[
+			SELECT
+			        isnull(sum(A.price2),0)
+			    FROM 
+			    ( 
+					SELECT ROW_NUMBER() OVER(
+		 ]]>				
+			<isNotEmpty property="sortColumn">
+				<isEqual property="sortColumn" compareValue="productNo">
+					<isEqual property="sortType" compareValue="ASC">
+						ORDER BY product_no ASC
+					</isEqual>
+					<isEqual property="sortType" compareValue="DESC">
+						ORDER BY product_no DESC
+					</isEqual>
+				</isEqual>
+				<isEqual property="sortColumn" compareValue="productName">
+					<isEqual property="sortType" compareValue="ASC">
+						ORDER BY product_name ASC
+					</isEqual>
+					<isEqual property="sortType" compareValue="DESC">
+						ORDER BY product_name DESC
+					</isEqual>
+				</isEqual>
+			</isNotEmpty>
+			<isEmpty property="sortColumn">
+				ORDER BY convert(varchar(6), regist_date, 112) desc, team_id ASC, category1 asc
+			</isEmpty>
+				<![CDATA[
+						) AS NUM,
+					    officeway_id as officewayId,
+						product_name as productName,
+						product_no as productNo,
+						register_id as registerId,
+						register_name as registerName,
+						regist_date as registDate,
+						updater_id as updaterId,
+						updater_name as updaterName,
+						update_date as updateDate,
+						price2 as price2,
+						unit as unit,
+						status1 as status1,
+						status2 as status2,
+						price1 as price1,
+						amount1 as amount1,
+						category1 as category1,
+						(select category_name from ikep4_officeway_category where category_id = category1) as categoryName1,
+						category2 as category2,
+						(select category_name from ikep4_officeway_category where category_id = category2) as categoryName2,
+						remark as remark,
+						team_id as teamId,
+						(select group_name from IKEP4_EV_GROUP where group_id = team_id) as teamName
+					FROM 
+					    ikep4_officeway
+			        where 1=1
+					and status1 in ('S','C','A','R')
+			        ]]>	
+			<isNotEmpty property="searchWord">
+				<isEqual property="searchColumn" compareValue="productName">
+					AND	UPPER(product_name) LIKE '%' + UPPER(#searchWord#) + '%'
+				</isEqual>
+				<isEqual property="searchColumn" compareValue="productNo">
+					AND	product_no LIKE '%' + #searchWord# + '%'
+				</isEqual>
+			</isNotEmpty>
+			<isNotEmpty property="searchStatus">
+				<isEqual property="searchStatus" compareValue="MA">
+					and status1 = 'S' and status2 = 'A'
+				</isEqual>
+				<isEqual property="searchStatus" compareValue="MR">
+					and status1 = 'S' and status2 = 'R'
+				</isEqual>
+				<isEqual property="searchStatus" compareValue="MC">
+					and status1 = 'S' and status2 = 'C'
+				</isEqual>
+				<isEqual property="searchStatus" compareValue="TA">
+					and status1 = 'S' and isnull(status2,'') =''
+				</isEqual>
+				<isEqual property="searchStatus" compareValue="TR">
+					and status1 = 'R' and isnull(status2,'') =''
+				</isEqual>
+				<isEqual property="searchStatus" compareValue="TC">
+					and status1 = 'C' and isnull(status2,'') =''
+				</isEqual>
+				<isEqual property="searchStatus" compareValue="TS">
+					and status1 = 'S' and isnull(status2,'') =''
+				</isEqual>
+			</isNotEmpty>
+			<isNotEmpty property="auth">
+				<isEqual property="auth" compareValue="TR">
+					<isNotEmpty property="userId">
+						and team_id in (select team_id from ikep4_officeway_team_manager where team_manager_id = #userId#)
+						<isNotEmpty property="teamId">
+							and team_id = #teamId#
+						</isNotEmpty>
+					</isNotEmpty>
+				</isEqual>
+				<isEqual property="auth" compareValue="TC">
+					<isNotEmpty property="userId">
+						and team_id in (select team_id from ikep4_officeway_team_manager where team_leader_id = #userId#)
+						<isNotEmpty property="teamId">
+							and team_id = #teamId#
+						</isNotEmpty>
+					</isNotEmpty>
+				</isEqual>
+			</isNotEmpty>
+			<isNotEmpty property="status1">
+				and status1 = #status1#
+			</isNotEmpty>
+			<isNotEmpty property="teamId">
+				and team_id = #teamId#
+			</isNotEmpty>
+			<isNotNull property="searchEndDate">
+			<![CDATA[
+			AND convert(varchar(6), regist_date, 112) <= #searchEndDate#
+			]]>	
+			</isNotNull>
+			<isNotNull property="searchStartDate">
+			<![CDATA[
+			AND convert(varchar(6), regist_date, 112) >= #searchStartDate# 
+			]]>	
+			</isNotNull>
+		<![CDATA[	
+				) A
+				WHERE A.NUM <=  #endRowIndex# AND A.NUM >  #startRowIndex# /* 시작 */
+		]]>	
+	</select>
+	
+	<select id="selectRequestUserPrice" parameterClass="OfficeWaySearchCondition" resultClass="int">
+			SELECT
+			        isnull(sum(price2),0)
+					FROM 
+					    ikep4_officeway
+			        where 1=1
+					and status1 = 'S' and status2 = 'A'
+			<isNotEmpty property="searchWord">
+				<isEqual property="searchColumn" compareValue="productName">
+					AND	UPPER(product_name) LIKE '%' + UPPER(#searchWord#) + '%'
+				</isEqual>
+				<isEqual property="searchColumn" compareValue="productNo">
+					AND	product_no LIKE '%' + #searchWord# + '%'
+				</isEqual>
+			</isNotEmpty>
+			<isNotEmpty property="teamId">
+				and team_id = #teamId#
+			</isNotEmpty>
+			<isNotEmpty property="userId">
+				and register_id = #userId#
+			</isNotEmpty>
+			<isNotNull property="searchEndDate">
+			<![CDATA[
+			AND convert(varchar(6), regist_date, 112) <= #searchEndDate#
+			]]>	
+			</isNotNull>
+			<isNotNull property="searchStartDate">
+			<![CDATA[
+			AND convert(varchar(6), regist_date, 112) >= #searchStartDate# 
+			]]>	
+			</isNotNull>
+	</select>
+	
+	<select id="selectRequestTeamPrice" parameterClass="OfficeWaySearchCondition" resultClass="int">
+			SELECT
+			        isnull(sum(price2),0)
+					FROM 
+					    ikep4_officeway
+			        where 1=1
+					and status1 = 'S' and status2 = 'A'
+			<isNotEmpty property="searchWord">
+				<isEqual property="searchColumn" compareValue="productName">
+					AND	UPPER(product_name) LIKE '%' + UPPER(#searchWord#) + '%'
+				</isEqual>
+				<isEqual property="searchColumn" compareValue="productNo">
+					AND	product_no LIKE '%' + #searchWord# + '%'
+				</isEqual>
+			</isNotEmpty>
+			<isNotEmpty property="teamId">
+				and team_id = #teamId#
+			</isNotEmpty>
+			<isNotNull property="searchEndDate">
+			<![CDATA[
+			AND convert(varchar(6), regist_date, 112) <= #searchEndDate#
+			]]>	
+			</isNotNull>
+			<isNotNull property="searchStartDate">
+			<![CDATA[
+			AND convert(varchar(6), regist_date, 112) >= #searchStartDate# 
+			]]>	
+			</isNotNull>
+	</select>
+	
+	<select id="selectTeamRequestPrice2" parameterClass="OfficeWaySearchCondition" resultClass="int">
+		<![CDATA[
+			SELECT
+			        isnull(sum(A.price2),0)
+			    FROM 
+			    ( 
+					SELECT ROW_NUMBER() OVER(
+		 ]]>				
+			<isNotEmpty property="sortColumn">
+				<isEqual property="sortColumn" compareValue="productNo">
+					<isEqual property="sortType" compareValue="ASC">
+						ORDER BY product_no ASC
+					</isEqual>
+					<isEqual property="sortType" compareValue="DESC">
+						ORDER BY product_no DESC
+					</isEqual>
+				</isEqual>
+				<isEqual property="sortColumn" compareValue="productName">
+					<isEqual property="sortType" compareValue="ASC">
+						ORDER BY product_name ASC
+					</isEqual>
+					<isEqual property="sortType" compareValue="DESC">
+						ORDER BY product_name DESC
+					</isEqual>
+				</isEqual>
+			</isNotEmpty>
+			<isEmpty property="sortColumn">
+				ORDER BY convert(varchar(6), regist_date, 112) desc, team_id ASC, category1 asc
+			</isEmpty>
+				<![CDATA[
+						) AS NUM,
+					    officeway_id as officewayId,
+						product_name as productName,
+						product_no as productNo,
+						register_id as registerId,
+						register_name as registerName,
+						regist_date as registDate,
+						updater_id as updaterId,
+						updater_name as updaterName,
+						update_date as updateDate,
+						price2 as price2,
+						unit as unit,
+						status1 as status1,
+						status2 as status2,
+						price1 as price1,
+						amount1 as amount1,
+						category1 as category1,
+						(select category_name from ikep4_officeway_category where category_id = category1) as categoryName1,
+						category2 as category2,
+						(select category_name from ikep4_officeway_category where category_id = category2) as categoryName2,
+						remark as remark,
+						team_id as teamId,
+						(select group_name from IKEP4_EV_GROUP where group_id = team_id) as teamName
+					FROM 
+					    ikep4_officeway
+			        where 1=1
+					and status1 in ('S','C','A','R')
+			        ]]>	
+			<isNotEmpty property="searchWord">
+				<isEqual property="searchColumn" compareValue="productName">
+					AND	UPPER(product_name) LIKE '%' + UPPER(#searchWord#) + '%'
+				</isEqual>
+				<isEqual property="searchColumn" compareValue="productNo">
+					AND	product_no LIKE '%' + #searchWord# + '%'
+				</isEqual>
+			</isNotEmpty>
+			<isNotEmpty property="searchStatus">
+				<isEqual property="searchStatus" compareValue="MA">
+					and status1 = 'S' and status2 = 'A'
+				</isEqual>
+				<isEqual property="searchStatus" compareValue="MR">
+					and status1 = 'S' and status2 = 'R'
+				</isEqual>
+				<isEqual property="searchStatus" compareValue="MC">
+					and status1 = 'S' and status2 = 'C'
+				</isEqual>
+				<isEqual property="searchStatus" compareValue="TA">
+					and status1 = 'S' and isnull(status2,'') =''
+				</isEqual>
+				<isEqual property="searchStatus" compareValue="TR">
+					and status1 = 'R' and isnull(status2,'') =''
+				</isEqual>
+				<isEqual property="searchStatus" compareValue="TC">
+					and status1 = 'C' and isnull(status2,'') =''
+				</isEqual>
+				<isEqual property="searchStatus" compareValue="TS">
+					and status1 = 'S' and isnull(status2,'') =''
+				</isEqual>
+			</isNotEmpty>
+			<isNotEmpty property="auth">
+				<isEqual property="auth" compareValue="TR">
+					<isNotEmpty property="userId">
+						and team_id in (select team_id from ikep4_officeway_team_manager where team_manager_id = #userId#)
+						<isNotEmpty property="teamId">
+							and team_id = #teamId#
+						</isNotEmpty>
+					</isNotEmpty>
+				</isEqual>
+				<isEqual property="auth" compareValue="TC">
+					<isNotEmpty property="userId">
+						and team_id in (select team_id from ikep4_officeway_team_manager where team_leader_id = #userId#)
+						<isNotEmpty property="teamId">
+							and team_id = #teamId#
+						</isNotEmpty>
+					</isNotEmpty>
+				</isEqual>
+			</isNotEmpty>
+			<isNotEmpty property="status1">
+				and status1 = #status1#
+			</isNotEmpty>
+			<isNotEmpty property="teamId">
+				and team_id = #teamId#
+			</isNotEmpty>
+			<isNotNull property="searchEndDate">
+			<![CDATA[
+			AND convert(varchar(6), regist_date, 112) <= #searchEndDate#
+			]]>	
+			</isNotNull>
+			<isNotNull property="searchStartDate">
+			<![CDATA[
+			AND convert(varchar(6), regist_date, 112) >= #searchStartDate# 
+			]]>	
+			</isNotNull>
+		<![CDATA[	
+				) A
+		]]>	
+	</select>
+	
+	<select id="selectTeamsRequestAll" parameterClass="OfficeWaySearchCondition" resultMap="resultTeamsRequest">
+		with cte1 as(
+		SELECT 
+		                 team_id,
+		STUFF((SELECT ',' + CONVERT(VarChar(50) , product_name) 
+		            FROM ikep4_officeway AS B 
+		WHERE A.team_id = B.team_id 
+		<isNotNull property="searchEndDate">
+			<![CDATA[
+			AND convert(varchar(6), B.regist_date, 112) <= #searchEndDate#
+			]]>	
+			</isNotNull>
+			<isNotNull property="searchStartDate">
+			<![CDATA[
+			AND convert(varchar(6), B.regist_date, 112) >= #searchStartDate#
+			]]>	
+			</isNotNull>
+			<isNotEmpty property="searchStatus">
+				<isEqual property="searchStatus" compareValue="MA">
+					and B.status1 = 'S' and B.status2 = 'A'
+				</isEqual>
+				<isEqual property="searchStatus" compareValue="MR">
+					and B.status1 = 'S' and B.status2 = 'R'
+				</isEqual>
+				<isEqual property="searchStatus" compareValue="MC">
+					and B.status1 = 'S' and B.status2 = 'C'
+				</isEqual>
+				<isEqual property="searchStatus" compareValue="TA">
+					and B.status1 = 'S' and isnull(B.status2,'') =''
+				</isEqual>
+			</isNotEmpty>
+		and B.status1 = 'S' FOR XML PATH ('')),1,1,'') AS product_name,
+		count(product_no) as product_cnt,
+		isnull(sum(price2),0) as price2
+         FROM ikep4_officeway AS A
+		 where A.status1 = 'S'
+		 <isNotNull property="searchEndDate">
+		<![CDATA[
+		AND convert(varchar(6), A.regist_date, 112) <= #searchEndDate#
+		]]>	
+		</isNotNull>
+		<isNotNull property="searchStartDate">
+		<![CDATA[
+		AND convert(varchar(6), A.regist_date, 112) >= #searchStartDate# 
+		]]>	
+		</isNotNull>
+		<isNotEmpty property="searchStatus">
+				<isEqual property="searchStatus" compareValue="MA">
+					and A.status1 = 'S' and A.status2 = 'A'
+				</isEqual>
+				<isEqual property="searchStatus" compareValue="MR">
+					and A.status1 = 'S' and A.status2 = 'R'
+				</isEqual>
+				<isEqual property="searchStatus" compareValue="MC">
+					and A.status1 = 'S' and A.status2 = 'C'
+				</isEqual>
+				<isEqual property="searchStatus" compareValue="TA">
+					and A.status1 = 'S' and isnull(A.status2,'') =''
+				</isEqual>
+			</isNotEmpty>
+               GROUP BY team_id)    
+		
+		select m.team_id as teamId,m.team_name as teamName, cte1.product_name as productName,cte1.product_cnt as productCnt, isnull(cte1.price2,0) as price2 from ikep4_officeway_team_manager m
+		inner join cte1 
+		on m.team_id = cte1.team_id
+		and m.use_yn = 'Y'
+		group by m.team_id,m.team_name,cte1.product_name,cte1.product_cnt, cte1.price2
+		order by m.team_id
+			
+	</select>
+	
+	<select id="teamsRequestDetailList" parameterClass="OfficeWaySearchCondition" resultMap="resultTeamsRequestDetail">
+		select 
+		convert(varchar(6), o.regist_date, 112) as registDate,
+		g.group_name as teamId,
+		o.product_no as productNo,
+		o.product_name as productName,
+		o.register_name as registerName,
+		o.amount1 as amount1,
+		o.unit as unit,
+		o.price1 as price1,
+		o.price2 as price2,
+		o.category1 as category1,
+		(select c.category_name from ikep4_officeway_category c where c.category_id = o.category1) as categoryName1,
+		o.category2 as category2,
+		o.remark as remark,
+		(select c.category_name from ikep4_officeway_category c where c.category_id = o.category2) as categoryName2,
+		case when o.status1 = 'S' then '신청' when o.status1 = 'A' then '팀장 승인' when o.status1 = 'R' then '팀장 반려' when o.status1 = 'C' then '팀담당자 상신' when o.status1 = 'T' then '임시저장' end as status1,
+		case when o.status2 = 'A' then '담당부서팀장 확정' when o.status2 = 'C' then '담당부서 상신' when o.status2 = 'R' then '담당부서 반려' end as status2
+		from ikep4_officeway o
+		inner join ikep4_ev_group g on o.team_id = g.group_id
+		<isNotNull property="searchEndDate">
+			<![CDATA[
+			AND convert(varchar(6), o.regist_date, 112) <= #searchEndDate#
+			]]>	
+			</isNotNull>
+			<isNotNull property="searchStartDate">
+			<![CDATA[
+			AND convert(varchar(6), o.regist_date, 112) <= #searchStartDate#
+			]]>	
+			</isNotNull>
+			<isNotEmpty property="searchStatus">
+				<isEqual property="searchStatus" compareValue="MA">
+					and o.status1 = 'S' and o.status2 = 'A'
+				</isEqual>
+				<isEqual property="searchStatus" compareValue="MR">
+					and o.status1 = 'S' and o.status2 = 'R'
+				</isEqual>
+				<isEqual property="searchStatus" compareValue="MC">
+					and o.status1 = 'S' and o.status2 = 'C'
+				</isEqual>
+				<isEqual property="searchStatus" compareValue="TA">
+					and o.status1 = 'S' and isnull(o.status2,'') =''
+				</isEqual>
+			</isNotEmpty>
+			<![CDATA[
+			AND o.status1 = 'S'
+			]]>	
+		order by convert(varchar(6), o.regist_date, 112), g.group_name,o.product_no,o.product_name
+	</select>
+	
+	<select id="selectRequestMyPrice1" parameterClass="OfficeWaySearchCondition" resultClass="int">
+		<![CDATA[
+			SELECT
+			        isnull(sum(A.price2),0)
+			    FROM 
+			    ( 
+					SELECT ROW_NUMBER() OVER(
+		 ]]>				
+			<isNotEmpty property="sortColumn">
+				<isEqual property="sortColumn" compareValue="productNo">
+					<isEqual property="sortType" compareValue="ASC">
+						ORDER BY product_no ASC
+					</isEqual>
+					<isEqual property="sortType" compareValue="DESC">
+						ORDER BY product_no DESC
+					</isEqual>
+				</isEqual>
+				<isEqual property="sortColumn" compareValue="productName">
+					<isEqual property="sortType" compareValue="ASC">
+						ORDER BY product_name ASC
+					</isEqual>
+					<isEqual property="sortType" compareValue="DESC">
+						ORDER BY product_name DESC
+					</isEqual>
+				</isEqual>
+			</isNotEmpty>
+			<isEmpty property="sortColumn">
+				ORDER BY convert(varchar(6), regist_date, 112) desc, team_id ASC, category1 asc
+			</isEmpty>
+				<![CDATA[
+						) AS NUM,
+					    officeway_id as officewayId,
+						product_name as productName,
+						product_no as productNo,
+						register_id as registerId,
+						register_name as registerName,
+						regist_date as registDate,
+						updater_id as updaterId,
+						updater_name as updaterName,
+						update_date as updateDate,
+						price2 as price2,
+						unit as unit,
+						status1 as status1,
+						status2 as status2,
+						price1 as price1,
+						amount1 as amount1,
+						category1 as category1,
+						(select category_name from ikep4_officeway_category where category_id = category1) as categoryName1,
+						category2 as category2,
+						(select category_name from ikep4_officeway_category where category_id = category2) as categoryName2,
+						remark as remark,
+						team_id as teamId,
+						(select group_name from IKEP4_EV_GROUP where group_id = team_id) as teamName
+					FROM 
+					    ikep4_officeway
+			        where register_id = #userId#
+					and team_id = #teamId#
+			        ]]>	
+			<isNotEmpty property="searchWord">
+				<isEqual property="searchColumn" compareValue="productName">
+					AND	UPPER(product_name) LIKE '%' + UPPER(#searchWord#) + '%'
+				</isEqual>
+				<isEqual property="searchColumn" compareValue="productNo">
+					AND	product_no LIKE '%' + #searchWord# + '%'
+				</isEqual>
+			</isNotEmpty>
+			<isNotEmpty property="searchStatus">
+				<isEqual property="searchStatus" compareValue="MA">
+					and status1 = 'S' and status2 = 'A'
+				</isEqual>
+				<isEqual property="searchStatus" compareValue="MR">
+					and status1 = 'S' and status2 = 'R'
+				</isEqual>
+				<isEqual property="searchStatus" compareValue="MC">
+					and status1 = 'S' and status2 = 'C'
+				</isEqual>
+				<isEqual property="searchStatus" compareValue="TA">
+					and status1 = 'S' and isnull(status2,'') =''
+				</isEqual>
+				<isEqual property="searchStatus" compareValue="TR">
+					and status1 = 'R' and isnull(status2,'') =''
+				</isEqual>
+				<isEqual property="searchStatus" compareValue="TC">
+					and status1 = 'C' and isnull(status2,'') =''
+				</isEqual>
+				<isEqual property="searchStatus" compareValue="TS">
+					and status1 = 'S' and isnull(status2,'') =''
+				</isEqual>
+				<isEqual property="searchStatus" compareValue="TT">
+					and status1 = 'T' and isnull(status2,'') =''
+				</isEqual>
+			</isNotEmpty>
+			<isNotEmpty property="status1">
+				and status1 = #status1#
+			</isNotEmpty>
+			<isNotNull property="searchEndDate">
+			<![CDATA[
+			AND convert(varchar(6), regist_date, 112) <= #searchEndDate#
+			]]>	
+			</isNotNull>
+			<isNotNull property="searchStartDate">
+			<![CDATA[
+			AND convert(varchar(6), regist_date, 112) >= #searchStartDate# 
+			]]>	
+			</isNotNull>
+		<![CDATA[	
+				) A
+				WHERE A.NUM <=  #endRowIndex# AND A.NUM >  #startRowIndex# /* 시작 */
+		]]>	
+	</select>
+	
+	<select id="selectRequestMyPrice2" parameterClass="OfficeWaySearchCondition" resultClass="int">
+			SELECT
+			        isnull(sum(price2),0)
+			    FROM 
+					    ikep4_officeway
+			        where register_id = #userId#
+					and team_id = #teamId#
+			<isNotEmpty property="searchWord">
+				<isEqual property="searchColumn" compareValue="productName">
+					AND	UPPER(product_name) LIKE '%' + UPPER(#searchWord#) + '%'
+				</isEqual>
+				<isEqual property="searchColumn" compareValue="productNo">
+					AND	product_no LIKE '%' + #searchWord# + '%'
+				</isEqual>
+			</isNotEmpty>
+			<isNotEmpty property="searchStatus">
+				<isEqual property="searchStatus" compareValue="MA">
+					and status1 = 'S' and status2 = 'A'
+				</isEqual>
+				<isEqual property="searchStatus" compareValue="MR">
+					and status1 = 'S' and status2 = 'R'
+				</isEqual>
+				<isEqual property="searchStatus" compareValue="MC">
+					and status1 = 'S' and status2 = 'C'
+				</isEqual>
+				<isEqual property="searchStatus" compareValue="TA">
+					and status1 = 'S' and isnull(status2,'') =''
+				</isEqual>
+				<isEqual property="searchStatus" compareValue="TR">
+					and status1 = 'R' and isnull(status2,'') =''
+				</isEqual>
+				<isEqual property="searchStatus" compareValue="TC">
+					and status1 = 'C' and isnull(status2,'') =''
+				</isEqual>
+				<isEqual property="searchStatus" compareValue="TS">
+					and status1 = 'S' and isnull(status2,'') =''
+				</isEqual>
+				<isEqual property="searchStatus" compareValue="TT">
+					and status1 = 'T' and isnull(status2,'') =''
+				</isEqual>
+			</isNotEmpty>
+			<isNotEmpty property="status1">
+				and status1 = #status1#
+			</isNotEmpty>
+			<isNotNull property="searchEndDate">
+			<![CDATA[
+			AND convert(varchar(6), regist_date, 112) <= #searchEndDate#
+			]]>	
+			</isNotNull>
+			<isNotNull property="searchStartDate">
+			<![CDATA[
+			AND convert(varchar(6), regist_date, 112) >= #searchStartDate# 
+			]]>	
+			</isNotNull>
+	</select>
+	
+	<select id="selectMyRequestAll" parameterClass="OfficeWaySearchCondition" resultMap="resultMyRequest">
+		<![CDATA[
+			SELECT
+			        A.* 
+			    FROM 
+			    ( 
+					SELECT ROW_NUMBER() OVER(
+		 ]]>				
+			<isNotEmpty property="sortColumn">
+				<isEqual property="sortColumn" compareValue="productNo">
+					<isEqual property="sortType" compareValue="ASC">
+						ORDER BY product_no ASC
+					</isEqual>
+					<isEqual property="sortType" compareValue="DESC">
+						ORDER BY product_no DESC
+					</isEqual>
+				</isEqual>
+				<isEqual property="sortColumn" compareValue="productName">
+					<isEqual property="sortType" compareValue="ASC">
+						ORDER BY product_name ASC
+					</isEqual>
+					<isEqual property="sortType" compareValue="DESC">
+						ORDER BY product_name DESC
+					</isEqual>
+				</isEqual>
+			</isNotEmpty>
+			<isEmpty property="sortColumn">
+				ORDER BY convert(varchar(6), regist_date, 112) desc, team_id ASC, category1 asc
+			</isEmpty>
+				<![CDATA[
+						) AS NUM,
+					    officeway_id as officewayId,
+						product_name as productName,
+						product_no as productNo,
+						register_id as registerId,
+						register_name as registerName,
+						regist_date as registDate,
+						updater_id as updaterId,
+						updater_name as updaterName,
+						update_date as updateDate,
+						price2 as price2,
+						unit as unit,
+						status1 as status1,
+						status2 as status2,
+						price1 as price1,
+						amount1 as amount1,
+						category1 as category1,
+						(select category_name from ikep4_officeway_category where category_id = category1) as categoryName1,
+						category2 as category2,
+						(select category_name from ikep4_officeway_category where category_id = category2) as categoryName2,
+						remark as remark,
+						team_id as teamId,
+						(select group_name from IKEP4_EV_GROUP where group_id = team_id) as teamName
+					FROM 
+					    ikep4_officeway
+			        where register_id = #userId#
+					and team_id = #teamId#
+			        ]]>	
+			<isNotEmpty property="searchWord">
+				<isEqual property="searchColumn" compareValue="productName">
+					AND	UPPER(product_name) LIKE '%' + UPPER(#searchWord#) + '%'
+				</isEqual>
+				<isEqual property="searchColumn" compareValue="productNo">
+					AND	product_no LIKE '%' + #searchWord# + '%'
+				</isEqual>
+			</isNotEmpty>
+			<isNotEmpty property="searchStatus">
+				<isEqual property="searchStatus" compareValue="MA">
+					and status1 = 'S' and status2 = 'A'
+				</isEqual>
+				<isEqual property="searchStatus" compareValue="MR">
+					and status1 = 'S' and status2 = 'R'
+				</isEqual>
+				<isEqual property="searchStatus" compareValue="MC">
+					and status1 = 'S' and status2 = 'C'
+				</isEqual>
+				<isEqual property="searchStatus" compareValue="TA">
+					and status1 = 'S' and isnull(status2,'') =''
+				</isEqual>
+				<isEqual property="searchStatus" compareValue="TR">
+					and status1 = 'R' and isnull(status2,'') =''
+				</isEqual>
+				<isEqual property="searchStatus" compareValue="TC">
+					and status1 = 'C' and isnull(status2,'') =''
+				</isEqual>
+				<isEqual property="searchStatus" compareValue="TS">
+					and status1 = 'S' and isnull(status2,'') =''
+				</isEqual>
+				<isEqual property="searchStatus" compareValue="TT">
+					and status1 = 'T' and isnull(status2,'') =''
+				</isEqual>
+			</isNotEmpty>
+			<isNotEmpty property="status1">
+				and status1 = #status1#
+			</isNotEmpty>
+			<isNotNull property="searchEndDate">
+			<![CDATA[
+			AND convert(varchar(6), regist_date, 112) <= #searchEndDate#
+			]]>	
+			</isNotNull>
+			<isNotNull property="searchStartDate">
+			<![CDATA[
+			AND convert(varchar(6), regist_date, 112) >= #searchStartDate# 
+			]]>	
+			</isNotNull>
+		<![CDATA[	
+				) A
+				WHERE A.NUM <=  #endRowIndex# AND A.NUM >  #startRowIndex# /* 시작 */
+		]]>	
+	</select>
+	
+	<select id="selectTeamRequestAll" parameterClass="OfficeWaySearchCondition" resultMap="resultMyRequest">
+		<![CDATA[
+			SELECT
+			        A.* 
+			    FROM 
+			    ( 
+					SELECT ROW_NUMBER() OVER(
+		 ]]>				
+			<isNotEmpty property="sortColumn">
+				<isEqual property="sortColumn" compareValue="productNo">
+					<isEqual property="sortType" compareValue="ASC">
+						ORDER BY product_no ASC
+					</isEqual>
+					<isEqual property="sortType" compareValue="DESC">
+						ORDER BY product_no DESC
+					</isEqual>
+				</isEqual>
+				<isEqual property="sortColumn" compareValue="productName">
+					<isEqual property="sortType" compareValue="ASC">
+						ORDER BY product_name ASC
+					</isEqual>
+					<isEqual property="sortType" compareValue="DESC">
+						ORDER BY product_name DESC
+					</isEqual>
+				</isEqual>
+			</isNotEmpty>
+			<isEmpty property="sortColumn">
+				ORDER BY convert(varchar(6), regist_date, 112) desc, team_id ASC, category1 asc
+			</isEmpty>
+				<![CDATA[
+						) AS NUM,
+					    officeway_id as officewayId,
+						product_name as productName,
+						product_no as productNo,
+						register_id as registerId,
+						register_name as registerName,
+						regist_date as registDate,
+						updater_id as updaterId,
+						updater_name as updaterName,
+						update_date as updateDate,
+						price2 as price2,
+						unit as unit,
+						status1 as status1,
+						status2 as status2,
+						price1 as price1,
+						amount1 as amount1,
+						category1 as category1,
+						(select category_name from ikep4_officeway_category where category_id = category1) as categoryName1,
+						category2 as category2,
+						(select category_name from ikep4_officeway_category where category_id = category2) as categoryName2,
+						remark as remark,
+						team_id as teamId,
+						(select group_name from IKEP4_EV_GROUP where group_id = team_id) as teamName
+					FROM 
+					    ikep4_officeway
+			        where 1=1
+					and status1 in ('S','C','A','R')
+			        ]]>	
+			<isNotEmpty property="searchWord">
+				<isEqual property="searchColumn" compareValue="productName">
+					AND	UPPER(product_name) LIKE '%' + UPPER(#searchWord#) + '%'
+				</isEqual>
+				<isEqual property="searchColumn" compareValue="productNo">
+					AND	product_no LIKE '%' + #searchWord# + '%'
+				</isEqual>
+			</isNotEmpty>
+			<isNotEmpty property="searchStatus">
+				<isEqual property="searchStatus" compareValue="MA">
+					and status1 = 'S' and status2 = 'A'
+				</isEqual>
+				<isEqual property="searchStatus" compareValue="MR">
+					and status1 = 'S' and status2 = 'R'
+				</isEqual>
+				<isEqual property="searchStatus" compareValue="MC">
+					and status1 = 'S' and status2 = 'C'
+				</isEqual>
+				<isEqual property="searchStatus" compareValue="TA">
+					and status1 = 'S' and isnull(status2,'') =''
+				</isEqual>
+				<isEqual property="searchStatus" compareValue="TR">
+					and status1 = 'R' and isnull(status2,'') =''
+				</isEqual>
+				<isEqual property="searchStatus" compareValue="TC">
+					and status1 = 'C' and isnull(status2,'') =''
+				</isEqual>
+				<isEqual property="searchStatus" compareValue="TS">
+					and status1 = 'S' and isnull(status2,'') =''
+				</isEqual>
+			</isNotEmpty>
+			<isNotEmpty property="auth">
+				<isEqual property="auth" compareValue="TR">
+					<isNotEmpty property="userId">
+						and team_id in (select team_id from ikep4_officeway_team_manager where team_manager_id = #userId#)
+						<isNotEmpty property="teamId">
+							and team_id = #teamId#
+						</isNotEmpty>
+					</isNotEmpty>
+				</isEqual>
+				<isEqual property="auth" compareValue="TC">
+					<isNotEmpty property="userId">
+						and team_id in (select team_id from ikep4_officeway_team_manager where team_leader_id = #userId#)
+						<isNotEmpty property="teamId">
+							and team_id = #teamId#
+						</isNotEmpty>
+					</isNotEmpty>
+				</isEqual>
+			</isNotEmpty>
+			<isNotEmpty property="status1">
+				and status1 = #status1#
+			</isNotEmpty>
+			<isNotEmpty property="teamId">
+				and team_id = #teamId#
+			</isNotEmpty>
+			<isNotNull property="searchEndDate">
+			<![CDATA[
+			AND convert(varchar(6), regist_date, 112) <= #searchEndDate#
+			]]>	
+			</isNotNull>
+			<isNotNull property="searchStartDate">
+			<![CDATA[
+			AND convert(varchar(6), regist_date, 112) >= #searchStartDate# 
+			]]>	
+			</isNotNull>
+		<![CDATA[	
+				) A
+				WHERE A.NUM <=  #endRowIndex# AND A.NUM >  #startRowIndex# /* 시작 */
+		]]>	
+	</select>
+	
+	<select id="teamRequestDetailList" parameterClass="OfficeWaySearchCondition" resultMap="resultTeamsRequestDetail">
+		select 
+		convert(varchar(6), o.regist_date, 112) as registDate,
+		g.group_name as teamId,
+		o.product_no as productNo,
+		o.product_name as productName,
+		o.register_name as registerName,
+		o.amount1 as amount1,
+		o.unit as unit,
+		o.price1 as price1,
+		o.price2 as price2,
+		o.category1 as category1,
+		(select c.category_name from ikep4_officeway_category c where c.category_id = o.category1) as categoryName1,
+		o.category2 as category2,
+		o.remark as remark,
+		(select c.category_name from ikep4_officeway_category c where c.category_id = o.category2) as categoryName2,
+		case when o.status1 = 'S' then '신청' when o.status1 = 'A' then '팀장 승인' when o.status1 = 'R' then '팀장 반려' when o.status1 = 'C' then '팀담당자 상신' when o.status1 = 'T' then '임시저장' end as status1,
+		case when o.status2 = 'A' then '담당부서팀장 확정' when o.status2 = 'C' then '담당부서 상신' when o.status2 = 'R' then '담당부서 반려' end as status2
+		from ikep4_officeway o
+		inner join ikep4_ev_group g on o.team_id = g.group_id
+		<isNotEmpty property="teamId">
+				and o.team_id = #teamId#
+			</isNotEmpty>
+		and o.status1 in ('S','C','A','R')
+		<isNotEmpty property="searchWord">
+				<isEqual property="searchColumn" compareValue="productName">
+					AND	UPPER(o.product_name) LIKE '%' + UPPER(#searchWord#) + '%'
+				</isEqual>
+				<isEqual property="searchColumn" compareValue="productNo">
+					AND	o.product_no LIKE '%' + #searchWord# + '%'
+				</isEqual>
+			</isNotEmpty>
+			<isNotEmpty property="searchStatus">
+				<isEqual property="searchStatus" compareValue="MA">
+					and o.status1 = 'S' and o.status2 = 'A'
+				</isEqual>
+				<isEqual property="searchStatus" compareValue="MR">
+					and o.status1 = 'S' and o.status2 = 'R'
+				</isEqual>
+				<isEqual property="searchStatus" compareValue="MC">
+					and vstatus1 = 'S' and o.status2 = 'C'
+				</isEqual>
+				<isEqual property="searchStatus" compareValue="TA">
+					and o.status1 = 'S' and isnull(o.status2,'') =''
+				</isEqual>
+				<isEqual property="searchStatus" compareValue="TR">
+					and o.status1 = 'R' and isnull(o.status2,'') =''
+				</isEqual>
+				<isEqual property="searchStatus" compareValue="TC">
+					and o.status1 = 'C' and isnull(o.status2,'') =''
+				</isEqual>
+				<isEqual property="searchStatus" compareValue="TS">
+					and o.status1 = 'S' and isnull(o.status2,'') =''
+				</isEqual>
+			</isNotEmpty>
+			<isNotEmpty property="status1">
+				and o.status1 = #status1#
+			</isNotEmpty>
+			<isNotNull property="searchEndDate">
+			<![CDATA[
+			AND convert(varchar(6), o.regist_date, 112) <= #searchEndDate#
+			]]>	
+			</isNotNull>
+			<isNotNull property="searchStartDate">
+			<![CDATA[
+			AND convert(varchar(6), o.regist_date, 112) >= #searchStartDate# 
+			]]>	
+			</isNotNull>
+		order by convert(varchar(6), o.regist_date, 112), g.group_name,o.product_no,o.product_name
+	</select>
+	
+	<select id="getStatisticsList1" parameterClass="OfficeWay" resultMap="resultStatistics1">
+		with cte1 as(
+		select m.team_id as team_id,m.team_name as team_name, #year#+c.CAL_MNT as cal_mnt
+		from ikep4_officeway_team_manager m 
+		left outer join ikep4_officeway_cal c on 1=1
+		and m.use_yn = 'Y'
+		<isNotEmpty property="teamId">
+			and m.team_id = #teamId#
+		</isNotEmpty>
+		 ),
+		 cte2 as(
+		 	select cte1.CAL_MNT as cal_mnt,cte1.team_id as team_id,cte1.team_name as team_name from cte1
+			where isnull(cte1.CAL_MNT,'') != ''
+		 )
+		
+		select cte2.CAL_MNT as cal_mnt,cte2.team_id as team_id,cte2.team_name as team_name,isnull(sum(a.price2),0) as price2 from cte2 
+		left outer join ikep4_officeway a
+		on cte2.cal_mnt = convert(varchar(6), a.regist_date, 112)
+		and cte2.team_id = a.team_id
+		and A.status1 = 'S' 
+		and A.status2 = 'A' 
+		group by cte2.CAL_MNT, cte2.team_id,cte2.team_name
+		order by cte2.team_name, cte2.CAL_MNT
+	</select>
+	
+	<select id="getStatisticsList2" parameterClass="OfficeWay" resultMap="resultStatistics2">
+		with cte1 as( 
+		SELECT 
+		team_id, isnull(sum(price2),0) as price2 
+		FROM ikep4_officeway AS A 
+		where A.status1 = 'S' 
+		AND convert(varchar(4), A.regist_date, 112) = #year#
+		and A.status2 = 'A' 
+		GROUP BY team_id),
+		cte2 as(
+			select m.team_id as team_id,m.team_name as team_name 
+			from ikep4_officeway_team_manager m 
+			where m.use_yn = 'Y'
+			<isNotEmpty property="teamId">
+				and m.team_id = #teamId#
+			</isNotEmpty>
+		)
+		select cte2.team_id as team_id,cte2.team_name as team_name, isnull(cte1.price2,0) as price2 
+		from cte2
+		left outer join cte1 
+		on cte2.team_id = cte1.team_id 
+		group by cte2.team_id,cte2.team_name, cte1.price2 
+		order by cte2.team_name
+	</select>
+	
+	<select id="getStatisticsList3" parameterClass="OfficeWay" resultMap="resultStatistics3">
+		select c.CAL_MNT as cal_mnt,isnull(sum(a.price2),0) as price2 from ikep4_officeway_cal c
+		left outer join ikep4_officeway a
+		on #year#+c.cal_mnt = convert(varchar(6), a.regist_date, 112)
+		and A.status1 = 'S' 
+		and A.status2 = 'A' 
+		<isNotEmpty property="teamId">
+			and a.team_id = #teamId#
+		</isNotEmpty>
+		group by c.CAL_MNT
+		order by c.CAL_MNT
+	</select>
+	
+	<select id="getTotalPrice" parameterClass="OfficeWay" resultClass="int">
+		select isnull(sum(a.price2),0) as price2 
+		from ikep4_officeway a
+		where convert(varchar(4), a.regist_date, 112) = #year#
+		and a.status1 = 'S' 
+		and a.status2 = 'A' 
+		<isNotEmpty property="teamId">
+			and a.team_id = #teamId#
+		</isNotEmpty>
+	</select>
+	
+	<select id="selectRequestCount" parameterClass="OfficeWaySearchCondition" resultClass="int">
+		select count(*) from ikep4_officeway
+		where approve_user_id = #userId#
+		and is_delete = '0'
+		<isNotNull property="endDate">
+		<![CDATA[
+		AND start_date < DATEADD(DD, 1, #endDate#)
+		]]>	
+		</isNotNull>
+		<isNotNull property="startDate">
+		<![CDATA[
+		AND end_date >= #startDate# 
+		]]>	
+		</isNotNull>
+	</select>
+	
+	<select id="selectRequestAllCount" parameterClass="OfficeWaySearchCondition" resultClass="int">
+		select count(*) from ikep4_officeway
+		where is_delete = '0'
+		<isNotNull property="endDate">
+		<![CDATA[
+		AND start_date < DATEADD(DD, 1, #endDate#)
+		]]>	
+		</isNotNull>
+		<isNotNull property="startDate">
+		<![CDATA[
+		AND end_date >= #startDate# 
+		]]>	
+		</isNotNull>
+	</select>
+	
+	<select id="selectExceptOfficewayCount" parameterClass="OfficeWaySearchCondition" resultClass="int">
+		select count(*) from ikep4_officeway_except
+		where 1=1
+		<isNotEmpty property="searchWord">
+			<isEqual property="searchColumn" compareValue="productName">
+				AND	UPPER(product_name) LIKE '%' + UPPER(#searchWord#) + '%'
+			</isEqual>
+			<isEqual property="searchColumn" compareValue="productNo">
+				AND	product_no LIKE '%' + #searchWord# + '%'
+			</isEqual>
+		</isNotEmpty>
+	</select>
+	
+	<select id="selectRequest" parameterClass="OfficeWaySearchCondition" resultMap="resultMyRequest">
+		select 
+			officeway_id as officewayId,
+			product_name as productName,
+			product_no as productNo,
+			register_id as registerId,
+			register_name as registerName,
+			regist_date as registDate,
+			updater_id as updaterId,
+			updater_name as updaterName,
+			update_date as updateDate,
+			price2 as price2,
+			unit as unit,
+			status1 as status1,
+			status2 as status2,
+			price1 as price1,
+			amount1 as amount1,
+			category1 as category1,
+			(select category_name from ikep4_officeway_category where category_id = category1) as categoryName1,
+			category2 as category2,
+			(select category_name from ikep4_officeway_category where category_id = category2) as categoryName2,
+			remark as remark,
+			team_id as teamId,
+			(select group_name from IKEP4_EV_GROUP where group_id = team_id) as teamName
+		from ikep4_officeway
+		where approve_user_id = #userId#
+		and team_id = #teamId#
+	</select>
+	
+	<select id="selectRequestAll" parameterClass="OfficeWaySearchCondition" resultMap="resultMyRequest">
+		select 
+			officeway_id as officewayId,
+			product_name as productName,
+			product_no as productNo,
+			register_id as registerId,
+			register_name as registerName,
+			regist_date as registDate,
+			updater_id as updaterId,
+			updater_name as updaterName,
+			update_date as updateDate,
+			price2 as price2,
+			unit as unit,
+			status1 as status1,
+			status2 as status2,
+			price1 as price1,
+			amount1 as amount1,
+			team_id as teamId,
+			(select group_name from IKEP4_EV_GROUP where group_id = team_id) as teamName
+		from ikep4_officeway
+		where team_id = #teamId#
+	</select>
+	
+	<select id="selectExceptOfficewayList" parameterClass="OfficeWaySearchCondition" resultMap="resultExceptOfficeway">
+			<![CDATA[
+			SELECT
+			        A.* 
+			    FROM 
+			    ( 
+					SELECT ROW_NUMBER() OVER(
+		 ]]>				
+			<isNotEmpty property="sortColumn">
+				<isEqual property="sortColumn" compareValue="productNo">
+					<isEqual property="sortType" compareValue="ASC">
+						ORDER BY product_no ASC
+					</isEqual>
+					<isEqual property="sortType" compareValue="DESC">
+						ORDER BY product_no DESC
+					</isEqual>
+				</isEqual>
+				<isEqual property="sortColumn" compareValue="productName">
+					<isEqual property="sortType" compareValue="ASC">
+						ORDER BY product_name ASC
+					</isEqual>
+					<isEqual property="sortType" compareValue="DESC">
+						ORDER BY product_name DESC
+					</isEqual>
+				</isEqual>
+			</isNotEmpty>
+			<isEmpty property="sortColumn">
+				ORDER BY convert(varchar(6), regist_date, 112) desc
+			</isEmpty>
+				<![CDATA[
+						) AS NUM,
+					    product_no as productNo,
+					    product_name as productName
+					FROM 
+					    ikep4_officeway_except
+			        WHERE 1 = 1
+			        ]]>	
+			<isNotEmpty property="searchWord">
+				<isEqual property="searchColumn" compareValue="productName">
+					AND	UPPER(product_name) LIKE '%' + UPPER(#searchWord#) + '%'
+				</isEqual>
+				<isEqual property="searchColumn" compareValue="productNo">
+					AND	product_no LIKE '%' + #searchWord# + '%'
+				</isEqual>
+			</isNotEmpty>
+	
+		<![CDATA[	
+				) A
+				WHERE A.NUM <=  #endRowIndex# AND A.NUM >  #startRowIndex# /* 시작 */
+		]]>	
+	</select>
+	
+	<select id="exceptOfficewayAllList" resultMap="resultExceptOfficeway">
+			select 
+			    product_no as productNo,
+			    product_name as productName
+			FROM 
+			    ikep4_officeway_except
+	</select>
+	
+	<select id="getUseRequestView" parameterClass="String" resultClass="OfficeWay">
+		<![CDATA[
+		SELECT 
+    		officeway_id as officewayId,
+			product_name as productName,
+			product_no as productNo,
+			register_id as registerId,
+			register_name as registerName,
+			regist_date as registDate,
+			updater_id as updaterId,
+			updater_name as updaterName,
+			update_date as updateDate,
+			price2 as price2,
+			unit as unit,
+			status1 as status1,
+			status2 as status2,
+			price1 as price1,
+			amount1 as amount1,
+			category1 as category1,
+			(select category_name from ikep4_officeway_category where category_id = category1) as categoryName1,
+			category2 as category2,
+			(select category_name from ikep4_officeway_category where category_id = category2) as categoryName2,
+			remark as remark,
+			team_id as teamId,
+			(select group_name from ikep4_ev_group g where g.group_id = team_id) as teamName
+        from ikep4_officeway
+		where officeway_id = #officewayId#
+		]]>
+	</select>
+	
+	<update id="officewayApproveUse" parameterClass="OfficeWay">
+   		<![CDATA[
+   		UPDATE				ikep4_officeway
+   		SET					APPROVE_STATUS = #approveStatus#,
+   							approve_user_id = #approveUserId#,
+   							approve_date = GETDATE(),
+   							reject_reason = #rejectReason#
+   		WHERE				USB_ID = #officewayId#
+   		]]>
+   	</update>
+   	
+   	<update id="updateOfficewayExcept" parameterClass="OfficeWay">
+   		<![CDATA[
+   		UPDATE				ikep4_officeway_except
+   		SET					
+   							product_name = #productName#,
+   							product_no = #productNo#,
+   							update_date = GETDATE(),
+   							updater_id = #updaterId#,
+							updater_name = #updaterName#
+   		WHERE				product_no = #productNo#
+   		]]>
+   	</update>
+   	
+   	<insert id="createOfficewayExcept" parameterClass="OfficeWay"> 
+   		INSERT INTO			ikep4_officeway_except
+							(
+							product_name,
+							product_no,
+							register_id,
+							register_name,
+							regist_date,
+							updater_id,
+							updater_name,
+							update_date
+							) 
+		VALUES 				( 
+							#productName#,
+							#productNo#,
+							#registerId#,
+							#registerName#,
+							GETDATE(),
+							#updaterId#,
+							#updaterName#,
+							GETDATE()
+							)
+   	</insert>
+   	
+   	<update id="officewayUseRequestUpdate" parameterClass="OfficeWay">
+   		<![CDATA[
+   		UPDATE				ikep4_officeway
+   		SET					
+   							product_name = #productName#,
+   							product_no = #productNo#,
+   							category1 = #category1#,
+   							category2 = #category2#,
+   							remark = #remark#,
+   							amount1 = #amount1#,
+   							unit = #unit#,
+   							price1 = #price1#,
+   							price2 = #price2#,
+   							status1 = #status1#,
+   							regist_date = GETDATE(),
+   							update_date = GETDATE(),
+   							updater_id = #updaterId#,
+							updater_name = #updaterName#
+   		WHERE				officeway_id = #officewayId#
+   		]]>
+   	</update>
+   	
+   	<update id="officewayUseRequestAdminUpdate" parameterClass="OfficeWay">
+   		<![CDATA[
+   		UPDATE				ikep4_officeway
+   		SET					
+   							product_name = #productName#,
+   							product_no = #productNo#,
+   							category1 = #category1#,
+   							category2 = #category2#,
+   							remark = #remark#,
+   							amount1 = #amount1#,
+   							unit = #unit#,
+   							price1 = #price1#,
+   							price2 = #price2#,
+   							update_date = GETDATE(),
+   							updater_id = #updaterId#,
+							updater_name = #updaterName#
+   		WHERE				officeway_id = #officewayId#
+   		]]>
+   	</update>
+   	
+   	<update id="officewayTeamAuthSave" parameterClass="OfficeWay">
+   		<![CDATA[
+   		UPDATE				ikep4_officeway_team_manager
+   		SET					
+   							team_leader_id = #teamLeaderId#,
+   							team_manager_id = #teamManagerId#,
+   							use_yn = #status#
+   		WHERE				team_id = #teamId#
+   		]]>
+   	</update>
+   	
+   	<update id="officewayCheckBoxUseRequest" parameterClass="OfficeWay">
+   		UPDATE				ikep4_officeway
+   		SET					
+   							status1 = #status1#
+   							,regist_date = GETDATE()
+							<isNotEmpty property="status1">
+								<isEqual property="status1" compareValue="C">
+									,team_reviewer_id = #teamReviewerId#
+									,team_reviewer_name = #teamReviewerName#
+									,team_review_date = GETDATE()
+								</isEqual>
+								<isEqual property="status1" compareValue="A">
+									,team_appr_id = #teamApprId#
+									,team_appr_name = #teamApprName#
+									,team_appr_date = GETDATE()
+								</isEqual>
+								<isEqual property="status1" compareValue="R">
+									,team_appr_id = #teamApprId#
+									,team_appr_name = #teamApprName#
+									,team_appr_date = GETDATE()
+								</isEqual>
+							</isNotEmpty>
+   		WHERE				officeway_id = #officewayId#
+   		<isNotEmpty property="status1">
+			<isEqual property="status1" compareValue="C">
+				and 				status1 = 'S'
+			</isEqual>
+			<isEqual property="status1" compareValue="A">
+				and 				status1 = 'C'
+			</isEqual>
+			<isEqual property="status1" compareValue="R">
+				and 				status1 = 'C'
+			</isEqual>
+		</isNotEmpty>
+   		
+   	</update>
+   	
+   	<update id="officewayManageCheckBoxUseRequest" parameterClass="OfficeWay">
+   		UPDATE				ikep4_officeway
+   		SET					
+   							status2 = #status2#
+   							,regist_date = GETDATE()
+							<isNotEmpty property="status2">
+								<isEqual property="status2" compareValue="C">
+									,manage_reviewer_id = #manageReviewerId#
+									,manage_reviewer_name = #manageReviewerName#
+									,manage_review_date = GETDATE()
+								</isEqual>
+								<isEqual property="status2" compareValue="A">
+									,manage_appr_id = #manageApprId#
+									,manage_appr_name = #manageApprName#
+									,manage_appr_date = GETDATE()
+								</isEqual>
+								<isEqual property="status2" compareValue="R">
+									,manage_appr_id = #manageApprId#
+									,manage_appr_name = #manageApprName#
+									,manage_appr_date = GETDATE()
+								</isEqual>
+							</isNotEmpty>
+   		WHERE				officeway_id = #officewayId#
+   	</update>
+   	
+   	<update id="officewayCheckBoxGroupRequest" parameterClass="OfficeWay">
+   		UPDATE				ikep4_officeway
+   		SET					
+   							status2 = #status2#,
+   							regist_date = GETDATE()
+							<isNotEmpty property="status2">
+								<isEqual property="status2" compareValue="C">
+									,manage_reviewer_id = #manageReviewerId#
+									,manage_reviewer_name = #manageReviewerName#
+									,manage_review_date = GETDATE()
+								</isEqual>
+								<isEqual property="status2" compareValue="A">
+									,manage_appr_id = #manageApprId#
+									,manage_appr_name = #manageApprName#
+									,manage_appr_date = GETDATE()
+								</isEqual>
+								<isEqual property="status2" compareValue="R">
+									,manage_appr_id = #manageApprId#
+									,manage_appr_name = #manageApprName#
+									,manage_appr_date = GETDATE()
+								</isEqual>
+							</isNotEmpty>
+   		WHERE				team_id = #teamId#
+   		<isNotEmpty property="status2">
+			<isEqual property="status2" compareValue="C">
+				and 				status1 = 'S'
+   				and 				isnull(status2,'') =''
+			</isEqual>
+			<isEqual property="status2" compareValue="A">
+				and 				status1 = 'S'
+   				and					status2 = 'C'
+			</isEqual>
+			<isEqual property="status2" compareValue="R">
+				and 				status1 = 'S'
+   				and					status2 = 'C'
+			</isEqual>
+		</isNotEmpty>
+		<![CDATA[
+   		and convert(varchar(6), regist_date, 112) = convert(varchar(6), GETDATE(), 112)
+   		]]>
+   	</update>
+   	
+   	<select id="listByItemIdArray" parameterClass="Map" resultMap="resultTeamRequest"> 
+   		SELECT 
+    		officeway_id as officewayId,
+			product_name as productName,
+			product_no as productNo,
+			register_id as registerId,
+			register_name as registerName,
+			regist_date as registDate,
+			updater_id as updaterId,
+			updater_name as updaterName,
+			update_date as updateDate,
+			price2 as price2,
+			unit as unit,
+			status1 as status1,
+			status2 as status2,
+			price1 as price1,
+			amount1 as amount1,
+			category1 as category1,
+			(select category_name from ikep4_officeway_category where category_id = category1) as categoryName1,
+			category2 as category2,
+			(select category_name from ikep4_officeway_category where category_id = category2) as categoryName2,
+			remark as remark,
+			team_id as teamId,
+			(select group_name from ikep4_ev_group g where g.group_id = team_id) as teamName
+        from ikep4_officeway
+   	 	WHERE officeway_id 
+    	<iterate prepend="IN" property="officewayIds" open="(" close=")" conjunction=",">
+			#officewayIds[]#
+		</iterate>	
+  	</select>
+  	
+  	<select id="listByTeamItemIdArray" parameterClass="Map" resultMap="resultTeamRequest"> 
+   		SELECT 
+    		officeway_id as officewayId,
+			product_name as productName,
+			product_no as productNo,
+			register_id as registerId,
+			register_name as registerName,
+			regist_date as registDate,
+			updater_id as updaterId,
+			updater_name as updaterName,
+			update_date as updateDate,
+			price2 as price2,
+			unit as unit,
+			status1 as status1,
+			status2 as status2,
+			price1 as price1,
+			amount1 as amount1,
+			category1 as category1,
+			(select category_name from ikep4_officeway_category where category_id = category1) as categoryName1,
+			category2 as category2,
+			(select category_name from ikep4_officeway_category where category_id = category2) as categoryName2,
+			remark as remark,
+			team_id as teamId,
+			(select group_name from ikep4_ev_group g where g.group_id = team_id) as teamName
+        from ikep4_officeway
+   	 	WHERE team_id 
+    	<iterate prepend="IN" property="teamIds" open="(" close=")" conjunction=",">
+			#teamIds[]#
+		</iterate>	
+  	</select>
+  	
+  	<select id="listByTeamItemIdArray1" parameterClass="Map" resultMap="resultTeamRequest"> 
+   		SELECT 
+    		officeway_id as officewayId,
+			product_name as productName,
+			product_no as productNo,
+			register_id as registerId,
+			register_name as registerName,
+			regist_date as registDate,
+			updater_id as updaterId,
+			updater_name as updaterName,
+			update_date as updateDate,
+			price2 as price2,
+			unit as unit,
+			status1 as status1,
+			status2 as status2,
+			price1 as price1,
+			amount1 as amount1,
+			category1 as category1,
+			(select category_name from ikep4_officeway_category where category_id = category1) as categoryName1,
+			category2 as category2,
+			(select category_name from ikep4_officeway_category where category_id = category2) as categoryName2,
+			remark as remark,
+			team_id as teamId,
+			(select group_name from ikep4_ev_group g where g.group_id = team_id) as teamName
+        from ikep4_officeway
+   	 	WHERE team_id 
+   	 	
+    	<iterate prepend="IN" property="teamIds" open="(" close=")" conjunction=",">
+			#teamIds[]#
+		</iterate>	
+		and status2 = 'A'
+		and convert(varchar(6), regist_date, 112) = convert(varchar(6), CURRENT_TIMESTAMP, 112)
+  	</select>
+  	
+  	<select id="listByTeamItemIdArray2" parameterClass="Map" resultMap="resultTeamRequest"> 
+   		SELECT 
+    		officeway_id as officewayId,
+			product_name as productName,
+			product_no as productNo,
+			register_id as registerId,
+			register_name as registerName,
+			regist_date as registDate,
+			updater_id as updaterId,
+			updater_name as updaterName,
+			update_date as updateDate,
+			price2 as price2,
+			unit as unit,
+			status1 as status1,
+			status2 as status2,
+			price1 as price1,
+			amount1 as amount1,
+			category1 as category1,
+			(select category_name from ikep4_officeway_category where category_id = category1) as categoryName1,
+			category2 as category2,
+			(select category_name from ikep4_officeway_category where category_id = category2) as categoryName2,
+			remark as remark,
+			team_id as teamId,
+			(select group_name from ikep4_ev_group g where g.group_id = team_id) as teamName
+        from ikep4_officeway
+   	 	WHERE team_id 
+   	 	
+    	<iterate prepend="IN" property="teamIds" open="(" close=")" conjunction=",">
+			#teamIds[]#
+		</iterate>	
+		and status2 = 'C'
+		and convert(varchar(6), regist_date, 112) = convert(varchar(6), CURRENT_TIMESTAMP, 112)
+  	</select>
+   	
+   	<update id="officewayUseRequestDelete" parameterClass="OfficeWay">
+   		<![CDATA[
+   		UPDATE				ikep4_officeway
+   		SET					IS_DELETE = #isDelete#,
+   							update_date = GETDATE()
+   		WHERE				USB_ID = #officewayId#
+   		]]>
+   	</update>
+   	
+   	<delete id="deleteOfficewayExcept" parameterClass="OfficeWay">
+   	    delete from ikep4_officeway_except
+   	    where product_no = #productNo#
+   	</delete>
+   	
+   	<delete id="officewayRequestDelete" parameterClass="String">
+   	    delete from ikep4_officeway
+   	    where officeway_id = #officewayId#
+   	</delete>
+   	
+   	<update id="savePeriod" parameterClass="OfficeWay">
+   		UPDATE				ikep4_officeway_period
+   		SET					
+   		<isNotEmpty property="startDate">
+   		<isNotEmpty property="endDate">
+   		start_date = #startDate#,
+		end_date = #endDate#,
+		</isNotEmpty>
+   		</isNotEmpty>
+   		status = #status#
+   		where year = #year#
+   		and month = #month#
+   	</update>
+   	
+   	<select id="getPeriod" resultClass="OfficeWay">
+   		select convert(varchar,start_date,102) as startDate, convert(varchar,end_date,102) as endDate from ikep4_officeway_period
+   	</select>
+   	
+   	<select id="periodInfo" resultClass="OfficeWay">
+   		select convert(varchar,start_date,102) as startDate, convert(varchar,end_date,102) as endDate, status,year,month from ikep4_officeway_period
+		where year+convert(varchar(2), Right('0'+Ltrim(Str(month)),2), 112) = convert(varchar(6), current_timestamp, 112)
+   	</select>
+   	
+   	<select id="getOfficewayTeamAuthInfo" parameterClass="String" resultClass="OfficeWay">
+   		select 
+   		team_name as teamName,
+		team_leader_id as teamLeaderId,
+		team_manager_id as teamManagerId,
+		(select user_name+'('+team_name+')' from ikep4_ev_user where user_id = team_leader_id) as teamLeaderName,
+		(select user_name+'('+team_name+')' from ikep4_ev_user where user_id = team_manager_id) as teamManagerName,
+		team_id as teamId,
+		use_yn as useYn
+   		from 
+   		ikep4_officeway_team_manager
+   		where team_id = #teamId#
+   	</select>
+   	
+   	<select id="getPeriodList" parameterClass="String" resultClass="OfficeWay">
+   		select year,month,status,convert(varchar,start_date,102) as startDate, convert(varchar,end_date,102) as endDate from ikep4_officeway_period
+   		where year = #year#
+   		order by year,month
+   	</select>
+   	
+   	<select id="getOfficewayTeamAuthList" resultClass="OfficeWay">
+   		select 
+   		team_name as teamName,
+		team_leader_id as teamLeaderId,
+		team_manager_id as teamManagerId,
+		(select user_name+'('+team_name+')' from ikep4_ev_user where user_id = team_leader_id) as teamLeaderName,
+		(select user_name+'('+team_name+')' from ikep4_ev_user where user_id = team_manager_id) as teamManagerName,
+		team_id as teamId,
+		use_yn as useYn
+   		from 
+   		ikep4_officeway_team_manager
+   	</select>
+   	
+   	<select id="selectOfficeWayManager" parameterClass="String" resultMap="resultOfficeWayAdmin">
+		select user_id as managerId from IKEP4_EV_USER_ROLE
+		where role_id = (
+		select role_id from IKEP4_EV_ROLE
+		where role_name = #officewayadm#)
+		and user_id in (select user_id from IKEP4_EV_USER where user_status = 'C')
+		union 
+		select user_id as managerId from IKEP4_EV_USER_GROUP
+		where group_id in(
+		select group_id from IKEP4_EV_GROUP_ROLE
+		where role_id = (
+		select role_id from IKEP4_EV_ROLE
+		where role_name = #officewayadm#))
+		and user_id in (select user_id from IKEP4_EV_USER where user_status = 'C')
+	</select>
+   
+</sqlMap>

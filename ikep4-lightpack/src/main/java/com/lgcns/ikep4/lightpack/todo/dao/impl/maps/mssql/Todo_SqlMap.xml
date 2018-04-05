@@ -1,0 +1,654 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="lightpack.todo.dao.todo">
+	<typeAlias alias = "Todo" type="com.lgcns.ikep4.lightpack.todo.model.Todo"/>
+	<typeAlias alias = "TodoPk" type="com.lgcns.ikep4.lightpack.todo.model.TodoPk"/>
+	<typeAlias alias = "TodoSearchCondition" type="com.lgcns.ikep4.lightpack.todo.search.TodoSearchCondition"/>
+	
+	<!-- IKEP4_TD_TODO 테이블 조회 결과 -->
+	<resultMap id="todoResult" class="Todo">
+		<result property="systemCode"      column="SYSTEM_CODE"      />
+		<result property="subworkCode"     column="SUBWORK_CODE"     />
+		<result property="taskKey"         column="TASK_KEY"         />
+		<result property="workerId"        column="WORKER_ID"        />
+		<result property="title"           column="TITLE"            />
+		<result property="directorId"      column="DIRECTOR_ID"      />
+		<result property="statusName"      column="STATUS_NAME"      />
+		<result property="dueDate"         column="DUE_DATE"         />
+		<result property="isComplete"      column="IS_COMPLETE"      />
+		<result property="completeDate"    column="COMPLETE_DATE"    />
+		<result property="url"             column="URL"              />
+		<result property="syncInsertDate"  column="SYNC_INSERT_DATE" />
+		<result property="syncUpdateDate"  column="SYNC_UPDATE_DATE" />
+		<result property="systemName"      column="SYSTEM_NAME"      />
+		<result property="subworkName"     column="SUBWORK_NAME"     />
+		<result property="todoStatusName"  column="TODO_STATUS_NAME" />
+		<result property="target"          column="TARGET"           />
+		<result property="etcName"         column="ETC_NAME"         />
+		<result property="etcEnglishName"      column="ETC_ENGLISH_NAME"         />
+		<result property="teamName"            column="TEAM_NAME"             />
+		<result property="teamEnglishName"     column="TEAM_ENGLISH_NAME"     />
+		<result property="jobTitleName"        column="JOB_TITLE_NAME"        />
+		<result property="jobTitleEnglishName" column="JOB_TITLE_ENGLISH_NAME"/>
+	</resultMap>
+	
+	<!-- ANSI -->
+	<insert id="create" parameterClass="Todo"> 
+      <![CDATA[ 
+           INSERT INTO IKEP4_TD_TODO /* [Todo_SqlMap.xml] Todo.create */
+                  (SYSTEM_CODE, SUBWORK_CODE, TASK_KEY, WORKER_ID, TITLE,
+                   DIRECTOR_ID, STATUS_NAME, DUE_DATE, IS_COMPLETE, URL,  
+                   SYNC_INSERT_DATE)  
+           VALUES (#systemCode#, #subworkCode#, #taskKey#, #workerId#, #title#, 
+           		   #directorId#, #statusName#, #dueDate#, 0, #url#, 
+           		   CURRENT_TIMESTAMP)
+       ]]>
+   </insert>
+   
+   	<!-- ANSI -->
+	<select id="get" parameterClass="TodoPk" resultMap="todoResult">
+	  <![CDATA[
+		   SELECT /* [Todo_SqlMap.xml] Todo.get */
+		   		  A.*, 
+				  '' AS SYSTEM_NAME,     
+				  '' AS SUBWORK_NAME,    
+				  '' AS TODO_STATUS_NAME,
+				  '' AS TARGET,
+				  '' AS ETC_NAME,
+				  '' AS ETC_ENGLISH_NAME,        
+				  '' AS TEAM_NAME,           
+				  '' AS TEAM_ENGLISH_NAME,   
+				  '' AS JOB_TITLE_NAME,       
+				  '' AS JOB_TITLE_ENGLISH_NAME 
+		     FROM IKEP4_TD_TODO A                  
+		    WHERE A.SYSTEM_CODE = #systemCode#      
+              AND A.SUBWORK_CODE = #subworkCode#
+              AND A.TASK_KEY = #taskKey#        
+              AND A.WORKER_ID = #workerId#
+	   ]]>
+	</select>
+	
+	<!-- ANSI -->
+	<update id="update" parameterClass="Todo">
+	  <![CDATA[
+		   UPDATE IKEP4_TD_TODO /* [Todo_SqlMap.xml] Todo.update */
+		      SET TITLE = #title#,
+				  DIRECTOR_ID = #directorId#,
+				  DUE_DATE = #dueDate#,
+				  SYNC_UPDATE_DATE = CURRENT_TIMESTAMP
+		    WHERE SYSTEM_CODE = #systemCode#
+              AND SUBWORK_CODE = #subworkCode#
+              AND TASK_KEY = #taskKey#
+              AND WORKER_ID = #workerId#
+	   ]]>
+	</update>
+   
+   <!-- ANSI -->
+   <delete id="remove" parameterClass="TodoPk">
+      <![CDATA[
+	       DELETE FROM IKEP4_TD_TODO /* [Todo_SqlMap.xml] Todo.remove */
+	        WHERE SYSTEM_CODE = #systemCode#
+              AND SUBWORK_CODE = #subworkCode#
+              AND TASK_KEY = #taskKey#
+              AND WORKER_ID = #workerId#
+	   ]]>
+	</delete>
+	
+	<!-- ANSI -->
+	<select id="count" parameterClass="TodoPk" resultClass="java.lang.Integer">
+	  <![CDATA[
+		   SELECT /* [Todo_SqlMap.xml] Todo.count */
+		   		  COUNT(1) 
+		     FROM IKEP4_TD_TODO 
+		    WHERE SYSTEM_CODE = #systemCode#
+              AND SUBWORK_CODE = #subworkCode#
+              AND TASK_KEY = #taskKey#
+              AND WORKER_ID = #workerId#
+	   ]]>
+	</select>
+	
+	<!-- ANSI -->
+	<!-- //연계시스템 존재 여부 -->
+	<select id="countLegacy" parameterClass="TodoPk" resultClass="java.lang.Integer">
+	  <![CDATA[
+		   SELECT /* [Todo_SqlMap.xml] Todo.countLegacy */
+		   		  COUNT(1) 
+		     FROM IKEP4_TD_LEGACY
+		    WHERE SYSTEM_CODE = #systemCode#
+	   ]]>
+	</select>
+	
+	<!-- ANSI -->
+	<!-- //업무종류 존재 여부 -->
+	<select id="countSubwork" parameterClass="TodoPk" resultClass="java.lang.Integer">
+	  <![CDATA[
+		   SELECT /* [Todo_SqlMap.xml] Todo.countSubwork */
+		   		  COUNT(1) 
+		     FROM IKEP4_TD_SUBWORK
+		    WHERE SYSTEM_CODE = #systemCode#
+              AND SUBWORK_CODE = #subworkCode#
+	   ]]>
+	</select>
+	
+	<!-- ANSI -->
+	<!-- //할일 완료 업데이트 -->
+	<update id="updateStatusComplete" parameterClass="TodoPk">
+	  <![CDATA[
+		   UPDATE IKEP4_TD_TODO /* [Todo_SqlMap.xml] Todo.updateStatusComplete */
+		      SET IS_COMPLETE = 1,
+				  COMPLETE_DATE = CURRENT_TIMESTAMP,
+				  SYNC_UPDATE_DATE = CURRENT_TIMESTAMP
+		    WHERE SYSTEM_CODE = #systemCode#
+              AND SUBWORK_CODE = #subworkCode#
+              AND TASK_KEY = #taskKey#
+              AND WORKER_ID = #workerId#
+	   ]]>
+	</update>
+	
+	<!-- ANSI -->
+	<!-- //나의 할 일만 카운트 -->
+	<select id="countMyTodo" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+	  <![CDATA[
+		   SELECT /* [Todo_SqlMap.xml] Todo.countMyTodo */
+		   		  COUNT(1) 
+		     FROM IKEP4_TD_TODO 
+		    WHERE WORKER_ID = #id#
+			  AND IS_COMPLETE = 0
+	   ]]>
+	</select>
+
+	<!-- //나의 업무만 카운트 -->
+	<select id="countMyTask" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+	  <![CDATA[
+		   SELECT /* [Todo_SqlMap.xml] Todo.countMyTodo */
+		   		  COUNT(1) 
+		     FROM IKEP4_TD_TODO 
+		    WHERE WORKER_ID = #id#
+			  AND IS_COMPLETE = 0
+			  AND SUBWORK_CODE = 'MYTASK'
+	   ]]>
+	</select>
+	
+	<!-- MS SQL -->
+	<!-- //나의 할 일만 조회 -->
+	<select id="listMyTodo" parameterClass="java.util.Map"  resultMap="todoResult">
+	  <![CDATA[ 
+		   SELECT /* [Todo_SqlMap.xml] Todo.listMyTodo */
+		   		  TOP $rowNum$ A.*,        
+				  '' AS TEAM_NAME,           
+				  '' AS TEAM_ENGLISH_NAME,   
+				  '' AS JOB_TITLE_NAME,       
+				  '' AS JOB_TITLE_ENGLISH_NAME 
+		     FROM (SELECT A.*, 
+				          C.SYSTEM_NAME, 
+				          B.SUBWORK_NAME,
+				          CASE WHEN A.IS_COMPLETE = 1 THEN 'B'
+				          	   WHEN DATEDIFF(DD, A.DUE_DATE, CURRENT_TIMESTAMP) > 0 THEN 'D' + CONVERT(NVARCHAR, DATEDIFF(DD, A.DUE_DATE, CURRENT_TIMESTAMP))
+				               ELSE 'A' + A.STATUS_NAME END AS TODO_STATUS_NAME,
+				          B.TARGET,
+				          D.USER_NAME AS ETC_NAME,
+				          D.USER_ENGLISH_NAME AS ETC_ENGLISH_NAME
+		             FROM   IKEP4_TD_TODO A
+					       inner join IKEP4_EV_USER D
+					         ON A.DIRECTOR_ID = D.USER_ID
+					       inner join IKEP4_TD_SUBWORK B
+					         ON A.SUBWORK_CODE = B.SUBWORK_CODE
+					        AND A.SYSTEM_CODE = B.SYSTEM_CODE
+					       inner join IKEP4_TD_LEGACY C
+					         ON B.SYSTEM_CODE = C.SYSTEM_CODE
+					WHERE  A.WORKER_ID = #workerId#
+					       AND A.IS_COMPLETE = 0
+				  ) A ORDER BY A.DUE_DATE
+	   ]]>
+	</select>
+
+	
+	<!-- MS SQL -->
+	<!-- //나의 할 일 조회-검색 -->
+	<select id="countMyTodoSearch" parameterClass="TodoSearchCondition" resultClass="java.lang.Integer">
+	  <![CDATA[
+		   SELECT /* [Todo_SqlMap.xml] Todo.countMyTodoSearch */
+		          COUNT(1) 
+		     FROM IKEP4_TD_TODO A, IKEP4_EV_USER B
+			WHERE A.WORKER_ID = #workerId#
+			  AND A.IS_COMPLETE = CASE WHEN CONVERT(INT, #todoStatus#) = 9 THEN A.IS_COMPLETE
+			           				   ELSE CONVERT(INT, #todoStatus#) END
+			  AND A.DIRECTOR_ID = B.USER_ID
+  		 ]]>
+			<dynamic>
+			  <isNotEmpty property="fromDay" >
+  				<![CDATA[ 
+			  	AND A.SYNC_INSERT_DATE BETWEEN #fromDay# AND #toDay#
+   				]]>
+			  </isNotEmpty>
+			  <isNotEmpty property="searchText"> 
+				  <isEqual property="searchType" compareValue="A">
+	  				<![CDATA[ 
+	   			  	AND A.TITLE LIKE '%'+ #searchText# + '%'
+	   				]]>
+				  </isEqual>
+				  <isEqual property="searchType" compareValue="B">
+	  				<![CDATA[ 
+	   			  	AND (B.USER_NAME LIKE '%'+ #searchText# + '%' OR B.USER_ENGLISH_NAME LIKE '%'+ #searchText# + '%')
+	   				]]>
+				  </isEqual>
+			   </isNotEmpty>	  
+			</dynamic>
+	</select>
+	
+	<!-- MS SQL -->
+	<!-- //나의 할 일 조회-검색 -->
+	<select id="countMyTodoSearchDueDate" parameterClass="TodoSearchCondition" resultClass="java.lang.Integer">
+	  <![CDATA[
+		   SELECT /* [Todo_SqlMap.xml] Todo.countMyTodoSearch */
+		          COUNT(1) 
+		     FROM IKEP4_TD_TODO A, IKEP4_EV_USER B
+			WHERE A.WORKER_ID = #workerId#
+			  AND A.IS_COMPLETE = CASE WHEN CONVERT(INT, #todoStatus#) = 9 THEN A.IS_COMPLETE
+			           				   ELSE CONVERT(INT, #todoStatus#) END
+			  AND A.DIRECTOR_ID = B.USER_ID 
+  		 ]]>
+			<dynamic>
+			  <isNotEmpty property="fromDay" >
+  				<![CDATA[ 
+			  	AND A.DUE_DATE BETWEEN #fromDay# AND #toDay#
+   				]]>
+			  </isNotEmpty>
+			  <isNotEmpty property="searchText"> 
+				  <isEqual property="searchType" compareValue="A">
+	  				<![CDATA[ 
+	   			  	AND A.TITLE LIKE '%'+ #searchText# + '%'
+	   				]]>
+				  </isEqual>
+				  <isEqual property="searchType" compareValue="B">
+	  				<![CDATA[ 
+	   			  	AND (B.USER_NAME LIKE '%'+ #searchText# + '%' OR B.USER_ENGLISH_NAME LIKE '%'+ #searchText# + '%')
+	   				]]>
+				  </isEqual>
+			   </isNotEmpty>	  
+			</dynamic>
+	</select>
+	
+	<!-- MS SQL -->
+	<!-- //나의 할 일 조회 -->
+	<select id="listMyTodoSearch" parameterClass="TodoSearchCondition"  resultMap="todoResult">
+	  <![CDATA[ 
+		   SELECT /* [Todo_SqlMap.xml] Todo.listMyTodoSearch */
+	       		  TBL.*,        
+				  '' AS TEAM_NAME,           
+				  '' AS TEAM_ENGLISH_NAME,   
+				  '' AS JOB_TITLE_NAME,       
+				  '' AS JOB_TITLE_ENGLISH_NAME 
+	          		 FROM (SELECT Row_number() OVER (ORDER BY A.DUE_DATE) AS RNUM,
+	          		 			  A.*,
+						          C.SYSTEM_NAME, 
+						          B.SUBWORK_NAME,
+						          CASE WHEN IS_COMPLETE = 1 THEN 'B'
+						          	   WHEN CONVERT(FLOAT, CURRENT_TIMESTAMP - A.DUE_DATE) > 0 THEN 'D' + CONVERT(NVARCHAR, DATEDIFF(DD, A.DUE_DATE, CURRENT_TIMESTAMP))
+						          	   ELSE 'A' + A.STATUS_NAME END AS TODO_STATUS_NAME,
+						          B.TARGET
+				    		 FROM (SELECT A.*, 
+				     			  		  B.USER_NAME AS ETC_NAME,
+				     			  		  B.USER_ENGLISH_NAME AS ETC_ENGLISH_NAME
+				             		 FROM IKEP4_TD_TODO A, 
+				                  		  IKEP4_EV_USER B
+									WHERE A.WORKER_ID = #workerId#
+							  		  AND A.IS_COMPLETE = CASE WHEN CONVERT(INT, #todoStatus#) = 9 THEN A.IS_COMPLETE ELSE CONVERT(INT, #todoStatus#) END
+	  ]]>
+				 				<dynamic>
+								  <isNotEmpty property="fromDay" >
+					  				<![CDATA[ 
+								  	AND A.SYNC_INSERT_DATE BETWEEN #fromDay# AND #toDay#
+					   				]]>
+								  </isNotEmpty>
+								  <isNotEmpty property="searchText"> 
+									  <isEqual property="searchType" compareValue="A">
+					   					<![CDATA[ 
+						   			  	AND A.TITLE LIKE '%'+ #searchText# + '%'
+					    				]]>
+									  </isEqual>
+									  <isEqual property="searchType" compareValue="B">
+					   					<![CDATA[ 
+						   			  	AND (B.USER_NAME LIKE '%'+ #searchText# + '%' OR B.USER_ENGLISH_NAME LIKE '%'+ #searchText# + '%')
+					    				]]>
+									  </isEqual>
+								   </isNotEmpty>	 
+				 				</dynamic>
+			   <![CDATA[ 
+								  AND A.DIRECTOR_ID = B.USER_ID
+							  ) A,
+							  IKEP4_TD_SUBWORK B, 
+							  IKEP4_TD_LEGACY C
+					    WHERE A.SYSTEM_CODE = B.SYSTEM_CODE
+					      AND A.SUBWORK_CODE = B.SUBWORK_CODE
+					      AND B.SYSTEM_CODE = C.SYSTEM_CODE  
+			   
+		) TBL  WHERE RNUM >  #startRowIndex# /* 시작 */
+			AND RNUM <=  #endRowIndex# /* 종료  */
+	   ]]>
+	</select>
+
+	<!-- MS SQL -->
+	<!-- //나의 할 일 조회 -->
+	<select id="listMyTodoSearchDueDate" parameterClass="TodoSearchCondition"  resultMap="todoResult">
+	  <![CDATA[ 
+		   SELECT /* [Todo_SqlMap.xml] Todo.listMyTodoSearch */
+	       		  TBL.*,        
+				  '' AS TEAM_NAME,           
+				  '' AS TEAM_ENGLISH_NAME,   
+				  '' AS JOB_TITLE_NAME,       
+				  '' AS JOB_TITLE_ENGLISH_NAME 
+	          		 FROM (SELECT Row_number() OVER (ORDER BY A.DUE_DATE) AS RNUM,
+	          		 			  A.*,
+						          C.SYSTEM_NAME, 
+						          B.SUBWORK_NAME,
+						          CASE WHEN IS_COMPLETE = 1 THEN 'B'
+						          	   WHEN CONVERT(FLOAT, CURRENT_TIMESTAMP - A.DUE_DATE) > 0 THEN 'D' + CONVERT(NVARCHAR, DATEDIFF(DD, A.DUE_DATE, CURRENT_TIMESTAMP))
+						          	   ELSE 'A' + A.STATUS_NAME END AS TODO_STATUS_NAME,
+						          B.TARGET
+				    		 FROM (SELECT A.*, 
+				     			  		  B.USER_NAME AS ETC_NAME,
+				     			  		  B.USER_ENGLISH_NAME AS ETC_ENGLISH_NAME
+				             		 FROM IKEP4_TD_TODO A, 
+				                  		  IKEP4_EV_USER B
+									WHERE A.WORKER_ID = #workerId#
+							  		  AND A.IS_COMPLETE = CASE WHEN CONVERT(INT, #todoStatus#) = 9 THEN A.IS_COMPLETE ELSE CONVERT(INT, #todoStatus#) END
+	  ]]>
+				 				<dynamic>
+								  <isNotEmpty property="fromDay" >
+					  				<![CDATA[ 
+								  	AND A.DUE_DATE BETWEEN #fromDay# AND #toDay#
+					   				]]>
+								  </isNotEmpty>
+								  <isNotEmpty property="searchText"> 
+									  <isEqual property="searchType" compareValue="A">
+					   					<![CDATA[ 
+						   			  	AND A.TITLE LIKE '%'+ #searchText# + '%'
+					    				]]>
+									  </isEqual>
+									  <isEqual property="searchType" compareValue="B">
+					   					<![CDATA[ 
+						   			  	AND (B.USER_NAME LIKE '%'+ #searchText# + '%' OR B.USER_ENGLISH_NAME LIKE '%'+ #searchText# + '%')
+					    				]]>
+									  </isEqual>
+								   </isNotEmpty>	 
+				 				</dynamic>
+			   <![CDATA[ 
+								  AND A.DIRECTOR_ID = B.USER_ID
+							  ) A,
+							  IKEP4_TD_SUBWORK B, 
+							  IKEP4_TD_LEGACY C
+					    WHERE A.SYSTEM_CODE = B.SYSTEM_CODE
+					      AND A.SUBWORK_CODE = B.SUBWORK_CODE
+					      AND B.SYSTEM_CODE = C.SYSTEM_CODE  
+			   
+		) TBL  WHERE RNUM >  #startRowIndex# /* 시작 */
+			AND RNUM <=  #endRowIndex# /* 종료  */
+	   ]]>
+	</select>
+
+	<!-- ANSI -->
+	<!-- //Task에서 삭제 요청 -->
+   <delete id="removeFromTask" parameterClass="java.util.Map">
+      <![CDATA[
+	       DELETE FROM IKEP4_TD_TODO /* [Todo_SqlMap.xml] Todo.removeFromTask */
+	        WHERE SYSTEM_CODE = #systemCode#
+              AND SUBWORK_CODE = #subworkCode#
+              AND TASK_KEY = #taskKey#
+	   ]]>
+	</delete>
+
+	<!-- MS SQL -->	
+	<!-- //오늘의 우선 업무(오늘 마감 + 지연) -->
+	<select id="listMyTodoDueToday" parameterClass="java.lang.String"  resultMap="todoResult">
+	  <![CDATA[ 
+		   SELECT /* [Todo_SqlMap.xml] Todo.listMyTodoDueToday */
+		   		  A.*, 
+		          C.SYSTEM_NAME, 
+		          B.SUBWORK_NAME,
+		          CASE WHEN IS_COMPLETE = 1 THEN 'B'
+		          	   WHEN CONVERT(FLOAT, CURRENT_TIMESTAMP - A.DUE_DATE) > 0 THEN 'D' + CONVERT(NVARCHAR, DATEDIFF(DD, A.DUE_DATE, CURRENT_TIMESTAMP))
+		          	   ELSE 'A' + A.STATUS_NAME END AS TODO_STATUS_NAME,
+		          D.USER_NAME AS ETC_NAME,
+		          B.TARGET,
+		          D.USER_ENGLISH_NAME AS ETC_ENGLISH_NAME,        
+				  '' AS TEAM_NAME,           
+				  '' AS TEAM_ENGLISH_NAME,   
+				  '' AS JOB_TITLE_NAME,       
+				  '' AS JOB_TITLE_ENGLISH_NAME 
+		     FROM (SELECT *
+		             FROM IKEP4_TD_TODO
+					WHERE WORKER_ID = #workerId#
+					  AND IS_COMPLETE = 0
+					  AND DATEDIFF(DD, DUE_DATE, CURRENT_TIMESTAMP) >= 0
+				  ) A,
+				  IKEP4_TD_SUBWORK B, 
+				  IKEP4_TD_LEGACY C,
+				  IKEP4_EV_USER D
+		    WHERE A.SYSTEM_CODE = B.SYSTEM_CODE
+		      AND A.SUBWORK_CODE = B.SUBWORK_CODE
+		      AND B.SYSTEM_CODE = C.SYSTEM_CODE
+		      AND A.DIRECTOR_ID = D.USER_ID
+		    ORDER BY A.SYNC_INSERT_DATE DESC
+	   ]]>
+	</select>
+	
+	<!-- MS SQL -->
+	<!-- //내일의 우선 업무(내일 마감 + 지연) -->
+	<select id="listMyTodoDueTomorrow" parameterClass="java.lang.String"  resultMap="todoResult">
+	  <![CDATA[ 
+		   SELECT /* [Todo_SqlMap.xml] Todo.listMyTodoDueTomorrow */
+		   		  A.*, 
+		          C.SYSTEM_NAME, 
+		          B.SUBWORK_NAME,
+		          CASE WHEN IS_COMPLETE = 1 THEN 'B'
+		          	   WHEN CONVERT(FLOAT, CURRENT_TIMESTAMP - A.DUE_DATE) > 0 THEN 'D' + CONVERT(NVARCHAR, DATEDIFF(DD, A.DUE_DATE, CURRENT_TIMESTAMP))
+		               ELSE 'A' + A.STATUS_NAME END AS TODO_STATUS_NAME,
+		          D.USER_NAME AS ETC_NAME,
+		          B.TARGET,
+		          D.USER_ENGLISH_NAME AS ETC_ENGLISH_NAME,        
+				  '' AS TEAM_NAME,           
+				  '' AS TEAM_ENGLISH_NAME,   
+				  '' AS JOB_TITLE_NAME,       
+				  '' AS JOB_TITLE_ENGLISH_NAME 
+		     FROM (SELECT *
+		             FROM IKEP4_TD_TODO
+					WHERE WORKER_ID = #workerId#
+					  AND IS_COMPLETE = 0
+					  AND DATEDIFF(DD, DUE_DATE, DATEADD(DD, 1, CURRENT_TIMESTAMP)) >= 0	
+				  ) A,
+				  IKEP4_TD_SUBWORK B, 
+				  IKEP4_TD_LEGACY C,
+				  IKEP4_EV_USER D
+		    WHERE A.SYSTEM_CODE = B.SYSTEM_CODE
+		      AND A.SUBWORK_CODE = B.SUBWORK_CODE
+		      AND B.SYSTEM_CODE = C.SYSTEM_CODE
+		      AND A.DIRECTOR_ID = D.USER_ID
+		    ORDER BY A.SYNC_INSERT_DATE DESC
+	   ]]>
+	</select>
+	
+	<!-- MS SQL -->
+	<!-- //나의 지시 목록(최근 7일) -->
+	<select id="listMyOrderDueWeek" parameterClass="java.lang.String"  resultMap="todoResult">
+	  <![CDATA[ 
+		   SELECT /* [Todo_SqlMap.xml] Todo.listMyOrderDueWeek */
+		   		  A.*, 
+		          C.SYSTEM_NAME, 
+		          B.SUBWORK_NAME,
+		          CASE WHEN IS_COMPLETE = 1 THEN 'B'
+		          	   WHEN CONVERT(FLOAT, CURRENT_TIMESTAMP - A.DUE_DATE) > 0 THEN 'D' + CONVERT(NVARCHAR, DATEDIFF(DD, A.DUE_DATE, CURRENT_TIMESTAMP))
+		               ELSE 'A' + A.STATUS_NAME END AS TODO_STATUS_NAME,
+		          D.USER_NAME AS ETC_NAME,
+		          B.TARGET,
+		          D.USER_ENGLISH_NAME AS ETC_ENGLISH_NAME,        
+				  D.TEAM_NAME,           
+				  D.TEAM_ENGLISH_NAME,   
+				  '' as E.JOB_TITLE_NAME,       
+				  '' as E.JOB_TITLE_ENGLISH_NAME 
+		     FROM (SELECT SYSTEM_CODE, 
+		     			  SUBWORK_CODE, 
+		     			  TASK_KEY,
+		     			  MAX(WORKER_ID) AS WORKER_ID,
+						  MAX(TITLE) AS TITLE,
+						  MAX(DIRECTOR_ID) AS DIRECTOR_ID,
+						  MAX(STATUS_NAME) AS STATUS_NAME,
+						  MAX(DUE_DATE) AS DUE_DATE,
+						  MAX(IS_COMPLETE) AS IS_COMPLETE,
+						  MAX(COMPLETE_DATE) AS COMPLETE_DATE,
+						  MAX(URL) AS URL,
+						  MAX(SYNC_INSERT_DATE) AS SYNC_INSERT_DATE,
+						  MAX(SYNC_UPDATE_DATE) AS SYNC_UPDATE_DATE
+		             FROM IKEP4_TD_TODO
+					WHERE DIRECTOR_ID = #directorId#
+					  AND DATEDIFF(DD, SYNC_INSERT_DATE, DATEADD(DD, -6, CURRENT_TIMESTAMP)) < 0
+					GROUP BY SYSTEM_CODE, SUBWORK_CODE, TASK_KEY
+				  ) A,
+				  IKEP4_TD_SUBWORK B, 
+				  IKEP4_TD_LEGACY C,
+				  IKEP4_EV_USER D
+		    WHERE A.SYSTEM_CODE = B.SYSTEM_CODE
+		      AND A.SUBWORK_CODE = B.SUBWORK_CODE
+		      AND B.SYSTEM_CODE = C.SYSTEM_CODE
+		      AND A.WORKER_ID = D.USER_ID
+		    ORDER BY A.SYNC_INSERT_DATE DESC
+	   ]]>
+	</select>
+	
+	<!--
+	<select id="countMyTodo_org" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+	  <![CDATA[
+		   SELECT /* [Todo_SqlMap.xml] Todo.countMyTodo */
+		   		  COUNT(1) 
+		     FROM IKEP4_TD_TODO 
+		    WHERE WORKER_ID = #id#
+			  AND IS_COMPLETE = 0
+			  AND SUBWORK_CODE != 'MYTASK'
+	   ]]>
+	</select>
+
+	<select id="listMyTodo_org" parameterClass="java.util.Map"  resultMap="todoResult">
+	  <![CDATA[ 
+		   SELECT /* [Todo_SqlMap.xml] Todo.listMyTodo */
+		   		  TOP $rowNum$ A.*,        
+				  '' AS TEAM_NAME,           
+				  '' AS TEAM_ENGLISH_NAME,   
+				  '' AS JOB_TITLE_NAME,       
+				  '' AS JOB_TITLE_ENGLISH_NAME 
+		     FROM (SELECT A.*, 
+				          C.SYSTEM_NAME, 
+				          B.SUBWORK_NAME,
+				          CASE WHEN A.IS_COMPLETE = 1 THEN 'B'
+				          	   WHEN DATEDIFF(DD, A.DUE_DATE, CURRENT_TIMESTAMP) > 0 THEN 'D' + CONVERT(NVARCHAR, DATEDIFF(DD, A.DUE_DATE, CURRENT_TIMESTAMP))
+				               ELSE 'A' + A.STATUS_NAME END AS TODO_STATUS_NAME,
+				          B.TARGET,
+				          D.USER_NAME AS ETC_NAME,
+				          D.USER_ENGLISH_NAME AS ETC_ENGLISH_NAME
+		             FROM   IKEP4_TD_TODO A
+					       inner join IKEP4_EV_USER D
+					         ON A.DIRECTOR_ID = D.USER_ID
+					       inner join IKEP4_TD_SUBWORK B
+					         ON A.SUBWORK_CODE = B.SUBWORK_CODE
+					        AND A.SYSTEM_CODE = B.SYSTEM_CODE
+					       inner join IKEP4_TD_LEGACY C
+					         ON B.SYSTEM_CODE = C.SYSTEM_CODE
+					WHERE  A.WORKER_ID = #workerId#
+					       AND A.IS_COMPLETE = 0
+					       AND A.SUBWORK_CODE != 'MYTASK'
+				  ) A ORDER BY A.DUE_DATE
+	   ]]>
+	</select>
+	
+	<select id="countMyTodoSearch_org" parameterClass="TodoSearchCondition" resultClass="java.lang.Integer">
+	  <![CDATA[
+		   SELECT /* [Todo_SqlMap.xml] Todo.countMyTodoSearch */
+		          COUNT(1) 
+		     FROM IKEP4_TD_TODO A, IKEP4_EV_USER B
+			WHERE A.WORKER_ID = #workerId#
+			  AND A.IS_COMPLETE = CASE WHEN CONVERT(INT, #todoStatus#) = 9 THEN A.IS_COMPLETE
+			           				   ELSE CONVERT(INT, #todoStatus#) END
+			  AND A.DIRECTOR_ID = B.USER_ID
+			  AND A.SUBWORK_CODE != 'MYTASK'  
+  		 ]]>
+			<dynamic>
+			  <isNotEmpty property="fromDay" >
+  				<![CDATA[ 
+			  	AND A.SYNC_INSERT_DATE BETWEEN #fromDay# AND #toDay#
+   				]]>
+			  </isNotEmpty>
+			  <isNotEmpty property="searchText"> 
+				  <isEqual property="searchType" compareValue="A">
+	  				<![CDATA[ 
+	   			  	AND A.TITLE LIKE '%'+ #searchText# + '%'
+	   				]]>
+				  </isEqual>
+				  <isEqual property="searchType" compareValue="B">
+	  				<![CDATA[ 
+	   			  	AND (B.USER_NAME LIKE '%'+ #searchText# + '%' OR B.USER_ENGLISH_NAME LIKE '%'+ #searchText# + '%')
+	   				]]>
+				  </isEqual>
+			   </isNotEmpty>	  
+			</dynamic>
+	</select>
+	
+	<select id="listMyTodoSearch" parameterClass="TodoSearchCondition"  resultMap="todoResult">
+	  <![CDATA[ 
+		   SELECT /* [Todo_SqlMap.xml] Todo.listMyTodoSearch */
+	       		  TBL.*,        
+				  '' AS TEAM_NAME,           
+				  '' AS TEAM_ENGLISH_NAME,   
+				  '' AS JOB_TITLE_NAME,       
+				  '' AS JOB_TITLE_ENGLISH_NAME 
+	          		 FROM (SELECT Row_number() OVER (ORDER BY A.DUE_DATE) AS RNUM,
+	          		 			  A.*,
+						          C.SYSTEM_NAME, 
+						          B.SUBWORK_NAME,
+						          CASE WHEN IS_COMPLETE = 1 THEN 'B'
+						          	   WHEN CONVERT(FLOAT, CURRENT_TIMESTAMP - A.DUE_DATE) > 0 THEN 'D' + CONVERT(NVARCHAR, DATEDIFF(DD, A.DUE_DATE, CURRENT_TIMESTAMP))
+						          	   ELSE 'A' + A.STATUS_NAME END AS TODO_STATUS_NAME,
+						          B.TARGET
+				    		 FROM (SELECT A.*, 
+				     			  		  B.USER_NAME AS ETC_NAME,
+				     			  		  B.USER_ENGLISH_NAME AS ETC_ENGLISH_NAME
+				             		 FROM IKEP4_TD_TODO A, 
+				                  		  IKEP4_EV_USER B
+									WHERE A.WORKER_ID = #workerId#
+							  		  AND A.IS_COMPLETE = CASE WHEN CONVERT(INT, #todoStatus#) = 9 THEN A.IS_COMPLETE ELSE CONVERT(INT, #todoStatus#) END
+							  		  AND A.SUBWORK_CODE != 'MYTASK'
+	  ]]>
+				 				<dynamic>
+								  <isNotEmpty property="fromDay" >
+					  				<![CDATA[ 
+								  	AND A.SYNC_INSERT_DATE BETWEEN #fromDay# AND #toDay#
+					   				]]>
+								  </isNotEmpty>
+								  <isNotEmpty property="searchText"> 
+									  <isEqual property="searchType" compareValue="A">
+					   					<![CDATA[ 
+						   			  	AND A.TITLE LIKE '%'+ #searchText# + '%'
+					    				]]>
+									  </isEqual>
+									  <isEqual property="searchType" compareValue="B">
+					   					<![CDATA[ 
+						   			  	AND (B.USER_NAME LIKE '%'+ #searchText# + '%' OR B.USER_ENGLISH_NAME LIKE '%'+ #searchText# + '%')
+					    				]]>
+									  </isEqual>
+								   </isNotEmpty>	 
+				 				</dynamic>
+			   <![CDATA[ 
+								  AND A.DIRECTOR_ID = B.USER_ID
+							  ) A,
+							  IKEP4_TD_SUBWORK B, 
+							  IKEP4_TD_LEGACY C
+					    WHERE A.SYSTEM_CODE = B.SYSTEM_CODE
+					      AND A.SUBWORK_CODE = B.SUBWORK_CODE
+					      AND B.SYSTEM_CODE = C.SYSTEM_CODE  
+			   
+		) TBL  WHERE RNUM >  #startRowIndex# /* 시작 */
+			AND RNUM <=  #endRowIndex# /* 종료  */
+	   ]]>
+	</select>
+
+	-->
+</sqlMap>

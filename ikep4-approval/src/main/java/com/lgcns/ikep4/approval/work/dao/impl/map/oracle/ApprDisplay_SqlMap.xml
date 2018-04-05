@@ -1,0 +1,436 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+
+<sqlMap namespace="com.lgcns.ikep4.approval.work.dao.ApprDisplay" >
+	<typeAlias alias="apprDisplay" type="com.lgcns.ikep4.approval.work.model.ApprDisplay"/>
+	<typeAlias alias="ApprDisplaySearchCondition"					type="com.lgcns.ikep4.approval.work.search.ApprDisplaySearchCondition"/>
+			       
+	<resultMap id="ApprDisplayResult" class="apprDisplay"> 
+		<result property="displayId" 			column="DISPLAY_ID" 			jdbcType="VARCHAR"/>
+		<result property="apprId" 				column="APPR_ID" 				jdbcType="VARCHAR"/>
+		<result property="displayStatus" 		column="DISPLAY_STATUS" 		jdbcType="VARCHAR"/>
+		<result property="completeDate" 		column="COMPLETE_DATE" 			jdbcType="VARCHAR"/>
+		<result property="userId" 		    	column="USER_ID" 				jdbcType="VARCHAR"/>
+		<result property="userName" 			column="USER_NAME" 				jdbcType="VARCHAR"/>
+		<result property="jobTitleName"			column="JOB_TITLE_NAME" 		jdbcType="VARCHAR"/>
+		<result property="teamName"				column="TEAM_NAME" 				jdbcType="VARCHAR"/>
+		<result property="userStatus" 			column="USER_STATUS" 			jdbcType="VARCHAR"/>
+		<result property="confirmDate" 			column="CONFIRM_DATE"			jdbcType="TIMESTAMP"/>
+	</resultMap>
+	
+	<resultMap id="ApprDisplayListResult" class="apprDisplay"> 
+		<result property="apprId" 				column="APPR_ID" 			jdbcType="VARCHAR"/>
+		<result property="formId" 				column="FORM_ID" 			jdbcType="VARCHAR"/>
+		<result property="formName" 			column="FORM_NAME" 			jdbcType="VARCHAR"/>
+		<result property="apprDocType" 			column="APPR_DOC_TYPE" 		jdbcType="VARCHAR"/>
+		<result property="codeName" 		    column="CODE_NAME" 			jdbcType="VARCHAR"/>
+		<result property="apprTitle" 			column="APPR_TITLE" 		jdbcType="VARCHAR"/>
+		<result property="apprReqDate"			column="APPR_REQ_DATE" 		jdbcType="TIMESTAMP"/>
+		<result property="apprDocStatus" 		column="APPR_DOC_STATUS" 	jdbcType="VARCHAR"/>
+		<result property="dRegistDate" 			column="DREGIST_DATE"		jdbcType="TIMESTAMP"/>
+		<result property="registDate" 			column="REGIST_DATE"		jdbcType="TIMESTAMP"/>
+		<result property="registerId" 		    column="REGISTER_ID" 		jdbcType="VARCHAR"/>
+		<result property="registerName" 		column="REGISTER_NAME" 	    jdbcType="VARCHAR"/>
+		<result property="teamName" 		    column="TEAM_NAME" 			jdbcType="VARCHAR"/>
+		<result property="apprEndDate" 		    column="APPR_END_DATE" 		jdbcType="TIMESTAMP"/>
+		<result property="confirmDate" 		    column="CONFIRM_DATE" 		jdbcType="TIMESTAMP"/>
+	</resultMap>
+	
+	<insert id="createApprDisplay" parameterClass="apprDisplay"> 
+      <![CDATA[ 
+           INSERT INTO IKEP4_APPR_DISPLAY 
+           		  (DISPLAY_ID, 
+           		   APPR_ID, 
+           		   REGISTER_ID, 
+           		   REGISTER_NAME, 
+           		   REGIST_DATE
+           	       )
+           VALUES (#displayId#, 
+           		   #apprId#, 
+           		   #registerId#,
+           		   #registerName#,
+           		   SYSDATE
+           		   )
+       ]]>
+  	</insert>
+  	
+  	<insert id="createApprDisplaySub" parameterClass="apprDisplay"> 
+      <![CDATA[ 
+           INSERT INTO IKEP4_APPR_DISPLAY_SUB 
+           		  (DISPLAY_ID, 
+           		   USER_ID
+           	       )
+           VALUES (#displayId#, 
+           		   #userId#
+           		   )
+       ]]>
+  	</insert>
+  	
+  	<insert id="creatDisplayUserIdForGroup" parameterClass="map"> 
+      <![CDATA[ 
+           INSERT INTO IKEP4_APPR_DISPLAY_SUB 
+           		  (DISPLAY_ID, 
+           		   USER_ID
+           	       )
+           VALUES (#displayId#,
+           		   #userId#
+           		   )
+       ]]>
+  	</insert>
+  	
+  	<select id="getUserIdByGroup" parameterClass="Map" resultClass="apprDisplay">
+	  <![CDATA[
+		   	SELECT  user_id userId
+			FROM 	IKEP4_EV_USER_GROUP
+			WHERE 	GROUP_ID 		= #groupId#
+	   ]]>
+	</select>
+	
+	<select id="getUserIdBySubGroupCntList" parameterClass="Map" resultClass="apprDisplay">
+	  <![CDATA[
+		   	SELECT  group_id groupId,
+		   			child_group_count childGroupCount
+			FROM 	IKEP4_EV_GROUP
+			WHERE 	GROUP_ID 		= #groupId#
+	   ]]>
+	</select>
+	
+	
+	<select id="getUserIdByParentGroup" parameterClass="Map" resultClass="apprDisplay">
+	  <![CDATA[
+		   	SELECT  group_id groupId,
+		   			child_group_count childGroupCount
+			FROM 	IKEP4_EV_GROUP
+			WHERE 	PARENT_GROUP_ID 		= #groupId#
+	   ]]>
+	</select>
+	
+	<select id="listBySearchCondition" parameterClass="ApprDisplaySearchCondition" resultMap="ApprDisplayResult"> 
+	SELECT /* [ApprDisplay_SqlMap.xml] approval.work.dao.ApprDisplay.listBySearchCondition */ 
+		*
+	FROM 
+	( 
+		SELECT ROWNUM AS RNUM, A.* FROM 
+		( 
+			/* START========================================= */
+			SELECT AD.DISPLAY_ID,
+			       AD.APPR_ID,
+			       AD.DISPLAY_STATUS,
+			       AD.COMPLETE_DATE,
+			       ADS.USER_ID,
+			       E.USER_NAME,
+			       J.JOB_TITLE_NAME,
+			       E.TEAM_NAME,
+			       ADS.USER_STATUS,
+			       ADS.CONFIRM_DATE
+			  FROM IKEP4_APPR_DISPLAY AD, IKEP4_APPR_DISPLAY_SUB ADS, IKEP4_EV_USER E, IKEP4_EV_JOB_TITLE J
+			 WHERE AD.DISPLAY_ID = ADS.DISPLAY_ID
+			   AND ADS.USER_ID = E.USER_ID
+			   AND E.JOB_TITLE_CODE = J.JOB_TITLE_CODE
+			   AND AD.APPR_ID = #apprId#
+				<isNotEmpty property="searchUserStatus">
+				AND	ADS.USER_STATUS = #searchUserStatus#
+				</isNotEmpty>
+				<isNotEmpty property="searchUserName">
+				AND	UPPER(E.USER_NAME) LIKE '%' || UPPER(#searchUserName#) || '%'
+				</isNotEmpty>
+			ORDER BY
+			<isNotEmpty property="sortColumn">
+	    	<isEqual property="sortColumn" compareValue="confirmDate">
+	    	ADS.CONFIRM_DATE
+			</isEqual>
+			</isNotEmpty>
+			<isNotEmpty property="sortType">
+	    	<isEqual property="sortType" compareValue="DESC">
+	    	DESC,
+			</isEqual>
+			<isEqual property="sortType" compareValue="ASC">
+	    	ASC,
+			</isEqual>
+			</isNotEmpty>
+	    	AD.APPR_ID DESC    	
+			/* ===========================================END  */ 
+	<![CDATA[
+		) A WHERE ROWNUM <=  #endRowIndex# /* 종료  */
+	) WHERE RNUM >  #startRowIndex# /* 시작 */
+	]]> 
+	</select>
+	
+	<select id="countBySearchCondition" parameterClass="ApprDisplaySearchCondition" resultClass="int">
+		SELECT /* [ApprDisplay_SqlMap.xml] approval.work.dao.ApprDisplay."countBySearchCondition" */ 
+			COUNT(*)
+		FROM 
+		( 
+			SELECT ROWNUM AS RNUM, A.* FROM 
+			( 
+				/* START========================================= */
+				SELECT AD.DISPLAY_ID,
+				       AD.APPR_ID,
+				       AD.DISPLAY_STATUS,
+				       AD.COMPLETE_DATE,
+				       ADS.USER_ID,
+				       E.USER_NAME,
+				       J.JOB_TITLE_NAME,
+				       E.TEAM_NAME,
+				       ADS.USER_STATUS,
+				       ADS.CONFIRM_DATE
+				  FROM IKEP4_APPR_DISPLAY AD, IKEP4_APPR_DISPLAY_SUB ADS, IKEP4_EV_USER E, IKEP4_EV_JOB_TITLE J
+				 WHERE AD.DISPLAY_ID = ADS.DISPLAY_ID
+				   AND ADS.USER_ID = E.USER_ID
+				   AND E.JOB_TITLE_CODE = J.JOB_TITLE_CODE
+				   AND AD.APPR_ID = #apprId#
+					<isNotEmpty property="searchUserStatus">
+					AND	ADS.USER_STATUS = #searchUserStatus#
+					</isNotEmpty>
+					
+					<isNotEmpty property="searchUserName">
+					AND	UPPER(E.USER_NAME) LIKE '%' || UPPER(#searchUserName#) || '%'
+					</isNotEmpty>
+				ORDER BY
+				<isNotEmpty property="sortColumn">
+		    	<isEqual property="sortColumn" compareValue="confirmDate">
+		    	ADS.CONFIRM_DATE
+				</isEqual>
+				</isNotEmpty>
+				<isNotEmpty property="sortType">
+		    	<isEqual property="sortType" compareValue="DESC">
+		    	DESC,
+				</isEqual>
+				<isEqual property="sortType" compareValue="ASC">
+		    	ASC,
+				</isEqual>
+				</isNotEmpty>
+		    	AD.APPR_ID DESC     	
+				/* ===========================================END  */ 
+		<![CDATA[
+			) A 
+		) 
+		]]> 
+	</select>
+	
+	<delete id="deleteApprDisplaySub" parameterClass="Map"> 
+	<![CDATA[
+		/* [ApprDisplay_SqlMap.xml] approval.work.dao.ApprDisplay.deleteApprDisplay */
+		DELETE 
+		FROM 
+			IKEP4_APPR_DISPLAY_SUB 
+		WHERE
+		]]>
+		<isNotEmpty property="displayId">
+			 DISPLAY_ID	=	#displayId#
+		  AND USER_ID	=   #userId#
+		</isNotEmpty>
+		<isEmpty property="displayId">
+			 DISPLAY_ID	IN (SELECT DISPLAY_ID FROM IKEP4_APPR_DISPLAY WHERE APPR_ID=#apprId#)
+		</isEmpty>
+	</delete>
+	
+  	<delete id="deleteApprDisplay" parameterClass="Map"> 
+	<![CDATA[
+		/* [ApprDisplay_SqlMap.xml] approval.work.dao.ApprDisplay.deleteApprDisplay */
+		DELETE 
+		FROM 
+			IKEP4_APPR_DISPLAY
+		WHERE
+		]]>
+		<isNotEmpty property="displayId">
+		   DISPLAY_ID	=	#displayId#
+		</isNotEmpty>
+		<isEmpty property="displayId">
+			APPR_ID		=	#apprId#
+		</isEmpty>
+	</delete>
+	
+	<select id="getApprDisplaySubCount" parameterClass="Map" resultClass="int">
+	<![CDATA[
+		SELECT /* [ApprDisplay_SqlMap.xml] approval.work.dao.ApprDisplay.getApprDisplaySubCount */ 
+			COUNT(*)
+		FROM IKEP4_APPR_DISPLAY_SUB
+ 		WHERE DISPLAY_ID IN 
+ 			  (SELECT DISPLAY_ID FROM IKEP4_APPR_DISPLAY WHERE APPR_ID=#apprId#)
+		]]> 
+	</select>
+	
+	<select id="listByDisplaySearchCondition" parameterClass="ApprDisplaySearchCondition" resultMap="ApprDisplayListResult"> 
+	SELECT /* [ApprDisplay_SqlMap.xml] approval.work.dao.ApprDisplay.listByDisplaySearchCondition */ 
+		*
+	FROM 
+	( 
+		SELECT ROWNUM AS RNUM, A.* FROM 
+		( 
+			/* START========================================= */
+			SELECT  ROWNUM AS RRNUM,
+					AD.APPR_ID,
+			        AD.FORM_ID,
+			        AF.FORM_NAME,
+			        AD.APPR_DOC_TYPE,
+			        (SELECT CODE_KR_NAME
+			           FROM IKEP4_APPR_CODE AC
+			          WHERE AC.CODE_ID = AF.FORM_PARENT_ID) CODE_NAME,
+			        AD.APPR_TITLE,
+			        AD.APPR_REQ_DATE,
+			        AD.APPR_DOC_STATUS,
+			        AD.REGIST_DATE DREGIST_DATE,
+			        (SELECT TEAM_NAME FROM IKEP4_EV_USER WHERE USER_ID = AD.REGISTER_ID) TEAM_NAME,
+	                AD.APPR_END_DATE,
+	                ADA.REGISTER_ID ,
+	                ADA.REGISTER_NAME,
+	                ADA.REGIST_DATE,
+	                ADS.CONFIRM_DATE
+			  FROM IKEP4_APPR_DOC AD, IKEP4_APPR_FORM AF, IKEP4_APPR_DISPLAY ADA, IKEP4_APPR_DISPLAY_SUB ADS
+			 WHERE AD.FORM_ID = AF.FORM_ID
+			  AND  AD.PORTAL_ID = AF.PORTAL_ID
+        	  AND  AD.APPR_ID = ADA.APPR_ID
+        	  AND  ADA.DISPLAY_ID = ADS.DISPLAY_ID
+			  AND  AD.PORTAL_ID = #portalId#
+			  AND  ADS.USER_ID = #userId#
+			  <isNotEmpty property="listType">
+		    	<isEqual property="listType" compareValue="listApprDisplayWaiting">
+		    	AND ADS.USER_STATUS = '0'
+				</isEqual>
+				<isEqual property="listType" compareValue="listApprDisplayComplete">
+		    	AND ADS.USER_STATUS = '1'
+				</isEqual>
+			  </isNotEmpty>
+			  <isNotEmpty property="searchApprTitle">
+				AND	UPPER(AD.APPR_TITLE) LIKE '%' || UPPER(#searchApprTitle#) || '%'
+				</isNotEmpty>
+				<isNotNull property="searchStartDate"><isNotEmpty property="searchStartDate">
+					<isNotNull property="searchEndDate"><isNotEmpty property="searchEndDate">
+						AND ADA.REGIST_DATE BETWEEN TO_DATE(#searchStartDate#) AND TO_DATE(#searchEndDate#)+1
+					</isNotEmpty></isNotNull>
+				</isNotEmpty></isNotNull>
+			ORDER BY
+			<isNotEmpty property="sortColumn">
+	    	<isEqual property="sortColumn" compareValue="dRegistDate">
+	    	AD.REGIST_DATE
+			</isEqual>
+			<isEqual property="sortColumn" compareValue="confirmDate">
+	    	ADS.CONFIRM_DATE
+			</isEqual>
+			<isEqual property="sortColumn" compareValue="registDate">
+	    	ADA.REGIST_DATE
+			</isEqual>
+			</isNotEmpty>
+			<isNotEmpty property="sortType">
+	    	<isEqual property="sortType" compareValue="DESC">
+	    	DESC,
+			</isEqual>
+			<isEqual property="sortType" compareValue="ASC">
+	    	ASC,
+			</isEqual>
+			</isNotEmpty>
+	    	AD.APPR_ID DESC    	
+			/* ===========================================END  */ 
+	<![CDATA[
+		) A WHERE RRNUM <=  #endRowIndex# /* 종료  */
+	) WHERE RNUM >  #startRowIndex# /* 시작 */
+	]]> 
+	</select>
+	
+	<select id="countByDisplaySearchCondition" parameterClass="ApprDisplaySearchCondition" resultClass="int"> 
+	SELECT /* [ApprDisplay_SqlMap.xml] approval.work.dao.ApprDisplay.countByDisplaySearchCondition */ 
+		COUNT(*)
+	FROM 
+	( 
+		SELECT ROWNUM AS RNUM, A.* FROM 
+		( 
+			/* START========================================= */
+			SELECT  AD.APPR_ID,
+			        AD.FORM_ID,
+			        AF.FORM_NAME,
+			        AD.APPR_DOC_TYPE,
+			        (SELECT CODE_KR_NAME
+			           FROM IKEP4_APPR_CODE AC
+			          WHERE AC.CODE_ID = AF.FORM_PARENT_ID) CODE_NAME,
+			        AD.APPR_TITLE,
+			        AD.APPR_REQ_DATE,
+			        AD.APPR_DOC_STATUS,
+			        AD.REGIST_DATE DREGIST_DATE,
+			        (SELECT TEAM_NAME FROM IKEP4_EV_USER WHERE USER_ID = AD.REGISTER_ID) TEAM_NAME,
+	                AD.APPR_END_DATE,
+	                ADA.REGISTER_ID ,
+	                ADA.REGISTER_NAME,
+	                ADA.REGIST_DATE,
+	                ADS.CONFIRM_DATE
+			  FROM IKEP4_APPR_DOC AD, IKEP4_APPR_FORM AF, IKEP4_APPR_DISPLAY ADA, IKEP4_APPR_DISPLAY_SUB ADS
+			 WHERE AD.FORM_ID = AF.FORM_ID
+			  AND  AD.PORTAL_ID = AF.PORTAL_ID
+        	  AND  AD.APPR_ID = ADA.APPR_ID
+        	  AND  ADA.DISPLAY_ID = ADS.DISPLAY_ID
+			  AND  AD.PORTAL_ID = #portalId#
+			  AND  ADS.USER_ID = #userId#
+			  <isNotEmpty property="listType">
+		    	<isEqual property="listType" compareValue="listApprDisplayWaiting">
+		    	AND ADS.USER_STATUS = '0'
+				</isEqual>
+				<isEqual property="listType" compareValue="listApprDisplayComplete">
+		    	AND ADS.USER_STATUS = '1'
+				</isEqual>
+			  </isNotEmpty>
+			  <isNotEmpty property="searchApprTitle">
+				AND	UPPER(AD.APPR_TITLE) LIKE '%' || UPPER(#searchApprTitle#) || '%'
+				</isNotEmpty>
+				<isNotNull property="searchStartDate"><isNotEmpty property="searchStartDate">
+					<isNotNull property="searchEndDate"><isNotEmpty property="searchEndDate">
+						AND ADA.REGIST_DATE BETWEEN TO_DATE(#searchStartDate#) AND TO_DATE(#searchEndDate#)+1
+					</isNotEmpty></isNotNull>
+				</isNotEmpty></isNotNull>
+			/* ===========================================END  */ 
+		) A 
+	) 
+	</select>
+	
+	<select id="getApprDisplayId" parameterClass="Map" resultClass="String"> 
+		SELECT /* [ApprDisplay_SqlMap.xml] approval.work.dao.ApprDisplay.getApprDisplayId */ 
+			DISPLAY_ID
+		FROM IKEP4_APPR_DISPLAY_SUB
+	 	WHERE DISPLAY_ID IN (
+	                      SELECT DISPLAY_ID
+	                        FROM IKEP4_APPR_DISPLAY 
+	                       WHERE APPR_ID = #apprId#
+	                      )
+	    AND USER_STATUS = '0'
+	    AND USER_ID = #userId#
+	</select>
+	
+	<update id="updateApprDisplaySub" parameterClass="Map">
+	  <![CDATA[
+		   	UPDATE 	IKEP4_APPR_DISPLAY_SUB 
+		   	SET 	USER_STATUS 	= '1'
+			   	  , CONFIRM_DATE 	= SYSDATE 
+		   	WHERE 	DISPLAY_ID 		= #displayId#
+		   	  AND   USER_ID = #userId#
+	   ]]>
+	</update>
+	
+	<select id="countByDisplayUserStatus" parameterClass="String" resultClass="int"> 
+		SELECT /* [ApprDisplay_SqlMap.xml] approval.work.dao.ApprDisplay.countByDisplayUserStatus */ 
+			COUNT(*)
+		FROM IKEP4_APPR_DISPLAY_SUB
+	 	WHERE DISPLAY_ID IN (
+	                      SELECT DISPLAY_ID
+	                        FROM IKEP4_APPR_DISPLAY 
+	                       WHERE APPR_ID = #apprId#
+	                      )
+	    AND USER_STATUS = '0'
+	</select>
+	
+	<select id="existDisplayDoc" parameterClass="map" resultClass="int"> 
+		SELECT /* [ApprDisplay_SqlMap.xml] approval.work.dao.ApprDisplay.existDisplayDoc */ 
+			COUNT(*)
+		FROM IKEP4_APPR_DISPLAY AD, IKEP4_APPR_DISPLAY_SUB ADS
+	   WHERE AD.DISPLAY_ID = ADS.DISPLAY_ID
+	     AND AD.APPR_ID = #apprId#
+	</select>
+	
+	<select id="existDisplayUser" parameterClass="map" resultClass="int"> 
+		SELECT /* [ApprDisplay_SqlMap.xml] approval.work.dao.ApprDisplay.existDisplayDoc */ 
+			COUNT(*)
+		FROM IKEP4_APPR_DISPLAY AD, IKEP4_APPR_DISPLAY_SUB ADS
+	   WHERE AD.DISPLAY_ID = ADS.DISPLAY_ID
+	     AND AD.APPR_ID = #apprId#
+	     AND ADS.USER_ID = #userId#
+	</select>
+	
+</sqlMap>
