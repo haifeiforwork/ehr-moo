@@ -1,0 +1,69 @@
+
+eclipse jeus 에서 배포하는 jar파일이 class not found 가 남.
+
+tomcat에 배포된 파일을 옮겨서 console 부팅하면 정상적으로 부팅됨 원인확인 불가.. 
+
+tomcat 버젼에서 정상작동 하는  mashupportlet.war,notepadportlet.war,photoshowajaxportlet.war
+showtimeportlet.war,testsuite.war,weatherportlet.war
+를 디플로이시 경로 : C:\ikep4j-project\server\jeus6.0\webhome\autodeploy 
+
+제우스에서 portlet 태그라이브러리를 못찾아서 에러 발생함.
+
+아래와 같은 에러가나면 톰캣 ikep~~~.jar를 옮겨서 올려본다.
+
+-[10:29:06.013] ERROR ContextLoader.initWebApplicationContext(ContextLoader.java:220) - Context initialization failed
+org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'org.springframework.security.authentication.ProviderManager#0': Cannot create inner bean '(inner bean)' of type [org.springframework.security.config.authentication.AuthenticationManagerFactoryBean] while setting bean property 'parent'; nested exception is org.springframework.beans.factory.BeanCreationException: Error creating bean with name '(inner bean)': FactoryBean threw exception on object creation; nested exception is org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'org.springframework.security.authenticationManager': Cannot resolve reference to bean 'org.springframework.security.authentication.dao.DaoAuthenticationProvider#0' while setting bean property 'providers' with key [0]; nested exception is org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'org.springframework.security.authentication.dao.DaoAuthenticationProvider#0': Cannot resolve reference to bean 'userDetailsServiceWrapper' while setting bean property 'userDetailsService'; nested exception is org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'userDetailsServiceWrapper' defined in URL [jar:file:/C:/ikep4j-project/workspace/.metadata/.plugins/org.eclipse.wst.server.core/tmp2/ikep4-webapp/WEB-INF/lib/ikep4-config.jar!/configuration/spring/context-security.xml]: Cannot resolve reference to bean 'roleHierarchy' while setting bean property 'roleHierarchy'; nested exception is org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'roleHierarchy' defined in URL [jar:file:/C:/ikep4j-project/workspace/.metadata/.plugins/org.eclipse.wst.server.core/tmp2/ikep4-webapp/WEB-INF/lib/ikep4-config.jar!/configuration/spring/context-security.xml]: Cannot resolve reference to bean 'hierarchyStrings' while setting bean property 'hierarchy'; nested exception is org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'hierarchyStrings': Injection of autowired dependencies failed; nested exception is org.springframework.beans.factory.BeanCreationException: Could not autowire field: private com.lgcns.ikep4.portal.security.service.SecuredObjectService com.lgcns.ikep4.portal.security.userdetails.hierarchicalroles.HierarchyStringsFactoryBean.securedObjectService; nested exception is org.springframework.beans.factory.NoSuchBeanDefinitionException: No matching bean of type [com.lgcns.ikep4.portal.security.service.SecuredObjectService] found for dependency: expected at least 1 bean which qualifies as autowire candidate for this dependency. Dependency annotations: {@org.springframework.beans.factory.annotation.Autowired(required=true)}
+	at org.springframework.beans.factory.support.BeanDefinitionValueResolver.resolveInnerBean(BeanDefinitionValueResolver.java:281)
+	at org.springframework.beans.factory.support.BeanDefinitionValueResolver.resolveValueIfNecessary(BeanDefinitionValueResolver.java:125)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.applyPropertyValues(AbstractAutowireCapableBeanFactory.java:1325)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.populateBean(AbstractAutowireCapableBeanFactory.java:1086)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:517)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:456)
+	at org.springframework.beans.factory.support.AbstractBeanFactory$1.getObject(AbstractBeanFactory.java:291)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:222)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:288)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:190)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:580)
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:895)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:425)
+	at org.springframework.web.context.ContextLoader.createWebApplicationContext(ContextLoader.java:276)
+	at org.springframework.web.context.ContextLoader.initWebApplicationContext(ContextLoader.java:197)
+	at org.springframework.web.context.ContextLoaderListener.contextInitialized(ContextLoaderListener.java:47)
+	at org.apache.pluto.driver.PortalStartupListener.contextInitialized(PortalStartupListener.java:108)
+	at jeus.servlet.listener.ListenerWrapper.contextInitialized(ListenerWrapper.java:81)
+	at jeus.servlet.listener.ListenerManager.fireContextInitializedEvent(ListenerManager.java:226)
+	at jeus.servlet.listener.ListenerManager.start(ListenerManager.java:155)
+	at jeus.servlet.engine.Context.doStart(Context.java:1113)
+	at jeus.servlet.engine.Context.execStart(Context.java:955)
+	at jeus.management.j2ee.WebModule.preStart(WebModule.java:390)
+	at jeus.management.j2ee.J2EEManagedObject.start(J2EEManagedObject.java:853)
+	at jeus.management.j2ee.J2EEDeployedObject.start(J2EEDeployedObject.java:275)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:597)
+	at com.sun.jmx.mbeanserver.StandardMBeanIntrospector.invokeM2(StandardMBeanIntrospector.java:93)
+	at com.sun.jmx.mbeanserver.StandardMBeanIntrospector.invokeM2(StandardMBeanIntrospector.java:27)
+	at com.sun.jmx.mbeanserver.MBeanIntrospector.invokeM(MBeanIntrospector.java:208)
+	at com.sun.jmx.mbeanserver.PerInterface.invoke(PerInterface.java:120)
+	at com.sun.jmx.mbeanserver.MBeanSupport.invoke(MBeanSupport.java:262)
+	at com.sun.jmx.interceptor.DefaultMBeanServerInterceptor.invoke(DefaultMBeanServerInterceptor.java:836)
+	at com.sun.jmx.mbeanserver.JmxMBeanServer.invoke(JmxMBeanServer.java:761)
+	at jeus.management.JMXUtility.invokeWithTargetModuleID(JMXUtility.java:821)
+	at jeus.server.enginecontainer.EngineContainer.deployRegisteredApp(EngineContainer.java:1122)
+	at jeus.server.enginecontainer.EngineContainer.deployApp(EngineContainer.java:1047)
+	at jeus.server.enginecontainer.EngineContainer.init(EngineContainer.java:368)
+	at jeus.server.enginecontainer.EngineContainer.<init>(EngineContainer.java:134)
+	at jeus.server.enginecontainer.EngineContainer.main(EngineContainer.java:998)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)
+	at java.lang.reflect.Method.invoke(Method.java:597)
+	at jeus.server.Bootstrapper.callMainMethod(Bootstrapper.java:295)
+	at jeus.server.Bootstrapper.callMain(Bootstrapper.java:364)
+	at jeus.server.enginecontainer.EngineContainerBootstrapper.main(EngineContainerBootstrapper.java:14)
+Caused by: org.springframework.beans.factory.BeanCreationException: Error creating bean with name '(inner bean)': FactoryBean threw exception on object creation; nested exception is org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'org.springframework.security.authenticationManager': Cannot resolve reference to bean 'org.springframework.security.authentication.dao.DaoAuthenticationProvider#0' while setting bean property 'providers' with key [0]; nested exception is org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'org.springframework.security.authentication.dao.DaoAuthenticationProvider#0': Cannot resolve reference to bean 'userDetailsServiceWrapper' while setting bean property 'userDetailsService'; nested exception is org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'userDetailsServiceWrapper' defined in URL [jar:file:/C:/ikep4j-project/workspace/.metadata/.plugins/org.eclipse.wst.server.core/tmp2/ikep4-webapp/WEB-INF/lib/ikep4-config.jar!/configuration/spring/context-security.xml]: Cannot resolve reference to bean 'roleHierarchy' while setting bean property 'roleHierarchy'; nested exception is org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'roleHierarchy' defined in URL [jar:file:/C:/ikep4j-project/workspace/.metadata/.plugins/org.eclipse.wst.server.core/tmp2/ikep4-webapp/WEB-INF/lib/ikep4-config.jar!/configuration/spring/context-security.xml]: Cannot resolve reference to bean 'hierarchyStrings' while setting bean property 'hierarchy'; nested exception is org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'hierarchyStrings': Injection of autowired dependencies failed; nested exception is org.springframework.beans.factory.BeanCreationException: Could not autowire field: private com.lgcns.ikep4.portal.security.service.SecuredObjectService com.lgcns.ikep4.portal.security.userdetails.hierarchicalroles.HierarchyStringsFactoryBean.securedObjectService; nested exception is org.springframework.beans.factory.NoSuchBeanDefinitionException: No matching bean of type [com.lgcns.ikep4.portal.security.service.SecuredObjectService] found for dependency: expected at least 1 bean which qualifies as autowire candidate for this dependency. Dependency annotations: {@org.springframework.beans.factory.annotation.Autowired(required=true)}
+	at org.springframework.beans.factory.support.FactoryBeanRegistrySupport.doGetObjectFromFactoryBean(FactoryBeanRegistrySupport.java:149)
+	at org.springframework.beans.factory.support.FactoryBeanRegistrySupport.getObjectFromFactoryBean(FactoryBeanRegistrySupport.java:109)
+	at org.springframework.beans.factory.support.BeanDefinitionValueResolver.resolveInnerBean(BeanDefinitionValueResolver.java:274)
+	... 48 more
